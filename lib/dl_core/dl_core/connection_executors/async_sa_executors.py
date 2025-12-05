@@ -238,6 +238,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
             chunk_size=conn_exec_query.chunk_size,
             db_name=conn_exec_query.db_name,
             debug_compiled_query=conn_exec_query.debug_compiled_query,
+            inspector_query=conn_exec_query.inspector_query,
             connector_specific_params=conn_exec_query.connector_specific_params,
             trusted_query=conn_exec_query.trusted_query,
             is_ddl_dml_query=conn_exec_query.is_ddl_dml_query,

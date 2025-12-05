@@ -127,7 +127,8 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             db_exc = self.make_exc(
                 status_code=HTTPBadRequest.status_code,
                 err_body="'step', 'from', 'to' must be in parameters",
-                debug_compiled_query=dba_query.debug_compiled_query,
+                debug_query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
             )
             raise db_exc
 
@@ -179,18 +180,21 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 message=f"Unexpected API response body: {err.args[0]}",
                 db_message=data["data"]["result"][:100],
                 query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
             ) from err
 
     @staticmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
         status_code: int,  # noqa
         err_body: str,
-        debug_compiled_query: Optional[str] = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> DatabaseQueryError:
         exc_cls = DatabaseQueryError
         return exc_cls(
             db_message=err_body,
-            query=debug_compiled_query,
+            query=debug_query,
+            inspector_query=inspector_query,
             orig=None,
             details={},
         )
@@ -206,7 +210,8 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             db_exc = self.make_exc(
                 status_code=resp.status,
                 err_body=body_piece,
-                debug_compiled_query=dba_query.debug_compiled_query,
+                debug_query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
             )
             raise db_exc
 
