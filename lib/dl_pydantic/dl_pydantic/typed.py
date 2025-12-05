@@ -16,6 +16,9 @@ from typing_extensions import Self
 import dl_pydantic.base as base
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 TypedBaseModelT = TypeVar("TypedBaseModelT", bound="TypedBaseModel")
 
 
@@ -40,7 +43,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             raise ValueError(f"Class '{class_}' must be subclass of '{cls}'")
 
         cls._classes[name] = class_
-        logging.info(f"Registered class '{name}' as '{class_}'")
+        LOGGER.info(f"Registered class '{name}' as '{class_}'")
 
     @classmethod
     def _prepare_data(cls, data: dict[str, Any]) -> dict[str, Any]:

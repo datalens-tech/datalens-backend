@@ -3,14 +3,15 @@ from typing import (
     TypeVar,
 )
 
+import aiohttp.typedefs
 import aiohttp.web
 import attr
 import pydantic
 from typing_extensions import override
 
 import dl_app_api_base.handlers as handlers
+import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
-import dl_app_api_base.printer as printer
 import dl_app_base
 import dl_settings
 
@@ -53,7 +54,7 @@ class HttpServerAppFactoryMixin(
                     app=await self._get_aiohttp_app(),
                     host=self.settings.HTTP_SERVER.HOST,
                     port=self.settings.HTTP_SERVER.PORT,
-                    print=printer.PrintLogger(),
+                    access_log=None,
                 ),
                 name="run_http_server",
             ),
@@ -65,12 +66,65 @@ class HttpServerAppFactoryMixin(
     async def _get_aiohttp_app(
         self,
     ) -> aiohttp.web.Application:
-        routes = await self._get_aiohttp_app_routes()
+        app = aiohttp.web.Application(
+            middlewares=await self._get_aiohttp_app_middlewares(),
+        )
 
-        app = aiohttp.web.Application()
+        await self._setup_routes(app)
+        await self._setup_openapi(app)
+
+        return app
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_aiohttp_app_middlewares(
+        self,
+    ) -> list[aiohttp.typedefs.Middleware]:
+        logging_middleware = middlewares.LoggingMiddleware()
+        error_handling_middleware = middlewares.ErrorHandlingMiddleware()
+
+        return [
+            logging_middleware.process,
+            error_handling_middleware.process,
+        ]
+
+    async def _setup_routes(self, app: aiohttp.web.Application) -> None:
+        routes = await self._get_aiohttp_app_routes()
         for route in routes:
             app.router.add_route(route.method, route.path, route.handler.process)
 
+    @dl_app_base.singleton_class_method_result
+    async def _get_aiohttp_app_routes(
+        self,
+    ) -> list[handlers.Route]:
+        result: list[handlers.Route] = []
+
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/api/v1/health/liveness",
+                handler=handlers.LivenessProbeHandler(),
+            ),
+        )
+
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/api/v1/health/readiness",
+                handler=handlers.ReadinessProbeHandler(
+                    subsystems=await self._get_aiohttp_subsystem_readiness_callbacks(),
+                ),
+            ),
+        )
+
+        return result
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_aiohttp_subsystem_readiness_callbacks(
+        self,
+    ) -> list[handlers.SubsystemReadinessCallback]:
+        return []
+
+    async def _setup_openapi(self, app: aiohttp.web.Application) -> None:
         open_api_spec = await self._get_aiohttp_open_api_spec()
         open_api_handler = openapi.OpenApiHandler(raw_spec=open_api_spec.raw)
         app.router.add_route("GET", self.settings.OPEN_API.spec_path, open_api_handler.process)
@@ -86,34 +140,6 @@ class HttpServerAppFactoryMixin(
             app.router.add_route("GET", self.settings.OPEN_API.DOCS_PATH, swagger_handler.process)
             app.router.add_static(f"{self.settings.OPEN_API.DOCS_PATH}/static/", path=swagger_handler.static_dir)
 
-        return app
-
-    @dl_app_base.singleton_class_method_result
-    async def _get_aiohttp_app_routes(
-        self,
-    ) -> list[handlers.Route]:
-        result: list[handlers.Route] = []
-
-        aiohttp_liveness_probe_handler = await self._get_aiohttp_liveness_probe_handler()
-        result.append(
-            handlers.Route(
-                method="GET",
-                path="/api/v1/health/liveness",
-                handler=aiohttp_liveness_probe_handler,
-            ),
-        )
-
-        aiohttp_readiness_probe_handler = await self._get_aiohttp_readiness_probe_handler()
-        result.append(
-            handlers.Route(
-                method="GET",
-                path="/api/v1/health/readiness",
-                handler=aiohttp_readiness_probe_handler,
-            ),
-        )
-
-        return result
-
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_open_api_spec(
         self,
@@ -121,25 +147,3 @@ class HttpServerAppFactoryMixin(
         return openapi.OpenApiSpec(
             routes=await self._get_aiohttp_app_routes(),
         )
-
-    @dl_app_base.singleton_class_method_result
-    async def _get_aiohttp_liveness_probe_handler(
-        self,
-    ) -> handlers.LivenessProbeHandler:
-        return handlers.LivenessProbeHandler()
-
-    @dl_app_base.singleton_class_method_result
-    async def _get_aiohttp_readiness_probe_handler(
-        self,
-    ) -> handlers.ReadinessProbeHandler:
-        subsystems = await self._get_aiohttp_subsystem_readiness_callbacks()
-
-        return handlers.ReadinessProbeHandler(
-            subsystems=subsystems,
-        )
-
-    @dl_app_base.singleton_class_method_result
-    async def _get_aiohttp_subsystem_readiness_callbacks(
-        self,
-    ) -> list[handlers.SubsystemReadinessCallback]:
-        return []

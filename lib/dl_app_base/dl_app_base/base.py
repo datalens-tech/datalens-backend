@@ -61,6 +61,7 @@ class BaseApp:
         yield from self._main_callbacks
 
     async def on_startup(self) -> None:
+        self.logger.info("Running Startup Callbacks")
         self._state.runtime_status = RuntimeStatus.STARTING
 
         for callback in self.startup_callbacks:
@@ -76,7 +77,10 @@ class BaseApp:
             else:
                 self.logger.info(f"Successfully started StartupCallback({callback.name})")
 
+        self.logger.info("Startup Callbacks completed")
+
     async def on_shutdown(self) -> None:
+        self.logger.info("Running ShutdownCallbacks")
         self._state.runtime_status = RuntimeStatus.STOPPING
 
         for callback in self.shutdown_callbacks:
@@ -92,11 +96,13 @@ class BaseApp:
             else:
                 self.logger.info(f"Successfully shutdown ShutdownCallback({callback.name})")
 
+        self.logger.info("ShutdownCallbacks completed")
         self._state.runtime_status = RuntimeStatus.STOPPED
 
     async def main(self) -> None:
         tasks: list[asyncio.Task[None]] = []
         for callback in self.main_callbacks:
+            self.logger.info("Creating task for MainCallback(%s)", callback.name)
             tasks.append(asyncio.create_task(callback.coroutine, name=callback.name))
 
         if len(tasks) == 0:
@@ -153,6 +159,7 @@ class BaseApp:
                         self.logger.info("- %s - cancelled", task.get_name())
 
     async def run(self) -> None:
+        self.logger.info("Running Application")
         await self.on_startup()
 
         try:
@@ -197,12 +204,21 @@ class BaseAppFactory(Generic[AppType]):
     async def create_application(
         self,
     ) -> AppType:
-        return self.app_class(
-            startup_callbacks=await self._get_startup_callbacks(),
-            shutdown_callbacks=await self._get_shutdown_callbacks(),
-            main_callbacks=await self._get_main_callbacks(),
-            logger=await self._get_logger(),
-        )
+        logger = await self._get_logger()
+        logger.info("Creating Application(%s) with settings: %s", self.app_class.__name__, self.settings)
+
+        try:
+            app = self.app_class(
+                startup_callbacks=await self._get_startup_callbacks(),
+                shutdown_callbacks=await self._get_shutdown_callbacks(),
+                main_callbacks=await self._get_main_callbacks(),
+                logger=await self._get_logger(),
+            )
+        except Exception as exc:
+            raise exceptions.ConfigurationError from exc
+
+        logger.info("Application successfully created")
+        return app
 
     @singleton.singleton_class_method_result
     async def _get_startup_callbacks(

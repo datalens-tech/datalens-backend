@@ -23,7 +23,6 @@ from .openapi import (
     OpenApiSettings,
     OpenApiSpec,
 )
-from .printer import PrintLogger
 
 
 __all__ = [
@@ -34,7 +33,6 @@ __all__ = [
     "SubsystemReadinessAsyncCallback",
     "SubsystemReadinessCallback",
     "SubsystemReadinessSyncCallback",
-    "PrintLogger",
     "HttpServerAppSettingsMixin",
     "HttpServerAppMixin",
     "HttpServerAppFactoryMixin",
