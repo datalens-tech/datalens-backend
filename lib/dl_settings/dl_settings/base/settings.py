@@ -20,6 +20,7 @@ class BaseRootSettings(pydantic_settings.BaseSettings):
 
     model_config = pydantic_settings.SettingsConfigDict(
         env_nested_delimiter="__",
+        extra="ignore",
     )
 
     @classmethod
