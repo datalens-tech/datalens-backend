@@ -184,7 +184,7 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     description=DESCRIPTION_TEMPLATE,
     resources=SimpleAliasedResourceRegistry(
         resources={
-            "return_type": AliasedTextResource(body="{type:ARRAY_STRING}"),
+            "return_type": AliasedTextResource(body="{type:ARRAY_STR}"),
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
