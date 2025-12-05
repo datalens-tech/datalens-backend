@@ -1,9 +1,16 @@
 from dl_formula_ref.categories.native import CATEGORY_NATIVE
 from dl_formula_ref.i18n.registry import FormulaRefTranslatable as Translatable
 from dl_formula_ref.localization import get_gettext
+from dl_formula_ref.registry.aliased_res import (
+    AliasedTextResource,
+    SimpleAliasedResourceRegistry,
+)
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.example import SimpleExample
-from dl_formula_ref.registry.note import Note
+from dl_formula_ref.registry.note import (
+    Note,
+    NoteLevel,
+)
 
 
 _ = get_gettext()
@@ -14,12 +21,13 @@ NATIVE_FUNCTION_NOTE = Note(
         "This function allows you to call database-specific functions that are not available "
         "as standard functions in DataLens. The availability and behavior of native functions "
         "depends on your database type and version."
-    )
+    ),
+    level=NoteLevel.warning,
 )
 
 DESCRIPTION_TEMPLATE = _(
-    "Calls a native database {attributes:function_type} by name. Native function should return {attributes:return_type}. "
-    "{attributes:execution_type} Parameters are passed in the same order as written in the formula."
+    "Calls a native database {text:function_type} by name. Native function should return {text:return_type}. "
+    "{text:execution_type} Parameters are passed in the same order as written in the formula."
     "\n\n"
     "The first argument {arg:0} must be a constant string with the name of the "
     "database function to call. All subsequent arguments are passed to the "
@@ -28,20 +36,25 @@ DESCRIPTION_TEMPLATE = _(
     "The function name must contain only alphanumeric characters, underscore and colon characters."
 )
 
-SIMPLE_FUNCTION_TYPE = _("function")
+SIMPLE_FUNCTION_BASE_RESOURCES = {
+    "function_type": AliasedTextResource(body=_("function")),
+    "execution_type": AliasedTextResource(
+        body=_("The function is executed for every row in the dataset (non-aggregated).")
+    ),
+}
 
-SIMPLE_EXECUTION_TYPE = _("The function is executed for every row in the dataset (non-aggregated).")
 
 FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     name="db_call_int",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("an integer result"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("an integer result")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     examples=[
         SimpleExample(
             'DB_CALL_INT("positionCaseInsensitive", "Hello", "l") = 3 '
@@ -58,11 +71,12 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("a float result"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("a float result")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     examples=[
         SimpleExample('DB_CALL_FLOAT("sign", -5.0) = -1.0 -- ClickHouse: sign of -5.0 is -1.0'),
         SimpleExample('DB_CALL_FLOAT("sign", 5.0) = 1.0 -- ClickHouse: sign of 5.0 is 1.0'),
@@ -75,11 +89,12 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("a string result"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("a string result")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     examples=[
         SimpleExample(
             'DB_CALL_STRING("dictGetStringOrDefault", "categories", "category_name", [category_id], "other") '
@@ -101,11 +116,12 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("a boolean result"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("a boolean result")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     examples=[
         SimpleExample('DB_CALL_BOOL("isFinite", 5) = TRUE -- ClickHouse: check if 5 is a finite number'),
         SimpleExample('DB_CALL_BOOL("isInfinite", 5) = FALSE -- ClickHouse: check if 5 is an infinite number'),
@@ -121,11 +137,12 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("an array of integers"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("an array of integers")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_INT("range", 5) = ARRAY(0, 1, 2, 3, 4) '
@@ -142,11 +159,12 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
     name="db_call_array_float",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("an array of floats"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("an array of floats")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -164,11 +182,12 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     name="db_call_array_string",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    attributes={
-        "function_type": SIMPLE_FUNCTION_TYPE,
-        "return_type": _("an array of strings"),
-        "execution_type": SIMPLE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("an array of strings")),
+            **SIMPLE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -182,19 +201,22 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     ],
 )
 
-AGGREGATE_FUNCTION_TYPE = _("aggregate function")
 
-AGGREGATE_EXECUTION_TYPE = _("The function is executed as an aggregation across grouped rows.")
+AGGREGATE_FUNCTION_BASE_RESOURCES = {
+    "function_type": AliasedTextResource(body=_("aggregate function")),
+    "execution_type": AliasedTextResource(body=_("The function is executed as an aggregation across grouped rows.")),
+}
 
 FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
     name="db_call_agg_int",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    attributes={
-        "function_type": AGGREGATE_FUNCTION_TYPE,
-        "return_type": _("an integer result"),
-        "execution_type": AGGREGATE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("an integer result")),
+            **AGGREGATE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -208,11 +230,12 @@ FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
     name="db_call_agg_float",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    attributes={
-        "function_type": AGGREGATE_FUNCTION_TYPE,
-        "return_type": _("a float result"),
-        "execution_type": AGGREGATE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("a float result")),
+            **AGGREGATE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -229,11 +252,12 @@ FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
     name="db_call_agg_string",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    attributes={
-        "function_type": AGGREGATE_FUNCTION_TYPE,
-        "return_type": _("a string result"),
-        "execution_type": AGGREGATE_EXECUTION_TYPE,
-    },
+    resources=SimpleAliasedResourceRegistry(
+        resources={
+            "return_type": AliasedTextResource(body=_("a string result")),
+            **AGGREGATE_FUNCTION_BASE_RESOURCES,
+        }
+    ),
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
