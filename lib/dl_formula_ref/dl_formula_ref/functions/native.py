@@ -21,7 +21,7 @@ DESCRIPTION_TEMPLATE = _(
     "Calls a native database {function_type} by name. Native function should return {return_type}. "
     "{execution_type} Parameters are passed in the same order as written in the formula."
     "\n\n"
-    "The first argument {arg:0} must be a constant string with the name of the "
+    "The first argument {{arg:0}} must be a constant string with the name of the "
     "database function to call. All subsequent arguments are passed to the "
     "native function and can be of any type, including types that are not currently supported by DataLens."
     "\n\n"
