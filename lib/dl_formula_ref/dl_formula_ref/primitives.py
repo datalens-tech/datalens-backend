@@ -46,6 +46,7 @@ class RawFunc:
     _short_title_factory: Callable[[str], str] = attr.ib(kw_only=True)
     _internal_name: str = attr.ib(kw_only=True)
     _description: str = attr.ib(kw_only=True)
+    _attributes: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     _args: list[FuncArg] = attr.ib(kw_only=True)
     _signature_coll: FunctionSignatureCollection = attr.ib(kw_only=True)
     _notes: list[ParameterizedNote] = attr.ib(kw_only=True)
@@ -78,6 +79,10 @@ class RawFunc:
     @property
     def args(self) -> list[FuncArg]:
         return self._args
+
+    @property
+    def attributes(self) -> dict[str, str]:
+        return self._attributes
 
     @property
     def return_type(self) -> ParameterizedText:

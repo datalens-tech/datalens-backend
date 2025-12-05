@@ -68,6 +68,7 @@ def _make_raw_func(item: FunctionDocRegistryItem, env: GenerationEnvironment) ->
         short_title_factory=item.get_short_title,
         internal_name=item.internal_name.upper(),
         description=item.description,
+        attributes=item.attributes,
         dialects=item.get_dialects(env=env),
         args=item.get_args(env=env),
         signature_coll=item.get_signatures(env=env),

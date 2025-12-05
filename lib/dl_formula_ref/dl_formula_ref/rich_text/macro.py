@@ -39,6 +39,10 @@ class TextMacro(SingleArgMacro):
     pass
 
 
+class AttributeMacro(SingleArgMacro):
+    pass
+
+
 class DialectsMacro(ListMacro):
     pass
 
@@ -69,6 +73,7 @@ SINGLE_ARG_MACROS = {
     "arg": ArgMacro,
     "argn": ArgNMacro,
     "macro": ExtMacroMacro,
+    "attribute": AttributeMacro,
 }
 DOUBLE_ARG_MACROS = {
     "ref": RefMacro,

@@ -18,10 +18,10 @@ NATIVE_FUNCTION_NOTE = Note(
 )
 
 DESCRIPTION_TEMPLATE = _(
-    "Calls a native database {function_type} by name. Native function should return {return_type}. "
-    "{execution_type} Parameters are passed in the same order as written in the formula."
+    "Calls a native database {attributes:function_type} by name. Native function should return {attributes:return_type}. "
+    "{attributes:execution_type} Parameters are passed in the same order as written in the formula."
     "\n\n"
-    "The first argument {{arg:0}} must be a constant string with the name of the "
+    "The first argument {arg:0} must be a constant string with the name of the "
     "database function to call. All subsequent arguments are passed to the "
     "native function and can be of any type, including types that are not currently supported by DataLens."
     "\n\n"
@@ -35,12 +35,13 @@ SIMPLE_EXECUTION_TYPE = _("The function is executed for every row in the dataset
 FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     name="db_call_int",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("an integer result"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("an integer result"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     examples=[
         SimpleExample(
             'DB_CALL_INT("positionCaseInsensitive", "Hello", "l") = 3 '
@@ -55,12 +56,13 @@ FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     name="db_call_float",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("a float result"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("a float result"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     examples=[
         SimpleExample('DB_CALL_FLOAT("sign", -5.0) = -1.0 -- ClickHouse: sign of -5.0 is -1.0'),
         SimpleExample('DB_CALL_FLOAT("sign", 5.0) = 1.0 -- ClickHouse: sign of 5.0 is 1.0'),
@@ -71,12 +73,13 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     name="db_call_string",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("a string result"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("a string result"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     examples=[
         SimpleExample(
             'DB_CALL_STRING("dictGetStringOrDefault", "categories", "category_name", [category_id], "other") '
@@ -96,12 +99,13 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     name="db_call_bool",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("a boolean result"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("a boolean result"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     examples=[
         SimpleExample('DB_CALL_BOOL("isFinite", 5) = TRUE -- ClickHouse: check if 5 is a finite number'),
         SimpleExample('DB_CALL_BOOL("isInfinite", 5) = FALSE -- ClickHouse: check if 5 is an infinite number'),
@@ -115,12 +119,13 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     name="db_call_array_int",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("an array of integers"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
     notes=[NATIVE_FUNCTION_NOTE],
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("an array of integers"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_INT("range", 5) = ARRAY(0, 1, 2, 3, 4) '
@@ -136,11 +141,12 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
     name="db_call_array_float",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("an array of floats"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("an array of floats"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -157,11 +163,12 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
     name="db_call_array_string",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=SIMPLE_FUNCTION_TYPE,
-        return_type=_("an array of strings"),
-        execution_type=SIMPLE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
+    attributes={
+        "function_type": SIMPLE_FUNCTION_TYPE,
+        "return_type": _("an array of strings"),
+        "execution_type": SIMPLE_EXECUTION_TYPE,
+    },
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -182,11 +189,12 @@ AGGREGATE_EXECUTION_TYPE = _("The function is executed as an aggregation across 
 FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
     name="db_call_agg_int",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=AGGREGATE_FUNCTION_TYPE,
-        return_type=_("an integer result"),
-        execution_type=AGGREGATE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
+    attributes={
+        "function_type": AGGREGATE_FUNCTION_TYPE,
+        "return_type": _("an integer result"),
+        "execution_type": AGGREGATE_EXECUTION_TYPE,
+    },
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -199,11 +207,12 @@ FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
     name="db_call_agg_float",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=AGGREGATE_FUNCTION_TYPE,
-        return_type=_("a float result"),
-        execution_type=AGGREGATE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
+    attributes={
+        "function_type": AGGREGATE_FUNCTION_TYPE,
+        "return_type": _("a float result"),
+        "execution_type": AGGREGATE_EXECUTION_TYPE,
+    },
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(
@@ -219,11 +228,12 @@ FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
 FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
     name="db_call_agg_string",
     category=CATEGORY_NATIVE,
-    description=DESCRIPTION_TEMPLATE.format(
-        function_type=AGGREGATE_FUNCTION_TYPE,
-        return_type=_("a string result"),
-        execution_type=AGGREGATE_EXECUTION_TYPE,
-    ),
+    description=DESCRIPTION_TEMPLATE,
+    attributes={
+        "function_type": AGGREGATE_FUNCTION_TYPE,
+        "return_type": _("a string result"),
+        "execution_type": AGGREGATE_EXECUTION_TYPE,
+    },
     notes=[NATIVE_FUNCTION_NOTE],
     examples=[
         SimpleExample(

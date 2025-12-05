@@ -35,6 +35,7 @@ from dl_formula_ref.rich_text.macro import (
     SINGLE_ARG_MACROS,
     ArgMacro,
     ArgNMacro,
+    AttributeMacro,
     BaseMacro,
     CategoryMacro,
     DialectsMacro,
@@ -52,7 +53,9 @@ from dl_formula_ref.texts import (
 from dl_i18n.localizer_base import Translatable
 
 
-_MACRO_CHOICES = "|".join(("ref", "link", "text", "table", "dialects", "arg", "argn", "type", "macro", "category"))
+_MACRO_CHOICES = "|".join(
+    ("ref", "link", "text", "table", "dialects", "arg", "argn", "type", "macro", "category", "attribute")
+)
 # 3 kinds of macros:
 #     {type: single_value}
 #     {type: first_value: second_value}
@@ -83,6 +86,7 @@ class MacroExpander:
     _func_link_provider: Optional[Callable[[str, Optional[str]], tuple[str, str]]] = attr.ib(kw_only=True, default=None)
     _cat_link_provider: Optional[Callable[[str, Optional[str]], tuple[str, str]]] = attr.ib(kw_only=True, default=None)
     _args: Optional[list[FuncArg]] = attr.ib(kw_only=True, default=None)
+    _attributes: dict[str, str] = attr.ib(kw_only=True, factory=dict)
     _translation_callable: Callable[[str | Translatable], str] = attr.ib(kw_only=True, default=lambda s: s)
 
     def _get_raw_link_url_by_alias(self, alias: str) -> Optional[str]:
@@ -96,6 +100,11 @@ class MacroExpander:
 
     def _get_raw_table_body_by_alias(self, alias: str) -> list[list[str | Translatable]]:
         return self._resources.get_table(alias).table_body
+
+    def _get_attribute_value(self, key: str) -> str:
+        if key not in self._attributes:
+            raise KeyError(f'Attribute "{key}" is not defined')
+        return self._attributes[key]
 
     def _get_func_name_and_url(self, func_name: str, category_name: Optional[str] = None) -> tuple[str, str]:
         assert self._func_link_provider is not None
@@ -278,6 +287,11 @@ class MacroExpander:
     @expand_macro.register
     def expand_macro_text(self, macro: TextMacro) -> RichText:
         return self.expand_text(self._get_raw_text_body_by_alias(macro.arg))
+
+    @expand_macro.register
+    def expand_macro_attribute(self, macro: AttributeMacro) -> RichText:
+        value = self._get_attribute_value(macro.arg)
+        return RichText(text=value)
 
     @expand_macro.register
     def expand_macro_table(self, macro: TableMacro) -> TableTextElement:
