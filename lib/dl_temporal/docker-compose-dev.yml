@@ -6,4 +6,4 @@ services:
     environment:
       - TEMPORAL_CORS_ORIGINS=http://localhost:53012
     ports:
-      - "53012:8080"
+      - "53013:8080"
