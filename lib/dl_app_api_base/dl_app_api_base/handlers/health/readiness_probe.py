@@ -64,7 +64,7 @@ class ReadinessProbeHandler(handlers.BaseHandler):
                 status=http.HTTPStatus.OK,
             )
 
-        logger.error("Not all subsystems are healthy!", extra=subsystems_status)
+        logger.error("Not all subsystems are healthy, status: %s", subsystems_status)
 
         return handlers.Response.with_model(
             schema=self.ResponseSchema(status="unhealthy", subsystems_status=subsystems_status),

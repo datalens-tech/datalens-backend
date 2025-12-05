@@ -2,6 +2,7 @@ import abc
 from typing import Protocol
 
 import attrs
+import pydantic
 from typing_extensions import Self
 
 import dl_constants
@@ -42,7 +43,7 @@ class NoAuthProvider(AuthProviderProtocol):
 
 
 class OauthAuthProviderSettings(AuthProviderSettings):
-    TOKEN: str
+    TOKEN: str = pydantic.Field(repr=False)
 
 
 AuthProviderSettings.register("OAUTH", OauthAuthProviderSettings)
@@ -64,7 +65,7 @@ class OauthAuthProvider(AuthProviderProtocol):
 
 
 class USMasterTokenAuthProviderSettings(AuthProviderSettings):
-    TOKEN: str
+    TOKEN: str = pydantic.Field(repr=False)
 
 
 AuthProviderSettings.register("US_MASTER_TOKEN", USMasterTokenAuthProviderSettings)

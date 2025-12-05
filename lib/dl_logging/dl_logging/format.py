@@ -3,6 +3,9 @@ import logging
 import os
 from typing import Any
 
+import attrs
+import statcommons.logs
+
 import dl_logging.context as context
 
 
@@ -46,7 +49,7 @@ def get_record_extra(record: logging.LogRecord) -> dict[str, Any]:
     return {key: value for key, value in vars(record).items() if key not in DEFAULT_RECORD_ATTRS}
 
 
-class JsonFormatter(logging.Formatter):
+class DeployJsonFormatter(logging.Formatter):
     """
     Formatting log records as JSON.
 
@@ -109,3 +112,23 @@ class JsonFormatter(logging.Formatter):
 
     def _get_standard_fields(self, record: logging.LogRecord) -> dict[str, Any]:
         return {field: getattr(record, field) for field in self.LOG_RECORD_USEFUL_FIELDS if hasattr(record, field)}
+
+
+JsonFormatter = statcommons.logs.JsonExtFormatter
+
+
+@attrs.define()
+class StdoutFormatter(logging.Formatter):
+    """
+    Write logs in YDeploy format in YDeploy,
+    and as top-level JSON otherwise.
+    """
+
+    deploy_json_formatter: logging.Formatter = attrs.field(factory=DeployJsonFormatter)
+    json_formatter: logging.Formatter = attrs.field(factory=JsonFormatter)
+
+    def format(self, record: logging.LogRecord) -> str:
+        if is_deploy():
+            return self.deploy_json_formatter.format(record)
+
+        return self.json_formatter.format(record)

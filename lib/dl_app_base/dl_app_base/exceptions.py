@@ -2,6 +2,10 @@ class ApplicationError(Exception):
     ...
 
 
+class ConfigurationError(ApplicationError):
+    ...
+
+
 class StartupError(ApplicationError):
     ...
 
