@@ -58,7 +58,7 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
         max_arg_cnt: int
         if any(defn.arg_cnt is None for defn in def_list):
             arg_names = max((defn.arg_names or () for defn in def_list), key=lambda names: len(names))
-            min_arg_cnt = max(len(arg_names), INFINITE_ARG_COUNT)
+            min_arg_cnt = min(len(arg_names), INFINITE_ARG_COUNT)
             max_arg_cnt = max(len(arg_names), INFINITE_ARG_COUNT)
         else:
             min_arg_cnt = min(defn.arg_cnt for defn in def_list)  # type: ignore  # 2024-01-30 # TODO: Value of type variable "SupportsRichComparisonT" of "min" cannot be "int | None"  [type-var]
@@ -88,6 +88,8 @@ class DefaultArgumentExtractor(ArgumentExtractorBase):
                 arg_names = ["value"]
             else:  # multiple anonymous args
                 arg_names = ["arg_{}".format(i + 1) for i in range(max_arg_cnt)]
+        elif len(arg_names) < max_arg_cnt:
+            arg_names = list(arg_names) + ["arg_{}".format(i + 1) for i in range(max_arg_cnt - len(arg_names))]
 
         # patch all type sets with implicit INTEGERs if FLOAT is accepted
         for types in arg_type_lists.values():
