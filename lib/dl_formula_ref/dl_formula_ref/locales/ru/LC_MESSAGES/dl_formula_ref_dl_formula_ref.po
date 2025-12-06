@@ -2157,9 +2157,10 @@ msgid ""
 "The function name must contain only alphanumeric characters, underscore and "
 "colon characters."
 msgstr ""
-"Вызывает нативную {text:function_type} базы данных по имени. Нативная функция "
-"должна возвращать {text:return_type}. {text:execution_type} Параметры передаются "
-"нативной функцией в том же порядке, в котором они записаны в формуле.\n"
+"Вызывает нативную {text:function_type} базы данных по имени. Нативная "
+"функция должна возвращать {text:return_type}. {text:execution_type} "
+"Параметры передаются нативной функцией в том же порядке, в котором они "
+"записаны в формуле.\n"
 "\n"
 "Первый аргумент {arg:0} должен быть константной строкой с именем функции "
 "базы данных для вызова. Все последующие аргументы передаются в нативную "
@@ -2175,27 +2176,6 @@ msgstr "функцию"
 msgid "The function is executed for every row in the dataset (non-aggregated)."
 msgstr ""
 "Функция выполняется для каждой строки в наборе данных (не агрегированная). "
-
-msgid "an integer result"
-msgstr "целое число"
-
-msgid "a float result"
-msgstr "вещественное число"
-
-msgid "a string result"
-msgstr "строку"
-
-msgid "a boolean result"
-msgstr "логическое значение"
-
-msgid "an array of integers"
-msgstr "массив целых чисел"
-
-msgid "an array of floats"
-msgstr "массив вещественных чисел"
-
-msgid "an array of strings"
-msgstr "массив строк"
 
 msgid "aggregate function"
 msgstr "агрегатную функцию (агрегацию)"
@@ -3333,3 +3313,4 @@ msgstr "Поддержка источников данных"
 
 msgid "<br/>or<br/>"
 msgstr "<br/>или<br/>"
+

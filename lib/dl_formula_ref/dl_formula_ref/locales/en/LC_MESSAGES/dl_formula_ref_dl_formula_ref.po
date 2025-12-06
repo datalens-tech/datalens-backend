@@ -1457,27 +1457,6 @@ msgstr ""
 msgid "The function is executed for every row in the dataset (non-aggregated)."
 msgstr ""
 
-msgid "an integer result"
-msgstr ""
-
-msgid "a float result"
-msgstr ""
-
-msgid "a string result"
-msgstr ""
-
-msgid "a boolean result"
-msgstr ""
-
-msgid "an array of integers"
-msgstr ""
-
-msgid "an array of floats"
-msgstr ""
-
-msgid "an array of strings"
-msgstr ""
-
 msgid "aggregate function"
 msgstr ""
 
