@@ -27,6 +27,7 @@ _CUSTOM_LOGGER_LEVELS = {
     "ydb": "WARNING",
     "httpcore": "INFO",
     "httpx": "WARNING",
+    "temporalio": "WARNING",
 }
 
 
