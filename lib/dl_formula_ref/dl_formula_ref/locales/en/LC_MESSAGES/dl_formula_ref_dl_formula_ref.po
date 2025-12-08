@@ -174,15 +174,6 @@ msgstr ""
 msgid "Tree"
 msgstr ""
 
-msgid "Null"
-msgstr ""
-
-msgid "Unsupported"
-msgstr ""
-
-msgid "Any (including unsupported by DataLens)"
-msgstr ""
-
 msgid "Standard"
 msgstr ""
 

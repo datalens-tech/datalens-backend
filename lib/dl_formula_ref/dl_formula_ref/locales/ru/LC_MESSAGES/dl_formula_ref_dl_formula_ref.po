@@ -174,15 +174,6 @@ msgstr "Массив строк"
 msgid "Tree"
 msgstr "Дерево"
 
-msgid "Null"
-msgstr "Null"
-
-msgid "Unsupported"
-msgstr "Неподдерживаемый"
-
-msgid "Any (including unsupported by DataLens)"
-msgstr "Любой (включая неподдерживаемые DataLens)"
-
 msgid "Standard"
 msgstr "Стандартный"
 
@@ -3313,4 +3304,3 @@ msgstr "Поддержка источников данных"
 
 msgid "<br/>or<br/>"
 msgstr "<br/>или<br/>"
-
