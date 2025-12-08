@@ -18,6 +18,13 @@ _ = get_gettext()
 
 NATIVE_FUNCTION_NOTE = Note(
     Translatable(
+        "It is recommended to use native functions only if there is no supported DataLens "
+        "function that can achieve the same result."
+    ),
+)
+
+NATIVE_FUNCTION_WARNING = Note(
+    Translatable(
         "This function allows you to call database-specific functions that are not available "
         "as standard functions in DataLens. The availability and behavior of native functions "
         "depends on your database type and version."
@@ -27,11 +34,12 @@ NATIVE_FUNCTION_NOTE = Note(
 
 DESCRIPTION_TEMPLATE = _(
     "Calls a native database {text:function_type} by name. Native function should return {text:return_type}. "
-    "{text:execution_type} Parameters are passed in the same order as written in the formula."
+    "{text:execution_type}"
     "\n\n"
     "The first argument {arg:0} must be a constant string with the name of the "
     "database function to call. All subsequent arguments are passed to the "
-    "native function and can be of any type, including types that are not currently supported by DataLens."
+    "native function in the same order as written in the formula and can be of any type, including types "
+    "that are not currently supported by DataLens."
     "\n\n"
     "The function name must contain only alphanumeric characters, underscore and colon characters."
 )
@@ -48,7 +56,7 @@ FUNCTION_DB_CALL_INT = FunctionDocRegistryItem(
     name="db_call_int",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     resources=SimpleAliasedResourceRegistry(
         resources={
             "return_type": AliasedTextResource(body="{type:INTEGER}"),
@@ -70,7 +78,7 @@ FUNCTION_DB_CALL_FLOAT = FunctionDocRegistryItem(
     name="db_call_float",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     resources=SimpleAliasedResourceRegistry(
         resources={
             "return_type": AliasedTextResource(body="{type:FLOAT}"),
@@ -88,7 +96,7 @@ FUNCTION_DB_CALL_STRING = FunctionDocRegistryItem(
     name="db_call_string",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     resources=SimpleAliasedResourceRegistry(
         resources={
             "return_type": AliasedTextResource(body="{type:STRING}"),
@@ -115,7 +123,7 @@ FUNCTION_DB_CALL_BOOL = FunctionDocRegistryItem(
     name="db_call_bool",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     resources=SimpleAliasedResourceRegistry(
         resources={
             "return_type": AliasedTextResource(body="{type:BOOLEAN}"),
@@ -136,7 +144,7 @@ FUNCTION_DB_CALL_ARRAY_INT = FunctionDocRegistryItem(
     name="db_call_array_int",
     category=CATEGORY_NATIVE,
     description=DESCRIPTION_TEMPLATE,
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     resources=SimpleAliasedResourceRegistry(
         resources={
             "return_type": AliasedTextResource(body="{type:ARRAY_INT}"),
@@ -165,7 +173,7 @@ FUNCTION_DB_CALL_ARRAY_FLOAT = FunctionDocRegistryItem(
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_FLOAT("arrayConcat", ARRAY(1.0, 2.0), ARRAY(3.0)) = ARRAY(1.0, 2.0, 3.0) '
@@ -188,7 +196,7 @@ FUNCTION_DB_CALL_ARRAY_STRING = FunctionDocRegistryItem(
             **SIMPLE_FUNCTION_BASE_RESOURCES,
         }
     ),
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     examples=[
         SimpleExample(
             'DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c") = ARRAY("a", "b", "c") '
@@ -217,7 +225,7 @@ FUNCTION_DB_CALL_AGG_INT = FunctionDocRegistryItem(
             **AGGREGATE_FUNCTION_BASE_RESOURCES,
         }
     ),
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     examples=[
         SimpleExample(
             'DB_CALL_AGG_INT("uniqMerge", [uniqStateField]) '
@@ -236,7 +244,7 @@ FUNCTION_DB_CALL_AGG_FLOAT = FunctionDocRegistryItem(
             **AGGREGATE_FUNCTION_BASE_RESOURCES,
         }
     ),
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     examples=[
         SimpleExample(
             'DB_CALL_AGG_FLOAT("avgWeighted", [amount], [weight_field]) '
@@ -258,7 +266,7 @@ FUNCTION_DB_CALL_AGG_STRING = FunctionDocRegistryItem(
             **AGGREGATE_FUNCTION_BASE_RESOURCES,
         }
     ),
-    notes=[NATIVE_FUNCTION_NOTE],
+    notes=[NATIVE_FUNCTION_NOTE, NATIVE_FUNCTION_WARNING],
     examples=[
         SimpleExample(
             'DB_CALL_AGG_STRING("anyHeavy", [str_field]) '
