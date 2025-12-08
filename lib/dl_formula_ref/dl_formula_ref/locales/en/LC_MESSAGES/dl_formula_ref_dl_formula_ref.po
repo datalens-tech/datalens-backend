@@ -1424,13 +1424,13 @@ msgstr ""
 
 msgid ""
 "It is recommended to use native functions only if there is no supported "
-"DataLens function that can achieve the same result."
+"DataLens function (composition of functions) that can achieve the required "
+"result."
 msgstr ""
 
 msgid ""
-"This function allows you to call database-specific functions that are not "
-"available as standard functions in DataLens. The availability and behavior "
-"of native functions depends on your database type and version."
+"The availability and behavior of native functions depends on your database "
+"type and version."
 msgstr ""
 
 msgid ""
