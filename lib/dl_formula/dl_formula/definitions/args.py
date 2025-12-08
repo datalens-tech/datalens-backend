@@ -1,8 +1,5 @@
-from __future__ import annotations
-
 from typing import (
     AbstractSet,
-    Optional,
     Sequence,
     Union,
 )
@@ -57,7 +54,7 @@ class ArgTypeForAll(ArgTypeMatcher):
     def __init__(
         self,
         expected_types: Union[DataType, AbstractSet[DataType]],
-        require_type_match: Optional[Union[DataType, AbstractSet[DataType]]] = None,
+        require_type_match: Union[DataType, AbstractSet[DataType]] | None = None,
     ):
         self._exp_arg_types = {expected_types} if isinstance(expected_types, DataType) else expected_types
         self._require_type_match = (
@@ -78,29 +75,64 @@ class ArgTypeForAll(ArgTypeMatcher):
         return set(self._exp_arg_types)
 
 
+class ArgTypeSequenceThenForAll(ArgTypeMatcher):
+    """Matches fixed types for first N arguments, then applies 'for all' type matching for the rest"""
+
+    __slots__ = ("_fixed_arg_num", "_fixed_arg_types_matcher", "_for_all_types_matcher")
+
+    def __init__(
+        self,
+        fixed_arg_types: Sequence[Union[DataType, AbstractSet[DataType]]],
+        for_all_types: Union[DataType, AbstractSet[DataType]],
+        for_all_require_type_match: Union[DataType, AbstractSet[DataType]] | None = None,
+    ):
+        self._fixed_arg_num = len(fixed_arg_types)
+
+        self._fixed_arg_types_matcher = ArgTypeSequence(fixed_arg_types)
+        self._for_all_types_matcher = ArgTypeForAll(for_all_types, require_type_match=for_all_require_type_match)
+
+    def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
+        fixed_args = arg_types[: self._fixed_arg_num]
+        remaining_args = arg_types[self._fixed_arg_num :]
+
+        return self._fixed_arg_types_matcher.match_arg_types(
+            fixed_args
+        ) and self._for_all_types_matcher.match_arg_types(remaining_args)
+
+    def get_possible_arg_types_at_pos(self, pos: int, total: int) -> set[DataType]:
+        if pos < self._fixed_arg_num:
+            # Return fixed type for this position
+            return self._fixed_arg_types_matcher.get_possible_arg_types_at_pos(pos, self._fixed_arg_num)
+        else:
+            # Return 'for all' types for positions beyond fixed types
+            return self._for_all_types_matcher.get_possible_arg_types_at_pos(
+                pos - self._fixed_arg_num, total - self._fixed_arg_num
+            )
+
+
 class ArgFlagDispenser:
     """Defines which arguments get marked with context flags"""
 
     __slots__ = ()
 
-    def get_flags_for_pos(self, pos: int, total: int) -> Optional[ContextFlags]:
+    def get_flags_for_pos(self, pos: int, total: int) -> ContextFlags | None:
         raise NotImplementedError
 
 
 class ArgFlagSequence(ArgFlagDispenser):
     __slots__ = ("_arg_flags",)
 
-    def __init__(self, arg_flags: Sequence[Optional[ContextFlags]]):
+    def __init__(self, arg_flags: Sequence[ContextFlags | None]):
         self._arg_flags = arg_flags
 
-    def get_flags_for_pos(self, pos: int, total: int) -> Optional[ContextFlags]:
+    def get_flags_for_pos(self, pos: int, total: int) -> ContextFlags | None:
         return self._arg_flags[pos]
 
 
 class IfFlagDispenser(ArgFlagDispenser):
     __slots__ = ()
 
-    def get_flags_for_pos(self, pos: int, total: int) -> Optional[ContextFlags]:
+    def get_flags_for_pos(self, pos: int, total: int) -> ContextFlags | None:
         if pos < total - 1 and pos % 2 == 0:
             # all even positions, except for last item -> condition
             return ContextFlag.REQ_CONDITION
