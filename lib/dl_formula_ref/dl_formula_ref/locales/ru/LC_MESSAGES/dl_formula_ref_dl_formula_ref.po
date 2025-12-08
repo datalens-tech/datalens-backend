@@ -78,6 +78,12 @@ msgstr "Функции для работы с временными рядами"
 msgid "Array functions"
 msgstr "Функции для работы с массивами"
 
+msgid "Native functions"
+msgstr "Нативные функции"
+
+msgid "Hash functions"
+msgstr "Хеш-функции"
+
 msgid "aggregation"
 msgstr "агрегатная"
 
@@ -113,6 +119,12 @@ msgstr "временные ряды"
 
 msgid "array"
 msgstr "массивы"
+
+msgid "native"
+msgstr "нативная"
+
+msgid "hash"
+msgstr "хеш"
 
 msgid "Integer"
 msgstr "Целое число"
@@ -556,6 +568,12 @@ msgstr ""
 "способ — загрузить и опубликовать изображение в {link: storage_link: Yandex "
 "Object Storage} (ознакомьтесь с {link: storage_prices_link: правилами "
 "тарификации} сервиса).\n"
+
+msgid "Functions for calling native database functions by name."
+msgstr "Функции для вызова нативных функций базы данных по имени."
+
+msgid "native, database, function, call"
+msgstr "нативные функции, базы данных, функции, вызов"
 
 msgid "https://github.com/google/re2/wiki/Syntax"
 msgstr ""
@@ -1751,6 +1769,27 @@ msgid ""
 msgstr ""
 "Возвращает текущую дату в зависимости от источника данных и типа соединения."
 
+msgid "Returns the MD5 hash of {arg:0} as a hexadecimal string."
+msgstr "Возвращает MD5 хеш {arg:0} в виде шестнадцатеричной строки."
+
+msgid "Returns the SHA-1 hash of {arg:0} as a hexadecimal string."
+msgstr "Возвращает SHA-1 хеш {arg:0} в виде шестнадцатеричной строки."
+
+msgid "Returns the SHA-256 hash of {arg:0} as a hexadecimal string."
+msgstr "Возвращает SHA-256 хеш {arg:0} в виде шестнадцатеричной строки."
+
+msgid "Returns the MurmurHash2 64-bit hash of {arg:0} as an integer."
+msgstr "Возвращает MurmurHash2 64-битный хеш {arg:0} в виде целого числа."
+
+msgid "Returns the SipHash64 hash of {arg:0} as an integer."
+msgstr "Возвращает SipHash64 хеш {arg:0} в виде целого числа."
+
+msgid "Returns the 64-bit hash of the integer {arg:0}."
+msgstr "Возвращает 64-битный хеш целого числа {arg:0} в виде целого числа."
+
+msgid "Returns the CityHash64 hash of {arg:0} as an integer."
+msgstr "Возвращает CityHash64 хеш {arg:0} в виде целого числа."
+
 msgid ""
 "Returns `TRUE` if {arg:0} is `NULL`, otherwise returns `FALSE`.\n"
 "\n"
@@ -1910,7 +1949,8 @@ msgid ""
 msgstr ""
 "Добавляет небольшую всплывающую подсказку к тексту или результату выполнения "
 "других функций разметки. Аргумент {arg:2} отвечает за расположение подсказки "
-"(`top`, `right`, `bottom`, `left` или `auto`). Значение по умолчанию — `auto`."
+"(`top`, `right`, `bottom`, `left` или `auto`). Значение по умолчанию — "
+"`auto`."
 
 msgid "Returns the absolute value of {arg:0}."
 msgstr "Возвращает абсолютное значение заданного числа {arg:0}."
@@ -2085,6 +2125,49 @@ msgstr ""
 "* 0, если {arg:0} и {arg:1} отличаются не более чем на {arg:2}.\n"
 "* -1, если {arg:0} меньше {arg:1} более чем на {arg:2}.\n"
 "* 1, если {arg:0} больше {arg:1} более чем на {arg:2}."
+
+msgid ""
+"It is recommended to use native functions only if there is no supported "
+"DataLens function (composition of functions) that can achieve the required result."
+msgstr ""
+"Нативные функции рекомендуется использовать только в том случае, если нет "
+"поддерживаемой в DataLens функции (композиции функций), позволяющей получить требуемый результат."
+
+msgid ""
+"The availability and behavior of native functions depends on your database type and version."
+msgstr ""
+"Доступность и поведение нативных функций зависят от типа и версии вашей базы данных."
+
+msgid ""
+"Calls a native database {text:function_type} by name. Native function should "
+"return {text:return_type}. {text:execution_type}\n"
+"\n"
+"The first argument {arg:0} must be a constant string with the name of the "
+"database function to call. All subsequent arguments are passed to the native "
+"function in the same order as written in the formula and can be of any type, "
+"including types that are not currently supported by DataLens.\n"
+"\n"
+"The function name must contain only alphanumeric characters, underscore and "
+"colon characters."
+msgstr ""
+"Вызывает нативную {text:function_type} базы данных по имени. Нативная функция должна возвращать {text:return_type}. {text:execution_type}\n"
+"\n"
+"Первый аргумент {arg:0} должен быть константной строкой с именем функции базы данных, которую нужно вызвать. Все последующие аргументы передаются в нативную функцию в том же порядке, в котором они записаны в формуле, и могут быть любого типа, включая типы, которые в настоящее время не поддерживаются в DataLens.\n"
+"\n"
+"Имя функции должно содержать только буквы, цифры, нижние подчеркивания и двоеточия."
+
+msgid "function"
+msgstr "функцию"
+
+msgid "The function is executed for every row in the dataset (non-aggregated)."
+msgstr ""
+"Функция выполняется для каждой строки в наборе данных (не агрегатная)."
+
+msgid "aggregate function"
+msgstr "агрегатную функцию (агрегацию)"
+
+msgid "The function is executed as an aggregation across grouped rows."
+msgstr "Функция выполняется как агрегация по сгруппированным строкам."
 
 msgid "Inverts a Boolean value."
 msgstr "Инвертирует логическое значение."

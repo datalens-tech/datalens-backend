@@ -19,16 +19,12 @@ _ = get_gettext()
 NATIVE_FUNCTION_NOTE = Note(
     Translatable(
         "It is recommended to use native functions only if there is no supported DataLens "
-        "function that can achieve the same result."
+        "function (composition of functions) that can achieve the required result."
     ),
 )
 
 NATIVE_FUNCTION_WARNING = Note(
-    Translatable(
-        "This function allows you to call database-specific functions that are not available "
-        "as standard functions in DataLens. The availability and behavior of native functions "
-        "depends on your database type and version."
-    ),
+    Translatable("The availability and behavior of native functions depends on your database type and version."),
     level=NoteLevel.warning,
 )
 
