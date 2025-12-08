@@ -22,7 +22,11 @@ import dl_json
 
 
 with temporalio.workflow.unsafe.imports_passed_through():
+    import dl_logging
     import dl_pydantic
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class BaseModel(dl_pydantic.BaseModel):
@@ -76,7 +80,12 @@ class DataConverter(temporalio.converter.DataConverter):
 
 
 class BaseActivityParams(BaseModel):
-    start_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
+    # per try timeout
+    start_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=1)
+    # overall timeout
+    schedule_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
+    # timeout before activity is started
+    schedule_to_start_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
 
 
 class BaseActivityResult(BaseModel):
@@ -103,7 +112,7 @@ class ActivityProtocol(Protocol[ActivityParamsT, ActivityResultT]):
 _ActivityType = ActivityProtocol[ActivityParamsT, ActivityResultT]
 
 
-def _activity_run_wrapper(
+def _activity_logging_middleware(
     func: Callable[[_ActivityType, ActivityParamsT], Awaitable[ActivityResultT]],
 ) -> Callable[[_ActivityType, ActivityParamsT], Awaitable[ActivityResultT]]:
     @functools.wraps(func)
@@ -111,24 +120,37 @@ def _activity_run_wrapper(
         self: _ActivityType,
         params: ActivityParamsT,
     ) -> ActivityResultT:
-        self.logger.info(
-            "TemporalActivity(name=%s).run: starting with params: %s",
-            self.name,
-            params.model_dump_for_logging(),
-        )
+        activity_info = temporalio.activity.info()
+        context = {
+            "temporal.activity_name": self.name,
+            "temporal.activity_id": activity_info.activity_id,
+            "temporal.activity_attempt": activity_info.attempt,
+            "temporal.activity_full_id": f"{activity_info.workflow_id}.{activity_info.activity_id}.{activity_info.attempt}",
+            "temporal.workflow_id": activity_info.workflow_id,
+            "temporal.workflow_namespace": activity_info.workflow_namespace,
+            "temporal.workflow_run_id": activity_info.workflow_run_id,
+            "temporal.workflow_task_queue": activity_info.task_queue,
+        }
 
-        try:
-            result = await func(self, params)
-        except Exception:
-            self.logger.exception("TemporalActivity(name=%s).run: failed", self.name)
-            raise
+        with dl_logging.LogContext(**context):
+            self.logger.info(
+                "TemporalActivity(name=%s).run: starting with params: %s",
+                self.name,
+                params.model_dump_for_logging(),
+            )
 
-        self.logger.info(
-            "TemporalActivity(name=%s).run: completed with result: %s",
-            self.name,
-            result.model_dump_for_logging(),
-        )
-        return result
+            try:
+                result = await func(self, params)
+            except Exception:
+                self.logger.exception("TemporalActivity(name=%s).run: failed", self.name)
+                raise
+
+            self.logger.info(
+                "TemporalActivity(name=%s).run: completed with result: %s",
+                self.name,
+                result.model_dump_for_logging(),
+            )
+            return result
 
     return inner
 
@@ -136,10 +158,6 @@ def _activity_run_wrapper(
 class BaseActivity(ActivityProtocol, Generic[ActivityParamsT, ActivityResultT]):
     name: ClassVar[str]
     logger: ClassVar[logging.Logger]
-
-    # Look for the comment in BaseWorkflow.__init_subclass__ for the story why we need this madness.
-    def __init_subclass__(cls, **kwargs: Any) -> None:
-        cls.run = _activity_run_wrapper(cls.run)  # type: ignore
 
     @abc.abstractmethod
     async def run(self, params: ActivityParamsT) -> ActivityResultT:
@@ -175,7 +193,7 @@ class WorkflowProtocol(Protocol[SelfType, WorkflowParamsT, WorkflowResultT]):
 _WorkflowType = WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]
 
 
-def _workflow_run_wrapper(
+def _workflow_logging_middleware(
     func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
 ) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
     @functools.wraps(func)
@@ -183,27 +201,37 @@ def _workflow_run_wrapper(
         self: _WorkflowType,
         params: WorkflowParamsT,
     ) -> WorkflowResultT:
-        self.logger.info(
-            "TemporalWorkflow(name=%s).run: starting with params: %s",
-            self.name,
-            params.model_dump_for_logging(),
-        )
+        workflow_info = temporalio.workflow.info()
+        context = {
+            "temporal.workflow_name": self.name,
+            "temporal.workflow_id": workflow_info.workflow_id,
+            "temporal.workflow_run_id": workflow_info.run_id,
+            "temporal.workflow_namespace": workflow_info.namespace,
+            "temporal.workflow_task_queue": workflow_info.task_queue,
+        }
 
-        try:
-            result = await func(self, params)
-        except Exception:
-            self.logger.exception(
-                "TemporalWorkflow(name=%s).run: failed",
+        with dl_logging.LogContext(**context):
+            self.logger.info(
+                "TemporalWorkflow(name=%s).run: starting with params: %s",
                 self.name,
+                params.model_dump_for_logging(),
             )
-            raise
 
-        self.logger.info(
-            "TemporalWorkflow(name=%s).run: completed with result: %s",
-            self.name,
-            result.model_dump_for_logging(),
-        )
-        return result
+            try:
+                result = await func(self, params)
+            except Exception:
+                self.logger.exception(
+                    "TemporalWorkflow(name=%s).run: failed",
+                    self.name,
+                )
+                raise
+
+            self.logger.info(
+                "TemporalWorkflow(name=%s).run: completed with result: %s",
+                self.name,
+                result.model_dump_for_logging(),
+            )
+            return result
 
     return inner
 
@@ -222,7 +250,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
     # 3. Explicit metaclass, which adds override to the subclass, but it was typing mess due to Generic + Metaclass combination
     # 4. This approach, which is not very elegant, but it works and is type-safe
     def __init_subclass__(cls, **kwargs: Any) -> None:
-        cls.run = _workflow_run_wrapper(cls.run)  # type: ignore
+        cls.run = _workflow_logging_middleware(cls.run)  # type: ignore
 
     @abc.abstractmethod
     async def run(self, params: WorkflowParamsT) -> WorkflowResultT:
@@ -237,6 +265,8 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
             activity=activity.name,
             arg=params,
             start_to_close_timeout=params.start_to_close_timeout,
+            schedule_to_close_timeout=params.schedule_to_close_timeout,
+            schedule_to_start_timeout=params.schedule_to_start_timeout,
             result_type=activity.Result,
         )
 
@@ -252,8 +282,23 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
             result_type=workflow.Result,
         )
 
+    async def execute_child_workflow(
+        self,
+        workflow: type[WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]],
+        params: WorkflowParamsT,
+    ) -> WorkflowResultT:
+        return await temporalio.workflow.execute_child_workflow(
+            workflow=workflow.name,
+            arg=params,
+            execution_timeout=params.execution_timeout,
+            result_type=workflow.Result,
+        )
+
 
 def define_activity(activity: type[ActivityProtocol]) -> type[ActivityProtocol]:
+    # can't use __init_subclass__ for consistency with WorkflowProtocol
+    # because double wrapping will happen for some reason
+    activity.run = _activity_logging_middleware(activity.run)  # type: ignore
     temporalio.activity.defn(name=activity.name)(activity.run)
     return activity
 

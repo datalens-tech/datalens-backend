@@ -3,6 +3,7 @@ from .base import (
     BaseActivity,
     BaseActivityParams,
     BaseActivityResult,
+    BaseModel,
     BaseWorkflow,
     BaseWorkflowParams,
     BaseWorkflowResult,
@@ -28,6 +29,7 @@ from .worker import create_worker
 __all__ = [
     "BaseActivity",
     "BaseWorkflow",
+    "BaseModel",
     "BaseActivityParams",
     "BaseActivityResult",
     "BaseWorkflowParams",
