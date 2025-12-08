@@ -5,10 +5,7 @@ from enum import (
     Enum,
     unique,
 )
-from typing import (
-    Hashable,
-    Optional,
-)
+from typing import Hashable
 
 import attr
 
@@ -18,6 +15,7 @@ from dl_formula.core import exc
 @unique
 class DataType(Enum):
     ANY = "any"  # Any type including unsupported by DataLens
+    CONST_ANY = "const_any"
     NULL = "null"
     INTEGER = "integer"
     CONST_INTEGER = "const_integer"
@@ -86,7 +84,7 @@ class DataType(Enum):
     @property
     def const_type(self) -> DataType:
         """Return a constant version of the type"""
-        if self.is_const or self is DataType.ANY or self is DataType.NULL or self is DataType.UNSUPPORTED:
+        if self.is_const or self is DataType.NULL or self is DataType.UNSUPPORTED:
             return self
         return DataType["CONST_" + self.name]
 
@@ -99,10 +97,10 @@ class DataType(Enum):
 class DataTypeParams:
     """Mix of all possible parameters for parametrized data types"""
 
-    timezone: Optional[str] = attr.ib(default=None)
+    timezone: str | None = attr.ib(default=None)
     # Other possible cases: decimal precision, datetime sub-second precision, nullable, enum values.
 
-    def as_primitive(self) -> tuple[Optional[Hashable]]:
+    def as_primitive(self) -> tuple[Hashable | None]:
         return (self.timezone,)
 
 
@@ -156,6 +154,7 @@ _AUTOCAST_FROM_TYPES = OrderedDict(
             },
         ),
         (DataType.UNSUPPORTED, {DataType.UNSUPPORTED}),
+        (DataType.CONST_ANY, {type.const_type for type in DataType}),
         (DataType.ANY, set(DataType)),
     )
 )
