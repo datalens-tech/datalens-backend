@@ -70,9 +70,6 @@ HUMAN_DATA_TYPES = {
     DataType.ARRAY_INT: _("Array of integers"),
     DataType.ARRAY_STR: _("Array of strings"),
     DataType.TREE_STR: _("Tree"),
-    DataType.NULL: _("Null"),
-    DataType.UNSUPPORTED: _("Unsupported"),
-    DataType.ANY: _("Any (including unsupported by DataLens)"),
     (
         DataType.FLOAT,
         DataType.INTEGER,

@@ -19,12 +19,6 @@ HIDDEN_TYPES = {
 
 def get_human_data_type_list(types: Collection[DataType]) -> list[str]:
     types_set: set[DataType] = set(t.non_const_type for t in types)
-
-    # checking for ANY type before the known type combinations due to the
-    # fact that ANY type allows even unsupported types
-    if DataType.ANY in types_set:
-        return [HUMAN_DATA_TYPES[DataType.ANY]]
-
     result_types = set()
     # try to find known type combinations within the given list of types
     type_combos = [type_combo for type_combo in HUMAN_DATA_TYPES if isinstance(type_combo, tuple)]

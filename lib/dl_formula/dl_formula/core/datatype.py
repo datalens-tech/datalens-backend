@@ -14,8 +14,6 @@ from dl_formula.core import exc
 
 @unique
 class DataType(Enum):
-    ANY = "any"  # Any type including unsupported by DataLens
-    CONST_ANY = "const_any"
     NULL = "null"
     INTEGER = "integer"
     CONST_INTEGER = "const_integer"
@@ -154,7 +152,5 @@ _AUTOCAST_FROM_TYPES = OrderedDict(
             },
         ),
         (DataType.UNSUPPORTED, {DataType.UNSUPPORTED}),
-        (DataType.CONST_ANY, {type.const_type for type in DataType}),
-        (DataType.ANY, set(DataType)),
     )
 )
