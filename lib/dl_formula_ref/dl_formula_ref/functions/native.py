@@ -29,7 +29,7 @@ NATIVE_FUNCTION_WARNING = Note(
 )
 
 DESCRIPTION_TEMPLATE = _(
-    "Calls a native database {text:function_type} by name. Native function should return {text:return_type}. "
+    "Calls a native database {text:function_type} by name. Native function should return a value of type {text:return_type}. "
     "{text:execution_type}"
     "\n\n"
     "The first argument {arg:0} must be a constant string with the name of the "
