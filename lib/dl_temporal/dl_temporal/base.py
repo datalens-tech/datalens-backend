@@ -166,6 +166,7 @@ class BaseActivity(ActivityProtocol, Generic[ActivityParamsT, ActivityResultT]):
 
 class BaseWorkflowParams(BaseModel):
     execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
+    parent_close_policy: temporalio.workflow.ParentClosePolicy = temporalio.workflow.ParentClosePolicy.TERMINATE
 
 
 class BaseWorkflowResult(BaseModel):
@@ -279,6 +280,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
             workflow=workflow.name,
             arg=params,
             execution_timeout=params.execution_timeout,
+            parent_close_policy=params.parent_close_policy,
             result_type=workflow.Result,
         )
 
@@ -291,6 +293,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
             workflow=workflow.name,
             arg=params,
             execution_timeout=params.execution_timeout,
+            parent_close_policy=params.parent_close_policy,
             result_type=workflow.Result,
         )
 
