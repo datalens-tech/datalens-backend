@@ -3,7 +3,6 @@ import logging
 import os
 from typing import Any
 
-import attrs
 import statcommons.logs
 
 import dl_logging.context as context
@@ -117,15 +116,11 @@ class DeployJsonFormatter(logging.Formatter):
 JsonFormatter = statcommons.logs.JsonExtFormatter
 
 
-@attrs.define()
 class StdoutFormatter(logging.Formatter):
-    """
-    Write logs in YDeploy format in YDeploy,
-    and as top-level JSON otherwise.
-    """
-
-    deploy_json_formatter: logging.Formatter = attrs.field(factory=DeployJsonFormatter)
-    json_formatter: logging.Formatter = attrs.field(factory=JsonFormatter)
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self.deploy_json_formatter = DeployJsonFormatter()
+        self.json_formatter = JsonFormatter()
 
     def format(self, record: logging.LogRecord) -> str:
         if is_deploy():
