@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import logging
+import time
 from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
     ClassVar,
+    Generator,
     Optional,
     TypeVar,
 )
@@ -14,9 +16,20 @@ import attr
 import sqlalchemy as sa
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
+from dl_app_tools.profiling_base import (
+    GenericProfiler,
+    generic_profiler,
+)
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connection_executors.models.db_adapter_data import (
+    DBAdapterQuery,
+    ExecutionStep,
+    ExecutionStepCursorInfo,
+    ExecutionStepDataChunk,
+)
 from dl_core.connection_models import TableIdent
+from dl_core.db_session_utils import db_session_context
 import dl_sqlalchemy_ydb.dialect
 
 import dl_connector_ydb.core.base.row_converters
@@ -33,6 +46,33 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 _DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetDTO")
+
+
+def extract_sleep_duration(text: str) -> float | None:
+    """
+    Checks if a string looks like '--SLEEP(duration_seconds)' and extracts the duration in seconds as a float.
+
+    Args:
+        text: The string to check.
+
+    Returns:
+        The duration in seconds as a float if the pattern is found, otherwise None.
+    """
+
+    import re
+
+    pattern = r"--SLEEP_ROW\((.+?)\)"  # Regex to match --SLEEP(duration)
+    match = re.search(pattern, text)
+
+    if match:
+        try:
+            duration = float(match.group(1))  # Extract the group and convert to float
+            return duration
+        except ValueError:
+            # Handle cases where the extracted value is not a valid number
+            return None
+    else:
+        return None
 
 
 @attr.s
@@ -120,3 +160,75 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     def get_engine_kwargs(self) -> dict:
         return {}
+
+    @generic_profiler("db-full")
+    def execute_by_steps(self, db_adapter_query: DBAdapterQuery) -> Generator[ExecutionStep, None, None]:
+        """
+        Generator that yielding messages with data chunks and execution meta-info.
+
+        This override adds time.sleep(1) between each row for YDB connections to help debug timeouts.
+        """
+        query = db_adapter_query.query
+
+        engine = self.get_db_engine(
+            db_name=db_adapter_query.db_name,
+            disable_streaming=db_adapter_query.disable_streaming,
+        )
+
+        # TODO FIX: Delegate query compilation for debug to error handler or make method of debug compilation
+        from dl_core.connection_executors.adapters.sa_utils import (
+            compile_query_for_debug,
+            compile_query_for_inspector,
+        )
+
+        debug_query = compile_query_for_debug(query, engine.dialect)
+        inspector_query = compile_query_for_inspector(query, engine.dialect)
+
+        with (
+            db_session_context(backend_type=self.get_backend_type(), db_engine=engine) as db_session,
+            self.handle_execution_error(debug_query=debug_query, inspector_query=inspector_query),
+            self.execution_context(),
+        ):
+            with GenericProfiler("db-exec"):
+                result = db_session.execute(
+                    query,
+                    # *args,
+                    # **kwargs,
+                )
+
+            cursor_info = ExecutionStepCursorInfo(
+                cursor_info=self._make_cursor_info(result.cursor, db_session=db_session),  # type: ignore  # 2024-01-24 # TODO: "Result" has no attribute "cursor"  [attr-defined]
+                raw_cursor_description=list(result.cursor.description),  # type: ignore  # 2024-01-24 # TODO: "Result" has no attribute "cursor"  [attr-defined]
+                raw_engine=engine,
+            )
+            yield cursor_info
+
+            row_duration = extract_sleep_duration(inspector_query)
+            LOGGER.info("YDB Debug row sleep duration: %s", row_duration)
+
+            row_converters = self._get_row_converters(cursor_info=cursor_info)
+            while True:
+                LOGGER.info("Fetching 1 row (conn %s)", self.conn_id)
+                with GenericProfiler("db-fetch"):
+                    row = result.fetchone()
+
+                if not row:
+                    LOGGER.info("No rows remaining")
+                    break
+
+                processed_row = tuple(
+                    (col_converter(val) if col_converter is not None and val is not None else val)
+                    for val, col_converter in zip(row, row_converters, strict=True)
+                )
+
+                # Add 1 second sleep between each row for YDB timeout debugging
+                if row_duration:
+                    time.sleep(row_duration)
+
+                LOGGER.debug("YDB debug: processed row")
+
+                yield ExecutionStepDataChunk(
+                    tuple(
+                        processed_row,
+                    )
+                )
