@@ -8,7 +8,6 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
-attrs = "*"
 dl-settings = {path = "../dl_settings"}
 jaeger-client = "*"
 opentracing = "*"
@@ -18,6 +17,9 @@ statcommons = {path = "../statcommons"}
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-json = {path = "../dl_json"}
+mock = "*"
+pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true
