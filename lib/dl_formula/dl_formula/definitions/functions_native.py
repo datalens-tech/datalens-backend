@@ -7,7 +7,7 @@ from dl_formula.core import exc
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula.core.nodes import LiteralString
-from dl_formula.definitions.args import ArgTypeSequence
+from dl_formula.definitions.args import ArgTypeSequenceThenForAll
 from dl_formula.definitions.base import (
     Function,
     TranslationVariantWrapped,
@@ -36,7 +36,7 @@ class DBCall(Function):
     arg_cnt = None
     arg_names = ["db_function_name"]
     argument_types = [
-        ArgTypeSequence([DataType.CONST_STRING]),
+        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=set(DataType)),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
@@ -81,7 +81,7 @@ class DBCallAgg(AggregationFunctionBase):
     arg_cnt = None
     arg_names = ["db_agg_function_name"]
     argument_types = [
-        ArgTypeSequence([DataType.CONST_STRING]),
+        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=set(DataType)),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
