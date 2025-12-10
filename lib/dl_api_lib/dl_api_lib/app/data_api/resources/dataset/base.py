@@ -323,6 +323,7 @@ class DatasetDataBaseView(BaseView):
         assert us_resp is not None
         revision_id = us_resp["data"].get("revision_id", None)
         permissions = us_resp.get("permissions", None)
+        full_permissions = us_resp.get("fullPermissions", None)
         permissions_mode = us_resp.get("permissions_mode", None)
 
         # Validate revision from request
@@ -347,6 +348,7 @@ class DatasetDataBaseView(BaseView):
             if cached_dataset:
                 self.dataset = cached_dataset
                 self.dataset.permissions = permissions
+                self.dataset.full_permissions = full_permissions
                 self.dataset.permissions_mode = permissions_mode
             else:
                 dataset = await us_manager.deserialize_us_resp(us_resp, Dataset)

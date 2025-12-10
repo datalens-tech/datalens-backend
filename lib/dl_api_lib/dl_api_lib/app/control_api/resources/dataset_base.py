@@ -451,5 +451,7 @@ class DatasetResource(BIResource):
         ds_dict["id"] = dataset.uuid
         if dataset.permissions is not None:
             ds_dict["permissions"] = dataset.permissions
+        if dataset.full_permissions is not None:
+            ds_dict["full_permissions"] = dataset.full_permissions
 
         return ds_dict
