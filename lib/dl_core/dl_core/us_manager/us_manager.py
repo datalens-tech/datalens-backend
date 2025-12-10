@@ -349,6 +349,7 @@ class USManagerBase:
             is_locked=us_resp.get("isLocked"),
             is_favorite=us_resp.get("isFavorite"),
             permissions=us_resp.get("permissions") or {},
+            full_permissions=us_resp.get("fullPermissions") or {},
             links=us_resp.get("links") or {},
             hidden=us_resp["hidden"],
             migration_status=MigrationStatus(us_resp.get("migration_status", MigrationStatus.non_migrated.value)),

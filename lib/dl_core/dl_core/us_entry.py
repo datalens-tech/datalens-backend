@@ -51,6 +51,7 @@ class USEntry:
     permissions_mode: Optional[str] = None
     initial_permissions: Optional[str] = None
     permissions: Optional[dict[str, bool]] = None
+    full_permissions: Optional[dict[str, bool]] = None
     hidden: bool
     links: Optional[dict] = None
     migration_status: MigrationStatus = MigrationStatus.non_migrated
@@ -122,6 +123,7 @@ class USEntry:
         permissions_mode: Optional[str] = None,
         initial_permissions: Optional[str] = None,
         permissions: Optional[dict[str, bool]] = None,
+        full_permissions: Optional[dict[str, bool]] = None,
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
@@ -145,6 +147,7 @@ class USEntry:
         self.permissions_mode = permissions_mode
         self.initial_permissions = initial_permissions
         self.permissions = permissions
+        self.full_permissions = full_permissions
         self.links = links
         self.hidden = hidden
         self.migration_status = migration_status
@@ -316,6 +319,7 @@ class USMigrationEntry(USEntry):
         permissions_mode: Optional[str] = None,
         initial_permissions: Optional[str] = None,
         permissions: Optional[dict] = None,
+        full_permissions: Optional[dict] = None,
         links: Optional[dict] = None,
         hidden: bool = False,
         data_strict: bool = True,
@@ -337,6 +341,7 @@ class USMigrationEntry(USEntry):
             permissions_mode=permissions_mode,
             initial_permissions=initial_permissions,
             permissions=permissions,
+            full_permissions=full_permissions,
             links=links,
             hidden=hidden,
             data_strict=data_strict,

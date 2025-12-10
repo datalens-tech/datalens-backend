@@ -124,6 +124,7 @@ class GetDatasetResponseSchema(DatasetContentSchema):
     mtime = NormalizedDateTime(format="%Y-%m-%d %H:%M:%S")
     is_favorite = ma_fields.Boolean()
     permissions = ma_fields.Dict(keys=ma_fields.String(), values=ma_fields.Boolean())
+    full_permissions = ma_fields.Dict(keys=ma_fields.String(), values=ma_fields.Boolean())
 
 
 class UpdateDatasetSchema(BaseSchema):
