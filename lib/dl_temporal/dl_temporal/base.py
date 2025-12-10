@@ -112,6 +112,23 @@ class ActivityProtocol(Protocol[ActivityParamsT, ActivityResultT]):
 _ActivityType = ActivityProtocol[ActivityParamsT, ActivityResultT]
 
 
+def _activity_info_to_logging_context(
+    activity_name: str,
+    activity_info: temporalio.activity.Info,
+) -> dict[str, Any]:
+    return {
+        "temporal.activity_name": activity_name,
+        "temporal.activity_id": activity_info.activity_id,
+        "temporal.activity_attempt": activity_info.attempt,
+        "temporal.activity_full_id": f"{activity_info.workflow_id}.{activity_info.workflow_run_id}.{activity_info.activity_id}.{activity_info.attempt}",
+        "temporal.workflow_id": activity_info.workflow_id,
+        "temporal.workflow_run_id": activity_info.workflow_run_id,
+        "temporal.workflow_full_id": f"{activity_info.workflow_id}.{activity_info.workflow_run_id}",
+        "temporal.workflow_namespace": activity_info.workflow_namespace,
+        "temporal.workflow_task_queue": activity_info.task_queue,
+    }
+
+
 def _activity_logging_middleware(
     func: Callable[[_ActivityType, ActivityParamsT], Awaitable[ActivityResultT]],
 ) -> Callable[[_ActivityType, ActivityParamsT], Awaitable[ActivityResultT]]:
@@ -120,19 +137,12 @@ def _activity_logging_middleware(
         self: _ActivityType,
         params: ActivityParamsT,
     ) -> ActivityResultT:
-        activity_info = temporalio.activity.info()
-        context = {
-            "temporal.activity_name": self.name,
-            "temporal.activity_id": activity_info.activity_id,
-            "temporal.activity_attempt": activity_info.attempt,
-            "temporal.activity_full_id": f"{activity_info.workflow_id}.{activity_info.activity_id}.{activity_info.attempt}",
-            "temporal.workflow_id": activity_info.workflow_id,
-            "temporal.workflow_namespace": activity_info.workflow_namespace,
-            "temporal.workflow_run_id": activity_info.workflow_run_id,
-            "temporal.workflow_task_queue": activity_info.task_queue,
-        }
+        logging_context = _activity_info_to_logging_context(
+            activity_name=self.name,
+            activity_info=temporalio.activity.info(),
+        )
 
-        with dl_logging.LogContext(**context):
+        with dl_logging.LogContext(**logging_context):
             self.logger.info(
                 "TemporalActivity(name=%s).run: starting with params: %s",
                 self.name,
@@ -194,6 +204,20 @@ class WorkflowProtocol(Protocol[SelfType, WorkflowParamsT, WorkflowResultT]):
 _WorkflowType = WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]
 
 
+def _workflow_info_to_logging_context(
+    workflow_name: str,
+    workflow_info: temporalio.workflow.Info,
+) -> dict[str, Any]:
+    return {
+        "temporal.workflow_name": workflow_name,
+        "temporal.workflow_id": workflow_info.workflow_id,
+        "temporal.workflow_run_id": workflow_info.run_id,
+        "temporal.workflow_full_id": f"{workflow_info.workflow_id}.{workflow_info.run_id}",
+        "temporal.workflow_namespace": workflow_info.namespace,
+        "temporal.workflow_task_queue": workflow_info.task_queue,
+    }
+
+
 def _workflow_logging_middleware(
     func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
 ) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
@@ -202,16 +226,12 @@ def _workflow_logging_middleware(
         self: _WorkflowType,
         params: WorkflowParamsT,
     ) -> WorkflowResultT:
-        workflow_info = temporalio.workflow.info()
-        context = {
-            "temporal.workflow_name": self.name,
-            "temporal.workflow_id": workflow_info.workflow_id,
-            "temporal.workflow_run_id": workflow_info.run_id,
-            "temporal.workflow_namespace": workflow_info.namespace,
-            "temporal.workflow_task_queue": workflow_info.task_queue,
-        }
+        logging_context = _workflow_info_to_logging_context(
+            workflow_name=self.name,
+            workflow_info=temporalio.workflow.info(),
+        )
 
-        with dl_logging.LogContext(**context):
+        with dl_logging.LogContext(**logging_context):
             self.logger.info(
                 "TemporalWorkflow(name=%s).run: starting with params: %s",
                 self.name,
