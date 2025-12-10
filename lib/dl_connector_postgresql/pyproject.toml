@@ -26,6 +26,7 @@ dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 psycopg2-binary = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 python-dateutil = "*"
 sqlalchemy = "*"

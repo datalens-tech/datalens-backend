@@ -34,7 +34,7 @@ from dl_connector_chyt.core.data_source_spec import (
     CHYTTableListDataSourceSpec,
     CHYTTableRangeDataSourceSpec,
 )
-from dl_connector_chyt.core.settings import CHYTSettingDefinition
+from dl_connector_chyt.core.settings import DeprecatedCHYTSettingDefinition
 from dl_connector_chyt.core.storage_schemas.connection import ConnectionCHYTDataStorageSchema
 from dl_connector_chyt.core.storage_schemas.data_source_spec import (
     CHYTSubselectDataSourceSpecStorageSchema,
@@ -55,7 +55,7 @@ class CHYTCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = CHYTSyncAdapterConnExecutor
     async_conn_executor_cls = CHYTAsyncAdapterConnExecutor
     dialect_string = "bi_chyt"
-    settings_definition = CHYTSettingDefinition
+    settings_definition = DeprecatedCHYTSettingDefinition
     data_source_migrator_cls = CHYTDataSourceMigrator
     allow_export = True
 

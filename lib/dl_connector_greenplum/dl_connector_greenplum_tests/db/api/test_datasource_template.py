@@ -4,7 +4,7 @@ from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_SUBSELECT,
     SOURCE_TYPE_GP_TABLE,
 )
-from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
+from dl_connector_greenplum.core.settings import DeprecatedGreenplumConnectorSettings
 from dl_connector_greenplum_tests.db.api.base import (
     GreenplumDataApiTestBase,
     GreenplumDatasetTestBase,
@@ -13,7 +13,7 @@ from dl_connector_greenplum_tests.db.api.base import (
 
 class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate):
     source_type = SOURCE_TYPE_GP_TABLE
-    conn_settings_cls = GreenplumConnectorSettings
+    conn_settings_cls = DeprecatedGreenplumConnectorSettings
 
 
 class TestTableControlApiSourceTemplate(
@@ -50,7 +50,7 @@ class TestTableDataApiSourceTemplate(
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
     source_type = SOURCE_TYPE_GP_SUBSELECT
-    conn_settings_cls = GreenplumConnectorSettings
+    conn_settings_cls = DeprecatedGreenplumConnectorSettings
 
 
 class TestSubselectControlApiSourceTemplate(

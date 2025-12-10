@@ -2,7 +2,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 
 
 CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
@@ -17,7 +17,7 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     redis_password="AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5",
 )
 
-SR_CONNECTION_SETTINGS = FileS3ConnectorSettings(
+SR_CONNECTION_SETTINGS = DeprecatedFileS3ConnectorSettings(
     SECURE=False,
     HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
     PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,

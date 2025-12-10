@@ -23,7 +23,7 @@ from dl_configs.settings_loaders.loader_env import (
 )
 from dl_core.core_connectors import load_all_connectors
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
 
@@ -56,7 +56,7 @@ EXPECTED_DATA_API_SETTINGS = DeprecatedDataApiAppSettings(
     US_MASTER_TOKEN=US_MASTER_TOKEN,
 )
 
-EXPECTED_FILE_SETTINGS = FileS3ConnectorSettings(
+EXPECTED_FILE_SETTINGS = DeprecatedFileS3ConnectorSettings(
     SECURE=True,
     HOST="localhost",
     PORT=8443,
@@ -118,7 +118,7 @@ def test_connector_settings_loading():
         CONNECTORS_FILE_SECRET_ACCESS_KEY="access_key",
     )
     connectors_settings = load_connectors_settings_from_env_with_fallback(
-        settings_registry={CONNECTION_TYPE_FILE: FileS3ConnectorSettings},
+        settings_registry={CONNECTION_TYPE_FILE: DeprecatedFileS3ConnectorSettings},
         fallbacks={CONNECTION_TYPE_FILE: file_s3_settings_fallback},
         env=env,
     )

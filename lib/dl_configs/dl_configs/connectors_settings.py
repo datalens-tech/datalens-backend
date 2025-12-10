@@ -9,8 +9,8 @@ from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 
 
 @attr.s(frozen=True)
-class ConnectorSettingsBase(SettingsBase):
+class DeprecatedConnectorSettingsBase(SettingsBase):
     """"""
 
 
-SettingsFallbackType = Callable[[ObjectLikeConfig], dict[str, ConnectorSettingsBase]]
+SettingsFallbackType = Callable[[ObjectLikeConfig], dict[str, DeprecatedConnectorSettingsBase]]

@@ -37,14 +37,14 @@ from dl_api_connector.form_config.models.rows.base import (
     TDisplayConditions,
 )
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
 from dl_i18n.localizer_base import Localizer
 
 from dl_connector_ydb.api.ydb.connection_info import YDBConnectionInfoProvider
 from dl_connector_ydb.api.ydb.i18n.localizer import Translatable
 from dl_connector_ydb.core.ydb.constants import YDBAuthTypeMode
-from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
+from dl_connector_ydb.core.ydb.settings import DeprecatedYDBConnectorSettings
 
 
 class YDBOAuthApplication(OAuthApplication):
@@ -117,7 +117,9 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
         ]
 
-    def _get_default_db_section(self, rc: RowConstructor, connector_settings: YDBConnectorSettings) -> list[FormRow]:
+    def _get_default_db_section(
+        self, rc: RowConstructor, connector_settings: DeprecatedYDBConnectorSettings
+    ) -> list[FormRow]:
         oauth_row = (
             C.OAuthTokenRow(
                 name=CommonFieldName.token,
@@ -183,9 +185,9 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
         ydb_rc: YDBRowConstructor,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[DeprecatedConnectorSettingsBase],
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, DeprecatedYDBConnectorSettings)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
@@ -281,10 +283,10 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[DeprecatedConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, DeprecatedYDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
         ydb_rc = YDBRowConstructor(localizer=self._localizer)
 

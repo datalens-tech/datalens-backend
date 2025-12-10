@@ -28,7 +28,7 @@ from dl_connector_ydb.core.ydb.data_source import (
     YDBSubselectDataSource,
     YDBTableDataSource,
 )
-from dl_connector_ydb.core.ydb.settings import YDBSettingDefinition
+from dl_connector_ydb.core.ydb.settings import DeprecatedYDBSettingDefinition
 from dl_connector_ydb.core.ydb.storage_schemas.connection import YDBConnectionDataStorageSchema
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
 
@@ -41,7 +41,7 @@ class YDBCoreConnectionDefinition(CoreConnectionDefinition):
     sync_conn_executor_cls = YDBAsyncAdapterConnExecutor
     async_conn_executor_cls = YDBAsyncAdapterConnExecutor
     dialect_string = "yql"
-    settings_definition = YDBSettingDefinition
+    settings_definition = DeprecatedYDBSettingDefinition
     allow_export = True
 
 

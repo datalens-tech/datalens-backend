@@ -22,7 +22,7 @@ import attr
 import typeguard
 
 from dl_configs.connectors_settings import (
-    ConnectorSettingsBase,
+    DeprecatedConnectorSettingsBase,
     SettingsFallbackType,
 )
 from dl_configs.settings_loaders.common import (
@@ -686,11 +686,11 @@ def load_settings_from_env_with_fallback(
 
 @no_type_check  # mypy is barely working with dynamic attrs classes
 def load_connectors_settings_from_env_with_fallback(
-    settings_registry: dict[ConnectionType, type[ConnectorSettingsBase]],
+    settings_registry: dict[ConnectionType, type[DeprecatedConnectorSettingsBase]],
     fallbacks: dict[ConnectionType, SettingsFallbackType],
     env: Optional[SDict] = None,
     fallback_cfg_resolver: Optional[FallbackConfigResolver] = None,
-) -> dict[ConnectionType, ConnectorSettingsBase]:
+) -> dict[ConnectionType, DeprecatedConnectorSettingsBase]:
     settings_class = generate_connectors_settings_class(settings_registry)
 
     def connectors_fallback(full_cfg: ObjectLikeConfig):
@@ -710,7 +710,7 @@ def load_connectors_settings_from_env_with_fallback(
     )
 
     loaded_settings = load_settings_from_env_with_fallback(connectors, env, fallback_cfg_resolver)
-    connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = {}
+    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase] = {}
     if loaded_settings.CONNECTORS is None:
         return connectors_settings
 
@@ -718,6 +718,6 @@ def load_connectors_settings_from_env_with_fallback(
         conn_type = ConnectionType(name.lower())
         connector_settings = getattr(loaded_settings.CONNECTORS, name)
         if connector_settings is not None:
-            assert isinstance(connector_settings, ConnectorSettingsBase)
+            assert isinstance(connector_settings, DeprecatedConnectorSettingsBase)
             connectors_settings[conn_type] = connector_settings
     return connectors_settings

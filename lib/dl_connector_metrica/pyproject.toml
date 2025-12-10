@@ -25,6 +25,7 @@ dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 

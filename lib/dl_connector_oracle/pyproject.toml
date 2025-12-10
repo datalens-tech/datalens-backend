@@ -23,6 +23,7 @@ dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 oracledb = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 

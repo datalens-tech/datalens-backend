@@ -28,7 +28,7 @@ from dl_connector_greenplum.core.data_source import (
 )
 from dl_connector_greenplum.core.data_source_migration import GreenPlumDataSourceMigrator
 from dl_connector_greenplum.core.sa_types import SQLALCHEMY_GP_TYPES
-from dl_connector_greenplum.core.settings import GreenplumSettingDefinition
+from dl_connector_greenplum.core.settings import DeprecatedGreenplumSettingDefinition
 from dl_connector_greenplum.core.storage_schemas.connection import GreenplumConnectionDataStorageSchema
 from dl_connector_greenplum.core.us_connection import GreenplumConnection
 from dl_connector_postgresql.core.postgresql_base.query_compiler import PostgreSQLQueryCompiler
@@ -44,7 +44,7 @@ class GreenplumCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncGreenplumConnExecutor
     dialect_string = "bi_postgresql"
     data_source_migrator_cls = GreenPlumDataSourceMigrator
-    settings_definition = GreenplumSettingDefinition
+    settings_definition = DeprecatedGreenplumSettingDefinition
     allow_export = True
 
 

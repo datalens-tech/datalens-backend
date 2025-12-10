@@ -28,7 +28,7 @@ from dl_maintenance.core.common import MaintenanceEnvironmentManagerBase
 
 
 if TYPE_CHECKING:
-    from dl_configs.connectors_settings import ConnectorSettingsBase
+    from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
     from dl_constants.enums import ConnectionType
     from dl_core.services_registry.sr_factories import SRFactory
 
@@ -49,7 +49,7 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
         )
         return settings
 
-    def get_connector_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+    def get_connector_settings(self) -> dict[ConnectionType, DeprecatedConnectorSettingsBase]:
         return load_connectors_settings_from_env_with_fallback(
             settings_registry=CONNECTORS_SETTINGS_CLASSES,
             fallbacks=CONNECTORS_SETTINGS_FALLBACKS,

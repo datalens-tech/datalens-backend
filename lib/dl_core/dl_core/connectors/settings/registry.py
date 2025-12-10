@@ -1,17 +1,17 @@
 from dl_configs.connectors_settings import (
-    ConnectorSettingsBase,
+    DeprecatedConnectorSettingsBase,
     SettingsFallbackType,
 )
 from dl_constants.enums import ConnectionType
 
 
-CONNECTORS_SETTINGS_CLASSES: dict[ConnectionType, type[ConnectorSettingsBase]] = {}
+CONNECTORS_SETTINGS_CLASSES: dict[ConnectionType, type[DeprecatedConnectorSettingsBase]] = {}
 CONNECTORS_SETTINGS_FALLBACKS: dict[ConnectionType, SettingsFallbackType] = {}
 
 
 def register_connector_settings_class(
     conn_type: ConnectionType,
-    settings_class: type[ConnectorSettingsBase],
+    settings_class: type[DeprecatedConnectorSettingsBase],
     fallback: SettingsFallbackType,
 ) -> None:
     if (registered_settings_class := CONNECTORS_SETTINGS_CLASSES.get(conn_type)) is not None:
