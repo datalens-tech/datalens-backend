@@ -13,7 +13,6 @@ from dl_formula.definitions.base import (
     TranslationVariantWrapped,
 )
 from dl_formula.definitions.functions_aggregation import AggregationFunctionBase
-from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 from dl_formula.translation.context import TranslationCtx
 
@@ -39,7 +38,6 @@ class DBCall(Function):
         ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=set(DataType)),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class DBCallInt(DBCall):
@@ -84,7 +82,6 @@ class DBCallAgg(AggregationFunctionBase):
         ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=set(DataType)),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class DBCallAggInt(DBCallAgg):

@@ -7,7 +7,6 @@ from dl_formula.definitions.base import (
     Function,
     TranslationVariant,
 )
-from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 
 
@@ -15,7 +14,7 @@ V = TranslationVariant.make
 
 
 class HashFunction(Function):
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
+    pass
 
 
 class MD5(HashFunction):
