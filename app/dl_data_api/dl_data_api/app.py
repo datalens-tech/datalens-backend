@@ -15,7 +15,7 @@ from dl_api_lib.loader import (
     preload_api_lib,
 )
 from dl_app_tools.aio_latency_tracking import LatencyTracker
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
@@ -39,7 +39,7 @@ LOGGER = logging.getLogger(__name__)
 
 def create_app(
     setting: DataApiAppSettingsOS,
-    connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
 ) -> web.Application:
     data_api_app_factory = StandaloneDataApiAppFactory(settings=setting)
     return data_api_app_factory.create_app(

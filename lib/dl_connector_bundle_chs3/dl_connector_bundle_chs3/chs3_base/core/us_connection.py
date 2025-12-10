@@ -35,7 +35,7 @@ from dl_core.us_connection_base import (
 from dl_core.utils import parse_comma_separated_hosts
 
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
@@ -48,12 +48,12 @@ LOGGER = logging.getLogger(__name__)
 
 
 class BaseFileS3Connection(
-    ConnectionSettingsMixin[FileS3ConnectorSettings],
+    ConnectionSettingsMixin[DeprecatedFileS3ConnectorSettings],
     ConnectionClickhouseBase,
 ):
     is_always_internal_source: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
-    settings_type = FileS3ConnectorSettings
+    settings_type = DeprecatedFileS3ConnectorSettings
 
     editable_data_source_parameters: ClassVar[tuple[str, ...]] = (
         "file_id",

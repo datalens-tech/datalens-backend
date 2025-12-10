@@ -8,7 +8,7 @@ from dl_api_lib_testing.connection_form_base import (
 
 from dl_connector_greenplum.api.connection_form.form_config import GreenplumConnectionFormFactory
 from dl_connector_greenplum.api.i18n.localizer import CONFIGS as BI_CONNECTOR_GREENPLUM_CONFIGS
-from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
+from dl_connector_greenplum.core.settings import DeprecatedGreenplumConnectorSettings
 from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
 
 
@@ -23,7 +23,7 @@ class TestGreenplumConnectionForm(
     def connectors_settings(
         self,
         enable_datasource_template: bool,
-    ) -> GreenplumConnectorSettings:
-        return GreenplumConnectorSettings(
+    ) -> DeprecatedGreenplumConnectorSettings:
+        return DeprecatedGreenplumConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
         )

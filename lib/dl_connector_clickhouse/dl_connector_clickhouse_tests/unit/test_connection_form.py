@@ -5,7 +5,7 @@ from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 
 from dl_connector_clickhouse.api.connection_form.form_config import ClickHouseConnectionFormFactory
 from dl_connector_clickhouse.api.i18n.localizer import CONFIGS as BI_API_LIB_CONFIGS
-from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
+from dl_connector_clickhouse.core.clickhouse.settings import DeprecatedClickHouseConnectorSettings
 
 
 class TestClickhouseConnectionForm(ConnectionFormTestBase):
@@ -22,7 +22,9 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase):
         return request.param
 
     @pytest.fixture(name="connectors_settings")
-    def fixture_connectors_settings(self, enable_datasource_template: bool) -> ClickHouseConnectorSettings | None:
-        return ClickHouseConnectorSettings(
+    def fixture_connectors_settings(
+        self, enable_datasource_template: bool
+    ) -> DeprecatedClickHouseConnectorSettings | None:
+        return DeprecatedClickHouseConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
         )

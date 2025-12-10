@@ -85,7 +85,7 @@ from dl_testing.utils import (
     get_root_certificates,
 )
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 
 
 if TYPE_CHECKING:
@@ -291,7 +291,7 @@ def tenant_id_header() -> dict[DLHeadersCommon, str]:
 @pytest.fixture(scope="session")
 def connectors_settings(s3_settings):
     return FileUploaderConnectorsSettings(
-        FILE=FileS3ConnectorSettings(
+        FILE=DeprecatedFileS3ConnectorSettings(
             SECURE=False,
             HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
             PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,

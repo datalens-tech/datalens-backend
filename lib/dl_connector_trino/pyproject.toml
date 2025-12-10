@@ -23,6 +23,7 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 requests = "*"
 sqlalchemy = "*"

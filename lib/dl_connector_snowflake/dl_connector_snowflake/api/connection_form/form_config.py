@@ -30,7 +30,7 @@ from dl_api_connector.form_config.models.rows.base import (
 )
 from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 
 from dl_connector_snowflake.api.connection_info import SnowflakeConnectionInfoProvider
 from dl_connector_snowflake.api.i18n.localizer import Translatable
@@ -97,7 +97,7 @@ def _basic_input_row(
 class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[DeprecatedConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)

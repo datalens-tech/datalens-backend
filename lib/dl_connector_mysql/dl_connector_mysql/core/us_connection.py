@@ -21,11 +21,11 @@ from dl_connector_mysql.core.constants import (
     SOURCE_TYPE_MYSQL_TABLE,
 )
 from dl_connector_mysql.core.dto import MySQLConnDTO
-from dl_connector_mysql.core.settings import MySQLConnectorSettings
+from dl_connector_mysql.core.settings import DeprecatedMySQLConnectorSettings
 
 
 class ConnectionMySQL(
-    ConnectionSettingsMixin[MySQLConnectorSettings],
+    ConnectionSettingsMixin[DeprecatedMySQLConnectorSettings],
     ClassicConnectionSQL,
 ):
     source_type = SOURCE_TYPE_MYSQL_TABLE
@@ -33,7 +33,7 @@ class ConnectionMySQL(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = MySQLConnectorSettings
+    settings_type = DeprecatedMySQLConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):

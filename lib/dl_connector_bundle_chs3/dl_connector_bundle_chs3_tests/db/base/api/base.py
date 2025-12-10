@@ -12,7 +12,7 @@ import pytest
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import (
     ConnectionType,
     UserDataType,
@@ -85,7 +85,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
         monkeyclass.setattr(FileUploaderClientFactory, "_file_uploader_client_cls", FileUploaderClientMockup)
 
     @pytest.fixture(scope="class")
-    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+    def connectors_settings(self) -> dict[ConnectionType, DeprecatedConnectorSettingsBase]:
         return {self.conn_type: self.connection_settings}
 
     @pytest.fixture(scope="function")

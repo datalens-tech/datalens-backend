@@ -3,7 +3,7 @@ from typing import Optional
 import attr
 from attr import fields
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.connectors_settings import generate_connectors_settings_class
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
@@ -16,19 +16,19 @@ CONNECTION_TYPE_WONDERFUL = ConnectionType.declare("wonderful")
 
 
 @attr.s(frozen=True)
-class WonderfulConnectorSettings(ConnectorSettingsBase):
+class WonderfulConnectorSettings(DeprecatedConnectorSettingsBase):
     WONDERFUL_STRING_SETTING: str = s_attrib("WONDERFUL_STRING_SETTING", missing=None)
     WONDERFUL_LIST_OF_STRINGS_SETTING: list[str] = s_attrib("WONDERFUL_LIST_OF_STRINGS_SETTING", missing=None)
 
 
 @attr.s(frozen=True)
-class FantasticConnectorSettings(ConnectorSettingsBase):
+class FantasticConnectorSettings(DeprecatedConnectorSettingsBase):
     FANTASTIC_INTEGER_SETTING: int = s_attrib("FANTASTIC_INTEGER_SETTING", missing=None)
     FANTASTIC_FLOAT_SETTING: float = s_attrib("FANTASTIC_FLOAT_SETTING", missing=None)
 
 
 @attr.s(frozen=True)
-class EmptyYetCoolConnectorSettings(ConnectorSettingsBase):
+class EmptyYetCoolConnectorSettings(DeprecatedConnectorSettingsBase):
     pass
 
 

@@ -4,7 +4,7 @@ from dl_connector_mssql.core.constants import (
     SOURCE_TYPE_MSSQL_SUBSELECT,
     SOURCE_TYPE_MSSQL_TABLE,
 )
-from dl_connector_mssql.core.settings import MSSQLConnectorSettings
+from dl_connector_mssql.core.settings import DeprecatedMSSQLConnectorSettings
 from dl_connector_mssql_tests.db.api.base import (
     MSSQLDataApiTestBase,
     MSSQLDatasetTestBase,
@@ -13,7 +13,7 @@ from dl_connector_mssql_tests.db.api.base import (
 
 class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate):
     source_type = SOURCE_TYPE_MSSQL_TABLE
-    conn_settings_cls = MSSQLConnectorSettings
+    conn_settings_cls = DeprecatedMSSQLConnectorSettings
 
 
 class TestTableControlApiSourceTemplate(
@@ -50,7 +50,7 @@ class TestTableDataApiSourceTemplate(
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
     source_type = SOURCE_TYPE_MSSQL_SUBSELECT
-    conn_settings_cls = MSSQLConnectorSettings
+    conn_settings_cls = DeprecatedMSSQLConnectorSettings
 
 
 class TestSubselectControlApiSourceTemplate(
