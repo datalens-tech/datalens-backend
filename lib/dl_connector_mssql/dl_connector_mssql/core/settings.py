@@ -1,5 +1,4 @@
 import attr
-import pydantic
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
@@ -47,4 +46,4 @@ class DeprecatedMSSQLSettingDefinition(DeprecatedConnectorSettingsDefinition):
 
 
 class MSSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = pydantic.Field(alias="conn_type", default=CONNECTION_TYPE_MSSQL.value)
+    type: str = CONNECTION_TYPE_MSSQL.value

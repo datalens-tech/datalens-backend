@@ -4,7 +4,6 @@ from typing import (
 )
 
 import attr
-import pydantic
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
@@ -61,7 +60,7 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     DEFAULT_CLIQUE:     clique that is set by default in the connection form
     """
 
-    type: str = pydantic.Field(alias="conn_type", default=CONNECTION_TYPE_CHYT.value)
+    type: str = CONNECTION_TYPE_CHYT.value
 
     PUBLIC_CLIQUES: Annotated[
         tuple[str, ...],

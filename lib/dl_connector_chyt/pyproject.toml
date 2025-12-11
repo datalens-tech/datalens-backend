@@ -24,7 +24,6 @@ dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
-pydantic = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 

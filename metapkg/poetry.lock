@@ -2186,7 +2186,6 @@ dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
-pydantic = "*"
 xxhash = "*"
 
 [package.source]
@@ -2219,7 +2218,6 @@ dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
-pydantic = "*"
 sqlalchemy = "*"
 
 [package.source]
@@ -2258,7 +2256,6 @@ dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
-pydantic = "*"
 pytest = "*"
 pytz = "*"
 requests = "*"
@@ -2289,7 +2286,6 @@ dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
-pydantic = "*"
 sqlalchemy = "*"
 
 [package.source]
@@ -2323,7 +2319,6 @@ dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
-pydantic = "*"
 sqlalchemy = "*"
 
 [package.source]
@@ -2352,7 +2347,6 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-pydantic = "*"
 pyodbc = "*"
 sqlalchemy = "*"
 
@@ -2386,7 +2380,6 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
-pydantic = "*"
 pymysql = "*"
 sqlalchemy = "*"
 
@@ -2419,7 +2412,6 @@ dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 oracledb = "*"
-pydantic = "*"
 sqlalchemy = "*"
 
 [package.source]
@@ -2454,7 +2446,6 @@ dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 psycopg2-binary = "*"
-pydantic = "*"
 python-dateutil = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
@@ -2550,7 +2541,6 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
-pydantic = "*"
 requests = "*"
 sqlalchemy = "*"
 trino = {version = "*", extras = ["sqlalchemy"]}
@@ -2586,7 +2576,6 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 grpcio = "*"
 marshmallow = "*"
-pydantic = "*"
 shortuuid = "*"
 sqlalchemy = "*"
 typing-extensions = "*"
