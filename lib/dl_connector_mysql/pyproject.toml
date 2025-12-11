@@ -24,7 +24,6 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
-pydantic = "*"
 pymysql = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"

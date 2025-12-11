@@ -1,5 +1,3 @@
-import pydantic
-
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import required
@@ -41,4 +39,4 @@ class DeprecatedFileS3SettingDefinition(DeprecatedConnectorSettingsDefinition):
 
 
 class FileConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
-    type: str = pydantic.Field(alias="conn_type", default=CONNECTION_TYPE_FILE.value)
+    type: str = CONNECTION_TYPE_FILE.value

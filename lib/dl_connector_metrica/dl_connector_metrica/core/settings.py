@@ -1,5 +1,4 @@
 import attr
-import pydantic
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
@@ -55,7 +54,7 @@ class DeprecatedAppMetricaSettingDefinition(DeprecatedConnectorSettingsDefinitio
 
 
 class MetricaConnectorSettings(ConnectorSettings):
-    type: str = pydantic.Field(alias="conn_type", default=CONNECTION_TYPE_METRICA_API.value)
+    type: str = CONNECTION_TYPE_METRICA_API.value
 
     COUNTER_ALLOW_MANUAL_INPUT: bool = False
     ALLOW_AUTO_DASH_CREATION: bool = False
@@ -63,7 +62,7 @@ class MetricaConnectorSettings(ConnectorSettings):
 
 
 class AppmetricaConnectorSettings(ConnectorSettings):
-    type: str = pydantic.Field(alias="conn_type", default=CONNECTION_TYPE_APPMETRICA_API.value)
+    type: str = CONNECTION_TYPE_APPMETRICA_API.value
 
     COUNTER_ALLOW_MANUAL_INPUT: bool = False
     ALLOW_AUTO_DASH_CREATION: bool = False

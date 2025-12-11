@@ -20,7 +20,6 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-pydantic = "*"
 pyodbc = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
