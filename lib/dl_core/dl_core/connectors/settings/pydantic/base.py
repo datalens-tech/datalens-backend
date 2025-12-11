@@ -1,5 +1,3 @@
-import pydantic
-
 import dl_settings
 
 
