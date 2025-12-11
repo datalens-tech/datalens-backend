@@ -29,6 +29,7 @@ dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
 xxhash = "*"
 
