@@ -1,3 +1,3 @@
 # {{cookiecutter.package_name}}
 
-{{cookiecutter.package_description}}
+TODO: Add short description about what's package main purpose in life.
