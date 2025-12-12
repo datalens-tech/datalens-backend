@@ -1,5 +1,4 @@
 {
   "package_slug": "package_slug",
-  "package_name": "{{ cookiecutter.package_slug.lower().replace('_', '-') }}",
-  "package_description": ""
+  "package_name": "{{ cookiecutter.package_slug.lower().replace('_', '-') }}"
 }
