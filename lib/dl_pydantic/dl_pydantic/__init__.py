@@ -10,6 +10,7 @@ from .typed import (
     TypedAnnotation,
     TypedBaseModel,
     TypedDictAnnotation,
+    TypedDictWithTypeKeyAnnotation,
     TypedListAnnotation,
 )
 
@@ -25,4 +26,5 @@ __all__ = [
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "TypedDictWithTypeKeyAnnotation",
 ]

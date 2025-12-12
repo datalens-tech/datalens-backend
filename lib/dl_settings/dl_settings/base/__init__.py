@@ -11,6 +11,7 @@ from .typed import (
     TypedAnnotation,
     TypedBaseSettings,
     TypedDictAnnotation,
+    TypedDictWithTypeKeyAnnotation,
     TypedListAnnotation,
 )
 
@@ -22,6 +23,7 @@ __all__ = [
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "TypedDictWithTypeKeyAnnotation",
     "WithFallbackGetAttr",
     "WithFallbackEnvSource",
     "BaseRootSettingsWithFallback",

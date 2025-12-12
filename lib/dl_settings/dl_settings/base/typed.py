@@ -39,6 +39,7 @@ if TYPE_CHECKING:
     TypedAnnotation = Annotated[TypedBaseSettingsT, ...]
     TypedListAnnotation = Annotated[list[TypedBaseSettingsT], ...]
     TypedDictAnnotation = Annotated[dict[str, TypedBaseSettingsT], ...]
+    TypedDictWithTypeKeyAnnotation = Annotated[dict[str, TypedBaseSettingsT], ...]
 else:
 
     class TypedAnnotation:
@@ -65,10 +66,19 @@ else:
                 pydantic.SerializeAsAny(),
             ]
 
+    class TypedDictWithTypeKeyAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSettingsT) -> Any:
+            return Annotated[
+                dict[str, pydantic.SerializeAsAny[base_class]],
+                pydantic.BeforeValidator(base_class.dict_with_type_key_factory),
+                pydantic.SerializeAsAny(),
+            ]
+
 
 __all__ = [
     "TypedBaseSettings",
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "TypedDictWithTypeKeyAnnotation",
 ]
