@@ -311,3 +311,17 @@ def test_dict_annotation_with_env(
 
     assert isinstance(root.children["child"], Child)
     assert root.children["child"].secret == "secret_value"
+
+
+def test_dict_factory_with_type_key() -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        field: str
+
+    Base.register("child", Child)
+
+    children = Base.dict_with_type_key_factory({"child": {"field": "child_field"}})
+
+    assert isinstance(children["child"], Child)
