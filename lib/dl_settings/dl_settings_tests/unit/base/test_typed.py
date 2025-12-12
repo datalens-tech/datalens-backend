@@ -318,10 +318,35 @@ def test_dict_factory_with_type_key() -> None:
         ...
 
     class Child(Base):
-        field: str
+        value: str
 
     Base.register("child", Child)
 
-    children = Base.dict_with_type_key_factory({"child": {"field": "child_field"}})
+    class Root(dl_settings.BaseRootSettings):
+        children: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
 
-    assert isinstance(children["child"], Child)
+    root = Root.model_validate({"children": {"child": {"value": "test"}}})
+    assert isinstance(root.children["child"], Child)
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+
+def test_dict_factory_with_type_key_with_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        value: str
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.BaseRootSettings):
+        children: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    monkeypatch.setenv("CHILDREN__CHILD__VALUE", "test")
+    root = Root()
+
+    assert isinstance(root.children["child"], Child)
+    assert root.children["child"].value == "test"
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
