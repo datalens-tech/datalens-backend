@@ -361,3 +361,20 @@ def test_model_json_schema_not_subclass() -> None:
 
     with pytest.raises(ValueError):
         Base.model_json_schema()
+
+
+def test_dict_annotation_with_type_key() -> None:
+    class Base(dl_pydantic.TypedBaseModel):
+        ...
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    class Root(dl_pydantic.BaseModel):
+        children: dl_pydantic.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    root = Root.model_validate({"children": {"child": {}}})
+
+    assert isinstance(root.children["child"], Child)
