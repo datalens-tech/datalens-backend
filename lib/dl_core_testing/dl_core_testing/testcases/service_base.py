@@ -18,7 +18,7 @@ from redis.asyncio import Redis
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
 from dl_configs.settings_submodels import RedisSettings
@@ -63,7 +63,7 @@ class USConfig(NamedTuple):
 class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     conn_type: ClassVar[ConnectionType]
     core_test_config: ClassVar[CoreTestEnvironmentConfiguration]
-    connection_settings: ClassVar[Optional[ConnectorSettingsBase]] = None
+    connection_settings: ClassVar[Optional[DeprecatedConnectorSettingsBase]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
     data_caches_enabled: ClassVar[bool] = False
     compeng_enabled: ClassVar[bool] = False

@@ -24,7 +24,7 @@ from dl_cache_engine.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
 )
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import (
     ConnectionType,
     DashSQLQueryType,
@@ -839,7 +839,7 @@ class ClassicConnectionSQL(ConnectionSQL):
         return parse_comma_separated_hosts(self.data.host)
 
 
-CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettingsBase)
+CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=DeprecatedConnectorSettingsBase)
 
 
 def _get_connector_settings(

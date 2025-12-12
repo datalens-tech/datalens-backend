@@ -20,7 +20,7 @@ from dl_api_connector.form_config.models.common import (
 )
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
 
 from dl_connector_bigquery.api.connection_info import BigQueryConnectionInfoProvider
@@ -36,7 +36,7 @@ class BigQueryFieldName(FormFieldName):
 class BigQueryConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[DeprecatedConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)

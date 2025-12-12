@@ -15,12 +15,12 @@ from dl_connector_greenplum.core.constants import (
     SOURCE_TYPE_GP_TABLE,
 )
 from dl_connector_greenplum.core.dto import GreenplumConnDTO
-from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
+from dl_connector_greenplum.core.settings import DeprecatedGreenplumConnectorSettings
 from dl_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
 
 
 class GreenplumConnection(
-    ConnectionSettingsMixin[GreenplumConnectorSettings],
+    ConnectionSettingsMixin[DeprecatedGreenplumConnectorSettings],
     ConnectionPostgreSQLBase,
 ):
     source_type = SOURCE_TYPE_GP_TABLE
@@ -28,7 +28,7 @@ class GreenplumConnection(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = GreenplumConnectorSettings
+    settings_type = DeprecatedGreenplumConnectorSettings
 
     def get_conn_dto(self) -> GreenplumConnDTO:
         return GreenplumConnDTO(

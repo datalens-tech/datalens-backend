@@ -17,7 +17,7 @@ from dl_file_uploader_lib.settings import (
     FileUploaderBaseSettings,
 )
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
 
 
@@ -30,7 +30,7 @@ class SecureReader(SettingsBase):
 
 @attr.s(frozen=True)
 class FileUploaderConnectorsSettings(SettingsBase):
-    FILE: Optional[FileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
+    FILE: Optional[DeprecatedFileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
 
 
 def file_uploader_connectors_settings_fallback(full_cfg: ObjectLikeConfig) -> FileUploaderConnectorsSettings:

@@ -23,11 +23,11 @@ from dl_connector_mssql.core.constants import (
     SOURCE_TYPE_MSSQL_TABLE,
 )
 from dl_connector_mssql.core.dto import MSSQLConnDTO
-from dl_connector_mssql.core.settings import MSSQLConnectorSettings
+from dl_connector_mssql.core.settings import DeprecatedMSSQLConnectorSettings
 
 
 class ConnectionMSSQL(
-    ConnectionSettingsMixin[MSSQLConnectorSettings],
+    ConnectionSettingsMixin[DeprecatedMSSQLConnectorSettings],
     ClassicConnectionSQL,
 ):
     has_schema: ClassVar[bool] = True
@@ -37,7 +37,7 @@ class ConnectionMSSQL(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = MSSQLConnectorSettings
+    settings_type = DeprecatedMSSQLConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):

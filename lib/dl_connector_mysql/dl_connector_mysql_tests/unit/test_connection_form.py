@@ -8,7 +8,7 @@ from dl_api_lib_testing.connection_form_base import (
 
 from dl_connector_mysql.api.connection_form.form_config import MySQLConnectionFormFactory
 from dl_connector_mysql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_MYSQL_CONFIGS
-from dl_connector_mysql.core.settings import MySQLConnectorSettings
+from dl_connector_mysql.core.settings import DeprecatedMySQLConnectorSettings
 
 
 class TestMySQLConnectionForm(
@@ -19,7 +19,7 @@ class TestMySQLConnectionForm(
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_MYSQL_CONFIGS
 
     @pytest.fixture
-    def connectors_settings(self, enable_datasource_template: bool) -> MySQLConnectorSettings:
-        return MySQLConnectorSettings(
+    def connectors_settings(self, enable_datasource_template: bool) -> DeprecatedMySQLConnectorSettings:
+        return DeprecatedMySQLConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
         )

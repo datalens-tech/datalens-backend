@@ -17,7 +17,7 @@ from dl_api_connector.form_config.models.base import (
 from dl_api_connector.form_config.models.common import CommonFieldName
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 
 from dl_connector_promql.api.connection_info import PromQLConnectionInfoProvider
 
@@ -25,7 +25,7 @@ from dl_connector_promql.api.connection_info import PromQLConnectionInfoProvider
 class PromQLConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[DeprecatedConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)

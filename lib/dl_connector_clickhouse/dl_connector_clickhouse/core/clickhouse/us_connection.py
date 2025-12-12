@@ -20,12 +20,12 @@ from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_TABLE,
 )
 from dl_connector_clickhouse.core.clickhouse.dto import DLClickHouseConnDTO
-from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
+from dl_connector_clickhouse.core.clickhouse.settings import DeprecatedClickHouseConnectorSettings
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 
 class ConnectionClickhouse(
-    ConnectionSettingsMixin[ClickHouseConnectorSettings],
+    ConnectionSettingsMixin[DeprecatedClickHouseConnectorSettings],
     ConnectionClickhouseBase,
 ):
     """
@@ -38,7 +38,7 @@ class ConnectionClickhouse(
 
     source_type = SOURCE_TYPE_CH_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT))
-    settings_type = ClickHouseConnectorSettings
+    settings_type = DeprecatedClickHouseConnectorSettings
 
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True

@@ -4,7 +4,7 @@ from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_SUBSELECT,
     SOURCE_TYPE_PG_TABLE,
 )
-from dl_connector_postgresql.core.postgresql.settings import PostgreSQLConnectorSettings
+from dl_connector_postgresql.core.postgresql.settings import DeprecatedPostgreSQLConnectorSettings
 from dl_connector_postgresql_tests.db.api.base import (
     PostgreSQLDataApiTestBase,
     PostgreSQLDatasetTestBase,
@@ -13,7 +13,7 @@ from dl_connector_postgresql_tests.db.api.base import (
 
 class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate):
     source_type = SOURCE_TYPE_PG_TABLE
-    conn_settings_cls = PostgreSQLConnectorSettings
+    conn_settings_cls = DeprecatedPostgreSQLConnectorSettings
 
 
 class TestTableControlApiSourceTemplate(
@@ -50,7 +50,7 @@ class TestTableDataApiSourceTemplate(
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
     source_type = SOURCE_TYPE_PG_SUBSELECT
-    conn_settings_cls = PostgreSQLConnectorSettings
+    conn_settings_cls = DeprecatedPostgreSQLConnectorSettings
 
 
 class TestSubselectControlApiSourceTemplate(

@@ -35,7 +35,7 @@ from dl_api_connector.form_config.models.rows.customizable import (
     HiddenRowItem,
 )
 from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_i18n.localizer_base import Localizer
 
 
@@ -202,7 +202,7 @@ class ConnectionFormFactory:
     @abc.abstractmethod
     def get_form_config(
         self,
-        connector_settings: ConnectorSettingsBase | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
         """Returns a form config built according to the specified settings"""

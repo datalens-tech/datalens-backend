@@ -15,7 +15,7 @@ from dl_connector_bundle_chs3.file.core.data_source import FileS3DataSource
 from dl_connector_bundle_chs3.file.core.data_source_spec import FileS3DataSourceSpec
 from dl_connector_bundle_chs3.file.core.lifecycle import FileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.file.core.sa_types import SQLALCHEMY_FILE_TYPES
-from dl_connector_bundle_chs3.file.core.settings import FileS3SettingDefinition
+from dl_connector_bundle_chs3.file.core.settings import DeprecatedFileS3SettingDefinition
 from dl_connector_bundle_chs3.file.core.storage_schemas.connection import FileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.file.core.storage_schemas.data_source_spec import FileS3DataSourceSpecStorageSchema
 from dl_connector_bundle_chs3.file.core.us_connection import FileS3Connection
@@ -30,7 +30,7 @@ class FileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     async_conn_executor_cls = FileS3AsyncAdapterConnExecutor
     lifecycle_manager_cls = FileS3ConnectionLifecycleManager
     dialect_string = "bi_clickhouse"
-    settings_definition = FileS3SettingDefinition
+    settings_definition = DeprecatedFileS3SettingDefinition
     allow_export = True
 
 
