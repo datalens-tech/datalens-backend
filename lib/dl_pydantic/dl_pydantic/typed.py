@@ -89,6 +89,23 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return {key: cls.factory(value) for key, value in data.items()}
 
     @classmethod
+    def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
+        if not isinstance(data, dict):
+            raise ValueError("Data must be mapping for dict factory")
+
+        result: dict[str, base.BaseModel] = {}
+        type_key = cls.type_key()
+
+        for key, value in data.items():
+            if type_key in data:
+                raise ValueError(f"Data must not contain '{type_key}' key, dict key is already used as type")
+
+            value[type_key] = key
+            result[key] = cls.factory(value)
+
+        return result
+
+    @classmethod
     def __get_pydantic_json_schema__(
         cls,
         core_schema: pydantic_core.CoreSchema,
@@ -117,6 +134,7 @@ if TYPE_CHECKING:
     TypedAnnotation = Annotated[TypedBaseModelT, ...]
     TypedListAnnotation = Annotated[list[TypedBaseModelT], ...]
     TypedDictAnnotation = Annotated[dict[str, TypedBaseModelT], ...]
+    TypedDictWithTypeKeyAnnotation = Annotated[dict[str, TypedBaseModelT], ...]
 else:
 
     class TypedAnnotation:
@@ -140,10 +158,18 @@ else:
                 pydantic.BeforeValidator(base_class.dict_factory),
             ]
 
+    class TypedDictWithTypeKeyAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseModelT) -> Any:
+            return Annotated[
+                dict[str, pydantic.SerializeAsAny[base_class]],
+                pydantic.BeforeValidator(base_class.dict_with_type_key_factory),
+            ]
+
 
 __all__ = [
     "TypedBaseModel",
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "TypedDictWithTypeKeyAnnotation",
 ]
