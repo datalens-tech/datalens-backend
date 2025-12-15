@@ -5,13 +5,15 @@ import attr
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
-from dl_core.connectors.settings.mixins import DeprecatedDatasourceTemplateSettingsMixin
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import (
+    DatasourceTemplateSettingsMixin,
+    DeprecatedDatasourceTemplateSettingsMixin,
+)
 from dl_core.connectors.settings.primitives import (
     ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.connectors.settings.mixins import DatasourceTemplateSettingsMixin
 
 from dl_connector_ydb.core.ydb.adapter import CONNECTION_TYPE_YDB
 

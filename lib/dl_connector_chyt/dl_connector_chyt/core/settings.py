@@ -9,13 +9,15 @@ from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.utils import split_by_comma
-from dl_core.connectors.settings.mixins import DeprecatedDatasourceTemplateSettingsMixin
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import (
+    DatasourceTemplateSettingsMixin,
+    DeprecatedDatasourceTemplateSettingsMixin,
+)
 from dl_core.connectors.settings.primitives import (
     ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.connectors.settings.mixins import DatasourceTemplateSettingsMixin
 import dl_settings
 
 from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT

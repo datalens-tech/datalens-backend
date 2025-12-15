@@ -2,18 +2,16 @@ import attr
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
+    DatasourceTemplateSettingsMixin,
     DeprecatedDatasourceTemplateSettingsMixin,
     DeprecatedTableDatasourceSettingsMixin,
+    TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import (
     ConnectorSettingsDefinition,
     get_connectors_settings_config,
-)
-from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.connectors.settings.mixins import (
-    DatasourceTemplateSettingsMixin,
-    TableDatasourceSettingsMixin,
 )
 
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES

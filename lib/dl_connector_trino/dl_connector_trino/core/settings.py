@@ -2,13 +2,15 @@ import attr
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
-from dl_core.connectors.settings.mixins import DeprecatedTableDatasourceSettingsMixin
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import (
+    DeprecatedTableDatasourceSettingsMixin,
+    TableDatasourceSettingsMixin,
+)
 from dl_core.connectors.settings.primitives import (
     ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.connectors.settings.mixins import TableDatasourceSettingsMixin
 
 from dl_connector_trino.core.constants import CONNECTION_TYPE_TRINO
 

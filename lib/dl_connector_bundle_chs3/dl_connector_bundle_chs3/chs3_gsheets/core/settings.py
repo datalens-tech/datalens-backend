@@ -1,11 +1,11 @@
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import required
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.primitives import (
     ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import (
     DeprecatedFileS3ConnectorSettings,
