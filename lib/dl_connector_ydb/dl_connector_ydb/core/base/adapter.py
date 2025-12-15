@@ -12,7 +12,6 @@ from typing import (
 
 import attr
 import sqlalchemy as sa
-import sqlalchemy.engine.base
 import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
