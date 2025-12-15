@@ -114,7 +114,7 @@ def _make_logging_config(
                 "asyncio": {"level": "INFO", "propagate": False, "handlers": default_handlers},
                 "kikimr": {"level": "WARNING", "propagate": False, "handlers": default_handlers},
                 "botocore": {"level": "INFO", "propagate": False, "handlers": default_handlers},
-                "ydb": {"level": "DEBUG", "propagate": False, "handlers": default_handlers},
+                "ydb": {"level": "WARNING", "propagate": False, "handlers": default_handlers},
             },
             "root": {
                 **(base.get("root") or {}),
