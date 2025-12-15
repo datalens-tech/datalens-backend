@@ -3559,7 +3559,6 @@ develop = false
 packaging = "*"
 sqlalchemy = "*"
 ydb = "*"
-ydb-dbapi = "*"
 ydb-sqlalchemy = "*"
 
 [package.source]

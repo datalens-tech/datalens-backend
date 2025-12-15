@@ -2,8 +2,6 @@ import datetime
 import typing
 
 import sqlalchemy as sa
-import ydb
-import ydb_dbapi
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 
@@ -165,15 +163,6 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
                 **kwargs,
                 **dict(_add_declare_for_yql_stmt_vars=True),
             },
-        )
-
-    def connect(self, *args: tuple, **kwargs: dict) -> ydb_dbapi.Connection:
-        connection: ydb_dbapi.Connection = self.dbapi.connect(*args, **kwargs)
-        connection.set_ydb_retry_settings(
-            ydb.RetrySettings(
-                max_retries=3,
-                idempotent=True,
-            ),
         )
 
 

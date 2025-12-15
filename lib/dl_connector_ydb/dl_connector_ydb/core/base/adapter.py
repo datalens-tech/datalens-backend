@@ -12,6 +12,8 @@ from typing import (
 
 import attr
 import sqlalchemy as sa
+import sqlalchemy.engine.base
+import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_core import exc
@@ -120,3 +122,10 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     def get_engine_kwargs(self) -> dict:
         return {}
+
+    def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> sa.engine.base.Engine:
+        engine: sa.engine.base.Engine = super()._get_db_engine(db_name, disable_streaming)
+
+        engine.update_execution_options(ydb_retry_settigns=ydb.RetrySettings(retry_cancelled=True))
+
+        return engine
