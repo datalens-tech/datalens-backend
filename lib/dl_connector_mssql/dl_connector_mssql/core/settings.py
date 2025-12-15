@@ -7,11 +7,11 @@ from dl_core.connectors.settings.mixins import (
     DeprecatedTableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
-from dl_core.connectors.settings.pydantic.mixins import (
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
     TableDatasourceSettingsMixin,
 )
@@ -40,7 +40,7 @@ def mssql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
     return dict(MSSQL=settings)
 
 
-class DeprecatedMSSQLSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class MSSQLSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedMSSQLConnectorSettings
     fallback = mssql_settings_fallback
 

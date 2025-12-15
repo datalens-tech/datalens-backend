@@ -29,6 +29,6 @@ def get_connectors_settings_config(
 
 
 @attr.s(frozen=True)
-class DeprecatedConnectorSettingsDefinition:
+class ConnectorSettingsDefinition:
     settings_class: type[DeprecatedConnectorSettingsBase] = attr.ib()
     fallback: SettingsFallbackType = attr.ib()

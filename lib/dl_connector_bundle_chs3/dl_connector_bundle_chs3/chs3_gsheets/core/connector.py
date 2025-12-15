@@ -19,7 +19,7 @@ from dl_connector_bundle_chs3.chs3_gsheets.core.data_source import GSheetsFileS3
 from dl_connector_bundle_chs3.chs3_gsheets.core.data_source_spec import GSheetsFileS3DataSourceSpec
 from dl_connector_bundle_chs3.chs3_gsheets.core.lifecycle import GSheetsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_gsheets.core.sa_types import SQLALCHEMY_GSHEETS_V2_TYPES
-from dl_connector_bundle_chs3.chs3_gsheets.core.settings import DeprecatedGSheetsFileS3SettingDefinition
+from dl_connector_bundle_chs3.chs3_gsheets.core.settings import GSheetsFileS3SettingDefinition
 from dl_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.connection import GSheetsFileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.chs3_gsheets.core.storage_schemas.data_source_spec import (
     GSheetsFileS3DataSourceSpecStorageSchema,
@@ -36,7 +36,7 @@ class GSheetsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     async_conn_executor_cls = GSheetsFileS3AsyncAdapterConnExecutor
     lifecycle_manager_cls = GSheetsFileS3ConnectionLifecycleManager
     dialect_string = "bi_clickhouse"
-    settings_definition = DeprecatedGSheetsFileS3SettingDefinition
+    settings_definition = GSheetsFileS3SettingDefinition
     allow_export = True
 
 

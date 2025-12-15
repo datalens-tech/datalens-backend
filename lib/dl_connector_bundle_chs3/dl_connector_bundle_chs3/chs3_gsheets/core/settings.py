@@ -2,10 +2,10 @@ from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import required
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import (
     DeprecatedFileS3ConnectorSettings,
@@ -32,7 +32,7 @@ def gsheets_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, D
     )
 
 
-class DeprecatedGSheetsFileS3SettingDefinition(DeprecatedConnectorSettingsDefinition):
+class GSheetsFileS3SettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedFileS3ConnectorSettings
     fallback = gsheets_file_s3_settings_fallback
 

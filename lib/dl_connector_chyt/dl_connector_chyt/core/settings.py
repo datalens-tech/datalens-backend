@@ -11,11 +11,11 @@ from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.utils import split_by_comma
 from dl_core.connectors.settings.mixins import DeprecatedDatasourceTemplateSettingsMixin
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
-from dl_core.connectors.settings.pydantic.mixins import DatasourceTemplateSettingsMixin
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import DatasourceTemplateSettingsMixin
 import dl_settings
 
 from dl_connector_chyt.core.constants import CONNECTION_TYPE_CHYT
@@ -48,7 +48,7 @@ def chyt_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedCo
     return dict(CHYT=settings)
 
 
-class DeprecatedCHYTSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class CHYTSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedCHYTConnectorSettings
     fallback = chyt_settings_fallback
 

@@ -26,7 +26,7 @@ from dl_core.connectors.base.schema_migration import (
     ConnectionSchemaMigration,
     DefaultConnectionSchemaMigration,
 )
-from dl_core.connectors.settings.primitives import DeprecatedConnectorSettingsDefinition
+from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from dl_core.data_source.base import DataSource
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
@@ -71,7 +71,7 @@ class CoreConnectionDefinition(abc.ABC):
     schema_migration_cls: ClassVar[type[ConnectionSchemaMigration]] = DefaultConnectionSchemaMigration
     dialect_string: ClassVar[str]
     data_source_migrator_cls: ClassVar[type[DataSourceMigrator]] = DefaultDataSourceMigrator
-    settings_definition: ClassVar[Optional[type[DeprecatedConnectorSettingsDefinition]]] = None
+    settings_definition: ClassVar[Optional[type[ConnectorSettingsDefinition]]] = None
     custom_dashsql_key_names: frozenset[str] = frozenset()
     allow_export: ClassVar[bool] = False
 

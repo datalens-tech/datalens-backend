@@ -27,7 +27,7 @@ from dl_connector_mysql.core.data_source import (
 from dl_connector_mysql.core.data_source_migration import MySQLDataSourceMigrator
 from dl_connector_mysql.core.query_compiler import MySQLQueryCompiler
 from dl_connector_mysql.core.sa_types import SQLALCHEMY_MYSQL_TYPES
-from dl_connector_mysql.core.settings import DeprecatedMySQLSettingDefinition
+from dl_connector_mysql.core.settings import MySQLSettingDefinition
 from dl_connector_mysql.core.storage_schemas.connection import ConnectionMySQLDataStorageSchema
 from dl_connector_mysql.core.type_transformer import MySQLTypeTransformer
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
@@ -42,7 +42,7 @@ class MySQLCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AsyncMySQLConnExecutor
     dialect_string = "dl_mysql"
     data_source_migrator_cls = MySQLDataSourceMigrator
-    settings_definition = DeprecatedMySQLSettingDefinition
+    settings_definition = MySQLSettingDefinition
     allow_export = True
 
 

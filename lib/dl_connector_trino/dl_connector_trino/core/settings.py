@@ -4,11 +4,11 @@ from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_core.connectors.settings.mixins import DeprecatedTableDatasourceSettingsMixin
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
-from dl_core.connectors.settings.pydantic.mixins import TableDatasourceSettingsMixin
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import TableDatasourceSettingsMixin
 
 from dl_connector_trino.core.constants import CONNECTION_TYPE_TRINO
 
@@ -33,7 +33,7 @@ def trino_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
     return dict(TRINO=settings)
 
 
-class DeprecatedTrinoSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class TrinoSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedTrinoConnectorSettings
     fallback = trino_settings_fallback
 

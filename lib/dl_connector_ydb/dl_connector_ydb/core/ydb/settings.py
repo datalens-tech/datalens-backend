@@ -7,11 +7,11 @@ from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_core.connectors.settings.mixins import DeprecatedDatasourceTemplateSettingsMixin
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
-from dl_core.connectors.settings.pydantic.mixins import DatasourceTemplateSettingsMixin
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import DatasourceTemplateSettingsMixin
 
 from dl_connector_ydb.core.ydb.adapter import CONNECTION_TYPE_YDB
 
@@ -37,7 +37,7 @@ def ydb_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedCon
     return dict(YDB=settings)
 
 
-class DeprecatedYDBSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class YDBSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedYDBConnectorSettings
     fallback = ydb_settings_fallback
 

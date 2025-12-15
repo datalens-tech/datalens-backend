@@ -43,8 +43,8 @@ from dl_connector_metrica.core.dto import (
 )
 from dl_connector_metrica.core.lifecycle import MetricaConnectionLifecycleManager
 from dl_connector_metrica.core.settings import (
-    DeprecatedAppMetricaSettingDefinition,
-    DeprecatedMetricaSettingDefinition,
+    AppMetricaSettingDefinition,
+    MetricaSettingDefinition,
 )
 from dl_connector_metrica.core.storage_schemas.connection import (
     ConnectionAppMetricaApiDataStorageSchema,
@@ -66,7 +66,7 @@ class MetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = MetricaAPIConnExecutor
     lifecycle_manager_cls = MetricaConnectionLifecycleManager
     dialect_string = "metrika_api"
-    settings_definition = DeprecatedMetricaSettingDefinition
+    settings_definition = MetricaSettingDefinition
     data_source_migrator_cls = MetricaApiDataSourceMigrator
     allow_export = False
 
@@ -103,7 +103,7 @@ class AppMetricaApiCoreConnectionDefinition(CoreConnectionDefinition):
     async_conn_executor_cls = AppMetricaAPIConnExecutor
     lifecycle_manager_cls = MetricaConnectionLifecycleManager
     dialect_string = "appmetrica_api"
-    settings_definition = DeprecatedAppMetricaSettingDefinition
+    settings_definition = AppMetricaSettingDefinition
     data_source_migrator_cls = AppMetricaApiDataSourceMigrator
     allow_export = False
 

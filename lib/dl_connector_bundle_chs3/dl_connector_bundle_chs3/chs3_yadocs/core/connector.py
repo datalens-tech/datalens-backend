@@ -19,7 +19,7 @@ from dl_connector_bundle_chs3.chs3_yadocs.core.data_source import YaDocsFileS3Da
 from dl_connector_bundle_chs3.chs3_yadocs.core.data_source_spec import YaDocsFileS3DataSourceSpec
 from dl_connector_bundle_chs3.chs3_yadocs.core.lifecycle import YaDocsFileS3ConnectionLifecycleManager
 from dl_connector_bundle_chs3.chs3_yadocs.core.sa_types import SQLALCHEMY_YADOCS_TYPES
-from dl_connector_bundle_chs3.chs3_yadocs.core.settings import DeprecatedYaDocsFileS3SettingDefinition
+from dl_connector_bundle_chs3.chs3_yadocs.core.settings import YaDocsFileS3SettingDefinition
 from dl_connector_bundle_chs3.chs3_yadocs.core.storage_schemas.connection import YaDocsFileConnectionDataStorageSchema
 from dl_connector_bundle_chs3.chs3_yadocs.core.storage_schemas.data_source_spec import (
     YaDocsFileS3DataSourceSpecStorageSchema,
@@ -36,7 +36,7 @@ class YaDocsFileS3CoreConnectionDefinition(BaseFileS3CoreConnectionDefinition):
     async_conn_executor_cls = YaDocsFileS3AsyncAdapterConnExecutor
     lifecycle_manager_cls = YaDocsFileS3ConnectionLifecycleManager
     dialect_string = "bi_clickhouse"
-    settings_definition = DeprecatedYaDocsFileS3SettingDefinition
+    settings_definition = YaDocsFileS3SettingDefinition
     allow_export = True
 
 

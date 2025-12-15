@@ -7,11 +7,11 @@ from dl_core.connectors.settings.mixins import (
     DeprecatedTableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
-from dl_core.connectors.settings.pydantic.mixins import (
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
     TableDatasourceSettingsMixin,
 )
@@ -40,7 +40,7 @@ def postgresql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
     return dict(POSTGRES=settings)
 
 
-class DeprecatedPostgreSQLSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class PostgreSQLSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedPostgreSQLConnectorSettings
     fallback = postgresql_settings_fallback
 

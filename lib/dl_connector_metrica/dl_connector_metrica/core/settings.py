@@ -4,10 +4,10 @@ from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_core.connectors.settings.primitives import (
-    DeprecatedConnectorSettingsDefinition,
+    ConnectorSettingsDefinition,
     get_connectors_settings_config,
 )
-from dl_core.connectors.settings.pydantic.base import ConnectorSettings
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
@@ -36,7 +36,7 @@ def metrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprecate
     return dict(METRIKA_API=DeprecatedMetricaConnectorSettings(BACKEND_DRIVEN_FORM=cfg.BACKEND_DRIVEN_FORM))  # type: ignore  # 2024-09-18 # TODO: Unexpected keyword argument "BACKEND_DRIVEN_FORM" for "AppmetricaConnectorSettings"  [call-arg]
 
 
-class DeprecatedMetricaSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class MetricaSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedMetricaConnectorSettings
     fallback = metrica_settings_fallback
 
@@ -48,7 +48,7 @@ def appmetrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
     return dict(APPMETRICA_API=DeprecatedAppmetricaConnectorSettings(BACKEND_DRIVEN_FORM=cfg.BACKEND_DRIVEN_FORM))  # type: ignore  # 2024-09-18 # TODO: Unexpected keyword argument "BACKEND_DRIVEN_FORM" for "AppmetricaConnectorSettings"  [call-arg]
 
 
-class DeprecatedAppMetricaSettingDefinition(DeprecatedConnectorSettingsDefinition):
+class AppMetricaSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedAppmetricaConnectorSettings
     fallback = appmetrica_settings_fallback
 
