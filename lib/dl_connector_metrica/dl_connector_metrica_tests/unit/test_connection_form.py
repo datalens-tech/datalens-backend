@@ -9,8 +9,8 @@ from dl_connector_metrica.api.connection_form.form_config import (
 )
 from dl_connector_metrica.api.i18n.localizer import CONFIGS as BI_CONNECTOR_METRICA_CONFIGS
 from dl_connector_metrica.core.settings import (
-    AppmetricaConnectorSettings,
-    MetricaConnectorSettings,
+    DeprecatedAppmetricaConnectorSettings,
+    DeprecatedMetricaConnectorSettings,
 )
 
 
@@ -40,8 +40,8 @@ class TestMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
         self,
         allow_auto_dash_creation,
         allow_counter_manual_input,
-    ) -> MetricaConnectorSettings:
-        return MetricaConnectorSettings(
+    ) -> DeprecatedMetricaConnectorSettings:
+        return DeprecatedMetricaConnectorSettings(
             COUNTER_ALLOW_MANUAL_INPUT=allow_counter_manual_input,
             ALLOW_AUTO_DASH_CREATION=allow_auto_dash_creation,
         )
@@ -57,8 +57,8 @@ class TestAppMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
         self,
         allow_auto_dash_creation,
         allow_counter_manual_input,
-    ) -> AppmetricaConnectorSettings:
-        return AppmetricaConnectorSettings(
+    ) -> DeprecatedAppmetricaConnectorSettings:
+        return DeprecatedAppmetricaConnectorSettings(
             COUNTER_ALLOW_MANUAL_INPUT=allow_counter_manual_input,
             ALLOW_AUTO_DASH_CREATION=allow_auto_dash_creation,
         )

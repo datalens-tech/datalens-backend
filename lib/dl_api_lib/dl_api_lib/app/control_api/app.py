@@ -29,7 +29,7 @@ from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
 )
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.utils import get_multiple_root_certificates
 from dl_constants.enums import (
     ConnectionType,
@@ -83,7 +83,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
     def create_app(
         self,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
         testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
         close_loop_after_request: bool = True,
     ) -> flask.Flask:

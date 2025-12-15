@@ -10,7 +10,7 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import rqe_config_from_env
 from dl_constants.enums import ConnectionType
@@ -52,7 +52,7 @@ def create_sr_factory_from_env_vars(
             rqe_sock_read_timeout=int(os.environ.get("RQE_SOCK_READ_TIMEOUT", 30 * 60)),
         )
 
-    connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = {}
+    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase] = {}
     if file_uploader_connectors_settings.FILE is not None:
         connectors_settings = {
             CONNECTION_TYPE_FILE: file_uploader_connectors_settings.FILE,

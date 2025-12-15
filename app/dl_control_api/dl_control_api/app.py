@@ -18,7 +18,7 @@ from dl_api_lib.loader import (
     load_api_lib,
     preload_api_lib,
 )
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
@@ -40,7 +40,7 @@ from dl_core.logging_config import hook_configure_logging
 
 def create_app(
     app_settings: ControlApiAppSettingsOS,
-    connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
     testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     close_loop_after_request: bool = True,
 ) -> flask.Flask:

@@ -33,7 +33,7 @@ from dl_api_lib_testing.client import (
 )
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.dataset_base import DatasetTestBase
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
 from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
@@ -119,7 +119,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     def data_api_app(
         self,
         data_api_app_factory: DataApiAppFactory,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
     ) -> web.Application:
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,

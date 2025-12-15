@@ -22,7 +22,7 @@ from dl_api_lib.i18n.registry import (
 from dl_api_lib.service_registry.sr_factory import DefaultApiSRFactory
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
 from dl_cache_engine.primitives import CacheTTLConfig
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.enums import RequiredService
 from dl_constants.enums import ConnectionType
 from dl_core.services_registry.entity_checker import EntityUsageChecker
@@ -120,7 +120,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         self,
         settings: TSettings,
         conn_opts_factory: ConnOptionsMutatorsFactory,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
         ca_data: bytes,
     ) -> DefaultApiSRFactory:
         supported_functions_manager = SupportedFunctionsManager(supported_tags=settings.FORMULA_SUPPORTED_FUNC_TAGS)

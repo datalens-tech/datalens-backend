@@ -7,7 +7,7 @@ from typing import (  # noqa: F401
 import attr
 
 from dl_configs.connectors_settings import (
-    ConnectorSettingsBase,
+    DeprecatedConnectorSettingsBase,
     SettingsFallbackType,
 )
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
@@ -30,5 +30,5 @@ def get_connectors_settings_config(
 
 @attr.s(frozen=True)
 class ConnectorSettingsDefinition:
-    settings_class: type[ConnectorSettingsBase] = attr.ib()
+    settings_class: type[DeprecatedConnectorSettingsBase] = attr.ib()
     fallback: SettingsFallbackType = attr.ib()

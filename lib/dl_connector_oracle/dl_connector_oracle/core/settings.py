@@ -1,9 +1,12 @@
 import attr
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
+    DeprecatedDatasourceTemplateSettingsMixin,
+    DeprecatedTableDatasourceSettingsMixin,
     TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import (
@@ -11,22 +14,24 @@ from dl_core.connectors.settings.primitives import (
     get_connectors_settings_config,
 )
 
+from dl_connector_oracle.core.constants import CONNECTION_TYPE_ORACLE
+
 
 @attr.s(frozen=True)
-class OracleConnectorSettings(
-    ConnectorSettingsBase,
-    DatasourceTemplateSettingsMixin,
-    TableDatasourceSettingsMixin,
+class DeprecatedOracleConnectorSettings(
+    DeprecatedConnectorSettingsBase,
+    DeprecatedDatasourceTemplateSettingsMixin,
+    DeprecatedTableDatasourceSettingsMixin,
 ):
     pass
 
 
-def oracle_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
+def oracle_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedConnectorSettingsBase]:
     cfg = get_connectors_settings_config(full_cfg, object_like_config_key="ORACLE")
     if cfg is None:
-        settings = OracleConnectorSettings()
+        settings = DeprecatedOracleConnectorSettings()
     else:
-        settings = OracleConnectorSettings(  # type: ignore
+        settings = DeprecatedOracleConnectorSettings(  # type: ignore
             ENABLE_DATASOURCE_TEMPLATE=cfg.get("ENABLE_DATASOURCE_TEMPLATE", True),
             ENABLE_TABLE_DATASOURCE_FORM=cfg.get("ENABLE_TABLE_DATASOURCE_FORM", True),
         )
@@ -34,5 +39,9 @@ def oracle_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorS
 
 
 class OracleSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = OracleConnectorSettings
+    settings_class = DeprecatedOracleConnectorSettings
     fallback = oracle_settings_fallback
+
+
+class OracleConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_ORACLE.value
