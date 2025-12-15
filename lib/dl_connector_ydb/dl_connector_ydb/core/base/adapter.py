@@ -40,7 +40,7 @@ _DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetD
 @attr.s
 class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     execution_options = {
-        "ydb_retry_settigns": ydb.RetrySettings(retry_cancelled=True),
+        "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
     }
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
