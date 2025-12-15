@@ -12,6 +12,7 @@ packaging = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 ydb = "*"
+ydb-dbapi = "*"
 ydb-sqlalchemy = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
