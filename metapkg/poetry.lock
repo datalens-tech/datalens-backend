@@ -3140,7 +3140,6 @@ develop = true
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-lib = {path = "../dl_api_lib"}
-dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
@@ -9284,13 +9283,13 @@ propcache = ">=0.2.0"
 
 [[package]]
 name = "ydb"
-version = "3.21.12"
+version = "3.22.3"
 description = "YDB Python SDK"
 optional = false
 python-versions = "*"
 files = [
-    {file = "ydb-3.21.12-py2.py3-none-any.whl", hash = "sha256:a1c685a9f88b0b6407c4c0a4803ee07f527cb7c17c346de9935dee920ab40122"},
-    {file = "ydb-3.21.12.tar.gz", hash = "sha256:612b1a81ab011b40120f187a249b919e85cfbea07de0db7b7664fbd566b83bab"},
+    {file = "ydb-3.22.3-py2.py3-none-any.whl", hash = "sha256:bb0eddd9eeb91d74916d2ccd2cded9d1610ada2c0d1b7cfd5d0a82892c9495a0"},
+    {file = "ydb-3.22.3.tar.gz", hash = "sha256:99e93051a4af34c4d18734600baa4e20c5d5c77d81ba00a5afe4d528780973f5"},
 ]
 
 [package.dependencies]
@@ -9304,13 +9303,13 @@ yc = ["yandexcloud"]
 
 [[package]]
 name = "ydb-dbapi"
-version = "0.1.14"
+version = "0.1.16"
 description = "YDB Python DBAPI which complies with PEP 249"
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "ydb_dbapi-0.1.14-py3-none-any.whl", hash = "sha256:f8f144ce98e2f2c0378ea389656a3faafb73cea93840da7e6f8a81ccb0b1f775"},
-    {file = "ydb_dbapi-0.1.14.tar.gz", hash = "sha256:17b17ad7d4c9fecfd8018fc43c7b4b143e7bba02d98d36dd53640087149e299b"},
+    {file = "ydb_dbapi-0.1.16-py3-none-any.whl", hash = "sha256:89174fb02b0a84b4c26b3c16e13f7a921294da478319c9c17c124f9403f35a27"},
+    {file = "ydb_dbapi-0.1.16.tar.gz", hash = "sha256:8fc5188d8b2b6a9afc02671705e303becaefa0ebfb27ba483b985a90b62d736e"},
 ]
 
 [package.dependencies]
@@ -9318,19 +9317,19 @@ ydb = ">=3.21.6,<4.0.0"
 
 [[package]]
 name = "ydb-sqlalchemy"
-version = "0.1.12"
+version = "0.1.14"
 description = "YDB Dialect for SQLAlchemy"
 optional = false
 python-versions = "*"
 files = [
-    {file = "ydb_sqlalchemy-0.1.12-py2.py3-none-any.whl", hash = "sha256:bf988e32fb6f86cbb09db395bb51067c125a88fc804e81cb754b6212aaeec7c7"},
-    {file = "ydb_sqlalchemy-0.1.12.tar.gz", hash = "sha256:8d990a9652e62642c9034d19a1ef8e0de46e080c8cb605e72158b2b7e4568dda"},
+    {file = "ydb_sqlalchemy-0.1.14-py2.py3-none-any.whl", hash = "sha256:3ed42f7812246ca88d682c12f514af98d2547966e06afa250a1dbe33efd58af9"},
+    {file = "ydb_sqlalchemy-0.1.14.tar.gz", hash = "sha256:363e76bb5eb8f3438efd697bc714ddb8fd2d807126562a41a71d82c80da69f30"},
 ]
 
 [package.dependencies]
 sqlalchemy = ">=1.4.0,<3.0.0"
 ydb = ">=3.21.6"
-ydb-dbapi = ">=0.1.10"
+ydb-dbapi = ">=0.1.16"
 
 [package.extras]
 yc = ["yandexcloud"]
@@ -9357,4 +9356,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "dfd01b7af2348932cc39b88546a3fc7c56a2aca2aed8a7f96c9e0cf740d80e2d"
+content-hash = "e6b94c9d12ca59b043cb4fce3b3d75bdc009116b870b6b0dfc5462209c5e3ad1"
