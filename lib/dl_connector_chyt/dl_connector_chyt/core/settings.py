@@ -4,6 +4,7 @@ from typing import (
 )
 
 import attr
+import pydantic_settings
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
@@ -67,9 +68,11 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     PUBLIC_CLIQUES: Annotated[
         tuple[str, ...],
         dl_settings.split_validator(","),
+        pydantic_settings.NoDecode,
     ]
     FORBIDDEN_CLIQUES: Annotated[
         tuple[str, ...],
         dl_settings.split_validator(","),
+        pydantic_settings.NoDecode,
     ]
     DEFAULT_CLIQUE: str | None = None
