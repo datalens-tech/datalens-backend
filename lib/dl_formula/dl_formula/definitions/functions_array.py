@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 import dl_formula.core.nodes as nodes
@@ -20,7 +18,6 @@ from dl_formula.definitions.functions_string import (
     FuncStartswith,
 )
 from dl_formula.definitions.literals import un_literal
-from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import (
     Fixed,
     FromArgs,
@@ -574,7 +571,6 @@ class FuncArrayDistinct(ArrayFunction):
         ArgTypeSequence([DataType.ARRAY_FLOAT]),
     ]
     return_type = FromArgs(0)
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class FuncArrayIndexOf(ArrayFunction):
@@ -587,7 +583,6 @@ class FuncArrayIndexOf(ArrayFunction):
         ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.FLOAT]),
     ]
     return_type = Fixed(DataType.INTEGER)
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 DEFINITIONS_ARRAY = [

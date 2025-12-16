@@ -24,7 +24,7 @@ ANY_TYPE = _("Any")
 HUMAN_CATEGORIES = {
     "aggregation": _("Aggregate functions"),
     "string": _("String functions"),
-    "numeric": _("Mathematical functions"),
+    "mathematical": _("Mathematical functions"),
     "logical": _("Logical functions"),
     "date": _("Date/Time functions"),
     "type-conversion": _("Type conversion functions"),
@@ -34,11 +34,13 @@ HUMAN_CATEGORIES = {
     "window": _("Window functions"),
     "time-series": _("Time series functions"),
     "array": _("Array functions"),
+    "native": _("Native functions"),
+    "hash": _("Hash functions"),
 }
 FUNCTION_CATEGORY_TAG = {
     "aggregation": _("aggregation"),
     "string": _("string"),
-    "numeric": _("mathematical"),
+    "mathematical": _("mathematical"),
     "logical": _("logical"),
     "date": _("date/time"),
     "type-conversion": _("type conversion"),
@@ -48,6 +50,8 @@ FUNCTION_CATEGORY_TAG = {
     "window": _("window"),
     "time-series": _("time series"),
     "array": _("array"),
+    "native": _("native"),
+    "hash": _("hash"),
 }
 HUMAN_DATA_TYPES = {
     DataType.INTEGER: _("Integer"),
