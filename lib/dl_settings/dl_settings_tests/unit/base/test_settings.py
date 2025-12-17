@@ -1,3 +1,5 @@
+import typing
+
 import pydantic
 import pytest
 
@@ -152,3 +154,63 @@ def test_nested_multiple_sources(
 
     assert settings.nested.field1 == "env_value"
     assert settings.nested.field2 == "config_value"
+
+
+def test_partial_field_aliases_in_child_classes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_configs: test_utils.TmpConfigs,
+) -> None:
+    def create_prefix_function(prefix: str) -> typing.Callable[[str], str]:
+        def with_deprecated_prefix(string: str) -> str:
+            string = prefix + string
+            return string
+
+        return with_deprecated_prefix
+
+    class ChildSettingsBase(pydantic.BaseModel):
+        field1: str = pydantic.Field(default="default_value", alias="field1", alias_priority=2)
+        field2: str = pydantic.Field(default="default_value", alias="field2", alias_priority=2)
+        common: str = "default"
+
+    class Child1SettingsBase(ChildSettingsBase):
+        DEPRECATED_PREFIX: typing.ClassVar[str] = "someprefix_"
+
+        model_config = pydantic.ConfigDict(
+            alias_generator=pydantic.AliasGenerator(
+                validation_alias=create_prefix_function(DEPRECATED_PREFIX),
+            ),
+            populate_by_name=True,
+        )
+
+    class Child2SettingsBase(ChildSettingsBase):
+        DEPRECATED_PREFIX: typing.ClassVar[str] = "otherprefix_"
+
+        model_config = pydantic.ConfigDict(
+            alias_generator=pydantic.AliasGenerator(
+                validation_alias=create_prefix_function(DEPRECATED_PREFIX),
+            ),
+            validate_by_name=True,
+            validate_by_alias=True,
+        )
+
+    class SettingsBase(dl_settings.BaseRootSettings):
+        child_1: Child1SettingsBase = pydantic.Field(default_factory=Child1SettingsBase)
+        child_2: Child2SettingsBase = pydantic.Field(default_factory=Child2SettingsBase)
+
+    config1 = {
+        "child_1": {"someprefix_field1": "value1_1", "field2": "value1_2"},
+        "child_2": {"field1": "value2_1", "otherprefix_field2": "value2_2"},
+    }
+
+    config_path = tmp_configs.add(config1)
+
+    monkeypatch.setenv("CONFIG_PATH", str(config_path))
+    monkeypatch.setenv("child_1__FIELD1", "env_value_1_1")
+    monkeypatch.setenv("child_2__FIELD1", "env_value_2_2")
+    settings = SettingsBase()
+
+    assert settings.child_1.field1 == "env_value_1_1"
+    assert settings.child_2.field1 == "env_value_2_1"
+    assert settings.child_1.field2 == "value1_2"
+    assert settings.child_2.field2 == "value_2_2"
+    assert settings.child_1.common == "default"
