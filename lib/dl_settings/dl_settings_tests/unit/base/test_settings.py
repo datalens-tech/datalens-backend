@@ -161,16 +161,15 @@ def test_partial_field_aliases_in_child_classes(
     tmp_configs: test_utils.TmpConfigs,
 ) -> None:
     def create_prefix_function(prefix: str) -> typing.Callable[[str], str]:
-        def with_deprecated_prefix(string: str) -> str:
-            string = prefix + string
-            return string
+        def with_deprecated_prefix_and_fieldname(string: str) -> typing.Any:
+            return pydantic.AliasChoices(string, prefix + string)
 
-        return with_deprecated_prefix
+        return with_deprecated_prefix_and_fieldname
 
     class ChildSettingsBase(pydantic.BaseModel):
-        field1: str = pydantic.Field(default="default_value", alias="field1", alias_priority=2)
-        field2: str = pydantic.Field(default="default_value", alias="field2", alias_priority=2)
-        common: str = "default"
+        field1: str = "default_value"
+        field2: str = "default_value"
+        field3: str = "default_value"
 
     class Child1SettingsBase(ChildSettingsBase):
         DEPRECATED_PREFIX: typing.ClassVar[str] = "someprefix_"
@@ -179,7 +178,8 @@ def test_partial_field_aliases_in_child_classes(
             alias_generator=pydantic.AliasGenerator(
                 validation_alias=create_prefix_function(DEPRECATED_PREFIX),
             ),
-            populate_by_name=True,
+            validate_by_name=True,
+            validate_by_alias=True,
         )
 
     class Child2SettingsBase(ChildSettingsBase):
@@ -206,11 +206,14 @@ def test_partial_field_aliases_in_child_classes(
 
     monkeypatch.setenv("CONFIG_PATH", str(config_path))
     monkeypatch.setenv("child_1__FIELD1", "env_value_1_1")
-    monkeypatch.setenv("child_2__FIELD1", "env_value_2_2")
+    monkeypatch.setenv("child_2__FIELD1", "env_value_2_1")
+    monkeypatch.setenv("child_2__FIELD3", "env_value_2_3")
+
     settings = SettingsBase()
 
     assert settings.child_1.field1 == "env_value_1_1"
     assert settings.child_2.field1 == "env_value_2_1"
     assert settings.child_1.field2 == "value1_2"
-    assert settings.child_2.field2 == "value_2_2"
-    assert settings.child_1.common == "default"
+    assert settings.child_2.field2 == "value2_2"
+    assert settings.child_1.field3 == "default_value"
+    assert settings.child_2.field3 == "env_value_2_3"
