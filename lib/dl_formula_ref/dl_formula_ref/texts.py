@@ -24,7 +24,7 @@ ANY_TYPE = _("Any")
 HUMAN_CATEGORIES = {
     "aggregation": _("Aggregate functions"),
     "string": _("String functions"),
-    "mathematical": _("Mathematical functions"),
+    "numeric": _("Mathematical functions"),
     "logical": _("Logical functions"),
     "date": _("Date/Time functions"),
     "type-conversion": _("Type conversion functions"),
@@ -40,7 +40,7 @@ HUMAN_CATEGORIES = {
 FUNCTION_CATEGORY_TAG = {
     "aggregation": _("aggregation"),
     "string": _("string"),
-    "mathematical": _("mathematical"),
+    "numeric": _("mathematical"),
     "logical": _("logical"),
     "date": _("date/time"),
     "type-conversion": _("type conversion"),
