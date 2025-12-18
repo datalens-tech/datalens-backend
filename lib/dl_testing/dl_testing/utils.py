@@ -180,6 +180,6 @@ def get_root_certificates() -> bytes:
 def get_default_aiohttp_session() -> aiohttp.ClientSession:
     return aiohttp.ClientSession(
         connector=aiohttp.TCPConnector(
-            ssl_context=get_default_ssl_context(),
+            ssl=get_default_ssl_context(),
         ),
     )
