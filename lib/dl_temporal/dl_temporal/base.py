@@ -92,6 +92,10 @@ class BaseActivityResult(BaseModel):
     ...
 
 
+class BaseActivityError(BaseActivityResult):
+    ...
+
+
 ActivityParamsT = TypeVar("ActivityParamsT", bound=BaseActivityParams)
 ActivityResultT = TypeVar("ActivityResultT", bound=BaseActivityResult)
 
@@ -155,11 +159,25 @@ def _activity_logging_middleware(
                 self.logger.exception("TemporalActivity(name=%s).run: failed", self.name)
                 raise
 
-            self.logger.info(
-                "TemporalActivity(name=%s).run: completed with result: %s",
-                self.name,
-                result.model_dump_for_logging(),
-            )
+            if isinstance(result, BaseActivityError):
+                self.logger.error(
+                    "TemporalActivity(name=%s).run: finished with error: %s",
+                    self.name,
+                    result.model_dump_for_logging(),
+                )
+            elif isinstance(result, BaseActivityResult):
+                self.logger.info(
+                    "TemporalActivity(name=%s).run: completed with result: %s",
+                    self.name,
+                    result.model_dump_for_logging(),
+                )
+            else:
+                self.logger.error(
+                    "TemporalActivity(name=%s).run: finished with result of unexpected type: %s",
+                    self.name,
+                    type(result),
+                )
+
             return result
 
     return inner
@@ -180,6 +198,10 @@ class BaseWorkflowParams(BaseModel):
 
 
 class BaseWorkflowResult(BaseModel):
+    ...
+
+
+class BaseWorkflowError(BaseWorkflowResult):
     ...
 
 
@@ -247,11 +269,25 @@ def _workflow_logging_middleware(
                 )
                 raise
 
-            self.logger.info(
-                "TemporalWorkflow(name=%s).run: completed with result: %s",
-                self.name,
-                result.model_dump_for_logging(),
-            )
+            if isinstance(result, BaseWorkflowError):
+                self.logger.error(
+                    "TemporalWorkflow(name=%s).run: finished with error: %s",
+                    self.name,
+                    result.model_dump_for_logging(),
+                )
+            elif isinstance(result, BaseWorkflowResult):
+                self.logger.info(
+                    "TemporalWorkflow(name=%s).run: completed with result: %s",
+                    self.name,
+                    result.model_dump_for_logging(),
+                )
+            else:
+                self.logger.error(
+                    "TemporalWorkflow(name=%s).run: finished with result of unexpected type: %s",
+                    self.name,
+                    type(result),
+                )
+
             return result
 
     return inner
