@@ -2,14 +2,13 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
+from dl_constants.enums import UserDataType
 from dl_core_testing.database import DbTable
 
 from dl_connector_ydb_tests.db.api.base import YDBDashSQLConnectionTest
-from dl_constants.enums import UserDataType
 
 
 class TestYDBParametrizedQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
-
     @pytest.mark.asyncio
     async def test_parametrized_ql_chart_select_as_is(
         self,
