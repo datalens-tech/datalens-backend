@@ -167,9 +167,8 @@ def test_read_top_level_setting_fields_from_nested(
             class Settings(dl_settings.BaseRootSettings):
                 field3: str = NotImplemented
 
-            top_level_settings =  Settings()
+            top_level_settings = Settings()
             return top_level_settings.field3
-
 
     class Settings(dl_settings.BaseRootSettings):
         nested: NestedSettings = pydantic.Field(default_factory=NestedSettings)
@@ -180,7 +179,7 @@ def test_read_top_level_setting_fields_from_nested(
             "field1": "config_value",
             "field2": "config_value",
         },
-        "field3": "top_level_setting_value"
+        "field3": "top_level_setting_value",
     }
     config_path = tmp_configs.add(config)
 
