@@ -152,3 +152,43 @@ def test_nested_multiple_sources(
 
     assert settings.nested.field1 == "env_value"
     assert settings.nested.field2 == "config_value"
+
+
+def test_read_top_level_setting_fields_from_nested(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_configs: test_utils.TmpConfigs,
+) -> None:
+    class NestedSettings(dl_settings.BaseSettings):
+        field1: str = NotImplemented
+        field2: str = NotImplemented
+
+        @property
+        def field3(self) -> str:
+            class Settings(dl_settings.BaseRootSettings):
+                field3: str = NotImplemented
+
+            top_level_settings =  Settings()
+            return top_level_settings.field3
+
+
+    class Settings(dl_settings.BaseRootSettings):
+        nested: NestedSettings = pydantic.Field(default_factory=NestedSettings)
+        field3: str = "default"
+
+    config = {
+        "nested": {
+            "field1": "config_value",
+            "field2": "config_value",
+        },
+        "field3": "top_level_setting_value"
+    }
+    config_path = tmp_configs.add(config)
+
+    monkeypatch.setenv("NESTED__FIELD1", "env_value")
+    monkeypatch.setenv("CONFIG_PATH", str(config_path))
+
+    settings = Settings()
+
+    assert settings.nested.field1 == "env_value"
+    assert settings.nested.field2 == "config_value"
+    assert settings.nested.field3 == "top_level_setting_value"
