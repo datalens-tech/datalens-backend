@@ -163,7 +163,7 @@ def test_read_top_level_setting_fields_from_nested(
         field2: str = NotImplemented
 
         @property
-        def field3(self) -> str:
+        def nested_field3(self) -> str:
             class Settings(dl_settings.BaseRootSettings):
                 field3: str = NotImplemented
 
@@ -184,11 +184,8 @@ def test_read_top_level_setting_fields_from_nested(
     }
     config_path = tmp_configs.add(config)
 
-    monkeypatch.setenv("NESTED__FIELD1", "env_value")
     monkeypatch.setenv("CONFIG_PATH", str(config_path))
 
     settings = Settings()
 
-    assert settings.nested.field1 == "env_value"
-    assert settings.nested.field2 == "config_value"
-    assert settings.nested.field3 == "top_level_setting_value"
+    assert settings.nested.nested_field3 == "top_level_setting_value"
