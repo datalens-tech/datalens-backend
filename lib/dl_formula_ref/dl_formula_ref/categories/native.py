@@ -6,6 +6,6 @@ _ = get_gettext()
 
 CATEGORY_NATIVE = FunctionDocCategory(
     name="native",
-    description=_("Functions for calling native database functions by name."),
+    description=_("Functions for calling native database functions by its name."),
     keywords=_("native, database, function, call"),
 )
