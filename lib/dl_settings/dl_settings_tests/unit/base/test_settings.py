@@ -4,6 +4,7 @@ import pydantic
 import pytest
 
 import dl_settings
+from dl_settings.generators.alias_with_prefix_and_fieldname import prefix_and_fieldname_alias_generator
 import dl_settings_tests.utils as test_utils
 
 
@@ -160,12 +161,6 @@ def test_partial_field_aliases_in_child_classes(
     monkeypatch: pytest.MonkeyPatch,
     tmp_configs: test_utils.TmpConfigs,
 ) -> None:
-    def create_prefix_function(prefix: str) -> typing.Callable[[str], str]:
-        def with_deprecated_prefix_and_fieldname(string: str) -> typing.Any:
-            return pydantic.AliasChoices(string, prefix + string)
-
-        return with_deprecated_prefix_and_fieldname
-
     class ChildSettingsBase(pydantic.BaseModel):
         field1: str = "default_value"
         field2: str = "default_value"
@@ -175,23 +170,13 @@ def test_partial_field_aliases_in_child_classes(
         DEPRECATED_PREFIX: typing.ClassVar[str] = "someprefix_"
 
         model_config = pydantic.ConfigDict(
-            alias_generator=pydantic.AliasGenerator(
-                validation_alias=create_prefix_function(DEPRECATED_PREFIX),
-            ),
-            validate_by_name=True,
-            validate_by_alias=True,
+            alias_generator=prefix_and_fieldname_alias_generator(DEPRECATED_PREFIX),
         )
 
     class Child2SettingsBase(ChildSettingsBase):
         DEPRECATED_PREFIX: typing.ClassVar[str] = "otherprefix_"
 
-        model_config = pydantic.ConfigDict(
-            alias_generator=pydantic.AliasGenerator(
-                validation_alias=create_prefix_function(DEPRECATED_PREFIX),
-            ),
-            validate_by_name=True,
-            validate_by_alias=True,
-        )
+        model_config = pydantic.ConfigDict(alias_generator=prefix_and_fieldname_alias_generator(DEPRECATED_PREFIX))
 
     class SettingsBase(dl_settings.BaseRootSettings):
         child_1: Child1SettingsBase = pydantic.Field(default_factory=Child1SettingsBase)
