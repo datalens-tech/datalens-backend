@@ -158,22 +158,6 @@ def test_read_top_level_setting_fields_from_nested(
     monkeypatch: pytest.MonkeyPatch,
     tmp_configs: test_utils.TmpConfigs,
 ) -> None:
-    # class NestedSettings(dl_settings.BaseSettings):
-    #     field1: str = NotImplemented
-    #     field2: str = NotImplemented
-
-    #     @property
-    #     def nested_field3(self) -> str:
-    #         class Settings(dl_settings.BaseRootSettings):
-    #             field3: str = NotImplemented
-
-    #         top_level_settings = Settings()
-    #         return top_level_settings.field3
-
-    # class Settings(dl_settings.BaseRootSettings):
-    #     nested: NestedSettings = pydantic.Field(default_factory=NestedSettings)
-    #     field3: str = "default"
-
     class _RootSettings(dl_settings.BaseRootSettings):
         field3: str = NotImplemented
 
