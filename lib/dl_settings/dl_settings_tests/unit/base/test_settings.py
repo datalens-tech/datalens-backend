@@ -191,6 +191,7 @@ def test_read_top_level_setting_fields_from_nested(
 
     assert settings.nested.nested_field3 == "top_level_setting_value"
 
+
 def test_partial_field_aliases_in_child_classes(
     monkeypatch: pytest.MonkeyPatch,
     tmp_configs: test_utils.TmpConfigs,
