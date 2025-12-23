@@ -4,7 +4,6 @@ import pydantic
 import pytest
 
 import dl_settings
-from dl_settings.generators.alias_with_prefix_and_fieldname import prefix_and_fieldname_alias_generator
 import dl_settings_tests.utils as test_utils
 
 
@@ -169,14 +168,12 @@ def test_partial_field_aliases_in_child_classes(
     class Child1SettingsBase(ChildSettingsBase):
         DEPRECATED_PREFIX: typing.ClassVar[str] = "someprefix_"
 
-        model_config = pydantic.ConfigDict(
-            alias_generator=prefix_and_fieldname_alias_generator(DEPRECATED_PREFIX),
-        )
+        model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator([DEPRECATED_PREFIX]))
 
     class Child2SettingsBase(ChildSettingsBase):
         DEPRECATED_PREFIX: typing.ClassVar[str] = "otherprefix_"
 
-        model_config = pydantic.ConfigDict(alias_generator=prefix_and_fieldname_alias_generator(DEPRECATED_PREFIX))
+        model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator([DEPRECATED_PREFIX]))
 
     class SettingsBase(dl_settings.BaseRootSettings):
         child_1: Child1SettingsBase = pydantic.Field(default_factory=Child1SettingsBase)
