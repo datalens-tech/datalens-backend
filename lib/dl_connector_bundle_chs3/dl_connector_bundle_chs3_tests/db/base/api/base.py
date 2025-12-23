@@ -107,7 +107,11 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
             enriched_connection_params=enriched_connection_params,
             bi_headers=bi_headers,
         ) as conn_id:
-            conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)
+            conn = sync_us_manager.get_by_id(
+                conn_id,
+                BaseFileS3Connection,
+                context_name="connection",
+            )
             for src in conn.data.sources:
                 src.status = sample_file_data_source.status
                 src.raw_schema = sample_file_data_source.raw_schema

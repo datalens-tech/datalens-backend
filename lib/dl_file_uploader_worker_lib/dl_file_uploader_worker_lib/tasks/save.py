@@ -173,7 +173,11 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                 async with RedisLock(redis, name=source_lock_key, timeout=120, blocking_timeout=120):
                     LOGGER.info(f"Lock {source_lock_key} acquired")
                     assert isinstance(usm, AsyncUSManager)
-                    conn = await usm.get_by_id(self.meta.connection_id, expected_type=BaseFileS3Connection)
+                    conn = await usm.get_by_id(
+                        self.meta.connection_id,
+                        expected_type=BaseFileS3Connection,
+                        context_name="connection",
+                    )
                     assert isinstance(conn, BaseFileS3Connection)
 
                     preview = await S3DataSourcePreview.get(manager=s3mm, obj_id=str(src_source.preview_id))

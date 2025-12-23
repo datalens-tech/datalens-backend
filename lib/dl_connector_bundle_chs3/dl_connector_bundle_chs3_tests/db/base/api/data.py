@@ -55,7 +55,11 @@ class CHS3DataResultTestSuite(
         data_api_test_params: DataApiTestParams,
     ) -> None:
         ds = saved_dataset
-        conn = sync_us_manager.get_by_id(saved_connection_id, BaseFileS3Connection)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
         conn.update_data_source(
             id=sample_file_data_source.id,
             role=DataSourceRole.origin,
