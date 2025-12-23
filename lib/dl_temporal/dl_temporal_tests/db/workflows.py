@@ -24,6 +24,7 @@ class WorkflowParams(dl_temporal.BaseWorkflowParams):
     workflow_date_param: dl_pydantic.JsonableDate
     workflow_datetime_param: dl_pydantic.JsonableDatetime
     workflow_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
+    return_error: bool
 
     execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=1)
 
@@ -41,14 +42,19 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
     workflow_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
+class WorkflowError(dl_temporal.BaseWorkflowResult):
+    ...
+
+
 @dl_temporal.define_workflow
 class Workflow(dl_temporal.BaseWorkflow):
     name = "test_workflow"
     logger = LOGGER
-    Params = WorkflowParams
-    Result = WorkflowResult
 
-    async def run(self, params: WorkflowParams) -> WorkflowResult:
+    Params = WorkflowParams
+    Result = WorkflowResult | WorkflowError
+
+    async def run(self, params: WorkflowParams) -> WorkflowResult | WorkflowError:
         result = await self.execute_activity(
             activities.Activity,
             activities.Activity.Params(
@@ -62,9 +68,14 @@ class Workflow(dl_temporal.BaseWorkflow):
                 activity_date_param=params.workflow_date_param,
                 activity_datetime_param=params.workflow_datetime_param,
                 activity_datetime_with_timezone_param=params.workflow_datetime_with_timezone_param,
+                return_error=params.return_error,
             ),
         )
-        return self.Result(
+
+        if isinstance(result, activities.ActivityError):
+            return WorkflowError()
+
+        return WorkflowResult(
             workflow_int_result=result.activity_int_result + 1,
             workflow_str_result=result.activity_str_result,
             workflow_bool_result=result.activity_bool_result,

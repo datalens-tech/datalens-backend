@@ -18,6 +18,7 @@ class ActivityParams(dl_temporal.BaseActivityParams):
     activity_date_param: dl_pydantic.JsonableDate
     activity_datetime_param: dl_pydantic.JsonableDatetime
     activity_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
+    return_error: bool
 
     start_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=30)
 
@@ -35,15 +36,23 @@ class ActivityResult(dl_temporal.BaseActivityResult):
     activity_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
+class ActivityError(dl_temporal.BaseActivityResult):
+    ...
+
+
 @dl_temporal.define_activity
 class Activity(dl_temporal.BaseActivity):
     name = "test_activity"
-    Params = ActivityParams
-    Result = ActivityResult
     logger = LOGGER
 
-    async def run(self, params: ActivityParams) -> ActivityResult:
-        return self.Result(
+    Params = ActivityParams
+    Result = ActivityResult | ActivityError
+
+    async def run(self, params: ActivityParams) -> ActivityResult | ActivityError:
+        if params.return_error:
+            return ActivityError()
+
+        return ActivityResult(
             activity_int_result=params.activity_int_param + 1,
             activity_str_result=params.activity_str_param,
             activity_bool_result=params.activity_bool_param,
