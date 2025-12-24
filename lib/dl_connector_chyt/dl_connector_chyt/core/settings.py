@@ -1,9 +1,11 @@
 from typing import (
     Annotated,
+    ClassVar,
     Optional,
 )
 
 import attr
+import pydantic
 import pydantic_settings
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -64,6 +66,10 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     """
 
     type: str = CONNECTION_TYPE_CHYT.value
+
+    DEPRECATED_PREFIX: ClassVar[str] = "CONN_CHYT_"
+
+    model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator(DEPRECATED_PREFIX))
 
     PUBLIC_CLIQUES: Annotated[
         tuple[str, ...],

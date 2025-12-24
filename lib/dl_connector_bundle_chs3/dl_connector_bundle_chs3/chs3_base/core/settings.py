@@ -1,3 +1,4 @@
+from typing import ClassVar
 import uuid
 
 import attr
@@ -29,7 +30,16 @@ class DeprecatedFileS3ConnectorSettings(DeprecatedConnectorSettingsBase):
     #   This means that the value must be set explicitly to preserve caches between restarts and instances
 
 
+class _RootSettings(dl_settings.BaseRootSettings):
+    S3_ENDPOINT_URL: str = NotImplemented
+    FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME: str = NotImplemented
+
+
 class FileS3ConnectorSettingsBase(dl_settings.BaseSettings):
+    DEPRECATED_PREFIX: ClassVar[str] = "CONN_FILE_"
+
+    model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator(DEPRECATED_PREFIX))
+
     SECURE: bool = True
     HOST: str
     PORT: int = 8443
@@ -38,9 +48,19 @@ class FileS3ConnectorSettingsBase(dl_settings.BaseSettings):
 
     S3_ACCESS_KEY_ID: str = pydantic.Field(repr=False)
     S3_SECRET_ACCESS_KEY: str = pydantic.Field(repr=False)
-    S3_ENDPOINT: str
-    S3_BUCKET: str
+    S3_ENDPOINT_INTERNAL: str | None = None
+    BUCKET_INTERNAL: str | None = None
 
     REPLACE_SECRET_SALT: str = pydantic.Field(repr=False, default_factory=lambda: str(uuid.uuid4()))
     # ^ Note that this is used in a query, which, in turn, is used in a cache key at the moment
     #   This means that the value must be set explicitly to preserve caches between restarts and instances
+
+    root: _RootSettings = pydantic.Field(default_factory=_RootSettings)
+
+    @property
+    def S3_ENDPOINT(self) -> str:
+        return self.root.S3_ENDPOINT_URL
+
+    @property
+    def BUCKET(self) -> str:
+        return self.root.FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME
