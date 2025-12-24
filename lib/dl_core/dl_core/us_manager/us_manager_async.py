@@ -276,6 +276,7 @@ class AsyncUSManager(USManagerBase):
         wait_timeout_sec: int = 30,
         duration_sec: int = 300,
         force: bool = False,
+        context_name: Optional[str] = None,
     ) -> AsyncGenerator[_ENTRY_TV, None]:
         entry: Optional[_ENTRY_TV] = None
         lock_token = await self._us_client.acquire_lock(
@@ -286,7 +287,11 @@ class AsyncUSManager(USManagerBase):
         )
 
         try:
-            entry = await self.get_by_id(entry_id, expected_type)
+            entry = await self.get_by_id(
+                entry_id,
+                expected_type,
+                context_name=context_name,
+            )
             entry._lock = lock_token
             assert entry is not None
             yield entry

@@ -122,10 +122,15 @@ class USEntryCrawler:
         entry_id: str,
         logging_extra: dict[str, Any],
         usm: AsyncUSManager,
+        context_name: Optional[str] = None,
     ) -> AsyncGenerator[Optional[USEntry], None]:
         if self._dry_run:
             try:
-                entry = await usm.get_by_id(entry_id, expected_type=self.ENTRY_TYPE)
+                entry = await usm.get_by_id(
+                    entry_id,
+                    expected_type=self.ENTRY_TYPE,
+                    context_name=context_name,
+                )
             except Exception:
                 logging_extra.update(us_entry_crawler_exc_stage="entry_locked_load")
                 raise
