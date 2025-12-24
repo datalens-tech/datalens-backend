@@ -124,7 +124,11 @@ class ConnectionTester(BIResource):
             usm.set_context("connection", connection_headers)
 
         service_registry = self.get_service_registry()
-        conn = usm.get_by_id(connection_id, expected_type=ConnectionBase)
+        conn = usm.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
         conn_orig = usm.clone_entry_instance(conn)
         assert isinstance(conn_orig, ConnectionBase)  # for typing
         need_permission_on_entry(conn, USPermissionKind.read)
@@ -284,10 +288,15 @@ class ConnectionItem(BIResource):
                 connection_id,
                 expected_type=ConnectionBase,
                 params={"revId": query["rev_id"]},
+                context_name="connection",
             )
             need_permission_on_entry(conn, USPermissionKind.edit)
         else:
-            conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+            conn = us_manager.get_by_id(
+                connection_id,
+                expected_type=ConnectionBase,
+                context_name="connection",
+            )
             need_permission_on_entry(conn, USPermissionKind.read)
 
         assert isinstance(conn, ConnectionBase)
@@ -301,7 +310,11 @@ class ConnectionItem(BIResource):
     def delete(self, connection_id: str) -> None:
         us_manager = self.get_us_manager()
 
-        conn = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+        conn = us_manager.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
         need_permission_on_entry(conn, USPermissionKind.admin)
 
         us_manager.delete(conn)
@@ -402,7 +415,11 @@ class ConnectionInfoMetadataSources(BIResource):
             }
             us_manager.set_context("connection", connection_headers)
 
-        connection: ConnectionBase = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+        connection: ConnectionBase = us_manager.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
 
         localizer = self.get_service_registry().get_localizer()
         source_template_templates = connection.get_data_source_template_templates(localizer=localizer)
@@ -436,7 +453,11 @@ class ConnectionDBNames(BIResource):
             }
             us_manager.set_context("connection", connection_headers)
 
-        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+        connection = us_manager.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
 
         service_registry = self.get_service_registry()
         if not connection.supports_db_name_listing:
@@ -473,7 +494,11 @@ class ConnectionInfoSourceListingOptions(BIResource):
             }
             us_manager.set_context("connection", connection_headers)
 
-        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+        connection = us_manager.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
 
         if not check_permission_on_entry(connection, USPermissionKind.read):
             # It does not matter what options we provide if the user does not have sufficient permissions,
@@ -514,7 +539,11 @@ class ConnectionInfoSources(BIResource):
             }
             us_manager.set_context("connection", connection_headers)
 
-        connection = us_manager.get_by_id(connection_id, expected_type=ConnectionBase)
+        connection = us_manager.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
 
         service_registry = self.get_service_registry()
         localizer = service_registry.get_localizer()
@@ -555,7 +584,11 @@ class ConnectionInfoSourceSchema(BIResource):
         responses={200: ("Success", ConnectionInfoSourceSchemaResponseSchema())},
     )
     def post(self, connection_id: str, body: dict) -> dict:
-        connection = self.get_us_manager().get_by_id(connection_id, expected_type=ConnectionBase)
+        connection = self.get_us_manager().get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
         sr = self.get_service_registry()
 
         def conn_executor_factory_func() -> SyncConnExecutorBase:

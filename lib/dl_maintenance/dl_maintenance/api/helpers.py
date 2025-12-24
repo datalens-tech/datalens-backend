@@ -35,7 +35,11 @@ def get_entry(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_
 
 def get_dataset(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_env: bool = True) -> Dataset:
     usm = m_manager.get_usm_from_env(is_async_env=is_async_env)
-    return usm.get_by_id(entry_id=entry_id, expected_type=Dataset)
+    return usm.get_by_id(
+        entry_id=entry_id,
+        expected_type=Dataset,
+        context_name="connection",
+    )
 
 
 def dump_entry_data(entry: USMigrationEntry) -> str:

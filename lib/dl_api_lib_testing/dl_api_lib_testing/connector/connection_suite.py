@@ -94,7 +94,11 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         sync_us_manager: SyncUSManager,
         control_api_app_settings: ControlApiAppSettings,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
         assert isinstance(conn, ConnectionBase)
 
         us_master_token = control_api_app_settings.US_MASTER_TOKEN
@@ -136,7 +140,11 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         sync_us_manager: SyncUSManager,
         control_api_app_settings: ControlApiAppSettings,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
         assert isinstance(conn, ConnectionBase)
         if not is_export_import_allowed(self.conn_type):
             return
@@ -310,7 +318,11 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         description: str,
     ) -> None:
         # test Connection object
-        conn = sync_us_manager.get_by_id(saved_connection_id, expected_type=ConnectionBase)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
         assert isinstance(conn, ConnectionBase)
         assert conn.annotation == {"description": description}
 

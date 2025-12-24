@@ -71,7 +71,11 @@ async def _get_gsheets_auth(
     if dfile_token is not None:  # if there is a token in dfile, then use it
         refresh_token = dfile_token
     elif conn_id is not None:  # otherwise, use the one from the connection
-        conn: GSheetsFileS3Connection = await usm.get_by_id(conn_id, GSheetsFileS3Connection)
+        conn: GSheetsFileS3Connection = await usm.get_by_id(
+            conn_id,
+            GSheetsFileS3Connection,
+            context_name="connection",
+        )
         if conn.data.refresh_token is None:
             raise NoToken()
         refresh_token = conn.data.refresh_token

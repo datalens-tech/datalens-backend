@@ -54,7 +54,11 @@ async def _get_yadocs_oauth_token(
     if dfile_token is not None:  # if there is a token in dfile, then use it
         oauth_token = dfile_token
     elif conn_id is not None:  # otherwise, use the one from the connection
-        conn: YaDocsFileS3Connection = await usm.get_by_id(conn_id, YaDocsFileS3Connection)
+        conn: YaDocsFileS3Connection = await usm.get_by_id(
+            conn_id,
+            YaDocsFileS3Connection,
+            context_name="connection",
+        )
         if conn.data.oauth_token is None:
             raise NoToken()
         oauth_token = conn.data.oauth_token
