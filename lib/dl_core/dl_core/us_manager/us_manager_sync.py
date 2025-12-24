@@ -382,11 +382,16 @@ class SyncUSManager(USManagerBase):
         entry_id: str,
         duration: Optional[int] = None,
         wait_timeout: Optional[int] = None,
+        context_name: Optional[str] = None,
     ) -> Generator[_ENTRY_TV, None, None]:
         lock_token = self._us_client.acquire_lock(entry_id, duration, wait_timeout)
         entry = None
         try:
-            entry = self.get_by_id(entry_id, expected_type=expected_type)
+            entry = self.get_by_id(
+                entry_id,
+                expected_type=expected_type,
+                context_name=context_name,
+            )
             entry.lock = lock_token
             yield entry
         finally:

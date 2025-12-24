@@ -95,6 +95,7 @@ def usm_tenant_resolver_middleware(
         usm = usm_factory.get_async_usm(rci=rci, services_registry=sr, us_api_type=us_api_type)
         try:
             try:
+                # TODO: context_name not passed due to target type unknown
                 entry = await usm.get_by_id(entry_id)
             except exc.USObjectNotFoundException as e:
                 raise web.HTTPNotFound() from e
