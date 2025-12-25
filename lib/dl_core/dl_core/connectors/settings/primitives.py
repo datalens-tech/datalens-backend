@@ -34,4 +34,4 @@ class ConnectorSettingsDefinition:
     settings_class: type[DeprecatedConnectorSettingsBase] = attr.ib()
     fallback: SettingsFallbackType = attr.ib()
 
-    pydantic_settings_class: type[ConnectorSettings] = attr.ib()
+    pydantic_settings_class: type[ConnectorSettings] = attr.ib(default=ConnectorSettings)
