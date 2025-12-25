@@ -71,9 +71,12 @@ def test_already_registered() -> None:
     class Child(Base):
         ...
 
+    class AnotherChild(Base):
+        ...
+
     Base.register("child", Child)
     with pytest.raises(ValueError):
-        Base.register("child", Child)
+        Base.register("child", AnotherChild)
 
 
 def test_not_subclass() -> None:
