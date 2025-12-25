@@ -1,7 +1,7 @@
 import re
 
-import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
+from sqlalchemy.sql.functions import Function as SqlFunction
 
 from dl_formula.core import exc
 from dl_formula.core.datatype import DataType
@@ -28,7 +28,7 @@ def _call_native_impl(func_name_ctx: TranslationCtx, *args: TranslationCtx) -> C
     if not re.match(r"^[a-zA-Z0-9_]+$", func_name):
         raise exc.NativeFunctionForbiddenInputError(func_name)
 
-    return getattr(sa.func, func_name)(*(arg.expression for arg in args))
+    return SqlFunction(func_name, *(arg.expression for arg in args))
 
 
 class DBCall(Function):

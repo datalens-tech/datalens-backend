@@ -22,6 +22,7 @@ class TestNativeFunctionClickHouse_21_8(
         assert dbe.eval('DB_CALL_INT("sign", -5)') == -1
         assert dbe.eval('DB_CALL_INT("sign", 5)') == 1
         assert dbe.eval('DB_CALL_INT("positionCaseInsensitive", "Hello", "l")') == 3
+        assert dbe.eval('DB_CALL_INT("CAST", "3", "UInt32")') == 3
 
         # DB_CALL_FLOAT
         assert dbe.eval('DB_CALL_FLOAT("sign", -5.0)') == -1.0
@@ -30,6 +31,7 @@ class TestNativeFunctionClickHouse_21_8(
 
         # DB_CALL_STRING
         assert dbe.eval('DB_CALL_STRING("reverse", "hello")') == "olleh"
+        assert dbe.eval('DB_CALL_STRING("CAST", 3, "String")') == "3"
 
         # DB_CALL_BOOL
         assert dbe.eval('DB_CALL_BOOL("isFinite", 5)') == True
