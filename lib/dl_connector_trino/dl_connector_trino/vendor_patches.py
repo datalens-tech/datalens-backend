@@ -5,6 +5,8 @@ from sqlalchemy.sql.compiler import SQLCompiler
 from trino.sqlalchemy.compiler import TrinoSQLCompiler
 
 
+# This is a temporary patch to fix https://github.com/trinodb/trino-python-client/pull/586
+# BI-6846
 @compiles(TrinoSQLCompiler.FirstValue)
 @compiles(TrinoSQLCompiler.LastValue)
 @compiles(TrinoSQLCompiler.NthValue)
