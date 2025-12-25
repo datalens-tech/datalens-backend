@@ -378,3 +378,39 @@ def test_dict_annotation_with_type_key() -> None:
     root = Root.model_validate({"children": {"child": {}}})
 
     assert isinstance(root.children["child"], Child)
+
+
+def test_register_unknown() -> None:
+    class Base(dl_pydantic.TypedBaseModel):
+        ...
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    with pytest.raises(ValueError):
+        Base.factory({"type": "bebebe"})
+
+    class UnknownChild(Base):
+        type: str = "unknown"
+        raw_data: typing.Any
+
+        @pydantic.model_validator(mode="before")
+        @classmethod
+        def transform_to_raw_data(cls, data: typing.Any) -> typing.Any:
+            return {"raw_data": data}
+
+    Base.register_unknown(UnknownChild)
+
+    raw_data = {"type": "bebebe"}
+    data = Base.factory(raw_data)
+
+    assert isinstance(data, UnknownChild)
+    assert data.type == "unknown"
+    assert data.raw_data == raw_data
+
+    raw_data = {"type": "child"}
+    data = Base.factory(raw_data)
+
+    assert isinstance(data, Child)

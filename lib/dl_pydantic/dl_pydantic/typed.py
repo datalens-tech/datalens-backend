@@ -25,6 +25,7 @@ TypedBaseModelT = TypeVar("TypedBaseModelT", bound="TypedBaseModel")
 class TypedMeta(pydantic_model_construction.ModelMetaclass):
     def __init__(cls, name: str, bases: tuple[type, ...], attrs: dict[str, Any]):
         cls._classes: dict[str, type["TypedBaseModel"]] = {}
+        cls._unknown_class: type["TypedBaseModel"] | None = None
 
 
 class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
@@ -37,13 +38,24 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     @classmethod
     def register(cls, name: str, class_: Type) -> None:  # noqa: UP006
         if name in cls._classes:
-            raise ValueError(f"Class with name '{name}' already registered")
+            raise ValueError(f"{cls.__name__}(type={name}) already registered")
 
         if not issubclass(class_, cls):
             raise ValueError(f"Class '{class_}' must be subclass of '{cls}'")
 
         cls._classes[name] = class_
-        LOGGER.info(f"Registered class '{name}' as '{class_}'")
+        LOGGER.debug("Registered %s(type=%s): %s", cls.__name__, name, class_)
+
+    @classmethod
+    def register_unknown(cls, class_: Type) -> None:  # noqa: UP006
+        if cls._unknown_class is not None:
+            raise ValueError("Unknown class already registered")
+
+        if not issubclass(class_, cls):
+            raise ValueError(f"Class '{class_}' must be subclass of {cls}")
+
+        cls._unknown_class = class_
+        LOGGER.debug("Registered unknown for %s: %s", cls.__name__, class_)
 
     @classmethod
     def _prepare_data(cls, data: dict[str, Any]) -> dict[str, Any]:
@@ -66,9 +78,12 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             raise ValueError("Data must be dict")
 
         class_name = cls._get_class_name(data)
-        if class_name not in cls._classes:
+        if class_name in cls._classes:
+            class_ = cls._classes[class_name]
+        elif cls._unknown_class is not None:
+            class_ = cls._unknown_class
+        else:
             raise ValueError(f"Unknown type: {class_name}")
-        class_ = cls._classes[class_name]
 
         data = class_._prepare_data(data)
 
