@@ -38,10 +38,11 @@ def postgresql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
     return dict(POSTGRES=settings)
 
 
+class PostgreSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_POSTGRES.value
+
+
 class PostgreSQLSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedPostgreSQLConnectorSettings
     fallback = postgresql_settings_fallback
-
-
-class PostgreSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = CONNECTION_TYPE_POSTGRES.value
+    pydantic_settings_class = PostgreSQLConnectorSettings

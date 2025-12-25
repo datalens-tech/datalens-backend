@@ -52,11 +52,6 @@ def chyt_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedCo
     return dict(CHYT=settings)
 
 
-class CHYTSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = DeprecatedCHYTConnectorSettings
-    fallback = chyt_settings_fallback
-
-
 class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     """
     PUBLIC_CLIQUES:     cliques which usage is discouraged due to their high load by other users
@@ -79,3 +74,9 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
         pydantic_settings.NoDecode,
     ]
     DEFAULT_CLIQUE: str | None = None
+
+
+class CHYTSettingDefinition(ConnectorSettingsDefinition):
+    settings_class = DeprecatedCHYTConnectorSettings
+    fallback = chyt_settings_fallback
+    pydantic_settings_class = CHYTConnectorSettings

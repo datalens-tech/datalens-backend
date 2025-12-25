@@ -11,6 +11,7 @@ from dl_configs.connectors_settings import (
     SettingsFallbackType,
 )
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from dl_core.connectors.settings.base import ConnectorSettings
 
 
 def get_connectors_settings_config(
@@ -32,3 +33,5 @@ def get_connectors_settings_config(
 class ConnectorSettingsDefinition:
     settings_class: type[DeprecatedConnectorSettingsBase] = attr.ib()
     fallback: SettingsFallbackType = attr.ib()
+
+    pydantic_settings_class: type[ConnectorSettings] = attr.ib()

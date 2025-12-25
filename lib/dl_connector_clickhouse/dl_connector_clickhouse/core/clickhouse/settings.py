@@ -39,10 +39,11 @@ def clickhouse_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
     return dict(CLICKHOUSE=settings)
 
 
+class ClickHouseConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_CLICKHOUSE.value
+
+
 class ClickHouseSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedClickHouseConnectorSettings
     fallback = clickhouse_settings_fallback
-
-
-class ClickHouseConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = CONNECTION_TYPE_CLICKHOUSE.value
+    pydantic_settings_class = ClickHouseConnectorSettings

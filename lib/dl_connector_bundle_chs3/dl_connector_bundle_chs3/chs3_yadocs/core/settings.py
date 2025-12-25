@@ -32,10 +32,11 @@ def yadocs_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, De
     )
 
 
+class YaDocsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
+    type: str = CONNECTION_TYPE_YADOCS.value
+
+
 class YaDocsFileS3SettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedFileS3ConnectorSettings
     fallback = yadocs_file_s3_settings_fallback
-
-
-class YaDocsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
-    type: str = CONNECTION_TYPE_YADOCS.value
+    pydantic_settings_class = YaDocsConnectorSettings

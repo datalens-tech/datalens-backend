@@ -38,10 +38,12 @@ def mssql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
     return dict(MSSQL=settings)
 
 
+class MSSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_MSSQL.value
+
+
 class MSSQLSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedMSSQLConnectorSettings
     fallback = mssql_settings_fallback
 
-
-class MSSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = CONNECTION_TYPE_MSSQL.value
+    pydantic_settings_class = MSSQLConnectorSettings

@@ -36,9 +36,19 @@ def metrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprecate
     return dict(METRIKA_API=DeprecatedMetricaConnectorSettings(BACKEND_DRIVEN_FORM=cfg.BACKEND_DRIVEN_FORM))  # type: ignore  # 2024-09-18 # TODO: Unexpected keyword argument "BACKEND_DRIVEN_FORM" for "AppmetricaConnectorSettings"  [call-arg]
 
 
+class MetricaConnectorSettings(ConnectorSettings):
+    type: str = CONNECTION_TYPE_METRICA_API.value
+
+    COUNTER_ALLOW_MANUAL_INPUT: bool = False
+    ALLOW_AUTO_DASH_CREATION: bool = False
+    BACKEND_DRIVEN_FORM: bool = False
+
+
 class MetricaSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedMetricaConnectorSettings
     fallback = metrica_settings_fallback
+
+    pydantic_settings_class = MetricaConnectorSettings
 
 
 def appmetrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedConnectorSettingsBase]:
@@ -48,22 +58,16 @@ def appmetrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
     return dict(APPMETRICA_API=DeprecatedAppmetricaConnectorSettings(BACKEND_DRIVEN_FORM=cfg.BACKEND_DRIVEN_FORM))  # type: ignore  # 2024-09-18 # TODO: Unexpected keyword argument "BACKEND_DRIVEN_FORM" for "AppmetricaConnectorSettings"  [call-arg]
 
 
-class AppMetricaSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = DeprecatedAppmetricaConnectorSettings
-    fallback = appmetrica_settings_fallback
-
-
-class MetricaConnectorSettings(ConnectorSettings):
-    type: str = CONNECTION_TYPE_METRICA_API.value
-
-    COUNTER_ALLOW_MANUAL_INPUT: bool = False
-    ALLOW_AUTO_DASH_CREATION: bool = False
-    BACKEND_DRIVEN_FORM: bool = False
-
-
 class AppmetricaConnectorSettings(ConnectorSettings):
     type: str = CONNECTION_TYPE_APPMETRICA_API.value
 
     COUNTER_ALLOW_MANUAL_INPUT: bool = False
     ALLOW_AUTO_DASH_CREATION: bool = False
     BACKEND_DRIVEN_FORM: bool = False
+
+
+class AppMetricaSettingDefinition(ConnectorSettingsDefinition):
+    settings_class = DeprecatedAppmetricaConnectorSettings
+    fallback = appmetrica_settings_fallback
+
+    pydantic_settings_class = AppmetricaConnectorSettings

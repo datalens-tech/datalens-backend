@@ -35,10 +35,11 @@ def trino_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
     return dict(TRINO=settings)
 
 
+class TrinoConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin):
+    type: str = CONNECTION_TYPE_TRINO.value
+
+
 class TrinoSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedTrinoConnectorSettings
     fallback = trino_settings_fallback
-
-
-class TrinoConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin):
-    type: str = CONNECTION_TYPE_TRINO.value
+    pydantic_settings_class = TrinoConnectorSettings
