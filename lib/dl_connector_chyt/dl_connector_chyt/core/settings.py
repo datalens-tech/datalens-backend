@@ -4,6 +4,7 @@ from typing import (
 )
 
 import attr
+import pydantic
 import pydantic_settings
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -64,6 +65,8 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     """
 
     type: str = CONNECTION_TYPE_CHYT.value
+
+    model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator("CONN_CHYT_"))
 
     PUBLIC_CLIQUES: Annotated[
         tuple[str, ...],
