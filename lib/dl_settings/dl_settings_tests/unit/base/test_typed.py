@@ -76,6 +76,8 @@ def test_already_registered() -> None:
         ...
 
     Base.register("child", Child)
+    Base.register("child", Child)  # it's ok, just warning
+
     with pytest.raises(ValueError):
         Base.register("child", AnotherChild)
 
