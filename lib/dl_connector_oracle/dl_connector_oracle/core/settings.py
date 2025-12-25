@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import attr
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -41,8 +43,14 @@ def oracle_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprecated
 class OracleConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_ORACLE.value
 
+    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+        "CONNECTORS__ORACLE__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_ORACLE_ENABLE_DATASOURCE_TEMPLATE",
+        "CONNECTORS__ORACLE__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_ORACLE_ENABLE_TABLE_DATASOURCE_FORM",
+    }
+
 
 class OracleSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedOracleConnectorSettings
     fallback = oracle_settings_fallback
+
     pydantic_settings_class = OracleConnectorSettings

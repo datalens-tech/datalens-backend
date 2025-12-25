@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import attr
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -38,8 +40,13 @@ def trino_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
 class TrinoConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin):
     type: str = CONNECTION_TYPE_TRINO.value
 
+    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+        "CONNECTORS__TRINO__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_TRINO_ENABLE_TABLE_DATASOURCE_FORM",
+    }
+
 
 class TrinoSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedTrinoConnectorSettings
     fallback = trino_settings_fallback
+
     pydantic_settings_class = TrinoConnectorSettings

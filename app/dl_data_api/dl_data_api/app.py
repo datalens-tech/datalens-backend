@@ -8,6 +8,7 @@ from aiohttp import web
 from dl_api_lib.app_settings import (
     DataApiAppSettingsOS,
     DeprecatedDataApiAppSettingsOS,
+    WhitelistsAppSettings,
 )
 from dl_api_lib.loader import (
     ApiLibraryConfig,
@@ -28,6 +29,7 @@ from dl_constants.enums import ConnectionType
 from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
+    CONNECTORS_SETTINGS_PYDANTIC_FALLBACKS,
 )
 from dl_core.loader import CoreLibraryConfig
 from dl_data_api.app_factory import StandaloneDataApiAppFactory
@@ -50,13 +52,15 @@ def create_app(
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     preload_api_lib()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedDataApiAppSettingsOS)
-    settings = DataApiAppSettingsOS(fallback=deprecated_settings)
+    whitelists = WhitelistsAppSettings()
     load_api_lib(
         ApiLibraryConfig(
-            api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
-            core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
+            api_connector_ep_names=whitelists.BI_API_CONNECTOR_WHITELIST,
+            core_lib_config=CoreLibraryConfig(core_connector_ep_names=whitelists.CORE_CONNECTOR_WHITELIST),
         )
     )
+    DataApiAppSettingsOS.fallback_env_keys.update(CONNECTORS_SETTINGS_PYDANTIC_FALLBACKS)
+    settings = DataApiAppSettingsOS(fallback=deprecated_settings)
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,

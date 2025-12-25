@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import required
@@ -35,8 +37,20 @@ def gsheets_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, D
 class GSheetsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
     type: str = CONNECTION_TYPE_GSHEETS_V2.value
 
+    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+        "CONNECTORS__GSHEETS_V2__SECURE": "CONNECTORS_GSHEETS_V2_SECURE",
+        "CONNECTORS__GSHEETS_V2__HOST": "CONNECTORS_GSHEETS_V2_HOST",
+        "CONNECTORS__GSHEETS_V2__PORT": "CONNECTORS_GSHEETS_V2_PORT",
+        "CONNECTORS__GSHEETS_V2__USERNAME": "CONNECTORS_GSHEETS_V2_USERNAME",
+        "CONNECTORS__GSHEETS_V2__PASSWORD": "CONNECTORS_GSHEETS_V2_PASSWORD",
+        "CONNECTORS__GSHEETS_V2__ACCESS_KEY_ID": "CONNECTORS_GSHEETS_V2_ACCESS_KEY_ID",
+        "CONNECTORS__GSHEETS_V2__SECRET_ACCESS_KEY": "CONNECTORS_GSHEETS_V2_SECRET_ACCESS_KEY",
+        "CONNECTORS__GSHEETS_V2__REPLACE_SECRET_SALT": "CONNECTORS_GSHEETS_V2_REPLACE_SECRET_SALT",
+    }
+
 
 class GSheetsFileS3SettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedFileS3ConnectorSettings
     fallback = gsheets_file_s3_settings_fallback
+
     pydantic_settings_class = GSheetsConnectorSettings
