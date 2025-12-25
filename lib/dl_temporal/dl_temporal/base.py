@@ -117,14 +117,14 @@ _ActivityType = ActivityProtocol[ActivityParamsT, ActivityResultT]
 
 
 def _activity_info_to_logging_context(
-    activity_name: str,
     activity_info: temporalio.activity.Info,
 ) -> dict[str, Any]:
     return {
-        "temporal.activity_name": activity_name,
+        "temporal.activity_type": activity_info.activity_type,
         "temporal.activity_id": activity_info.activity_id,
         "temporal.activity_attempt": activity_info.attempt,
         "temporal.activity_full_id": f"{activity_info.workflow_id}.{activity_info.workflow_run_id}.{activity_info.activity_id}.{activity_info.attempt}",
+        "temporal.workflow_type": activity_info.workflow_type,
         "temporal.workflow_id": activity_info.workflow_id,
         "temporal.workflow_run_id": activity_info.workflow_run_id,
         "temporal.workflow_full_id": f"{activity_info.workflow_id}.{activity_info.workflow_run_id}",
@@ -142,7 +142,6 @@ def _activity_logging_middleware(
         params: ActivityParamsT,
     ) -> ActivityResultT:
         logging_context = _activity_info_to_logging_context(
-            activity_name=self.name,
             activity_info=temporalio.activity.info(),
         )
 
@@ -227,11 +226,10 @@ _WorkflowType = WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]
 
 
 def _workflow_info_to_logging_context(
-    workflow_name: str,
     workflow_info: temporalio.workflow.Info,
 ) -> dict[str, Any]:
     return {
-        "temporal.workflow_name": workflow_name,
+        "temporal.workflow_type": workflow_info.workflow_type,
         "temporal.workflow_id": workflow_info.workflow_id,
         "temporal.workflow_run_id": workflow_info.run_id,
         "temporal.workflow_full_id": f"{workflow_info.workflow_id}.{workflow_info.run_id}",
@@ -249,7 +247,6 @@ def _workflow_logging_middleware(
         params: WorkflowParamsT,
     ) -> WorkflowResultT:
         logging_context = _workflow_info_to_logging_context(
-            workflow_name=self.name,
             workflow_info=temporalio.workflow.info(),
         )
 
