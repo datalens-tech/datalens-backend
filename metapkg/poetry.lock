@@ -2219,6 +2219,7 @@ dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
+pydantic = "*"
 pydantic-settings = "*"
 sqlalchemy = "*"
 
