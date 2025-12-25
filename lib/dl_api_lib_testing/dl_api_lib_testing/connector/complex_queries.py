@@ -603,6 +603,30 @@ class DefaultBasicWindowFunctionTestSuite(
             # RSUM = previous RSUM value + value of current arg
             assert pytest.approx(float(data_rows[i][9])) == float(data_rows[i - 1][9]) + float(data_rows[i][2])
 
+    @for_features(feature_window_functions)
+    def test_correct_window_function_handler_registration(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ) -> None:
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            formulas={
+                "BI-6846": "FIRST(ROUND(COUNT(1)))",
+            },
+        )
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title="BI-6846")],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        data_rows = get_data_rows(result_resp)
+        assert len(data_rows) == 1
+        assert float(data_rows[0][0]) == 1
+
 
 class DefaultBasicNativeFunctionTestSuite(
     RegulatedTestCase, DataApiTestBase, DatasetTestBase, DbServiceFixtureTextClass
