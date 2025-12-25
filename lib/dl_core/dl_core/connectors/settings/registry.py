@@ -24,5 +24,7 @@ def register_connector_settings_class(
         CONNECTORS_SETTINGS_CLASSES[conn_type] = settings_class
         CONNECTORS_SETTINGS_FALLBACKS[conn_type] = fallback
     # delete  above after moving to pydantic settings
-
-    ConnectorSettings.register(conn_type.value, pydantic_settings_class)
+    try:
+        ConnectorSettings.register(conn_type.value, pydantic_settings_class)
+    except ValueError:
+        assert ConnectorSettings._classes[conn_type.value] == pydantic_settings_class
