@@ -40,7 +40,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             if cls._classes[name] is class_:
                 LOGGER.warning("Class %s(type=%s) already registered", class_.__name__, name)
                 return
-            
+
             raise ValueError(f"Class with name '{name}' already registered")
 
         if not issubclass(class_, cls):
