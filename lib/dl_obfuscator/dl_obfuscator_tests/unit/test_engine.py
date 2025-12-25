@@ -6,10 +6,7 @@ from dl_obfuscator import (
 
 
 class TestObfuscationEngine:
-    """Test cases for ObfuscationEngine"""
-
     def test_init(self, secret_keeper: SecretKeeper) -> None:
-        """Test engine initialization"""
         engine = ObfuscationEngine(secret_keeper)
         assert engine.secret_keeper == secret_keeper
         assert len(engine._obfuscators) == 0
