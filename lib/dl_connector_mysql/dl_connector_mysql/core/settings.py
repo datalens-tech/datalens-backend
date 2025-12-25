@@ -38,10 +38,11 @@ def mysql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
     return dict(MYSQL=settings)
 
 
+class MySQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_MYSQL.value
+
+
 class MySQLSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedMySQLConnectorSettings
     fallback = mysql_settings_fallback
-
-
-class MySQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = CONNECTION_TYPE_MYSQL.value
+    pydantic_settings_class = MySQLConnectorSettings

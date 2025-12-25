@@ -38,6 +38,10 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     @classmethod
     def register(cls, name: str, class_: Type) -> None:  # noqa: UP006
         if name in cls._classes:
+            if cls._classes[name] is class_:
+                LOGGER.warning("Class %s(type=%s) already registered: %s", cls.__name__, name, class_)
+                return
+
             raise ValueError(f"{cls.__name__}(type={name}) already registered")
 
         if not issubclass(class_, cls):

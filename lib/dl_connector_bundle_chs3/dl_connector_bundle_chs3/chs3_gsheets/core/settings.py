@@ -32,10 +32,11 @@ def gsheets_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, D
     )
 
 
+class GSheetsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
+    type: str = CONNECTION_TYPE_GSHEETS_V2.value
+
+
 class GSheetsFileS3SettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedFileS3ConnectorSettings
     fallback = gsheets_file_s3_settings_fallback
-
-
-class GSheetsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
-    type: str = CONNECTION_TYPE_GSHEETS_V2.value
+    pydantic_settings_class = GSheetsConnectorSettings

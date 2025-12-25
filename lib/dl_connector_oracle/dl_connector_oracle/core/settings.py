@@ -38,10 +38,11 @@ def oracle_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprecated
     return dict(ORACLE=settings)
 
 
+class OracleConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_ORACLE.value
+
+
 class OracleSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedOracleConnectorSettings
     fallback = oracle_settings_fallback
-
-
-class OracleConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = CONNECTION_TYPE_ORACLE.value
+    pydantic_settings_class = OracleConnectorSettings

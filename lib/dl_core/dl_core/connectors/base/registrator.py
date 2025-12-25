@@ -84,6 +84,7 @@ class CoreConnectorRegistrator:
                 conn_type=conn_def.conn_type,
                 settings_class=conn_def.settings_definition.settings_class,
                 fallback=conn_def.settings_definition.fallback,
+                pydantic_settings_class=conn_def.settings_definition.pydantic_settings_class,
             )
         register_data_source_migrator(conn_type=conn_def.conn_type, migrator_cls=conn_def.data_source_migrator_cls)
         register_custom_dash_sql_key_names(conn_type=conn_def.conn_type, key_names=conn_def.custom_dashsql_key_names)

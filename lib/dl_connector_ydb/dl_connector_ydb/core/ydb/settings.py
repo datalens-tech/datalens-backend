@@ -39,14 +39,16 @@ def ydb_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedCon
     return dict(YDB=settings)
 
 
-class YDBSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = DeprecatedYDBConnectorSettings
-    fallback = ydb_settings_fallback
-
-
 class YDBConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_YDB.value
 
     ENABLE_AUTH_TYPE_PICKER: bool | None = False
     DEFAULT_HOST_VALUE: str | None = None
     DEFAULT_SSL_ENABLE_VALUE: bool = True
+
+
+class YDBSettingDefinition(ConnectorSettingsDefinition):
+    settings_class = DeprecatedYDBConnectorSettings
+    fallback = ydb_settings_fallback
+
+    pydantic_settings_class = YDBConnectorSettings

@@ -38,10 +38,11 @@ def greenplum_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Depreca
     return dict(GREENPLUM=settings)
 
 
+class GreenplumConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+    type: str = CONNECTION_TYPE_GREENPLUM.value
+
+
 class GreenplumSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedGreenplumConnectorSettings
     fallback = greenplum_settings_fallback
-
-
-class GreenplumConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
-    type: str = CONNECTION_TYPE_GREENPLUM.value
+    pydantic_settings_class = GreenplumConnectorSettings

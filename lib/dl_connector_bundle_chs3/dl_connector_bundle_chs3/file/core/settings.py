@@ -33,10 +33,11 @@ def file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprecate
     )
 
 
+class FileConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
+    type: str = CONNECTION_TYPE_FILE.value
+
+
 class FileS3SettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedFileS3ConnectorSettings
     fallback = file_s3_settings_fallback
-
-
-class FileConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
-    type: str = CONNECTION_TYPE_FILE.value
+    pydantic_settings_class = FileConnectorSettings
