@@ -59,8 +59,10 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
             core_lib_config=CoreLibraryConfig(core_connector_ep_names=whitelists.CORE_CONNECTOR_WHITELIST),
         )
     )
-    DataApiAppSettingsOS.fallback_env_keys.update(CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS)
-    settings = DataApiAppSettingsOS(fallback=deprecated_settings)
+    settings = DataApiAppSettingsOS(
+        fallback=deprecated_settings,
+        extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
+    )
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
         fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
