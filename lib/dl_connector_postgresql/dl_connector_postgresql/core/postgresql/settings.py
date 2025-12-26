@@ -43,7 +43,7 @@ def postgresql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
 class PostgreSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_POSTGRES.value
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__POSTGRES__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_POSTGRES_ENABLE_DATASOURCE_TEMPLATE",
         "CONNECTORS__POSTGRES__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_POSTGRES_ENABLE_TABLE_DATASOURCE_FORM",
     }

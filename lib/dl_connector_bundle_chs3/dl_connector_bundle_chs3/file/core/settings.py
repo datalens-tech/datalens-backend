@@ -38,7 +38,7 @@ def file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprecate
 class FileConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
     type: str = CONNECTION_TYPE_FILE.value
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__FILE__SECURE": "CONNECTORS_FILE_SECURE",
         "CONNECTORS__FILE__HOST": "CONNECTORS_FILE_HOST",
         "CONNECTORS__FILE__PORT": "CONNECTORS_FILE_PORT",

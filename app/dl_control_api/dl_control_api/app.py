@@ -34,7 +34,6 @@ from dl_control_api.app_factory import StandaloneControlApiAppFactory
 from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
-    CONNECTORS_SETTINGS_PYDANTIC_FALLBACKS,
 )
 from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
@@ -64,7 +63,6 @@ def create_uwsgi_app() -> flask.Flask:
             core_lib_config=CoreLibraryConfig(core_connector_ep_names=whitelists.CORE_CONNECTOR_WHITELIST),
         )
     )
-    ControlApiAppSettingsOS.fallback_env_keys.update(CONNECTORS_SETTINGS_PYDANTIC_FALLBACKS)
     settings = ControlApiAppSettingsOS(fallback=deprecated_settings)
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,

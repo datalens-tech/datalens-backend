@@ -43,7 +43,7 @@ def greenplum_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Depreca
 class GreenplumConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_GREENPLUM.value
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__GREENPLUM__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_GREENPLUM_ENABLE_DATASOURCE_TEMPLATE",
         "CONNECTORS__GREENPLUM__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_GREENPLUM_ENABLE_TABLE_DATASOURCE_FORM",
     }

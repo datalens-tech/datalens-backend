@@ -37,7 +37,7 @@ def gsheets_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, D
 class GSheetsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
     type: str = CONNECTION_TYPE_GSHEETS_V2.value
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__GSHEETS_V2__SECURE": "CONNECTORS_GSHEETS_V2_SECURE",
         "CONNECTORS__GSHEETS_V2__HOST": "CONNECTORS_GSHEETS_V2_HOST",
         "CONNECTORS__GSHEETS_V2__PORT": "CONNECTORS_GSHEETS_V2_PORT",

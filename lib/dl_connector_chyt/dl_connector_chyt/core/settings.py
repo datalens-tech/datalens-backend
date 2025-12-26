@@ -76,7 +76,7 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
     ]
     DEFAULT_CLIQUE: str | None = None
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__CHYT__PUBLIC_CLIQUES": "CONNECTORS_CHYT_PUBLIC_CLIQUES",
         "CONNECTORS__CHYT__FORBIDDEN_CLIQUES": "CONNECTORS_CHYT_FORBIDDEN_CLIQUES",
         "CONNECTORS__CHYT__DEFAULT_CLIQUE": "CONNECTORS_CHYT_DEFAULT_CLIQUE",

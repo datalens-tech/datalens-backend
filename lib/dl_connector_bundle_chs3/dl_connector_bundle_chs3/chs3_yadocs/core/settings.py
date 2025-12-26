@@ -37,7 +37,7 @@ def yadocs_file_s3_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, De
 class YaDocsConnectorSettings(ConnectorSettings, FileS3ConnectorSettingsBase):
     type: str = CONNECTION_TYPE_YADOCS.value
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__YADOCS__SECURE": "CONNECTORS_YADOCS_SECURE",
         "CONNECTORS__YADOCS__HOST": "CONNECTORS_YADOCS_HOST",
         "CONNECTORS__YADOCS__PORT": "CONNECTORS_YADOCS_PORT",

@@ -43,7 +43,7 @@ def mssql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
 class MSSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_MSSQL.value
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__MSSQL__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_MSSQL_ENABLE_DATASOURCE_TEMPLATE",
         "CONNECTORS__MSSQL__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_MSSQL_ENABLE_TABLE_DATASOURCE_FORM",
     }

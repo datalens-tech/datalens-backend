@@ -45,7 +45,7 @@ class MetricaConnectorSettings(ConnectorSettings):
     ALLOW_AUTO_DASH_CREATION: bool = False
     BACKEND_DRIVEN_FORM: bool = False
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__METRIKA_API__COUNTER_ALLOW_MANUAL_INPUT": "CONNECTORS_METRIKA_API_COUNTER_ALLOW_MANUAL_INPUT",
         "CONNECTORS__METRIKA_API__ALLOW_AUTO_DASH_CREATION": "CONNECTORS_METRIKA_API_ALLOW_AUTO_DASH_CREATION",
         "CONNECTORS__METRIKA_API__BACKEND_DRIVEN_FORM": "CONNECTORS_METRIKA_API_BACKEND_DRIVEN_FORM",
@@ -73,7 +73,7 @@ class AppmetricaConnectorSettings(ConnectorSettings):
     ALLOW_AUTO_DASH_CREATION: bool = False
     BACKEND_DRIVEN_FORM: bool = False
 
-    pydantic_env_fallback: ClassVar[dict[str, str]] = {
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__APPMETRICA_API__COUNTER_ALLOW_MANUAL_INPUT": "CONNECTORS_APPMETRICA_API_COUNTER_ALLOW_MANUAL_INPUT",
         "CONNECTORS__APPMETRICA_API__ALLOW_AUTO_DASH_CREATION": "CONNECTORS_APPMETRICA_API_ALLOW_AUTO_DASH_CREATION",
         "CONNECTORS__APPMETRICA_API__BACKEND_DRIVEN_FORM": "CONNECTORS_APPMETRICA_API_BACKEND_DRIVEN_FORM",

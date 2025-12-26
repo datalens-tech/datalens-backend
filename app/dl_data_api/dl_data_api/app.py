@@ -29,7 +29,7 @@ from dl_constants.enums import ConnectionType
 from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
-    CONNECTORS_SETTINGS_PYDANTIC_FALLBACKS,
+    CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
 )
 from dl_core.loader import CoreLibraryConfig
 from dl_data_api.app_factory import StandaloneDataApiAppFactory
@@ -59,7 +59,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
             core_lib_config=CoreLibraryConfig(core_connector_ep_names=whitelists.CORE_CONNECTOR_WHITELIST),
         )
     )
-    DataApiAppSettingsOS.fallback_env_keys.update(CONNECTORS_SETTINGS_PYDANTIC_FALLBACKS)
+    DataApiAppSettingsOS.fallback_env_keys.update(CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS)
     settings = DataApiAppSettingsOS(fallback=deprecated_settings)
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
