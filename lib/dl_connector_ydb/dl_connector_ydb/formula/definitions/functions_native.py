@@ -1,7 +1,7 @@
 import re
 
-import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
+from sqlalchemy.sql.functions import Function as SqlFunction
 
 from dl_formula.core.nodes import LiteralString
 from dl_formula.definitions.base import (
@@ -24,11 +24,7 @@ def _call_native_impl_yql(func_name_ctx: TranslationCtx, *args: TranslationCtx) 
     # Validate function name
     if re.match(r"^[a-zA-Z0-9_]+::[a-zA-Z0-9_]+$", func_name):
         namespace, function = func_name.split("::")
-
-        namespace = getattr(sa.func, namespace)
-        function = getattr(namespace, function)
-
-        return function(*(arg.expression for arg in args))
+        return SqlFunction(function, *(arg.expression for arg in args), packagenames=(namespace,))
 
     return base._call_native_impl(func_name_ctx, *args)
 
