@@ -46,6 +46,7 @@ def load_api_lib(api_lib_config: ApiLibraryConfig = ApiLibraryConfig()) -> None:
 
 
 def load_api_lib_with_settings() -> None:
+    preload_api_lib()
     whitelists = WhitelistsAppSettings()
     api_lib_config = ApiLibraryConfig(
         api_connector_ep_names=whitelists.BI_API_CONNECTOR_WHITELIST,

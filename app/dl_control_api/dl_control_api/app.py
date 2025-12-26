@@ -15,7 +15,6 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.loader import (
     load_api_lib_with_settings,
-    preload_api_lib,
 )
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (
@@ -52,7 +51,6 @@ def create_app(
 
 
 def create_uwsgi_app() -> flask.Flask:
-    preload_api_lib()
     load_api_lib_with_settings()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedControlApiAppSettingsOS)
     settings = ControlApiAppSettingsOS(

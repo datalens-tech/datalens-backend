@@ -11,7 +11,6 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.loader import (
     load_api_lib_with_settings,
-    preload_api_lib,
 )
 from dl_app_tools.aio_latency_tracking import LatencyTracker
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -47,7 +46,6 @@ def create_app(
 
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
-    preload_api_lib()
     load_api_lib_with_settings()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedDataApiAppSettingsOS)
     settings = DataApiAppSettingsOS(
