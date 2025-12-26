@@ -8,11 +8,9 @@ from aiohttp import web
 from dl_api_lib.app_settings import (
     DataApiAppSettingsOS,
     DeprecatedDataApiAppSettingsOS,
-    WhitelistsAppSettings,
 )
 from dl_api_lib.loader import (
-    ApiLibraryConfig,
-    load_api_lib,
+    load_api_lib_with_settings,
     preload_api_lib,
 )
 from dl_app_tools.aio_latency_tracking import LatencyTracker
@@ -31,7 +29,6 @@ from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_FALLBACKS,
     CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
 )
-from dl_core.loader import CoreLibraryConfig
 from dl_data_api.app_factory import StandaloneDataApiAppFactory
 import dl_logging
 
@@ -51,14 +48,8 @@ def create_app(
 
 async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
     preload_api_lib()
+    load_api_lib_with_settings()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedDataApiAppSettingsOS)
-    whitelists = WhitelistsAppSettings()
-    load_api_lib(
-        ApiLibraryConfig(
-            api_connector_ep_names=whitelists.BI_API_CONNECTOR_WHITELIST,
-            core_lib_config=CoreLibraryConfig(core_connector_ep_names=whitelists.CORE_CONNECTOR_WHITELIST),
-        )
-    )
     settings = DataApiAppSettingsOS(
         fallback=deprecated_settings,
         extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,

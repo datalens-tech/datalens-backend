@@ -12,11 +12,9 @@ from dl_api_lib.app_settings import (
     ControlApiAppSettingsOS,
     ControlApiAppTestingsSettings,
     DeprecatedControlApiAppSettingsOS,
-    WhitelistsAppSettings,
 )
 from dl_api_lib.loader import (
-    ApiLibraryConfig,
-    load_api_lib,
+    load_api_lib_with_settings,
     preload_api_lib,
 )
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -36,7 +34,6 @@ from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_FALLBACKS,
     CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
 )
-from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
 
 
@@ -56,14 +53,8 @@ def create_app(
 
 def create_uwsgi_app() -> flask.Flask:
     preload_api_lib()
+    load_api_lib_with_settings()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedControlApiAppSettingsOS)
-    whitelists = WhitelistsAppSettings()
-    load_api_lib(
-        ApiLibraryConfig(
-            api_connector_ep_names=whitelists.BI_API_CONNECTOR_WHITELIST,
-            core_lib_config=CoreLibraryConfig(core_connector_ep_names=whitelists.CORE_CONNECTOR_WHITELIST),
-        )
-    )
     settings = ControlApiAppSettingsOS(
         fallback=deprecated_settings,
         extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
