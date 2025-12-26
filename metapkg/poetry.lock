@@ -1788,6 +1788,7 @@ flask-restx = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 pydantic = "*"
+pydantic_settings = "*"
 requests = "*"
 statcommons = {path = "../statcommons"}
 typing-extensions = "*"

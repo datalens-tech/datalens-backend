@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import attr
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -41,8 +43,14 @@ def mysql_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedC
 class MySQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_MYSQL.value
 
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
+        "CONNECTORS__MYSQL__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_MYSQL_ENABLE_DATASOURCE_TEMPLATE",
+        "CONNECTORS__MYSQL__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_MYSQL_ENABLE_TABLE_DATASOURCE_FORM",
+    }
+
 
 class MySQLSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedMySQLConnectorSettings
     fallback = mysql_settings_fallback
+
     pydantic_settings_class = MySQLConnectorSettings

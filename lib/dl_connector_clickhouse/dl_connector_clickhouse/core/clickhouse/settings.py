@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import attr
 
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
@@ -42,8 +44,14 @@ def clickhouse_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, Deprec
 class ClickHouseConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
     type: str = CONNECTION_TYPE_CLICKHOUSE.value
 
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
+        "CONNECTORS__CLICKHOUSE__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_CLICKHOUSE_ENABLE_DATASOURCE_TEMPLATE",
+        "CONNECTORS__CLICKHOUSE__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_CLICKHOUSE_ENABLE_TABLE_DATASOURCE_FORM",
+    }
+
 
 class ClickHouseSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedClickHouseConnectorSettings
     fallback = clickhouse_settings_fallback
+
     pydantic_settings_class = ClickHouseConnectorSettings

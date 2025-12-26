@@ -43,8 +43,8 @@ class FileS3ConnectorSettingsBase(dl_settings.BaseSettings):
     USERNAME: str
     PASSWORD: str
 
-    S3_ACCESS_KEY_ID: str = pydantic.Field(repr=False)
-    S3_SECRET_ACCESS_KEY: str = pydantic.Field(repr=False)
+    ACCESS_KEY_ID: str = pydantic.Field(repr=False)
+    SECRET_ACCESS_KEY: str = pydantic.Field(repr=False)
 
     REPLACE_SECRET_SALT: str = pydantic.Field(repr=False, default_factory=lambda: str(uuid.uuid4()))
     # ^ Note that this is used in a query, which, in turn, is used in a cache key at the moment
