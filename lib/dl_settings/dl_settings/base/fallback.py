@@ -2,6 +2,7 @@ import logging
 import typing
 import warnings
 
+import pydantic
 import pydantic_settings
 
 import dl_settings.base.settings as base_settings
@@ -97,8 +98,11 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
     fallback_env_keys should be a dict where:
         - keys: setting env var names
         - values: fallback env var names
+
+    Extra fallback env keys can be passed via constructor using extra_fallback_env_keys parameter.
     """
 
+    extra_fallback_env_keys: dict[str, str] = pydantic.Field(default_factory=dict)
     fallback_env_keys: typing.ClassVar[dict[str, str]] = {}
 
     @classmethod
@@ -111,6 +115,7 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
         file_secret_settings: pydantic_settings.PydanticBaseSettingsSource,
     ) -> tuple[pydantic_settings.PydanticBaseSettingsSource, ...]:
         assert isinstance(env_settings, pydantic_settings.EnvSettingsSource)
+        assert isinstance(init_settings, pydantic_settings.InitSettingsSource)
 
         return super().settings_customise_sources(
             settings_cls=settings_cls,
@@ -123,7 +128,7 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
                 env_ignore_empty=env_settings.env_ignore_empty,
                 env_parse_none_str=env_settings.env_parse_none_str,
                 env_parse_enums=env_settings.env_parse_enums,
-                env_keys=cls.fallback_env_keys,
+                env_keys={**cls.fallback_env_keys, **init_settings.init_kwargs.get("extra_fallback_env_keys", {})},
             ),
             dotenv_settings=dotenv_settings,
             file_secret_settings=file_secret_settings,
