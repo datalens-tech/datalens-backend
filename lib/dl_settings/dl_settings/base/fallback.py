@@ -1,4 +1,3 @@
-import contextvars
 import logging
 import typing
 import warnings
@@ -9,12 +8,6 @@ import dl_settings.base.settings as base_settings
 
 
 LOGGER = logging.getLogger(__name__)
-
-# Context variable to pass extra fallback env keys to settings_customise_sources
-_extra_fallback_env_keys: contextvars.ContextVar[dict[str, str]] = contextvars.ContextVar(
-    "_extra_fallback_env_keys",
-    default={},
-)
 
 
 class WithFallbackGetAttr(base_settings.BaseRootSettings):
@@ -110,14 +103,6 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
 
     fallback_env_keys: typing.ClassVar[dict[str, str]] = {}
 
-    def __init__(self, **data: typing.Any) -> None:
-        extra_keys = data.pop("extra_fallback_env_keys", {})
-        token = _extra_fallback_env_keys.set(extra_keys)
-        try:
-            super().__init__(**data)
-        finally:
-            _extra_fallback_env_keys.reset(token)
-
     @classmethod
     def settings_customise_sources(
         cls,
@@ -128,8 +113,7 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
         file_secret_settings: pydantic_settings.PydanticBaseSettingsSource,
     ) -> tuple[pydantic_settings.PydanticBaseSettingsSource, ...]:
         assert isinstance(env_settings, pydantic_settings.EnvSettingsSource)
-
-        merged_env_keys = {**cls.fallback_env_keys, **_extra_fallback_env_keys.get()}
+        assert isinstance(init_settings, pydantic_settings.InitSettingsSource)
 
         return super().settings_customise_sources(
             settings_cls=settings_cls,
@@ -142,7 +126,7 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
                 env_ignore_empty=env_settings.env_ignore_empty,
                 env_parse_none_str=env_settings.env_parse_none_str,
                 env_parse_enums=env_settings.env_parse_enums,
-                env_keys=merged_env_keys,
+                env_keys={**cls.fallback_env_keys, **init_settings.init_kwargs.get("extra_fallback_env_keys", {})},
             ),
             dotenv_settings=dotenv_settings,
             file_secret_settings=file_secret_settings,
