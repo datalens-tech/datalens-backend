@@ -169,4 +169,3 @@ def test_fallback_extra_env_source_merged_with_class(
 
     assert settings.TEST_KEY == "value1"
     assert settings.ANOTHER_KEY == "value2"
-
