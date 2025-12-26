@@ -29,6 +29,10 @@ with temporalio.workflow.unsafe.imports_passed_through():
 LOGGER = logging.getLogger(__name__)
 
 
+def _generate_workflow_id() -> str:
+    return str(temporalio.workflow.uuid4())
+
+
 class BaseModel(dl_pydantic.BaseModel):
     __pydantic_is_temporal_model__: ClassVar[bool] = True
 
@@ -328,10 +332,15 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
         self,
         workflow: type[WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]],
         params: WorkflowParamsT,
+        workflow_id: str | None = None,
     ) -> temporalio.workflow.ChildWorkflowHandle[SelfType, WorkflowResultT]:
+        workflow_id = workflow_id or _generate_workflow_id()
+
+        LOGGER.debug("Starting child workflow %s(id=%s)", workflow.name, workflow_id)
         return await temporalio.workflow.start_child_workflow(
             workflow=workflow.name,
             arg=params,
+            id=workflow_id,
             execution_timeout=params.execution_timeout,
             parent_close_policy=params.parent_close_policy,
             result_type=workflow.Result,
@@ -341,7 +350,11 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
         self,
         workflow: type[WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]],
         params: WorkflowParamsT,
+        workflow_id: str | None = None,
     ) -> WorkflowResultT:
+        workflow_id = workflow_id or _generate_workflow_id()
+
+        LOGGER.debug("Executing child workflow %s(id=%s)", workflow.name, workflow_id)
         return await temporalio.workflow.execute_child_workflow(
             workflow=workflow.name,
             arg=params,
