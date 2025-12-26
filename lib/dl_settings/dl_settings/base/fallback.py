@@ -2,6 +2,7 @@ import logging
 import typing
 import warnings
 
+import pydantic
 import pydantic_settings
 
 import dl_settings.base.settings as base_settings
@@ -101,6 +102,7 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
     Extra fallback env keys can be passed via constructor using extra_fallback_env_keys parameter.
     """
 
+    extra_fallback_env_keys: dict[str, str] = pydantic.Field(default_factory=dict)
     fallback_env_keys: typing.ClassVar[dict[str, str]] = {}
 
     @classmethod
