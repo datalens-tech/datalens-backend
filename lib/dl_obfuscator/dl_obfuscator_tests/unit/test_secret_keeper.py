@@ -59,5 +59,6 @@ class TestSecretKeeper:
         sc.add_secret("token", "abc123")
         sc.add_param("param", "value456")
 
-        printed = print(sc)
-        assert not printed
+        representation = repr(sc)
+        assert "abc123" not in representation
+        assert "value456" not in representation
