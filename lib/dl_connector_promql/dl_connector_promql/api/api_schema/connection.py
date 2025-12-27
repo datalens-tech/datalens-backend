@@ -15,7 +15,9 @@ from dl_api_connector.api_schema.connection_base_fields import secret_string_fie
 from dl_api_connector.api_schema.connection_mixins import DataExportForbiddenMixin
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
 from dl_api_connector.api_schema.extras import FieldExtra
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
+from dl_connector_promql.core.constants import PromQLAuthType
 from dl_connector_promql.core.us_connection import PromQLConnection
 
 
@@ -44,7 +46,14 @@ class DBPathField(ma_fields.String):
 
 class PromQLConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema):
     TARGET_CLS = PromQLConnection
-
+    auth_type = DynamicEnumField(
+        PromQLAuthType,
+        attribute="data.auth_type",
+        allow_none=False,
+        dump_default=PromQLAuthType.password,
+        load_default=PromQLAuthType.password,
+        bi_extra=FieldExtra(editable=True),
+    )
     secure = ma_fields.Boolean(attribute="data.secure", bi_extra=FieldExtra(editable=True))
     username = ma_fields.String(
         attribute="data.username",
@@ -55,6 +64,11 @@ class PromQLConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, Clas
     )
     password = secret_string_field(
         attribute="data.password",
+        required=False,
+        allow_none=True,
+    )
+    auth_header = secret_string_field(
+        attribute="data.auth_header",
         required=False,
         allow_none=True,
     )
