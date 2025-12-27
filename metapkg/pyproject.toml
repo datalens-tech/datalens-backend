@@ -154,6 +154,7 @@ dl-json = {develop = true, path = "../lib/dl_json"}
 dl-logging = {develop = true, path = "../lib/dl_logging"}
 dl-maintenance = {develop = true, path = "../lib/dl_maintenance"}
 dl-model-tools = {develop = true, path = "../lib/dl_model_tools"}
+dl-obfuscator = {develop = true, path = "../lib/dl_obfuscator"}
 dl-pivot = {develop = true, path = "../lib/dl_pivot"}
 dl-pivot-pandas = {develop = true, path = "../lib/dl_pivot_pandas"}
 dl-pydantic = {develop = true, path = "../lib/dl_pydantic"}

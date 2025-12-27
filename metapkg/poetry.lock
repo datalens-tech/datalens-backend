@@ -3189,6 +3189,22 @@ type = "directory"
 url = "../lib/dl_model_tools"
 
 [[package]]
+name = "dl-obfuscator"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+attrs = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_obfuscator"
+
+[[package]]
 name = "dl-pivot"
 version = "0.0.1"
 description = ""
@@ -9428,4 +9444,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "b64d2bde7486ad6217fe030ab9281355b5f3ebc97f00ba3d6bed738132c717bd"
+content-hash = "379d98053d4342918efd85477401cea76257171bd03531d80d53185f71a42c44"
