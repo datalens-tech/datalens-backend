@@ -1,7 +1,14 @@
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 
-from dl_connector_promql_tests.db.api.base import PromQLConnectionTestBase
+from dl_connector_promql_tests.db.api.base import (
+    PromQLConnectionTestBase,
+    PromQLHeaderAuthConnectionTest,
+)
 
 
 class TestPromQLConnection(PromQLConnectionTestBase, DefaultConnectorConnectionTestSuite):
+    pass
+
+
+class TestPromQLConnectionAuthHeader(PromQLHeaderAuthConnectionTest, DefaultConnectorConnectionTestSuite):
     pass

@@ -2476,11 +2476,14 @@ dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 sqlalchemy = "*"
+typing_extensions = "*"
 
 [package.source]
 type = "directory"

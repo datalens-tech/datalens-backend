@@ -3,7 +3,10 @@ import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
 
-from dl_connector_promql_tests.db.api.base import PromQLConnectionTestBase
+from dl_connector_promql_tests.db.api.base import (
+    PromQLConnectionTestBase,
+    PromQLHeaderAuthConnectionTest,
+)
 
 
 class TestPromQLDashSQL(PromQLConnectionTestBase, DefaultDashSQLTestSuite):
@@ -81,3 +84,7 @@ class TestPromQLDashSQL(PromQLConnectionTestBase, DefaultDashSQLTestSuite):
                 "to": "2021-09-28T18:00:00Z",
             },
         )
+
+
+class TestPromQLDashSQLAuthHeader(PromQLHeaderAuthConnectionTest, TestPromQLDashSQL):
+    pass

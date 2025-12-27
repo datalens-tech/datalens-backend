@@ -38,7 +38,7 @@ def rebuild_prometheus_data(data):
 
 
 class SyncPromQLClient:
-    def __init__(self, base_url, username, password, **kwargs):
+    def __init__(self, base_url, username, password, auth_type=None, auth_header=None, **kwargs):
         self._closed = False
         self._session = requests.Session()
         self._session.max_redirects = 0
@@ -54,9 +54,11 @@ class SyncPromQLClient:
                     )
                 ),
             )
-        if username and password:
+        if auth_type == "password" and username and password:
             auth = requests.auth.HTTPBasicAuth(username, password)
             self._session = auth(self._session)
+        elif auth_type == "header" and auth_header:
+            self._session.headers["Authorization"] = auth_header
         self._base_url = base_url
 
     def close(self):
