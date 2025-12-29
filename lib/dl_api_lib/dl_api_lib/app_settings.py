@@ -7,6 +7,7 @@ from typing import (
 
 import attr
 import pydantic
+import pydantic_settings
 
 import dl_api_commons
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -351,6 +352,19 @@ BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 class AppSettings(dl_settings.BaseRootSettingsWithFallback):
     ...
+
+
+class WhitelistsAppSettings(dl_settings.BaseRootSettings):
+    BI_API_CONNECTOR_WHITELIST: Annotated[
+        list[str] | None,
+        dl_settings.split_validator(","),
+        pydantic_settings.NoDecode,
+    ] = None
+    CORE_CONNECTOR_WHITELIST: Annotated[
+        list[str] | None,
+        dl_settings.split_validator(","),
+        pydantic_settings.NoDecode,
+    ] = None
 
 
 class ControlApiAppSettings(AppSettings):

@@ -9,6 +9,8 @@ from dl_core.connectors.settings.base import ConnectorSettings
 CONNECTORS_SETTINGS_CLASSES: dict[ConnectionType, type[DeprecatedConnectorSettingsBase]] = {}
 CONNECTORS_SETTINGS_FALLBACKS: dict[ConnectionType, SettingsFallbackType] = {}
 
+CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS: dict[str, str] = {}
+
 
 def register_connector_settings_class(
     conn_type: ConnectionType,
@@ -26,3 +28,4 @@ def register_connector_settings_class(
     # delete above after moving to pydantic settings
 
     ConnectorSettings.register(conn_type.value, pydantic_settings_class)
+    CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS.update(pydantic_settings_class.root_fallback_env_keys)

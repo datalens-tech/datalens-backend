@@ -13,11 +13,7 @@ from dl_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
     DeprecatedControlApiAppSettingsOS,
 )
-from dl_api_lib.loader import (
-    ApiLibraryConfig,
-    load_api_lib,
-    preload_api_lib,
-)
+from dl_api_lib.loader import load_api_lib_with_settings
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
@@ -33,8 +29,8 @@ from dl_control_api.app_factory import StandaloneControlApiAppFactory
 from dl_core.connectors.settings.registry import (
     CONNECTORS_SETTINGS_CLASSES,
     CONNECTORS_SETTINGS_FALLBACKS,
+    CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
 )
-from dl_core.loader import CoreLibraryConfig
 from dl_core.logging_config import hook_configure_logging
 
 
@@ -53,14 +49,11 @@ def create_app(
 
 
 def create_uwsgi_app() -> flask.Flask:
-    preload_api_lib()
+    load_api_lib_with_settings()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedControlApiAppSettingsOS)
-    settings = ControlApiAppSettingsOS(fallback=deprecated_settings)
-    load_api_lib(
-        ApiLibraryConfig(
-            api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
-            core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
-        )
+    settings = ControlApiAppSettingsOS(
+        fallback=deprecated_settings,
+        extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
     )
     connectors_settings = load_connectors_settings_from_env_with_fallback(
         settings_registry=CONNECTORS_SETTINGS_CLASSES,
