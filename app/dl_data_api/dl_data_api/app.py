@@ -9,9 +9,7 @@ from dl_api_lib.app_settings import (
     DataApiAppSettingsOS,
     DeprecatedDataApiAppSettingsOS,
 )
-from dl_api_lib.loader import (
-    load_api_lib_with_settings,
-)
+from dl_api_lib.loader import load_api_lib_with_settings
 from dl_app_tools.aio_latency_tracking import LatencyTracker
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (

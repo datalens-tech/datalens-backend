@@ -13,9 +13,7 @@ from dl_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
     DeprecatedControlApiAppSettingsOS,
 )
-from dl_api_lib.loader import (
-    load_api_lib_with_settings,
-)
+from dl_api_lib.loader import load_api_lib_with_settings
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
