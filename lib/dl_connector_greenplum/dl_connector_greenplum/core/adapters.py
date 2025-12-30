@@ -26,15 +26,17 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
             pg_class
             JOIN pg_namespace
             ON pg_namespace.oid = pg_class.relnamespace
-            LEFT JOIN pg_partitions
-            ON pg_partitions.partitiontablename = pg_class.relname
         WHERE
             pg_namespace.nspname not like 'pg_%'
             AND pg_namespace.nspname not like 'gp_%'
             AND pg_namespace.nspname != 'session_state'
             AND pg_namespace.nspname != 'information_schema'
             AND pg_class.relkind in ('m', 'p', 'r', 'v')
-            AND pg_partitions.tablename is NULL
+            AND NOT COALESCE((row_to_json(pg_class)->>'relispartition')::boolean, false)
+            AND NOT EXISTS (
+                SELECT 1 FROM pg_inherits 
+                WHERE pg_inherits.inhrelid = pg_class.oid
+            )
         """
         ]
 
@@ -84,11 +86,14 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         FROM
             pg_class c
             JOIN pg_namespace n ON n.oid = c.relnamespace
-            LEFT JOIN pg_partitions p ON p.partitiontablename = c.relname
         WHERE
             n.nspname = :schema
             AND c.relkind in ('r', 'p', 'v', 'm')
-            AND p.tablename is NULL
+            AND NOT COALESCE((row_to_json(c)->>'relispartition')::boolean, false)
+            AND NOT EXISTS (
+                SELECT 1 FROM pg_inherits 
+                WHERE pg_inherits.inhrelid = c.oid
+            )
         """
         ]
 
