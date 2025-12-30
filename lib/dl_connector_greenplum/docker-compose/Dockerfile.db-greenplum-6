@@ -1,0 +1,8 @@
+FROM woblerr/greenplum:6.27.1@sha256:4d424ddfa772cc9da17a0a8b139fd0c57dcb64e3699af6452d70a26d6bea2d6b  
+
+COPY db-greenplum/initdb.d/* /docker-entrypoint-initdb.d/
+COPY db-greenplum/data /common-data
+
+ENV GREENPLUM_PASSWORD=qwerty
+ENV GREENPLUM_DATABASE_NAME=test_data
+ENV GREENPLUM_USER=datalens

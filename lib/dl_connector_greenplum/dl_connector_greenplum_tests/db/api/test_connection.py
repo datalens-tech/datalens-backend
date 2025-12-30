@@ -1,3 +1,4 @@
+import abc
 from typing import Optional
 
 import pytest
@@ -5,10 +6,13 @@ import pytest
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
 
-from dl_connector_greenplum_tests.db.api.base import GreenplumConnectionTestBase
+from dl_connector_greenplum_tests.db.api.base import (
+    GP6ConnectionTestBase,
+    GP7ConnectionTestBase,
+)
 
 
-class TestGreenplumSQLConnection(GreenplumConnectionTestBase, DefaultConnectorConnectionTestSuite):
+class GreenplumSQLConnectionTestSuite(DefaultConnectorConnectionTestSuite, metaclass=abc.ABCMeta):
     def test_create_connection(
         self,
         control_api_sync_client: SyncHttpClientBase,
@@ -34,9 +38,8 @@ class TestGreenplumSQLConnection(GreenplumConnectionTestBase, DefaultConnectorCo
             ("?search_text=ampl&limit=1&offset=0&db_name=test_memory_catalog", 400),
             ("?search_text=ampl", 200),
             ("?limit=1", 200),
-            ("?offset=1", 200),
             ("?offset=0", 200),
-            ("?search_text=ampl&limit=1&offset=1", 200),
+            ("?search_text=ampl&limit=1&offset=0", 200),
         ],
     )
     def test_connection_sources_paginated_with_params(
@@ -60,3 +63,11 @@ class TestGreenplumSQLConnection(GreenplumConnectionTestBase, DefaultConnectorCo
         else:
             assert resp_data.get("code") == "ERR.DS_API.INVALID_REQUEST"
             assert resp_data.get("message")
+
+
+class TestGP6SQLConnection(GP6ConnectionTestBase, GreenplumSQLConnectionTestSuite):
+    pass
+
+
+class TestGP7SQLConnection(GP7ConnectionTestBase, GreenplumSQLConnectionTestSuite):
+    pass

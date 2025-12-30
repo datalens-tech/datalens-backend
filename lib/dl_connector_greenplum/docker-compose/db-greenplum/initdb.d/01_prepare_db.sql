@@ -22,8 +22,7 @@ CREATE TABLE test_data.sample (
     "Ship Mode" VARCHAR(255),
     "State" VARCHAR(255),
     "Sub-Category" VARCHAR(255)
-) DISTRIBUTED BY ("Row ID");
-
+);
 create index order_date_idx on test_data.sample("Order Date");
 
 COPY test_data.sample (
