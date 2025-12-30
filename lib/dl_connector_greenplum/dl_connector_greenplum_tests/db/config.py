@@ -58,15 +58,6 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
 )
 
 
-# CONNECTION_PARAMS = dict(
-#     db_name=DB_NAME,
-#     host=get_test_container_hostport("db-postgres-13", fallback_port=52301).host,
-#     port=get_test_container_hostport("db-postgres-13", fallback_port=52301).port,
-#     username=GP_USER,
-#     password=GP_PASSWORD,
-# )
-
-
 DASHSQL_QUERY = r"""
 with base as (
     select generate_series(0, 6) as number

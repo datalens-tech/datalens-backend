@@ -1,16 +1,4 @@
 services:
-  # yes, greenplum tests run on a postgres db
-  db-postgres-13:
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.db-postgres-13
-    environment:
-      POSTGRES_DB: "test_data"
-      POSTGRES_USER: "datalens"
-      POSTGRES_PASSWORD: "qwerty"
-    ports:
-     - "52302:5432"
-
   db-greenplum-6:
     build:
       context: docker-compose
