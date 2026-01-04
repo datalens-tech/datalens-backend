@@ -14,7 +14,7 @@ from dl_formula.validation.validator import (
 
 @attr.s
 class BFBChecker(Checker):
-    _field_ids: Collection[str] = attr.ib(factory=frozenset)
+    _field_ids: Collection[str] = attr.ib(factory=frozenset, kw_only=True)
 
     def perform_node_check(
         self,
