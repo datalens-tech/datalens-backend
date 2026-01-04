@@ -3,7 +3,6 @@ from http import HTTPStatus
 import re
 from typing import Optional
 
-import pytest
 
 from dl_api_client.dsmaker.primitives import WhereClause
 from dl_api_client.dsmaker.shortcuts.dataset import (

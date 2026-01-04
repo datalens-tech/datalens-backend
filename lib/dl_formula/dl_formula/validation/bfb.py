@@ -1,8 +1,9 @@
-import attr
 from typing import Collection
 
-import dl_formula.core.nodes as nodes
+import attr
+
 import dl_formula.core.exc as exc
+import dl_formula.core.nodes as nodes
 import dl_formula.inspect.expression
 import dl_formula.inspect.node
 from dl_formula.validation.validator import (
@@ -28,10 +29,10 @@ class BFBChecker(Checker):
         for child, stack in children_w_stacks:
             with validator.handle_error(node=node):
                 self.check_node(validator=validator, node=child, parent_stack=stack)
-    
+
         if not isinstance(node, nodes.FuncCall):
             return
-        
+
         bfb = node.before_filter_by
         for bfb_name in bfb.field_names:
             if bfb_name not in self._field_ids:
