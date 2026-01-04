@@ -3,7 +3,6 @@ from http import HTTPStatus
 import re
 from typing import Optional
 
-
 from dl_api_client.dsmaker.primitives import WhereClause
 from dl_api_client.dsmaker.shortcuts.dataset import (
     add_formulas_to_dataset,
