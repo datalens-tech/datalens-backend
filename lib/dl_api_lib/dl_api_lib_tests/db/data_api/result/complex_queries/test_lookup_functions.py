@@ -602,7 +602,6 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=1, ago_idx=3, day_offset=1)
         check_ago_data(data_rows=data_rows, date_idx=0, value_idx=2, ago_idx=4, day_offset=1)
 
-    @pytest.mark.xfail(reason="https://github.com/datalens-tech/datalens-backend/issues/531")  # FIXME
     def test_id_with_unknown_field(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
