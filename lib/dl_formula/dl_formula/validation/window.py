@@ -8,7 +8,6 @@ import dl_formula.core.exc as exc
 import dl_formula.core.nodes as nodes
 from dl_formula.inspect.env import InspectionEnvironment
 import dl_formula.inspect.expression
-import dl_formula.inspect.function
 import dl_formula.inspect.node
 from dl_formula.validation.validator import (
     Checker,

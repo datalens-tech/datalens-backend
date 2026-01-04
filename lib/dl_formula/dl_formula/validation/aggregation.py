@@ -14,7 +14,6 @@ import dl_formula.core.fork_nodes as fork_nodes
 import dl_formula.core.nodes as nodes
 from dl_formula.inspect.env import InspectionEnvironment
 import dl_formula.inspect.expression
-import dl_formula.inspect.function
 import dl_formula.inspect.node
 from dl_formula.validation.env import ValidationEnvironment
 from dl_formula.validation.validator import (
