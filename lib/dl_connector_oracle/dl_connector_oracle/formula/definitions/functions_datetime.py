@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import sqlalchemy as sa
 
 from dl_formula.core.datatype import DataType
@@ -20,7 +22,26 @@ from dl_formula.definitions.literals import (
 from dl_connector_oracle.formula.constants import OracleDialect as D
 
 
+if TYPE_CHECKING:
+    from sqlalchemy.sql.elements import ColumnElement
+
+
 V = TranslationVariant.make
+
+
+def _oracle_dateadd_impl(date_expr: ColumnElement, unit: str, num: int) -> ColumnElement:
+    """
+    Oracle implementation for dateadd that uses ADD_MONTHS for month-based intervals.
+    This handles edge cases like adding a month to January 31st properly.
+    """
+    unit_lower = unit.lower()
+    if unit_lower == "month":
+        return sa.cast(sa.func.ADD_MONTHS(date_expr, num), sa.Date)
+    elif unit_lower == "quarter":
+        return sa.cast(sa.func.ADD_MONTHS(date_expr, 3 * num), sa.Date)
+    elif unit_lower == "year":
+        return sa.cast(sa.func.ADD_MONTHS(date_expr, 12 * num), sa.Date)
+    return sa.cast(date_expr + datetime_interval(unit, num, literal_mult=True), sa.Date)
 
 
 class FuncDatetrunc2Oracle(base.FuncDatetrunc2):
@@ -63,11 +84,7 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.ORACLE,
-                lambda date, what: (
-                    sa.cast(date + datetime_interval(un_literal(what), 1, literal_mult=True), sa.Date)
-                    if un_literal(what).lower() != "quarter"
-                    else sa.cast(date + datetime_interval("month", 3, literal_mult=True), sa.Date)
-                ),
+                lambda date, what: _oracle_dateadd_impl(date, un_literal(what), 1),
             ),
         ]
     ),
@@ -77,11 +94,7 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.ORACLE,
-                lambda date, what, num: (
-                    sa.cast(date + datetime_interval(un_literal(what), un_literal(num), literal_mult=True), sa.Date)
-                    if un_literal(what).lower() != "quarter"
-                    else sa.cast(date + datetime_interval("month", 3 * un_literal(num), literal_mult=True), sa.Date)
-                ),
+                lambda date, what, num: _oracle_dateadd_impl(date, un_literal(what), un_literal(num)),
             ),
         ]
     ),
@@ -89,11 +102,7 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.ORACLE,
-                lambda dt, what, num: (
-                    sa.cast(dt + datetime_interval(what.value, num.value, literal_mult=True), sa.Date)
-                    if what.value.lower() != "quarter"
-                    else sa.cast(dt + datetime_interval("month", 3 * num.value, literal_mult=True), sa.Date)
-                ),
+                lambda dt, what, num: _oracle_dateadd_impl(dt, what.value, num.value),
             ),
         ]
     ),
