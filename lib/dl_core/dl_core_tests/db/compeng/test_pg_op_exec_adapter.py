@@ -38,7 +38,9 @@ async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> list[dic
         user_type=UserDataType.integer,
         ctx=ctx,
     )
-    active_queries_query = f"SELECT {', '.join(columns)} FROM pg_stat_activity WHERE pid = {connection_pid} -- active_queries_query"
+    active_queries_query = (
+        f"SELECT {', '.join(columns)} FROM pg_stat_activity WHERE pid = {connection_pid} -- active_queries_query"
+    )
     queries_resp = await pg_adapter.fetch_data_from_select(
         query=active_queries_query,
         user_types=[UserDataType.string] * len(columns),
