@@ -21,15 +21,19 @@ import typing_extensions
 
 import dl_auth
 import dl_configs
+import dl_constants
 from dl_httpx.models import BaseRequest
 import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
 
+_REQUEST_HEADERS_TO_LOG = (dl_constants.DLHeadersCommon.REQUEST_ID.value,)
+
 
 def _request_to_string(request: httpx.Request) -> str:
-    return f"Request(method={request.method}, url={request.url})"
+    headers = {header: request.headers[header] for header in _REQUEST_HEADERS_TO_LOG if header in request.headers}
+    return f"Request(method={request.method}, url={request.url}, headers={headers})"
 
 
 def _request_to_debug_string(request: httpx.Request) -> str:
