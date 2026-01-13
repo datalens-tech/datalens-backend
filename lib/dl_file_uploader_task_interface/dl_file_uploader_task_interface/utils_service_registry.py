@@ -51,11 +51,11 @@ def create_sr_factory_from_env_vars(
         )
 
     connectors_settings: dict[str, ConnectorSettings] = {}
-    if file_uploader_connectors_settings["FILE"] is not None:
+    if file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value] is not None:
         connectors_settings = {
-            CONNECTION_TYPE_FILE.value: file_uploader_connectors_settings["FILE"],
-            CONNECTION_TYPE_GSHEETS_V2.value: file_uploader_connectors_settings["FILE"],
-            CONNECTION_TYPE_YADOCS.value: file_uploader_connectors_settings["FILE"],
+            CONNECTION_TYPE_FILE.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
+            CONNECTION_TYPE_GSHEETS_V2.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
+            CONNECTION_TYPE_YADOCS.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
         }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),

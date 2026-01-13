@@ -166,7 +166,7 @@ def secure_reader():
 
 
 @pytest.fixture(scope="session")
-def connectors_settings(s3_settings):
+def file_connectors_settings_dict(s3_settings):
     return {
         CONNECTION_TYPE_FILE.value: FileS3ConnectorSettingsBase(
             SECURE=False,
@@ -185,11 +185,28 @@ def connectors_settings(s3_settings):
 
 
 @pytest.fixture(scope="session")
+def file_connectors_settings(s3_settings):
+    return FileS3ConnectorSettingsBase(
+        SECURE=False,
+        HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
+        PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,
+        USERNAME="datalens",
+        PASSWORD="qwerty",
+        ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+        SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        root=_RootSettings(
+            S3_ENDPOINT_URL="http://s3-storage:8000",
+            FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
+        ),
+    )
+
+
+@pytest.fixture(scope="session")
 def file_uploader_worker_settings(
     redis_app_settings,
     redis_arq_settings,
     s3_settings,
-    connectors_settings,
+    file_connectors_settings_dict,
     us_config,
     secure_reader,
 ):
@@ -216,7 +233,7 @@ def file_uploader_worker_settings(
     )
     settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
-        CONNECTORS=connectors_settings,
+        CONNECTORS=file_connectors_settings_dict,
     )
     yield settings
 
@@ -410,21 +427,21 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
 
 
 @pytest_asyncio.fixture(scope="function")
-async def chs3_conn(connectors_settings):
+async def chs3_conn(file_connectors_settings):
     with connect_ch(
         host=get_test_container_hostport("db-clickhouse", original_port=9000).host,
         port=get_test_container_hostport("db-clickhouse", original_port=9000).port,
-        user=connectors_settings.FILE.USERNAME,
-        password=connectors_settings.FILE.PASSWORD,
+        user=file_connectors_settings.USERNAME,
+        password=file_connectors_settings.PASSWORD,
         secure=False,
     ) as ch_conn:
         yield ch_conn
 
 
 @pytest_asyncio.fixture(scope="function")
-async def read_chs3_file(chs3_conn, connectors_settings):
+async def read_chs3_file(chs3_conn, file_connectors_settings):
     def reader(s3_filename):
-        c_file = connectors_settings.FILE
+        c_file = file_connectors_settings
         with chs3_conn.cursor() as cursor:
             cursor.execute(
                 f"""

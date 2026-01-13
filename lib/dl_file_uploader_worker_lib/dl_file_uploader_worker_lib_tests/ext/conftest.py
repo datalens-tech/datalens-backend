@@ -30,7 +30,7 @@ def file_uploader_worker_settings(
     redis_app_settings,
     redis_arq_settings,
     s3_settings,
-    connectors_settings,
+    file_connectors_settings_dict,
     us_config,
     secure_reader,
 ):
@@ -57,7 +57,7 @@ def file_uploader_worker_settings(
     )
     settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
-        CONNECTORS=connectors_settings,
+        CONNECTORS=file_connectors_settings_dict,
     )
     yield settings
 
