@@ -7,7 +7,6 @@ from typing import (
     final,
 )
 
-import attrs
 import pytest
 import pytest_mock
 
@@ -95,7 +94,9 @@ class ConnectionFormTestBase:
     ) -> str:
         parts: list[str] = []
         if connectors_settings is not None:
-            for value in attrs.astuple(connectors_settings):
+            for key, value in connectors_settings.model_dump().items():
+                if key == "type":
+                    continue
                 parts.append(str(value))
         parts.append(str(tenant))
         parts.append(mode.value)
