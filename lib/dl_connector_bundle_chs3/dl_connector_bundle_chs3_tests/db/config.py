@@ -29,7 +29,8 @@ SR_CONNECTION_SETTINGS = FileS3ConnectorSettingsBase(
     ACCESS_KEY_ID="accessKey1",
     SECRET_ACCESS_KEY="verySecretKey1",
     root=_RootSettings(
-        S3_ENDPOINT_URL="http://s3-storage:8000", FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="dl-file-uploader"
+        S3_ENDPOINT_URL="http://s3-storage:8000",
+        FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="dl-file-uploader",
     ),
 )
 

@@ -15,9 +15,7 @@ from dl_file_uploader_lib.settings import (
     DeprecatedFileUploaderBaseSettings,
     FileUploaderBaseSettings,
 )
-import dl_settings
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import FileS3ConnectorSettingsBase
 
 
 @attr.s(frozen=True)
@@ -25,10 +23,6 @@ class SecureReader(SettingsBase):
     SOCKET: str = s_attrib("SOCKET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
     CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
-
-
-class FileUploaderConnectorsSettings(dl_settings.BaseSettings):
-    FILE: Optional[FileS3ConnectorSettingsBase] = None
 
 
 @attr.s(frozen=True)

@@ -62,7 +62,10 @@ EXPECTED_FILE_SETTINGS = FileS3ConnectorSettingsBase(
     PASSWORD="qwerty",
     ACCESS_KEY_ID="key_id",
     SECRET_ACCESS_KEY="access_key",
-    root=_RootSettings(S3_ENDPOINT_URL="http://s3-storage:8000", FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bucket"),
+    root=_RootSettings(
+        S3_ENDPOINT_URL="http://s3-storage:8000",
+        FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bucket",
+    ),
 )
 
 
