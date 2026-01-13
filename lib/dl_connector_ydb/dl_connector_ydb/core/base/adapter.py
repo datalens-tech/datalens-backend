@@ -36,10 +36,20 @@ LOGGER = logging.getLogger(__name__)
 _DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetDTO")
 
 
+DEFAULT_YDB_REQUEST_TIMEOUT_SEC = 30
+
+
 @attr.s
 class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
+    use_literal_binds_if_possible = True
+
     execution_options = {
         "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
+        "ydb_request_settings": (
+            ydb.BaseRequestSettings()
+            .with_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
+            .with_cancel_after(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
+        ),
     }
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
