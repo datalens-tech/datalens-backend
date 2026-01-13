@@ -305,8 +305,8 @@ def connectors_settings(s3_settings):
             root=_RootSettings(
                 S3_ENDPOINT_URL="http://s3-storage:8000",
                 FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
-            ).model_dump(),
-        )
+            ),
+        ).model_dump()
     }
 
 
