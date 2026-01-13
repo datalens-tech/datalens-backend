@@ -1,4 +1,5 @@
 import collections
+from typing import Sequence
 
 import attrs
 
@@ -21,7 +22,7 @@ class OpenApiSpec:
     openapi: str = "3.0.1"
     info: Info | None = None
     tags: list[Tag] = attrs.field(factory=list)
-    routes: list[OpenApiRouteProtocol] = attrs.field(factory=list)
+    routes: Sequence[OpenApiRouteProtocol] = attrs.field(factory=list)
 
     @property
     def raw(self) -> dict:
