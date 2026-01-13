@@ -17,7 +17,6 @@ from dl_file_uploader_lib.settings import (
 )
 
 
-
 @attr.s(frozen=True)
 class SecureReader(SettingsBase):
     SOCKET: str = s_attrib("SOCKET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
