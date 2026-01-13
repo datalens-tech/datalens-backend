@@ -88,6 +88,7 @@ from dl_connector_bundle_chs3.chs3_base.core.settings import (
     FileS3ConnectorSettingsBase,
     _RootSettings,
 )
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 if TYPE_CHECKING:
@@ -293,7 +294,7 @@ def tenant_id_header() -> dict[DLHeadersCommon, str]:
 @pytest.fixture(scope="session")
 def connectors_settings(s3_settings):
     return {
-        "FILE": FileS3ConnectorSettingsBase(
+        CONNECTION_TYPE_FILE.value: FileS3ConnectorSettingsBase(
             SECURE=False,
             HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
             PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,
@@ -304,7 +305,7 @@ def connectors_settings(s3_settings):
             root=_RootSettings(
                 S3_ENDPOINT_URL="http://s3-storage:8000",
                 FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
-            ),
+            ).model_dump(),
         )
     }
 
