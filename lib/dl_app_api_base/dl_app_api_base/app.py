@@ -1,6 +1,7 @@
 from typing import (
     Generic,
     TypeVar,
+    cast,
 )
 
 import aiohttp.typedefs
@@ -144,6 +145,5 @@ class HttpServerAppFactoryMixin(
     async def _get_aiohttp_open_api_spec(
         self,
     ) -> openapi.OpenApiSpec:
-        return openapi.OpenApiSpec(
-            routes=await self._get_aiohttp_app_routes(),
-        )
+        routes = cast(list[openapi.OpenApiRouteProtocol], await self._get_aiohttp_app_routes())
+        return openapi.OpenApiSpec(routes=routes)

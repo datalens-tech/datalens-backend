@@ -20,6 +20,8 @@ from .handlers import (
 )
 from .openapi import (
     OpenApiHandler,
+    OpenApiHandlerProtocol,
+    OpenApiRouteProtocol,
     OpenApiSettings,
     OpenApiSpec,
 )
@@ -43,6 +45,8 @@ __all__ = [
     "BaseRequestSchema",
     "BaseResponseSchema",
     "OpenApiHandler",
+    "OpenApiHandlerProtocol",
+    "OpenApiRouteProtocol",
     "OpenApiSpec",
     "OpenApiSettings",
 ]

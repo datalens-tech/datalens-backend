@@ -3,6 +3,7 @@ import collections
 import attrs
 
 import dl_app_api_base.handlers.base as handlers_base
+from dl_app_api_base.openapi.protocols import OpenApiRouteProtocol
 
 
 @attrs.define(frozen=True, kw_only=True)
@@ -20,7 +21,7 @@ class OpenApiSpec:
     openapi: str = "3.0.1"
     info: Info | None = None
     tags: list[Tag] = attrs.field(factory=list)
-    routes: list[handlers_base.Route] = attrs.field(factory=list)
+    routes: list[OpenApiRouteProtocol] = attrs.field(factory=list)
 
     @property
     def raw(self) -> dict:
