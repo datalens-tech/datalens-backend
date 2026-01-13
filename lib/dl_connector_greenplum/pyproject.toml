@@ -12,7 +12,6 @@ asyncpg = "*"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
-dl-configs = {path = "../dl_configs"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}

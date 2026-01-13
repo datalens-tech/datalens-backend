@@ -22,7 +22,7 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormMode,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_i18n.localizer_base import (
     LocalizerLoader,
     TranslationConfig,
@@ -36,7 +36,7 @@ class ConnectionFormTestBase:
     EXPECTED_FORMS_DIR: ClassVar[str] = "expected_forms"
 
     @pytest.fixture
-    def connectors_settings(self) -> Optional[DeprecatedConnectorSettingsBase]:
+    def connectors_settings(self) -> Optional[ConnectorSettings]:
         """Parametrize if a form has extra settings"""
 
         return None
@@ -61,7 +61,7 @@ class ConnectionFormTestBase:
     @pytest.fixture
     def form_config(
         self,
-        connectors_settings: Optional[DeprecatedConnectorSettingsBase],
+        connectors_settings: Optional[ConnectorSettings],
         tenant: TenantDef,
         mode: ConnectionFormMode,
         service_registry: ApiServiceRegistry,
@@ -89,7 +89,7 @@ class ConnectionFormTestBase:
     def fixture_expected_form_config_file(
         self,
         config_dir: str,
-        connectors_settings: Optional[DeprecatedConnectorSettingsBase],
+        connectors_settings: Optional[ConnectorSettings],
         tenant: TenantDef,
         mode: ConnectionFormMode,
     ) -> str:
