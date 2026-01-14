@@ -104,6 +104,10 @@ class BaseHandler(abc.ABC):
             http.HTTPStatus.BAD_REQUEST: BadRequestResponseSchema,
         }
 
+    @property
+    def _request_schema(self) -> type[BaseRequestSchema]:
+        return self.RequestSchema
+
     @abc.abstractmethod
     async def process(self, request: aiohttp.web.Request) -> aiohttp.web.StreamResponse:
         ...

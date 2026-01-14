@@ -1,7 +1,10 @@
 import http
-from typing import Protocol
+from typing import (
+    Mapping,
+    Protocol,
+)
 
-import dl_app_api_base.handlers.base as handlers_base
+import dl_pydantic
 
 
 class OpenApiHandlerProtocol(Protocol):
@@ -18,11 +21,11 @@ class OpenApiHandlerProtocol(Protocol):
         ...
 
     @property
-    def RequestSchema(self) -> type[handlers_base.BaseRequestSchema]:
+    def _request_schema(self) -> type[dl_pydantic.BaseModel]:
         ...
 
     @property
-    def _response_schemas(self) -> dict[http.HTTPStatus, type[handlers_base.BaseResponseSchema]]:
+    def _response_schemas(self) -> Mapping[http.HTTPStatus, type[dl_pydantic.BaseModel]]:
         ...
 
 
