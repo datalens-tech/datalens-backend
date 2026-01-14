@@ -36,6 +36,7 @@ from dl_core.connection_executors.adapters.sa_utils import (
     CursorLogger,
     compile_query_for_debug,
     compile_query_for_inspector,
+    compile_query_with_literal_binds_if_possible,
     get_db_version_query,
 )
 from dl_core.connection_executors.models.db_adapter_data import (
@@ -92,6 +93,7 @@ class BaseSAAdapter(
     SAColumnTypeNormalizer,
 ):
     allow_sa_text_as_columns_source: ClassVar[bool] = False
+    use_literal_binds_if_possible: ClassVar[bool] = False
 
     # Instance attributes
     _default_chunk_size: int = attr.ib()
@@ -165,6 +167,9 @@ class BaseSAAdapter(
 
         debug_query = compile_query_for_debug(query, engine.dialect)
         inspector_query = compile_query_for_inspector(query, engine.dialect)
+
+        if self.use_literal_binds_if_possible:
+            query = compile_query_with_literal_binds_if_possible(query, engine.dialect)
 
         with (
             db_session_context(backend_type=self.get_backend_type(), db_engine=engine) as db_session,
