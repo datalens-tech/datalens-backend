@@ -11,6 +11,7 @@ version = "0.0.1"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-api-lib = {path = "../dl_api_lib"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
@@ -35,7 +36,6 @@ ydb-sqlalchemy = "*"
 [tool.poetry.group.tests.dependencies]
 aiohttp = "*"
 dl-api-client = {path = "../dl_api_client"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
