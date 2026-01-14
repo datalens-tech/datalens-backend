@@ -35,7 +35,7 @@ LOGGER = logging.getLogger(__name__)
 
 _DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetDTO")
 
-DEFAULT_YDB_REQUEST_TIMEOUT_SEC = 90
+DEFAULT_YDB_REQUEST_TIMEOUT_SEC = 80
 
 
 @attr.s
