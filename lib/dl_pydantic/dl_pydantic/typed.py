@@ -109,6 +109,9 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
     @classmethod
     def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
+        if not isinstance(data, dict):
+            raise ValueError("Data must be mapping for dict factory")
+
         result: dict[str, base.BaseModel] = {}
         type_key = cls.type_key()
 
