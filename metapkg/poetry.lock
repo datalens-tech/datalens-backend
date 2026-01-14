@@ -2567,7 +2567,6 @@ develop = true
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}

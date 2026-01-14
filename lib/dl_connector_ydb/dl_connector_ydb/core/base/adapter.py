@@ -15,15 +15,9 @@ import sqlalchemy as sa
 import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
-from dl_api_lib.app_settings import (
-    DataApiAppSettingsOS,
-    DeprecatedDataApiAppSettingsOS,
-)
-from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_models import TableIdent
-from dl_core.connectors.settings.registry import CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS
 import dl_sqlalchemy_ydb.dialect
 
 import dl_connector_ydb.core.base.row_converters
@@ -41,27 +35,20 @@ LOGGER = logging.getLogger(__name__)
 
 _DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetDTO")
 
-
-def _get_execution_options() -> dict:
-    deprecated_settings = load_settings_from_env_with_fallback(DeprecatedDataApiAppSettingsOS)
-    settings = DataApiAppSettingsOS(
-        fallback=deprecated_settings,
-        extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
-    )
-
-    return {
-        "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
-        "ydb_request_settings": (
-            ydb.BaseRequestSettings()
-            .with_timeout(settings.COMMON_TIMEOUT_SEC)
-            .with_cancel_after(settings.COMMON_TIMEOUT_SEC)
-        ),
-    }
+DEFAULT_YDB_REQUEST_TIMEOUT_SEC = 90
 
 
 @attr.s
 class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
-    execution_options: ClassVar[dict] = _get_execution_options()
+    # TODO: bind timeout value to the COMMON_TIMEOUT_SEC app setting or create a new one
+    execution_options: ClassVar[dict] = {
+        "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
+        "ydb_request_settings": (
+            ydb.BaseRequestSettings()
+            .with_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
+            .with_cancel_after(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
+        ),
+    }
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
         # Not useful.
