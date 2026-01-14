@@ -55,6 +55,15 @@ def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) ->
         return "-"
 
 
+def compile_query_with_literal_binds_if_possible(query: ClauseElement | str, dialect: Dialect) -> str:
+    if isinstance(query, str):
+        return query
+    try:
+        return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
+    except NotImplementedError:
+        return str(query.compile(dialect=dialect))
+
+
 def make_debug_query(query: str, params: Union[list, dict]) -> str:
     return f"{query} {params!r}"
 
