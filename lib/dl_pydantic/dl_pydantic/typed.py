@@ -121,9 +121,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
             if isinstance(value, cls):
                 if value.type != key:
-                    raise ValueError(
-                        f"Type mismatch: dict key is '{key}', but {cls.__name__}.type is '{value.type}'"
-                    )
+                    raise ValueError(f"Type mismatch: dict key is '{key}', but {cls.__name__}.type is '{value.type}'")
                 result[key] = value
                 continue
             elif isinstance(value, dict):
