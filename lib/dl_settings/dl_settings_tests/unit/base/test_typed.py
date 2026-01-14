@@ -323,6 +323,7 @@ def test_dict_factory_with_type_key() -> None:
         ...
 
     class Child(Base):
+        type: str = "default_type"
         value: str
 
     Base.register("child", Child)
@@ -331,6 +332,10 @@ def test_dict_factory_with_type_key() -> None:
         children: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
 
     root = Root.model_validate({"children": {"child": {"value": "test"}}})
+    assert isinstance(root.children["child"], Child)
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    root = Root(children={"child": Child(value="test")})  # type: ignore
     assert isinstance(root.children["child"], Child)
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
 

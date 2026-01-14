@@ -119,7 +119,13 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             if type_key in data:
                 raise ValueError(f"Data must not contain '{type_key}' key, dict key is already used as type")
 
-            value[type_key] = key
+            if isinstance(value, cls):
+                value.type = key
+            elif isinstance(value, dict):
+                value[type_key] = key
+            else:
+                raise ValueError(f"Value must be dict or {cls.__name__}")
+
             result[key] = cls.factory(value)
 
         return result
