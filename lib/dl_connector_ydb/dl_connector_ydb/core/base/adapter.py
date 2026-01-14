@@ -38,7 +38,8 @@ _DBA_YQL_BASE_DTO_TV = TypeVar("_DBA_YQL_BASE_DTO_TV", bound="BaseSQLConnTargetD
 
 @attr.s
 class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
-    use_literal_binds_if_possible = True
+    use_literal_binds: ClassVar[bool] = False
+    use_literal_binds_for_dashsql: ClassVar[bool] = True
 
     execution_options = {
         "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),

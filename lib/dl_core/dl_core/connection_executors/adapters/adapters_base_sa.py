@@ -93,7 +93,8 @@ class BaseSAAdapter(
     SAColumnTypeNormalizer,
 ):
     allow_sa_text_as_columns_source: ClassVar[bool] = False
-    use_literal_binds_if_possible: ClassVar[bool] = False
+    use_literal_binds: ClassVar[bool] = False
+    use_literal_binds_for_dashsql: ClassVar[bool] = False
 
     # Instance attributes
     _default_chunk_size: int = attr.ib()
@@ -168,7 +169,8 @@ class BaseSAAdapter(
         debug_query = compile_query_for_debug(query, engine.dialect)
         inspector_query = compile_query_for_inspector(query, engine.dialect)
 
-        if self.use_literal_binds_if_possible:
+        # Use literal binds for all queries or for dashsql queries only
+        if self.use_literal_binds or self.use_literal_binds_for_dashsql and db_adapter_query.is_dashsql_query:
             query = compile_query_with_literal_binds_if_possible(query, engine.dialect)
 
         with (
