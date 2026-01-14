@@ -109,23 +109,21 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
     @classmethod
     def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
-        if not isinstance(data, dict):
-            raise ValueError("Data must be mapping for dict factory")
-
         result: dict[str, base.BaseModel] = {}
         type_key = cls.type_key()
 
         for key, value in data.items():
-            if type_key in value:
-                raise ValueError(f"Data must not contain '{type_key}' key, dict key is already used as type")
-
             if isinstance(value, cls):
                 if value.type != key:
                     raise ValueError(f"Type mismatch: dict key is '{key}', but {cls.__name__}.type is '{value.type}'")
                 result[key] = value
                 continue
+
             elif isinstance(value, dict):
+                if type_key in value:
+                    raise ValueError(f"Data must not contain '{type_key}' key, dict key is already used as type")
                 value[type_key] = key
+
             else:
                 raise ValueError(f"Value must be dict or {cls.__name__}")
 
