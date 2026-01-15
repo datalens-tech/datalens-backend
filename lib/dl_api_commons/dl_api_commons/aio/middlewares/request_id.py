@@ -7,10 +7,7 @@ from typing import Optional
 from aiohttp import web
 import attr
 
-from dl_api_commons import (
-    make_uuid_from_parts,
-    request_id_generator,
-)
+from dl_api_commons import make_uuid_from_parts
 from dl_api_commons.aio.middlewares.commons import get_endpoint_code
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
@@ -28,6 +25,7 @@ from dl_api_commons.reporting.profiler import DefaultReportingProfiler
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from dl_constants.api_constants import DLHeadersCommon
 import dl_logging
+import dl_utils
 
 
 LOGGER = logging.getLogger(__name__)
@@ -65,11 +63,11 @@ class RequestId:
 
         if self.append_own_req_id:
             request_id = make_uuid_from_parts(
-                current=request_id_generator(self.app_prefix),
+                current=dl_utils.request_id_generator(self.app_prefix),
                 parent=parent_request_id,
             )
         else:
-            request_id = parent_request_id or request_id_generator(self.app_prefix)
+            request_id = parent_request_id or dl_utils.request_id_generator(self.app_prefix)
 
         endpoint_code = get_endpoint_code(request)
 

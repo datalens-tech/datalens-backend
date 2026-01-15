@@ -3075,6 +3075,7 @@ dl-constants = {path = "../dl_constants"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
+dl-utils = {path = "../dl_utils"}
 httpx = "*"
 pydantic = "*"
 typing-extensions = "*"

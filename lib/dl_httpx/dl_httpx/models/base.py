@@ -1,22 +1,15 @@
 from typing import Any
-import uuid
 
 import attrs
 
 import dl_constants
 import dl_pydantic
-
-
-def request_id_generator(prefix: str | None = None) -> str:
-    result = uuid.uuid4().hex
-    if prefix is not None:
-        result = prefix + "." + result
-    return result
+import dl_utils
 
 
 @attrs.define(kw_only=True, frozen=True)
 class BaseRequest:
-    request_id: str = attrs.field(factory=request_id_generator)
+    request_id: str = attrs.field(factory=dl_utils.request_id_generator)
 
     @property
     def path(self) -> str:
