@@ -355,6 +355,22 @@ tasks:
         vars:
           DOCKER_HOST: "ssh://{{.VM_HOST}}"
 
+  compose-ps:
+    desc: Show docker-compose ps
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - |
+        {{ if .DOCKER_HOST }}DOCKER_HOST={{.DOCKER_HOST}}{{ end }} \
+        docker ps
+
+  compose-remote-ps:
+    desc: Show docker-compose ps remotely
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - task: compose-ps
+        vars:
+          DOCKER_HOST: 'ssh://{{.VM_HOST}}'
+
   compose-stop:
     desc: Stop docker-compose
     dir: "{{.USER_WORKING_DIR}}"
