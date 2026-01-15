@@ -237,6 +237,10 @@ def test_annotation() -> None:
     assert isinstance(root.child, Child)
     assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
 
+    root = Root(child=Child(type="child", value="test"))  # type: ignore
+    assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
+
 
 def test_optional_annotation() -> None:
     class Base(dl_settings.TypedBaseSettings):
@@ -262,6 +266,18 @@ def test_optional_annotation() -> None:
     assert root.child is None
     assert root.model_dump() == {"child": None}
 
+    root = Root(child=Child(type="child", value="test"))  # type: ignore
+    assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
+
+    root = Root(child=None)
+    assert root.child is None
+    assert root.model_dump() == {"child": None}
+
+    root = Root()
+    assert root.child is None
+    assert root.model_dump() == {"child": None}
+
 
 def test_list_annotation() -> None:
     class Base(dl_settings.TypedBaseSettings):
@@ -276,6 +292,10 @@ def test_list_annotation() -> None:
         children: dl_settings.TypedListAnnotation[Base] = pydantic.Field(default_factory=list)
 
     root = Root.model_validate({"children": [{"type": "child", "value": "test"}]})
+    assert isinstance(root.children[0], Child)
+    assert root.model_dump() == {"children": [{"type": "child", "value": "test"}]}
+
+    root = Root(children=[Child(type="child", value="test")])  # type: ignore
     assert isinstance(root.children[0], Child)
     assert root.model_dump() == {"children": [{"type": "child", "value": "test"}]}
 
@@ -295,6 +315,11 @@ def test_dict_annotation() -> None:
     root = Root.model_validate({"children": {"child": {"type": "child", "value": "test"}}})
     assert isinstance(root.children["child"], Child)
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    root = Root(children={"child": Child(type="child", value="test")})  # type: ignore
+
+    assert isinstance(root.children["child"], Child)
+    assert root.children["child"].value == "test"
 
 
 def test_dict_annotation_with_env(
@@ -323,6 +348,7 @@ def test_dict_factory_with_type_key() -> None:
         ...
 
     class Child(Base):
+        type: str = "child"
         value: str
 
     Base.register("child", Child)
@@ -331,6 +357,10 @@ def test_dict_factory_with_type_key() -> None:
         children: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
 
     root = Root.model_validate({"children": {"child": {"value": "test"}}})
+    assert isinstance(root.children["child"], Child)
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    root = Root(children={"child": Child(value="test")})  # type: ignore
     assert isinstance(root.children["child"], Child)
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
 
