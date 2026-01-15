@@ -62,10 +62,6 @@ class SourceBackendType(DynamicEnum):
 class ConnectionType(DynamicEnum):
     unknown = AutoEnumValue()
 
-    @property
-    def upper_value(self) -> str:
-        return self.__value.upper()
-
 
 @unique
 class QueryBlockPlacementType(Enum):

@@ -66,12 +66,19 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return data
 
     @classmethod
-    def _get_class_name(cls, data: dict[str, Any]) -> str:
+    def _get_class_name(cls, data: dict[str, Any]) -> str | None:
         type_key = cls.type_key()
         if type_key not in data:
             raise ValueError(f"Data must contain '{type_key}' key")
 
-        return data[type_key]
+        data_type = data[type_key]
+
+        data_type_lower = data_type.lower()
+        for registered_type in cls._classes:
+            if registered_type.lower() == data_type_lower:
+                return registered_type
+
+        return None
 
     @classmethod
     def factory(cls, data: Any) -> Self:
@@ -82,9 +89,10 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             raise ValueError("Data must be dict")
 
         class_name = cls._get_class_name(data)
-        if class_name in cls._classes:
+        if class_name:
             class_ = cls._classes[class_name]
-        elif cls._unknown_class is not None:
+            data[cls.type_key()] = class_name
+        elif not class_name and cls._unknown_class is not None:
             class_ = cls._unknown_class
         else:
             raise ValueError(f"Unknown type: {class_name}")
@@ -130,7 +138,8 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             else:
                 raise ValueError(f"Value must be dict or {cls.__name__}")
 
-            result[key] = cls.factory(value)
+            result_cls = cls.factory(value)
+            result[result_cls.type] = result_cls
 
         return result
 

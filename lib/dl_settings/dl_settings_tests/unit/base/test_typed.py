@@ -196,7 +196,16 @@ def test_factory_ignores_case(
     monkeypatch.setenv("CHILD__inner_field", "value")
 
     root = RootSettings()  # type: ignore
+    assert isinstance(root.child, Child)
 
+    monkeypatch.setenv("CHILD__TYPE", "CHILD")
+
+    root = RootSettings()  # type: ignore
+    assert isinstance(root.child, Child)
+
+    monkeypatch.setenv("CHILD__TYPE", "ChiLd")
+
+    root = RootSettings()  # type: ignore
     assert isinstance(root.child, Child)
 
 
@@ -216,6 +225,16 @@ def test_factory_ignores_case_in_config(
 
     with tmp_configs_utils.TmpConfigs() as tmp_configs:
         config_path = tmp_configs.add({"CHILD": {"TYPE": "child"}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILD, Child)
+
+        config_path = tmp_configs.add({"CHILD": {"type": "CHILD"}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILD, Child)
+
+        config_path = tmp_configs.add({"CHILD": {"type": "ChiLd"}})
         monkeypatch.setenv("CONFIG_PATH", str(config_path))
         root = Root()
         assert isinstance(root.CHILD, Child)
@@ -343,7 +362,9 @@ def test_dict_annotation_with_env(
     assert root.children["child"].secret == "secret_value"
 
 
-def test_dict_factory_with_type_key() -> None:
+def test_dict_factory_with_type_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class Base(dl_settings.TypedBaseSettings):
         ...
 
@@ -363,6 +384,13 @@ def test_dict_factory_with_type_key() -> None:
     root = Root(children={"child": Child(value="test")})  # type: ignore
     assert isinstance(root.children["child"], Child)
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        config_path = tmp_configs.add({"children": {"child": {"value": "test"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.children["child"], Child)
+        assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
 
 
 def test_dict_factory_with_type_key_with_env(
@@ -385,3 +413,18 @@ def test_dict_factory_with_type_key_with_env(
     assert isinstance(root.children["child"], Child)
     assert root.children["child"].value == "test"
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+
+def test_dict_factory_with_type_key_ignores_type_case() -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        value: str
+
+    Base.register("child", Child)
+
+    base = Base.dict_with_type_key_factory({"CHILD": {"value": "test"}})
+    assert isinstance(base["child"], Child)
+    base = Base.dict_with_type_key_factory({"ChiLd": {"value": "test"}})
+    assert isinstance(base["child"], Child)

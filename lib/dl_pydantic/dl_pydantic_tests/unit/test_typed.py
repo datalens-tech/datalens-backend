@@ -35,6 +35,19 @@ def test_type_field_name_alias() -> None:
     assert isinstance(Base.factory({"test_type_field_name": "child"}), Child)
 
 
+def test_type_field_case_insensitive() -> None:
+    class Base(dl_pydantic.TypedBaseModel):
+        type: str
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    assert isinstance(Base.factory({"type": "CHILD"}), Child)
+    assert isinstance(Base.factory({"type": "ChiLd"}), Child)
+
+
 def test_already_deserialized() -> None:
     class Base(dl_pydantic.TypedBaseModel):
         ...
