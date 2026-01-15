@@ -10,6 +10,7 @@ from typing import (
     Optional,
     TypeVar,
 )
+import uuid
 
 import attr
 
@@ -127,3 +128,10 @@ def hide_url_args(url_or_path: str) -> str:
     fragment = "".join(params.partition("#")[1:])
     hidden_params = "&".join(f"{p.partition('=')[0]}=[hidden]" for p in params.split("&") if "=" in p)
     return f"{path}?{hidden_params}{fragment}"
+
+
+def request_id_generator(prefix: Optional[str] = None) -> str:
+    result = uuid.uuid4().hex
+    if prefix is not None:
+        result = prefix + "." + result
+    return result
