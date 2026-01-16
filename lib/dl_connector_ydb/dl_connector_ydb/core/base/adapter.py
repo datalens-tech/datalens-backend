@@ -45,7 +45,6 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
         "ydb_request_settings": (
             ydb.BaseRequestSettings()
-            .with_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
             .with_operation_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
         ),
     }
