@@ -4,7 +4,7 @@ from dl_connector_oracle.core.constants import (
     SOURCE_TYPE_ORACLE_SUBSELECT,
     SOURCE_TYPE_ORACLE_TABLE,
 )
-from dl_connector_oracle.core.settings import DeprecatedOracleConnectorSettings
+from dl_connector_oracle.core.settings import OracleConnectorSettings
 from dl_connector_oracle_tests.db.api.base import (
     OracleDataApiTestBase,
     OracleDatasetTestBase,
@@ -13,7 +13,7 @@ from dl_connector_oracle_tests.db.api.base import (
 
 class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate):
     source_type = SOURCE_TYPE_ORACLE_TABLE
-    conn_settings_cls = DeprecatedOracleConnectorSettings
+    conn_settings_cls = OracleConnectorSettings
     table_name_pattern = "TABLE_.*"
     invalid_table_name = "TABLE_INVALID"
     failed_constraint_table_name = "FAILED_CONSTRAINT_TABLE_NAME"
@@ -53,7 +53,7 @@ class TestTableDataApiSourceTemplate(
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
     source_type = SOURCE_TYPE_ORACLE_SUBSELECT
-    conn_settings_cls = DeprecatedOracleConnectorSettings
+    conn_settings_cls = OracleConnectorSettings
     table_name_pattern = "TABLE_.*"
     invalid_table_name = "TABLE_INVALID"
     failed_constraint_table_name = "FAILED_CONSTRAINT_TABLE_NAME"

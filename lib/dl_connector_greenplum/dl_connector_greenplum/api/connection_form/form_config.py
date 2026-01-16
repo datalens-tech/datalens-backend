@@ -20,11 +20,11 @@ from dl_api_connector.form_config.models.common import CommonFieldName
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider
-from dl_connector_greenplum.core.settings import DeprecatedGreenplumConnectorSettings
+from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
 from dl_connector_postgresql.api.connection_form.form_config import (
     PostgreSQLFieldName,
     PostgresRowConstructor,
@@ -76,7 +76,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
 
     def _get_base_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         host_section: Sequence[FormRow],
         username_section: Sequence[FormRow],
         db_name_section: Sequence[FormRow],
@@ -86,7 +86,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         postgres_rc: PostgresRowConstructor,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, DeprecatedGreenplumConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, GreenplumConnectorSettings)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
@@ -123,7 +123,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)

@@ -20,13 +20,13 @@ from dl_api_connector.form_config.models.common import (
 )
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_oracle.api.connection_info import OracleConnectionInfoProvider
 from dl_connector_oracle.api.i18n.localizer import Translatable
 from dl_connector_oracle.core.constants import OracleDbNameType
-from dl_connector_oracle.core.settings import DeprecatedOracleConnectorSettings
+from dl_connector_oracle.core.settings import OracleConnectorSettings
 
 
 @unique
@@ -37,10 +37,10 @@ class OracleFieldName(FormFieldName):
 class OracleConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, DeprecatedOracleConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, OracleConnectorSettings)
         rc = RowConstructor(self._localizer)
 
         common_api_schema_items: list[FormFieldApiSchema] = [

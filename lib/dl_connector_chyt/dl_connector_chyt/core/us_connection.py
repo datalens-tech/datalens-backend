@@ -39,7 +39,7 @@ from dl_connector_chyt.core.constants import (
     SOURCE_TYPE_CHYT_YTSAURUS_TABLE_RANGE,
 )
 from dl_connector_chyt.core.dto import CHYTDTO
-from dl_connector_chyt.core.settings import DeprecatedCHYTConnectorSettings
+from dl_connector_chyt.core.settings import CHYTConnectorSettings
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
 
@@ -49,13 +49,13 @@ if TYPE_CHECKING:
 
 class BaseConnectionCHYT(
     RawSqlLevelConnectionMixin,
-    ConnectionSettingsMixin[DeprecatedCHYTConnectorSettings],
+    ConnectionSettingsMixin[CHYTConnectorSettings],
     ConnectionBase,
     abc.ABC,
 ):
     allow_dashsql: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = DeprecatedCHYTConnectorSettings
+    settings_type = CHYTConnectorSettings
 
     chyt_table_source_type: ClassVar[DataSourceType]
     chyt_table_list_source_type: ClassVar[DataSourceType]
