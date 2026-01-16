@@ -64,7 +64,7 @@ class ConnectionType(DynamicEnum):
 
     @property
     def upper_value(self) -> str:
-        return self.__value.upper()
+        return self.value.upper()
 
 
 @unique
