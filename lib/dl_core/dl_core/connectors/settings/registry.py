@@ -27,5 +27,5 @@ def register_connector_settings_class(
         CONNECTORS_SETTINGS_FALLBACKS[conn_type] = fallback
     # delete above after moving to pydantic settings
 
-    ConnectorSettings.register(conn_type.value, pydantic_settings_class)
+    ConnectorSettings.register(conn_type.upper_value, pydantic_settings_class)
     CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS.update(pydantic_settings_class.root_fallback_env_keys)
