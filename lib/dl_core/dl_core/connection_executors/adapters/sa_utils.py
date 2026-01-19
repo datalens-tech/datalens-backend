@@ -78,8 +78,9 @@ def compile_query_with_literal_binds_if_possible(
 
         # SA generates query for DBAPI, so mod is represented as `%%` so next hack is needed
         return compiled_query % ()
-    except NotImplementedError:
+    except Exception:
         LOGGER.exception("Failed to compile query with literal_binds")
+        LOGGER.debug(f"Debug query: {compile_query_for_debug(query, dialect)}")
         return query
 
 

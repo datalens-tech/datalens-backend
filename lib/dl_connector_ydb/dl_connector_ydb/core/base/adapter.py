@@ -43,7 +43,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     use_literal_binds: ClassVar[bool] = False
     use_literal_binds_for_dashsql: ClassVar[bool] = True
 
-    execution_options = {
+    execution_options: ClassVar[dict[str, Any]] = {
         "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
         "ydb_request_settings": (
             ydb.BaseRequestSettings()
