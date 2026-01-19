@@ -59,6 +59,7 @@ class RequestObfuscator:
             "secret",
             "private_key",
             "cypher_text",
+            "chart_params",
         )
     )
 
