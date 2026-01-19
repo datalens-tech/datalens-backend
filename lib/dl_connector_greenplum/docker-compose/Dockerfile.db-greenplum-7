@@ -1,0 +1,4 @@
+FROM woblerr/greenplum:7.1.0@sha256:51bc75831c43468425e5cb55ff9964ffd7f33e7790da5e8e8ce3af8e659c8bef   
+
+COPY db-greenplum/initdb.d/* /docker-entrypoint-initdb.d/
+COPY db-greenplum/data /common-data

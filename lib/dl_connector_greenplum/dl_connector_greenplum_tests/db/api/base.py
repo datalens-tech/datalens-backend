@@ -16,9 +16,10 @@ from dl_connector_greenplum.core.constants import (
 )
 from dl_connector_greenplum_tests.db.config import (
     API_TEST_CONFIG,
-    CONNECTION_PARAMS,
+    CONNECTION_PARAMS_BY_VERSION,
     CORE_TEST_CONFIG,
-    DB_CORE_URL,
+    DB_URLS,
+    GreenplumVersion,
 )
 
 
@@ -29,27 +30,49 @@ class GreenplumConnectionTestBase(ConnectionTestBase, ServiceFixtureTextClass):
     raw_sql_level: ClassVar[RawSQLLevel] = RawSQLLevel.dashsql
 
     @pytest.fixture(scope="class")
-    def db_url(self) -> str:
-        return DB_CORE_URL
-
-    @pytest.fixture(scope="class")
     def bi_test_config(self) -> ApiTestEnvironmentConfiguration:
         return API_TEST_CONFIG
 
+
+class GP6ConnectionTestBase(GreenplumConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        return DB_URLS[GreenplumVersion.GP6]
+
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        result = CONNECTION_PARAMS.copy()
+        result = CONNECTION_PARAMS_BY_VERSION[GreenplumVersion.GP6].copy()
         if self.raw_sql_level is not None:
             result["raw_sql_level"] = self.raw_sql_level.value
-
         return result
 
 
-class GreenplumDashSQLConnectionTest(GreenplumConnectionTestBase):
-    raw_sql_level = RawSQLLevel.dashsql
+class GP7ConnectionTestBase(GreenplumConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        return DB_URLS[GreenplumVersion.GP7]
+
+    @pytest.fixture(scope="class")
+    def connection_params(self) -> dict:
+        result = CONNECTION_PARAMS_BY_VERSION[GreenplumVersion.GP7].copy()
+        if self.raw_sql_level is not None:
+            result["raw_sql_level"] = self.raw_sql_level.value
+        return result
 
 
-class GreenplumDatasetTestBase(GreenplumConnectionTestBase, DatasetTestBase):
+class GreenplumDashSQLConnectionTestMixin:
+    raw_sql_level: ClassVar[RawSQLLevel] = RawSQLLevel.dashsql
+
+
+class GP6DashSQLConnectionTest(GreenplumDashSQLConnectionTestMixin, GP6ConnectionTestBase):
+    pass
+
+
+class GP7DashSQLConnectionTest(GreenplumDashSQLConnectionTestMixin, GP7ConnectionTestBase):
+    pass
+
+
+class GreenplumDatasetTestBaseMixin(DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table: DbTable) -> dict:
         return dict(
@@ -61,5 +84,21 @@ class GreenplumDatasetTestBase(GreenplumConnectionTestBase, DatasetTestBase):
         )
 
 
-class GreenplumDataApiTestBase(GreenplumDatasetTestBase, StandardizedDataApiTestBase):
+class GP6DatasetTestBase(GP6ConnectionTestBase, GreenplumDatasetTestBaseMixin):
+    pass
+
+
+class GP7DatasetTestBase(GP7ConnectionTestBase, GreenplumDatasetTestBaseMixin):
+    pass
+
+
+class GreenplumDataApiTestBaseMixin(StandardizedDataApiTestBase):
     mutation_caches_enabled = False
+
+
+class GP6DataApiTestBase(GP6DatasetTestBase, GreenplumDataApiTestBaseMixin):
+    pass
+
+
+class GP7DataApiTestBase(GP7DatasetTestBase, GreenplumDataApiTestBaseMixin):
+    pass

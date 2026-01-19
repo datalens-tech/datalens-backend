@@ -1,6 +1,13 @@
+import enum
+
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
+
+
+class GreenplumVersion(enum.Enum):
+    GP6 = "gp6"
+    GP7 = "gp7"
 
 
 # Infra settings
@@ -15,22 +22,39 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     redis_port=get_test_container_hostport("redis-caches", fallback_port=51912).port,
 )
 
-DB_CORE_URL = f'bi_postgresql://datalens:qwerty@{get_test_container_hostport("db-postgres-13", fallback_port=52301).as_pair()}/test_data'
+DB_NAME = "test_data"
+TABLE_NAME = "sample"
+GP_USER = "datalens"
+GP_PASSWORD = "qwerty"
+
+
+DB_URLS = {
+    GreenplumVersion.GP6: f'bi_postgresql://{GP_USER}:{GP_PASSWORD}@{get_test_container_hostport("db-greenplum-6", fallback_port=52320).as_pair()}/{DB_NAME}',
+    GreenplumVersion.GP7: f'bi_postgresql://{GP_USER}:{GP_PASSWORD}@{get_test_container_hostport("db-greenplum-7", fallback_port=52321).as_pair()}/{DB_NAME}',
+}
+
+
+CONNECTION_PARAMS_BY_VERSION = {
+    GreenplumVersion.GP6: dict(
+        db_name=DB_NAME,
+        host=get_test_container_hostport("db-greenplum-6", fallback_port=52320).host,
+        port=get_test_container_hostport("db-greenplum-6", fallback_port=52320).port,
+        username=GP_USER,
+        password=GP_PASSWORD,
+    ),
+    GreenplumVersion.GP7: dict(
+        db_name=DB_NAME,
+        host=get_test_container_hostport("db-greenplum-7", fallback_port=52321).host,
+        port=get_test_container_hostport("db-greenplum-7", fallback_port=52321).port,
+        username=GP_USER,
+        password=GP_PASSWORD,
+    ),
+}
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["greenplum", "postgresql"],
     core_test_config=CORE_TEST_CONFIG,
     ext_query_executer_secret_key="_some_test_secret_key_",
-)
-
-DB_NAME = "test_data"
-TABLE_NAME = "sample"
-CONNECTION_PARAMS = dict(
-    db_name=DB_NAME,
-    host=get_test_container_hostport("db-postgres-13", fallback_port=52301).host,
-    port=get_test_container_hostport("db-postgres-13", fallback_port=52301).port,
-    username="datalens",
-    password="qwerty",
 )
 
 
