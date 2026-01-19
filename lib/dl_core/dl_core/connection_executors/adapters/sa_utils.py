@@ -55,6 +55,35 @@ def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) ->
         return "-"
 
 
+def compile_query_with_literal_binds_if_possible(
+    query: ClauseElement | str,
+    dialect: Dialect,
+) -> ClauseElement | str:
+    """
+    Compile query to string using literal_binds.
+
+    In case of error, defaults to query as-is without compilation
+    """
+
+    if isinstance(query, str):
+        return query
+
+    try:
+        compiled_query = str(
+            query.compile(
+                dialect=dialect,
+                compile_kwargs={"literal_binds": True},
+            )
+        )
+
+        # SA generates query for DBAPI, so mod is represented as `%%` so next hack is needed
+        return compiled_query % ()
+    except Exception:
+        LOGGER.exception("Failed to compile query with literal_binds")
+        LOGGER.debug(f"Debug query: {compile_query_for_debug(query, dialect)}")
+        return query
+
+
 def make_debug_query(query: str, params: Union[list, dict]) -> str:
     return f"{query} {params!r}"
 
