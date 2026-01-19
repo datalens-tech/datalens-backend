@@ -43,11 +43,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     # TODO: bind timeout value to the COMMON_TIMEOUT_SEC app setting or create a new one
     execution_options: ClassVar[dict] = {
         "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
-        "ydb_request_settings": (
-            ydb.BaseRequestSettings()
-            .with_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)
-            .with_cancel_after(DEFAULT_YDB_REQUEST_TIMEOUT_SEC + 10)
-        ),
+        "ydb_request_settings": (ydb.BaseRequestSettings().with_operation_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)),
     }
 
     def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
