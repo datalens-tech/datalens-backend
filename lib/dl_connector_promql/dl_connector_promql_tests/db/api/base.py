@@ -12,6 +12,7 @@ from dl_core_testing.engine_wrapper import TestingEngineWrapper
 from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
 from dl_connector_promql_tests.db.config import (
     API_CONNECTION_SETTINGS,
+    API_CONNECTION_SETTINGS_HEADER_AUTH,
     API_TEST_CONFIG,
 )
 
@@ -44,3 +45,9 @@ class PromQLDashSQLConnectionTest(PromQLConnectionTestBase):
         return API_CONNECTION_SETTINGS | dict(
             raw_sql_level=RawSQLLevel.dashsql.value,
         )
+
+
+class PromQLHeaderAuthConnectionTest(PromQLConnectionTestBase):
+    @pytest.fixture(scope="class")
+    def connection_params(self) -> dict:
+        return API_CONNECTION_SETTINGS_HEADER_AUTH

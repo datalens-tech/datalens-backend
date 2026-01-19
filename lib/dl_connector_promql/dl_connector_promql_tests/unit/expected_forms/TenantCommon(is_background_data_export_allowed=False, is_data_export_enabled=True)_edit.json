@@ -5,6 +5,29 @@
             "items": [
                 {
                     "id": "label",
+                    "text": "Authentication type"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "auth_type",
+                    "defaultValue": "password",
+                    "options": [
+                        {
+                            "text": "Password",
+                            "value": "password"
+                        },
+                        {
+                            "text": "Header",
+                            "value": "header"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
                     "text": "Hostname"
                 },
                 {
@@ -53,11 +76,17 @@
             "items": [
                 {
                     "id": "label",
+                    "displayConditions": {
+                        "auth_type": "password"
+                    },
                     "text": "Username"
                 },
                 {
                     "id": "input",
                     "name": "username",
+                    "displayConditions": {
+                        "auth_type": "password"
+                    },
                     "width": "m"
                 }
             ]
@@ -66,12 +95,41 @@
             "items": [
                 {
                     "id": "label",
+                    "displayConditions": {
+                        "auth_type": "password"
+                    },
                     "text": "Password"
                 },
                 {
                     "id": "input",
                     "name": "password",
+                    "displayConditions": {
+                        "auth_type": "password"
+                    },
                     "width": "m",
+                    "fakeValue": "******",
+                    "controlProps": {
+                        "type": "password"
+                    }
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
+                        "auth_type": "header"
+                    },
+                    "text": "Header Authorization"
+                },
+                {
+                    "id": "input",
+                    "name": "auth_header",
+                    "displayConditions": {
+                        "auth_type": "header"
+                    },
+                    "width": "l",
                     "fakeValue": "******",
                     "controlProps": {
                         "type": "password"
@@ -143,6 +201,11 @@
         "edit": {
             "items": [
                 {
+                    "name": "auth_type",
+                    "required": true,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "host",
                     "required": true,
                     "defaultAction": "include"
@@ -160,12 +223,17 @@
                 {
                     "name": "username",
                     "required": false,
-                    "defaultAction": "include"
+                    "defaultAction": "skip"
                 },
                 {
                     "name": "password",
                     "required": false,
-                    "defaultAction": "include"
+                    "defaultAction": "skip"
+                },
+                {
+                    "name": "auth_header",
+                    "required": false,
+                    "defaultAction": "skip"
                 },
                 {
                     "name": "cache_ttl_sec",
@@ -192,10 +260,50 @@
                     "defaultAction": "include"
                 }
             ],
-            "conditions": []
+            "conditions": [
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "password",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "username"
+                            },
+                            "action": "include"
+                        },
+                        {
+                            "selector": {
+                                "name": "password"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                },
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "header",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "auth_header"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                }
+            ]
         },
         "check": {
             "items": [
+                {
+                    "name": "auth_type",
+                    "required": true,
+                    "defaultAction": "include"
+                },
                 {
                     "name": "host",
                     "required": true,
@@ -214,12 +322,17 @@
                 {
                     "name": "username",
                     "required": false,
-                    "defaultAction": "include"
+                    "defaultAction": "skip"
                 },
                 {
                     "name": "password",
                     "required": false,
-                    "defaultAction": "include"
+                    "defaultAction": "skip"
+                },
+                {
+                    "name": "auth_header",
+                    "required": false,
+                    "defaultAction": "skip"
                 },
                 {
                     "name": "secure",
@@ -228,7 +341,42 @@
                     "defaultAction": "include"
                 }
             ],
-            "conditions": []
+            "conditions": [
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "password",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "username"
+                            },
+                            "action": "include"
+                        },
+                        {
+                            "selector": {
+                                "name": "password"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                },
+                {
+                    "when": {
+                        "name": "auth_type"
+                    },
+                    "equals": "header",
+                    "then": [
+                        {
+                            "selector": {
+                                "name": "auth_header"
+                            },
+                            "action": "include"
+                        }
+                    ]
+                }
+            ]
         }
     },
     "uiSchema": {

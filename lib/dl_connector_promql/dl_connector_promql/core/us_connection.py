@@ -8,8 +8,12 @@ from typing import (
 import attr
 
 from dl_core.us_connection_base import ClassicConnectionSQL
+from dl_core.utils import secrepr
 
-from dl_connector_promql.core.constants import SOURCE_TYPE_PROMQL
+from dl_connector_promql.core.constants import (
+    SOURCE_TYPE_PROMQL,
+    PromQLAuthType,
+)
 from dl_connector_promql.core.dto import PromQLConnDTO
 
 
@@ -23,6 +27,8 @@ class PromQLConnection(ClassicConnectionSQL):
     class DataModel(ClassicConnectionSQL.DataModel):
         path: Optional[str] = attr.ib(default=None)
         secure: bool = attr.ib(default=False)
+        auth_type: PromQLAuthType = attr.ib()
+        auth_header: str | None = attr.ib(repr=secrepr, default=None)
 
     def get_conn_dto(self) -> PromQLConnDTO:
         return PromQLConnDTO(
@@ -30,8 +36,10 @@ class PromQLConnection(ClassicConnectionSQL):
             host=self.data.host,
             port=self.data.port,
             path=self.data.path,
-            username=self.data.username,
-            password=self.data.password,
+            auth_type=self.data.auth_type,
+            username=self.data.username or "",
+            password=self.data.password or "",
+            auth_header=self.data.auth_header,
             db_name=self.data.db_name or "",
             protocol="https" if self.data.secure else "http",
             multihosts=(),
