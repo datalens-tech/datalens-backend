@@ -1,3 +1,5 @@
+import base64
+
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
@@ -24,6 +26,14 @@ PROMETHEUS_CONTAINER_HOSTPORT = get_test_container_hostport("db-prometheus", fal
 API_CONNECTION_SETTINGS = dict(
     host=PROMETHEUS_CONTAINER_HOSTPORT.host,
     port=PROMETHEUS_CONTAINER_HOSTPORT.port,
+    auth_type="password",
     username="admin",
     password="admin",
+)
+
+API_CONNECTION_SETTINGS_HEADER_AUTH = dict(
+    host=PROMETHEUS_CONTAINER_HOSTPORT.host,
+    port=PROMETHEUS_CONTAINER_HOSTPORT.port,
+    auth_type="header",
+    auth_header=f"Basic {base64.b64encode(b'admin:admin').decode()}",
 )
