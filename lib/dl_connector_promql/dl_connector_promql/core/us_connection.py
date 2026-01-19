@@ -7,7 +7,11 @@ from typing import (
 
 import attr
 
-from dl_core.us_connection_base import ClassicConnectionSQL
+from dl_core.services_registry import ServicesRegistry
+from dl_core.us_connection_base import (
+    ClassicConnectionSQL,
+    ConnectionBase,
+)
 from dl_core.utils import secrepr
 
 from dl_connector_promql.core.constants import (
@@ -37,8 +41,8 @@ class PromQLConnection(ClassicConnectionSQL):
             port=self.data.port,
             path=self.data.path,
             auth_type=self.data.auth_type,
-            username=self.data.username or "",
-            password=self.data.password or "",
+            username=self.data.username,
+            password=self.data.password,
             auth_header=self.data.auth_header,
             db_name=self.data.db_name or "",
             protocol="https" if self.data.secure else "http",
@@ -56,3 +60,16 @@ class PromQLConnection(ClassicConnectionSQL):
     @property
     def allow_public_usage(self) -> bool:
         return True
+
+    async def validate_new_data(
+        self,
+        services_registry: ServicesRegistry,
+        changes: Optional[dict] = None,
+        original_version: Optional[ConnectionBase] = None,
+    ) -> None:
+        if original_version is None or original_version and original_version.data.auth_type != self.data.auth_type:
+            if self.data.auth_type == PromQLAuthType.header:
+                self.data.username = None
+                self.data.password = None
+            elif self.data.auth_type == PromQLAuthType.password:
+                self.data.auth_header = None

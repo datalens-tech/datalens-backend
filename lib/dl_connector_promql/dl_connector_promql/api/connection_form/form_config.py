@@ -39,7 +39,6 @@ from dl_connector_promql.core.constants import PromQLAuthType
 @unique
 class PromQLFormFieldName(FormFieldName):
     auth_type = "auth_type"
-    header = "header"
     auth_header = "auth_header"
 
 
@@ -113,12 +112,10 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.path),
             FormFieldApiSchema(
                 name=CommonFieldName.username,
-                required=self.mode == ConnectionFormMode.create,
                 default_action=FormFieldApiAction.skip,
             ),
             FormFieldApiSchema(
                 name=CommonFieldName.password,
-                required=self.mode == ConnectionFormMode.create,
                 default_action=FormFieldApiAction.skip,
             ),
             FormFieldApiSchema(
