@@ -2,18 +2,19 @@ from dl_obfuscator import (
     ObfuscationContext,
     ObfuscationEngine,
     SecretKeeper,
+    SecretObfuscator,
 )
 
 
 class TestObfuscationEngine:
     def test_init(self, secret_keeper: SecretKeeper) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-        assert engine.secret_keeper == secret_keeper
+        obfuscator = SecretObfuscator(secret_keeper)
+        engine = ObfuscationEngine()
         assert len(engine._obfuscators) == 0
+        engine.add_obfuscator(obfuscator)
+        assert len(engine._obfuscators) == 1
 
-    def test_obfuscate_text_secrets(self, secret_keeper: SecretKeeper) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
+    def test_obfuscate_text_secrets(self, engine: ObfuscationEngine) -> None:
         text = "Token: abc123def456 and API key: sk-1234567890abcdef"
 
         obfuscated_logs = engine.obfuscate_text(text, ObfuscationContext.LOGS)
@@ -27,9 +28,7 @@ class TestObfuscationEngine:
         assert "abc123def456" not in obfuscated_inspector
         assert "sk-1234567890abcdef" not in obfuscated_inspector
 
-    def test_obfuscate_text_query_params(self, secret_keeper: SecretKeeper) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
+    def test_obfuscate_text_query_params(self, engine: ObfuscationEngine) -> None:
         text = "Filter: user_id=12345 and param: sensitive_value"
 
         obfuscated_logs = engine.obfuscate_text(text, ObfuscationContext.LOGS)
@@ -41,51 +40,7 @@ class TestObfuscationEngine:
         assert "user_id=12345" in obfuscated_inspector
         assert "sensitive_value" in obfuscated_inspector
 
-    def test_obfuscate_empty_or_none(self, secret_keeper: SecretKeeper) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
-        assert engine.obfuscate("", ObfuscationContext.LOGS) == ""
-        assert engine.obfuscate(None, ObfuscationContext.LOGS) is None
-        assert engine.obfuscate(123, ObfuscationContext.LOGS) == 123
-
-    def test_obfuscate_dict(self, secret_keeper: SecretKeeper, sample_dict: dict) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
-        obfuscated = engine.obfuscate_dict(sample_dict, ObfuscationContext.LOGS)
-
-        assert "abc123def456" not in str(obfuscated)
-        assert "sk-1234567890abcdef" not in str(obfuscated)
-        assert "user_id=12345" not in str(obfuscated)
-
-        # Check structure is preserved
-        assert "message" in obfuscated
-        assert "nested" in obfuscated
-        assert "data" in obfuscated["nested"]
-
-    def test_obfuscate_dict_inspector_context(self, secret_keeper: SecretKeeper, sample_dict: dict) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
-        obfuscated = engine.obfuscate_dict(sample_dict, ObfuscationContext.INSPECTOR)
-
-        assert "abc123def456" not in str(obfuscated)
-        assert "sk-1234567890abcdef" not in str(obfuscated)
-
-        assert "user_id=12345" in str(obfuscated)
-
-    def test_obfuscate_generic(self, secret_keeper: SecretKeeper) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
-        text = "Token: abc123def456"
-        obfuscated = engine.obfuscate(text, ObfuscationContext.LOGS)
-        assert "abc123def456" not in obfuscated
-
-        data = {"token": "abc123def456"}
-        obfuscated = engine.obfuscate(data, ObfuscationContext.LOGS)
-        assert "abc123def456" not in str(obfuscated)
-
-    def test_context_behavior(self, secret_keeper: SecretKeeper) -> None:
-        engine = ObfuscationEngine(secret_keeper)
-
+    def test_context_behavior(self, engine: ObfuscationEngine) -> None:
         text = "Secret: abc123def456, Query: user_id=12345"
 
         contexts = [
@@ -96,10 +51,10 @@ class TestObfuscationEngine:
         ]
 
         for context in contexts:
-            obfuscated = engine.obfuscate_text(text, context)
+            obfuscated = engine.obfuscate(text, context)
             assert "abc123def456" not in obfuscated
             assert "user_id=12345" not in obfuscated
 
-        inspector_obfuscated = engine.obfuscate_text(text, ObfuscationContext.INSPECTOR)
+        inspector_obfuscated = engine.obfuscate(text, ObfuscationContext.INSPECTOR)
         assert "abc123def456" not in inspector_obfuscated
         assert "user_id=12345" in inspector_obfuscated

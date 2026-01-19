@@ -3,6 +3,7 @@ import pytest
 from dl_obfuscator import (
     ObfuscationEngine,
     SecretKeeper,
+    SecretObfuscator,
 )
 
 
@@ -17,8 +18,15 @@ def secret_keeper() -> SecretKeeper:
 
 
 @pytest.fixture
-def obfuscation_engine(secret_keeper: SecretKeeper) -> ObfuscationEngine:
-    engine = ObfuscationEngine(secret_keeper)
+def secret_obfuscator(secret_keeper: SecretKeeper) -> SecretObfuscator:
+    obfuscator = SecretObfuscator(secret_keeper)
+    return obfuscator
+
+
+@pytest.fixture
+def engine(secret_obfuscator: SecretObfuscator) -> ObfuscationEngine:
+    engine = ObfuscationEngine()
+    engine.add_obfuscator(secret_obfuscator)
     return engine
 
 

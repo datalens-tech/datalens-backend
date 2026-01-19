@@ -5,8 +5,8 @@ import attr
 class SecretKeeper:
     """Request-scoped registry for storing secrets and query parameters"""
 
-    _secrets: dict[str, str] = attr.ib(factory=dict, init=False, repr=False)
-    _params: dict[str, str] = attr.ib(factory=dict, init=False, repr=False)
+    _secrets: dict[str, str] = attr.ib(factory=dict, repr=False)
+    _params: dict[str, str] = attr.ib(factory=dict, repr=False)
 
     def add_secret(self, key: str, value: str) -> None:
         """

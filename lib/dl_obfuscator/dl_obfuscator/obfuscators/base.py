@@ -1,6 +1,6 @@
 import abc
 
-from ..context import ObfuscationContext
+from dl_obfuscator.context import ObfuscationContext
 
 
 class BaseObfuscator(abc.ABC):
