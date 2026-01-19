@@ -222,12 +222,12 @@
                 },
                 {
                     "name": "username",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "skip"
                 },
                 {
                     "name": "password",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "skip"
                 },
                 {
@@ -326,12 +326,12 @@
                 },
                 {
                     "name": "username",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "skip"
                 },
                 {
                     "name": "password",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "skip"
                 },
                 {
