@@ -12,6 +12,7 @@ from typing_extensions import override
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
+import dl_app_api_base.request_context as request_context
 import dl_app_base
 import dl_settings
 
@@ -76,13 +77,30 @@ class HttpServerAppFactoryMixin(
         return app
 
     @dl_app_base.singleton_class_method_result
+    async def _get_request_context_manager(
+        self,
+    ) -> request_context.DefaultRequestContextManager:
+        return request_context.DefaultRequestContextManager(
+            context_factory=request_context.DefaultRequestContext.factory,
+            dependencies=request_context.DefaultRequestContextDependencies(),
+        )
+
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app_middlewares(
         self,
     ) -> list[aiohttp.typedefs.Middleware]:
-        logging_middleware = middlewares.LoggingMiddleware()
+        request_context_manager = await self._get_request_context_manager()
+
+        logging_middleware = middlewares.LoggingMiddleware(
+            request_context_manager=request_context_manager,
+        )
         error_handling_middleware = middlewares.ErrorHandlingMiddleware()
+        request_context_middlewares = middlewares.RequestContextMiddleware(
+            context_manager=request_context_manager,
+        )
 
         return [
+            request_context_middlewares.process,
             logging_middleware.process,
             error_handling_middleware.process,
         ]
