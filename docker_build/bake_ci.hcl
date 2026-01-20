@@ -39,4 +39,7 @@ target "ci_with_src" {
     "RUN . /venv/bin/activate && pip install -e /src/terrarium/dl_gitmanager",
     "RUN . /venv/bin/activate && cd /src/metapkg/ && poetry install --no-root --with=dev --with=ci --with=mypy",
   ])
+
+  cache-from = ["type=gha"]
+  cache-to = ["type=gha,mode=max"]
 }
