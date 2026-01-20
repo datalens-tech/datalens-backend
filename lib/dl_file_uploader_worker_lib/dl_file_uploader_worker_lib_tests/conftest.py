@@ -180,7 +180,7 @@ def file_connectors_settings_dict(s3_settings):
                 S3_ENDPOINT_URL="http://s3-storage:8000",
                 FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
             ),
-        ).model_dump(),
+        ),
     }
 
 
