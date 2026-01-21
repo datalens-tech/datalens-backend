@@ -36,7 +36,11 @@ class ActivityResult(dl_temporal.BaseActivityResult):
     activity_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
-class ActivityError(dl_temporal.BaseActivityResult):
+class EmptyActivityResult(dl_temporal.BaseActivityResult):
+    ...
+
+
+class ActivityError(dl_temporal.BaseActivityError):
     ...
 
 
@@ -46,9 +50,9 @@ class Activity(dl_temporal.BaseActivity):
     logger = LOGGER
 
     Params = ActivityParams
-    Result = ActivityResult | ActivityError
+    Result = ActivityResult | EmptyActivityResult | ActivityError
 
-    async def run(self, params: ActivityParams) -> ActivityResult | ActivityError:
+    async def run(self, params: ActivityParams) -> ActivityResult | EmptyActivityResult | ActivityError:
         if params.return_error:
             return ActivityError()
 

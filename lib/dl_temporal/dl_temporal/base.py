@@ -13,6 +13,7 @@ from typing import (
     cast,
 )
 
+import pydantic
 import temporalio.activity
 import temporalio.api.common.v1
 import temporalio.converter
@@ -39,6 +40,27 @@ class BaseModel(dl_pydantic.BaseModel):
     def model_dump_for_logging(self) -> str:
         data = self.model_dump(mode="json")
         return dl_json.dumps_str(data)
+
+
+class _UnsetStr(str):
+    ...
+
+
+class BaseResultModel(BaseModel):
+    type: str = pydantic.Field(default_factory=_UnsetStr)
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def type_only_default(cls, data: Any) -> Any:
+        expected_type_value = cls.__name__
+
+        if isinstance(data, dict):
+            if "type" not in data or isinstance(data["type"], _UnsetStr):
+                data["type"] = expected_type_value
+            elif data["type"] != expected_type_value:
+                raise ValueError(f"Type must be {expected_type_value}, got {data['type']}")
+
+        return data
 
 
 class JSONPlainPayloadConverter(temporalio.converter.JSONPlainPayloadConverter):
@@ -92,7 +114,7 @@ class BaseActivityParams(BaseModel):
     schedule_to_start_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
 
 
-class BaseActivityResult(BaseModel):
+class BaseActivityResult(BaseResultModel):
     ...
 
 
@@ -200,7 +222,7 @@ class BaseWorkflowParams(BaseModel):
     parent_close_policy: temporalio.workflow.ParentClosePolicy = temporalio.workflow.ParentClosePolicy.TERMINATE
 
 
-class BaseWorkflowResult(BaseModel):
+class BaseWorkflowResult(BaseResultModel):
     ...
 
 

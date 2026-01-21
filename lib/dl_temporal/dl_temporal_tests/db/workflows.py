@@ -42,7 +42,7 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
     workflow_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
-class WorkflowError(dl_temporal.BaseWorkflowResult):
+class WorkflowError(dl_temporal.BaseWorkflowError):
     ...
 
 
@@ -75,15 +75,18 @@ class Workflow(dl_temporal.BaseWorkflow):
         if isinstance(result, activities.ActivityError):
             return WorkflowError()
 
-        return WorkflowResult(
-            workflow_int_result=result.activity_int_result + 1,
-            workflow_str_result=result.activity_str_result,
-            workflow_bool_result=result.activity_bool_result,
-            workflow_list_result=result.activity_list_result,
-            workflow_dict_result=result.activity_dict_result,
-            workflow_timedelta_result=result.activity_timedelta_result,
-            workflow_uuid_result=result.activity_uuid_result,
-            workflow_date_result=result.activity_date_result,
-            workflow_datetime_result=result.activity_datetime_result,
-            workflow_datetime_with_timezone_result=result.activity_datetime_with_timezone_result,
-        )
+        if isinstance(result, activities.ActivityResult):
+            return WorkflowResult(
+                workflow_int_result=result.activity_int_result + 1,
+                workflow_str_result=result.activity_str_result,
+                workflow_bool_result=result.activity_bool_result,
+                workflow_list_result=result.activity_list_result,
+                workflow_dict_result=result.activity_dict_result,
+                workflow_timedelta_result=result.activity_timedelta_result,
+                workflow_uuid_result=result.activity_uuid_result,
+                workflow_date_result=result.activity_date_result,
+                workflow_datetime_result=result.activity_datetime_result,
+                workflow_datetime_with_timezone_result=result.activity_datetime_with_timezone_result,
+            )
+
+        raise NotImplementedError(f"Unexpected result type: {type(result)}")
