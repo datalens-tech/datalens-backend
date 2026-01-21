@@ -1,4 +1,3 @@
-
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.connector.dataset_suite import DefaultConnectorDatasetTestSuite
 
@@ -6,9 +5,7 @@ from dl_connector_ydb_tests.db.api.base import (
     YDBDatasetTestBase,
     YDBViewDatasetTestBase,
 )
-from dl_connector_ydb_tests.db.config import (
-    TABLE_SCHEMA,
-)
+from dl_connector_ydb_tests.db.config import TABLE_SCHEMA
 
 
 class TestYDBDataset(YDBDatasetTestBase, DefaultConnectorDatasetTestSuite):
