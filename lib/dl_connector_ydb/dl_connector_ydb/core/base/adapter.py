@@ -124,6 +124,18 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     def get_engine_kwargs(self) -> dict:
         return {}
 
+    def make_subselect_query(self, table_def: TableIdent) -> str:
+        table = sa.table(table_def.table_name)
+        statement = sa.select(sa.text("*")).select_from(table).limit(1)
+        query = statement.compile(
+            dialect=self.get_dialect(),
+            compile_kwargs={
+                "literal_binds": True,
+            },
+        )
+
+        return f"({str(query) % ()})"
+
     def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
         # Check if target path is view
         if isinstance(table_def, TableIdent):
@@ -137,16 +149,10 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
                 driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "_driver"  [attr-defined]
                 assert driver
 
-                # User can gain access to tables by absolute path instead of relative to db_name root.
-                # Possible solution: require prefix be equal to db_name/
                 if table_def.db_name is None:
                     table_path = table_def.table_name
                 elif table_def.table_name.startswith("/"):
-                    if table_def.table_name.startswith(table_def.db_name + "/"):
-                        table_path = table_def.table_name
-                    else:
-                        # Not ok?
-                        raise ValueError("absolute table path is not subpath of database path")
+                    table_path = table_def.table_name
                 else:
                     table_path = table_def.db_name.rstrip("/") + "/" + table_def.table_name
 
@@ -156,7 +162,8 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
                 if result.is_view():
                     return self._get_subselect_table_info(
                         SATextTableDefinition(
-                            sa_plain_text(f"(SELECT * FROM `{table_path}` LIMIT 1)"),
+                            # Note: SQL Injection possible if no result type check is made above
+                            sa_plain_text(self.make_subselect_query(table_def)),
                         ),
                     ).columns
             finally:

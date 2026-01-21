@@ -1,4 +1,7 @@
-from typing import ClassVar
+from typing import (
+    ClassVar,
+    Iterable,
+)
 
 from frozendict import frozendict
 import pytest
@@ -108,7 +111,7 @@ class YDBViewDatasetTestBase(YDBConnectionTestBase, DatasetTestBase):
         self,
         db: Db,
         sample_table: DbTable,
-    ) -> str:
+    ) -> Iterable[str]:
         view_name = sample_table.name + "_view"
 
         db.get_current_connection().connection.cursor().execute_scheme(
