@@ -156,8 +156,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
                 else:
                     table_path = table_def.db_name.rstrip("/") + "/" + table_def.table_name
 
-                response = driver.scheme_client.async_describe_path(table_path)
-                result = response.result()
+                result = driver.scheme_client.describe_path(table_path)
 
                 if result.is_view():
                     return self._get_subselect_table_info(
