@@ -141,20 +141,20 @@ class DbCastTypeFunctionYQLTestSuite(
         target: str,
         cast_args: tuple[int, int] | None,
         ok: bool,
-        ydb_data_test_table_field_types_patch,
+        ydb_data_test_table_field_types,
         source_column: str,
     ) -> None:
         if cast_args:
-            cast_args_str = ", ".join(cast_args)
+            cast_args_str = ", ".join(str(arg) for arg in cast_args)
             query_string = f'DB_CAST([{source_column}], "{target}", {cast_args_str})'
         else:
             query_string = f'DB_CAST([{source_column}], "{target}")'
 
         if ok:
-            dbe.eval(query_string, from_=ydb_type_test_data_table)
+            dbe.eval(query_string, from_=ydb_type_test_data_table, field_types=ydb_data_test_table_field_types)
         else:
             with pytest.raises(exc.TranslationError):
-                dbe.eval(query_string, from_=ydb_type_test_data_table)
+                dbe.eval(query_string, from_=ydb_type_test_data_table, field_types=ydb_data_test_table_field_types)
 
     @pytest.mark.parametrize(
         # target - target type for cast
@@ -193,7 +193,7 @@ class DbCastTypeFunctionYQLTestSuite(
         target: str,
         cast_args: tuple[int, int] | None,
         ok: bool,
-        ydb_data_test_table_field_types_patch,
+        ydb_data_test_table_field_types,
     ) -> None:
         self._test_db_cast_ydb_func(
             dbe=dbe,
@@ -201,7 +201,7 @@ class DbCastTypeFunctionYQLTestSuite(
             target=target,
             cast_args=cast_args,
             ok=ok,
-            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            ydb_data_test_table_field_types=ydb_data_test_table_field_types,
             source_column="bool_value",
         )
 
@@ -242,7 +242,7 @@ class DbCastTypeFunctionYQLTestSuite(
         target: str,
         cast_args: tuple[int, int] | None,
         ok: bool,
-        ydb_data_test_table_field_types_patch,
+        ydb_data_test_table_field_types,
     ) -> None:
         self._test_db_cast_ydb_func(
             dbe=dbe,
@@ -250,7 +250,7 @@ class DbCastTypeFunctionYQLTestSuite(
             target=target,
             cast_args=cast_args,
             ok=ok,
-            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            ydb_data_test_table_field_types=ydb_data_test_table_field_types,
             source_column="int64_value",
         )
 
@@ -291,7 +291,7 @@ class DbCastTypeFunctionYQLTestSuite(
         target: str,
         cast_args: tuple[int, int] | None,
         ok: bool,
-        ydb_data_test_table_field_types_patch,
+        ydb_data_test_table_field_types,
     ) -> None:
         self._test_db_cast_ydb_func(
             dbe=dbe,
@@ -299,7 +299,7 @@ class DbCastTypeFunctionYQLTestSuite(
             target=target,
             cast_args=cast_args,
             ok=ok,
-            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            ydb_data_test_table_field_types=ydb_data_test_table_field_types,
             source_column="float_value",
         )
 
@@ -340,7 +340,7 @@ class DbCastTypeFunctionYQLTestSuite(
         target: str,
         cast_args: tuple[int, int] | None,
         ok: bool,
-        ydb_data_test_table_field_types_patch,
+        ydb_data_test_table_field_types,
     ) -> None:
         self._test_db_cast_ydb_func(
             dbe=dbe,
@@ -348,7 +348,7 @@ class DbCastTypeFunctionYQLTestSuite(
             target=target,
             cast_args=cast_args,
             ok=ok,
-            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            ydb_data_test_table_field_types=ydb_data_test_table_field_types,
             source_column="string_value",
         )
 
@@ -389,7 +389,7 @@ class DbCastTypeFunctionYQLTestSuite(
         target: str,
         cast_args: tuple[int, int] | None,
         ok: bool,
-        ydb_data_test_table_field_types_patch,
+        ydb_data_test_table_field_types,
     ) -> None:
         self._test_db_cast_ydb_func(
             dbe=dbe,
@@ -397,7 +397,7 @@ class DbCastTypeFunctionYQLTestSuite(
             target=target,
             cast_args=cast_args,
             ok=ok,
-            ydb_data_test_table_field_types_patch=ydb_data_test_table_field_types_patch,
+            ydb_data_test_table_field_types=ydb_data_test_table_field_types,
             source_column="date_value",
         )
 
@@ -460,12 +460,8 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
     }
 
     @pytest.fixture(scope="function")
-    def ydb_data_test_table_field_types_patch(self, monkeypatch) -> None:
-        ydb_field_types = {**self.YDB_TYPE_FIELD_TYPES}
-
-        monkeypatch.setattr("dl_formula_testing.evaluator.FIELD_TYPES", ydb_field_types)
-
-        return ydb_field_types
+    def ydb_data_test_table_field_types(self) -> dict[str, DataType]:
+        return {**self.YDB_TYPE_FIELD_TYPES}
 
 
 class TestDbCastTypeFunctionYQL(

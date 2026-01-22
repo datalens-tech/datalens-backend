@@ -132,13 +132,12 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
 
     WHITELISTS = {
         yql_dialect: {
-            # TODO: Decimal
-            # TODO: DyNumber
-            # TODO: Json
-            # TODO: JsonDocument
-            # TODO: Yson
-            # TODO: Cast Integer to Interval
-            # Commented - not supported
+            # TODO: Decimal, DyNumber, Json, JsonDocument, Yson, Uuid
+            # All mappings are based on the table above.
+            # Notes:
+            # - Interval can not be casted to Bool
+            # - Interval can not be casted to Decimal
+            # - Utf8 can not be casted to Uuid
             DataType.BOOLEAN: [
                 # > Bool
                 TYPES_SPEC["Bool"],
@@ -156,24 +155,10 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Float"],
                 # > Double
                 TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
                 # > String
                 TYPES_SPEC["String"],
-                # > Utf8
-                # TYPES_SPEC["Utf8"],
-                # > Date
-                # TYPES_SPEC["Date"],
-                # > Datetime
-                # TYPES_SPEC["Datetime"],
-                # > Timestamp
-                # TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
             ],
             DataType.INTEGER: [
-                # Interval can not be casted to Bool
-                # Interval can not be casted to Decimal
                 # > Bool
                 TYPES_SPEC["Bool"],
                 # > INT
@@ -194,16 +179,12 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Decimal"],
                 # > String
                 TYPES_SPEC["String"],
-                # > Utf8
-                # TYPES_SPEC["Utf8"],
                 # > Date
                 TYPES_SPEC["Date"],
                 # > Datetime
                 TYPES_SPEC["Datetime"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
             ],
             DataType.FLOAT: [
                 # > Bool
@@ -222,23 +203,10 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Float"],
                 # > Double
                 TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
                 # > String
                 TYPES_SPEC["String"],
-                # > Utf8
-                # TYPES_SPEC["Utf8"],
-                # > Date
-                # TYPES_SPEC["Date"],
-                # > Datetime
-                # TYPES_SPEC["Datetime"],
-                # > Timestamp
-                # TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
             ],
             DataType.STRING: [
-                # Utf8 can not be casted to Uuid
                 # > Bool
                 TYPES_SPEC["Bool"],
                 # > INT
@@ -271,8 +239,6 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Uuid"],
             ],
             DataType.DATE: [
-                # > Bool
-                # TYPES_SPEC["Bool"],
                 # > INT
                 TYPES_SPEC["Int8"],
                 TYPES_SPEC["Int16"],
@@ -287,8 +253,6 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Float"],
                 # > Double
                 TYPES_SPEC["Double"],
-                # > Decimal
-                # TYPES_SPEC["Decimal"],
                 # > String
                 TYPES_SPEC["String"],
                 # > Utf8
@@ -299,8 +263,6 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Datetime"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
-                # > UUID
-                # TYPES_SPEC["Uuid"],
             ],
             DataType.ARRAY_STR: [],
             DataType.ARRAY_INT: [],

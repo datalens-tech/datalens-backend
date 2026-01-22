@@ -152,6 +152,7 @@ class DbEvaluator:
         group_by: Optional[list[str | Formula]] = None,
         first: bool = False,
         required_scopes: int = Scope.EXPLICIT_USAGE,
+        field_types: Optional[dict[DataType]] = None,
     ):
         select_ctx = self.translate_formula(
             formula,
@@ -159,6 +160,7 @@ class DbEvaluator:
             order_by=order_by,
             group_by=group_by,
             required_scopes=required_scopes,
+            field_types=field_types,
         )
 
         def convert(val):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
@@ -172,17 +174,32 @@ class DbEvaluator:
             query = query.select_from(from_)
         if order_by is not None:
             query = query.order_by(
-                *[self.translate_formula(expr, required_scopes=required_scopes).expression for expr in order_by]
+                *[
+                    self.translate_formula(
+                        expr,
+                        required_scopes=required_scopes,
+                        field_types=field_types,
+                    ).expression
+                    for expr in order_by
+                ]
             )
         if group_by:
             query = query.group_by(
-                *[self.translate_formula(expr, required_scopes=required_scopes).expression for expr in group_by]
+                *[
+                    self.translate_formula(
+                        expr,
+                        required_scopes=required_scopes,
+                        field_types=field_types,
+                    ).expression
+                    for expr in group_by
+                ]
             )
         if where is not None:
             where_ctx = self.translate_formula(
                 where,
                 context_flags=ContextFlag.REQ_CONDITION,
                 required_scopes=required_scopes,
+                field_types=field_types,
             )
             query = query.where(where_ctx.expression)
         if first:
