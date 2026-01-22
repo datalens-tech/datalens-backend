@@ -20,6 +20,8 @@ python = ">=3.10, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
+pytest-asyncio = "*"
 
 [tool.mypy]
 check_untyped_defs = true

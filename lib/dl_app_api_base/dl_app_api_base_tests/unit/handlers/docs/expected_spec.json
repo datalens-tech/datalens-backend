@@ -1,0 +1,153 @@
+{
+  "openapi": "3.0.1",
+  "tags": [],
+  "paths": {
+    "/api/v1/health/liveness": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Liveness probe, checks if the system is alive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "const": "healthy",
+                      "default": "healthy",
+                      "title": "Status",
+                      "type": "string"
+                    }
+                  },
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health/readiness": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Readiness probe, checks if the system is ready to serve requests",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "healthy",
+                        "unhealthy"
+                      ],
+                      "title": "Status",
+                      "type": "string"
+                    },
+                    "subsystems_status": {
+                      "additionalProperties": {
+                        "type": "boolean"
+                      },
+                      "title": "Subsystems Status",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "subsystems_status"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "healthy",
+                        "unhealthy"
+                      ],
+                      "title": "Status",
+                      "type": "string"
+                    },
+                    "subsystems_status": {
+                      "additionalProperties": {
+                        "type": "boolean"
+                      },
+                      "title": "Subsystems Status",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "subsystems_status"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {}
+}
