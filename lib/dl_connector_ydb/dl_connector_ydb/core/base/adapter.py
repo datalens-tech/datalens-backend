@@ -162,7 +162,6 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
                 if result.is_view():
                     return self._get_subselect_table_info(
                         SATextTableDefinition(
-                            # Note: SQL Injection possible if no result type check is made above
                             sa_plain_text(self.make_subselect_query(table_def)),
                         ),
                     ).columns
