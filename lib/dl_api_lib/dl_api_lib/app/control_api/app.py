@@ -45,6 +45,8 @@ if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
     from dl_core.us_connection_base import ConnectionBase
 
+from dl_api_lib.app.control_api.resources.connections import ns as connections_namespace
+
 
 @attr.s(frozen=True)
 class EnvSetupResult:
@@ -88,6 +90,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         close_loop_after_request: bool = True,
     ) -> flask.Flask:
         app = Flask(__name__)
+
+        from dl_api_lib.app.control_api.resources.connections import BIResource
+        connections_namespace.add_resource(BIResource, "/export/<connection_id>")
 
         TracingMiddleware(
             url_prefix_exclude=(
