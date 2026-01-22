@@ -41,7 +41,7 @@ def postprocess_array(value: Optional[Iterable[Any]]) -> Optional[Iterable[Optio
     return json.dumps(value, ensure_ascii=False)  # Frontend fully supports non-ASCII JSON
 
 
-TYPE_PROCESSORS = {
+TYPE_PROCESSORS: dict[UserDataType, Callable[[Any], Any]] = {
     UserDataType.datetime: postprocess_datetime,
     # parametrized: UserDataType.datetimetz
     UserDataType.genericdatetime: postprocess_genericdatetime,
@@ -62,7 +62,7 @@ def get_type_processor(field_type_info: Optional[DetailedType]) -> Callable[[Any
     # Basic
     result = TYPE_PROCESSORS.get(field_type_info.data_type)
     if result is not None:
-        return result  # type: ignore  # TODO: fix
+        return result
 
     # Parmetrized
     if field_type_info.data_type == UserDataType.datetimetz:

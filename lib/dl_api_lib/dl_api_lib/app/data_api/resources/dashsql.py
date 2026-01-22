@@ -49,6 +49,10 @@ from dl_dashsql.types import (
     IncomingDSQLParamType,
     IncomingDSQLParamTypeExt,
 )
+from dl_query_processing.postprocessing.postprocessors.all import (
+    TYPE_PROCESSORS,
+    postprocess_array,
+)
 from dl_query_processing.utils.datetime import parse_datetime
 
 
@@ -180,12 +184,31 @@ class DashSQLView(BaseView):
         return value
 
     @classmethod
-    def _make_postprocess_row(cls, bi_type_names: tuple[str, ...]) -> TRowProcessor:
-        # Nothing type-specific at the moment
-        funcs = tuple(cls._postprocess_any for _ in bi_type_names)
+    def _get_type_processor(cls, bi_type_name: str) -> Callable[[Any], Any]:
+        try:
+            bi_type = UserDataType[bi_type_name]
+        except KeyError:
+            return cls._postprocess_any
 
-        def _postprocess_row(row: TRow, funcs: tuple[Callable, ...] = funcs) -> TRow:
-            return tuple(func(value) for func, value in zip(funcs, row, strict=True))
+        if bi_type == UserDataType.datetimetz:
+            # Handle datetimetz as datetime (without timezone conversion)
+            # UserDataType.datetimetz type processor requires timezone param and dashsql only has bi types
+            return TYPE_PROCESSORS[UserDataType.datetime]
+
+        type_processor = TYPE_PROCESSORS.get(bi_type)
+
+        if type_processor is not None and type_processor != postprocess_array:
+            # Return arrays as is, no need to dump
+            return type_processor
+
+        return cls._postprocess_any
+
+    @classmethod
+    def _make_postprocess_row(cls, bi_type_names: tuple[str, ...]) -> TRowProcessor:
+        type_processors = tuple(cls._get_type_processor(name) for name in bi_type_names)
+
+        def _postprocess_row(row: TRow) -> TRow:
+            return tuple(cls._postprocess_any(proc(val)) for proc, val in zip(type_processors, row, strict=True))
 
         return _postprocess_row
 
