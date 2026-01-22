@@ -208,7 +208,13 @@ class DashSQLView(BaseView):
         type_processors = tuple(cls._get_type_processor(name) for name in bi_type_names)
 
         def _postprocess_row(row: TRow) -> TRow:
-            return tuple(cls._postprocess_any(proc(val)) for proc, val in zip(type_processors, row, strict=True))
+            result = []
+            for proc, val in zip(type_processors, row, strict=True):
+                try:
+                    result.append(cls._postprocess_any(proc(val)))
+                except (ValueError, TypeError):
+                    result.append(cls._postprocess_any(val))
+            return tuple(result)
 
         return _postprocess_row
 

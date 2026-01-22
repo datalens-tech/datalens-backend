@@ -27,8 +27,8 @@ class TestClickHouseDashSQL(ClickHouseDashSQLConnectionTest, DefaultDashSQLTestS
         assert resp_data[0]["data"]["bi_types"] == ["integer", "unsupported", "genericdatetime"]
 
         assert resp_data[0]["data"]["clickhouse_headers"]["X-ClickHouse-Timezone"] == "UTC", resp_data
-        assert resp_data[1] == {"event": "row", "data": [11, [33, 44], "2020-01-02 03:04:16"]}, resp_data
-        assert resp_data[2] == {"event": "row", "data": [22, [33, 44], "2020-01-02 03:04:27"]}, resp_data
+        assert resp_data[1] == {"event": "row", "data": [11, [33, 44], "2020-01-02T03:04:16"]}, resp_data
+        assert resp_data[2] == {"event": "row", "data": [22, [33, 44], "2020-01-02T03:04:27"]}, resp_data
         assert resp_data[-1]["event"] == "footer", resp_data
         assert isinstance(resp_data[-1]["data"], dict)
 
