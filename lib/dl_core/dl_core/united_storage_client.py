@@ -133,22 +133,29 @@ class USAuthContextPublic(USAuthContextBase):
         return {}
 
 
-@attr.s(frozen=True)
-class USAuthContextMaster(USAuthContextBase):
+class USAuthContextPrivateBase(USAuthContextBase):
     DEFAULT_US_PREFIX = USApiType.private
     DEFAULT_TENANT = TenantCommon()
     IS_TENANT_ID_MUTABLE = True
-
-    us_master_token: str = attr.ib(repr=False)
 
     def get_tenant(self) -> TenantDef:
         return self.DEFAULT_TENANT
 
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
-        return {DLHeadersCommon.US_MASTER_TOKEN: self.us_master_token}
+        raise NotImplementedError()
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
         return {}
+
+
+@attr.s(frozen=True)
+class USAuthContextMaster(USAuthContextPrivateBase):
+    us_master_token: str = attr.ib(repr=False)
+
+    def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
+        return {
+            DLHeadersCommon.US_MASTER_TOKEN: self.us_master_token,
+        }
 
 
 @attr.s(frozen=True)
