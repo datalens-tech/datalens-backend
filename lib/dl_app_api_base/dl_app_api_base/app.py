@@ -1,3 +1,4 @@
+import re
 from typing import (
     Generic,
     TypeVar,
@@ -9,6 +10,7 @@ import attr
 import pydantic
 from typing_extensions import override
 
+import dl_app_api_base.auth as auth
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
@@ -38,6 +40,7 @@ AppType = TypeVar("AppType", bound=HttpServerAppMixin)
 
 @attr.define(frozen=True, kw_only=True)
 class HttpServerRequestContextDependencies(
+    auth.AuthRequestContextDependenciesMixin,
     request_context.BaseRequestContextDependencies,
 ):
     ...
@@ -45,6 +48,7 @@ class HttpServerRequestContextDependencies(
 
 class HttpServerRequestContext(
     request_id.RequestIdRequestContextMixin,
+    auth.AuthRequestContextMixin,
     request_context.BaseRequestContext,
 ):
     _dependencies: HttpServerRequestContextDependencies
@@ -103,8 +107,29 @@ class HttpServerAppFactoryMixin(
     ) -> HttpServerRequestContextManager:
         return HttpServerRequestContextManager(
             context_factory=HttpServerRequestContext.factory,
-            dependencies=HttpServerRequestContextDependencies(),
+            dependencies=HttpServerRequestContextDependencies(
+                request_auth_checkers=await self._get_request_auth_checkers(),
+            ),
         )
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_auth_checkers(
+        self,
+    ) -> list[auth.RequestAuthCheckerProtocol]:
+        return [
+            auth.NoAuthChecker(
+                route_matchers=[
+                    auth.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/health/.*$"),
+                        methods=frozenset(["GET"]),
+                    ),
+                    auth.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/docs/.*$"),
+                        methods=frozenset(["GET"]),
+                    ),
+                ],
+            ),
+        ]
 
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app_middlewares(
@@ -119,11 +144,15 @@ class HttpServerAppFactoryMixin(
             request_context_provider=request_context_manager,
         )
         error_handling_middleware = middlewares.ErrorHandlingMiddleware()
+        auth_middleware = auth.AuthMiddleware(
+            request_context_provider=request_context_manager,
+        )
 
         return [
             request_context_middlewares.process,
             logging_middleware.process,
             error_handling_middleware.process,
+            auth_middleware.process,
         ]
 
     async def _setup_routes(self, app: aiohttp.web.Application) -> None:

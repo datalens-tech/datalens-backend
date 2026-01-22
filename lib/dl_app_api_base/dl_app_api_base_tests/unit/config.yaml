@@ -1,3 +1,9 @@
 HTTP_SERVER:
   HOST: "0.0.0.0"
   PORT: 54010
+  OAUTH_CHECKER:
+    USERS:
+      user1:
+        CLIENT_ID: "user1"
+      user2:
+        CLIENT_ID: "user2"

@@ -21,6 +21,12 @@ class ErrorHandlingMiddleware:
     ) -> aiohttp.web.StreamResponse:
         try:
             return await handler(request)
+        except aiohttp.web.HTTPNotFound:
+            return dl_app_api_base.handlers.Response.with_error(
+                message="Not found",
+                code="NOT_FOUND",
+                status=http.HTTPStatus.NOT_FOUND,
+            )
         except Exception:
             # TODO: add error handling mechanism here
             LOGGER.exception("Failed to handle request error")
