@@ -4,6 +4,7 @@ import ydb_sqlalchemy as ydb_sa
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_type as base
+import dl_sqlalchemy_ydb.cast_types as ydb_cast_types
 import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
@@ -23,15 +24,14 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="UInt16", sa_type=ydb_sa.types.UInt16),
         base.WhitelistTypeSpec(name="UInt32", sa_type=ydb_sa.types.UInt32),
         base.WhitelistTypeSpec(name="UInt64", sa_type=ydb_sa.types.UInt64),
-        base.WhitelistTypeSpec(name="Double", sa_type=sa.types.FLOAT),
+        base.WhitelistTypeSpec(name="Double", sa_type=ydb_cast_types.Double),
         base.WhitelistTypeSpec(name="Float", sa_type=sa.types.FLOAT),
         base.WhitelistTypeSpec(name="Decimal", sa_type=sa.DECIMAL, arg_types=base.DECIMAL_CAST_ARG_T),
-        base.WhitelistTypeSpec(name="Utf8", sa_type=sa.types.TEXT),
+        base.WhitelistTypeSpec(name="Utf8", sa_type=ydb_cast_types.Utf8),
         base.WhitelistTypeSpec(name="String", sa_type=sa.types.TEXT),
         base.WhitelistTypeSpec(name="Date", sa_type=sa.types.DATE),
         base.WhitelistTypeSpec(name="Datetime", sa_type=ydb_dialect.YqlDateTime),
         base.WhitelistTypeSpec(name="Timestamp", sa_type=ydb_dialect.YqlTimestamp),
-        base.WhitelistTypeSpec(name="Uuid", sa_type=sa.types.TEXT),
     ]
 }
 

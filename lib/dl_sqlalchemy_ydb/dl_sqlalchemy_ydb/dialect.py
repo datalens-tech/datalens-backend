@@ -68,6 +68,12 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_big_integer(self, type_: sa.BigInteger, **kw: typing.Any) -> typing.Any:
         return "int64"
 
+    def visit_Utf8(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+        return "Utf8"
+
+    def visit_Double(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+        return "Double"
+
     def get_ydb_type(
         self, type_: sa.types.TypeEngine, is_optional: bool
     ) -> typing.Union[ydb_sa.ydb.PrimitiveType, ydb_sa.ydb.AbstractTypeBuilder]:
