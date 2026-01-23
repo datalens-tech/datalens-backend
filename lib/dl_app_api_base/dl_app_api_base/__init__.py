@@ -5,6 +5,16 @@ from .app import (
     HttpServerRequestContext,
     HttpServerRequestContextDependencies,
     HttpServerRequestContextManager,
+    HttpServerSettings,
+)
+from .auth import (
+    NoAuthChecker,
+    NoAuthResult,
+    OAuthChecker,
+    OAuthCheckerSettings,
+    OAuthResult,
+    RequestAuthCheckerProtocol,
+    RouteMatcher,
 )
 from .handlers import (
     BadRequestResponseSchema,
@@ -48,6 +58,7 @@ __all__ = [
     "SubsystemReadinessAsyncCallback",
     "SubsystemReadinessCallback",
     "SubsystemReadinessSyncCallback",
+    "HttpServerSettings",
     "HttpServerAppSettingsMixin",
     "HttpServerAppMixin",
     "HttpServerAppFactoryMixin",
@@ -71,4 +82,11 @@ __all__ = [
     "HttpServerRequestContextDependencies",
     "HttpServerRequestContext",
     "HttpServerRequestContextManager",
+    "RequestAuthCheckerProtocol",
+    "OAuthChecker",
+    "OAuthResult",
+    "NoAuthChecker",
+    "NoAuthResult",
+    "RouteMatcher",
+    "OAuthCheckerSettings",
 ]

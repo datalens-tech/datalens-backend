@@ -1,19 +1,19 @@
 import http
 import logging
 import os
+import re
 from typing import (
     AsyncGenerator,
     ClassVar,
 )
 
-import aiohttp
 import aiohttp.web
 import attr
 import pytest
 import pytest_asyncio
 from typing_extensions import override
 
-import dl_app_api_base.app
+import dl_app_api_base
 import dl_app_base
 
 
@@ -46,12 +46,17 @@ class Counter:
         return self.value
 
 
-class App(dl_app_api_base.app.HttpServerAppMixin):
+class App(dl_app_api_base.HttpServerAppMixin):
     ...
 
 
-class AppSettings(dl_app_api_base.app.HttpServerAppSettingsMixin):
+class HttpServerSettings(dl_app_api_base.HttpServerSettings):
+    OAUTH_CHECKER: dl_app_api_base.OAuthCheckerSettings = NotImplemented
+
+
+class AppSettings(dl_app_api_base.HttpServerAppSettingsMixin):
     readiness_resource: ReadinessResource
+    HTTP_SERVER: HttpServerSettings = NotImplemented
 
 
 @attr.define(kw_only=True, slots=False)
@@ -127,7 +132,19 @@ class CounterHandler(dl_app_api_base.BaseHandler):
 
 
 @attr.define(kw_only=True, slots=False)
-class AppFactory(dl_app_api_base.app.HttpServerAppFactoryMixin):
+class PingHandler(dl_app_api_base.BaseHandler):
+    class ResponseSchema(dl_app_api_base.BaseResponseSchema):
+        message: str
+
+    async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
+        return dl_app_api_base.Response.with_model(
+            schema=self.ResponseSchema(message="pong"),
+            status=http.HTTPStatus.OK,
+        )
+
+
+@attr.define(kw_only=True, slots=False)
+class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
     settings: AppSettings
     app_class: ClassVar[type[App]] = App
 
@@ -152,6 +169,42 @@ class AppFactory(dl_app_api_base.app.HttpServerAppFactoryMixin):
 
     @override
     @dl_app_base.singleton_class_method_result
+    async def _get_request_auth_checkers(
+        self,
+    ) -> list[dl_app_api_base.RequestAuthCheckerProtocol]:
+        base_checkers = await super()._get_request_auth_checkers()
+
+        return [
+            dl_app_api_base.NoAuthChecker(
+                route_matchers=[
+                    dl_app_api_base.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/counter"),
+                        methods=frozenset(["GET"]),
+                    ),
+                ],
+            ),
+            dl_app_api_base.OAuthChecker.from_settings(
+                settings=self.settings.HTTP_SERVER.OAUTH_CHECKER,
+                route_matchers=[
+                    dl_app_api_base.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/oauth/.*"),
+                        methods=frozenset(["GET"]),
+                    )
+                ],
+            ),
+            dl_app_api_base.NoAuthChecker(
+                route_matchers=[
+                    dl_app_api_base.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/no_auth/.*"),
+                        methods=frozenset(["GET"]),
+                    ),
+                ],
+            ),
+            *base_checkers,
+        ]
+
+    @override
+    @dl_app_base.singleton_class_method_result
     async def _get_request_context_manager(  # type: ignore[override]
         self,
     ) -> RequestContextManager:
@@ -160,6 +213,7 @@ class AppFactory(dl_app_api_base.app.HttpServerAppFactoryMixin):
             dependencies=RequestContextDependencies(
                 counter=Counter(),
                 value=42,
+                request_auth_checkers=await self._get_request_auth_checkers(),
             ),
         )
 
@@ -169,22 +223,49 @@ class AppFactory(dl_app_api_base.app.HttpServerAppFactoryMixin):
         self,
     ) -> list[dl_app_api_base.Route]:
         routes = await super()._get_aiohttp_app_routes()
-        routes.append(
-            dl_app_api_base.Route(
-                method="GET",
-                path="/api/v1/counter",
-                handler=CounterHandler(request_context_manager=await self._get_request_context_manager()),
-            ),
+        routes.extend(
+            [
+                dl_app_api_base.Route(
+                    method="GET",
+                    path="/api/v1/counter",
+                    handler=CounterHandler(request_context_manager=await self._get_request_context_manager()),
+                ),
+                dl_app_api_base.Route(
+                    method="GET",
+                    path="/api/v1/oauth/ping",
+                    handler=PingHandler(),
+                ),
+                dl_app_api_base.Route(
+                    method="GET",
+                    path="/api/v1/no_auth/ping",
+                    handler=PingHandler(),
+                ),
+            ]
         )
         return routes
+
+
+@pytest.fixture(name="oauth_user1_token")
+def fixture_oauth_user1_token() -> str:
+    return "user1_token"
+
+
+@pytest.fixture(name="oauth_user2_token")
+def fixture_oauth_user2_token() -> str:
+    return "user2_token"
 
 
 @pytest.fixture(name="app_settings")
 def fixture_app_settings(
     monkeypatch: pytest.MonkeyPatch,
     readiness_resource: ReadinessResource,
+    oauth_user1_token: str,
+    oauth_user2_token: str,
 ) -> AppSettings:
     monkeypatch.setenv("CONFIG_PATH", os.path.join(DIR_PATH, "config.yaml"))
+
+    monkeypatch.setenv("HTTP_SERVER__OAUTH_CHECKER__USERS__USER1__TOKEN", oauth_user1_token)
+    monkeypatch.setenv("HTTP_SERVER__OAUTH_CHECKER__USERS__USER2__TOKEN", oauth_user2_token)
 
     return AppSettings(readiness_resource=readiness_resource)
 
