@@ -34,6 +34,7 @@ class TestAsyncPostgreSQLAdapter(
             if t.schema_name != "public"  # skip public schema because it contains garbage tables from other tests
             # TODO: clean up tables created in other tests
         ] == [
+            "pgmyschema.test_table",
             "test_data.sample",
             "test_data_partitions.sample_partition",
         ]
