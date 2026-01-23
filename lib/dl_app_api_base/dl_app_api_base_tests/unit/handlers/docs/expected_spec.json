@@ -253,7 +253,57 @@
         }
       }
     },
-    "/api/v1/no_auth/ping": {
+    "/api/v1/always_allow/ping": {
+      "get": {
+        "tags": [],
+        "summary": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "title": "Message",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/always_deny/ping": {
       "get": {
         "tags": [],
         "summary": "",

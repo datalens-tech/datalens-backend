@@ -9,6 +9,6 @@ async def test_default(
     app_client: aiohttp.ClientSession,
 ) -> None:
     response = await app_client.get(
-        "/api/v1/no_auth/ping",
+        "/api/v1/always_allow/ping",
     )
     assert response.status == http.HTTPStatus.OK
