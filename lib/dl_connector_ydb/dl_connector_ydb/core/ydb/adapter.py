@@ -126,7 +126,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
                 ]
                 children.sort()
                 for full_path, child in children:
-                    if child.is_any_table():
+                    if child.is_any_table() or child.is_view():
                         yield full_path.removeprefix(unprefix)
                     elif child.is_directory():
                         queue.append(full_path)
