@@ -29,6 +29,7 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="Decimal", sa_type=sa.DECIMAL, arg_types=base.DECIMAL_CAST_ARG_T),
         base.WhitelistTypeSpec(name="Utf8", sa_type=ydb_cast_types.Utf8),
         base.WhitelistTypeSpec(name="String", sa_type=sa.types.TEXT),
+        base.WhitelistTypeSpec(name="Uuid", sa_type=ydb_cast_types.Uuid),
         base.WhitelistTypeSpec(name="Date", sa_type=sa.types.DATE),
         base.WhitelistTypeSpec(name="Datetime", sa_type=ydb_dialect.YqlDateTime),
         base.WhitelistTypeSpec(name="Timestamp", sa_type=ydb_dialect.YqlTimestamp),
@@ -235,6 +236,8 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Datetime"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
+                # > Uuid
+                TYPES_SPEC["Uuid"],
             ],
             DataType.DATE: [
                 # > INT

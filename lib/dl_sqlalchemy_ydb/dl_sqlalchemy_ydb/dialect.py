@@ -74,6 +74,9 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_Double(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
         return "Double"
 
+    def visit_Uuid(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+        return "Uuid"
+
     def get_ydb_type(
         self, type_: sa.types.TypeEngine, is_optional: bool
     ) -> typing.Union[ydb_sa.ydb.PrimitiveType, ydb_sa.ydb.AbstractTypeBuilder]:
