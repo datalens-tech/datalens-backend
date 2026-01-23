@@ -235,8 +235,6 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Datetime"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
-                # > UUID
-                TYPES_SPEC["Uuid"],
             ],
             DataType.DATE: [
                 # > INT
