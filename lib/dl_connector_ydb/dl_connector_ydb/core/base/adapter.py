@@ -138,6 +138,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
         # Check if target path is view
+        # Note: sa.inspect.get_columns cannot be used on YDB VIEW as it does not have schema. However schema can be determined using subselect.
         if isinstance(table_def, TableIdent):
             assert table_def.table_name is not None
 
