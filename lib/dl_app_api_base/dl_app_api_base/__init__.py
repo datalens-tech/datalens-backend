@@ -2,6 +2,9 @@ from .app import (
     HttpServerAppFactoryMixin,
     HttpServerAppMixin,
     HttpServerAppSettingsMixin,
+    HttpServerRequestContext,
+    HttpServerRequestContextDependencies,
+    HttpServerRequestContextManager,
 )
 from .handlers import (
     BadRequestResponseSchema,
@@ -29,6 +32,12 @@ from .openapi import (
     OpenApiSettings,
     OpenApiSpec,
 )
+from .request_context import (
+    BaseRequestContext,
+    BaseRequestContextDependencies,
+    BaseRequestContextManager,
+    RequestContextMiddleware,
+)
 
 
 __all__ = [
@@ -53,6 +62,13 @@ __all__ = [
     "OpenApiRouteProtocol",
     "OpenApiSpec",
     "OpenApiSettings",
+    "BaseRequestContextDependencies",
+    "BaseRequestContext",
+    "BaseRequestContextManager",
+    "RequestContextMiddleware",
     "ErrorHandlingMiddleware",
     "LoggingMiddleware",
+    "HttpServerRequestContextDependencies",
+    "HttpServerRequestContext",
+    "HttpServerRequestContextManager",
 ]
