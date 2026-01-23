@@ -54,3 +54,26 @@ class TestAsyncPostgreSQLAdapter(
         )
 
         assert [f"{t.schema_name}.{t.table_name}" for t in tables] == [f"{schema}.{t}" for t in expected_tables]
+
+    @pytest.mark.asyncio
+    async def test_list_system_schemas(
+        self, conn_bi_context: RequestContextInfo, target_conn_dto: PostgresConnTargetDTO
+    ):
+        """Test that tables from schemas starting with 'pg' but not 'pg_' are included in the table list."""
+        dba = self._make_dba(target_conn_dto, conn_bi_context)
+        tables = await dba.get_tables(SchemaIdent(db_name="test_data", schema_name=None))
+        table_schemas = {t.schema_name for t in tables}
+
+        assert "pgmyschema" in table_schemas, (
+            f"Schema 'pgmyschema' should be included in table list. " f"Found schemas: {sorted(table_schemas)}"
+        )
+
+        pgmyschema_tables = [f"{t.schema_name}.{t.table_name}" for t in tables if t.schema_name == "pgmyschema"]
+        assert "pgmyschema.test_table" in pgmyschema_tables, (
+            f"Table 'pgmyschema.test_table' should be in the results. " f"Found: {pgmyschema_tables}"
+        )
+
+        pg_underscore_schemas = [s for s in table_schemas if s.startswith("pg_")]
+        assert len(pg_underscore_schemas) == 0, (
+            f"System schemas starting with 'pg_' should be filtered out. " f"Found: {pg_underscore_schemas}"
+        )
