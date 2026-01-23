@@ -61,6 +61,7 @@ class YQLDbEvaluator(DbEvaluator):
         group_by: Optional[list[str | Formula]] = None,
         first: bool = False,
         required_scopes: int = Scope.EXPLICIT_USAGE,
+        field_types: Optional[dict[str, DataType]] = None,
     ):
         result = super().eval(
             formula=formula,
@@ -72,6 +73,7 @@ class YQLDbEvaluator(DbEvaluator):
             group_by=group_by,
             first=first,
             required_scopes=required_scopes,
+            field_types=field_types,
         )
 
         if isinstance(result, list):
