@@ -147,6 +147,61 @@
           }
         }
       }
+    },
+    "/api/v1/counter": {
+      "get": {
+        "tags": [],
+        "summary": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "counter_value": {
+                      "title": "Counter Value",
+                      "type": "integer"
+                    },
+                    "value": {
+                      "title": "Value",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "counter_value",
+                    "value"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {}

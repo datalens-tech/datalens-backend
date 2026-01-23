@@ -12,6 +12,8 @@ from typing_extensions import override
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
+import dl_app_api_base.request_context as request_context
+import dl_app_api_base.request_id as request_id
 import dl_app_base
 import dl_settings
 
@@ -32,6 +34,26 @@ class HttpServerAppMixin(dl_app_base.BaseApp):
 
 
 AppType = TypeVar("AppType", bound=HttpServerAppMixin)
+
+
+@attr.define(frozen=True, kw_only=True)
+class HttpServerRequestContextDependencies(
+    request_context.BaseRequestContextDependencies,
+):
+    ...
+
+
+class HttpServerRequestContext(
+    request_id.RequestIdRequestContextMixin,
+    request_context.BaseRequestContext,
+):
+    _dependencies: HttpServerRequestContextDependencies
+
+
+HttpServerRequestContextManager = request_context.BaseRequestContextManager[
+    HttpServerRequestContextDependencies,
+    HttpServerRequestContext,
+]
 
 
 @attr.define(kw_only=True, slots=False)
@@ -76,13 +98,30 @@ class HttpServerAppFactoryMixin(
         return app
 
     @dl_app_base.singleton_class_method_result
+    async def _get_request_context_manager(
+        self,
+    ) -> HttpServerRequestContextManager:
+        return HttpServerRequestContextManager(
+            context_factory=HttpServerRequestContext.factory,
+            dependencies=HttpServerRequestContextDependencies(),
+        )
+
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app_middlewares(
         self,
     ) -> list[aiohttp.typedefs.Middleware]:
-        logging_middleware = middlewares.LoggingMiddleware()
+        request_context_manager = await self._get_request_context_manager()
+
+        request_context_middlewares = request_context.RequestContextMiddleware(
+            request_context_manager=request_context_manager,
+        )
+        logging_middleware = middlewares.LoggingMiddleware(
+            request_context_provider=request_context_manager,
+        )
         error_handling_middleware = middlewares.ErrorHandlingMiddleware()
 
         return [
+            request_context_middlewares.process,
             logging_middleware.process,
             error_handling_middleware.process,
         ]
