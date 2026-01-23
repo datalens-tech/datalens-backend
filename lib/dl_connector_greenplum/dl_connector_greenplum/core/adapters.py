@@ -27,8 +27,8 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
             JOIN pg_namespace
             ON pg_namespace.oid = pg_class.relnamespace
         WHERE
-            pg_namespace.nspname not like 'pg_%'
-            AND pg_namespace.nspname not like 'gp_%'
+            pg_namespace.nspname not like 'pg\_%'
+            AND pg_namespace.nspname not like 'gp\_%'
             AND pg_namespace.nspname != 'session_state'
             AND pg_namespace.nspname != 'information_schema'
             AND pg_class.relkind in ('m', 'p', 'r', 'v')
@@ -58,8 +58,8 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         sql_parts = [
             """
         SELECT nspname FROM pg_namespace
-        WHERE nspname NOT LIKE 'pg_%'
-        AND nspname NOT LIKE 'gp_%'
+        WHERE nspname NOT LIKE 'pg\_%'
+        AND nspname NOT LIKE 'gp\_%'
         AND nspname != 'session_state'
         AND nspname != 'information_schema'
         """
