@@ -42,7 +42,8 @@ class YqlListType(ydb_sa.types.ListType):
             for item in value:
                 if isinstance(item, bytes):
                     converted_value.append(item.decode("utf-8", errors="replace"))
-                converted_value.append(item)
+                else:
+                    converted_value.append(item)
 
             return converted_value
 
@@ -234,7 +235,7 @@ class YqlDotAccess(ColumnElement):
     """
     Special kind of sqlalchemy statement for accessing tuple's elements through dot.
 
-    Converts expression and indes into `expression.index`, example: `tupl.0`.
+    Converts expression and index into `expression.index`, example: `tupl.0`.
     """
 
     __visit_name__ = "dot_access"
