@@ -8,7 +8,6 @@ from typing import (
     Any,
     Collection,
     Optional,
-    Sequence,
     Union,
 )
 
@@ -88,7 +87,7 @@ class DbEvaluator:
         context_flags: Optional[int] = None,
         other_fields: Optional[dict] = None,
         collect_errors: Optional[bool] = None,
-        field_types: Optional[Sequence[DataType]] = None,
+        field_types: Optional[dict[str, DataType]] = None,
         group_by: Optional[list[str | Formula]] = None,
         order_by: Optional[list[str | Formula]] = None,
         required_scopes: int = Scope.EXPLICIT_USAGE,
@@ -152,7 +151,7 @@ class DbEvaluator:
         group_by: Optional[list[str | Formula]] = None,
         first: bool = False,
         required_scopes: int = Scope.EXPLICIT_USAGE,
-        field_types: Optional[dict[DataType]] = None,
+        field_types: Optional[dict[str, DataType]] = None,
     ):
         select_ctx = self.translate_formula(
             formula,
