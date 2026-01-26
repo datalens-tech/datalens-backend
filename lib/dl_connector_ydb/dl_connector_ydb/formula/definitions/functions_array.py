@@ -696,25 +696,7 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # distinct
-    base.FuncArrayDistinctStr(
-        # Leave only unique items in array, order not preserved
-        variants=[
-            V(
-                D.YQL,
-                _func_array_distinct,
-            ),
-        ]
-    ),
-    base.FuncArrayDistinctInt(
-        # Leave only unique items in array, order not preserved
-        variants=[
-            V(
-                D.YQL,
-                _func_array_distinct,
-            ),
-        ]
-    ),
-    base.FuncArrayDistinctFloat(
+    base.FuncArrayDistinct(
         # Leave only unique items in array, order not preserved
         variants=[
             V(
@@ -724,25 +706,7 @@ DEFINITIONS_ARRAY = [
         ]
     ),
     # arr_index_of
-    base.FuncArrayIndexOfStr(
-        # Find element by value and return index
-        variants=[
-            V(
-                D.YQL,
-                _func_array_index_of,
-            ),
-        ]
-    ),
-    base.FuncArrayIndexOfInt(
-        # Find element by value and return index
-        variants=[
-            V(
-                D.YQL,
-                _func_array_index_of,
-            ),
-        ]
-    ),
-    base.FuncArrayIndexOfFloat(
+    base.FuncArrayIndexOf(
         # Find element by value and return index
         variants=[
             V(
