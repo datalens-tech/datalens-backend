@@ -35,7 +35,11 @@ def _async_singleton_function_result(func: AsyncFunctionType) -> AsyncFunctionTy
     @functools.wraps(func)
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         if not hasattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE):
-            setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, await func(*args, **kwargs))
+            function_name = func.__name__
+            LOGGER.info("Creating %s singleton result", function_name)
+            result = await func(*args, **kwargs)
+            setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, result)
+            LOGGER.info("%s singleton result created", function_name)
 
         return getattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE)
 
@@ -46,7 +50,11 @@ def _sync_singleton_function_result(func: SyncFunctionType) -> SyncFunctionType:
     @functools.wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         if not hasattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE):
-            setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, func(*args, **kwargs))
+            function_name = func.__name__
+            LOGGER.info("Creating %s singleton result", function_name)
+            result = func(*args, **kwargs)
+            setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, result)
+            LOGGER.info("%s singleton result created", function_name)
 
         return getattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE)
 
@@ -68,7 +76,11 @@ def _async_singleton_class_method_result(func: AsyncFunctionType) -> AsyncFuncti
         instance_key = f"{SINGLETON_FUNCTION_RESULT_ATTRIBUTE}_{func.__name__}"
 
         if not hasattr(class_instance, instance_key):
-            setattr(class_instance, instance_key, await func(*args, **kwargs))
+            function_name = f"{class_instance.__class__.__name__}.{func.__name__}"
+            LOGGER.info("Creating %s singleton result", function_name)
+            result = await func(*args, **kwargs)
+            setattr(class_instance, instance_key, result)
+            LOGGER.info("%s singleton result created", function_name)
 
         return getattr(class_instance, instance_key)
 
@@ -82,7 +94,11 @@ def _sync_singleton_class_method_result(func: SyncFunctionType) -> SyncFunctionT
         instance_key = f"{SINGLETON_FUNCTION_RESULT_ATTRIBUTE}_{func.__name__}"
 
         if not hasattr(class_instance, instance_key):
-            setattr(class_instance, instance_key, func(*args, **kwargs))
+            function_name = f"{class_instance.__class__.__name__}.{func.__name__}"
+            LOGGER.info("Creating %s singleton result", function_name)
+            result = func(*args, **kwargs)
+            setattr(class_instance, instance_key, result)
+            LOGGER.info("%s singleton result created", function_name)
 
         return getattr(class_instance, instance_key)
 

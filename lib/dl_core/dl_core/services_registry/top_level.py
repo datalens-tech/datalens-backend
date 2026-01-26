@@ -38,9 +38,9 @@ from dl_task_processor.processor import TaskProcessorFactory
 
 
 if TYPE_CHECKING:
-    from dl_configs.connectors_settings import ConnectorSettingsBase
     from dl_constants.enums import ConnectionType
     from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
+    from dl_core.connectors.settings.base import ConnectorSettings
     from dl_core.services_registry.compute_executor import ComputeExecutor
     from dl_core.services_registry.file_uploader_client_factory import FileUploaderClientFactory
     from dl_core.us_manager.local_cache import USEntryBuffer
@@ -116,7 +116,7 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettingsBase]:
+    def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettings]:
         pass
 
     @abc.abstractmethod
@@ -158,7 +158,7 @@ class DefaultServicesRegistry(ServicesRegistry):
     _mutation_cache_engine_factory: MutationCacheEngineFactory = attr.ib(default=None)
     _data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = attr.ib(default=None)
     _data_processor_factory: BaseClosableDataProcessorFactory = attr.ib()
-    _connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = attr.ib(default=None)
+    _connectors_settings: dict[str, ConnectorSettings] = attr.ib(default=None)
     _file_uploader_client_factory: Optional[FileUploaderClientFactory] = attr.ib(default=None)
     _task_processor_factory: Optional[TaskProcessorFactory] = attr.ib(default=None)
     _rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
@@ -233,8 +233,8 @@ class DefaultServicesRegistry(ServicesRegistry):
     def get_required_services(self) -> set[RequiredService]:
         return self._required_services
 
-    def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettingsBase]:
-        return self._connectors_settings.get(conn_type)
+    def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettings]:
+        return self._connectors_settings.get(conn_type.value)
 
     def get_data_source_collection_factory(self, us_entry_buffer: USEntryBuffer) -> DataSourceCollectionFactory:
         return DataSourceCollectionFactory(us_entry_buffer=us_entry_buffer)
@@ -329,7 +329,7 @@ class DummyServiceRegistry(ServicesRegistry):
     def get_data_processor_factory(self) -> BaseClosableDataProcessorFactory:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
-    def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettingsBase]:
+    def get_connectors_settings(self, conn_type: ConnectionType) -> Optional[ConnectorSettings]:
         raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def get_data_source_collection_factory(self, us_entry_buffer: USEntryBuffer) -> DataSourceCollectionFactory:

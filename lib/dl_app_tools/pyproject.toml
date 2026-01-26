@@ -11,7 +11,6 @@ attrs = "*"
 dl-utils = {path = "../dl_utils"}
 opentracing = "*"
 python = ">=3.10, <3.13"
-six = "*"
 
 [tool.poetry.group.tests.dependencies]
 

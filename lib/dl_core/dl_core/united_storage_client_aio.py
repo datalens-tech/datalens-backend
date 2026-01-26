@@ -143,11 +143,14 @@ class UStorageClientAIO(UStorageClientBase):
         self,
         request_data: UStorageClientBase.RequestData,
         retry_policy_name: Optional[str] = None,
+        context_name: Optional[str] = None,
     ) -> dict:
         self._raise_for_disabled_interactions()
         self._log_request_start(request_data)
         tracing_headers = get_current_tracing_headers()
         start = time.monotonic()
+
+        context_headers = self._named_contexts.get(context_name, {}) if context_name else {}
 
         with GenericProfiler("us-client-request"):
             retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
@@ -159,6 +162,7 @@ class UStorageClientAIO(UStorageClientBase):
                 headers={
                     **self._extra_headers,
                     **tracing_headers,
+                    **context_headers,
                 },
                 retrier=AiohttpPolicyRetrier(
                     retry_policy=retry_policy,
@@ -183,6 +187,7 @@ class UStorageClientAIO(UStorageClientBase):
         include_permissions: bool = True,
         include_links: bool = True,
         include_favorite: bool = False,
+        context_name: Optional[str] = None,
     ) -> dict:
         return await self._request(
             self._req_data_get_entry(
@@ -193,6 +198,7 @@ class UStorageClientAIO(UStorageClientBase):
                 include_favorite=include_favorite,
             ),
             retry_policy_name="get_entry",
+            context_name=context_name,
         )
 
     async def create_entry(

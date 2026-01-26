@@ -16,12 +16,16 @@ from typing_extensions import Self
 import dl_pydantic.base as base
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 TypedBaseModelT = TypeVar("TypedBaseModelT", bound="TypedBaseModel")
 
 
 class TypedMeta(pydantic_model_construction.ModelMetaclass):
     def __init__(cls, name: str, bases: tuple[type, ...], attrs: dict[str, Any]):
         cls._classes: dict[str, type["TypedBaseModel"]] = {}
+        cls._unknown_class: type["TypedBaseModel"] | None = None
 
 
 class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
@@ -34,25 +38,47 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     @classmethod
     def register(cls, name: str, class_: Type) -> None:  # noqa: UP006
         if name in cls._classes:
-            raise ValueError(f"Class with name '{name}' already registered")
+            if cls._classes[name] is class_:
+                LOGGER.warning("Class %s(type=%s) already registered: %s", cls.__name__, name, class_)
+                return
+
+            raise ValueError(f"{cls.__name__}(type={name}) already registered")
 
         if not issubclass(class_, cls):
             raise ValueError(f"Class '{class_}' must be subclass of '{cls}'")
 
         cls._classes[name] = class_
-        logging.info(f"Registered class '{name}' as '{class_}'")
+        LOGGER.debug("Registered %s(type=%s): %s", cls.__name__, name, class_)
+
+    @classmethod
+    def register_unknown(cls, class_: Type) -> None:  # noqa: UP006
+        if cls._unknown_class is not None:
+            raise ValueError("Unknown class already registered")
+
+        if not issubclass(class_, cls):
+            raise ValueError(f"Class '{class_}' must be subclass of {cls}")
+
+        cls._unknown_class = class_
+        LOGGER.debug("Registered unknown for %s: %s", cls.__name__, class_)
 
     @classmethod
     def _prepare_data(cls, data: dict[str, Any]) -> dict[str, Any]:
         return data
 
     @classmethod
-    def _get_class_name(cls, data: dict[str, Any]) -> str:
+    def _get_class_name(cls, data: dict[str, Any]) -> str | None:
         type_key = cls.type_key()
         if type_key not in data:
             raise ValueError(f"Data must contain '{type_key}' key")
 
-        return data[type_key]
+        data_type = data[type_key]
+
+        data_type_lower = data_type.lower()
+        for registered_type in cls._classes:
+            if registered_type.lower() == data_type_lower:
+                return registered_type
+
+        return None
 
     @classmethod
     def factory(cls, data: Any) -> Self:
@@ -63,9 +89,16 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             raise ValueError("Data must be dict")
 
         class_name = cls._get_class_name(data)
-        if class_name not in cls._classes:
+        if class_name is not None:
+            if class_name not in cls._classes:
+                raise ValueError(f"Unknown type: {class_name}")
+
+            class_ = cls._classes[class_name]
+            data[cls.type_key()] = class_name
+        elif cls._unknown_class is not None:
+            class_ = cls._unknown_class
+        else:
             raise ValueError(f"Unknown type: {class_name}")
-        class_ = cls._classes[class_name]
 
         data = class_._prepare_data(data)
 
@@ -84,6 +117,34 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             raise ValueError("Data must be mapping for dict factory")
 
         return {key: cls.factory(value) for key, value in data.items()}
+
+    @classmethod
+    def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
+        if not isinstance(data, dict):
+            raise ValueError("Data must be mapping for dict factory")
+
+        result: dict[str, base.BaseModel] = {}
+        type_key = cls.type_key()
+
+        for key, value in data.items():
+            if isinstance(value, cls):
+                if value.type != key:
+                    raise ValueError(f"Type mismatch: dict key is '{key}', but {cls.__name__}.type is '{value.type}'")
+                result[key] = value
+                continue
+
+            elif isinstance(value, dict):
+                if type_key in value:
+                    raise ValueError(f"Data must not contain '{type_key}' key, dict key is already used as type")
+                value[type_key] = key
+
+            else:
+                raise ValueError(f"Value must be dict or {cls.__name__}")
+
+            result_cls = cls.factory(value)
+            result[result_cls.type] = result_cls
+
+        return result
 
     @classmethod
     def __get_pydantic_json_schema__(
@@ -114,6 +175,7 @@ if TYPE_CHECKING:
     TypedAnnotation = Annotated[TypedBaseModelT, ...]
     TypedListAnnotation = Annotated[list[TypedBaseModelT], ...]
     TypedDictAnnotation = Annotated[dict[str, TypedBaseModelT], ...]
+    TypedDictWithTypeKeyAnnotation = Annotated[dict[str, TypedBaseModelT], ...]
 else:
 
     class TypedAnnotation:
@@ -137,10 +199,18 @@ else:
                 pydantic.BeforeValidator(base_class.dict_factory),
             ]
 
+    class TypedDictWithTypeKeyAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseModelT) -> Any:
+            return Annotated[
+                dict[str, pydantic.SerializeAsAny[base_class]],
+                pydantic.BeforeValidator(base_class.dict_with_type_key_factory),
+            ]
+
 
 __all__ = [
     "TypedBaseModel",
     "TypedAnnotation",
     "TypedListAnnotation",
     "TypedDictAnnotation",
+    "TypedDictWithTypeKeyAnnotation",
 ]

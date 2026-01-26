@@ -99,7 +99,12 @@ class DatasetResource(BIResource):
         )
         if dataset_id:
             try:
-                dataset = us_manager.get_by_id(dataset_id, expected_type=Dataset, params=params)
+                dataset = us_manager.get_by_id(
+                    dataset_id,
+                    expected_type=Dataset,
+                    params=params,
+                    context_name="dataset",
+                )
             except UnexpectedUSEntryType as e:
                 raise USObjectNotFoundException("Dataset with id {} does not exist".format(dataset_id)) from e
         else:
@@ -446,5 +451,7 @@ class DatasetResource(BIResource):
         ds_dict["id"] = dataset.uuid
         if dataset.permissions is not None:
             ds_dict["permissions"] = dataset.permissions
+        if dataset.full_permissions is not None:
+            ds_dict["full_permissions"] = dataset.full_permissions
 
         return ds_dict

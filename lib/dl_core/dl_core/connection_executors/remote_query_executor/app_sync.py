@@ -55,7 +55,7 @@ from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
 )
-from dl_core.logging_config import hook_configure_logging as _hook_configure_logging
+from dl_core.logging_config import hook_configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
@@ -238,9 +238,11 @@ class ActionHandlingView(flask.views.View):
                 if host is None or ipaddress.ip_address(host).is_private:
                     time.sleep(random.uniform(5, 20))
                     query = None
+                    inspector_query = None
                     if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
                         query = action.db_adapter_query.debug_compiled_query
-                    raise SourceTimeout(db_message="Source timed out", query=query)
+                        inspector_query = action.db_adapter_query.inspector_query
+                    raise SourceTimeout(db_message="Source timed out", query=query, inspector_query=inspector_query)
 
         if isinstance(action, act.ActionExecuteQuery):
             return self.execute_execute_action(dba, action)
@@ -269,7 +271,7 @@ def hook_init_logging(
     app_prefix: Optional[str] = None,
     **kwargs: Any,
 ) -> None:
-    return _hook_configure_logging(
+    return hook_configure_logging(
         app=app,
         app_name=app_name,
         app_prefix=app_prefix,

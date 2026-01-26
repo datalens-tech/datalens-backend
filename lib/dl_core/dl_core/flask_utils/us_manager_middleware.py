@@ -68,12 +68,13 @@ class USManagerFlaskMiddleware:
         elif RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
             LOGGER.info("User US manager will not be created due to US_HEADERS_TOKEN flag in target view")
         else:
-            LOGGER.info("Creating user US manager")
             usm: SyncUSManager
 
             if self.us_auth_mode == USAuthMode.regular:
+                LOGGER.info("Creating user US manager with regular auth mode")
                 usm = self._usm_factory.get_regular_sync_usm(rci=bi_context, services_registry=services_registry)
             elif self.us_auth_mode == USAuthMode.master:
+                LOGGER.info("Creating user US manager with master auth mode")
                 usm = self._usm_factory.get_master_sync_usm(rci=bi_context, services_registry=services_registry)
             else:
                 raise AssertionError(f"Mode is not supported by USManagerFlaskMiddleware: {self.us_auth_mode!r}")

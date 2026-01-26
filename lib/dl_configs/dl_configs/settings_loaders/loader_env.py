@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import reduce
 import inspect
 import json
 import logging
@@ -15,36 +14,27 @@ from typing import (
     TypeVar,
     Union,
     final,
-    no_type_check,
 )
 
 import attr
 import typeguard
 
-from dl_configs.connectors_settings import (
-    ConnectorSettingsBase,
-    SettingsFallbackType,
-)
 from dl_configs.settings_loaders.common import (
     FallbackFactory,
     SDict,
 )
-from dl_configs.settings_loaders.connectors_settings import generate_connectors_settings_class
 from dl_configs.settings_loaders.env_remap import remap_env
 from dl_configs.settings_loaders.exc import SettingsLoadingException
 from dl_configs.settings_loaders.fallback_cfg_resolver import (
     FallbackConfigResolver,
-    ObjectLikeConfig,
     YamlFileConfigResolver,
 )
 from dl_configs.settings_loaders.meta_definition import (
     RequiredValue,
     ReservedKeys,
     SMeta,
-    s_attrib,
 )
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_constants.enums import ConnectionType
 from dl_utils.utils import get_type_full_name
 
 
@@ -682,42 +672,3 @@ def load_settings_from_env_with_fallback(
         settings_type,
         fallback_cfg_resolver=default_fallback_cfg_resolver,
     )
-
-
-@no_type_check  # mypy is barely working with dynamic attrs classes
-def load_connectors_settings_from_env_with_fallback(
-    settings_registry: dict[ConnectionType, type[ConnectorSettingsBase]],
-    fallbacks: dict[ConnectionType, SettingsFallbackType],
-    env: Optional[SDict] = None,
-    fallback_cfg_resolver: Optional[FallbackConfigResolver] = None,
-) -> dict[ConnectionType, ConnectorSettingsBase]:
-    settings_class = generate_connectors_settings_class(settings_registry)
-
-    def connectors_fallback(full_cfg: ObjectLikeConfig):
-        full_settings = reduce(lambda settings, fallback: settings | fallback(full_cfg), fallbacks.values(), {})
-        return settings_class(**full_settings)
-
-    connectors = attr.make_class(
-        "Connectors",
-        {
-            "CONNECTORS": s_attrib(
-                "CONNECTORS",
-                type_class=Optional[settings_class],
-                fallback_factory=connectors_fallback,
-            )
-        },
-        frozen=True,
-    )
-
-    loaded_settings = load_settings_from_env_with_fallback(connectors, env, fallback_cfg_resolver)
-    connectors_settings: dict[ConnectionType, ConnectorSettingsBase] = {}
-    if loaded_settings.CONNECTORS is None:
-        return connectors_settings
-
-    for name in attr.fields_dict(settings_class):
-        conn_type = ConnectionType(name.lower())
-        connector_settings = getattr(loaded_settings.CONNECTORS, name)
-        if connector_settings is not None:
-            assert isinstance(connector_settings, ConnectorSettingsBase)
-            connectors_settings[conn_type] = connector_settings
-    return connectors_settings

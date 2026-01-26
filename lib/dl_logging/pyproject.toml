@@ -1,0 +1,53 @@
+[tool.poetry]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+description = ""
+license = "Apache 2.0"
+name = "dl-logging"
+packages = [{include = "dl_logging"}]
+readme = "README.md"
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+dl-settings = {path = "../dl_settings"}
+jaeger-client = "*"
+opentracing = "*"
+pydantic = "*"
+python = ">=3.10, <3.13"
+statcommons = {path = "../statcommons"}
+typing-extensions = "*"
+
+[tool.poetry.group.tests.dependencies]
+dl-json = {path = "../dl_json"}
+mock = "*"
+pytest = "*"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "statcommons.*",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_logging_tests/"
+skip_compose = "true"
+target_path = "unit"

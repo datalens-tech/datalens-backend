@@ -563,10 +563,10 @@ FUNCTION_ARR_DISTINCT = FunctionDocRegistryItem(
         "The order of elements in the returned array is not guaranteed to be the same as the input array."
     ),
     examples=[
-        SimpleExample("ARR_DISTINCT(ARRAY(1, 2, 2, 3, 3, 3, 4) = [1, 2, 3, 4]"),
-        SimpleExample("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 3.3, 3.3, 4.4) = [1.1, 2.2, 3.3, 4.4]"),
+        SimpleExample("ARR_DISTINCT(ARRAY(1, 2, 2, 3, 3, 3, 4)) = [1, 2, 3, 4]"),
+        SimpleExample("ARR_DISTINCT(ARRAY(1.1, 2.2, 2.2, 3.3, 3.3, 3.3, 4.4)) = [1.1, 2.2, 3.3, 4.4]"),
         SimpleExample(
-            "ARR_DISTINCT(ARRAY('apple', 'banana', 'apple', 'orange', 'banana') = ['apple', 'banana', 'orange']"
+            "ARR_DISTINCT(ARRAY('apple', 'banana', 'apple', 'orange', 'banana')) = ['apple', 'banana', 'orange']"
         ),
     ],
 )

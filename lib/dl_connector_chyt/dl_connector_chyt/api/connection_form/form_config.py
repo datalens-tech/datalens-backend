@@ -20,8 +20,8 @@ from dl_api_connector.form_config.models.common import (
 )
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_chyt.api.connection_info import CHYTConnectionInfoProvider
 from dl_connector_chyt.api.i18n.localizer import Translatable
@@ -36,7 +36,7 @@ class CHYTFieldName(FormFieldName):
 class CHYTConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, CHYTConnectorSettings)

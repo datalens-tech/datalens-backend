@@ -25,8 +25,8 @@ dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
-dl-constants = {path = "../../lib/dl_constants"}
 dl-core = {path = "../../lib/dl_core"}
+dl-logging = {path = "../../lib/dl_logging"}
 dl-model-tools = {path = "../../lib/dl_model_tools"}
 dl-retrier = {path = "../../lib/dl_retrier"}
 dl-sqlalchemy-clickhouse = {path = "../../lib/dl_sqlalchemy_clickhouse"}
@@ -66,6 +66,15 @@ strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "argcomplete.*",
+  "blinker.*",
+  "deepdiff.*",
+  "uvloop.*",
+]
 
 [tool.pytest.ini_options]
 addopts = "-ra"

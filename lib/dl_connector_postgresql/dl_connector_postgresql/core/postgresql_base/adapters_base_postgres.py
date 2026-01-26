@@ -387,7 +387,7 @@ class PostgresQueryConstructorMixin:
             JOIN pg_namespace
             ON pg_namespace.oid = pg_class.relnamespace
         WHERE
-            pg_namespace.nspname not like 'pg_%'
+            pg_namespace.nspname not like 'pg\_%'
             AND pg_namespace.nspname != 'information_schema'
             AND pg_class.relkind in ('m', 'p', 'r', 'v')
             AND NOT COALESCE((row_to_json(pg_class)->>'relispartition')::boolean, false)
@@ -412,7 +412,7 @@ class PostgresQueryConstructorMixin:
         sql_parts = [
             """
         SELECT nspname FROM pg_namespace
-        WHERE nspname NOT LIKE 'pg_%'
+        WHERE nspname NOT LIKE 'pg\_%'
         """
         ]
 

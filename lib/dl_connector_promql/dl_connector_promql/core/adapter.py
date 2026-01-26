@@ -30,7 +30,10 @@ from dl_core.exc import DatabaseQueryError
 from dl_type_transformer.native_type import GenericNativeType
 from dl_utils.utils import make_url
 
-from dl_connector_promql.core.constants import CONNECTION_TYPE_PROMQL
+from dl_connector_promql.core.constants import (
+    CONNECTION_TYPE_PROMQL,
+    PromQLAuthType,
+)
 
 
 if TYPE_CHECKING:
@@ -68,10 +71,14 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
         )
 
     def _get_dsn_query_params(self) -> dict:
-        return {
+        params: dict = {
             "path": self._target_dto.path,
             "protocol": self._target_dto.protocol,
+            "auth_type": self._target_dto.auth_type.value,
         }
+        if self._target_dto.auth_header:
+            params["auth_header"] = self._target_dto.auth_header
+        return params
 
 
 @attr.s
@@ -112,13 +119,23 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
         )
 
     def get_session_auth(self) -> Optional[BasicAuth]:
-        if self._target_dto.username and self._target_dto.password:
+        if (
+            self._target_dto.auth_type == PromQLAuthType.password
+            and self._target_dto.username
+            and self._target_dto.password
+        ):
             return BasicAuth(
                 login=self._target_dto.username,
                 password=self._target_dto.password,
                 encoding="utf-8",
             )
         return None
+
+    def get_session_headers(self) -> dict[str, str]:
+        headers = super().get_session_headers()
+        if self._target_dto.auth_type == PromQLAuthType.header and self._target_dto.auth_header:
+            headers["Authorization"] = self._target_dto.auth_header
+        return headers
 
     async def _run_query(self, dba_query: DBAdapterQuery) -> ClientResponse:
         req_params = {"from", "to", "step"}
@@ -127,7 +144,8 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             db_exc = self.make_exc(
                 status_code=HTTPBadRequest.status_code,
                 err_body="'step', 'from', 'to' must be in parameters",
-                debug_compiled_query=dba_query.debug_compiled_query,
+                debug_query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
             )
             raise db_exc
 
@@ -179,18 +197,21 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 message=f"Unexpected API response body: {err.args[0]}",
                 db_message=data["data"]["result"][:100],
                 query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
             ) from err
 
     @staticmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
         status_code: int,  # noqa
         err_body: str,
-        debug_compiled_query: Optional[str] = None,
+        debug_query: str | None = None,
+        inspector_query: str | None = None,
     ) -> DatabaseQueryError:
         exc_cls = DatabaseQueryError
         return exc_cls(
             db_message=err_body,
-            query=debug_compiled_query,
+            query=debug_query,
+            inspector_query=inspector_query,
             orig=None,
             details={},
         )
@@ -206,7 +227,8 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             db_exc = self.make_exc(
                 status_code=resp.status,
                 err_body=body_piece,
-                debug_compiled_query=dba_query.debug_compiled_query,
+                debug_query=dba_query.debug_compiled_query,
+                inspector_query=dba_query.inspector_query,
             )
             raise db_exc
 

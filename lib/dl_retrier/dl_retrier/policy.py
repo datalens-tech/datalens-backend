@@ -1,7 +1,5 @@
 import datetime
-import itertools
 from typing import (
-    Iterable,
     Iterator,
     Protocol,
     TypeAlias,
@@ -16,6 +14,7 @@ from dl_retrier.settings import RetryPolicyFactorySettings
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True)
 class Retry:
+    attempt_number: int
     request_timeout: float
     connect_timeout: float
     sleep_before_seconds: float
@@ -60,34 +59,34 @@ class RetryPolicy:
     backoff_factor: float = attr.ib()
     """
     Backoff exponential factor. Backoff delay is computed as
-    `backoff = min(backoff_max, backoff_initial * (backoff_factor ** (retry_number - 1)))`.
+    `backoff = min(backoff_max, backoff_initial * (backoff_factor ** (attempt_number - 2)))`.
     """
 
     backoff_max: float = attr.ib()
     """
     Maximal backoff delay. Backoff delay is computed as
-    `backoff = min(backoff_max, backoff_initial * (backoff_factor ** (retry_number - 1)))`.
+    `backoff = min(backoff_max, backoff_initial * (backoff_factor ** (attempt_number - 2)))`.
     """
 
-    def get_backoff_at(self, retry: int) -> float:
+    def _get_sleep_before(self, attempt_number: int) -> float:
+        if attempt_number <= 1:
+            return 0
+
         return min(
             self.backoff_max,
-            self.backoff_initial * (self.backoff_factor**retry),
+            self.backoff_initial * (self.backoff_factor ** (attempt_number - 2)),
         )
-
-    def get_backoff(self) -> Iterable[float]:
-        for idx in itertools.count():
-            yield self.get_backoff_at(idx)
 
     def can_retry_error(self, error_code: ErrorCode) -> bool:
         return error_code in self.retryable_codes
 
-    def iter_retries(retry_policy: typing_extensions.Self) -> Iterator[Retry]:
+    def iter_retries(self) -> Iterator[Retry]:
         start_dt = datetime.datetime.now()
-        end_dt = start_dt + datetime.timedelta(seconds=retry_policy.total_timeout)
+        end_dt = start_dt + datetime.timedelta(seconds=self.total_timeout)
+        max_attempts_count = self.retries_count + 1  # First attempt is not a retry
 
-        for idx in range(retry_policy.retries_count + 1):  # First Retry is not a retry
-            sleep_before_seconds = 0 if idx == 0 else retry_policy.get_backoff_at(idx - 1)
+        for attempt_number in range(1, max_attempts_count + 1):
+            sleep_before_seconds = self._get_sleep_before(attempt_number)
             total_timeout_remaining = (end_dt - datetime.datetime.now()).total_seconds()
 
             if sleep_before_seconds > total_timeout_remaining:
@@ -96,8 +95,9 @@ class RetryPolicy:
             total_timeout_remaining -= sleep_before_seconds
 
             yield Retry(
-                request_timeout=min(retry_policy.request_timeout, total_timeout_remaining),
-                connect_timeout=min(retry_policy.connect_timeout, total_timeout_remaining),
+                attempt_number=attempt_number,
+                request_timeout=min(self.request_timeout, total_timeout_remaining),
+                connect_timeout=min(self.connect_timeout, total_timeout_remaining),
                 sleep_before_seconds=sleep_before_seconds,
             )
 

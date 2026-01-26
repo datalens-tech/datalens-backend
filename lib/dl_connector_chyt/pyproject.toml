@@ -13,16 +13,18 @@ attrs = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
-dl-configs = {path = "../dl_configs"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
 dl-i18n = {path = "../dl_i18n"}
+dl-settings = {path = "../dl_settings"}
 dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
+pydantic = "*"
+pydantic-settings = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 

@@ -72,9 +72,14 @@ def test_already_registered() -> None:
     class Child(Base):
         ...
 
+    class AnotherChild(Base):
+        ...
+
     Base.register("child", Child)
+    Base.register("child", Child)  # it's ok, just warning
+
     with pytest.raises(ValueError):
-        Base.register("child", Child)
+        Base.register("child", AnotherChild)
 
 
 def test_not_subclass() -> None:
@@ -191,7 +196,16 @@ def test_factory_ignores_case(
     monkeypatch.setenv("CHILD__inner_field", "value")
 
     root = RootSettings()  # type: ignore
+    assert isinstance(root.child, Child)
 
+    monkeypatch.setenv("CHILD__TYPE", "CHILD")
+
+    root = RootSettings()  # type: ignore
+    assert isinstance(root.child, Child)
+
+    monkeypatch.setenv("CHILD__TYPE", "ChiLd")
+
+    root = RootSettings()  # type: ignore
     assert isinstance(root.child, Child)
 
 
@@ -215,6 +229,16 @@ def test_factory_ignores_case_in_config(
         root = Root()
         assert isinstance(root.CHILD, Child)
 
+        config_path = tmp_configs.add({"CHILD": {"type": "CHILD"}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILD, Child)
+
+        config_path = tmp_configs.add({"CHILD": {"type": "ChiLd"}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILD, Child)
+
 
 def test_annotation() -> None:
     class Base(dl_settings.TypedBaseSettings):
@@ -229,6 +253,10 @@ def test_annotation() -> None:
         child: dl_settings.TypedAnnotation[Base]
 
     root = Root.model_validate({"child": {"type": "child", "value": "test"}})
+    assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
+
+    root = Root(child=Child(type="child", value="test"))  # type: ignore
     assert isinstance(root.child, Child)
     assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
 
@@ -257,6 +285,18 @@ def test_optional_annotation() -> None:
     assert root.child is None
     assert root.model_dump() == {"child": None}
 
+    root = Root(child=Child(type="child", value="test"))  # type: ignore
+    assert isinstance(root.child, Child)
+    assert root.model_dump() == {"child": {"type": "child", "value": "test"}}
+
+    root = Root(child=None)
+    assert root.child is None
+    assert root.model_dump() == {"child": None}
+
+    root = Root()
+    assert root.child is None
+    assert root.model_dump() == {"child": None}
+
 
 def test_list_annotation() -> None:
     class Base(dl_settings.TypedBaseSettings):
@@ -271,6 +311,10 @@ def test_list_annotation() -> None:
         children: dl_settings.TypedListAnnotation[Base] = pydantic.Field(default_factory=list)
 
     root = Root.model_validate({"children": [{"type": "child", "value": "test"}]})
+    assert isinstance(root.children[0], Child)
+    assert root.model_dump() == {"children": [{"type": "child", "value": "test"}]}
+
+    root = Root(children=[Child(type="child", value="test")])  # type: ignore
     assert isinstance(root.children[0], Child)
     assert root.model_dump() == {"children": [{"type": "child", "value": "test"}]}
 
@@ -290,6 +334,11 @@ def test_dict_annotation() -> None:
     root = Root.model_validate({"children": {"child": {"type": "child", "value": "test"}}})
     assert isinstance(root.children["child"], Child)
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    root = Root(children={"child": Child(type="child", value="test")})  # type: ignore
+
+    assert isinstance(root.children["child"], Child)
+    assert root.children["child"].value == "test"
 
 
 def test_dict_annotation_with_env(
@@ -311,3 +360,71 @@ def test_dict_annotation_with_env(
 
     assert isinstance(root.children["child"], Child)
     assert root.children["child"].secret == "secret_value"
+
+
+def test_dict_factory_with_type_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        type: str = "child"
+        value: str
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.BaseRootSettings):
+        children: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    root = Root.model_validate({"children": {"child": {"value": "test"}}})
+    assert isinstance(root.children["child"], Child)
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    root = Root(children={"child": Child(value="test")})  # type: ignore
+    assert isinstance(root.children["child"], Child)
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        config_path = tmp_configs.add({"children": {"child": {"value": "test"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.children["child"], Child)
+        assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+
+def test_dict_factory_with_type_key_with_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        value: str
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.BaseRootSettings):
+        children: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    monkeypatch.setenv("CHILDREN__CHILD__VALUE", "test")
+    root = Root()
+
+    assert isinstance(root.children["child"], Child)
+    assert root.children["child"].value == "test"
+    assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+
+def test_dict_factory_with_type_key_ignores_type_case() -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        value: str
+
+    Base.register("child", Child)
+
+    base = Base.dict_with_type_key_factory({"CHILD": {"value": "test"}})
+    assert isinstance(base["child"], Child)
+    base = Base.dict_with_type_key_factory({"ChiLd": {"value": "test"}})
+    assert isinstance(base["child"], Child)

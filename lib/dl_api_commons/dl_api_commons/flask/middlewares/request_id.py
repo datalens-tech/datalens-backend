@@ -9,10 +9,7 @@ import attr
 import flask
 from flask import request
 
-from dl_api_commons import (
-    make_uuid_from_parts,
-    request_id_generator,
-)
+from dl_api_commons import make_uuid_from_parts
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
@@ -25,8 +22,9 @@ from dl_api_commons.logging import (
     NON_TRANSITIVE_LOGGING_CTX_KEYS,
     RequestLogHelper,
 )
-from dl_app_tools.log.context import put_to_context
 from dl_constants.api_constants import DLHeadersCommon
+import dl_logging
+import dl_utils
 
 
 LOGGER = logging.getLogger(__name__)
@@ -48,11 +46,11 @@ class RequestIDService:
 
         if self._append_local_req_id:
             current_req_id = make_uuid_from_parts(
-                current=request_id_generator(self._request_id_app_prefix),
+                current=dl_utils.request_id_generator(self._request_id_app_prefix),
                 parent=incoming_req_id,
             )
         else:
-            current_req_id = incoming_req_id or request_id_generator(self._request_id_app_prefix)
+            current_req_id = incoming_req_id or dl_utils.request_id_generator(self._request_id_app_prefix)
 
         trace_id_header = DLHeadersCommon.UBER_TRACE_ID
         trace_id = request.headers[trace_id_header].split(":")[0] if trace_id_header in request.headers else None
@@ -71,7 +69,7 @@ class RequestIDService:
                     logging_ctx_from_header.pop(ctx_key, None)
 
                 for ctx_key, ctx_val in logging_ctx_from_header.items():
-                    put_to_context(ctx_key, ctx_val)
+                    dl_logging.put_to_context(ctx_key, ctx_val)
 
             except Exception:  # noqa
                 LOGGER.exception("Can not parse logging context: %s", logging_ctx_header)

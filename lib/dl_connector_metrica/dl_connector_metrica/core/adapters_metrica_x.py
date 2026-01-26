@@ -55,9 +55,13 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
 
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
+        cls,
+        wrapper_exc: Exception,
+        orig_exc: Exception | None,
+        debug_query: str | None,
+        inspector_query: str | None,
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
-        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_compiled_query)
+        exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_query, inspector_query)
 
         if isinstance(
             orig_exc,

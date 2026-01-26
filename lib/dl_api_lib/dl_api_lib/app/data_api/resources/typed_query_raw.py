@@ -72,7 +72,11 @@ class DashSQLTypedQueryRawView(BaseView):
         connection_id = self.connection_id
         assert connection_id
         try:
-            connection = await self.dl_request.us_manager.get_by_id(connection_id, ConnectionBase)
+            connection = await self.dl_request.us_manager.get_by_id(
+                connection_id,
+                ConnectionBase,
+                context_name="connection",
+            )
         except core_exc.USValidationException:
             raise core_exc.USInvalidConnectionID(params={"entry_id": connection_id})
         except core_exc.USObjectNotFoundException:

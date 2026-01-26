@@ -228,3 +228,49 @@ class DbEvaluator:
         except Exception:
             print("QUERY:", self.db.expr_as_str(query))
             raise
+
+    def compile_formula(
+        self,
+        formula: Union[str, Formula],
+        from_: Optional[ClauseElement] = None,
+        where: str | Formula | None = None,
+        many: bool = False,
+        other_fields: Optional[dict] = None,
+        order_by: Optional[list[str | Formula]] = None,
+        group_by: Optional[list[str | Formula]] = None,
+        first: bool = False,
+        required_scopes: int = Scope.EXPLICIT_USAGE,
+    ) -> str:
+        """
+        Compile formula to SQL string without executing it.
+        """
+        select_ctx = self.translate_formula(
+            formula,
+            other_fields=other_fields,
+            order_by=order_by,
+            group_by=group_by,
+            required_scopes=required_scopes,
+        )
+
+        query = sa.select([select_ctx.expression])
+        if from_ is not None:
+            query = query.select_from(from_)
+        if order_by is not None:
+            query = query.order_by(
+                *[self.translate_formula(expr, required_scopes=required_scopes).expression for expr in order_by]
+            )
+        if group_by:
+            query = query.group_by(
+                *[self.translate_formula(expr, required_scopes=required_scopes).expression for expr in group_by]
+            )
+        if where is not None:
+            where_ctx = self.translate_formula(
+                where,
+                context_flags=ContextFlag.REQ_CONDITION,
+                required_scopes=required_scopes,
+            )
+            query = query.where(where_ctx.expression)
+        if first:
+            query = query.limit(1)
+
+        return self.db.expr_as_str(query)

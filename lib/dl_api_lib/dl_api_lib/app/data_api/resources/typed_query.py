@@ -120,7 +120,11 @@ class DashSQLTypedQueryView(BaseView):
         # TODO: Move to some base class for connection-based views
         connection_id = self.connection_id
         assert connection_id
-        connection = await self.dl_request.us_manager.get_by_id(connection_id, ConnectionBase)
+        connection = await self.dl_request.us_manager.get_by_id(
+            connection_id,
+            ConnectionBase,
+            context_name="connection",
+        )
         assert isinstance(connection, ConnectionBase)
         return connection
 

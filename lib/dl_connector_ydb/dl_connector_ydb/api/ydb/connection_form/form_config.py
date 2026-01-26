@@ -37,8 +37,8 @@ from dl_api_connector.form_config.models.rows.base import (
     TDisplayConditions,
 )
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_i18n.localizer_base import Localizer
 
 from dl_connector_ydb.api.ydb.connection_info import YDBConnectionInfoProvider
@@ -183,7 +183,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
         ydb_rc: YDBRowConstructor,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
 
@@ -281,7 +281,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)

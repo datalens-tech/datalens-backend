@@ -7,7 +7,6 @@ from typing import (
     final,
 )
 
-import attrs
 import pytest
 import pytest_mock
 
@@ -22,7 +21,7 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormMode,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_i18n.localizer_base import (
     LocalizerLoader,
     TranslationConfig,
@@ -36,7 +35,7 @@ class ConnectionFormTestBase:
     EXPECTED_FORMS_DIR: ClassVar[str] = "expected_forms"
 
     @pytest.fixture
-    def connectors_settings(self) -> Optional[ConnectorSettingsBase]:
+    def connectors_settings(self) -> Optional[ConnectorSettings]:
         """Parametrize if a form has extra settings"""
 
         return None
@@ -61,7 +60,7 @@ class ConnectionFormTestBase:
     @pytest.fixture
     def form_config(
         self,
-        connectors_settings: Optional[ConnectorSettingsBase],
+        connectors_settings: Optional[ConnectorSettings],
         tenant: TenantDef,
         mode: ConnectionFormMode,
         service_registry: ApiServiceRegistry,
@@ -89,13 +88,15 @@ class ConnectionFormTestBase:
     def fixture_expected_form_config_file(
         self,
         config_dir: str,
-        connectors_settings: Optional[ConnectorSettingsBase],
+        connectors_settings: Optional[ConnectorSettings],
         tenant: TenantDef,
         mode: ConnectionFormMode,
     ) -> str:
         parts: list[str] = []
         if connectors_settings is not None:
-            for value in attrs.astuple(connectors_settings):
+            for key, value in connectors_settings.model_dump().items():
+                if key == "type":
+                    continue
                 parts.append(str(value))
         parts.append(str(tenant))
         parts.append(mode.value)

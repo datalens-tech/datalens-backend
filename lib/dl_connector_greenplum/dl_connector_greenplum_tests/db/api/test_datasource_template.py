@@ -6,8 +6,10 @@ from dl_connector_greenplum.core.constants import (
 )
 from dl_connector_greenplum.core.settings import GreenplumConnectorSettings
 from dl_connector_greenplum_tests.db.api.base import (
-    GreenplumDataApiTestBase,
-    GreenplumDatasetTestBase,
+    GP6DataApiTestBase,
+    GP6DatasetTestBase,
+    GP7DataApiTestBase,
+    GP7DatasetTestBase,
 )
 
 
@@ -16,34 +18,66 @@ class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate
     conn_settings_cls = GreenplumConnectorSettings
 
 
-class TestTableControlApiSourceTemplate(
+class TestTableControlApiSourceTemplateGP6(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
-    GreenplumDatasetTestBase,
+    GP6DatasetTestBase,
 ):
     ...
 
 
-class TestTableControlApiSourceTemplateSettingsDisabled(
+class TestTableControlApiSourceTemplateGP7(
+    BaseTableTestSourceTemplate,
+    dl_api_lib_testing.BaseTestControlApiSourceTemplate,
+    GP7DatasetTestBase,
+):
+    ...
+
+
+class TestTableControlApiSourceTemplateSettingsDisabledGP6(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
-    GreenplumDatasetTestBase,
+    GP6DatasetTestBase,
 ):
     ...
 
 
-class TestTableControlApiSourceTemplateConnectionDisabled(
+class TestTableControlApiSourceTemplateSettingsDisabledGP7(
+    BaseTableTestSourceTemplate,
+    dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
+    GP7DatasetTestBase,
+):
+    ...
+
+
+class TestTableControlApiSourceTemplateConnectionDisabledGP6(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
-    GreenplumDatasetTestBase,
+    GP6DatasetTestBase,
 ):
     ...
 
 
-class TestTableDataApiSourceTemplate(
+class TestTableControlApiSourceTemplateConnectionDisabledGP7(
+    BaseTableTestSourceTemplate,
+    dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
+    GP7DatasetTestBase,
+):
+    ...
+
+
+class TestTableDataApiSourceTemplateGP6(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
-    GreenplumDataApiTestBase,
+    GP6DataApiTestBase,
+):
+    ...
+
+
+class TestTableDataApiSourceTemplateGP7(
+    BaseTableTestSourceTemplate,
+    dl_api_lib_testing.BaseTestDataApiSourceTemplate,
+    GP7DataApiTestBase,
 ):
     ...
 
@@ -53,33 +87,65 @@ class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSource
     conn_settings_cls = GreenplumConnectorSettings
 
 
-class TestSubselectControlApiSourceTemplate(
+class TestSubselectControlApiSourceTemplateGP6(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
-    GreenplumDatasetTestBase,
+    GP6DatasetTestBase,
 ):
     ...
 
 
-class TestSubselectControlApiSourceTemplateSettingsDisabled(
+class TestSubselectControlApiSourceTemplateGP7(
+    BaseSubselectTestSourceTemplate,
+    dl_api_lib_testing.BaseTestControlApiSourceTemplate,
+    GP7DatasetTestBase,
+):
+    ...
+
+
+class TestSubselectControlApiSourceTemplateSettingsDisabledGP6(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
-    GreenplumDatasetTestBase,
+    GP6DatasetTestBase,
 ):
     ...
 
 
-class TestSubselectControlApiSourceTemplateConnectionDisabled(
+class TestSubselectControlApiSourceTemplateSettingsDisabledGP7(
+    BaseSubselectTestSourceTemplate,
+    dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
+    GP7DatasetTestBase,
+):
+    ...
+
+
+class TestSubselectControlApiSourceTemplateConnectionDisabledGP6(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
-    GreenplumDatasetTestBase,
+    GP6DatasetTestBase,
 ):
     ...
 
 
-class TestSubselectDataApiSourceTemplate(
+class TestSubselectControlApiSourceTemplateConnectionDisabledGP7(
+    BaseSubselectTestSourceTemplate,
+    dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
+    GP7DatasetTestBase,
+):
+    ...
+
+
+class TestSubselectDataApiSourceTemplateGP6(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
-    GreenplumDataApiTestBase,
+    GP6DataApiTestBase,
+):
+    ...
+
+
+class TestSubselectDataApiSourceTemplateGP7(
+    BaseSubselectTestSourceTemplate,
+    dl_api_lib_testing.BaseTestDataApiSourceTemplate,
+    GP7DataApiTestBase,
 ):
     ...

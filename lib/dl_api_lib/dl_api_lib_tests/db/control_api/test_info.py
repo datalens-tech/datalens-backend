@@ -7,12 +7,12 @@ from dl_api_connector.form_config.models.base import ConnectionFormMode
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from dl_api_lib.enums import BI_TYPE_AGGREGATIONS
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_constants.enums import (
     AggregationFunction,
     ConnectionType,
     UserDataType,
 )
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
@@ -23,10 +23,10 @@ from dl_connector_postgresql.core.postgresql.settings import PostgreSQLConnector
 
 class TestInfo(DefaultApiTestBase):
     @pytest.fixture(scope="class")
-    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+    def connectors_settings(self) -> dict[str, ConnectorSettings]:
         return {
-            CONNECTION_TYPE_CLICKHOUSE: ClickHouseConnectorSettings(),
-            CONNECTION_TYPE_POSTGRES: PostgreSQLConnectorSettings(),
+            CONNECTION_TYPE_CLICKHOUSE.value: ClickHouseConnectorSettings(),
+            CONNECTION_TYPE_POSTGRES.value: PostgreSQLConnectorSettings(),
         }
 
     def test_get_field_types_info(self, client):

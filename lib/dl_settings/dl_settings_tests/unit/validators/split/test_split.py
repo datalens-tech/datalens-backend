@@ -1,5 +1,6 @@
 import typing
 
+import pydantic_settings
 import pytest
 
 import dl_settings
@@ -40,6 +41,22 @@ def test_list(
     assert model.value == expected
 
 
+def test_list_with_root_settings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class TestModel(dl_settings.BaseRootSettings):
+        value: typing.Annotated[
+            list[str],
+            dl_settings.split_validator(","),
+            pydantic_settings.NoDecode,
+        ] = NotImplemented
+
+    monkeypatch.setenv("VALUE", "value1,value2")
+
+    model = TestModel()
+    assert model.value == ["value1", "value2"]
+
+
 @pytest.mark.parametrize(
     "input, expected",
     [
@@ -70,3 +87,19 @@ def test_tuple(
 
     model = TestModel(value=input)
     assert model.value == expected
+
+
+def test_tuple_with_root_settings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class TestModel(dl_settings.BaseRootSettings):
+        value: typing.Annotated[
+            tuple[str, ...],
+            dl_settings.split_validator(","),
+            pydantic_settings.NoDecode,
+        ] = NotImplemented
+
+    monkeypatch.setenv("VALUE", "value1,value2")
+
+    model = TestModel()
+    assert model.value == ("value1", "value2")

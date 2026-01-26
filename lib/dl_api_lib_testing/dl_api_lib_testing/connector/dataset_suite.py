@@ -60,7 +60,12 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_dataset: Dataset,
         sync_us_manager: SyncUSManager,
     ) -> None:
-        sync_us_manager.delete(sync_us_manager.get_by_id(saved_connection_id))
+        sync_us_manager.delete(
+            sync_us_manager.get_by_id(
+                saved_connection_id,
+                context_name="connection",
+            )
+        )
         dataset_resp = control_api.load_dataset(saved_dataset)
         assert dataset_resp.status_code == 200, dataset_resp.json
 
@@ -173,7 +178,12 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_dataset: Dataset,
         export_import_headers: dict[str, str],
     ) -> None:
-        sync_us_manager.delete(sync_us_manager.get_by_id(saved_connection_id))
+        sync_us_manager.delete(
+            sync_us_manager.get_by_id(
+                saved_connection_id,
+                context_name="connection",
+            )
+        )
 
         # export with no connection
         export_req_data: dict = {"id_mapping": {}}

@@ -89,7 +89,10 @@ def make_saved_connection(
     if conn_id is None:
         raise ValueError("Connection ID is None")
 
-    conn_us = sync_usm.get_by_id(conn_id)
+    conn_us = sync_usm.get_by_id(
+        conn_id,
+        context_name="connection",
+    )
     return cast(ConnectionBase, conn_us)
 
 

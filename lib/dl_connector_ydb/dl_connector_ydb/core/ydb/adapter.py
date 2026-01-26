@@ -59,7 +59,11 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
 
     def _update_connect_args(self, args: dict) -> None:
         if self._target_dto.auth_type == YDBAuthTypeMode.oauth:
-            args.update(auth_token=self._target_dto.password)
+            args.update(
+                credentials=credentials_impl.AuthTokenCredentials(
+                    token=self._target_dto.password,
+                ),
+            )
         elif self._target_dto.auth_type == YDBAuthTypeMode.password:
             driver_config = DriverConfig(
                 endpoint="{}://{}:{}".format(
@@ -122,7 +126,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
                 ]
                 children.sort()
                 for full_path, child in children:
-                    if child.is_any_table():
+                    if child.is_any_table() or child.is_view():
                         yield full_path.removeprefix(unprefix)
                     elif child.is_directory():
                         queue.append(full_path)
@@ -136,7 +140,8 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
             for item in result:
                 yield item
         except driver_excs as err:
-            raise exc.DatabaseQueryError(db_message=str(err), query="list_directory()") from None
+            query = "list_directory()"
+            raise exc.DatabaseQueryError(db_message=str(err), query=query, inspector_query=query) from None
 
     def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         db_name = schema_ident.db_name

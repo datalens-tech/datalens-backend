@@ -61,10 +61,8 @@ from dl_api_lib.app.data_api.resources.unistat import UnistatView
 from dl_api_lib.app_common import SRFactoryBuilder
 from dl_api_lib.app_settings import DataApiAppSettings
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
-from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.enums import RedisMode
 from dl_constants.enums import (
-    ConnectionType,
     ProcessorType,
     RedisInstanceKind,
 )
@@ -73,6 +71,7 @@ from dl_core.aio.web_app_services.redis import (
     RedisSentinelService,
     SingleHostSimpleRedisService,
 )
+from dl_core.connectors.settings.base import ConnectorSettings
 
 
 LOGGER = logging.getLogger(__name__)
@@ -121,7 +120,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     @abc.abstractmethod
     def set_up_environment(
         self,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
     ) -> EnvSetupResult:
         raise NotImplementedError()
 
@@ -195,7 +194,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
 
     def create_app(
         self,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
     ) -> web.Application:
         if self._settings.SENTRY_ENABLED:
             self.set_up_sentry()

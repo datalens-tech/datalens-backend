@@ -130,13 +130,16 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
             for orig_err_type, mapped_err_type in self.execute_err_map:
                 if isinstance(err, orig_err_type):
                     # TODO CONSIDER: Add messages for users' DBs (not internal materialization CH)
-                    debug_compiled_query = None
+                    inspector_query = None
+                    debug_query = None
                     if self._target_dto.pass_db_query_to_user:
-                        debug_compiled_query = query.debug_compiled_query
+                        inspector_query = query.inspector_query
+                        debug_query = query.debug_compiled_query  # TODO: BI-6448 move out the if
 
                     new_err = mapped_err_type(
                         db_message=None,
-                        query=debug_compiled_query,
+                        query=debug_query,
+                        inspector_query=inspector_query,
                         orig=err,
                         details={},
                     )

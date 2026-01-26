@@ -1,3 +1,5 @@
+import logging
+
 import temporalio.workflow
 
 
@@ -6,6 +8,9 @@ with temporalio.workflow.unsafe.imports_passed_through():
     import dl_temporal_tests.db.activities as activities
 
 import dl_temporal
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class WorkflowParams(dl_temporal.BaseWorkflowParams):
@@ -19,6 +24,7 @@ class WorkflowParams(dl_temporal.BaseWorkflowParams):
     workflow_date_param: dl_pydantic.JsonableDate
     workflow_datetime_param: dl_pydantic.JsonableDatetime
     workflow_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
+    return_error: bool
 
     execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=1)
 
@@ -36,13 +42,19 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
     workflow_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
 
+class WorkflowError(dl_temporal.BaseWorkflowError):
+    ...
+
+
 @dl_temporal.define_workflow
 class Workflow(dl_temporal.BaseWorkflow):
     name = "test_workflow"
-    Params = WorkflowParams
-    Result = WorkflowResult
+    logger = LOGGER
 
-    async def run(self, params: WorkflowParams) -> WorkflowResult:
+    Params = WorkflowParams
+    Result = WorkflowResult | WorkflowError
+
+    async def run(self, params: WorkflowParams) -> WorkflowResult | WorkflowError:
         result = await self.execute_activity(
             activities.Activity,
             activities.Activity.Params(
@@ -56,17 +68,25 @@ class Workflow(dl_temporal.BaseWorkflow):
                 activity_date_param=params.workflow_date_param,
                 activity_datetime_param=params.workflow_datetime_param,
                 activity_datetime_with_timezone_param=params.workflow_datetime_with_timezone_param,
+                return_error=params.return_error,
             ),
         )
-        return self.Result(
-            workflow_int_result=result.activity_int_result + 1,
-            workflow_str_result=result.activity_str_result,
-            workflow_bool_result=result.activity_bool_result,
-            workflow_list_result=result.activity_list_result,
-            workflow_dict_result=result.activity_dict_result,
-            workflow_timedelta_result=result.activity_timedelta_result,
-            workflow_uuid_result=result.activity_uuid_result,
-            workflow_date_result=result.activity_date_result,
-            workflow_datetime_result=result.activity_datetime_result,
-            workflow_datetime_with_timezone_result=result.activity_datetime_with_timezone_result,
-        )
+
+        if isinstance(result, activities.ActivityError):
+            return WorkflowError()
+
+        if isinstance(result, activities.ActivityResult):
+            return WorkflowResult(
+                workflow_int_result=result.activity_int_result + 1,
+                workflow_str_result=result.activity_str_result,
+                workflow_bool_result=result.activity_bool_result,
+                workflow_list_result=result.activity_list_result,
+                workflow_dict_result=result.activity_dict_result,
+                workflow_timedelta_result=result.activity_timedelta_result,
+                workflow_uuid_result=result.activity_uuid_result,
+                workflow_date_result=result.activity_date_result,
+                workflow_datetime_result=result.activity_datetime_result,
+                workflow_datetime_with_timezone_result=result.activity_datetime_with_timezone_result,
+            )
+
+        raise NotImplementedError(f"Unexpected result type: {type(result)}")

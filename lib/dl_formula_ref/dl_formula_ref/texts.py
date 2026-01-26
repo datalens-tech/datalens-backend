@@ -34,6 +34,8 @@ HUMAN_CATEGORIES = {
     "window": _("Window functions"),
     "time-series": _("Time series functions"),
     "array": _("Array functions"),
+    "native": _("Native functions"),
+    "hash": _("Hash functions"),
 }
 FUNCTION_CATEGORY_TAG = {
     "aggregation": _("aggregation"),
@@ -48,6 +50,8 @@ FUNCTION_CATEGORY_TAG = {
     "window": _("window"),
     "time-series": _("time series"),
     "array": _("array"),
+    "native": _("native"),
+    "hash": _("hash"),
 }
 HUMAN_DATA_TYPES = {
     DataType.INTEGER: _("Integer"),

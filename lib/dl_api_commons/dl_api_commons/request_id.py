@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Optional
-import uuid
 
 
 def make_uuid_from_parts(current: str, parent: Optional[str]) -> str:
@@ -20,11 +19,4 @@ def make_uuid_from_parts(current: str, parent: Optional[str]) -> str:
         parent = cutted_parent
 
     result = parent + uuid_sep + current
-    return result
-
-
-def request_id_generator(prefix: Optional[str] = None) -> str:
-    result = uuid.uuid4().hex
-    if prefix is not None:
-        result = prefix + "." + result
     return result

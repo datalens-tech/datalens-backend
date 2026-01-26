@@ -29,7 +29,6 @@ from dl_api_commons.headers import (
     INTERNAL_HEADER_PROFILING_STACK,
 )
 from dl_api_commons.tracing import get_current_tracing_headers
-from dl_app_tools import log
 from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler_async,
@@ -75,6 +74,7 @@ from dl_dashsql.typed_query.result_serialization import (
     DefaultTypedQueryRawResultSerializer,
     get_typed_query_result_serializer,
 )
+import dl_logging
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.utils import make_url
 
@@ -144,7 +144,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
         if rel_path is None:
             rel_path = self.DEFAULT_REL_PATH
 
-        logging_context = log.context.get_log_context()
+        logging_context = dl_logging.get_log_context()
         serialized_context = json.dumps(logging_context)
 
         qe = self._rqe_data
@@ -195,12 +195,14 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             if str(err).startswith("Connection timeout"):
                 raise
 
-            query = (
-                req_obj.db_adapter_query.debug_compiled_query
+            query, inspector_query = (
+                (req_obj.db_adapter_query.debug_compiled_query, req_obj.db_adapter_query.inspector_query)
                 if isinstance(req_obj, dba_actions.ActionExecuteQuery)
-                else ""
+                else ("", "")
             )
-            raise common_exc.SourceTimeout(db_message="Source timed out", query=query) from err
+            raise common_exc.SourceTimeout(
+                db_message="Source timed out", query=query, inspector_query=inspector_query
+            ) from err
         return resp
 
     @staticmethod
@@ -322,7 +324,9 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                     raw_chunk, end_of_chunk = await resp.content.readchunk()
                 except asyncio.CancelledError as err:
                     raise common_exc.SourceTimeout(
-                        db_message="Source timed out", query=query.debug_compiled_query
+                        db_message="Source timed out",
+                        query=query.debug_compiled_query,
+                        inspector_query=query.inspector_query,
                     ) from err
                 buf += raw_chunk
 

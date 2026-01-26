@@ -80,11 +80,13 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         await self._execute(query)
 
     @contextmanager
-    def handle_db_errors(self, query_text: str) -> Generator[None, None, None]:
+    def handle_db_errors(self, debug_query: str, inspector_query: str | None) -> Generator[None, None, None]:
         try:
             yield
         except Exception as wrapper_exc:
-            trans_exc = self._error_transformer.make_bi_error(wrapper_exc=wrapper_exc, debug_compiled_query=query_text)
+            trans_exc = self._error_transformer.make_bi_error(
+                wrapper_exc=wrapper_exc, debug_query=debug_query, inspector_query=inspector_query
+            )
             raise trans_exc from wrapper_exc
 
     async def _execute_and_fetch(
@@ -107,7 +109,7 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         async def chunked_data_gen() -> AsyncGenerator[list[list[TBIDataValue]], None]:
             """Fetch data in chunks"""
 
-            with self.handle_db_errors(query_text=query_text):
+            with self.handle_db_errors(debug_query=query_text, inspector_query=query_text):  # TODO: BI-6448
                 cur = await self._conn.cursor(query_text, *params)
                 while True:
                     chunk = []

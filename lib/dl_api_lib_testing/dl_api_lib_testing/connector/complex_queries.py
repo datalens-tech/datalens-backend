@@ -551,6 +551,7 @@ class DefaultBasicWindowFunctionTestSuite(
                 "Date Sales": "SUM([Group Sales] WITHIN [order_date])",
                 "City Sales": "SUM([Group Sales] AMONG [order_date])",
                 "Total RSUM": 'RSUM([Group Sales], "asc" TOTAL)',
+                "First Round Count": "FIRST(ROUND(COUNT(1)))",
             },
         )
 
@@ -567,6 +568,7 @@ class DefaultBasicWindowFunctionTestSuite(
                 ds.find_field(title="Date Sales"),
                 ds.find_field(title="City Sales"),
                 ds.find_field(title="Total RSUM"),
+                ds.find_field(title="First Round Count"),
             ],
             order_by=[
                 ds.find_field(title="order_date"),
@@ -585,7 +587,7 @@ class DefaultBasicWindowFunctionTestSuite(
         assert {row[3] for row in data_rows}.issubset({str(i) for i in range(1, cnt + 1)})
 
         # There are as many [Unique Rank of Sales] values as there are rows
-        assert {row[4] for row in data_rows} == ({str(i) for i in range(1, cnt + 1)})
+        assert {row[4] for row in data_rows} == {str(i) for i in range(1, cnt + 1)}
 
         # [Rank of City Sales for Date] values are not greater than the number of [City] values
         assert len({row[5] for row in data_rows}) <= len({row[1] for row in data_rows})
@@ -602,6 +604,8 @@ class DefaultBasicWindowFunctionTestSuite(
         for i in range(1, len(data_rows)):
             # RSUM = previous RSUM value + value of current arg
             assert pytest.approx(float(data_rows[i][9])) == float(data_rows[i - 1][9]) + float(data_rows[i][2])
+
+        assert all(float(row[10]) == 1 for row in data_rows)
 
 
 class DefaultBasicNativeFunctionTestSuite(

@@ -10,6 +10,23 @@ from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBas
 
 
 class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionClickHouseTestSuite):
+    def test_array_contains_optimization(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
+        has_cases = [
+            dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), NULL)"),
+            dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), 1)"),
+            dbe.compile_formula("CONTAINS([arr_int_value], NULL)", from_=data_table),
+            dbe.compile_formula("CONTAINS([arr_int_value], 1)", from_=data_table),
+            dbe.compile_formula("CONTAINS([arr_int_value], [int_value])", from_=data_table),
+        ]
+        for case in has_cases:
+            assert case.startswith("SELECT has(")
+
+        in_cases = [
+            dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), [int_value])", from_=data_table),
+        ]
+        for case in in_cases:
+            assert case.find("value IN array") != -1
+
     def test_array_contains_subsequence(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         assert dbe.eval("CONTAINS_SUBSEQUENCE(ARRAY(1, 2, 3), ARRAY(1, 2))", from_=data_table)
         assert dbe.eval("CONTAINS_SUBSEQUENCE(ARRAY(1.1, 2.2, 3.3), ARRAY(1.1, 2.2))", from_=data_table)

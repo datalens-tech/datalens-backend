@@ -1,47 +1,45 @@
-import attr
+from typing import ClassVar
 
-from dl_configs.connectors_settings import ConnectorSettingsBase
-from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
-from dl_configs.settings_loaders.meta_definition import s_attrib
-from dl_core.connectors.settings.primitives import (
-    ConnectorSettingsDefinition,
-    get_connectors_settings_config,
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
+
+from dl_connector_metrica.core.constants import (
+    CONNECTION_TYPE_APPMETRICA_API,
+    CONNECTION_TYPE_METRICA_API,
 )
 
 
-@attr.s(frozen=True)
-class MetricaConnectorSettings(ConnectorSettingsBase):
-    COUNTER_ALLOW_MANUAL_INPUT: bool = s_attrib("COUNTER_ALLOW_MANUAL_INPUT", missing=False)  # type: ignore
-    ALLOW_AUTO_DASH_CREATION: bool = s_attrib("ALLOW_AUTO_DASH_CREATION", missing=False)  # type: ignore
-    BACKEND_DRIVEN_FORM: bool = s_attrib("BACKEND_DRIVEN_FORM", missing=False)  # type: ignore
+class MetricaConnectorSettings(ConnectorSettings):
+    type: str = CONNECTION_TYPE_METRICA_API.value
 
+    COUNTER_ALLOW_MANUAL_INPUT: bool = False
+    ALLOW_AUTO_DASH_CREATION: bool = False
+    BACKEND_DRIVEN_FORM: bool = False
 
-@attr.s(frozen=True)
-class AppmetricaConnectorSettings(ConnectorSettingsBase):
-    COUNTER_ALLOW_MANUAL_INPUT: bool = s_attrib("COUNTER_ALLOW_MANUAL_INPUT", missing=False)  # type: ignore
-    ALLOW_AUTO_DASH_CREATION: bool = s_attrib("ALLOW_AUTO_DASH_CREATION", missing=False)  # type: ignore
-    BACKEND_DRIVEN_FORM: bool = s_attrib("BACKEND_DRIVEN_FORM", missing=False)  # type: ignore
-
-
-def metrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
-    cfg = get_connectors_settings_config(full_cfg, object_like_config_key="METRIKA_API")
-    if cfg is None:
-        return {}
-    return dict(METRIKA_API=MetricaConnectorSettings(BACKEND_DRIVEN_FORM=cfg.BACKEND_DRIVEN_FORM))  # type: ignore  # 2024-09-18 # TODO: Unexpected keyword argument "BACKEND_DRIVEN_FORM" for "AppmetricaConnectorSettings"  [call-arg]
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
+        "CONNECTORS__METRIKA_API__COUNTER_ALLOW_MANUAL_INPUT": "CONNECTORS_METRIKA_API_COUNTER_ALLOW_MANUAL_INPUT",
+        "CONNECTORS__METRIKA_API__ALLOW_AUTO_DASH_CREATION": "CONNECTORS_METRIKA_API_ALLOW_AUTO_DASH_CREATION",
+        "CONNECTORS__METRIKA_API__BACKEND_DRIVEN_FORM": "CONNECTORS_METRIKA_API_BACKEND_DRIVEN_FORM",
+    }
 
 
 class MetricaSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = MetricaConnectorSettings
-    fallback = metrica_settings_fallback
+    pydantic_settings_class = MetricaConnectorSettings
 
 
-def appmetrica_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, ConnectorSettingsBase]:
-    cfg = get_connectors_settings_config(full_cfg, object_like_config_key="APPMETRICA_API")
-    if cfg is None:
-        return {}
-    return dict(APPMETRICA_API=AppmetricaConnectorSettings(BACKEND_DRIVEN_FORM=cfg.BACKEND_DRIVEN_FORM))  # type: ignore  # 2024-09-18 # TODO: Unexpected keyword argument "BACKEND_DRIVEN_FORM" for "AppmetricaConnectorSettings"  [call-arg]
+class AppmetricaConnectorSettings(ConnectorSettings):
+    type: str = CONNECTION_TYPE_APPMETRICA_API.value
+
+    COUNTER_ALLOW_MANUAL_INPUT: bool = False
+    ALLOW_AUTO_DASH_CREATION: bool = False
+    BACKEND_DRIVEN_FORM: bool = False
+
+    root_fallback_env_keys: ClassVar[dict[str, str]] = {
+        "CONNECTORS__APPMETRICA_API__COUNTER_ALLOW_MANUAL_INPUT": "CONNECTORS_APPMETRICA_API_COUNTER_ALLOW_MANUAL_INPUT",
+        "CONNECTORS__APPMETRICA_API__ALLOW_AUTO_DASH_CREATION": "CONNECTORS_APPMETRICA_API_ALLOW_AUTO_DASH_CREATION",
+        "CONNECTORS__APPMETRICA_API__BACKEND_DRIVEN_FORM": "CONNECTORS_APPMETRICA_API_BACKEND_DRIVEN_FORM",
+    }
 
 
 class AppMetricaSettingDefinition(ConnectorSettingsDefinition):
-    settings_class = AppmetricaConnectorSettings
-    fallback = appmetrica_settings_fallback
+    pydantic_settings_class = AppmetricaConnectorSettings

@@ -4,7 +4,6 @@ from typing import (
     Callable,
     ClassVar,
     Generator,
-    Optional,
 )
 
 from sqlalchemy import exc as sa_exc
@@ -26,7 +25,11 @@ class ErrorHandlerMixin:
     # TODO FIX: Try to implement overrides in more functional style
     @classmethod
     def make_exc(
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
+        cls,
+        wrapper_exc: Exception,
+        orig_exc: Exception | None,
+        debug_query: str | None,
+        inspector_query: str | None,
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         raise NotImplementedError()
 
@@ -34,10 +37,11 @@ class ErrorHandlerMixin:
     @contextlib.contextmanager
     def handle_execution_error(
         self,
-        debug_compiled_query: Optional[str],
+        debug_query: str | None,
+        inspector_query: str | None,
         # This function will be called after converting DatabaseQueryError
         # or in case if DatabaseQueryError will be caught by this handler
-        exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None,
+        exc_post_processor: Callable[[exc.DatabaseQueryError], None] | None = None,
     ) -> Generator[None, None, None]:
         exc_clses_to_catch: tuple[type[Exception], ...] = (
             sa_exc.DatabaseError,
@@ -64,7 +68,7 @@ class ErrorHandlerMixin:
             orig_exc = getattr(err, "orig", None)
 
             exc_cls, exc_kwargs = self.make_exc(
-                wrapper_exc=err, orig_exc=orig_exc, debug_compiled_query=debug_compiled_query
+                wrapper_exc=err, orig_exc=orig_exc, debug_query=debug_query, inspector_query=inspector_query
             )
             try:
                 raise exc_cls(**exc_kwargs) from err
@@ -86,11 +90,10 @@ class ETBasedExceptionMaker(ErrorHandlerMixin):
 
     @classmethod
     def make_exc(
-        cls, wrapper_exc: Exception, orig_exc: Optional[Exception], debug_compiled_query: Optional[str]
+        cls, wrapper_exc: Exception, orig_exc: Exception | None, debug_query: str | None, inspector_query: str | None
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         trans_exc_cls, kw = cls._error_transformer.make_bi_error_parameters(
-            wrapper_exc=wrapper_exc,
-            debug_compiled_query=debug_compiled_query,
+            wrapper_exc=wrapper_exc, debug_query=debug_query, inspector_query=inspector_query
         )
 
         return trans_exc_cls, kw

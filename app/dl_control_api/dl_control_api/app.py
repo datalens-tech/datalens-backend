@@ -13,34 +13,22 @@ from dl_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
     DeprecatedControlApiAppSettingsOS,
 )
-from dl_api_lib.loader import (
-    ApiLibraryConfig,
-    load_api_lib,
-    preload_api_lib,
-)
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_api_lib.loader import load_api_lib_with_settings
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
-from dl_configs.settings_loaders.loader_env import (
-    load_connectors_settings_from_env_with_fallback,
-    load_settings_from_env_with_fallback,
-)
-from dl_constants.enums import ConnectionType
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_control_api import app_version
 from dl_control_api.app_factory import StandaloneControlApiAppFactory
-from dl_core.connectors.settings.registry import (
-    CONNECTORS_SETTINGS_CLASSES,
-    CONNECTORS_SETTINGS_FALLBACKS,
-)
-from dl_core.loader import CoreLibraryConfig
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.registry import CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS
 from dl_core.logging_config import hook_configure_logging
 
 
 def create_app(
     app_settings: ControlApiAppSettingsOS,
-    connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+    connectors_settings: dict[str, ConnectorSettings],
     testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
     close_loop_after_request: bool = True,
 ) -> flask.Flask:
@@ -53,19 +41,13 @@ def create_app(
 
 
 def create_uwsgi_app() -> flask.Flask:
-    preload_api_lib()
+    load_api_lib_with_settings()
     deprecated_settings = load_settings_from_env_with_fallback(DeprecatedControlApiAppSettingsOS)
-    settings = ControlApiAppSettingsOS(fallback=deprecated_settings)
-    load_api_lib(
-        ApiLibraryConfig(
-            api_connector_ep_names=settings.BI_API_CONNECTOR_WHITELIST,
-            core_lib_config=CoreLibraryConfig(core_connector_ep_names=settings.CORE_CONNECTOR_WHITELIST),
-        )
+    settings = ControlApiAppSettingsOS(
+        fallback=deprecated_settings,
+        extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
     )
-    connectors_settings = load_connectors_settings_from_env_with_fallback(
-        settings_registry=CONNECTORS_SETTINGS_CLASSES,
-        fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
-    )
+    connectors_settings = settings.CONNECTORS
     uwsgi_app = create_app(settings, connectors_settings)
 
     actual_sentry_dsn: Optional[str] = settings.SENTRY_DSN if settings.SENTRY_ENABLED else None

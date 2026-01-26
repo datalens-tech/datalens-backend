@@ -34,7 +34,11 @@ class YaDocsFileS3ApiConnectionTestBase(
             conn_id: str = req_data["connection_id"]
             sources_to_update = [src["id"] for src in req_data["sources"]]
 
-            conn = await async_us_manager.get_by_id(conn_id, YaDocsFileS3Connection)
+            conn = await async_us_manager.get_by_id(
+                conn_id,
+                YaDocsFileS3Connection,
+                context_name="connection",
+            )
             for src_id in sources_to_update:
                 src: YaDocsFileS3Connection.FileDataSource = conn.get_file_source_by_id(src_id)
                 src.data_updated_at = datetime.datetime.now(datetime.timezone.utc)

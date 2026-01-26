@@ -25,17 +25,29 @@ from dl_maintenance.api.common import MaintenanceEnvironmentManager
 
 def get_migration_entry(m_manager: MaintenanceEnvironmentManager, entry_id: str) -> USMigrationEntry:
     usm = m_manager.get_usm_from_env(use_sr_factory=False, is_async_env=False)
-    return usm.get_by_id(entry_id=entry_id, expected_type=USMigrationEntry)
+    return usm.get_by_id(
+        entry_id=entry_id,
+        expected_type=USMigrationEntry,
+        context_name="migration-entry",
+    )
 
 
 def get_entry(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_env: bool = True) -> USEntry:
     usm = m_manager.get_usm_from_env(is_async_env=is_async_env)
-    return usm.get_by_id(entry_id=entry_id, expected_type=USMigrationEntry)
+    return usm.get_by_id(
+        entry_id=entry_id,
+        expected_type=USMigrationEntry,
+        context_name="migration-entry",
+    )
 
 
 def get_dataset(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_async_env: bool = True) -> Dataset:
     usm = m_manager.get_usm_from_env(is_async_env=is_async_env)
-    return usm.get_by_id(entry_id=entry_id, expected_type=Dataset)
+    return usm.get_by_id(
+        entry_id=entry_id,
+        expected_type=Dataset,
+        context_name="connection",
+    )
 
 
 def dump_entry_data(entry: USMigrationEntry) -> str:

@@ -4,11 +4,11 @@ services:
       file: ../testenv-common/docker-compose.common.yml
       service: temporal-postgresql
     ports:
-      - "53010:5432"
+      - "53011:5432"
 
   temporal:
     extends:
       file: ../testenv-common/docker-compose.common.yml
       service: temporal
     ports:
-      - "53011:7233"
+      - "53012:7233"

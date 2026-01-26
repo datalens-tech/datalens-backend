@@ -7,6 +7,7 @@ from typing import (
 
 import attr
 import pydantic
+import pydantic_settings
 
 import dl_api_commons
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -32,6 +33,7 @@ from dl_constants.enums import (
     USAuthMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.us_manager.settings import USClientSettings
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
@@ -353,11 +355,28 @@ class AppSettings(dl_settings.BaseRootSettingsWithFallback):
     ...
 
 
-class ControlApiAppSettings(AppSettings):
+class WhitelistsAppSettings(dl_settings.BaseRootSettings):
+    BI_API_CONNECTOR_WHITELIST: Annotated[
+        list[str] | None,
+        dl_settings.split_validator(","),
+        pydantic_settings.NoDecode,
+    ] = None
+    CORE_CONNECTOR_WHITELIST: Annotated[
+        list[str] | None,
+        dl_settings.split_validator(","),
+        pydantic_settings.NoDecode,
+    ] = None
+
+
+class ConnectorsSettingsMixin(AppSettings):
+    CONNECTORS: dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings] = pydantic.Field(default_factory=dict)
+
+
+class ControlApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
 
 
-class DataApiAppSettings(AppSettings):
+class DataApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
 
 

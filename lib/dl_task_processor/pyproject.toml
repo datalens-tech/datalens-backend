@@ -13,12 +13,12 @@ arq = "*"
 attrs = "*"
 dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
+dl-logging = {path = "../dl_logging"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.10, <3.13"
 redis = "*"
 
 [tool.poetry.group.tests.dependencies]
-dl-api-commons = {path = "../dl_api_commons"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"

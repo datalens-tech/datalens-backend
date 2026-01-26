@@ -271,7 +271,11 @@ class DashSQLView(BaseView):
         db_params = body.get("db_params")
         connector_specific_params = body.get("connector_specific_params")
 
-        conn = await self.dl_request.us_manager.get_by_id(conn_id, ConnectionBase)
+        conn = await self.dl_request.us_manager.get_by_id(
+            conn_id,
+            ConnectionBase,
+            context_name="connection",
+        )
         assert isinstance(conn, ConnectionBase)
 
         self.enrich_logging_context(conn)

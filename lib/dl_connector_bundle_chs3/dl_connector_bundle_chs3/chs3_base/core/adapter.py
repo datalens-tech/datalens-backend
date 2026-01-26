@@ -65,9 +65,11 @@ class BaseAsyncFileS3Adapter(BaseAsyncClickHouseAdapter):
         )
 
         debug_query = dba_q.debug_compiled_query if dba_q.debug_compiled_query is not None else query_str_raw
+        debug_compiled_query = reduce(lambda a, kv: a.replace(*kv), secrets_hidden, debug_query) % ()
 
         dba_q = dba_q.clone(
             query=reduce(lambda a, kv: a.replace(*kv), secrets, query_str_raw) % (),
-            debug_compiled_query=reduce(lambda a, kv: a.replace(*kv), secrets_hidden, debug_query) % (),
+            debug_compiled_query=debug_compiled_query,
+            inspector_query=debug_compiled_query,  # TODO: BI-6448
         )
         return await super()._make_query(dba_q, mirroring_mode)

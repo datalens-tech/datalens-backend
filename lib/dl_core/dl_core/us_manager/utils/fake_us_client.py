@@ -30,5 +30,6 @@ class FakeUSClient(UStorageClient):
         self,
         request_data: UStorageClientBase.RequestData,
         retry_policy_name: Optional[str] = None,
+        context_name: Optional[str] = None,
     ) -> NoReturn:
         raise NotImplementedError("US entries created by async manager can not communicate with US directly")

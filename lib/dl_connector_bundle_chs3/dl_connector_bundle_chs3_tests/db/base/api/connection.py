@@ -40,7 +40,11 @@ class CHS3ConnectionTestSuite(
         single_new_conn_source_params: dict,
     ) -> None:
         conn_id = saved_connection_id
-        orig_conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)
+        orig_conn = sync_us_manager.get_by_id(
+            conn_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         new_source = single_new_conn_source_params
         add_resp = client.put(
@@ -54,7 +58,10 @@ class CHS3ConnectionTestSuite(
         )
         assert add_resp.status_code == HTTPStatus.OK, add_resp.json
 
-        conn = sync_us_manager.get_by_id(conn_id)
+        conn = sync_us_manager.get_by_id(
+            conn_id,
+            context_name="connection",
+        )
         assert len(conn.data.sources) == len(orig_conn.data.sources) + 1
 
         drop_resp = client.put(
@@ -67,7 +74,10 @@ class CHS3ConnectionTestSuite(
         )
         assert drop_resp.status_code == HTTPStatus.OK, drop_resp.json
 
-        conn = sync_us_manager.get_by_id(conn_id)
+        conn = sync_us_manager.get_by_id(
+            conn_id,
+            context_name="connection",
+        )
         assert len(conn.data.sources) == len(orig_conn.data.sources)
 
     def test_rename_connection_source(
@@ -77,7 +87,11 @@ class CHS3ConnectionTestSuite(
         saved_connection_id: str,
     ) -> None:
         conn_id = saved_connection_id
-        orig_conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)
+        orig_conn = sync_us_manager.get_by_id(
+            conn_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         resp = client.put(
             "/api/v1/connections/{}".format(conn_id),
@@ -89,7 +103,10 @@ class CHS3ConnectionTestSuite(
         )
         assert resp.status_code == HTTPStatus.OK, resp.json
 
-        conn = sync_us_manager.get_by_id(conn_id)
+        conn = sync_us_manager.get_by_id(
+            conn_id,
+            context_name="connection",
+        )
         assert conn.data.sources[0].title == "renamed source"
 
     def test_replace_connection_source(
@@ -100,7 +117,11 @@ class CHS3ConnectionTestSuite(
         single_new_conn_source_params: dict,
     ) -> None:
         conn_id = saved_connection_id
-        orig_conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)
+        orig_conn = sync_us_manager.get_by_id(
+            conn_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         source_to_replace = orig_conn.data.sources[0]
         new_source = single_new_conn_source_params
@@ -117,7 +138,11 @@ class CHS3ConnectionTestSuite(
             },
         )
         assert resp.status_code == HTTPStatus.OK, resp.json
-        conn = sync_us_manager.get_by_id(conn_id, BaseFileS3Connection)
+        conn = sync_us_manager.get_by_id(
+            conn_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         old_source_ids = set(src.id for src in orig_conn.data.sources)
         new_source_ids = set(src.id for src in conn.data.sources)
@@ -132,7 +157,11 @@ class CHS3ConnectionTestSuite(
         saved_connection_id: str,
         single_new_conn_source_params: dict,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, BaseFileS3Connection)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         new_source = single_new_conn_source_params
         new_source.pop("file_id")  # as if this source already exists
@@ -158,7 +187,11 @@ class CHS3ConnectionTestSuite(
         saved_connection_id: str,
         single_new_conn_source_params: dict,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, BaseFileS3Connection)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         replaced_source_id = str(uuid.uuid4())  # replacing a non-existent source
         new_source = single_new_conn_source_params
@@ -190,7 +223,11 @@ class CHS3ConnectionTestSuite(
         saved_connection_id: str,
         single_new_conn_source_params: dict,
     ) -> None:
-        conn = sync_us_manager.get_by_id(saved_connection_id, BaseFileS3Connection)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
 
         new_source = single_new_conn_source_params
         new_source["title"] = conn.data.sources[0].title
@@ -213,7 +250,11 @@ class CHS3ConnectionTestSuite(
         saved_connection_id: str,
     ) -> None:
         usm = sync_us_manager
-        orig_conn = usm.get_by_id(saved_connection_id, BaseFileS3Connection)
+        orig_conn = usm.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
         orig_filename = orig_conn.data.sources[0].s3_filename
 
         fake_filename = "hack_me.native"
@@ -231,5 +272,9 @@ class CHS3ConnectionTestSuite(
         )
         assert resp.status_code == HTTPStatus.BAD_REQUEST, resp.json
         assert resp.json["sources"]["0"]["s3_filename"] == ["Unknown field."]
-        conn = usm.get_by_id(saved_connection_id, BaseFileS3Connection)
+        conn = usm.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
         assert conn.data.sources[0].s3_filename == orig_filename

@@ -39,6 +39,7 @@ flask-restx = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 pydantic = "*"
+pydantic_settings = "*"
 python = ">=3.10, <3.13"
 requests = "*"
 statcommons = {path = "../statcommons"}

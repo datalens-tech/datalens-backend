@@ -14,9 +14,6 @@ jobs:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     container:
       image: "ghcr.io/${{ github.repository_owner }}/docker-mirror/python:3.11.0"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.ROBOT_GITHUB_PACKAGES_READ_TOKEN }}
 
     strategy:
       fail-fast: false
@@ -46,9 +43,6 @@ jobs:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
     container:
       image: "ghcr.io/${{ github.repository_owner }}/docker-mirror/python:3.11.0"
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.ROBOT_GITHUB_PACKAGES_READ_TOKEN }}
 
     strategy:
       fail-fast: false

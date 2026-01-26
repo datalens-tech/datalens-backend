@@ -1,19 +1,18 @@
 import re
 
-import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
+from sqlalchemy.sql.functions import Function as SqlFunction
 
 from dl_formula.core import exc
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula.core.nodes import LiteralString
-from dl_formula.definitions.args import ArgTypeSequence
+from dl_formula.definitions.args import ArgTypeSequenceThenForAll
 from dl_formula.definitions.base import (
     Function,
     TranslationVariantWrapped,
 )
 from dl_formula.definitions.functions_aggregation import AggregationFunctionBase
-from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 from dl_formula.translation.context import TranslationCtx
 
@@ -29,17 +28,16 @@ def _call_native_impl(func_name_ctx: TranslationCtx, *args: TranslationCtx) -> C
     if not re.match(r"^[a-zA-Z0-9_]+$", func_name):
         raise exc.NativeFunctionForbiddenInputError(func_name)
 
-    return getattr(sa.func, func_name)(*(arg.expression for arg in args))
+    return SqlFunction(func_name, *(arg.expression for arg in args))
 
 
 class DBCall(Function):
     arg_cnt = None
     arg_names = ["db_function_name"]
     argument_types = [
-        ArgTypeSequence([DataType.CONST_STRING]),
+        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=set(DataType)),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class DBCallInt(DBCall):
@@ -81,10 +79,9 @@ class DBCallAgg(AggregationFunctionBase):
     arg_cnt = None
     arg_names = ["db_agg_function_name"]
     argument_types = [
-        ArgTypeSequence([DataType.CONST_STRING]),
+        ArgTypeSequenceThenForAll(fixed_arg_types=[DataType.CONST_STRING], for_all_types=set(DataType)),
     ]
     variants = [VW(D.DUMMY, _call_native_impl)]
-    scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
 
 class DBCallAggInt(DBCallAgg):

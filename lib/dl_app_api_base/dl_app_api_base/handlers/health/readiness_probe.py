@@ -29,8 +29,8 @@ SubsystemReadinessCallback = SubsystemReadinessAsyncCallback | SubsystemReadines
 
 @attr.define(frozen=True, kw_only=True)
 class ReadinessProbeHandler(handlers.BaseHandler):
-    TAGS = ["health"]
-    DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
+    OPENAPI_TAGS = ["health"]
+    OPENAPI_DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
 
     class ResponseSchema(handlers.BaseResponseSchema):
         status: Literal["healthy", "unhealthy"]
@@ -64,7 +64,7 @@ class ReadinessProbeHandler(handlers.BaseHandler):
                 status=http.HTTPStatus.OK,
             )
 
-        logger.error("Not all subsystems are healthy!", extra=subsystems_status)
+        logger.error("Not all subsystems are healthy, status: %s", subsystems_status)
 
         return handlers.Response.with_model(
             schema=self.ResponseSchema(status="unhealthy", subsystems_status=subsystems_status),

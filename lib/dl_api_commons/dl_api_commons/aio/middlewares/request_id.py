@@ -7,10 +7,7 @@ from typing import Optional
 from aiohttp import web
 import attr
 
-from dl_api_commons import (
-    make_uuid_from_parts,
-    request_id_generator,
-)
+from dl_api_commons import make_uuid_from_parts
 from dl_api_commons.aio.middlewares.commons import get_endpoint_code
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
@@ -26,8 +23,9 @@ from dl_api_commons.logging import (
 )
 from dl_api_commons.reporting.profiler import DefaultReportingProfiler
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
-from dl_app_tools import log
 from dl_constants.api_constants import DLHeadersCommon
+import dl_logging
+import dl_utils
 
 
 LOGGER = logging.getLogger(__name__)
@@ -65,11 +63,11 @@ class RequestId:
 
         if self.append_own_req_id:
             request_id = make_uuid_from_parts(
-                current=request_id_generator(self.app_prefix),
+                current=dl_utils.request_id_generator(self.app_prefix),
                 parent=parent_request_id,
             )
         else:
-            request_id = parent_request_id or request_id_generator(self.app_prefix)
+            request_id = parent_request_id or dl_utils.request_id_generator(self.app_prefix)
 
         endpoint_code = get_endpoint_code(request)
 
@@ -82,16 +80,16 @@ class RequestId:
             dl_request.log_ctx_controller.put_to_context("parent_request_id", parent_request_id)
             dl_request.log_ctx_controller.put_to_context("endpoint_code", endpoint_code)
 
-        log.context.reset_context()
-        initial_log_context = log.context.get_log_context()
+        dl_logging.reset_context()
+        initial_log_context = dl_logging.get_log_context()
         assert len(initial_log_context) == 0, (
             f"Initial log context for request {request_id}" f" is not empty: {initial_log_context}"
         )
 
-        log.context.put_to_context("trace_id", trace_id)
-        log.context.put_to_context("request_id", request_id)
-        log.context.put_to_context("parent_request_id", parent_request_id)
-        log.context.put_to_context("endpoint_code", endpoint_code)
+        dl_logging.put_to_context("trace_id", trace_id)
+        dl_logging.put_to_context("request_id", request_id)
+        dl_logging.put_to_context("parent_request_id", parent_request_id)
+        dl_logging.put_to_context("endpoint_code", endpoint_code)
 
         if self.accept_logging_ctx and self.logging_ctx_header_name in request.headers:
             assert self.logging_ctx_header_name is not None
@@ -111,7 +109,7 @@ class RequestId:
                             initial_log_context[ctx_key],
                         )
                     else:
-                        log.context.put_to_context(ctx_key, ctx_val)
+                        dl_logging.put_to_context(ctx_key, ctx_val)
 
         LOG_HELPER.log_request_start(method=request.method, full_path=request.path_qs, headers=request.headers.items())
 

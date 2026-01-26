@@ -24,7 +24,7 @@ from dl_api_connector.form_config.models.common import (
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import ConnectorSettingsBase
+from dl_core.connectors.settings.base import ConnectorSettings
 
 import dl_connector_metrica.api.connection_form.components as components
 from dl_connector_metrica.api.connection_form.components import MetricaFieldName
@@ -59,26 +59,24 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _counter_row(
-        self, manual_input: bool, connector_settings: ConnectorSettingsBase
-    ) -> CounterRow | C.CustomizableRow:
+    def _counter_row(self, manual_input: bool, connector_settings: ConnectorSettings) -> CounterRow | C.CustomizableRow:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _allow_manual_counter_input(self, connector_settings: ConnectorSettings) -> bool:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettings) -> bool:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _is_backend_driven_form(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _is_backend_driven_form(self, connector_settings: ConnectorSettings) -> bool:
         raise NotImplementedError
 
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         assert connector_settings is not None
@@ -158,7 +156,7 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
         return MetricaConnectionInfoProvider.get_title(self._localizer)
 
     def _counter_row(
-        self, manual_input: bool, connector_settings: ConnectorSettingsBase
+        self, manual_input: bool, connector_settings: ConnectorSettings
     ) -> MetricaCounterRowItem | C.CustomizableRow:
         return (
             MetricaCounterRowItem(
@@ -178,15 +176,15 @@ class MetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
             )
         )
 
-    def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _allow_manual_counter_input(self, connector_settings: ConnectorSettings) -> bool:
         assert isinstance(connector_settings, MetricaConnectorSettings)
         return connector_settings.COUNTER_ALLOW_MANUAL_INPUT
 
-    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettings) -> bool:
         assert isinstance(connector_settings, MetricaConnectorSettings)
         return connector_settings.ALLOW_AUTO_DASH_CREATION
 
-    def _is_backend_driven_form(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _is_backend_driven_form(self, connector_settings: ConnectorSettings) -> bool:
         assert isinstance(connector_settings, MetricaConnectorSettings)
         return connector_settings.BACKEND_DRIVEN_FORM
 
@@ -199,7 +197,7 @@ class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
         return AppMetricaConnectionInfoProvider.get_title(self._localizer)
 
     def _counter_row(
-        self, manual_input: bool, connector_settings: ConnectorSettingsBase
+        self, manual_input: bool, connector_settings: ConnectorSettings
     ) -> AppMetricaCounterRowItem | C.CustomizableRow:
         return (
             AppMetricaCounterRowItem(
@@ -219,14 +217,14 @@ class AppMetricaAPIConnectionFormFactory(MetricaLikeBaseFormFactory):
             )
         )
 
-    def _allow_manual_counter_input(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _allow_manual_counter_input(self, connector_settings: ConnectorSettings) -> bool:
         assert isinstance(connector_settings, AppmetricaConnectorSettings)
         return connector_settings.COUNTER_ALLOW_MANUAL_INPUT
 
-    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _allow_auto_dash_creation(self, connector_settings: ConnectorSettings) -> bool:
         assert isinstance(connector_settings, AppmetricaConnectorSettings)
         return connector_settings.ALLOW_AUTO_DASH_CREATION
 
-    def _is_backend_driven_form(self, connector_settings: ConnectorSettingsBase) -> bool:
+    def _is_backend_driven_form(self, connector_settings: ConnectorSettings) -> bool:
         assert isinstance(connector_settings, AppmetricaConnectorSettings)
         return connector_settings.BACKEND_DRIVEN_FORM

@@ -175,6 +175,7 @@ class SyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: None = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> USEntry:
         pass
 
@@ -184,6 +185,7 @@ class SyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: Optional[type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> _ENTRY_TV:
         pass
 
@@ -193,12 +195,17 @@ class SyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: Optional[type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = self.get_migrated_entry(entry_id, params=params)
+            us_resp = self.get_migrated_entry(
+                entry_id,
+                params=params,
+                context_name=context_name,
+            )
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await_sync(self.get_lifecycle_manager(entry=obj).post_init_async_hook())
@@ -236,8 +243,17 @@ class SyncUSManager(USManagerBase):
         return obj
 
     @generic_profiler("us-get-migrated-entity")
-    def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
-        us_resp = self._us_client.get_entry(entry_id, params=params)
+    def get_migrated_entry(
+        self,
+        entry_id: str,
+        params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
+    ) -> dict[str, Any]:
+        us_resp = self._us_client.get_entry(
+            entry_id,
+            params=params,
+            context_name=context_name,
+        )
         return self._migrate_response(us_resp)
 
     def _migrate_response(self, us_resp: dict) -> dict:
@@ -366,11 +382,16 @@ class SyncUSManager(USManagerBase):
         entry_id: str,
         duration: Optional[int] = None,
         wait_timeout: Optional[int] = None,
+        context_name: Optional[str] = None,
     ) -> Generator[_ENTRY_TV, None, None]:
         lock_token = self._us_client.acquire_lock(entry_id, duration, wait_timeout)
         entry = None
         try:
-            entry = self.get_by_id(entry_id, expected_type=expected_type)
+            entry = self.get_by_id(
+                entry_id,
+                expected_type=expected_type,
+                context_name=context_name,
+            )
             entry.lock = lock_token
             yield entry
         finally:
@@ -401,7 +422,11 @@ class SyncUSManager(USManagerBase):
         else:
             try:
                 assert isinstance(conn_ref, DefaultConnectionRef)
-                conn = self.get_by_id(conn_ref.conn_id, ConnectionBase)
+                conn = self.get_by_id(
+                    conn_ref.conn_id,
+                    ConnectionBase,
+                    context_name="connection",
+                )
             except (exc.USObjectNotFoundException, exc.USAccessDeniedException) as err:
                 r_scope = referrer.scope if referrer is not None else "unk"
                 r_uuid = referrer.uuid if referrer is not None else "unk"

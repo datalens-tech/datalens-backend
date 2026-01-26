@@ -35,6 +35,19 @@ def test_type_field_name_alias() -> None:
     assert isinstance(Base.factory({"test_type_field_name": "child"}), Child)
 
 
+def test_type_field_case_insensitive() -> None:
+    class Base(dl_pydantic.TypedBaseModel):
+        type: str
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    assert isinstance(Base.factory({"type": "CHILD"}), Child)
+    assert isinstance(Base.factory({"type": "ChiLd"}), Child)
+
+
 def test_already_deserialized() -> None:
     class Base(dl_pydantic.TypedBaseModel):
         ...
@@ -71,9 +84,14 @@ def test_already_registered() -> None:
     class Child(Base):
         ...
 
+    class AnotherChild(Base):
+        ...
+
     Base.register("child", Child)
+    Base.register("child", Child)  # it's ok, just warning
+
     with pytest.raises(ValueError):
-        Base.register("child", Child)
+        Base.register("child", AnotherChild)
 
 
 def test_not_subclass() -> None:
@@ -361,3 +379,56 @@ def test_model_json_schema_not_subclass() -> None:
 
     with pytest.raises(ValueError):
         Base.model_json_schema()
+
+
+def test_dict_annotation_with_type_key() -> None:
+    class Base(dl_pydantic.TypedBaseModel):
+        ...
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    class Root(dl_pydantic.BaseModel):
+        children: dl_pydantic.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    root = Root.model_validate({"children": {"child": {}}})
+
+    assert isinstance(root.children["child"], Child)
+
+
+def test_register_unknown() -> None:
+    class Base(dl_pydantic.TypedBaseModel):
+        ...
+
+    class Child(Base):
+        ...
+
+    Base.register("child", Child)
+
+    with pytest.raises(ValueError):
+        Base.factory({"type": "bebebe"})
+
+    class UnknownChild(Base):
+        type: str = "unknown"
+        raw_data: typing.Any
+
+        @pydantic.model_validator(mode="before")
+        @classmethod
+        def transform_to_raw_data(cls, data: typing.Any) -> typing.Any:
+            return {"raw_data": data}
+
+    Base.register_unknown(UnknownChild)
+
+    raw_data = {"type": "bebebe"}
+    data = Base.factory(raw_data)
+
+    assert isinstance(data, UnknownChild)
+    assert data.type == "unknown"
+    assert data.raw_data == raw_data
+
+    raw_data = {"type": "child"}
+    data = Base.factory(raw_data)
+
+    assert isinstance(data, Child)

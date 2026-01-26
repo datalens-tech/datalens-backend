@@ -26,13 +26,13 @@ from dl_api_lib_testing.app import TestingControlApiAppFactory
 from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 import dl_auth
-from dl_configs.connectors_settings import ConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
 from dl_constants.enums import (
     ConnectionType,
     QueryProcessingMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.flask_utils import (
@@ -65,7 +65,7 @@ class ApiTestBase(abc.ABC):
         raise NotImplementedError
 
     @pytest.fixture(scope="class")
-    def connectors_settings(self) -> dict[ConnectionType, ConnectorSettingsBase]:
+    def connectors_settings(self) -> dict[str, ConnectorSettings]:
         return {}
 
     @pytest.fixture(scope="class")
@@ -178,7 +178,7 @@ class ApiTestBase(abc.ABC):
         self,
         environment_readiness: None,
         control_api_app_factory: ControlApiAppFactory,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
         fake_tenant: dl_api_commons.TenantDef,
         fake_auth_data: dl_auth.AuthData | None,
     ) -> Generator[Flask, None, None]:
@@ -233,7 +233,7 @@ class ApiTestBase(abc.ABC):
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
         control_api_app_factory: ControlApiAppFactory,
-        connectors_settings: dict[ConnectionType, ConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
         control_api_app_settings: ControlApiAppSettings,
         ca_data: bytes,
     ) -> SyncUSManager:

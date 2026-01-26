@@ -124,6 +124,7 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: None = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> USEntry:
         pass
 
@@ -133,6 +134,7 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: Optional[type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> _ENTRY_TV:
         pass
 
@@ -142,12 +144,17 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         expected_type: Optional[type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
     ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = await self.get_migrated_entry(entry_id, params=params)
+            us_resp = await self.get_migrated_entry(
+                entry_id,
+                params=params,
+                context_name=context_name,
+            )
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
         await self.get_lifecycle_manager(entry=obj).post_init_async_hook()
@@ -185,8 +192,17 @@ class AsyncUSManager(USManagerBase):
         return obj
 
     @generic_profiler_async("us-get-migrated-entity")  # type: ignore  # TODO: fix
-    async def get_migrated_entry(self, entry_id: str, params: Optional[dict[str, str]] = None) -> dict[str, Any]:
-        us_resp = await self._us_client.get_entry(entry_id, params=params)
+    async def get_migrated_entry(
+        self,
+        entry_id: str,
+        params: Optional[dict[str, str]] = None,
+        context_name: Optional[str] = None,
+    ) -> dict[str, Any]:
+        us_resp = await self._us_client.get_entry(
+            entry_id,
+            params=params,
+            context_name=context_name,
+        )
         return await self._migrate_response(us_resp)
 
     async def _migrate_response(self, us_resp: dict) -> dict:
@@ -260,6 +276,7 @@ class AsyncUSManager(USManagerBase):
         wait_timeout_sec: int = 30,
         duration_sec: int = 300,
         force: bool = False,
+        context_name: Optional[str] = None,
     ) -> AsyncGenerator[_ENTRY_TV, None]:
         entry: Optional[_ENTRY_TV] = None
         lock_token = await self._us_client.acquire_lock(
@@ -270,7 +287,11 @@ class AsyncUSManager(USManagerBase):
         )
 
         try:
-            entry = await self.get_by_id(entry_id, expected_type)
+            entry = await self.get_by_id(
+                entry_id,
+                expected_type,
+                context_name=context_name,
+            )
             entry._lock = lock_token
             assert entry is not None
             yield entry
@@ -292,7 +313,11 @@ class AsyncUSManager(USManagerBase):
         else:
             try:
                 assert isinstance(conn_ref, DefaultConnectionRef)
-                conn = await self.get_by_id(conn_ref.conn_id, ConnectionBase)
+                conn = await self.get_by_id(
+                    conn_ref.conn_id,
+                    ConnectionBase,
+                    context_name="connection",
+                )
             except (exc.USObjectNotFoundException, exc.USAccessDeniedException) as err:
                 r_scope = referrer.scope if referrer is not None else "unk"
                 r_uuid = referrer.uuid if referrer is not None else "unk"

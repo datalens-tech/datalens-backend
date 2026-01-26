@@ -17,7 +17,7 @@ from typing import (
 import attr
 
 from dl_api_commons.headers import normalize_header_name
-from dl_app_tools.log import context
+import dl_logging
 
 
 LOGGER = logging.getLogger(__name__)
@@ -59,6 +59,7 @@ class RequestObfuscator:
             "secret",
             "private_key",
             "cypher_text",
+            "chart_params",
         )
     )
 
@@ -342,4 +343,4 @@ class LogRequestLoggingContextController(RequestLoggingContextController):
         if key in self.allowed_keys:
             # Each request assumed to be executed in individual ContextVars context so we don't need to pop it back
             # see `bi_core.flask_utils.context_var_middleware`
-            context.put_to_context(key, value)
+            dl_logging.put_to_context(key, value)

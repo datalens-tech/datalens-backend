@@ -10,7 +10,17 @@ class Connection:
     dl_promql_cli_cls = SyncPromQLClient
 
     def __init__(
-        self, host, port, username=None, password=None, protocol="http", path=None, cli_cls=None, **conn_kwargs
+        self,
+        host,
+        port,
+        username=None,
+        password=None,
+        auth_type=None,
+        auth_header=None,
+        protocol="http",
+        path=None,
+        cli_cls=None,
+        **conn_kwargs,
     ):
         base_url = "{protocol}://{host}:{port}".format(
             protocol=protocol,
@@ -26,6 +36,8 @@ class Connection:
             base_url=base_url,
             username=username,
             password=password,
+            auth_type=auth_type,
+            auth_header=auth_header,
             **conn_kwargs,
         )
 
@@ -42,5 +54,12 @@ class Connection:
         self.cli.close()
 
     @staticmethod
-    def _create_cli(cli_cls, base_url, username, password, **conn_kwargs):
-        return cli_cls(base_url=base_url, username=username, password=password, **conn_kwargs)
+    def _create_cli(cli_cls, base_url, username, password, auth_type=None, auth_header=None, **conn_kwargs):
+        return cli_cls(
+            base_url=base_url,
+            username=username,
+            password=password,
+            auth_type=auth_type,
+            auth_header=auth_header,
+            **conn_kwargs,
+        )

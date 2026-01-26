@@ -17,6 +17,7 @@ from .mixins import (
     CertificatesSettings,
 )
 from .models import Callback
+from .run import run_async_app
 from .singleton import (
     singleton_class_method_result,
     singleton_function_result,
@@ -39,4 +40,5 @@ __all__ = [
     "CertificatesAppMixin",
     "CertificatesAppFactoryMixin",
     "CertificatesSettings",
+    "run_async_app",
 ]

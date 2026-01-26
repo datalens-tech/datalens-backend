@@ -6,11 +6,17 @@ from .handlers import (
     SwaggerHandlerDependencies,
 )
 from .models import OpenApiSpec
+from .protocols import (
+    OpenApiHandlerProtocol,
+    OpenApiRouteProtocol,
+)
 from .settings import OpenApiSettings
 
 
 __all__ = [
     "OpenApiHandler",
+    "OpenApiHandlerProtocol",
+    "OpenApiRouteProtocol",
     "SwaggerHandler",
     "SwaggerHandlerDependencies",
     "SWAGGER_TEMPLATE_DIR",

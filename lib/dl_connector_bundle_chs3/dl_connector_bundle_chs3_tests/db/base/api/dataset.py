@@ -107,7 +107,11 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
         orig_ds = saved_dataset
 
         # --- change connection source: add one column ---
-        conn = sync_us_manager.get_by_id(saved_connection_id, BaseFileS3Connection)
+        conn = sync_us_manager.get_by_id(
+            saved_connection_id,
+            BaseFileS3Connection,
+            context_name="connection",
+        )
         new_field = sample_file_data_source.raw_schema[-1].clone(name="new_field")
         conn.update_data_source(
             id=sample_file_data_source.id,
