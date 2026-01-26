@@ -89,10 +89,13 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             raise ValueError("Data must be dict")
 
         class_name = cls._get_class_name(data)
-        if class_name:
+        if class_name is not None:
+            if class_name not in cls._classes:
+                raise ValueError(f"Unknown type: {class_name}")
+
             class_ = cls._classes[class_name]
             data[cls.type_key()] = class_name
-        elif not class_name and cls._unknown_class is not None:
+        elif cls._unknown_class is not None:
             class_ = cls._unknown_class
         else:
             raise ValueError(f"Unknown type: {class_name}")
