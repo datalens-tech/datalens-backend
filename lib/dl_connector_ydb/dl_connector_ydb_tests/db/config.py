@@ -7,6 +7,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_constants.enums import UserDataType
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 from dl_testing.containers import get_test_container_hostport
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
@@ -71,9 +72,9 @@ TABLE_SCHEMA = (
     ("some_int64", UserDataType.integer, sa.BigInteger),
     ("some_uint8", UserDataType.integer, sa.SmallInteger),
     ("some_bool", UserDataType.boolean, sa.Boolean),
-    ("some_double", UserDataType.float, sa.Float),
-    ("some_string", UserDataType.string, sa.String),
-    ("some_utf8", UserDataType.string, sa.Unicode),
+    ("some_double", UserDataType.float, ydb_dialect.YqlDouble),
+    ("some_string", UserDataType.string, ydb_dialect.YqlString),
+    ("some_utf8", UserDataType.string, ydb_dialect.YqlUtf8),
     ("some_date", UserDataType.date, sa.Date),
     ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
@@ -257,12 +258,14 @@ select
     MAX(CAST(111 AS UInt8)) as some_uint8,
     MAX(4398046511104) as some_int64,
     MAX(18446744073709551606) as some_uint64,
+    cast(MAX(1.11e-11) as Float) as some_float,
     MAX(1.11e-11) as some_double,
     MAX(true) as some_bool,
     MAX(Date('2021-06-09')) as some_date,
     MAX(Datetime('2021-06-09T20:50:47Z')) as some_datetime,
     MAX(Timestamp('2021-07-10T21:51:48.841512Z')) as some_timestamp,
     CAST(1 AS Interval) as some_interval,
+    CAST("03bbcd6d-3de3-4718-a503-a37fcb75e663" AS Uuid) as some_uuid,
 
     MAX(ListHead(ListSkip(Unicode::SplitToList(CAST(some_string AS UTF8), ''), 3))) as str_split,
     MAX(ListConcat(ListReplicate(CAST(' ' AS UTF8), 5))) as num_space_by_lst,

@@ -23,6 +23,7 @@ from dl_formula_testing.testcases.functions_type_conversion import (
     DefaultStrTypeFunctionFormulaConnectorTestSuite,
 )
 from dl_formula_testing.util import to_str
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 from dl_connector_ydb_tests.db.formula.base import YQLTestBase
 
@@ -109,6 +110,9 @@ class DbCastTypeFunctionYQLTestSuite(
         dbe.eval('DB_CAST(FLOAT([int_value]), "Double")', from_=data_table)
         # Test that it works with string
         dbe.eval('DB_CAST(STR([int_value]), "Utf8")', from_=data_table)
+        # Test that it works with uuid
+        dbe.eval('DB_CAST(STR("00000000-0000-0000-0000-000000000000"), "Uuid")', from_=data_table)
+        dbe.eval('DB_CAST(STR("8098116c-07e7-4670-8c1d-dea21848b031"), "Uuid")', from_=data_table)
 
         # Cast to decimal with correct arguments
         assert dbe.eval('DB_CAST([int_value], "Decimal", 5, 1)', from_=data_table) == value
@@ -413,8 +417,8 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
         columns = [
             sa.Column("bool_value", sa.Boolean()),
             sa.Column("int64_value", sa.Integer(), primary_key=True),
-            sa.Column("float_value", sa.Float()),
-            sa.Column("string_value", sa.Text()),
+            sa.Column("float_value", ydb_dialect.YqlDouble()),
+            sa.Column("string_value", ydb_dialect.YqlString()),
             sa.Column("date_value", sa.Date()),
         ]
 

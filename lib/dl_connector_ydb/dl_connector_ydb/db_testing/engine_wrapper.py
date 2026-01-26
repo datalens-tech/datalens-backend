@@ -42,6 +42,11 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     sa.BINARY: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
     sa.Text: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
     sa.Unicode: YdbTypeSpec(type=ydb.PrimitiveType.Utf8, to_sql_str=lambda x: f'"{x}"'),
+    dl_sqlalchemy_ydb.dialect.YqlFloat: YdbTypeSpec(type=ydb.PrimitiveType.Float, to_sql_str=str),
+    dl_sqlalchemy_ydb.dialect.YqlDouble: YdbTypeSpec(type=ydb.PrimitiveType.Double, to_sql_str=str),
+    dl_sqlalchemy_ydb.dialect.YqlString: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
+    dl_sqlalchemy_ydb.dialect.YqlUtf8: YdbTypeSpec(type=ydb.PrimitiveType.Utf8, to_sql_str=lambda x: f'"{x}"'),
+    dl_sqlalchemy_ydb.dialect.YqlUuid: YdbTypeSpec(type=ydb.PrimitiveType.UUID, to_sql_str=lambda x: f'UUID("{x}")'),
     sa.Date: YdbTypeSpec(type=ydb.PrimitiveType.Date, to_sql_str=lambda x: f'DateTime::MakeDate($date_parse("{x}"))'),
     sa.DateTime: YdbTypeSpec(
         ydb.PrimitiveType.Datetime,

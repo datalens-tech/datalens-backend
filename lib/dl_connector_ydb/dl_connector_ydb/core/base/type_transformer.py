@@ -7,6 +7,7 @@ import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_constants.enums import UserDataType
 import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 from dl_type_transformer.type_transformer import (
     TypeTransformer,
     make_native_type,
@@ -36,11 +37,15 @@ class YQLTypeTransformer(TypeTransformer):
             sa.FLOAT,
             sa.REAL,
             sa.NUMERIC,
+            ydb_dialect.YqlDouble,
+            ydb_dialect.YqlFloat,
             # see also: DOUBLE_PRECISION,
         ),
         UserDataType.boolean: (sa.BOOLEAN,),
         UserDataType.string: (
             sa.TEXT,
+            ydb_dialect.YqlString,
+            ydb_dialect.YqlUtf8,
             sa.String,
             sa.CHAR,
             sa.VARCHAR,
@@ -63,11 +68,11 @@ class YQLTypeTransformer(TypeTransformer):
             dl_sqlalchemy_ydb.dialect.YqlTimestamp,
         ),
         UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
+        UserDataType.uuid: (ydb_dialect.YqlUuid,),
     }
     _extra_type_map: dict[UserDataType, SATypeSpec] = {  # user-to-native only
         UserDataType.geopoint: sa.TEXT,
         UserDataType.geopolygon: sa.TEXT,
-        UserDataType.uuid: sa.TEXT,  # see also: UUID
         UserDataType.markup: sa.TEXT,
     }
 

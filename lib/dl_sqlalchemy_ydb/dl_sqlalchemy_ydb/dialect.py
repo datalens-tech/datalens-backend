@@ -43,6 +43,26 @@ class YqlInterval(sa.types.Interval):
         return process
 
 
+class YqlString(sa.types.TEXT):
+    __visit_name__ = "String"
+
+
+class YqlDouble(sa.types.FLOAT):
+    __visit_name__ = "Double"
+
+
+class YqlFloat(sa.types.FLOAT):
+    __visit_name__ = "Float"
+
+
+class YqlUtf8(sa.types.TEXT):
+    __visit_name__ = "Utf8"
+
+
+class YqlUuid(sa.types.TEXT):
+    __visit_name__ = "Uuid"
+
+
 class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
         return self.visit_datetime(type_, **kw)
@@ -68,11 +88,17 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_big_integer(self, type_: sa.BigInteger, **kw: typing.Any) -> typing.Any:
         return "int64"
 
+    def visit_String(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+        return "String"
+
     def visit_Utf8(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
         return "Utf8"
 
     def visit_Double(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
         return "Double"
+
+    def visit_Float(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+        return "Float"
 
     def visit_Uuid(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
         return "Uuid"
