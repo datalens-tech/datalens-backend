@@ -13,6 +13,7 @@ from dl_core.us_connection_base import (
     ConnectionBase,
 )
 from dl_core.utils import secrepr
+from dl_utils.utils import DataKey
 
 from dl_connector_promql.core.constants import (
     SOURCE_TYPE_PROMQL,
@@ -33,6 +34,13 @@ class PromQLConnection(ClassicConnectionSQL):
         secure: bool = attr.ib(default=False)
         auth_type: PromQLAuthType = attr.ib()
         auth_header: str | None = attr.ib(repr=secrepr, default=None)
+
+        @classmethod
+        def get_secret_keys(cls) -> set[DataKey]:
+            return {
+                *super().get_secret_keys(),
+                DataKey(parts=("auth_header",)),
+            }
 
     def get_conn_dto(self) -> PromQLConnDTO:
         return PromQLConnDTO(
