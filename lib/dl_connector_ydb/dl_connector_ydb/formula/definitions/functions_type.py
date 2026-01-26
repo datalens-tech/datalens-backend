@@ -22,7 +22,7 @@ def _with_optional_list_item(
 
     return (
         base.WhitelistTypeSpec(name=f"List<{type_name}>", sa_type=ydb_dialect.YqlListType, nested_sa_type=nested_type),
-        base.WhitelistTypeSpec(name=f"List<{type_name}?>", sa_type=ydb_dialect.YqlListType, nested_sa_type=nested_type),
+        base.WhitelistTypeSpec(name=f"List<{type_name}?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=nested_type),
     )
 
 
