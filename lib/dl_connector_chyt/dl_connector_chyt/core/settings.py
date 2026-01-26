@@ -29,12 +29,12 @@ class CHYTConnectorSettings(ConnectorSettings, DatasourceTemplateSettingsMixin):
         tuple[str, ...],
         dl_settings.split_validator(","),
         pydantic_settings.NoDecode,
-    ]
+    ] = pydantic.Field(default_factory=tuple)
     FORBIDDEN_CLIQUES: Annotated[
         tuple[str, ...],
         dl_settings.split_validator(","),
         pydantic_settings.NoDecode,
-    ]
+    ] = pydantic.Field(default_factory=tuple)
     DEFAULT_CLIQUE: str | None = None
 
     root_fallback_env_keys: ClassVar[dict[str, str]] = {
