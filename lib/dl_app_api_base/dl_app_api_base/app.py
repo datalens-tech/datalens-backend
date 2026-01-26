@@ -117,7 +117,7 @@ class HttpServerAppFactoryMixin(
         self,
     ) -> list[auth.RequestAuthCheckerProtocol]:
         return [
-            auth.NoAuthChecker(
+            auth.AlwaysAllowAuthChecker(
                 route_matchers=[
                     auth.RouteMatcher(
                         path_regex=re.compile(r"^/api/v1/health/.*$"),

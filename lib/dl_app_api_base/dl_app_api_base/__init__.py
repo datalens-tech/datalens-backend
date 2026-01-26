@@ -8,8 +8,9 @@ from .app import (
     HttpServerSettings,
 )
 from .auth import (
-    NoAuthChecker,
-    NoAuthResult,
+    AlwaysAllowAuthChecker,
+    AlwaysAllowAuthResult,
+    AlwaysDenyAuthChecker,
     OAuthChecker,
     OAuthCheckerSettings,
     OAuthResult,
@@ -85,8 +86,9 @@ __all__ = [
     "RequestAuthCheckerProtocol",
     "OAuthChecker",
     "OAuthResult",
-    "NoAuthChecker",
-    "NoAuthResult",
+    "AlwaysAllowAuthChecker",
+    "AlwaysAllowAuthResult",
+    "AlwaysDenyAuthChecker",
     "RouteMatcher",
     "OAuthCheckerSettings",
 ]

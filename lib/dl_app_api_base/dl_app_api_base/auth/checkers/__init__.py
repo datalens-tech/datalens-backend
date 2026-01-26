@@ -1,11 +1,12 @@
+from .always_allow import (
+    AlwaysAllowAuthChecker,
+    AlwaysAllowAuthResult,
+)
+from .always_deny import AlwaysDenyAuthChecker
 from .base import (
     BaseRequestAuthChecker,
     BaseRequestAuthResult,
     RequestAuthCheckerProtocol,
-)
-from .no_auth import (
-    NoAuthChecker,
-    NoAuthResult,
 )
 from .oauth import (
     OAuthChecker,
@@ -18,9 +19,10 @@ __all__ = [
     "BaseRequestAuthChecker",
     "RequestAuthCheckerProtocol",
     "BaseRequestAuthResult",
-    "NoAuthChecker",
-    "NoAuthResult",
+    "AlwaysAllowAuthChecker",
+    "AlwaysAllowAuthResult",
     "OAuthChecker",
     "OAuthCheckerSettings",
     "OAuthResult",
+    "AlwaysDenyAuthChecker",
 ]

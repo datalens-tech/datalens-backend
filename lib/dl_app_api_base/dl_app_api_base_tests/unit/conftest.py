@@ -175,7 +175,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
         base_checkers = await super()._get_request_auth_checkers()
 
         return [
-            dl_app_api_base.NoAuthChecker(
+            dl_app_api_base.AlwaysAllowAuthChecker(
                 route_matchers=[
                     dl_app_api_base.RouteMatcher(
                         path_regex=re.compile(r"^/api/v1/counter"),
@@ -192,10 +192,18 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                     )
                 ],
             ),
-            dl_app_api_base.NoAuthChecker(
+            dl_app_api_base.AlwaysAllowAuthChecker(
                 route_matchers=[
                     dl_app_api_base.RouteMatcher(
-                        path_regex=re.compile(r"^/api/v1/no_auth/.*"),
+                        path_regex=re.compile(r"^/api/v1/always_allow/.*"),
+                        methods=frozenset(["GET"]),
+                    ),
+                ],
+            ),
+            dl_app_api_base.AlwaysDenyAuthChecker(
+                route_matchers=[
+                    dl_app_api_base.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/always_deny/.*"),
                         methods=frozenset(["GET"]),
                     ),
                 ],
@@ -237,7 +245,12 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 ),
                 dl_app_api_base.Route(
                     method="GET",
-                    path="/api/v1/no_auth/ping",
+                    path="/api/v1/always_allow/ping",
+                    handler=PingHandler(),
+                ),
+                dl_app_api_base.Route(
+                    method="GET",
+                    path="/api/v1/always_deny/ping",
                     handler=PingHandler(),
                 ),
             ]
