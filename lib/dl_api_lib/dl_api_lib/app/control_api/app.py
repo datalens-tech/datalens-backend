@@ -93,7 +93,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
     def create_app(
         self,
-        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
         testing_app_settings: ControlApiAppTestingsSettings | None = None,
         close_loop_after_request: bool = True,
     ) -> flask.Flask:
