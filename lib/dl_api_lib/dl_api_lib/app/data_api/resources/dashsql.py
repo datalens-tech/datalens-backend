@@ -60,6 +60,11 @@ if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
     from dl_core.data_processing.dashsql import TResultEvents
 
+import logging
+
+
+LOGGER = logging.getLogger(__name__)
+
 
 TRowProcessor = Callable[[TRow], TRow]
 
@@ -185,23 +190,22 @@ class DashSQLView(BaseView):
 
     @classmethod
     def _get_type_processor(cls, bi_type_name: str) -> Callable[[Any], Any]:
-        try:
-            bi_type = UserDataType[bi_type_name]
-        except KeyError:
-            return cls._postprocess_any
+        bi_type = UserDataType.__members__.get(bi_type_name)
 
+        if bi_type is None:
+            return lambda val: val
+
+        # Handle datetimetz as datetime (without timezone conversion)
         if bi_type == UserDataType.datetimetz:
-            # Handle datetimetz as datetime (without timezone conversion)
-            # UserDataType.datetimetz type processor requires timezone param and dashsql only has bi types
-            return TYPE_PROCESSORS[UserDataType.datetime]
+            bi_type = UserDataType.datetime
 
         type_processor = TYPE_PROCESSORS.get(bi_type)
 
-        if type_processor is not None and type_processor != postprocess_array:
-            # Return arrays as is, no need to dump
-            return type_processor
+        # Return arrays as is (no need to dump), otherwise use the processor
+        if type_processor is None or type_processor == postprocess_array:
+            return lambda val: val
 
-        return cls._postprocess_any
+        return type_processor
 
     @classmethod
     def _make_postprocess_row(cls, bi_type_names: tuple[str, ...]) -> TRowProcessor:
@@ -213,6 +217,7 @@ class DashSQLView(BaseView):
                 try:
                     result.append(cls._postprocess_any(proc(val)))
                 except (ValueError, TypeError):
+                    LOGGER.warning("Failed to postprocess value %s (processor: %s). Using raw value.", val, proc)
                     result.append(cls._postprocess_any(val))
             return tuple(result)
 

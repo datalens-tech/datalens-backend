@@ -45,8 +45,10 @@ class TestDashSQL(DefaultApiTestBase, DefaultDashSQLTestSuite):
         )
         data = await resp.json()
         row_data = data[1]["data"]
-        for row in row_data:
-            assert self.ISO_DATETIME_PATTERN.match(row), f"Value '{row}' doesn't match ISO 8601 format"
+        for datetime_value in row_data:
+            assert self.ISO_DATETIME_PATTERN.match(
+                datetime_value
+            ), f"Value '{datetime_value}' doesn't match ISO 8601 format"
 
     @pytest.mark.asyncio
     async def test_postprocess_array(
