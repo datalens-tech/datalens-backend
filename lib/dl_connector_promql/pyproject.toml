@@ -13,7 +13,6 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
-dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
