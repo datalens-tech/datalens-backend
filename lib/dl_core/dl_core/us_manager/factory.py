@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 import flask
 
@@ -12,6 +10,7 @@ from dl_core.services_registry import ServicesRegistry
 from dl_core.united_storage_client import (
     USAuthContextEmbed,
     USAuthContextMaster,
+    USAuthContextPrivateBase,
     USAuthContextPublic,
     USAuthContextRegular,
 )
@@ -23,11 +22,11 @@ import dl_retrier
 @attr.s(frozen=True)
 class USMFactory:
     us_base_url: str = attr.ib()
-    crypto_keys_config: Optional[CryptoKeysConfig] = attr.ib()
+    crypto_keys_config: CryptoKeysConfig | None = attr.ib()
     ca_data: bytes = attr.ib()
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attr.ib()
-    us_master_token: Optional[str] = attr.ib(default=None, repr=False)
-    us_public_token: Optional[str] = attr.ib(default=None, repr=False)
+    us_master_token: str | None = attr.ib(default=None, repr=False)
+    us_public_token: str | None = attr.ib(default=None, repr=False)
 
     @classmethod
     def get_regular_us_auth_ctx_from_rci(cls, rci: RequestContextInfo) -> USAuthContextRegular:
@@ -54,11 +53,11 @@ class USMFactory:
             tenant=tenant,
         )
 
-    def get_master_auth_context(self) -> USAuthContextMaster:
+    def get_master_auth_context(self) -> USAuthContextPrivateBase:
         assert self.us_master_token is not None, "US master token must be set in factory to create USAuthContextMaster"
         return USAuthContextMaster(us_master_token=self.us_master_token)
 
-    def get_master_auth_context_from_headers(self) -> USAuthContextMaster:
+    def get_master_auth_context_from_headers(self) -> USAuthContextPrivateBase:
         us_master_token = flask.request.headers.get(DLHeadersCommon.US_MASTER_TOKEN.value)
         if us_master_token is None:
             raise InvalidRequestError(
@@ -136,7 +135,7 @@ class USMFactory:
         )
 
     def get_master_sync_usm(
-        self, rci: RequestContextInfo, services_registry: ServicesRegistry, is_token_stored: Optional[bool] = True
+        self, rci: RequestContextInfo, services_registry: ServicesRegistry, is_token_stored: bool | None = True
     ) -> SyncUSManager:
         return SyncUSManager(
             us_auth_context=self.get_master_auth_context()

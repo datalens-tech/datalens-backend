@@ -54,7 +54,7 @@ class USClientHTTPExceptionWrapper(Exception):
 
 
 @attr.s
-class USAuthContextBase:
+class USAuthContextBase(abc.ABC):
     DEFAULT_US_PREFIX: ClassVar[USApiType] = USApiType.v1
     IS_TENANT_ID_MUTABLE: ClassVar[bool] = False
 
@@ -133,22 +133,35 @@ class USAuthContextPublic(USAuthContextBase):
         return {}
 
 
-@attr.s(frozen=True)
-class USAuthContextMaster(USAuthContextBase):
+class USAuthContextPrivateBase(USAuthContextBase):
+    """
+    Common base class for environment-specific US authentication contexts.
+    Used for service requests to US private API.
+    """
+
     DEFAULT_US_PREFIX = USApiType.private
     DEFAULT_TENANT = TenantCommon()
     IS_TENANT_ID_MUTABLE = True
 
-    us_master_token: str = attr.ib(repr=False)
-
     def get_tenant(self) -> TenantDef:
         return self.DEFAULT_TENANT
 
+    @abc.abstractmethod
     def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
-        return {DLHeadersCommon.US_MASTER_TOKEN: self.us_master_token}
+        raise NotImplementedError()
 
     def get_outbound_cookies(self) -> dict[DLCookies, str]:
         return {}
+
+
+@attr.s(frozen=True)
+class USAuthContextMaster(USAuthContextPrivateBase):
+    us_master_token: str = attr.ib(repr=False)
+
+    def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
+        return {
+            DLHeadersCommon.US_MASTER_TOKEN: self.us_master_token,
+        }
 
 
 @attr.s(frozen=True)

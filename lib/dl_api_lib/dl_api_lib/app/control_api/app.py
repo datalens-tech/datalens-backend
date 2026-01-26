@@ -4,7 +4,6 @@ import abc
 from typing import (
     TYPE_CHECKING,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -59,7 +58,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     def set_up_environment(
         self,
         app: flask.Flask,
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        testing_app_settings: ControlApiAppTestingsSettings | None = None,
     ) -> EnvSetupResult:
         raise NotImplementedError()
 
@@ -67,10 +66,24 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     def _is_async_env(self) -> bool:
         return False
 
+    def _get_us_manager_middleware(
+        self,
+        us_auth_mode: USAuthMode,
+        ca_data: bytes,
+    ) -> USManagerFlaskMiddleware:
+        return USManagerFlaskMiddleware(
+            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
+            us_base_url=self._settings.US_BASE_URL,
+            us_master_token=self._settings.US_MASTER_TOKEN,
+            us_auth_mode=us_auth_mode,
+            ca_data=ca_data,
+            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(self._settings.US_CLIENT.RETRY_POLICY),
+        )
+
     def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
         conn_opts_mutators_factory = ConnOptionsMutatorsFactory()
 
-        def enable_index_fetching_mutator(conn_opts: ConnectOptions, conn: ConnectionBase) -> Optional[ConnectOptions]:
+        def enable_index_fetching_mutator(conn_opts: ConnectOptions, conn: ConnectionBase) -> ConnectOptions | None:
             return conn_opts.clone(fetch_table_indexes=True)
 
         if self._settings.DO_DSRC_IDX_FETCH:
@@ -81,7 +94,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     def create_app(
         self,
         connectors_settings: dict[str, ConnectorSettings],
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        testing_app_settings: ControlApiAppTestingsSettings | None = None,
         close_loop_after_request: bool = True,
     ) -> flask.Flask:
         app = Flask(__name__)
@@ -133,13 +146,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             services_registry_factory=sr_factory,
         ).set_up(app)
 
-        USManagerFlaskMiddleware(
-            crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
-            us_base_url=self._settings.US_BASE_URL,
-            us_master_token=self._settings.US_MASTER_TOKEN,
+        self._get_us_manager_middleware(
             us_auth_mode=env_setup_result.us_auth_mode,
             ca_data=ca_data,
-            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(self._settings.US_CLIENT.RETRY_POLICY),
         ).set_up(app)
 
         _ = app.logger
