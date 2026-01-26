@@ -24,17 +24,22 @@ CRM_DEAL = [
     {"name": "ASSIGNED_BY_NAME", "type": "string"},
     {"name": "ASSIGNED_BY", "type": "string"},
     {"name": "ASSIGNED_BY_DEPARTMENT", "type": "string"},
+    {"name": "MOVED_BY_ID", "type": "integer"},
+    {"name": "MOVED_BY", "type": "string"},
+    {"name": "MOVED_BY_NAME", "type": "string"},
+    {"name": "MOVED_TIME", "type": "datetime"},
     {"name": "OPENED", "type": "string"},
     {"name": "LEAD_ID", "type": "integer"},
     {"name": "COMPANY_ID", "type": "integer"},
     {"name": "COMPANY_NAME", "type": "string"},
     {"name": "COMPANY", "type": "string"},
-    {"name": "CONTACT_ID", "type": "string"},
+    {"name": "CONTACT_ID", "type": "integer"},
     {"name": "CONTACT_NAME", "type": "string"},
     {"name": "CONTACT", "type": "string"},
     {"name": "TITLE", "type": "string"},
     {"name": "CRM_PRODUCT", "type": "string"},
     {"name": "CRM_PRODUCT_COUNT", "type": "string"},
+    {"name": "CRM_PRODUCT_ID", "type": "integer"},
     {"name": "CATEGORY_ID", "type": "string"},
     {"name": "CATEGORY_NAME", "type": "string"},
     {"name": "CATEGORY", "type": "string"},
@@ -48,18 +53,18 @@ CRM_DEAL = [
     {"name": "IS_RETURN_CUSTOMER", "type": "string"},
     {"name": "CLOSED", "type": "string"},
     {"name": "TYPE_ID", "type": "string"},
-    {"name": "OPPORTUNITY", "type": "string"},
+    {"name": "OPPORTUNITY", "type": "float"},
     {"name": "IS_MANUAL_OPPORTUNITY", "type": "string"},
-    {"name": "TAX_VALUE", "type": "string"},
+    {"name": "TAX_VALUE", "type": "float"},
     {"name": "CURRENCY_ID", "type": "string"},
-    {"name": "OPPORTUNITY_ACCOUNT", "type": "string"},
-    {"name": "TAX_VALUE_ACCOUNT", "type": "string"},
+    {"name": "OPPORTUNITY_ACCOUNT", "type": "float"},
+    {"name": "TAX_VALUE_ACCOUNT", "type": "float"},
     {"name": "ACCOUNT_CURRENCY_ID", "type": "string"},
-    {"name": "PROBABILITY", "type": "string"},
+    {"name": "PROBABILITY", "type": "integer"},
     {"name": "COMMENTS", "type": "string"},
     {"name": "BEGINDATE", "type": "datetime"},
     {"name": "CLOSEDATE", "type": "datetime"},
-    {"name": "LOCATION_ID", "type": "string"},
+    {"name": "LOCATION_ID", "type": "integer"},
     {"name": "SOURCE_ID", "type": "string"},
     {"name": "SOURCE_NAME", "type": "string"},
     {"name": "SOURCE", "type": "string"},
@@ -72,7 +77,10 @@ CRM_DEAL = [
     {"name": "UTM_CAMPAIGN", "type": "string"},
     {"name": "UTM_CONTENT", "type": "string"},
     {"name": "UTM_TERM", "type": "string"},
-    {"name": "BANK_DETAIL_ID", "type": "string"},
+    {"name": "BANK_DETAIL_ID", "type": "integer"},
+    {"name": "WEBFORM_ID", "type": "integer"},
+    {"name": "WEBFORM_NAME", "type": "string"},
+    {"name": "WEBFORM", "type": "string"},
 ]
 
 
@@ -81,6 +89,7 @@ CRM_LEAD = [
     {"name": "DATE_MODIFY", "type": "datetime"},
     {"name": "DATE_CREATE", "type": "datetime"},
     {"name": "CREATED_BY_ID", "type": "integer"},
+    {"name": "CREATED_BY_NAME", "type": "string"},
     {"name": "CREATED_BY", "type": "string"},
     {"name": "MODIFY_BY_ID", "type": "integer"},
     {"name": "MODIFIED_BY_NAME", "type": "string"},
@@ -92,8 +101,9 @@ CRM_LEAD = [
     {"name": "OPENED", "type": "string"},
     {"name": "COMPANY_ID", "type": "integer"},
     {"name": "COMPANY_NAME", "type": "string"},
+    {"name": "COMPANY_TITLE", "type": "string"},
     {"name": "COMPANY", "type": "string"},
-    {"name": "CONTACT_ID", "type": "string"},
+    {"name": "CONTACT_ID", "type": "integer"},
     {"name": "CONTACT_NAME", "type": "string"},
     {"name": "CONTACT", "type": "string"},
     {"name": "STATUS_ID", "type": "string"},
@@ -105,7 +115,8 @@ CRM_LEAD = [
     {"name": "CRM_PRODUCT_ID", "type": "string"},
     {"name": "CRM_PRODUCT_NAME", "type": "string"},
     {"name": "CRM_PRODUCT", "type": "string"},
-    {"name": "OPPORTUNITY", "type": "string"},
+    {"name": "CRM_PRODUCT_COUNT", "type": "string"},
+    {"name": "OPPORTUNITY", "type": "float"},
     {"name": "CURRENCY_ID", "type": "string"},
     {"name": "SOURCE_ID", "type": "string"},
     {"name": "SOURCE_NAME", "type": "string"},
@@ -116,7 +127,6 @@ CRM_LEAD = [
     {"name": "NAME", "type": "string"},
     {"name": "LAST_NAME", "type": "string"},
     {"name": "SECOND_NAME", "type": "string"},
-    {"name": "COMPANY_TITLE", "type": "string"},
     {"name": "POST", "type": "string"},
     {"name": "ADDRESS_1", "type": "string"},
     {"name": "ADDRESS_2", "type": "string"},
@@ -157,6 +167,7 @@ CRM_COMPANY = [
     {"name": "ASSIGNED_BY_ID", "type": "integer"},
     {"name": "ASSIGNED_BY_NAME", "type": "string"},
     {"name": "ASSIGNED_BY", "type": "string"},
+    {"name": "ASSIGNED_BY_DEPARTMENT", "type": "string"},
     {"name": "OPENED", "type": "string"},
     {"name": "TITLE", "type": "string"},
     {"name": "ADDRESS_1", "type": "string"},
@@ -208,10 +219,14 @@ CRM_CONTACT = [
     {"name": "ASSIGNED_BY_ID", "type": "integer"},
     {"name": "ASSIGNED_BY_NAME", "type": "string"},
     {"name": "ASSIGNED_BY", "type": "string"},
+    {"name": "ASSIGNED_BY_DEPARTMENT", "type": "string"},
     {"name": "OPENED", "type": "string"},
     {"name": "COMPANY_ID", "type": "integer"},
     {"name": "SOURCE_ID", "type": "string"},
+    {"name": "SOURCE_NAME", "type": "string"},
+    {"name": "SOURCE", "type": "string"},
     {"name": "SOURCE_DESCRIPTION", "type": "string"},
+    {"name": "FULL_NAME", "type": "string"},
     {"name": "NAME", "type": "string"},
     {"name": "LAST_NAME", "type": "string"},
     {"name": "SECOND_NAME", "type": "string"},
@@ -257,6 +272,9 @@ CRM_DEAL_STAGE_HISTORY = [
     {"name": "ASSIGNED_BY_NAME", "type": "string"},
     {"name": "ASSIGNED_BY", "type": "string"},
     {"name": "ASSIGNED_BY_DEPARTMENT", "type": "string"},
+    {"name": "CATEGORY_ID", "type": "string"},
+    {"name": "CATEGORY_NAME", "type": "string"},
+    {"name": "CATEGORY", "type": "string"},
     {"name": "STAGE_SEMANTIC_ID", "type": "string"},
     {"name": "STAGE_SEMANTIC", "type": "string"},
     {"name": "STAGE_ID", "type": "string"},
@@ -290,6 +308,7 @@ SOCIALNETWORK_GROUP = [
     {"name": "DATE_CREATE", "type": "datetime"},
     {"name": "DATE_MODIFY", "type": "datetime"},
     {"name": "OPENED", "type": "string"},
+    {"name": "VISIBLE", "type": "string"},
     {"name": "SUBJECT", "type": "string"},
     {"name": "OWNER_ID", "type": "integer"},
     {"name": "OWNER_NAME", "type": "string"},
@@ -299,6 +318,8 @@ SOCIALNETWORK_GROUP = [
     {"name": "DATE_ACTIVITY", "type": "datetime"},
     {"name": "CLOSED", "type": "string"},
     {"name": "PROJECT", "type": "string"},
+    {"name": "SCRUM_OWNER_ID", "type": "integer"},
+    {"name": "SCRUM_MASTER_ID", "type": "integer"},
 ]
 
 
@@ -345,6 +366,7 @@ CRM_ACTIVITY = [
     {"name": "RESPONSIBLE_ID", "type": "integer"},
     {"name": "RESPONSIBLE_NAME", "type": "string"},
     {"name": "RESPONSIBLE", "type": "string"},
+    {"name": "RESPONSIBLE_DEPARTMENT", "type": "string"},
     {"name": "PRIORITY_ID", "type": "integer"},
     {"name": "PRIORITY_NAME", "type": "string"},
     {"name": "DESCRIPTION", "type": "string"},
@@ -472,12 +494,12 @@ CRM_DYNAMIC_ITEMS = [
     {"name": "CONTACT", "type": "string"},
     {"name": "CONTACT_ID", "type": "integer"},
     {"name": "CONTACT_NAME", "type": "string"},
-    {"name": "OPPORTUNITY", "type": "string"},
+    {"name": "OPPORTUNITY", "type": "float"},
     {"name": "IS_MANUAL_OPPORTUNITY", "type": "string"},
-    {"name": "TAX_VALUE", "type": "string"},
+    {"name": "TAX_VALUE", "type": "float"},
     {"name": "CURRENCY_ID", "type": "string"},
-    {"name": "OPPORTUNITY_ACCOUNT", "type": "string"},
-    {"name": "TAX_VALUE_ACCOUNT", "type": "string"},
+    {"name": "OPPORTUNITY_ACCOUNT", "type": "float"},
+    {"name": "TAX_VALUE_ACCOUNT", "type": "float"},
     {"name": "ACCOUNT_CURRENCY_ID", "type": "string"},
     {"name": "MYCOMPANY", "type": "string"},
     {"name": "MYCOMPANY_ID", "type": "integer"},
@@ -489,6 +511,7 @@ CRM_DYNAMIC_ITEMS = [
     {"name": "ASSIGNED_BY", "type": "string"},
     {"name": "ASSIGNED_BY_ID", "type": "integer"},
     {"name": "ASSIGNED_BY_NAME", "type": "string"},
+    {"name": "ASSIGNED_BY_DEPARTMENT", "type": "string"},
     {"name": "WEBFORM_ID", "type": "integer"},
 ]
 
@@ -507,6 +530,365 @@ CRM_COMPANY_UF = [
 CRM_CONTACT_UF = [
     {"name": "CONTACT_ID", "type": "integer"},
     {"name": "DATE_CREATE", "type": "datetime"},
+]
+
+
+TASK = [
+    {"name": "ID", "type": "integer"},
+    {"name": "TITLE", "type": "string"},
+    {"name": "DESCRIPTION", "type": "string"},
+    {"name": "MARK", "type": "string"},
+    {"name": "PRIORITY", "type": "string"},
+    {"name": "STATUS", "type": "string"},
+    {"name": "GROUP_ID", "type": "integer"},
+    {"name": "GROUP_NAME", "type": "string"},
+    {"name": "GROUP_INFO", "type": "string"},
+    {"name": "MULTITASK", "type": "string"},
+    {"name": "STAGE_NAME", "type": "string"},
+    {"name": "STAGE", "type": "string"},
+    {"name": "CREATED_BY_ID", "type": "integer"},
+    {"name": "CREATED_BY_NAME", "type": "string"},
+    {"name": "CREATED_BY", "type": "string"},
+    {"name": "CREATED_DATE", "type": "date"},
+    {"name": "RESPONSIBLE_ID", "type": "integer"},
+    {"name": "RESPONSIBLE", "type": "string"},
+    {"name": "ACCOMPLICES_IDS", "type": "string"},
+    {"name": "ACCOMPLICES_NAMES", "type": "string"},
+    {"name": "ACCOMPLICES", "type": "string"},
+    {"name": "AUDITORS_IDS", "type": "string"},
+    {"name": "AUDITORS_NAMES", "type": "string"},
+    {"name": "AUDITORS", "type": "string"},
+    {"name": "CHANGED_BY_ID", "type": "integer"},
+    {"name": "CHANGED_BY_NAME", "type": "string"},
+    {"name": "CHANGED_BY", "type": "string"},
+    {"name": "CHANGED_DATE", "type": "date"},
+    {"name": "STATUS_CHANGED_BY_ID", "type": "integer"},
+    {"name": "STATUS_CHANGED_BY", "type": "string"},
+    {"name": "STATUS_CHANGED_DATE", "type": "date"},
+    {"name": "CLOSED_BY_ID", "type": "integer"},
+    {"name": "CLOSED_BY_NAME", "type": "string"},
+    {"name": "CLOSED_BY", "type": "string"},
+    {"name": "CLOSED_DATE", "type": "date"},
+    {"name": "DATE_START", "type": "date"},
+    {"name": "DEADLINE", "type": "date"},
+    {"name": "START_DATE_PLAN", "type": "date"},
+    {"name": "END_DATE_PLAN", "type": "date"},
+    {"name": "ALLOW_CHANGE_DEADLINE", "type": "string"},
+    {"name": "ALLOW_TIME_TRACKING", "type": "string"},
+    {"name": "TASK_CONTROL", "type": "string"},
+    {"name": "ADD_IN_REPORT", "type": "string"},
+    {"name": "TIME_ESTIMATE", "type": "integer"},
+    {"name": "MATCH_WORK_TIME", "type": "string"},
+    {"name": "DURATION_PLAN", "type": "integer"},
+    {"name": "DURATION_TYPE", "type": "string"},
+    {"name": "CRM_TASK", "type": "string"},
+    {"name": "TAGS", "type": "string"},
+    {"name": "DEPENDS_ON", "type": "integer"},
+    {"name": "FLOW_ID", "type": "integer"},
+]
+
+
+TASK_STAGES = [
+    {"name": "ID", "type": "integer"},
+    {"name": "TITLE", "type": "string"},
+    {"name": "SORT", "type": "integer"},
+    {"name": "COLOR", "type": "string"},
+    {"name": "GROUP_ID", "type": "integer"},
+    {"name": "GROUP_NAME", "type": "string"},
+    {"name": "GROUP_INFO", "type": "string"},
+]
+
+
+TASK_UF = [
+    {"name": "TASK_ID", "type": "integer"},
+    {"name": "UF_CRM_TASK", "type": "string"},
+    {"name": "UF_MAIL_MESSAGE", "type": "string"},
+]
+
+
+TASK_ELAPSED_TIME = [
+    {"name": "ID", "type": "integer"},
+    {"name": "TASK_ID", "type": "integer"},
+    {"name": "USER_NAME", "type": "string"},
+    {"name": "USER", "type": "string"},
+    {"name": "DATE_START", "type": "date"},
+    {"name": "ELAPSED_TIME", "type": "integer"},
+]
+
+
+FLOW = [
+    {"name": "ID", "type": "integer"},
+    {"name": "NAME", "type": "string"},
+    {"name": "ID_NAME", "type": "string"},
+    {"name": "CREATOR_ID", "type": "integer"},
+    {"name": "CREATOR_NAME", "type": "string"},
+    {"name": "CREATOR_ID_NAME", "type": "string"},
+    {"name": "OWNER_ID", "type": "integer"},
+    {"name": "OWNER_NAME", "type": "string"},
+    {"name": "PLANNED_COMPLETION_TIME", "type": "integer"},
+    {"name": "DISTRIBUTION_TYPE", "type": "string"},
+    {"name": "HAS_TEMPLATE", "type": "string"},
+    {"name": "ACTIVE", "type": "string"},
+    {"name": "GROUP_ID", "type": "integer"},
+    {"name": "GROUP_NAME", "type": "string"},
+    {"name": "GROUP_ID_NAME", "type": "string"},
+    {"name": "TASKS_IDS", "type": "string"},
+]
+
+
+TASK_EFFICIENCY = [
+    {"name": "ID", "type": "integer"},
+    {"name": "DATETIME", "type": "date"},
+    {"name": "DATETIME_REPAIR", "type": "date"},
+    {"name": "IS_VIOLATION", "type": "string"},
+]
+
+
+CRM_PRODUCT = [
+    {"name": "ID", "type": "integer"},
+    {"name": "NAME", "type": "string"},
+    {"name": "TYPE", "type": "string"},
+    {"name": "PARENT_ID", "type": "integer"},
+    {"name": "MEASURE", "type": "string"},
+    {"name": "PRICE", "type": "integer"},
+]
+
+
+CRM_PRODUCT_PROPERTY = [
+    {"name": "ID", "type": "integer"},
+    {"name": "NAME", "type": "string"},
+]
+
+
+CRM_PRODUCT_PROPERTY_VALUE = [
+    {"name": "ID", "type": "string"},
+    {"name": "PROPERTY_ID", "type": "integer"},
+    {"name": "PRODUCT_ID", "type": "integer"},
+    {"name": "VALUE", "type": "string"},
+]
+
+
+CRM_SMART_PROC = [
+    {"name": "ID", "type": "integer"},
+    {"name": "TITLE", "type": "string"},
+    {"name": "NAME", "type": "string"},
+    {"name": "ENTITY_TYPE_ID", "type": "integer"},
+    {"name": "IS_AUTOMATION_ENABLED", "type": "string"},
+    {"name": "IS_BIZ_PROC_ENABLED", "type": "string"},
+    {"name": "IS_DOCUMENTS_ENABLED", "type": "string"},
+    {"name": "IS_OBSERVERS_ENABLED", "type": "string"},
+    {"name": "IS_RECYCLEBIN_ENABLED", "type": "string"},
+    {"name": "IS_CLIENT_ENABLED", "type": "string"},
+    {"name": "IS_MYCOMPANY_ENABLED", "type": "string"},
+    {"name": "IS_LINK_WITH_PRODUCTS_ENABLED", "type": "string"},
+    {"name": "IS_USE_ITEM_PLANNER", "type": "string"},
+    {"name": "IS_PAYMENT_ENABLED", "type": "string"},
+    {"name": "CREATED_BY", "type": "string"},
+    {"name": "CREATED_BY_ID", "type": "integer"},
+    {"name": "CREATED_BY_NAME", "type": "string"},
+    {"name": "CREATED_DATE", "type": "datetime"},
+]
+
+
+CRM_ENTITY_RELATION = [
+    {"name": "SRC_ENTITY_TYPE_ID", "type": "integer"},
+    {"name": "SRC_ENTITY_TYPE_NAME", "type": "string"},
+    {"name": "SRC_ENTITY_ID", "type": "integer"},
+    {"name": "DST_ENTITY_TYPE_ID", "type": "integer"},
+    {"name": "DST_ENTITY_TYPE_NAME", "type": "string"},
+    {"name": "DST_ENTITY_ID", "type": "integer"},
+    {"name": "RELATION_TYPE", "type": "string"},
+]
+
+
+BIZPROC_TASK = [
+    {"name": "ID", "type": "integer"},
+    {"name": "WORKFLOW_ID", "type": "string"},
+    {"name": "DOCUMENT_NAME", "type": "string"},
+    {"name": "DESCRIPTION", "type": "string"},
+    {"name": "NAME", "type": "string"},
+    {"name": "MODIFIED", "type": "datetime"},
+    {"name": "WORKFLOW_STARTED", "type": "datetime"},
+    {"name": "WORKFLOW_STARTED_BY", "type": "string"},
+    {"name": "WORKFLOW_STARTED_BY_ID", "type": "integer"},
+    {"name": "WORKFLOW_STARTED_BY_NAME", "type": "string"},
+    {"name": "OVERDUE_DATE", "type": "datetime"},
+    {"name": "WORKFLOW_TEMPLATE_ID", "type": "integer"},
+    {"name": "WORKFLOW_TEMPLATE_NAME", "type": "string"},
+    {"name": "WORKFLOW_STATE", "type": "string"},
+    {"name": "STATUS", "type": "string"},
+    {"name": "USER_ID", "type": "integer"},
+    {"name": "USER_NAME", "type": "string"},
+    {"name": "USER", "type": "string"},
+    {"name": "USER_STATUS", "type": "string"},
+    {"name": "MODULE_ID", "type": "string"},
+    {"name": "ENTITY", "type": "string"},
+    {"name": "DOCUMENT_ID", "type": "integer"},
+    {"name": "ACTIVITY", "type": "string"},
+    {"name": "ACTIVITY_NAME", "type": "string"},
+    {"name": "PARAMETERS", "type": "string"},
+    {"name": "IS_INLINE", "type": "string"},
+]
+
+
+BIZPROC_WORKFLOW_STATE = [
+    {"name": "ID", "type": "string"},
+    {"name": "TEMPLATE_ID", "type": "integer"},
+    {"name": "TEMPLATE_NAME", "type": "string"},
+    {"name": "TEMPLATE_DESCRIPTION", "type": "string"},
+    {"name": "TEMPLATE_PARAMETERS", "type": "string"},
+    {"name": "MODULE_ID", "type": "string"},
+    {"name": "ENTITY", "type": "string"},
+    {"name": "DOCUMENT_ID", "type": "integer"},
+    {"name": "DOCUMENT_ID_INT", "type": "integer"},
+    {"name": "STARTED", "type": "datetime"},
+    {"name": "STARTED_BY", "type": "string"},
+    {"name": "STARTED_BY_ID", "type": "integer"},
+    {"name": "STARTED_BY_NAME", "type": "string"},
+    {"name": "MODIFIED", "type": "datetime"},
+    {"name": "STATE", "type": "string"},
+    {"name": "STATE_NAME", "type": "string"},
+    {"name": "STATE_TITLE", "type": "string"},
+    {"name": "STATE_PARAMETERS", "type": "string"},
+    {"name": "WORKFLOW_STATUS", "type": "string"},
+]
+
+
+CRM_QUOTE = [
+    {"name": "ID", "type": "integer"},
+    {"name": "TITLE", "type": "string"},
+    {"name": "STATUS_ID", "type": "string"},
+    {"name": "STATUS_NAME", "type": "string"},
+    {"name": "STATUS", "type": "string"},
+    {"name": "CURRENCY_ID", "type": "string"},
+    {"name": "OPPORTUNITY", "type": "float"},
+    {"name": "TAX_VALUE", "type": "float"},
+    {"name": "ACCOUNT_CURRENCY_ID", "type": "string"},
+    {"name": "OPPORTUNITY_ACCOUNT", "type": "float"},
+    {"name": "TAX_VALUE_ACCOUNT", "type": "float"},
+    {"name": "COMPANY_ID", "type": "integer"},
+    {"name": "COMPANY_NAME", "type": "string"},
+    {"name": "COMPANY", "type": "string"},
+    {"name": "CONTACT_ID", "type": "integer"},
+    {"name": "CONTACT_NAME", "type": "string"},
+    {"name": "CONTACT", "type": "string"},
+    {"name": "MYCOMPANY_ID", "type": "integer"},
+    {"name": "MYCOMPANY_NAME", "type": "string"},
+    {"name": "MYCOMPANY", "type": "string"},
+    {"name": "BEGINDATE", "type": "datetime"},
+    {"name": "CLOSEDATE", "type": "datetime"},
+    {"name": "ACTUAL_DATE", "type": "datetime"},
+    {"name": "OPENED", "type": "string"},
+    {"name": "CLOSED", "type": "string"},
+    {"name": "COMMENTS", "type": "string"},
+    {"name": "CONTENT", "type": "string"},
+    {"name": "TERMS", "type": "string"},
+    {"name": "DEAL_ID", "type": "integer"},
+    {"name": "LEAD_ID", "type": "integer"},
+    {"name": "LOCATION_ID", "type": "integer"},
+    {"name": "QUOTE_NUMBER", "type": "string"},
+    {"name": "ASSIGNED_BY_ID", "type": "integer"},
+    {"name": "ASSIGNED_BY_NAME", "type": "string"},
+    {"name": "ASSIGNED_BY", "type": "string"},
+    {"name": "ASSIGNED_BY_DEPARTMENT", "type": "string"},
+    {"name": "CREATED_BY_ID", "type": "integer"},
+    {"name": "CREATED_BY_NAME", "type": "string"},
+    {"name": "CREATED_BY", "type": "string"},
+    {"name": "MODIFY_BY_ID", "type": "integer"},
+    {"name": "MODIFIED_BY_NAME", "type": "string"},
+    {"name": "MODIFIED_BY", "type": "string"},
+    {"name": "DATE_CREATE", "type": "datetime"},
+    {"name": "DATE_MODIFY", "type": "datetime"},
+    {"name": "UTM_SOURCE", "type": "string"},
+    {"name": "UTM_MEDIUM", "type": "string"},
+    {"name": "UTM_CAMPAIGN", "type": "string"},
+    {"name": "UTM_CONTENT", "type": "string"},
+    {"name": "UTM_TERM", "type": "string"},
+]
+
+
+CRM_QUOTE_PRODUCT_ROW = [
+    {"name": "ID", "type": "integer"},
+    {"name": "QUOTE_ID", "type": "integer"},
+    {"name": "QUOTE_DATE_CREATE", "type": "datetime"},
+    {"name": "QUOTE_CLOSEDATE", "type": "datetime"},
+    {"name": "PRODUCT", "type": "string"},
+    {"name": "PRODUCT_ID", "type": "integer"},
+    {"name": "PRODUCT_NAME", "type": "string"},
+    {"name": "PRICE", "type": "string"},
+    {"name": "PRICE_EXCLUSIVE", "type": "string"},
+    {"name": "PRICE_NETTO", "type": "string"},
+    {"name": "PRICE_BRUTTO", "type": "string"},
+    {"name": "QUANTITY", "type": "string"},
+    {"name": "DISCOUNT_TYPE", "type": "string"},
+    {"name": "DISCOUNT_TYPE_ID", "type": "integer"},
+    {"name": "DISCOUNT_TYPE_NAME", "type": "string"},
+    {"name": "DISCOUNT_RATE", "type": "string"},
+    {"name": "DISCOUNT_SUM", "type": "string"},
+    {"name": "TAX_RATE", "type": "string"},
+    {"name": "TAX_INCLUDED", "type": "string"},
+    {"name": "CUSTOMIZED", "type": "string"},
+    {"name": "MEASURE", "type": "string"},
+    {"name": "MEASURE_CODE", "type": "integer"},
+    {"name": "MEASURE_NAME", "type": "string"},
+    {"name": "SORT", "type": "integer"},
+]
+
+
+ORG_STRUCTURE = [
+    {"name": "ID", "type": "integer"},
+    {"name": "NAME", "type": "string"},
+    {"name": "SORT", "type": "integer"},
+    {"name": "PARENT_ID", "type": "integer"},
+    {"name": "PARENT_NAME", "type": "string"},
+    {"name": "PARENT", "type": "string"},
+    {"name": "HEAD_ID", "type": "integer"},
+    {"name": "HEAD_NAME", "type": "string"},
+    {"name": "HEAD", "type": "string"},
+    {"name": "DEPTH_LEVEL", "type": "integer"},
+]
+
+
+ORG_STRUCTURE_RELATION = [
+    {"name": "USER_ID", "type": "integer"},
+    {"name": "USER_NAME", "type": "string"},
+    {"name": "USER", "type": "string"},
+    {"name": "DEPARTMENT_ID", "type": "integer"},
+    {"name": "DEPARTMENT_NAME", "type": "string"},
+    {"name": "DEPARTMENT", "type": "string"},
+    {"name": "IS_HEAD", "type": "string"},
+]
+
+
+CRM_ACTIVITY_RELATION = [
+    {"name": "ACTIVITY_ID", "type": "integer"},
+    {"name": "ENTITY_TYPE_ID", "type": "integer"},
+    {"name": "ENTITY_TYPE_NAME", "type": "string"},
+    {"name": "ENTITY_ID", "type": "integer"},
+]
+
+
+CRM_AI_QUALITY_ASSESSMENT = [
+    {"name": "ID", "type": "integer"},
+    {"name": "ACTIVITY_ID", "type": "integer"},
+    {"name": "CREATED_TIME", "type": "datetime"},
+    {"name": "ASSESSMENT_TYPE", "type": "string"},
+    {"name": "ASSESSMENT_RESULT", "type": "string"},
+    {"name": "ASSESSMENT_SCORE", "type": "integer"},
+    {"name": "ASSESSMENT_COMMENT", "type": "string"},
+]
+
+
+CRM_COPILOT_CALL_ASSESSMENT = [
+    {"name": "ID", "type": "integer"},
+    {"name": "ACTIVITY_ID", "type": "integer"},
+    {"name": "CALL_ID", "type": "string"},
+    {"name": "CREATED_TIME", "type": "datetime"},
+    {"name": "ASSESSMENT_TYPE", "type": "string"},
+    {"name": "ASSESSMENT_RESULT", "type": "string"},
+    {"name": "ASSESSMENT_SCORE", "type": "integer"},
+    {"name": "ASSESSMENT_COMMENT", "type": "string"},
+    {"name": "TRANSCRIPT_SUMMARY", "type": "string"},
 ]
 
 
@@ -608,6 +990,96 @@ BITRIX_TABLES_MAP = {
         type=BitrixGDSTableType.crm_contact_uf,
         daterange_col_name="DATE_CREATE",
         schema=[BitrixGDSColumn(**column) for column in CRM_CONTACT_UF],
+    ),
+    "task": BitrixGDSTable(
+        type=BitrixGDSTableType.task,
+        daterange_col_name="CREATED_DATE",
+        schema=[BitrixGDSColumn(**column) for column in TASK],
+    ),
+    "task_stages": BitrixGDSTable(
+        type=BitrixGDSTableType.task_stages,
+        schema=[BitrixGDSColumn(**column) for column in TASK_STAGES],
+    ),
+    "task_uf": BitrixGDSTable(
+        type=BitrixGDSTableType.task_uf,
+        schema=[BitrixGDSColumn(**column) for column in TASK_UF],
+    ),
+    "task_elapsed_time": BitrixGDSTable(
+        type=BitrixGDSTableType.task_elapsed_time,
+        daterange_col_name="DATE_START",
+        schema=[BitrixGDSColumn(**column) for column in TASK_ELAPSED_TIME],
+    ),
+    "flow": BitrixGDSTable(
+        type=BitrixGDSTableType.flow,
+        schema=[BitrixGDSColumn(**column) for column in FLOW],
+    ),
+    "task_efficiency": BitrixGDSTable(
+        type=BitrixGDSTableType.task_efficiency,
+        daterange_col_name="DATETIME",
+        schema=[BitrixGDSColumn(**column) for column in TASK_EFFICIENCY],
+    ),
+    "crm_product": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_product,
+        schema=[BitrixGDSColumn(**column) for column in CRM_PRODUCT],
+    ),
+    "crm_product_property": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_product_property,
+        schema=[BitrixGDSColumn(**column) for column in CRM_PRODUCT_PROPERTY],
+    ),
+    "crm_product_property_value": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_product_property_value,
+        schema=[BitrixGDSColumn(**column) for column in CRM_PRODUCT_PROPERTY_VALUE],
+    ),
+    "crm_smart_proc": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_smart_proc,
+        daterange_col_name="CREATED_DATE",
+        schema=[BitrixGDSColumn(**column) for column in CRM_SMART_PROC],
+    ),
+    "crm_entity_relation": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_entity_relation,
+        schema=[BitrixGDSColumn(**column) for column in CRM_ENTITY_RELATION],
+    ),
+    "bizproc_task": BitrixGDSTable(
+        type=BitrixGDSTableType.bizproc_task,
+        daterange_col_name="MODIFIED",
+        schema=[BitrixGDSColumn(**column) for column in BIZPROC_TASK],
+    ),
+    "bizproc_workflow_state": BitrixGDSTable(
+        type=BitrixGDSTableType.bizproc_workflow_state,
+        daterange_col_name="STARTED",
+        schema=[BitrixGDSColumn(**column) for column in BIZPROC_WORKFLOW_STATE],
+    ),
+    "crm_quote": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_quote,
+        daterange_col_name="DATE_CREATE",
+        schema=[BitrixGDSColumn(**column) for column in CRM_QUOTE],
+    ),
+    "crm_quote_product_row": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_quote_product_row,
+        daterange_col_name="QUOTE_DATE_CREATE",
+        schema=[BitrixGDSColumn(**column) for column in CRM_QUOTE_PRODUCT_ROW],
+    ),
+    "org_structure": BitrixGDSTable(
+        type=BitrixGDSTableType.org_structure,
+        schema=[BitrixGDSColumn(**column) for column in ORG_STRUCTURE],
+    ),
+    "org_structure_relation": BitrixGDSTable(
+        type=BitrixGDSTableType.org_structure_relation,
+        schema=[BitrixGDSColumn(**column) for column in ORG_STRUCTURE_RELATION],
+    ),
+    "crm_activity_relation": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_activity_relation,
+        schema=[BitrixGDSColumn(**column) for column in CRM_ACTIVITY_RELATION],
+    ),
+    "crm_ai_quality_assessment": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_ai_quality_assessment,
+        daterange_col_name="CREATED_TIME",
+        schema=[BitrixGDSColumn(**column) for column in CRM_AI_QUALITY_ASSESSMENT],
+    ),
+    "crm_copilot_call_assessment": BitrixGDSTable(
+        type=BitrixGDSTableType.crm_copilot_call_assessment,
+        daterange_col_name="CREATED_TIME",
+        schema=[BitrixGDSColumn(**column) for column in CRM_COPILOT_CALL_ASSESSMENT],
     ),
 }
 
