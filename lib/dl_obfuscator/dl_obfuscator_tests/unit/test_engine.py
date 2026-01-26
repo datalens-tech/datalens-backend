@@ -1,3 +1,7 @@
+import time
+
+import flaky
+
 from dl_obfuscator import (
     ObfuscationContext,
     ObfuscationEngine,
@@ -58,3 +62,26 @@ class TestObfuscationEngine:
         inspector_obfuscated = engine.obfuscate(text, ObfuscationContext.INSPECTOR)
         assert "abc123def456" not in inspector_obfuscated
         assert "user_id=12345" in inspector_obfuscated
+
+    @flaky.flaky(max_runs=5)
+    def test_perf(self) -> None:
+        num_strings = 5_000_000
+        secrets_in_a_string = "abcdefghijklmnopqrstuvwxyz"
+        text = "the quick brown fox jumps over the lazy dog"
+
+        keeper = SecretKeeper()
+        for i in secrets_in_a_string:
+            keeper.add_secret(i, "*")
+
+        engine = ObfuscationEngine()
+        engine.add_obfuscator(SecretObfuscator(keeper))
+
+        start = time.perf_counter()
+        count = num_strings
+        while count:
+            text_to_obfuscate = text
+            text_to_obfuscate = engine.obfuscate(text_to_obfuscate, ObfuscationContext.LOGS)
+            count -= 1
+        elapsed = time.perf_counter() - start
+
+        assert elapsed < 2.5

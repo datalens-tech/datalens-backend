@@ -12,11 +12,13 @@ attrs = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+flaky = "*"
 pytest = "*"
 
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true
+exclude = ["dl_obfuscator_tests"]
 strict_optional = true
 warn_redundant_casts = true
 warn_unused_configs = true

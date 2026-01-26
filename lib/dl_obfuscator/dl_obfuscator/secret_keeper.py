@@ -22,10 +22,10 @@ class SecretKeeper:
         self._params[value] = key
 
     def get_secrets(self) -> dict[str, str]:
-        return self._secrets.copy()
+        return self._secrets
 
     def get_params(self) -> dict[str, str]:
-        return self._params.copy()
+        return self._params
 
     def clear(self) -> None:
         self._secrets.clear()
