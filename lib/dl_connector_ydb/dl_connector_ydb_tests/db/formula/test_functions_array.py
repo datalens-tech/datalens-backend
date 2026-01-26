@@ -16,8 +16,8 @@ from dl_connector_ydb_tests.db.formula.base import YQLTestBase
 
 class ArrayFunctionYDBTestSuite(DefaultArrayFunctionFormulaConnectorTestSuite):
     make_decimal_cast = None
-    make_float_cast = "Double"
-    make_float_array_cast = "List<Double?>"
+    make_float_cast = "Float"
+    make_float_array_cast = "List<Float?>"
     make_str_array_cast = "List<String?>"
 
     # Using VIEW instead of TABLE
@@ -69,7 +69,7 @@ class YQLViewTableTestBase(YQLTestBase):
             att_str_value_str = [(qt + v + qt) if v is not None else "NULL" for v in row["arr_str_value"]]
             query += f"AsList({ (',').join(att_str_value_str) }) as arr_str_value,\n"
             query += "Nothing(List<Int64?>?) as arr_int_null_value,\n"
-            query += "Nothing(List<Double?>?) as arr_float_null_value,\n"
+            query += "Nothing(List<Float?>?) as arr_float_null_value,\n"
             query += "Nothing(List<String?>?) as arr_str_null_value\n"
 
             if index != len(sample_data) - 1:
