@@ -49,12 +49,21 @@ from dl_dashsql.types import (
     IncomingDSQLParamType,
     IncomingDSQLParamTypeExt,
 )
+from dl_query_processing.postprocessing.postprocessors.all import (
+    TYPE_PROCESSORS,
+    postprocess_array,
+)
 from dl_query_processing.utils.datetime import parse_datetime
 
 
 if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
     from dl_core.data_processing.dashsql import TResultEvents
+
+import logging
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 TRowProcessor = Callable[[TRow], TRow]
@@ -180,12 +189,37 @@ class DashSQLView(BaseView):
         return value
 
     @classmethod
-    def _make_postprocess_row(cls, bi_type_names: tuple[str, ...]) -> TRowProcessor:
-        # Nothing type-specific at the moment
-        funcs = tuple(cls._postprocess_any for _ in bi_type_names)
+    def _get_type_processor(cls, bi_type_name: str) -> Callable[[Any], Any]:
+        bi_type = UserDataType.__members__.get(bi_type_name)
 
-        def _postprocess_row(row: TRow, funcs: tuple[Callable, ...] = funcs) -> TRow:
-            return tuple(func(value) for func, value in zip(funcs, row, strict=True))
+        if bi_type is None:
+            return lambda val: val
+
+        # Handle datetimetz as datetime (without timezone conversion)
+        if bi_type == UserDataType.datetimetz:
+            bi_type = UserDataType.datetime
+
+        type_processor = TYPE_PROCESSORS.get(bi_type)
+
+        # Return arrays as is (no need to dump), otherwise use the processor
+        if type_processor is None or type_processor == postprocess_array:
+            return lambda val: val
+
+        return type_processor
+
+    @classmethod
+    def _make_postprocess_row(cls, bi_type_names: tuple[str, ...]) -> TRowProcessor:
+        type_processors = tuple(cls._get_type_processor(name) for name in bi_type_names)
+
+        def _postprocess_row(row: TRow) -> TRow:
+            result = []
+            for proc, val in zip(type_processors, row, strict=True):
+                try:
+                    result.append(cls._postprocess_any(proc(val)))
+                except (ValueError, TypeError):
+                    LOGGER.warning("Failed to postprocess value %s (processor: %s). Using raw value.", val, proc)
+                    result.append(cls._postprocess_any(val))
+            return tuple(result)
 
         return _postprocess_row
 

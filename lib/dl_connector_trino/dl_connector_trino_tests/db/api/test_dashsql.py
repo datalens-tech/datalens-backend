@@ -135,7 +135,7 @@ class TestTrinoDashSQL(TrinoDashSQLConnectionTest, DefaultDashSQLTestSuite):
                 True,
                 False,
                 "2021-07-19",
-                "2021-07-19 19:35:43.000000",
+                "2021-07-19T19:35:43",
                 "11",
                 "22",
                 True,
