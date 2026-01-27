@@ -11,6 +11,7 @@ version = "0.0.1"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}

@@ -33,7 +33,6 @@ from dl_constants.enums import (
     USAuthMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
-from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.us_manager.settings import USClientSettings
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
@@ -368,15 +367,11 @@ class WhitelistsAppSettings(dl_settings.BaseRootSettings):
     ] = None
 
 
-class ConnectorsSettingsMixin(AppSettings):
-    CONNECTORS: dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings] = pydantic.Field(default_factory=dict)
-
-
-class ControlApiAppSettings(ConnectorsSettingsMixin):
+class ControlApiAppSettings(AppSettings):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
 
 
-class DataApiAppSettings(ConnectorsSettingsMixin):
+class DataApiAppSettings(AppSettings):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
 
 

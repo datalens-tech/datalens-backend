@@ -7,7 +7,7 @@ from dl_connector_ydb.core.ydb.constants import (
     SOURCE_TYPE_YDB_SUBSELECT,
     SOURCE_TYPE_YDB_TABLE,
 )
-from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
+from dl_connector_ydb.core.ydb.settings import DeprecatedYDBConnectorSettings
 from dl_connector_ydb_tests.db.api.base import (
     YDBDataApiTestBase,
     YDBDatasetTestBase,
@@ -15,7 +15,7 @@ from dl_connector_ydb_tests.db.api.base import (
 
 
 class BaseTestSourceTemplate(dl_api_lib_testing.BaseTestSourceTemplate):
-    conn_settings_cls = YDBConnectorSettings
+    conn_settings_cls = DeprecatedYDBConnectorSettings
     table_name_pattern = "test_table_.*"
     invalid_table_name = "test_table_invalid"
 

@@ -28,10 +28,13 @@ from dl_api_lib.app_settings import (
     ControlApiAppSettings,
     ControlApiAppTestingsSettings,
 )
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.utils import get_multiple_root_certificates
-from dl_constants.enums import USAuthMode
+from dl_constants.enums import (
+    ConnectionType,
+    USAuthMode,
+)
 from dl_core import profiling_middleware
-from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 import dl_retrier
@@ -93,7 +96,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
     def create_app(
         self,
-        connectors_settings: dict[str, ConnectorSettings],
+        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
         testing_app_settings: ControlApiAppTestingsSettings | None = None,
         close_loop_after_request: bool = True,
     ) -> flask.Flask:

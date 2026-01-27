@@ -12,12 +12,12 @@ aiogoogle = "*"
 aiohttp = "*"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-s3 = {path = "../dl_s3"}
+dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"

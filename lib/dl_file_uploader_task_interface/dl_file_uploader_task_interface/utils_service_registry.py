@@ -10,14 +10,16 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import rqe_config_from_env
-from dl_core.connectors.settings.base import ConnectorSettings
+from dl_constants.enums import ConnectionType
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
+from dl_file_uploader_worker_lib.settings import FileUploaderConnectorsSettings
 import dl_retrier
 
 from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
@@ -35,7 +37,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_sr_factory_from_env_vars(
-    file_uploader_connectors_settings: dict[str, ConnectorSettings],
+    file_uploader_connectors_settings: FileUploaderConnectorsSettings,
     ca_data: bytes,
 ) -> DefaultSRFactory:
     def get_conn_options(conn: ConnectionBase) -> Optional[ConnectOptions]:
@@ -50,12 +52,12 @@ def create_sr_factory_from_env_vars(
             rqe_sock_read_timeout=int(os.environ.get("RQE_SOCK_READ_TIMEOUT", 30 * 60)),
         )
 
-    connectors_settings: dict[str, ConnectorSettings] = {}
-    if file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value] is not None:
+    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase] = {}
+    if file_uploader_connectors_settings.FILE is not None:
         connectors_settings = {
-            CONNECTION_TYPE_FILE.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
-            CONNECTION_TYPE_GSHEETS_V2.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
-            CONNECTION_TYPE_YADOCS.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
+            CONNECTION_TYPE_FILE: file_uploader_connectors_settings.FILE,
+            CONNECTION_TYPE_GSHEETS_V2: file_uploader_connectors_settings.FILE,
+            CONNECTION_TYPE_YADOCS: file_uploader_connectors_settings.FILE,
         }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),

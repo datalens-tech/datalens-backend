@@ -42,9 +42,10 @@ if TYPE_CHECKING:
 
     from dl_api_commons.base_models import RequestContextInfo
     from dl_cache_engine.primitives import CacheTTLConfig
+    from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
     from dl_configs.rqe import RQEConfig
+    from dl_constants.enums import ConnectionType
     from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
-    from dl_core.connectors.settings.base import ConnectorSettings
     from dl_core.services_registry.entity_checker import EntityUsageChecker
     from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
     from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
@@ -90,7 +91,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
     conn_cls_whitelist: Optional[frozenset[type[ConnectionBase]]] = attr.ib(default=None)
     connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
     entity_usage_checker: Optional[EntityUsageChecker] = attr.ib(default=None)
-    connectors_settings: dict[str, ConnectorSettings] = attr.ib(factory=dict)
+    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase] = attr.ib(factory=dict)
     file_uploader_settings: Optional[FileUploaderSettings] = attr.ib(default=None)
     redis_pool_settings: Optional[ArqRedisSettings] = attr.ib(default=None)
     force_non_rqe_mode: bool = attr.ib(default=False)
