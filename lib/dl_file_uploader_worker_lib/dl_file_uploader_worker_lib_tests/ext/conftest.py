@@ -10,10 +10,8 @@ from dl_configs.settings_submodels import (
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
-from dl_file_uploader_worker_lib.settings import (
-    DeprecatedFileUploaderWorkerSettings,
-    FileUploaderWorkerSettings,
-)
+from dl_file_uploader_worker_lib.settings import DeprecatedFileUploaderWorkerSettings
+from dl_file_uploader_worker_lib.testing.app_settings import TestingFileUploaderWorkerSettings
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
@@ -55,7 +53,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(
+    settings = TestingFileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=file_connectors_settings_dict,
     )

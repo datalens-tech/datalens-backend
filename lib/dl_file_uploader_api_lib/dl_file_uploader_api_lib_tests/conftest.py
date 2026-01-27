@@ -60,9 +60,9 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
-    FileUploaderWorkerSettings,
     SecureReader,
 )
+from dl_file_uploader_worker_lib.testing.app_settings import TestingFileUploaderWorkerSettings
 from dl_file_uploader_worker_lib.testing.task_processor_client import get_task_processor_client
 import dl_retrier
 from dl_task_processor.processor import TaskProcessor
@@ -341,7 +341,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(
+    settings = TestingFileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=connectors_settings,
     )
