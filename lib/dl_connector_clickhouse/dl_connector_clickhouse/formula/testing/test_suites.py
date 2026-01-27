@@ -12,6 +12,7 @@ from dl_formula.translation import ext_nodes
 from dl_formula.translation.context import TranslationCtx
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
+from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
 from dl_formula_testing.testcases.functions_aggregation import DefaultMainAggFunctionFormulaConnectorTestSuite
 from dl_formula_testing.testcases.functions_array import DefaultArrayFunctionFormulaConnectorTestSuite
 from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
@@ -33,6 +34,10 @@ from dl_formula_testing.util import (
 )
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
+
+
+class ConditionalBlockClickHouseTestSuite(DefaultConditionalBlockFormulaConnectorTestSuite):
+    ...
 
 
 class MainAggFunctionClickHouseTestSuite(DefaultMainAggFunctionFormulaConnectorTestSuite):
