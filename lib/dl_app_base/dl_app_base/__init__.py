@@ -19,6 +19,7 @@ from .mixins import (
 from .models import Callback
 from .run import run_async_app
 from .singleton import (
+    LockedAndUnsetError,
     singleton_class_method_result,
     singleton_function_result,
 )
@@ -34,6 +35,7 @@ __all__ = [
     "ShutdownError",
     "RunError",
     "UnexpectedFinishError",
+    "LockedAndUnsetError",
     "singleton_function_result",
     "singleton_class_method_result",
     "CertificatesAppSettingsMixin",
