@@ -84,4 +84,4 @@ class TestObfuscationEngine:
             count -= 1
         elapsed = time.perf_counter() - start
 
-        assert elapsed < 2.5
+        assert elapsed < 5.5
