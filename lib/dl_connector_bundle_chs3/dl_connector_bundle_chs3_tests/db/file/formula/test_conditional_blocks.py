@@ -1,6 +1,7 @@
+from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
+
 from dl_connector_bundle_chs3_tests.db.file.formula.base import FileTestBase
-from dl_connector_clickhouse.formula.testing.test_suites import ConditionalBlockClickHouseTestSuite
 
 
-class TestMainAggFunctionFile(FileTestBase, ConditionalBlockClickHouseTestSuite):
+class TestMainAggFunctionFile(FileTestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
     pass
