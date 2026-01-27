@@ -105,16 +105,25 @@ class BIAioHTTPClient:
 
     retrier: BaseRetrier = attr.ib(factory=NoRetriesRetrier)
 
-    _ca_data: bytes = attr.ib()
+    _ca_data: bytes | None = attr.ib(default=None)
+    _ssl_context: ssl.SSLContext | None = attr.ib(default=None)
     _session: Optional[aiohttp.ClientSession] = attr.ib(init=False, default=None)
 
+    @property
+    def ssl_context(self) -> ssl.SSLContext:
+        if self._ssl_context is not None:
+            return self._ssl_context
+        if self._ca_data is not None:
+            return ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
+
+        raise ValueError("No SSL context provided")
+
     def _make_session(self) -> aiohttp.ClientSession:
-        ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
         return aiohttp.ClientSession(
             cookies=self.cookies,
             headers=self.headers,
             connector=aiohttp.TCPConnector(
-                ssl_context=ssl_context,
+                ssl_context=self.ssl_context,
             ),
         )
 
