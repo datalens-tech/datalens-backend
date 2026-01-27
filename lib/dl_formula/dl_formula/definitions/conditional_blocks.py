@@ -53,7 +53,7 @@ class CaseBlock(CondBlock):
         return value
 
     @classmethod
-    def translation(cls, *args, replace_nulls: bool = False, as_multiif: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def translation(cls, *args, as_multiif: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         value_arg, args = args[0], args[1:]
         else_expr, else_type = None, DataType.NULL
         if len(args) % 2 == 1:
@@ -67,13 +67,6 @@ class CaseBlock(CondBlock):
 
         return_type = DataType.get_common_cast_type(else_type, *[then_expr.data_type for _, then_expr in when_args])
 
-        def _then_else_wrap(expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
-            if replace_nulls:
-                # TODO: make sure it's not needed anymore and remove
-                # for ClickHouse only, a workaround for https://github.com/ClickHouse/ClickHouse/issues/7237
-                expr = cls._ifnull(expr, data_type=return_type.non_const_type)
-            return expr
-
         if as_multiif and not return_type.is_const:
             # ClickHouse does not support non-constant THENs
             # So use the multiIf function
@@ -82,18 +75,18 @@ class CaseBlock(CondBlock):
                     # when_1, then_1, when_2, then_2, ...
                     expr
                     for when_value, then_expr in when_args
-                    for expr in (value_arg.expression == when_value.expression, _then_else_wrap(then_expr.expression))
+                    for expr in (value_arg.expression == when_value.expression, then_expr.expression)
                 ],
-                _then_else_wrap(else_expr if else_expr is not None else sa.null()),
+                else_expr if else_expr is not None else sa.null(),
             )
 
         # Use CASE syntax in SQL
-        whens = {when_value.expression: _then_else_wrap(then_expr.expression) for when_value, then_expr in when_args}
+        whens = {when_value.expression: then_expr.expression for when_value, then_expr in when_args}
 
         return sa.case(
             value=value_arg.expression,
             whens=whens,
-            else_=_then_else_wrap(else_expr if else_expr is not None else sa.null()),
+            else_=else_expr if else_expr is not None else sa.null(),
         )
 
     arg_cnt = None
