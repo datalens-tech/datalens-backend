@@ -2,10 +2,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import (
-    FileS3ConnectorSettingsBase,
-    _RootSettings,
-)
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 
 
 CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
@@ -20,7 +17,7 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     redis_password="AwockEuvavDyinmeakmiRiopanbesBepsensUrdIz5",
 )
 
-SR_CONNECTION_SETTINGS = FileS3ConnectorSettingsBase(
+SR_CONNECTION_SETTINGS = DeprecatedFileS3ConnectorSettings(
     SECURE=False,
     HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
     PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,
@@ -28,10 +25,8 @@ SR_CONNECTION_SETTINGS = FileS3ConnectorSettingsBase(
     PASSWORD="qwerty",
     ACCESS_KEY_ID="accessKey1",
     SECRET_ACCESS_KEY="verySecretKey1",
-    root=_RootSettings(
-        S3_ENDPOINT_URL="http://s3-storage:8000",
-        FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="dl-file-uploader",
-    ),
+    BUCKET="dl-file-uploader",
+    S3_ENDPOINT="http://s3-storage:8000",  # compose svc name, because this is a container interaction (ch <-> s3)
 )
 
 DB_CH_URL = (

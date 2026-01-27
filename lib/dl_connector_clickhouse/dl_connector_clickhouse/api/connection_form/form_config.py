@@ -22,13 +22,13 @@ from dl_api_connector.form_config.models.common import (
 )
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
-from dl_core.connectors.settings.base import ConnectorSettings
 from dl_i18n.localizer_base import Localizer
 
 from dl_connector_clickhouse.api.connection_info import ClickHouseConnectionInfoProvider
 from dl_connector_clickhouse.api.i18n.localizer import Translatable
-from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
+from dl_connector_clickhouse.core.clickhouse.settings import DeprecatedClickHouseConnectorSettings
 
 
 @unique
@@ -85,7 +85,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def _get_edit_api_schema(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -97,7 +97,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def _get_create_api_schema(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
         edit_api_schema: FormActionApiSchema,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
@@ -110,7 +110,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def _get_check_api_schema(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -122,37 +122,37 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     def _get_host_section(
         self,
         rc: RowConstructor,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.host_row()]
 
     def _get_port_section(
         self,
         rc: RowConstructor,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.port_row(label_text=Translatable("field_click-house-port"), default_value=self.DEFAULT_PORT)]
 
     def _get_username_section(
         self,
         rc: RowConstructor,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.username_row()]
 
     def _get_password_section(
         self,
         rc: RowConstructor,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.password_row(mode=self.mode)]
 
     def _get_common_section(
         self,
         rc: RowConstructor,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> typing.Sequence[FormRow]:
-        assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, DeprecatedClickHouseConnectorSettings)
         clickhouse_rc = ClickHouseRowConstructor(localizer=self._localizer)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
@@ -180,7 +180,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)

@@ -28,7 +28,7 @@ from dl_api_connector.form_config.models.common import (
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_core.connectors.settings.base import ConnectorSettings
+from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_i18n.localizer_base import Localizer
 
 from dl_connector_promql.api.connection_info import PromQLConnectionInfoProvider
@@ -155,7 +155,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
 
     def _get_edit_api_schema(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -169,7 +169,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
 
     def _get_create_api_schema(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
         edit_api_schema: FormActionApiSchema,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
@@ -182,7 +182,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
 
     def _get_check_api_schema(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -195,7 +195,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettings],
+        connector_settings: Optional[DeprecatedConnectorSettingsBase],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = PromQLRowConstructor(localizer=self._localizer)

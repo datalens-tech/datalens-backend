@@ -8,7 +8,7 @@ from dl_api_lib_testing.connection_form_base import (
 
 from dl_connector_postgresql.api.connection_form.form_config import PostgreSQLConnectionFormFactory
 from dl_connector_postgresql.api.i18n.localizer import CONFIGS as BI_CONNECTOR_POSTGRESQL_CONFIGS
-from dl_connector_postgresql.core.postgresql.settings import PostgreSQLConnectorSettings
+from dl_connector_postgresql.core.postgresql.settings import DeprecatedPostgreSQLConnectorSettings
 
 
 class TestPostgresConnectionForm(
@@ -19,7 +19,7 @@ class TestPostgresConnectionForm(
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_CONNECTOR_POSTGRESQL_CONFIGS
 
     @pytest.fixture
-    def connectors_settings(self, enable_datasource_template: bool) -> PostgreSQLConnectorSettings:
-        return PostgreSQLConnectorSettings(
+    def connectors_settings(self, enable_datasource_template: bool) -> DeprecatedPostgreSQLConnectorSettings:
+        return DeprecatedPostgreSQLConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
         )
