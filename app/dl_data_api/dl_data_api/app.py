@@ -11,21 +11,13 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.loader import load_api_lib_with_settings
 from dl_app_tools.aio_latency_tracking import LatencyTracker
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
     use_jaeger_tracer,
 )
-from dl_configs.settings_loaders.loader_env import (
-    load_connectors_settings_from_env_with_fallback,
-    load_settings_from_env_with_fallback,
-)
-from dl_constants.enums import ConnectionType
-from dl_core.connectors.settings.registry import (
-    CONNECTORS_SETTINGS_CLASSES,
-    CONNECTORS_SETTINGS_FALLBACKS,
-    CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
-)
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
+from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.registry import CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS
 from dl_data_api.app_factory import StandaloneDataApiAppFactory
 import dl_logging
 
@@ -35,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 
 def create_app(
     setting: DataApiAppSettingsOS,
-    connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
+    connectors_settings: dict[str, ConnectorSettings],
 ) -> web.Application:
     data_api_app_factory = StandaloneDataApiAppFactory(settings=setting)
     return data_api_app_factory.create_app(
@@ -50,10 +42,7 @@ async def create_gunicorn_app(start_selfcheck: bool = True) -> web.Application:
         fallback=deprecated_settings,
         extra_fallback_env_keys=CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS,
     )
-    connectors_settings = load_connectors_settings_from_env_with_fallback(
-        settings_registry=CONNECTORS_SETTINGS_CLASSES,
-        fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
-    )
+    connectors_settings = settings.CONNECTORS
     dl_logging.configure_logging(
         app_name=settings.app_name,
         app_prefix=settings.app_prefix,

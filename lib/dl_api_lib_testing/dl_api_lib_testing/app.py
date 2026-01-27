@@ -20,15 +20,14 @@ from dl_api_lib.app_settings import (
 )
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.enums import RequiredService
 from dl_constants.enums import (
-    ConnectionType,
     RLSSubjectType,
     USAuthMode,
 )
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.services_registry import ServicesRegistry
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -163,7 +162,7 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
 
     def set_up_environment(
         self,
-        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
     ) -> DataApiEnvSetupResult:
         conn_opts_factory = ConnOptionsMutatorsFactory()
         ca_data = get_root_certificates()

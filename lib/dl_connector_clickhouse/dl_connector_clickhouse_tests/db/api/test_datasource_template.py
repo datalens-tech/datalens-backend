@@ -7,7 +7,7 @@ from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,
     SOURCE_TYPE_CH_TABLE,
 )
-from dl_connector_clickhouse.core.clickhouse.settings import DeprecatedClickHouseConnectorSettings
+from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
 from dl_connector_clickhouse_tests.db.api.base import (
     ClickHouseDataApiTestBase,
     ClickHouseDatasetTestBase,
@@ -17,7 +17,7 @@ from dl_connector_clickhouse_tests.db.config import CoreConnectionSettings
 
 class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate):
     source_type = SOURCE_TYPE_CH_TABLE
-    conn_settings_cls = DeprecatedClickHouseConnectorSettings
+    conn_settings_cls = ClickHouseConnectorSettings
 
     @pytest.fixture(name="datasource_parameters")
     def fixture_datasource_parameters(self) -> dict[str, str]:
@@ -68,7 +68,7 @@ class TestTableDataApiSourceTemplate(
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
     source_type = SOURCE_TYPE_CH_SUBSELECT
-    conn_settings_cls = DeprecatedClickHouseConnectorSettings
+    conn_settings_cls = ClickHouseConnectorSettings
     table_name_pattern = f"{CoreConnectionSettings.DB_NAME}.table_.*"
     invalid_table_name = f"{CoreConnectionSettings.DB_NAME}.table_invalid"
 
