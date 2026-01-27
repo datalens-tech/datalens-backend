@@ -32,6 +32,7 @@ from .handlers import (
     SubsystemReadinessCallback,
     SubsystemReadinessSyncCallback,
 )
+from .headers import HeadersRequestContextMixin
 from .middlewares import (
     ErrorHandlingMiddleware,
     LoggingMiddleware,
@@ -47,7 +48,9 @@ from .request_context import (
     BaseRequestContext,
     BaseRequestContextDependencies,
     BaseRequestContextManager,
+    RequestContextManagerProtocol,
     RequestContextMiddleware,
+    RequestContextProviderProtocol,
 )
 
 
@@ -91,4 +94,7 @@ __all__ = [
     "AlwaysDenyAuthChecker",
     "RouteMatcher",
     "OAuthCheckerSettings",
+    "RequestContextManagerProtocol",
+    "RequestContextProviderProtocol",
+    "HeadersRequestContextMixin",
 ]

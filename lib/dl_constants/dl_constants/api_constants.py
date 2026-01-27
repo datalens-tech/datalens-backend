@@ -31,6 +31,7 @@ class DLHeadersCommon(DLHeaders):
     COLLECTION_ID = "X-DL-CollectionId"
     WORKBOOK_ID = "X-DL-WorkbookId"
     PROJECT_ID = "X-DC-ProjectId"
+    REAL_IP = "X-Real-Ip"  # Source IP address of the client initiated HTTP request.
     FORWARDED_FOR = "X-Forwarded-For"
     CSRF_TOKEN = "X-CSRF-Token"
     CONTENT_TYPE = "Content-Type"
