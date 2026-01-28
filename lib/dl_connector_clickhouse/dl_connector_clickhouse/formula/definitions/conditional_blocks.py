@@ -17,7 +17,7 @@ DEFINITIONS_COND_BLOCKS = [
     # _case_block_
     base.CaseBlock(
         variants=[
-            VW(D.CLICKHOUSE, lambda *args: base.CaseBlock.translation(*args, as_multiif=True, replace_nulls=True)),
+            VW(D.CLICKHOUSE, lambda *args: base.CaseBlock.translation(*args, as_multiif=True)),
         ]
     ),
     # _if_block_
