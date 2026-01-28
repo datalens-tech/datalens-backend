@@ -1,4 +1,5 @@
 import pytest
+from typing_extensions import override
 
 import dl_app_base
 
@@ -42,6 +43,15 @@ def test_sync_function_with_kwargs() -> None:
     assert test_func(arg=2) == 1
 
 
+def test_sync_function_recursive_call() -> None:
+    @dl_app_base.singleton_function_result
+    def test_func() -> object:
+        return test_func()
+
+    with pytest.raises(dl_app_base.LockedAndUnsetError):
+        test_func()
+
+
 @pytest.mark.asyncio
 async def test_async_function_same_result() -> None:
     @dl_app_base.singleton_function_result
@@ -83,6 +93,16 @@ async def test_async_function_with_kwargs() -> None:
 
     assert await test_func(arg=1) == 1
     assert await test_func(arg=2) == 1
+
+
+@pytest.mark.asyncio
+async def test_async_function_recursive_call() -> None:
+    @dl_app_base.singleton_function_result
+    async def test_func() -> object:
+        return await test_func()
+
+    with pytest.raises(dl_app_base.LockedAndUnsetError):
+        await test_func()
 
 
 def test_sync_class_method_same_result() -> None:
@@ -148,6 +168,36 @@ def test_sync_class_method_with_kwargs() -> None:
 
     assert instance.test_func(arg=1) == 1
     assert instance.test_func(arg=2) == 1
+
+
+def test_sync_class_method_recursive_call() -> None:
+    class TestClass:
+        @dl_app_base.singleton_class_method_result
+        def test_func(self) -> object:
+            return self.test_func()
+
+    instance = TestClass()
+    with pytest.raises(dl_app_base.LockedAndUnsetError):
+        instance.test_func()
+
+
+def test_sync_class_child_class_result() -> None:
+    class TestClass:
+        @dl_app_base.singleton_class_method_result
+        def test_func(self) -> object:
+            return object()
+
+    class TestChildClass(TestClass):
+        @override
+        @dl_app_base.singleton_class_method_result
+        def test_func(self) -> object:
+            return super().test_func()
+
+    instance = TestChildClass()
+    result1 = instance.test_func()
+    result2 = instance.test_func()
+
+    assert result1 is result2
 
 
 @pytest.mark.asyncio
@@ -218,3 +268,35 @@ async def test_async_class_method_with_kwargs() -> None:
 
     assert await instance.test_func(arg=1) == 1
     assert await instance.test_func(arg=2) == 1
+
+
+@pytest.mark.asyncio
+async def test_async_class_method_recursive_call() -> None:
+    class TestClass:
+        @dl_app_base.singleton_class_method_result
+        async def test_func(self) -> object:
+            return await self.test_func()
+
+    instance = TestClass()
+    with pytest.raises(dl_app_base.LockedAndUnsetError):
+        await instance.test_func()
+
+
+@pytest.mark.asyncio
+async def test_async_class_child_class_result() -> None:
+    class TestClass:
+        @dl_app_base.singleton_class_method_result
+        async def test_func(self) -> object:
+            return object()
+
+    class TestChildClass(TestClass):
+        @override
+        @dl_app_base.singleton_class_method_result
+        async def test_func(self) -> object:
+            return await super().test_func()
+
+    instance = TestChildClass()
+    result1 = await instance.test_func()
+    result2 = await instance.test_func()
+
+    assert result1 is result2
