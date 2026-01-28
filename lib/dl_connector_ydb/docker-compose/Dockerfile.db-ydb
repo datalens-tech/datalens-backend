@@ -1,4 +1,4 @@
-FROM cr.yandex/yc/yandex-docker-local-ydb:latest
+FROM ydbplatform/local-ydb:latest@sha256:1252f37e5f3fd6c490a8e6c34f927cb8b3dd8323db2aa14ffa21dd09dd6ebcdc
 
 RUN apt update && apt install -y python3
 
