@@ -14,6 +14,11 @@ import dl_app_api_base.request_context as request_context
 LOGGER = logging.getLogger(__name__)
 
 
+class UnauthorizedResponseSchema(handlers.ErrorResponseSchema):
+    message: str = "Unauthorized"
+    code: str = "ERR.API.UNAUTHORIZED"
+
+
 @attr.define(frozen=True, kw_only=True)
 class AuthMiddleware:
     _request_context_provider: request_context.RequestContextProviderProtocol[
@@ -31,9 +36,8 @@ class AuthMiddleware:
             await context.get_auth_user()
         except auth_exc.AuthError:
             LOGGER.exception("Authentication failed")
-            return handlers.Response.with_error(
-                message="Unauthorized",
-                code="UNAUTHORIZED",
+            return handlers.Response.with_model(
+                schema=UnauthorizedResponseSchema(),
                 status=http.HTTPStatus.UNAUTHORIZED,
             )
 

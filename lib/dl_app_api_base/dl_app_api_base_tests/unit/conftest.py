@@ -144,6 +144,28 @@ class PingHandler(dl_app_api_base.BaseHandler):
 
 
 @attr.define(kw_only=True, slots=False)
+class HeadersHandler(dl_app_api_base.BaseHandler):
+    OPENAPI_INCLUDE = False
+
+    request_context_provider: dl_app_api_base.RequestContextProviderProtocol[dl_app_api_base.HeadersRequestContextMixin]
+
+    class ResponseSchema(dl_app_api_base.BaseResponseSchema):
+        request_id: str
+        user_ip: str
+
+    async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
+        request_context = self.request_context_provider.get()
+
+        return dl_app_api_base.Response.with_model(
+            schema=self.ResponseSchema(
+                request_id=request_context.get_request_id(),
+                user_ip=request_context.get_user_ip(),
+            ),
+            status=http.HTTPStatus.OK,
+        )
+
+
+@attr.define(kw_only=True, slots=False)
 class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
     settings: AppSettings
     app_class: ClassVar[type[App]] = App
@@ -179,6 +201,14 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 route_matchers=[
                     dl_app_api_base.RouteMatcher(
                         path_regex=re.compile(r"^/api/v1/counter"),
+                        methods=frozenset(["GET"]),
+                    ),
+                ],
+            ),
+            dl_app_api_base.AlwaysAllowAuthChecker(
+                route_matchers=[
+                    dl_app_api_base.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/headers"),
                         methods=frozenset(["GET"]),
                     ),
                 ],
@@ -237,6 +267,11 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                     method="GET",
                     path="/api/v1/counter",
                     handler=CounterHandler(request_context_manager=await self._get_request_context_manager()),
+                ),
+                dl_app_api_base.Route(
+                    method="GET",
+                    path="/api/v1/headers",
+                    handler=HeadersHandler(request_context_provider=await self._get_request_context_manager()),
                 ),
                 dl_app_api_base.Route(
                     method="GET",

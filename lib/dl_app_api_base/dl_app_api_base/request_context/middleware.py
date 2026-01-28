@@ -1,14 +1,14 @@
 import aiohttp.web
 import attr
 
+import dl_app_api_base.headers as headers
 import dl_app_api_base.request_context as request_context
-import dl_app_api_base.request_id as request_id
 import dl_constants
 
 
 @attr.define(frozen=True, kw_only=True)
 class RequestContextMiddleware:
-    _request_context_manager: request_context.RequestContextManagerProtocol[request_id.RequestIdRequestContextMixin]
+    _request_context_manager: request_context.RequestContextManagerProtocol[headers.HeadersRequestContextMixin]
 
     @aiohttp.web.middleware
     async def process(

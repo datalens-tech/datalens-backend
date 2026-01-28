@@ -12,10 +12,10 @@ from typing_extensions import override
 
 import dl_app_api_base.auth as auth
 import dl_app_api_base.handlers as handlers
+import dl_app_api_base.headers as headers
 import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
 import dl_app_api_base.request_context as request_context
-import dl_app_api_base.request_id as request_id
 import dl_app_base
 import dl_settings
 
@@ -47,7 +47,7 @@ class HttpServerRequestContextDependencies(
 
 
 class HttpServerRequestContext(
-    request_id.RequestIdRequestContextMixin,
+    headers.HeadersRequestContextMixin,
     auth.AuthRequestContextMixin,
     request_context.BaseRequestContext,
 ):

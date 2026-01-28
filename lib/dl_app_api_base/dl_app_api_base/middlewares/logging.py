@@ -5,8 +5,8 @@ import aiohttp.typedefs
 import aiohttp.web
 import attr
 
+import dl_app_api_base.headers as headers
 import dl_app_api_base.request_context as request_context
-import dl_app_api_base.request_id as request_id
 
 
 LOGGER = logging.getLogger(__name__)
@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
 
 @attr.define(frozen=True, kw_only=True)
 class LoggingMiddleware:
-    _request_context_provider: request_context.RequestContextProviderProtocol[request_id.RequestIdRequestContextMixin]
+    _request_context_provider: request_context.RequestContextProviderProtocol[headers.HeadersRequestContextMixin]
 
     def _request_to_string(self, request: aiohttp.web.Request) -> str:
         request_context = self._request_context_provider.get()
