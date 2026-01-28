@@ -10,10 +10,10 @@ from dl_obfuscator import (
 @pytest.fixture
 def secret_keeper() -> SecretKeeper:
     secret_keeper = SecretKeeper()
-    secret_keeper.add_secret("master_token", "abc123def456")
-    secret_keeper.add_secret("api_key", "sk-1234567890abcdef")
-    secret_keeper.add_param("user_filter", "user_id=12345")
-    secret_keeper.add_param("custom_param", "sensitive_value")
+    secret_keeper.add_secret("abc123def456", "master_token")
+    secret_keeper.add_secret("sk-1234567890abcdef", "api_key")
+    secret_keeper.add_param("user_id=12345", "user_filter")
+    secret_keeper.add_param("sensitive_value")
     return secret_keeper
 
 

@@ -10,14 +10,14 @@ class SecretObfuscator(BaseObfuscator):
     secret_keeper: SecretKeeper = attr.ib(repr=False)
 
     def obfuscate(self, text: str, context: ObfuscationContext) -> str:
-        secrets = self.secret_keeper.get_secrets()
+        secrets = self.secret_keeper.secrets
 
         for secret in secrets:
-            text = text.replace(secret, f"***{secrets[secret] or 'hidden'}***")
+            text = text.replace(secret, f"***{secrets[secret]}***")
 
         if context != ObfuscationContext.INSPECTOR:
-            params = self.secret_keeper.get_params()
+            params = self.secret_keeper.params
             for param in params:
-                text = text.replace(param, f"***{params[param] or 'hidden'}***")
+                text = text.replace(param, f"***{params[param]}***")
 
         return text
