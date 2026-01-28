@@ -77,9 +77,10 @@ TABLE_SCHEMA = (
     ("some_double", UserDataType.float, ydb_dialect.YqlDouble),
     ("some_string", UserDataType.string, ydb_dialect.YqlString),
     ("some_utf8", UserDataType.string, ydb_dialect.YqlUtf8),
-    ("some_date", UserDataType.date, ydb_dialect.YqlDate),
-    ("some_datetime", UserDataType.genericdatetime, ydb_dialect.YqlDateTime),
-    ("some_timestamp", UserDataType.genericdatetime, ydb_dialect.YqlTimestamp),
+    ("some_date", UserDataType.date, sa.Date),
+    ("some_datetime", UserDataType.genericdatetime, ydb_sa.types.YqlDateTime),
+    ("some_datetime64", UserDataType.genericdatetime, ydb_sa.types.YqlDateTime64),
+    ("some_timestamp", UserDataType.genericdatetime, ydb_sa.types.YqlTimestamp),
     ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
     ("some_uuid", UserDataType.uuid, dl_sqlalchemy_ydb.dialect.YqlUuid),
 )
