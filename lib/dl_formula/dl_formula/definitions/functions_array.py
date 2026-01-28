@@ -520,6 +520,30 @@ class FuncArrayProduct(ArrayFunction):
     return_type = Fixed(DataType.FLOAT)
 
 
+class FuncArrayProduct(ArrayFunction):
+    name = "arr_product"
+    arg_names = ["array"]
+    arg_cnt = 1
+    argument_types = [
+        ArgTypeSequence([{DataType.ARRAY_INT, DataType.ARRAY_FLOAT}]),
+    ]
+    return_type = Fixed(DataType.FLOAT)
+
+
+class FuncArrayProductFloat(FuncArrayProduct):
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_FLOAT]),
+    ]
+    return_type = Fixed(DataType.FLOAT)
+
+
+class FuncArrayProductInt(FuncArrayProduct):
+    argument_types = [
+        ArgTypeSequence([DataType.ARRAY_INT]),
+    ]
+    return_type = Fixed(DataType.INTEGER)
+
+
 class FuncArrayRemoveBase(ArrayFunction):
     name = "arr_remove"
     arg_names = ["array", "value"]

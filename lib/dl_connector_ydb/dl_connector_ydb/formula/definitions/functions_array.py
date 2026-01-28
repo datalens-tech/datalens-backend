@@ -389,7 +389,87 @@ def _func_array_starts_with_array_non_const(array_1: ClauseElement, array_2: Cla
     )
 
 
+def _func_array_product(array_1: ClauseElement) -> Function:
+
+    return sa.func.ListFold(
+        array_1,
+        1.0,
+        ydb_sa.types.Lambda(
+            lambda product, value: sa.func.Unwrap(product * value),
+        ),
+    )
+
+
 DEFINITIONS_ARRAY = [
+    # arr_avg
+    base.FuncArrayAvg(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListAvg,
+            ),
+        ]
+    ),
+    # arr_min
+    base.FuncArrayMinFloat(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListMin,
+            ),
+        ]
+    ),
+    base.FuncArrayMinInt(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListMin,
+            ),
+        ]
+    ),
+    # arr_max
+    base.FuncArrayMaxFloat(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListMax,
+            ),
+        ]
+    ),
+    base.FuncArrayMaxInt(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListMax,
+            ),
+        ]
+    ),
+    # arr_product
+    base.FuncArrayProduct(
+        variants=[
+            V(
+                D.YQL,
+                _func_array_product,
+            ),
+        ]
+    ),
+    # arr_sum
+    base.FuncArraySumFloat(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListSum,
+            ),
+        ]
+    ),
+    base.FuncArraySumInt(
+        variants=[
+            V(
+                D.YQL,
+                sa.func.ListSum,
+            ),
+        ]
+    ),
     # arr_remove
     base.FuncArrayRemoveLiteralNull(
         # Remove all NULLs
