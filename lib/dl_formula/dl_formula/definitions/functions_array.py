@@ -520,16 +520,6 @@ class FuncArrayProduct(ArrayFunction):
     return_type = Fixed(DataType.FLOAT)
 
 
-class FuncArrayProduct(ArrayFunction):
-    name = "arr_product"
-    arg_names = ["array"]
-    arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([{DataType.ARRAY_INT, DataType.ARRAY_FLOAT}]),
-    ]
-    return_type = Fixed(DataType.FLOAT)
-
-
 class FuncArrayProductFloat(FuncArrayProduct):
     argument_types = [
         ArgTypeSequence([DataType.ARRAY_FLOAT]),
