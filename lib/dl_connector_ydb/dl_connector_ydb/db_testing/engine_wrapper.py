@@ -61,19 +61,19 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     dl_sqlalchemy_ydb.dialect.YqlUuid: YdbTypeSpec(type=ydb.PrimitiveType.UUID, to_sql_str=lambda x: f'UUID("{x}")'),
     sa.Date: YdbTypeSpec(type=ydb.PrimitiveType.Date, to_sql_str=lambda x: f'DateTime::MakeDate($date_parse("{x}"))'),
     # Datetime
-    dl_sqlalchemy_ydb.dialect.YqlDateTime: _DATETIME_TYPE_SPEC,
+    ydb_sa.types.YqlDateTime: _DATETIME_TYPE_SPEC,
     sa.DateTime: _DATETIME_TYPE_SPEC,
     sa.DATETIME: _DATETIME_TYPE_SPEC,
     # Datetime64
-    dl_sqlalchemy_ydb.dialect.YqlDateTime64: YdbTypeSpec(
+    ydb_sa.types.YqlDateTime64: YdbTypeSpec(
         ydb.PrimitiveType.Datetime64,
         to_sql_str=lambda x: f'DateTime::MakeDatetime64($datetime64_parse("{x}"))',
     ),
     # Timestamp
-    dl_sqlalchemy_ydb.dialect.YqlTimestamp: _TIMESTAMP_TYPE_SPEC,
+    ydb_sa.types.YqlTimestamp: _TIMESTAMP_TYPE_SPEC,
     sa.TIMESTAMP: _TIMESTAMP_TYPE_SPEC,
     # Timestamp64
-    dl_sqlalchemy_ydb.dialect.YqlTimestamp64: YdbTypeSpec(
+    ydb_sa.types.YqlTimestamp64: YdbTypeSpec(
         ydb.PrimitiveType.Timestamp64,
         to_sql_str=lambda x: f'DateTime::MakeTimestamp64($datetime64_parse("{x}"))',
     ),
