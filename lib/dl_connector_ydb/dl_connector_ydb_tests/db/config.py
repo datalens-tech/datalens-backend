@@ -278,7 +278,7 @@ select
     MAX(Datetime('2021-06-09T20:50:47Z')) as some_datetime,
     MAX(Timestamp('2021-07-10T21:51:48.841512Z')) as some_timestamp,
     CAST(1 AS Interval) as some_interval,
-    CAST("03bbcd6d-3de3-4718-a503-a37fcb75e663" AS Uuid) as some_uuid,
+    CAST("03bbcd6d-3de3-4718-a503-a37fcb75e663" AS UUID) as some_uuid,
 
     MAX(ListHead(ListSkip(Unicode::SplitToList(CAST(some_string AS UTF8), ''), 3))) as str_split,
     MAX(ListConcat(ListReplicate(CAST(' ' AS UTF8), 5))) as num_space_by_lst,

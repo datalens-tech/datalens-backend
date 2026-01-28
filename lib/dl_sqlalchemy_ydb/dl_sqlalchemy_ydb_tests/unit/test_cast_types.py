@@ -24,7 +24,7 @@ def test_cast_uuid_type(sa_engine: sa.engine.Engine):
 
     compiled_sql = str(query.compile(dialect=sa_engine.dialect, compile_kwargs={"literal_binds": True}))
 
-    assert "CAST('617ddd51-7960-4e61-8509-32fa03dccb41' AS Uuid)" in compiled_sql
+    assert "CAST('617ddd51-7960-4e61-8509-32fa03dccb41' AS UUID)" in compiled_sql
 
 
 def test_cast_from_column_to_utf8(sa_engine: sa.engine.Engine):
@@ -69,4 +69,4 @@ def test_cast_from_column_to_uuid(sa_engine: sa.engine.Engine):
 
     compiled_sql = str(query.compile(dialect=sa_engine.dialect, compile_kwargs={"literal_binds": True}))
 
-    assert "CAST(test_table.uuid_col AS Uuid)" in compiled_sql
+    assert "CAST(test_table.uuid_col AS UUID)" in compiled_sql
