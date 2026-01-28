@@ -65,7 +65,7 @@ class TestObfuscationEngine:
 
     @flaky.flaky(max_runs=5)
     def test_perf(self) -> None:
-        num_strings = 5_000_000
+        num_strings = 500_000
         secrets_in_a_string = " abcdefghijklmnopqrstuvwxyz"
         text = "the quick brown fox jumps over the lazy dog"
 
@@ -79,9 +79,10 @@ class TestObfuscationEngine:
         start = time.perf_counter()
         count = num_strings
         while count:
-            text = engine.obfuscate(text, ObfuscationContext.LOGS)
+            text_to_obfuscate = text
+            text_to_obfuscate = engine.obfuscate(text_to_obfuscate, ObfuscationContext.LOGS)
             count -= 1
         elapsed = time.perf_counter() - start
 
-        assert text.replace("*", "") == ""
+        assert text_to_obfuscate.replace("*", "") == ""
         assert elapsed < 5.5
