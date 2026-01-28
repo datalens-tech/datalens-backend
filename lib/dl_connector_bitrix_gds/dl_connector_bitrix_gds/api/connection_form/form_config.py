@@ -21,7 +21,7 @@ from dl_api_connector.form_config.models.common import (
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_bitrix_gds.api.connection_info import BitrixGDSConnectionInfoProvider
 from dl_connector_bitrix_gds.api.i18n.localizer import Translatable
@@ -35,7 +35,7 @@ class BitrixGDSFieldName(FormFieldName):
 class BitrixGDSConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
+        connector_settings: Optional[ConnectorSettings],
         tenant: Optional[TenantDef],
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
