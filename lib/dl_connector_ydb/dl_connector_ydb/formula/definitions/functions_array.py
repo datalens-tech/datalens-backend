@@ -390,7 +390,6 @@ def _func_array_starts_with_array_non_const(array_1: ClauseElement, array_2: Cla
 
 
 def _func_array_product(array_1: ClauseElement) -> Function:
-
     return sa.func.ListFold(
         array_1,
         1.0,
