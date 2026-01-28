@@ -1,4 +1,5 @@
 from typing import ClassVar
+import uuid
 
 import requests
 import sqlalchemy as sa
@@ -79,6 +80,7 @@ TABLE_SCHEMA = (
     ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
     ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
+    ("some_uuid", UserDataType.uuid, dl_sqlalchemy_ydb.dialect.YqlUuid),
 )
 TABLE_DATA = [
     {
@@ -95,6 +97,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 9,
+        "some_uuid": uuid.UUID("a8f4768e-6cd3-4383-89dd-b4787cdc0c16"),
     },
     {
         "id": 2,
@@ -110,6 +113,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": uuid.UUID("00000000-0000-0000-0000-000000000000"),
     },
     {
         "id": 3,
@@ -125,6 +129,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 1337,
+        "some_uuid": uuid.UUID("ec4fc0c5-9171-43a1-a8f6-f3d17aad7bf8"),
     },
     {
         "id": 4,
@@ -140,6 +145,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 42,
+        "some_uuid": uuid.UUID("11111111-1111-1111-1111-111111111111"),
     },
     {
         "id": 5,
@@ -155,6 +161,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": uuid.UUID("11111111-1111-1111-1111-111111111111"),
     },
     {
         "id": 6,
@@ -170,6 +177,7 @@ TABLE_DATA = [
         "some_datetime": "2021-06-07T18:19:20Z",
         "some_timestamp": "2021-06-07T18:19:20Z",
         "some_interval": None,
+        "some_uuid": uuid.UUID("1418976a-c9c6-4cba-8b0e-a5b74b457381"),
     },
     {
         "id": 7,
@@ -185,6 +193,7 @@ TABLE_DATA = [
         "some_datetime": "1970-12-31T23:58:57Z",
         "some_timestamp": "1970-12-31T23:58:57Z",
         "some_interval": 0,
+        "some_uuid": None,
     },
     {
         "id": 8,
@@ -200,6 +209,7 @@ TABLE_DATA = [
         "some_datetime": "1972-03-28T17:11:02Z",
         "some_timestamp": "1972-03-28T17:11:02Z",
         "some_interval": 1,
+        "some_uuid": None,
     },
     {
         "id": 9,
@@ -215,6 +225,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": None,
     },
     {
         "id": 10,
@@ -230,6 +241,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": None,
     },
     {
         "id": 11,
@@ -245,6 +257,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 1234,
+        "some_uuid": uuid.UUID("a68da475-4850-4a15-8b08-b5bd95edaadb"),
     },
 ]
 TABLE_NAME = "test_table_h"

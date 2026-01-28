@@ -1,7 +1,10 @@
 import datetime
 import typing
+import uuid
 
 import sqlalchemy as sa
+from sqlalchemy.engine import reflection
+import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 
@@ -91,6 +94,30 @@ class YqlUtf8(sa.types.TEXT):
 class YqlUuid(sa.types.TEXT):
     __visit_name__ = "Uuid"
 
+    def literal_processor(self, dialect: sa.engine.Dialect):
+        def process(value: uuid.UUID | str | None) -> str | None:
+            if value is None:
+                return "NULL"
+
+            if not isinstance(value, uuid.UUID):
+                value = uuid.UUID(value)
+
+            return f'UUID("{str(value)}")'
+
+        return process
+
+    def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any):
+        def process(value: uuid.UUID | str | None) -> uuid.UUID | None:
+            if value is None:
+                return None
+
+            if isinstance(value, uuid.UUID):
+                return value
+
+            return uuid.UUID(str(value))
+
+        return process
+
 
 class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
@@ -130,7 +157,7 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
         return "Float"
 
     def visit_Uuid(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
-        return "Uuid"
+        return "UUID"
 
     def get_ydb_type(
         self, type_: sa.types.TypeEngine, is_optional: bool
@@ -169,6 +196,49 @@ class CustomYqlCompiler(ydb_sa.YqlCompiler):
     _type_compiler_cls = CustomYqlTypeCompiler
 
 
+COLUMN_TYPES = {
+    ydb.PrimitiveType.Int8: ydb_sa.types.Int8,
+    ydb.PrimitiveType.Int16: ydb_sa.types.Int16,
+    ydb.PrimitiveType.Int32: ydb_sa.types.Int32,
+    ydb.PrimitiveType.Int64: ydb_sa.types.Int64,
+    ydb.PrimitiveType.Uint8: ydb_sa.types.UInt8,
+    ydb.PrimitiveType.Uint16: ydb_sa.types.UInt16,
+    ydb.PrimitiveType.Uint32: ydb_sa.types.UInt32,
+    ydb.PrimitiveType.Uint64: ydb_sa.types.UInt64,
+    ydb.PrimitiveType.Float: YqlFloat,
+    ydb.PrimitiveType.Double: YqlDouble,
+    ydb.PrimitiveType.String: YqlString,
+    ydb.PrimitiveType.Utf8: YqlUtf8,
+    ydb.PrimitiveType.Json: sa.JSON,
+    ydb.PrimitiveType.JsonDocument: sa.JSON,
+    ydb.DecimalType: sa.DECIMAL,
+    ydb.PrimitiveType.Yson: sa.TEXT,
+    ydb.PrimitiveType.Date: YqlDate,
+    ydb.PrimitiveType.Date32: YqlDate,
+    ydb.PrimitiveType.Timestamp64: YqlTimestamp,
+    ydb.PrimitiveType.Datetime64: YqlDateTime,
+    ydb.PrimitiveType.Datetime: YqlDateTime,
+    ydb.PrimitiveType.Timestamp: YqlTimestamp,
+    ydb.PrimitiveType.Interval: ydb_sa.types.Int32,
+    ydb.PrimitiveType.Interval64: ydb_sa.types.Int64,
+    ydb.PrimitiveType.Bool: sa.BOOLEAN,
+    ydb.PrimitiveType.DyNumber: sa.FLOAT,
+    ydb.PrimitiveType.UUID: YqlUuid,
+}
+
+
+def _get_column_info(t: type) -> tuple[ydb.PrimitiveType, bool]:
+    nullable = False
+    if isinstance(t, ydb.OptionalType):
+        nullable = True
+        t = t.item
+
+    if isinstance(t, ydb.DecimalType):
+        return sa.DECIMAL(precision=t.precision, scale=t.scale), nullable
+
+    return COLUMN_TYPES[t], nullable
+
+
 class CustomYqlDialect(ydb_sa.YqlDialect):
     type_compiler = CustomYqlTypeCompiler
     statement_compiler = CustomYqlCompiler
@@ -199,6 +269,23 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
                 **dict(_add_declare_for_yql_stmt_vars=True),
             },
         )
+
+    @reflection.cache
+    def get_columns(self, connection, table_name, schema=None, **kw):
+        table = self._describe_table(connection, table_name, schema)
+        as_compatible = []
+        for column in table.columns:
+            col_type, nullable = _get_column_info(column.type)
+            as_compatible.append(
+                {
+                    "name": column.name,
+                    "type": col_type,
+                    "nullable": nullable,
+                    "default": None,
+                }
+            )
+
+        return as_compatible
 
 
 class CustomAsyncYqlDialect(CustomYqlDialect):
