@@ -83,8 +83,11 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "UUID": dl_sqlalchemy_ydb.dialect.YqlUuid,
         "Date": sa.DATE,
         "Timestamp": dl_sqlalchemy_ydb.dialect.YqlTimestamp,
+        "Timestamp64": dl_sqlalchemy_ydb.dialect.YqlTimestamp64,
         "Datetime": dl_sqlalchemy_ydb.dialect.YqlDateTime,
+        "Datetime64": dl_sqlalchemy_ydb.dialect.YqlDateTime64,
         "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
+        "Interval64": dl_sqlalchemy_ydb.dialect.YqlInterval64,
         "Bool": sa.BOOLEAN,
     }
     _type_code_to_sa = {

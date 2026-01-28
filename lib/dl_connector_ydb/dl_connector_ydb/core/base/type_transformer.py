@@ -32,6 +32,7 @@ class YQLTypeTransformer(TypeTransformer):
             ydb_sa.types.UInt32,
             ydb_sa.types.UInt64,
             dl_sqlalchemy_ydb.dialect.YqlInterval,
+            dl_sqlalchemy_ydb.dialect.YqlInterval64,
         ),
         UserDataType.float: (
             sa.FLOAT,
@@ -65,7 +66,9 @@ class YQLTypeTransformer(TypeTransformer):
             sa.DATETIME,
             sa.TIMESTAMP,
             dl_sqlalchemy_ydb.dialect.YqlDateTime,
+            dl_sqlalchemy_ydb.dialect.YqlDateTime64,
             dl_sqlalchemy_ydb.dialect.YqlTimestamp,
+            dl_sqlalchemy_ydb.dialect.YqlTimestamp64,
         ),
         UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
         UserDataType.uuid: (ydb_dialect.YqlUuid,),

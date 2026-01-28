@@ -24,6 +24,18 @@ class YdbTypeSpec(NamedTuple):
     to_sql_str: Callable[[Any], str]
 
 
+_DATETIME_TYPE_SPEC = YdbTypeSpec(
+    ydb.PrimitiveType.Datetime,
+    to_sql_str=lambda x: f'DateTime::MakeDatetime($datetime_parse("{x}"))',
+)
+
+
+_TIMESTAMP_TYPE_SPEC = YdbTypeSpec(
+    ydb.PrimitiveType.Timestamp,
+    to_sql_str=lambda x: f'DateTime::MakeTimestamp($datetime_parse("{x}"))',
+)
+
+
 SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     ydb_sa.types.Int8: YdbTypeSpec(type=ydb.PrimitiveType.Int8, to_sql_str=str),
     ydb_sa.types.Int16: YdbTypeSpec(type=ydb.PrimitiveType.Int16, to_sql_str=str),
@@ -48,18 +60,30 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     dl_sqlalchemy_ydb.dialect.YqlUtf8: YdbTypeSpec(type=ydb.PrimitiveType.Utf8, to_sql_str=lambda x: f'"{x}"'),
     dl_sqlalchemy_ydb.dialect.YqlUuid: YdbTypeSpec(type=ydb.PrimitiveType.UUID, to_sql_str=lambda x: f'UUID("{x}")'),
     sa.Date: YdbTypeSpec(type=ydb.PrimitiveType.Date, to_sql_str=lambda x: f'DateTime::MakeDate($date_parse("{x}"))'),
-    sa.DateTime: YdbTypeSpec(
-        ydb.PrimitiveType.Datetime,
-        to_sql_str=lambda x: f'DateTime::MakeDatetime($datetime_parse("{x}"))',
+    # Datetime
+    dl_sqlalchemy_ydb.dialect.YqlDateTime: _DATETIME_TYPE_SPEC,
+    sa.DateTime: _DATETIME_TYPE_SPEC,
+    sa.DATETIME: _DATETIME_TYPE_SPEC,
+    # Datetime64
+    dl_sqlalchemy_ydb.dialect.YqlDateTime64: YdbTypeSpec(
+        ydb.PrimitiveType.Datetime64,
+        to_sql_str=lambda x: f'DateTime::MakeDatetime64($datetime64_parse("{x}"))',
     ),
-    sa.DATETIME: YdbTypeSpec(
-        ydb.PrimitiveType.Datetime, to_sql_str=lambda x: f'DateTime::MakeDatetime($datetime_parse("{x}"))'
+    # Timestamp
+    dl_sqlalchemy_ydb.dialect.YqlTimestamp: _TIMESTAMP_TYPE_SPEC,
+    sa.TIMESTAMP: _TIMESTAMP_TYPE_SPEC,
+    # Timestamp64
+    dl_sqlalchemy_ydb.dialect.YqlTimestamp64: YdbTypeSpec(
+        ydb.PrimitiveType.Timestamp64,
+        to_sql_str=lambda x: f'DateTime::MakeTimestamp64($datetime64_parse("{x}"))',
     ),
-    sa.TIMESTAMP: YdbTypeSpec(
-        ydb.PrimitiveType.Timestamp, to_sql_str=lambda x: f'DateTime::MakeTimestamp($datetime_parse("{x}"))'
-    ),
+    # Interval
     dl_sqlalchemy_ydb.dialect.YqlInterval: YdbTypeSpec(
         ydb.PrimitiveType.Interval, to_sql_str=lambda x: f"CAST({x} as Interval)"
+    ),
+    # Interval64
+    dl_sqlalchemy_ydb.dialect.YqlInterval64: YdbTypeSpec(
+        ydb.PrimitiveType.Interval64, to_sql_str=lambda x: f"CAST({x} as Interval64)"
     ),
 }
 
@@ -129,6 +153,7 @@ class YQLEngineWrapper(EngineWrapperBase):
         upsert_query_prefix = f"""
         $date_parse = DateTime::Parse("%Y-%m-%d");
         $datetime_parse = DateTime::Parse("%Y-%m-%d %H:%M:%S");
+        $datetime64_parse = DateTime::Parse64("%Y-%m-%d %H:%M:%S");
         UPSERT INTO `{table_path}` ({", ".join([column.name for column in table.columns])}) VALUES
         """
         upserts = (

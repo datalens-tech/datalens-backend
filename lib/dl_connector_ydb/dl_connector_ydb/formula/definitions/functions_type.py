@@ -31,7 +31,11 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="Uuid", sa_type=ydb_dialect.YqlUuid),
         base.WhitelistTypeSpec(name="Date", sa_type=sa.types.DATE),
         base.WhitelistTypeSpec(name="Datetime", sa_type=ydb_dialect.YqlDateTime),
+        base.WhitelistTypeSpec(name="Datetime64", sa_type=ydb_dialect.YqlDateTime64),
         base.WhitelistTypeSpec(name="Timestamp", sa_type=ydb_dialect.YqlTimestamp),
+        base.WhitelistTypeSpec(name="Timestamp64", sa_type=ydb_dialect.YqlTimestamp64),
+        base.WhitelistTypeSpec(name="Interval", sa_type=ydb_dialect.YqlInterval),
+        base.WhitelistTypeSpec(name="Interval64", sa_type=ydb_dialect.YqlInterval64),
     ]
 }
 
@@ -60,48 +64,62 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
     # For numeric types see: https://ydb.tech/docs/en/yql/reference/types/primitive#casting-to-numeric-types
     # Type cast tables date: 2025-09-29.
     #
-    # Type       Bool    Int8    Int16   Int32   Int64   Uint8     Uint16    Uint32    Uint64     Float   Double  Decimal <- (Target Type)
-    # Bool       —       Yes[1]  Yes[1]  Yes[1]  Yes[1]  Yes[1]    Yes[1]    Yes[1]    Yes[1]     Yes[1]  Yes[1]  No
-    # Int8       Yes2    —       Yes     Yes     Yes     Yes[3]    Yes[3]    Yes[3]    Yes[3]     Yes     Yes     Yes
-    # Int16      Yes2    Yes[4]  —       Yes     Yes     Yes[3,4]  Yes[3]    Yes[3]    Yes[3]     Yes     Yes     Yes
-    # Int32      Yes2    Yes[4]  Yes[4]  —       Yes     Yes[3,4]  Yes[3,4]  Yes[3]    Yes[3]     Yes     Yes     Yes
-    # Int64      Yes2    Yes[4]  Yes[4]  Yes[4]  —       Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3]     Yes     Yes     Yes
-    # Uint8      Yes2    Yes[4]  Yes     Yes     Yes     —         Yes       Yes       Yes        Yes     Yes     Yes
-    # Uint16     Yes2    Yes[4]  Yes[4]  Yes     Yes     Yes[4]    —         Yes       Yes        Yes     Yes     Yes
-    # Uint32     Yes2    Yes[4]  Yes[4]  Yes[4]  Yes     Yes[4]    Yes[4]    —         Yes        Yes     Yes     Yes
-    # Uint64     Yes2    Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[4]    Yes[4]    Yes[4]    —          Yes     Yes     Yes
-    # Float      Yes2    Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3,4]   —       Yes     No
-    # Double     Yes2    Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes      —       No
-    # Decimal    No      Yes     Yes     Yes     Yes     Yes       Yes       Yes       Yes       Yes      Yes     —
-    # String     Yes     Yes     Yes     Yes     Yes     Yes       Yes       Yes       Yes       Yes      Yes     Yes
-    # Utf8       Yes     Yes     Yes     Yes     Yes     Yes       Yes       Yes       Yes       Yes      Yes     Yes
-    # Json       No      No      No      No      No      No        No        No        No        No       No      No
-    # Yson       Yes[5]  Yes[5]  Yes[5]  Yes[5]  Yes[5]  Yes[5]    Yes[5]    Yes[5]    Yes[5]    Yes[5]   Yes[5]  No
-    # Uuid       No      No      No      No      No      No        No        No        No        No       No      No
-    # Date       No      Yes[4]  Yes[4]  Yes     Yes     Yes[4]    Yes       Yes       Yes       Yes      Yes     No
-    # Datetime   No      Yes[4]  Yes[4]  Yes[4]  Yes     Yes[4]    Yes[4]    Yes       Yes       Yes      Yes     No
-    # Timestamp  No      Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[4]    Yes[4]    Yes[4]    Yes       Yes      Yes     No
-    # Interval   No      Yes[4]  Yes[4]  Yes[4]  Yes     Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3]    Yes      Yes     No
+    # Type        Bool    Int8    Int16   Int32   Int64   Uint8     Uint16    Uint32    Uint64     Float   Double  Decimal <- (Target Type)
+    # Bool        —       Yes[1]  Yes[1]  Yes[1]  Yes[1]  Yes[1]    Yes[1]    Yes[1]    Yes[1]     Yes[1]  Yes[1]  No
+    # Int8        Yes2    —       Yes     Yes     Yes     Yes[3]    Yes[3]    Yes[3]    Yes[3]     Yes     Yes     Yes
+    # Int16       Yes2    Yes[4]  —       Yes     Yes     Yes[3,4]  Yes[3]    Yes[3]    Yes[3]     Yes     Yes     Yes
+    # Int32       Yes2    Yes[4]  Yes[4]  —       Yes     Yes[3,4]  Yes[3,4]  Yes[3]    Yes[3]     Yes     Yes     Yes
+    # Int64       Yes2    Yes[4]  Yes[4]  Yes[4]  —       Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3]     Yes     Yes     Yes
+    # Uint8       Yes2    Yes[4]  Yes     Yes     Yes     —         Yes       Yes       Yes        Yes     Yes     Yes
+    # Uint16      Yes2    Yes[4]  Yes[4]  Yes     Yes     Yes[4]    —         Yes       Yes        Yes     Yes     Yes
+    # Uint32      Yes2    Yes[4]  Yes[4]  Yes[4]  Yes     Yes[4]    Yes[4]    —         Yes        Yes     Yes     Yes
+    # Uint64      Yes2    Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[4]    Yes[4]    Yes[4]    —          Yes     Yes     Yes
+    # Float       Yes2    Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3,4]   —       Yes     No
+    # Double      Yes2    Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes      —       No
+    # Decimal     No      Yes     Yes     Yes     Yes     Yes       Yes       Yes       Yes       Yes      Yes     —
+    # String      Yes     Yes     Yes     Yes     Yes     Yes       Yes       Yes       Yes       Yes      Yes     Yes
+    # Utf8        Yes     Yes     Yes     Yes     Yes     Yes       Yes       Yes       Yes       Yes      Yes     Yes
+    # Json        No      No      No      No      No      No        No        No        No        No       No      No
+    # Yson        Yes[5]  Yes[5]  Yes[5]  Yes[5]  Yes[5]  Yes[5]    Yes[5]    Yes[5]    Yes[5]    Yes[5]   Yes[5]  No
+    # Uuid        No      No      No      No      No      No        No        No        No        No       No      No
+    # Date        No      Yes[4]  Yes[4]  Yes     Yes     Yes[4]    Yes       Yes       Yes       Yes      Yes     No
+    # Datetime    No      Yes[4]  Yes[4]  Yes[4]  Yes     Yes[4]    Yes[4]    Yes       Yes       Yes      Yes     No
+    # Datetime64  No      Yes[4]  Yes[4]  Yes[4]  Yes     Yes[4]    Yes[4]    Yes       Yes       Yes      Yes     No
+    # Timestamp   No      Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[4]    Yes[4]    Yes[4]    Yes       Yes      Yes     No
+    # Timestamp64 No      Yes[4]  Yes[4]  Yes[4]  Yes[4]  Yes[4]    Yes[4]    Yes[4]    Yes       Yes      Yes     No
+    # Interval    No      Yes[4]  Yes[4]  Yes[4]  Yes     Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3]    Yes      Yes     No
+    # Interval64  No      Yes[4]  Yes[4]  Yes[4]  Yes     Yes[3,4]  Yes[3,4]  Yes[3,4]  Yes[3]    Yes      Yes     No
     # ^
     # |
     # (Source Type)
     #
-    # Type       String  Utf8   Json  Yson  Uuid
-    # Bool       Yes     No     No    No    No
-    # INT        Yes     No     No    No    No
-    # Uint       Yes     No     No    No    No
-    # Float      Yes     No     No    No    No
-    # Double     Yes     No     No    No    No
-    # Decimal    Yes     No     No    No    No
-    # String     —       Yes    Yes   Yes   Yes
-    # Utf8       Yes     —      No    No    No
-    # Json       Yes     Yes    —     No    No
-    # Yson       Yes[4]  No     No    No    No
-    # Uuid       Yes     Yes    No    No    —
-    # Date       Yes     Yes    No    No    No
-    # Datetime   Yes     Yes    No    No    No
-    # Timestamp  Yes     Yes    No    No    No
-    # Interval   Yes     Yes    No    No    No
+    # Type         Date  Date32  Datetime  Datetime64  Timestamp  Timestamp64  Interval  Interval64
+    # Bool         No    No      No        No          No         No           No        No
+    # Int8         Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Int16        Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Int32        Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Int64        Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Uint8        Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Uint16       Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Uint32       Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Uint64       Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Float        No    No      No        No          No         No           No        No
+    # Double       No    No      No        No          No         No           No        No
+    # Decimal      No    No      No        No          No         No           No        No
+    # String       Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Bytes        Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Text         Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
+    # Json         No    No      No        No          No         No           No        No
+    # Yson         No    No      No        No          No         No           No        No
+    # Uuid         No    No      No        No          No         No           No        No
+    # Date         —     Yes     Yes       Yes         Yes        Yes          No        No
+    # Date32       Yes   —       Yes       Yes         Yes        Yes          No        No
+    # Datetime     Yes   Yes     —         Yes         Yes        Yes          No        No
+    # Datetime64   Yes   Yes     Yes       —           Yes        Yes          No        No
+    # Timestamp    Yes   Yes     Yes       Yes         —          Yes          No        No
+    # Timestamp64  Yes   Yes     Yes       Yes         Yes        —            No        No
+    # Interval     No    No      No        No          No         No           —         Yes
+    # Interval64   No    No      No        No          No         No           Yes       —
     #
     # Type       Date  Datetime  Timestamp  Interval
     # Bool       No    No        No         No
@@ -183,8 +201,13 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Date"],
                 # > Datetime
                 TYPES_SPEC["Datetime"],
+                TYPES_SPEC["Datetime64"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
+                TYPES_SPEC["Timestamp64"],
+                # > Interval
+                TYPES_SPEC["Interval"],
+                TYPES_SPEC["Interval64"],
             ],
             DataType.FLOAT: [
                 # > Bool
@@ -233,8 +256,13 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Date"],
                 # > Datetime
                 TYPES_SPEC["Datetime"],
+                TYPES_SPEC["Datetime64"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
+                TYPES_SPEC["Timestamp64"],
+                # > Interval
+                TYPES_SPEC["Interval"],
+                TYPES_SPEC["Interval64"],
                 # > Uuid
                 TYPES_SPEC["Uuid"],
             ],
@@ -261,8 +289,10 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Date"],
                 # > Datetime
                 TYPES_SPEC["Datetime"],
+                TYPES_SPEC["Datetime64"],
                 # > Timestamp
                 TYPES_SPEC["Timestamp"],
+                TYPES_SPEC["Timestamp64"],
             ],
             DataType.ARRAY_STR: [],
             DataType.ARRAY_INT: [],

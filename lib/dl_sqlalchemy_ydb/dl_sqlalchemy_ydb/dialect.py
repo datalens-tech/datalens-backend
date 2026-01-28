@@ -9,6 +9,8 @@ import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 
 class YqlTimestamp(sa.types.DateTime):
+    __visit_name__ = "Timestamp"
+
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
         def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[datetime.datetime]:
             if value is None:
@@ -30,7 +32,13 @@ class YqlTimestamp(sa.types.DateTime):
         return process
 
 
+class YqlTimestamp64(YqlTimestamp):
+    __visit_name__ = "Timestamp64"
+
+
 class YqlDateTime(YqlTimestamp, sa.types.DateTime):
+    __visit_name__ = "Datetime"
+
     def bind_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
         def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[int]:
             if value is None:
@@ -52,8 +60,12 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
         return process
 
 
+class YqlDateTime64(YqlDateTime):
+    __visit_name__ = "Datetime64"
+
+
 class YqlInterval(sa.types.Interval):
-    __visit_name__ = "interval"
+    __visit_name__ = "Interval"
 
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
         def process(value: typing.Optional[datetime.timedelta] | int) -> typing.Optional[int]:
@@ -64,6 +76,10 @@ class YqlInterval(sa.types.Interval):
             return value
 
         return process
+
+
+class YqlInterval64(YqlInterval):
+    __visit_name__ = "Interval64"
 
 
 class YqlDate(sa.types.Date, sa.types.DateTime):
@@ -120,11 +136,59 @@ class YqlUuid(sa.types.TEXT):
 
 
 class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
+    def visit_datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return "Datetime"
+
     def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
         return self.visit_datetime(type_, **kw)
 
-    def visit_datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
-        return "DateTime"
+    def visit_Datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return self.visit_datetime(type_, **kw)
+
+    def visit_datetime64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return "Datetime64"
+
+    def visit_DATETIME64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+        return self.visit_datetime64(type_, **kw)
+
+    def visit_Datetime64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return self.visit_datetime64(type_, **kw)
+
+    def visit_timestamp(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return "Timestamp"
+
+    def visit_TIMESTAMP(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+        return self.visit_timestamp(type_, **kw)
+
+    def visit_Timestamp(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return self.visit_timestamp(type_, **kw)
+
+    def visit_timestamp64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return "Timestamp64"
+
+    def visit_TIMESTAMP64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+        return self.visit_timestamp64(type_, **kw)
+
+    def visit_Timestamp64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return self.visit_timestamp64(type_, **kw)
+
+    def visit_interval(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return "Interval"
+
+    def visit_INTERVAL(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+        return self.visit_interval(type_, **kw)
+
+    def visit_Interval(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return self.visit_interval(type_, **kw)
+
+    def visit_interval64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return "Interval64"
+
+    def visit_INTERVAL64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+        return self.visit_interval64(type_, **kw)
+
+    def visit_Interval64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+        return self.visit_interval64(type_, **kw)
 
     def visit_INTEGER(self, type_: sa.INTEGER, **kw: typing.Any) -> typing.Any:
         return self.visit_integer(type_, **kw)
@@ -219,8 +283,7 @@ COLUMN_TYPES = {
     ydb.PrimitiveType.Datetime64: YqlDateTime,
     ydb.PrimitiveType.Datetime: YqlDateTime,
     ydb.PrimitiveType.Timestamp: YqlTimestamp,
-    ydb.PrimitiveType.Interval: ydb_sa.types.Int32,
-    ydb.PrimitiveType.Interval64: ydb_sa.types.Int64,
+    ydb.PrimitiveType.Interval: sa.INTEGER,
     ydb.PrimitiveType.Bool: sa.BOOLEAN,
     ydb.PrimitiveType.DyNumber: sa.FLOAT,
     ydb.PrimitiveType.UUID: YqlUuid,
