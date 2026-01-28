@@ -40,7 +40,6 @@ class YQLTypeTransformer(TypeTransformer):
             sa.NUMERIC,
             ydb_dialect.YqlDouble,
             ydb_dialect.YqlFloat,
-            # see also: DOUBLE_PRECISION,
         ),
         UserDataType.boolean: (sa.BOOLEAN,),
         UserDataType.string: (
@@ -51,16 +50,19 @@ class YQLTypeTransformer(TypeTransformer):
             sa.CHAR,
             sa.VARCHAR,
             sa.BINARY,
-            # TODO: ydb_sa.types.YqlJSON,
-            # see also: ENUM,
+            # TODO: JSON, YSON
         ),
-        # see also: UUID
-        UserDataType.date: (dl_sqlalchemy_ydb.dialect.YqlDate,),
+        UserDataType.date: (
+            sa.DATE,
+            dl_sqlalchemy_ydb.dialect.YqlDate,
+        ),
         UserDataType.datetime: (
             sa.DATETIME,
             sa.TIMESTAMP,
             dl_sqlalchemy_ydb.dialect.YqlDateTime,
+            dl_sqlalchemy_ydb.dialect.YqlDateTime64,
             dl_sqlalchemy_ydb.dialect.YqlTimestamp,
+            dl_sqlalchemy_ydb.dialect.YqlTimestamp64,
         ),
         UserDataType.genericdatetime: (
             sa.DATETIME,

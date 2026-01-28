@@ -62,8 +62,9 @@ class YQLDbCastArgTypes(base.DbCastArgTypes):
 
 class FuncDbCastYQLBase(base.FuncDbCastBase):
     # For numeric types see: https://ydb.tech/docs/en/yql/reference/types/primitive#casting-to-numeric-types
-    # Type cast tables date: 2025-09-29.
+    # Type cast tables date: 2026-01-28.
     #
+    # Cast to numeric types
     # Type        Bool    Int8    Int16   Int32   Int64   Uint8     Uint16    Uint32    Uint64     Float   Double  Decimal <- (Target Type)
     # Bool        —       Yes[1]  Yes[1]  Yes[1]  Yes[1]  Yes[1]    Yes[1]    Yes[1]    Yes[1]     Yes[1]  Yes[1]  No
     # Int8        Yes2    —       Yes     Yes     Yes     Yes[3]    Yes[3]    Yes[3]    Yes[3]     Yes     Yes     Yes
@@ -93,6 +94,7 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
     # |
     # (Source Type)
     #
+    # Cast to time types
     # Type         Date  Date32  Datetime  Datetime64  Timestamp  Timestamp64  Interval  Interval64
     # Bool         No    No      No        No          No         No           No        No
     # Int8         Yes   Yes     Yes       Yes         Yes        Yes          Yes       Yes
@@ -121,22 +123,35 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
     # Interval     No    No      No        No          No         No           —         Yes
     # Interval64   No    No      No        No          No         No           Yes       —
     #
-    # Type       Date  Datetime  Timestamp  Interval
-    # Bool       No    No        No         No
-    # INT        Yes   Yes       Yes        Yes
-    # Uint       Yes   Yes       Yes        Yes
-    # Float      No    No        No         No
-    # Double     No    No        No         No
-    # Decimal    No    No        No         No
-    # String     Yes   Yes       Yes        Yes
-    # Utf8       Yes   Yes       Yes        Yes
-    # Json       No    No        No         No
-    # Yson       No    No        No         No
-    # Uuid       No    No        No         No
-    # Date       —     Yes       Yes        No
-    # Datetime   Yes    —        Yes        No
-    # Timestamp  Yes   Yes       —          No
-    # Interval   No    No        No         —
+    # Cast to textual types
+    # Type         String  Bytes   Utf8  Text  Json  Yson  Uuid
+    # Bool         Yes     Yes     No    No    No    No    No
+    # Int8         Yes     Yes     No    No    No    No    No
+    # Int16        Yes     Yes     No    No    No    No    No
+    # Int32        Yes     Yes     No    No    No    No    No
+    # Int64        Yes     Yes     No    No    No    No    No
+    # Uint8        Yes     Yes     No    No    No    No    No
+    # Uint16       Yes     Yes     No    No    No    No    No
+    # Uint32       Yes     Yes     No    No    No    No    No
+    # Uint64       Yes     Yes     No    No    No    No    No
+    # Float        Yes     Yes     No    No    No    No    No
+    # Double       Yes     Yes     No    No    No    No    No
+    # Decimal      Yes     Yes     No    No    No    No    No
+    # String       —       —       Yes   Yes   Yes   Yes   Yes
+    # Bytes        —       —       Yes   Yes   Yes   Yes   Yes
+    # Utf8         Yes     Yes     —     —     No    No    No
+    # Text         Yes     Yes     —     —     No    No    No
+    # Json         Yes     Yes     Yes   Yes   —     No    No
+    # Yson         Yes[1]  Yes[1]  No    No    No    —     No
+    # Uuid         Yes     Yes     Yes   Yes   No    No    —
+    # Date         Yes     Yes     Yes   Yes   No    No    No
+    # Datetime     Yes     Yes     Yes   Yes   No    No    No
+    # Timestamp    Yes     Yes     Yes   Yes   No    No    No
+    # Interval     Yes     Yes     Yes   Yes   No    No    No
+    # Date32       Yes     Yes     Yes   Yes   No    No    No
+    # Datetime64   Yes     Yes     Yes   Yes   No    No    No
+    # Timestamp64  Yes     Yes     Yes   Yes   No    No    No
+    # Interval64   Yes     Yes     Yes   Yes   No    No    No
     #
     # [1] - True is converted to 1 and False to 0.
     # [2] - Any value other than 0 is converted to True, 0 is converted to False.
@@ -267,6 +282,62 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Uuid"],
             ],
             DataType.DATE: [
+                # > INT
+                TYPES_SPEC["Int8"],
+                TYPES_SPEC["Int16"],
+                TYPES_SPEC["Int32"],
+                TYPES_SPEC["Int64"],
+                # > UINT
+                TYPES_SPEC["UInt8"],
+                TYPES_SPEC["UInt16"],
+                TYPES_SPEC["UInt32"],
+                TYPES_SPEC["UInt64"],
+                # > Float
+                TYPES_SPEC["Float"],
+                # > Double
+                TYPES_SPEC["Double"],
+                # > String
+                TYPES_SPEC["String"],
+                # > Utf8
+                TYPES_SPEC["Utf8"],
+                # > Date
+                TYPES_SPEC["Date"],
+                # > Datetime
+                TYPES_SPEC["Datetime"],
+                TYPES_SPEC["Datetime64"],
+                # > Timestamp
+                TYPES_SPEC["Timestamp"],
+                TYPES_SPEC["Timestamp64"],
+            ],
+            DataType.DATETIME: [
+                # > INT
+                TYPES_SPEC["Int8"],
+                TYPES_SPEC["Int16"],
+                TYPES_SPEC["Int32"],
+                TYPES_SPEC["Int64"],
+                # > UINT
+                TYPES_SPEC["UInt8"],
+                TYPES_SPEC["UInt16"],
+                TYPES_SPEC["UInt32"],
+                TYPES_SPEC["UInt64"],
+                # > Float
+                TYPES_SPEC["Float"],
+                # > Double
+                TYPES_SPEC["Double"],
+                # > String
+                TYPES_SPEC["String"],
+                # > Utf8
+                TYPES_SPEC["Utf8"],
+                # > Date
+                TYPES_SPEC["Date"],
+                # > Datetime
+                TYPES_SPEC["Datetime"],
+                TYPES_SPEC["Datetime64"],
+                # > Timestamp
+                TYPES_SPEC["Timestamp"],
+                TYPES_SPEC["Timestamp64"],
+            ],
+            DataType.GENERICDATETIME: [
                 # > INT
                 TYPES_SPEC["Int8"],
                 TYPES_SPEC["Int16"],
