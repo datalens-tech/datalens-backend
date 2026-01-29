@@ -61,10 +61,12 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     dl_sqlalchemy_ydb.dialect.YqlUuid: YdbTypeSpec(type=ydb.PrimitiveType.UUID, to_sql_str=lambda x: f'UUID("{x}")'),
     sa.Date: YdbTypeSpec(type=ydb.PrimitiveType.Date, to_sql_str=lambda x: f'DateTime::MakeDate($date_parse("{x}"))'),
     # Datetime
+    # TODO: 2025.01.29: Not adding Datetime64 because YDB Datetime::Parse64 does not work
     ydb_sa.types.YqlDateTime: _DATETIME_TYPE_SPEC,
     sa.DateTime: _DATETIME_TYPE_SPEC,
     sa.DATETIME: _DATETIME_TYPE_SPEC,
     # Timestamp
+    # TODO: 2025.01.29: Not adding Timestamp64 because YDB Datetime::Parse64 does not work
     ydb_sa.types.YqlTimestamp: _TIMESTAMP_TYPE_SPEC,
     sa.TIMESTAMP: _TIMESTAMP_TYPE_SPEC,
     # Interval
