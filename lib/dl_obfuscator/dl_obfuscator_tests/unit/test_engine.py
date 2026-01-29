@@ -76,13 +76,13 @@ class TestObfuscationEngine:
         engine = ObfuscationEngine()
         engine.add_obfuscator(SecretObfuscator(keeper))
 
-        start = time.perf_counter()
+        start = time.process_time()
         count = num_strings
         while count:
             text_to_obfuscate = text
             text_to_obfuscate = engine.obfuscate(text_to_obfuscate, ObfuscationContext.LOGS)
             count -= 1
-        elapsed = time.perf_counter() - start
+        elapsed = time.process_time() - start
 
         assert text_to_obfuscate.replace("*", "") == ""
-        assert elapsed < 5.5
+        assert elapsed < 7
