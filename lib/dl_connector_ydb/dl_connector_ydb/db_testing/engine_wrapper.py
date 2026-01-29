@@ -153,7 +153,6 @@ class YQLEngineWrapper(EngineWrapperBase):
         upsert_query_prefix = f"""
         $date_parse = DateTime::Parse("%Y-%m-%d");
         $datetime_parse = DateTime::Parse("%Y-%m-%d %H:%M:%S");
-        $datetime64_parse = DateTime::Parse64("%Y-%m-%d %H:%M:%S");
         UPSERT INTO `{table_path}` ({", ".join([column.name for column in table.columns])}) VALUES
         """
         upserts = (
