@@ -76,7 +76,7 @@ class TestYDBDashSQL(YDBDashSQLConnectionTest, DefaultDashSQLTestSuite):
             "double",
             "boolean",
             "date",
-            "timestamp",
+            "datetime",
             "datetime64",
             "timestamp",
             "timestamp64",
