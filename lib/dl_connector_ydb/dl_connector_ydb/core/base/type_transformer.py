@@ -38,6 +38,7 @@ class YQLTypeTransformer(TypeTransformer):
             sa.FLOAT,
             sa.REAL,
             sa.NUMERIC,
+            sa.DECIMAL,
             ydb_dialect.YqlDouble,
             ydb_dialect.YqlFloat,
         ),
