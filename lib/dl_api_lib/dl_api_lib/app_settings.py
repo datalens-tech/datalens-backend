@@ -368,8 +368,20 @@ class WhitelistsAppSettings(dl_settings.BaseRootSettings):
     ] = None
 
 
+def postload_connectors_settings(value: dict[str, ConnectorSettings]) -> dict[str, ConnectorSettings]:
+    """Validator function to populate missing connector settings with defaults."""
+    for conn_type_value, settings_cls in ConnectorSettings.classes.items():
+        if conn_type_value not in value:
+            assert issubclass(settings_cls, ConnectorSettings)
+            value[conn_type_value] = settings_cls()
+    return value
+
+
 class ConnectorsSettingsMixin(AppSettings):
-    CONNECTORS: dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings] = pydantic.Field(default_factory=dict)
+    CONNECTORS: Annotated[
+        dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings],
+        pydantic.AfterValidator(postload_connectors_settings),
+    ] = pydantic.Field(default_factory=dict)
 
 
 class ControlApiAppSettings(ConnectorsSettingsMixin):

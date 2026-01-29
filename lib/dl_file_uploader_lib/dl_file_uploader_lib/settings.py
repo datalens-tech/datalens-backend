@@ -5,7 +5,6 @@ from typing import (
 
 import attr
 
-from dl_api_lib.app_settings import ConnectorsSettingsMixin
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -17,6 +16,7 @@ from dl_configs.settings_submodels import (
     RedisSettings,
     S3Settings,
 )
+import dl_settings
 
 
 def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings]:
@@ -76,5 +76,5 @@ class DeprecatedFileUploaderBaseSettings:
     )
 
 
-class FileUploaderBaseSettings(ConnectorsSettingsMixin):
+class FileUploaderBaseSettings(dl_settings.BaseRootSettingsWithFallback):
     ...

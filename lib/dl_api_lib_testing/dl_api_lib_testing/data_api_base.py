@@ -26,6 +26,7 @@ from dl_api_lib.app_settings import (
     DeprecatedDataApiAppSettings,
 )
 from dl_api_lib_testing.app import TestingDataApiAppFactory
+from dl_api_lib_testing.app_settings import TestingDataApiAppSettings
 from dl_api_lib_testing.base import ApiTestBase
 from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
@@ -106,7 +107,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
-        settings = DataApiAppSettings(fallback=deprecated_settings)
+        settings = TestingDataApiAppSettings(fallback=deprecated_settings)
 
         return settings
 

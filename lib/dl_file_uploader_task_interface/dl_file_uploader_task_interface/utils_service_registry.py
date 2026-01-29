@@ -20,9 +20,6 @@ from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 import dl_retrier
 
-from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
-from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectOptions
 
 
@@ -35,7 +32,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def create_sr_factory_from_env_vars(
-    file_uploader_connectors_settings: dict[str, ConnectorSettings],
+    connectors_settings: dict[str, ConnectorSettings],
     ca_data: bytes,
 ) -> DefaultSRFactory:
     def get_conn_options(conn: ConnectionBase) -> Optional[ConnectOptions]:
@@ -50,13 +47,6 @@ def create_sr_factory_from_env_vars(
             rqe_sock_read_timeout=int(os.environ.get("RQE_SOCK_READ_TIMEOUT", 30 * 60)),
         )
 
-    connectors_settings: dict[str, ConnectorSettings] = {}
-    if file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value] is not None:
-        connectors_settings = {
-            CONNECTION_TYPE_FILE.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
-            CONNECTION_TYPE_GSHEETS_V2.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
-            CONNECTION_TYPE_YADOCS.value: file_uploader_connectors_settings[CONNECTION_TYPE_FILE.value],
-        }
     return DefaultSRFactory(
         rqe_config=rqe_config_from_env(),
         async_env=True,
