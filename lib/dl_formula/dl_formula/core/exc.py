@@ -128,6 +128,10 @@ class ValidationError(FormulaError):
     default_code = FormulaError.default_code + ("VALIDATION",)
 
 
+class UnknownBFBFieldError(ValidationError):
+    default_code = ValidationError.default_code + ("BFB_UNKNOWN_FIELD",)
+
+
 # Aggregation errors
 
 
