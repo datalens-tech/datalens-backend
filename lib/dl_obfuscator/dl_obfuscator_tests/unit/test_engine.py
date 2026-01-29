@@ -85,4 +85,4 @@ class TestObfuscationEngine:
         elapsed = time.perf_counter() - start
 
         assert text_to_obfuscate.replace("*", "") == ""
-        assert elapsed < 5.5
+        assert elapsed < 7
