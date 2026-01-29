@@ -7,8 +7,10 @@ from dl_configs.settings_submodels import (
     GoogleAppSettings,
     S3Settings,
 )
-from dl_file_uploader_worker_lib.settings import DeprecatedFileUploaderWorkerSettings
-from dl_file_uploader_worker_lib.testing.app_settings import TestingFileUploaderWorkerSettings
+from dl_file_uploader_worker_lib.settings import (
+    DeprecatedFileUploaderWorkerSettings,
+    FileUploaderWorkerSettings,
+)
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
@@ -56,7 +58,7 @@ def file_uploader_worker_settings(
         SECURE_READER=secure_reader,
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
     )
-    settings = TestingFileUploaderWorkerSettings(
+    settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=connectors_settings,
     )

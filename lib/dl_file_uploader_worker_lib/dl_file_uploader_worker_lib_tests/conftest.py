@@ -42,11 +42,11 @@ from dl_file_uploader_lib.s3_model.base import S3ModelManager
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
+    FileUploaderWorkerSettings,
     SecureReader,
 )
 from dl_file_uploader_worker_lib.tasks import REGISTRY
 from dl_file_uploader_worker_lib.testing.app_factory import TestingFileUploaderWorkerFactory
-from dl_file_uploader_worker_lib.testing.app_settings import TestingFileUploaderWorkerSettings
 from dl_file_uploader_worker_lib_tests.config import (
     CONNECTOR_WHITELIST,
     TestingUSConfig,
@@ -231,7 +231,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
-    settings = TestingFileUploaderWorkerSettings(
+    settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=file_connectors_settings_dict,
     )

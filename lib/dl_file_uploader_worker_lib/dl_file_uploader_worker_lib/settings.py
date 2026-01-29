@@ -82,10 +82,10 @@ def file_uploader_worker_postload_connectors_settings(
     and reuse these same settings for CONNECTION_TYPE_GSHEETS_V2 and CONNECTION_TYPE_YADOCS.
     """
     conn_types_to_fill_manually = [CONNECTION_TYPE_GSHEETS_V2.value, CONNECTION_TYPE_YADOCS.value]
-    conn_file_settings = ConnectorSettings.classes[CONNECTION_TYPE_FILE.value]
-    assert issubclass(conn_file_settings, ConnectorSettings)
+    conn_file_settings = value[CONNECTION_TYPE_FILE.value]
+    assert isinstance(conn_file_settings, ConnectorSettings)
     for conn_type in conn_types_to_fill_manually:
-        value[conn_type] = conn_file_settings()
+        value[conn_type] = conn_file_settings
     return postload_connectors_settings(value)
 
 
