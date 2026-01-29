@@ -26,6 +26,7 @@ from dl_core.connection_models import (
 )
 from dl_core.utils import sa_plain_text
 import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 import dl_connector_ydb.core.base.row_converters
 
@@ -83,10 +84,10 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "UUID": dl_sqlalchemy_ydb.dialect.YqlUuid,
         "Date": ydb_sa.types.YqlDate,
         "Date32": ydb_sa.types.YqlDate32,
-        "Timestamp": ydb_sa.types.YqlTimestamp,
-        "Timestamp64": ydb_sa.types.YqlTimestamp64,
-        "Datetime": ydb_sa.types.YqlDateTime,
-        "Datetime64": ydb_sa.types.YqlDateTime64,
+        "Timestamp": ydb_dialect.YqlTimestamp,
+        "Timestamp64": ydb_dialect.YqlTimestamp64,
+        "Datetime": ydb_dialect.YqlDateTime,
+        "Datetime64": ydb_dialect.YqlDateTime64,
         "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
         "Interval64": dl_sqlalchemy_ydb.dialect.YqlInterval64,
         "Bool": sa.BOOLEAN,

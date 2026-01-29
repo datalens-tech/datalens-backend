@@ -16,7 +16,7 @@ import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_db_testing.database.engine_wrapper import EngineWrapperBase
-import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 
 class YdbTypeSpec(NamedTuple):
@@ -54,27 +54,27 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     sa.BINARY: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
     sa.Text: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
     sa.Unicode: YdbTypeSpec(type=ydb.PrimitiveType.Utf8, to_sql_str=lambda x: f'"{x}"'),
-    dl_sqlalchemy_ydb.dialect.YqlFloat: YdbTypeSpec(type=ydb.PrimitiveType.Float, to_sql_str=str),
-    dl_sqlalchemy_ydb.dialect.YqlDouble: YdbTypeSpec(type=ydb.PrimitiveType.Double, to_sql_str=str),
-    dl_sqlalchemy_ydb.dialect.YqlString: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
-    dl_sqlalchemy_ydb.dialect.YqlUtf8: YdbTypeSpec(type=ydb.PrimitiveType.Utf8, to_sql_str=lambda x: f'"{x}"'),
-    dl_sqlalchemy_ydb.dialect.YqlUuid: YdbTypeSpec(type=ydb.PrimitiveType.UUID, to_sql_str=lambda x: f'UUID("{x}")'),
+    ydb_dialect.YqlFloat: YdbTypeSpec(type=ydb.PrimitiveType.Float, to_sql_str=str),
+    ydb_dialect.YqlDouble: YdbTypeSpec(type=ydb.PrimitiveType.Double, to_sql_str=str),
+    ydb_dialect.YqlString: YdbTypeSpec(type=ydb.PrimitiveType.String, to_sql_str=lambda x: f'"{x}"'),
+    ydb_dialect.YqlUtf8: YdbTypeSpec(type=ydb.PrimitiveType.Utf8, to_sql_str=lambda x: f'"{x}"'),
+    ydb_dialect.YqlUuid: YdbTypeSpec(type=ydb.PrimitiveType.UUID, to_sql_str=lambda x: f'UUID("{x}")'),
     sa.Date: YdbTypeSpec(type=ydb.PrimitiveType.Date, to_sql_str=lambda x: f'DateTime::MakeDate($date_parse("{x}"))'),
     # Datetime
     # TODO: 2025.01.29: Not adding Datetime64 because YDB Datetime::Parse64 does not work
     ydb_sa.types.YqlDateTime: _DATETIME_TYPE_SPEC,
+    ydb_dialect.YqlDateTime: _DATETIME_TYPE_SPEC,
     sa.DateTime: _DATETIME_TYPE_SPEC,
     sa.DATETIME: _DATETIME_TYPE_SPEC,
     # Timestamp
     # TODO: 2025.01.29: Not adding Timestamp64 because YDB Datetime::Parse64 does not work
     ydb_sa.types.YqlTimestamp: _TIMESTAMP_TYPE_SPEC,
+    ydb_dialect.YqlTimestamp: _TIMESTAMP_TYPE_SPEC,
     sa.TIMESTAMP: _TIMESTAMP_TYPE_SPEC,
     # Interval
-    dl_sqlalchemy_ydb.dialect.YqlInterval: YdbTypeSpec(
-        ydb.PrimitiveType.Interval, to_sql_str=lambda x: f"CAST({x} as Interval)"
-    ),
+    ydb_dialect.YqlInterval: YdbTypeSpec(ydb.PrimitiveType.Interval, to_sql_str=lambda x: f"CAST({x} as Interval)"),
     # Interval64
-    dl_sqlalchemy_ydb.dialect.YqlInterval64: YdbTypeSpec(
+    ydb_dialect.YqlInterval64: YdbTypeSpec(
         ydb.PrimitiveType.Interval64, to_sql_str=lambda x: f"CAST({x} as Interval64)"
     ),
 }

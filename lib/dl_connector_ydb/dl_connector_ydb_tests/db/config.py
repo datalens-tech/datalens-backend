@@ -3,7 +3,6 @@ import uuid
 
 import requests
 import sqlalchemy as sa
-import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_constants.enums import UserDataType
@@ -78,8 +77,8 @@ TABLE_SCHEMA = (
     ("some_string", UserDataType.string, ydb_dialect.YqlString),
     ("some_utf8", UserDataType.string, ydb_dialect.YqlUtf8),
     ("some_date", UserDataType.date, sa.Date),
-    ("some_datetime", UserDataType.genericdatetime, ydb_sa.types.YqlDateTime),
-    ("some_timestamp", UserDataType.genericdatetime, ydb_sa.types.YqlTimestamp),
+    ("some_datetime", UserDataType.genericdatetime, ydb_dialect.YqlDateTime),
+    ("some_timestamp", UserDataType.genericdatetime, ydb_dialect.YqlTimestamp),
     ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
     ("some_uuid", UserDataType.uuid, dl_sqlalchemy_ydb.dialect.YqlUuid),
 )

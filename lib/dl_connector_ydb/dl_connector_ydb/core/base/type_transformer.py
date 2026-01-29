@@ -63,6 +63,10 @@ class YQLTypeTransformer(TypeTransformer):
             ydb_sa.types.YqlDateTime64,
             ydb_sa.types.YqlTimestamp,
             ydb_sa.types.YqlTimestamp64,
+            ydb_dialect.YqlDateTime,
+            ydb_dialect.YqlDateTime64,
+            ydb_dialect.YqlTimestamp,
+            ydb_dialect.YqlTimestamp64,
         ),
         UserDataType.genericdatetime: (
             sa.DATETIME,
@@ -71,6 +75,10 @@ class YQLTypeTransformer(TypeTransformer):
             ydb_sa.types.YqlDateTime64,
             ydb_sa.types.YqlTimestamp,
             ydb_sa.types.YqlTimestamp64,
+            ydb_dialect.YqlDateTime,
+            ydb_dialect.YqlDateTime64,
+            ydb_dialect.YqlTimestamp,
+            ydb_dialect.YqlTimestamp64,
         ),
         UserDataType.unsupported: (sa.sql.sqltypes.NullType,),  # Actually the default, so should not matter much.
         UserDataType.uuid: (ydb_dialect.YqlUuid,),

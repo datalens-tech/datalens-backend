@@ -8,6 +8,63 @@ import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 
+# These types are defined to fix debug query generation and to enable explicit cast to timestamp
+class YqlTimestamp(sa.types.DateTime):
+    __visit_name__ = "Timestamp"
+
+    def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
+        def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[datetime.datetime]:
+            if value is None:
+                return None
+            if not self.timezone:
+                return value
+            return value.replace(tzinfo=datetime.timezone.utc)
+
+        return process
+
+    def literal_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
+        def process(value: datetime.datetime) -> str:
+            dt = value.astimezone(datetime.timezone.utc)
+            dt = dt.replace(tzinfo=None)
+            formatted_dt = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+            return f'Timestamp("{ formatted_dt }")'
+
+        return process
+
+
+class YqlTimestamp64(YqlTimestamp):
+    __visit_name__ = "Timestamp64"
+
+
+class YqlDateTime(YqlTimestamp, sa.types.DateTime):
+    __visit_name__ = "Datetime"
+
+    def bind_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
+        def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[int]:
+            if value is None:
+                return None
+            if not self.timezone:
+                value = value.replace(tzinfo=datetime.timezone.utc)
+            return int(value.timestamp())
+
+        return process
+
+    def literal_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
+        def process(value: datetime.datetime) -> str:
+            dt = value.astimezone(datetime.timezone.utc)
+            dt = dt.replace(tzinfo=None)
+            formatted_dt = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            return f'Datetime("{ formatted_dt }")'
+
+        return process
+
+
+class YqlDateTime64(YqlDateTime):
+    __visit_name__ = "Datetime64"
+
+
 class YqlInterval(sa.types.Interval):
     __visit_name__ = "Interval"
 
@@ -223,10 +280,10 @@ COLUMN_TYPES = {
     ydb.PrimitiveType.Yson: sa.TEXT,
     ydb.PrimitiveType.Date: YqlDate,
     ydb.PrimitiveType.Date32: YqlDate,
-    ydb.PrimitiveType.Datetime: ydb_sa.types.YqlDateTime,
-    ydb.PrimitiveType.Datetime64: ydb_sa.types.YqlDateTime64,
-    ydb.PrimitiveType.Timestamp: ydb_sa.types.YqlTimestamp,
-    ydb.PrimitiveType.Timestamp64: ydb_sa.types.YqlTimestamp64,
+    ydb.PrimitiveType.Datetime: YqlDateTime,
+    ydb.PrimitiveType.Datetime64: YqlDateTime64,
+    ydb.PrimitiveType.Timestamp: YqlTimestamp,
+    ydb.PrimitiveType.Timestamp64: YqlTimestamp64,
     ydb.PrimitiveType.Interval: YqlInterval,
     ydb.PrimitiveType.Interval64: YqlInterval64,
     ydb.PrimitiveType.Bool: sa.BOOLEAN,
