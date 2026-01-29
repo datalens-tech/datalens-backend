@@ -29,5 +29,7 @@ ROW_CONVERTERS: dict[str, Callable[[Any], Any]] = {
     "list<string>": convert_bytes,
     "string": convert_bytes,
     "timestamp": convert_timestamp,
+    "timestamp64": convert_timestamp,
     "interval": convert_interval,
+    "interval64": convert_interval,
 }

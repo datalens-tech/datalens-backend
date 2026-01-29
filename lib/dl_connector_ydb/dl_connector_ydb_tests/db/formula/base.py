@@ -124,14 +124,8 @@ class YQLTestBase(FormulaConnectorTestBase):
             dbe.db.drop_table(table)
 
     @pytest.fixture(scope="function")
-    def ydb_data_table_field_types_patch(self, monkeypatch):
-        """Patch parent evaluator to handle timestamp type for ydb_data_table"""
-
-        ydb_field_types = {**FIELD_TYPES, **self.YDB_FIELD_TYPES}
-
-        monkeypatch.setattr("dl_formula_testing.evaluator.FIELD_TYPES", ydb_field_types)
-
-        return ydb_field_types
+    def ydb_data_table_field_types(self) -> dict[str, DataType]:
+        return {**FIELD_TYPES, **self.YDB_FIELD_TYPES}
 
     @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
