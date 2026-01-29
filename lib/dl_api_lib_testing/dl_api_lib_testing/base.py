@@ -23,6 +23,7 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.loader import preload_api_lib
 from dl_api_lib_testing.app import TestingControlApiAppFactory
+from dl_api_lib_testing.app_settings import TestingControlApiAppSettings
 from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 import dl_auth
@@ -149,7 +150,7 @@ class ApiTestBase(abc.ABC):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
-        settings = ControlApiAppSettings(fallback=deprecated_settings)
+        settings = TestingControlApiAppSettings(fallback=deprecated_settings)
 
         return settings
 
