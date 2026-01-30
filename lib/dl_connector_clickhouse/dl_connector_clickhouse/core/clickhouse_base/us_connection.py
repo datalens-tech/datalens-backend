@@ -55,6 +55,11 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
         max_execution_time: Optional[int] = attr.ib(default=None)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
         readonly: int = attr.ib(kw_only=True, default=2)
+        experimental_features: bool = attr.ib(kw_only=True, default=False)
+
+    @property
+    def experimental_features_enabled(self) -> bool:
+        return self.data.experimental_features
 
     def get_conn_dto(self) -> ClickHouseConnDTO:
         return ClickHouseConnDTO(

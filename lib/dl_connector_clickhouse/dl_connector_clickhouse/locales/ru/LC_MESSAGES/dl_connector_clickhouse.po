@@ -15,6 +15,15 @@ msgstr "ClickHouse"
 msgid "field_readonly-mode"
 msgstr "Readonly"
 
+msgid "label_experimental-features"
+msgstr "Экспериментальные возможности"
+
+msgid "value_experimental-features-off"
+msgstr "Выкл"
+
+msgid "value_experimental-features-on"
+msgstr "Вкл"
+
 msgid "field_click-house-port"
 msgstr "Порт HTTP-интерфейса"
 

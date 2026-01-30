@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-import attr
 
 from dl_constants.enums import DashSQLQueryType
 from dl_core.us_connection_base import (
@@ -32,9 +31,6 @@ class ConnectionClickhouse(
     User's ClickHouse database.
     Should not be used for internal clickhouses.
     """
-
-    class DataModel(ConnectionClickhouseBase.DataModel):
-        readonly: int = attr.ib(kw_only=True, default=2)
 
     source_type = SOURCE_TYPE_CH_TABLE
     allowed_source_types = frozenset((SOURCE_TYPE_CH_TABLE, SOURCE_TYPE_CH_SUBSELECT))

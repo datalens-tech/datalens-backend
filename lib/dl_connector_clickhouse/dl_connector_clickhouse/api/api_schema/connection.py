@@ -43,3 +43,8 @@ class ClickHouseConnectionSchema(
         load_default=2,
         dump_default=2,
     )
+    experimental_features = core_ma_fields.OnOffField(
+        attribute="data.experimental_features",
+        bi_extra=FieldExtra(editable=True),
+        load_default=False,
+    )
