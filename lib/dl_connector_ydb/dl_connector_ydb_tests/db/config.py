@@ -1,4 +1,5 @@
 from typing import ClassVar
+import uuid
 
 import requests
 import sqlalchemy as sa
@@ -7,6 +8,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_constants.enums import UserDataType
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 from dl_testing.containers import get_test_container_hostport
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
@@ -71,13 +73,14 @@ TABLE_SCHEMA = (
     ("some_int64", UserDataType.integer, sa.BigInteger),
     ("some_uint8", UserDataType.integer, sa.SmallInteger),
     ("some_bool", UserDataType.boolean, sa.Boolean),
-    ("some_double", UserDataType.float, sa.Float),
-    ("some_string", UserDataType.string, sa.String),
-    ("some_utf8", UserDataType.string, sa.Unicode),
+    ("some_double", UserDataType.float, ydb_dialect.YqlDouble),
+    ("some_string", UserDataType.string, ydb_dialect.YqlString),
+    ("some_utf8", UserDataType.string, ydb_dialect.YqlUtf8),
     ("some_date", UserDataType.date, sa.Date),
-    ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
-    ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
+    ("some_datetime", UserDataType.genericdatetime, ydb_dialect.YqlDateTime),
+    ("some_timestamp", UserDataType.genericdatetime, ydb_dialect.YqlTimestamp),
     ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
+    ("some_uuid", UserDataType.uuid, dl_sqlalchemy_ydb.dialect.YqlUuid),
 )
 TABLE_DATA = [
     {
@@ -94,6 +97,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 9,
+        "some_uuid": uuid.UUID("a8f4768e-6cd3-4383-89dd-b4787cdc0c16"),
     },
     {
         "id": 2,
@@ -109,6 +113,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": uuid.UUID("00000000-0000-0000-0000-000000000000"),
     },
     {
         "id": 3,
@@ -124,6 +129,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 1337,
+        "some_uuid": uuid.UUID("ec4fc0c5-9171-43a1-a8f6-f3d17aad7bf8"),
     },
     {
         "id": 4,
@@ -139,6 +145,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 42,
+        "some_uuid": uuid.UUID("11111111-1111-1111-1111-111111111111"),
     },
     {
         "id": 5,
@@ -154,6 +161,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": uuid.UUID("11111111-1111-1111-1111-111111111111"),
     },
     {
         "id": 6,
@@ -169,6 +177,7 @@ TABLE_DATA = [
         "some_datetime": "2021-06-07T18:19:20Z",
         "some_timestamp": "2021-06-07T18:19:20Z",
         "some_interval": None,
+        "some_uuid": uuid.UUID("1418976a-c9c6-4cba-8b0e-a5b74b457381"),
     },
     {
         "id": 7,
@@ -184,6 +193,7 @@ TABLE_DATA = [
         "some_datetime": "1970-12-31T23:58:57Z",
         "some_timestamp": "1970-12-31T23:58:57Z",
         "some_interval": 0,
+        "some_uuid": None,
     },
     {
         "id": 8,
@@ -199,6 +209,7 @@ TABLE_DATA = [
         "some_datetime": "1972-03-28T17:11:02Z",
         "some_timestamp": "1972-03-28T17:11:02Z",
         "some_interval": 1,
+        "some_uuid": None,
     },
     {
         "id": 9,
@@ -214,6 +225,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": None,
     },
     {
         "id": 10,
@@ -229,6 +241,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": None,
+        "some_uuid": None,
     },
     {
         "id": 11,
@@ -244,6 +257,7 @@ TABLE_DATA = [
         "some_datetime": None,
         "some_timestamp": None,
         "some_interval": 1234,
+        "some_uuid": uuid.UUID("a68da475-4850-4a15-8b08-b5bd95edaadb"),
     },
 ]
 TABLE_NAME = "test_table_h"
@@ -257,12 +271,17 @@ select
     MAX(CAST(111 AS UInt8)) as some_uint8,
     MAX(4398046511104) as some_int64,
     MAX(18446744073709551606) as some_uint64,
+    cast(MAX(1.11e-11) as Float) as some_float,
     MAX(1.11e-11) as some_double,
     MAX(true) as some_bool,
     MAX(Date('2021-06-09')) as some_date,
     MAX(Datetime('2021-06-09T20:50:47Z')) as some_datetime,
+    MAX(Datetime64('2021-06-09T20:50:47Z')) as some_datetime64,
     MAX(Timestamp('2021-07-10T21:51:48.841512Z')) as some_timestamp,
+    MAX(Timestamp64('2021-07-10T21:51:48.841512Z')) as some_timestamp64,
     CAST(1 AS Interval) as some_interval,
+    CAST(1 AS Interval64) as some_interval64,
+    CAST("03bbcd6d-3de3-4718-a503-a37fcb75e663" AS UUID) as some_uuid,
 
     MAX(ListHead(ListSkip(Unicode::SplitToList(CAST(some_string AS UTF8), ''), 3))) as str_split,
     MAX(ListConcat(ListReplicate(CAST(' ' AS UTF8), 5))) as num_space_by_lst,

@@ -26,6 +26,7 @@ from dl_core.connection_models import (
 )
 from dl_core.utils import sa_plain_text
 import dl_sqlalchemy_ydb.dialect
+import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 import dl_connector_ydb.core.base.row_converters
 
@@ -73,17 +74,22 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Uint16": ydb_sa.types.UInt16,
         "Uint32": ydb_sa.types.UInt32,
         "Uint64": ydb_sa.types.UInt64,
-        "Float": sa.FLOAT,
-        "Double": sa.FLOAT,
-        "String": sa.TEXT,
-        "Utf8": sa.TEXT,
+        "Float": dl_sqlalchemy_ydb.dialect.YqlFloat,
+        "Double": dl_sqlalchemy_ydb.dialect.YqlDouble,
+        "String": dl_sqlalchemy_ydb.dialect.YqlString,
+        "Utf8": dl_sqlalchemy_ydb.dialect.YqlUtf8,
         "Json": sa.TEXT,
         "Yson": sa.TEXT,
-        "Uuid": sa.TEXT,
-        "Date": sa.DATE,
-        "Timestamp": dl_sqlalchemy_ydb.dialect.YqlTimestamp,
-        "Datetime": dl_sqlalchemy_ydb.dialect.YqlDateTime,
+        "Uuid": dl_sqlalchemy_ydb.dialect.YqlUuid,
+        "UUID": dl_sqlalchemy_ydb.dialect.YqlUuid,
+        "Date": ydb_sa.types.YqlDate,
+        "Date32": ydb_sa.types.YqlDate32,
+        "Timestamp": ydb_dialect.YqlTimestamp,
+        "Timestamp64": ydb_dialect.YqlTimestamp64,
+        "Datetime": ydb_dialect.YqlDateTime,
+        "Datetime64": ydb_dialect.YqlDateTime64,
         "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
+        "Interval64": dl_sqlalchemy_ydb.dialect.YqlInterval64,
         "Bool": sa.BOOLEAN,
     }
     _type_code_to_sa = {

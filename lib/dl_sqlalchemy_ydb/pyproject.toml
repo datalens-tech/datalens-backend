@@ -14,6 +14,9 @@ sqlalchemy = "*"
 ydb = "*"
 ydb-sqlalchemy = "*"
 
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
+
 [tool.poetry.plugins."sqlalchemy.dialects"]
 bi_ydb = "dl_sqlalchemy_ydb.dialect:CustomYqlDialect"
 
@@ -44,5 +47,8 @@ requires = ["poetry-core"]
 [datalens.meta.mypy]
 targets = [] # ignore mypy in entire module
 
-[datalens_ci]
-skip_test = true
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_sqlalchemy_ydb_tests/"
+skip_compose = "true"
+target_path = "unit"
