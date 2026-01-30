@@ -3,6 +3,7 @@ import uuid
 
 import requests
 import sqlalchemy as sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_constants.enums import UserDataType
@@ -68,20 +69,73 @@ DB_CONFIGURATIONS = {
 
 TABLE_SCHEMA = (
     ("id", UserDataType.integer, sa.Integer),
-    ("distinct_string", UserDataType.string, sa.String),
-    ("some_int32", UserDataType.integer, sa.Integer),
-    ("some_int64", UserDataType.integer, sa.BigInteger),
-    ("some_uint8", UserDataType.integer, sa.SmallInteger),
+    ("distinct_string", UserDataType.string, ydb_dialect.YqlString),
+    ("some_int32", UserDataType.integer, ydb_sa.types.Int32),
+    ("some_int64", UserDataType.integer, ydb_sa.types.Int64),
+    ("some_uint8", UserDataType.integer, ydb_sa.types.Int16),
     ("some_bool", UserDataType.boolean, sa.Boolean),
     ("some_double", UserDataType.float, ydb_dialect.YqlDouble),
     ("some_string", UserDataType.string, ydb_dialect.YqlString),
     ("some_utf8", UserDataType.string, ydb_dialect.YqlUtf8),
-    ("some_date", UserDataType.date, sa.Date),
+    ("some_date", UserDataType.date, ydb_dialect.YqlDate),
     ("some_datetime", UserDataType.genericdatetime, ydb_dialect.YqlDateTime),
     ("some_timestamp", UserDataType.genericdatetime, ydb_dialect.YqlTimestamp),
     ("some_interval", UserDataType.integer, dl_sqlalchemy_ydb.dialect.YqlInterval),
     ("some_uuid", UserDataType.uuid, dl_sqlalchemy_ydb.dialect.YqlUuid),
 )
+
+COLUMN_TABLE_SCHEMA = (
+    ("id", UserDataType.integer, sa.Integer),
+    ("distinct_string", UserDataType.string, ydb_dialect.YqlString),
+    ("some_int32", UserDataType.integer, ydb_sa.types.Int32),
+    ("some_int64", UserDataType.integer, ydb_sa.types.Int64),
+    ("some_uint8", UserDataType.integer, ydb_sa.types.UInt8),
+    ("some_double", UserDataType.float, ydb_dialect.YqlDouble),
+    ("some_string", UserDataType.string, ydb_dialect.YqlString),
+    ("some_utf8", UserDataType.string, ydb_dialect.YqlUtf8),
+    ("some_date", UserDataType.date, ydb_dialect.YqlDate),
+    ("some_datetime", UserDataType.genericdatetime, ydb_dialect.YqlDateTime),
+    ("some_timestamp", UserDataType.genericdatetime, ydb_dialect.YqlTimestamp),
+)
+_COLUMN_TABLE_SCHEMA_COLUMNS = set(col[0] for col in COLUMN_TABLE_SCHEMA)
+
+SA_TYPE_TO_YDB_TYPE_NAME = {
+    # Integer
+    ydb_sa.types.UInt8: "UInt8",
+    ydb_sa.types.UInt16: "UInt16",
+    ydb_sa.types.UInt32: "UInt32",
+    ydb_sa.types.UInt64: "UInt64",
+    ydb_sa.types.Int8: "Int8",
+    ydb_sa.types.Int16: "Int16",
+    ydb_sa.types.Int32: "Int32",
+    ydb_sa.types.Int64: "Int64",
+    sa.Integer: "Int32",
+    sa.String: "String",
+    sa.BigInteger: "Int64",
+    sa.SmallInteger: "Int8",
+    # Boolean
+    sa.Boolean: "Bool",
+    # Double
+    sa.Float: "Double",
+    ydb_dialect.YqlFloat: "Float",
+    ydb_dialect.YqlDouble: "Double",
+    # String
+    ydb_dialect.YqlString: "String",
+    ydb_dialect.YqlUtf8: "Utf8",
+    sa.Unicode: "Utf8",
+    # Date
+    sa.Date: "Date",
+    ydb_dialect.YqlDate: "Date",
+    # Datetime
+    sa.DATETIME: "Datetime",
+    ydb_dialect.YqlDateTime: "Datetime",
+    # Timestamp
+    sa.TIMESTAMP: "Timestamp",
+    ydb_dialect.YqlTimestamp: "Timestamp",
+    # Interval
+    dl_sqlalchemy_ydb.dialect.YqlInterval: "Interval",
+}
+
 TABLE_DATA = [
     {
         "id": 1,
@@ -260,7 +314,14 @@ TABLE_DATA = [
         "some_uuid": uuid.UUID("a68da475-4850-4a15-8b08-b5bd95edaadb"),
     },
 ]
+
+# Leave only values in COLUMN_TABLE_SCHEMA
+COLUMN_TABLE_DATA = [
+    {key: value for key, value in row.items() if key in _COLUMN_TABLE_SCHEMA_COLUMNS} for row in TABLE_DATA
+]
+
 TABLE_NAME = "test_table_h"
+
 
 DASHSQL_QUERY = r"""
 select

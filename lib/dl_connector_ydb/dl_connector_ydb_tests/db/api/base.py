@@ -27,7 +27,10 @@ from dl_connector_ydb.core.ydb.constants import (
 )
 from dl_connector_ydb_tests.db.config import (
     API_TEST_CONFIG,
+    COLUMN_TABLE_DATA,
+    COLUMN_TABLE_SCHEMA,
     DB_CORE_URL,
+    SA_TYPE_TO_YDB_TYPE_NAME,
     TABLE_DATA,
     TABLE_NAME,
     TABLE_SCHEMA,
@@ -133,6 +136,41 @@ class YDBViewDatasetTestBase(YDBConnectionTestBase, DatasetTestBase):
                 table_name=sample_view_name,
             ),
         )
+
+
+class YDBColumnDatasetTestBase(YDBDatasetTestBase):
+    @pytest.fixture(scope="class")
+    def sample_table(self, db: Db) -> DbTable:
+        table_name = TABLE_NAME + "_column"
+
+        db_table = make_table(
+            db=db,
+            name=table_name,
+            columns=[
+                C(name=name, user_type=user_type, sa_type=sa_type) for name, user_type, sa_type in COLUMN_TABLE_SCHEMA
+            ],
+            data=[],  # to avoid producing a sample data
+            create_in_db=False,
+        )
+
+        column_definitions_list = []
+        for name, _, sa_type in COLUMN_TABLE_SCHEMA:
+            target_type = SA_TYPE_TO_YDB_TYPE_NAME[sa_type]
+            if name == "id":
+                target_type += " NOT NULL"
+
+            column_definitions_list.append(f"{name} {target_type}")
+        column_definitions = ", ".join(column_definitions_list)
+
+        query = f"CREATE TABLE `{table_name}` ({column_definitions}, PRIMARY KEY (id)) WITH (STORE = COLUMN)"
+        db.get_current_connection().connection.cursor().execute_scheme(query)
+
+        db.create_table(db_table.table)
+        db.insert_into_table(db_table.table, COLUMN_TABLE_DATA)
+
+        yield db_table
+
+        db.get_current_connection().connection.cursor().execute_scheme(f"DROP TABLE `{table_name}`;")
 
 
 class YDBDataApiTestBase(YDBDatasetTestBase, StandardizedDataApiTestBase):
