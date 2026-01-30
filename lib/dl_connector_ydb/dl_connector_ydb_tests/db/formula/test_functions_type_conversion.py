@@ -417,7 +417,7 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
         columns = [
             sa.Column("bool_value", sa.Boolean()),
             sa.Column("int64_value", sa.Integer(), primary_key=True),
-            sa.Column("float_value", ydb_dialect.YqlDouble()),
+            sa.Column("float_value", ydb_dialect.YqlFloat()),
             sa.Column("string_value", ydb_dialect.YqlString()),
             sa.Column("date_value", sa.Date()),
         ]
