@@ -33,6 +33,7 @@ from dl_constants.enums import (
     USAuthMode,
 )
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.us_manager.settings import USClientSettings
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
@@ -367,11 +368,27 @@ class WhitelistsAppSettings(dl_settings.BaseRootSettings):
     ] = None
 
 
-class ControlApiAppSettings(AppSettings):
+def postload_connectors_settings(value: dict[str, ConnectorSettings]) -> dict[str, ConnectorSettings]:
+    """Validator function to populate missing connector settings with defaults."""
+    for conn_type_value, settings_cls in ConnectorSettings.classes.items():
+        if conn_type_value not in value:
+            assert issubclass(settings_cls, ConnectorSettings)
+            value[conn_type_value] = settings_cls()
+    return value
+
+
+class ConnectorsSettingsMixin(AppSettings):
+    CONNECTORS: Annotated[
+        dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings],
+        pydantic.AfterValidator(postload_connectors_settings),
+    ] = pydantic.Field(default_factory=dict)
+
+
+class ControlApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
 
 
-class DataApiAppSettings(AppSettings):
+class DataApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
 
 

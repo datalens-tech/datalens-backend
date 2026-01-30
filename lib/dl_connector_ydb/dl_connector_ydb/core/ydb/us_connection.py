@@ -29,7 +29,7 @@ from dl_connector_ydb.core.ydb.constants import (
     YDBAuthTypeMode,
 )
 from dl_connector_ydb.core.ydb.dto import YDBConnDTO
-from dl_connector_ydb.core.ydb.settings import DeprecatedYDBConnectorSettings
+from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 
 
 if TYPE_CHECKING:
@@ -37,13 +37,13 @@ if TYPE_CHECKING:
 
 
 class YDBConnection(
-    ConnectionSettingsMixin[DeprecatedYDBConnectorSettings],
+    ConnectionSettingsMixin[YDBConnectorSettings],
     ClassicConnectionSQL,
 ):
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
     allow_dashsql: ClassVar[bool] = True
-    settings_type = DeprecatedYDBConnectorSettings
+    settings_type = YDBConnectorSettings
 
     source_type = SOURCE_TYPE_YDB_TABLE
 

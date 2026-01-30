@@ -17,15 +17,13 @@ from dl_configs.connector_availability import (
 )
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
-from dl_configs.settings_loaders.loader_env import (
-    load_connectors_settings_from_env_with_fallback,
-    load_settings_from_env_with_fallback,
-)
+from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_core.core_connectors import load_all_connectors
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
-from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
+from dl_connector_bundle_chs3.chs3_base.core.settings import (
+    FileS3ConnectorSettingsBase,
+    _RootSettings,
+)
 
 
 TEST_CONFIG_PATH = Path(test_directory.__file__).parent / "config.yaml"
@@ -56,7 +54,7 @@ EXPECTED_DATA_API_SETTINGS = DeprecatedDataApiAppSettings(
     US_MASTER_TOKEN=US_MASTER_TOKEN,
 )
 
-EXPECTED_FILE_SETTINGS = DeprecatedFileS3ConnectorSettings(
+EXPECTED_FILE_SETTINGS = FileS3ConnectorSettingsBase(
     SECURE=True,
     HOST="localhost",
     PORT=8443,
@@ -64,8 +62,10 @@ EXPECTED_FILE_SETTINGS = DeprecatedFileS3ConnectorSettings(
     PASSWORD="qwerty",
     ACCESS_KEY_ID="key_id",
     SECRET_ACCESS_KEY="access_key",
-    BUCKET="bucket",
-    S3_ENDPOINT="http://s3-storage:8000",
+    root=_RootSettings(
+        S3_ENDPOINT_URL="http://s3-storage:8000",
+        FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bucket",
+    ),
 )
 
 
@@ -107,25 +107,3 @@ def test_config_loading(expected_settings):
     )
     settings = load_settings_from_env_with_fallback(settings_type=expected_settings.__class__, env=env)
     assert settings == expected_settings
-
-
-def test_connector_settings_loading():
-    load_all_connectors()
-    env = dict(
-        CONFIG_PATH=TEST_CONFIG_PATH,
-        CONNECTORS_FILE_PASSWORD="qwerty",
-        CONNECTORS_FILE_ACCESS_KEY_ID="key_id",
-        CONNECTORS_FILE_SECRET_ACCESS_KEY="access_key",
-    )
-    connectors_settings = load_connectors_settings_from_env_with_fallback(
-        settings_registry={CONNECTION_TYPE_FILE: DeprecatedFileS3ConnectorSettings},
-        fallbacks={CONNECTION_TYPE_FILE: file_s3_settings_fallback},
-        env=env,
-    )
-
-    assert len(connectors_settings) == 1
-    file_settings = attr.evolve(
-        connectors_settings[CONNECTION_TYPE_FILE],
-        REPLACE_SECRET_SALT=EXPECTED_FILE_SETTINGS.REPLACE_SECRET_SALT,  # non-deterministic
-    )
-    assert file_settings == EXPECTED_FILE_SETTINGS
