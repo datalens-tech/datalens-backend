@@ -12,7 +12,10 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormFactory,
     ConnectionFormMode,
 )
-from dl_api_connector.form_config.models.common import CommonFieldName
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    FormFieldName,
+)
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
@@ -21,7 +24,43 @@ from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_mysql.api.connection_info import MySQLConnectionInfoProvider
 from dl_connector_mysql.api.i18n.localizer import Translatable
+from dl_connector_mysql.core.constants import MySQLEnforceCollateMode
 from dl_connector_mysql.core.settings import MySQLConnectorSettings
+
+
+class MySQLFieldName(FormFieldName):
+    enforce_collate = "enforce_collate"
+
+
+class MySQLRowConstructor(RowConstructor):
+    def enforce_collate_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_enforce-collate")),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+                C.RadioButtonRowItem(
+                    name=MySQLFieldName.enforce_collate,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_enforce-collate-auto")),
+                            value=MySQLEnforceCollateMode.auto.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_enforce-collate-off")),
+                            value=MySQLEnforceCollateMode.off.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_enforce-collate-on")),
+                            value=MySQLEnforceCollateMode.on.value,
+                        ),
+                    ],
+                    default_value=MySQLEnforceCollateMode.auto.value,
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+            ]
+        )
 
 
 class MySQLConnectionFormFactory(ConnectionFormFactory):
@@ -32,42 +71,42 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
 
     def _get_host_section(
         self,
-        rc: RowConstructor,
+        rc: MySQLRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.host_row()]
 
     def _get_port_section(
         self,
-        rc: RowConstructor,
+        rc: MySQLRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.port_row(default_value=self.DEFAULT_PORT)]
 
     def _get_db_name_section(
         self,
-        rc: RowConstructor,
+        rc: MySQLRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.db_name_row()]
 
     def _get_username_section(
         self,
-        rc: RowConstructor,
+        rc: MySQLRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.username_row()]
 
     def _get_password_section(
         self,
-        rc: RowConstructor,
+        rc: MySQLRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.password_row(mode=self.mode)]
 
     def _get_common_section(
         self,
-        rc: RowConstructor,
+        rc: MySQLRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         assert connector_settings is not None and isinstance(connector_settings, MySQLConnectorSettings)
@@ -82,6 +121,7 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
+            rc.enforce_collate_row(),
             *rc.ssl_rows(
                 enabled_name=CommonFieldName.ssl_enable,
                 enabled_help_text=self._localizer.translate(Translatable("label_mysql-ssl-enabled-tooltip")),
@@ -107,6 +147,7 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                FormFieldApiSchema(name=MySQLFieldName.enforce_collate),
                 FormFieldApiSchema(name=CommonFieldName.ssl_enable),
                 FormFieldApiSchema(name=CommonFieldName.ssl_ca),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
@@ -145,7 +186,7 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        rc = RowConstructor(localizer=self._localizer)
+        rc = MySQLRowConstructor(localizer=self._localizer)
 
         edit_api_schema = self._get_edit_api_schema(connector_settings)
         create_api_schema = self._get_create_api_schema(connector_settings, edit_api_schema)

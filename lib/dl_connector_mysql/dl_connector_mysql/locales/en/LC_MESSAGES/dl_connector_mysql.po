@@ -12,6 +12,18 @@ msgstr ""
 msgid "label_connector-mysql"
 msgstr "MySQL"
 
+msgid "field_enforce-collate"
+msgstr "Specifying collate in the request"
+
+msgid "value_enforce-collate-auto"
+msgstr "Auto"
+
+msgid "value_enforce-collate-off"
+msgstr "Off"
+
+msgid "value_enforce-collate-on"
+msgstr "On"
+
 msgid "label_mysql-ssl-enabled-tooltip"
 msgstr ""
 "When the option is enabled, it ensures mandatory use of ssl for connection."
