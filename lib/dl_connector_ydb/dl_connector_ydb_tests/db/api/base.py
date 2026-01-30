@@ -27,6 +27,7 @@ from dl_connector_ydb.core.ydb.constants import (
 )
 from dl_connector_ydb_tests.db.config import (
     API_TEST_CONFIG,
+    COLUMN_TABLE_DATA,
     COLUMN_TABLE_SCHEMA,
     DB_CORE_URL,
     SA_TYPE_TO_YDB_TYPE_NAME,
@@ -165,7 +166,7 @@ class YDBColumnDatasetTestBase(YDBDatasetTestBase):
         db.get_current_connection().connection.cursor().execute_scheme(query)
 
         db.create_table(db_table.table)
-        db.insert_into_table(db_table.table, TABLE_DATA)
+        db.insert_into_table(db_table.table, COLUMN_TABLE_DATA)
 
         yield db_table
 

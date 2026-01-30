@@ -96,6 +96,7 @@ COLUMN_TABLE_SCHEMA = (
     ("some_datetime", UserDataType.genericdatetime, sa.DATETIME),
     ("some_timestamp", UserDataType.genericdatetime, sa.TIMESTAMP),
 )
+_COLUMN_TABLE_SCHEMA_COLUMNS = set(col[0] for col in COLUMN_TABLE_SCHEMA)
 
 SA_TYPE_TO_YDB_TYPE_NAME = {
     sa.Integer: "Int32",
@@ -291,7 +292,9 @@ TABLE_DATA = [
 ]
 
 # Leave only values in COLUMN_TABLE_SCHEMA
-COLUMN_TABLE_DATA = [{key: value for key, value in row.items() if key in COLUMN_TABLE_SCHEMA} for row in TABLE_DATA]
+COLUMN_TABLE_DATA = [
+    {key: value for key, value in row.items() if key in _COLUMN_TABLE_SCHEMA_COLUMNS} for row in TABLE_DATA
+]
 
 TABLE_NAME = "test_table_h"
 
