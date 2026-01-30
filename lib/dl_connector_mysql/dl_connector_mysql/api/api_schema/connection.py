@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from marshmallow import fields as ma_fields
+
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
@@ -9,6 +11,7 @@ from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchem
 from dl_api_connector.api_schema.extras import FieldExtra
 import dl_core.marshmallow as core_ma_fields
 
+from dl_connector_mysql.core.constants import MySQLEnforceCollateMode
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 
 
@@ -21,6 +24,14 @@ class MySQLConnectionSchema(
     TARGET_CLS = ConnectionMySQL
     ALLOW_MULTI_HOST = True
 
+    enforce_collate = ma_fields.Enum(
+        MySQLEnforceCollateMode,
+        attribute="data.enforce_collate",
+        required=False,
+        dump_default=MySQLEnforceCollateMode.auto,
+        load_default=MySQLEnforceCollateMode.auto,
+        bi_extra=FieldExtra(editable=True),
+    )
     ssl_enable = core_ma_fields.OnOffField(
         attribute="data.ssl_enable",
         required=False,
