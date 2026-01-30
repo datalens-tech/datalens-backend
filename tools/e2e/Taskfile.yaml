@@ -137,7 +137,7 @@ tasks:
       E2E_DOMAIN: "http://localhost:8080"
       E2E_TEST_NAME_PATTERN: '{{.PATTERN | default ""}}'
       E2E_HEADFUL: '{{.HEADFUL | default ""}}'
-      E2E_RETRY_TIMES: '{{.RETRY_TIMES | default "2"}}'
+      E2E_RETRY_TIMES: '{{.RETRY_TIMES | default ""}}'
       E2E_NO_AUTH: 'false'
       E2E_TEST_TIMEOUT: '90000'
       E2E_ACTION_TIMEOUT: '10000'
@@ -178,4 +178,4 @@ tasks:
       - task: docker-start
       - task: test
         vars:
-          RETRY_TIMES: 1
+          E2E_RETRY_TIMES: 1
