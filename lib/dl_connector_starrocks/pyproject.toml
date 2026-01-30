@@ -1,0 +1,101 @@
+[tool.poetry]
+authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
+description = ""
+license = "Apache 2.0"
+name = "dl-connector-starrocks"
+packages = [{include = "dl_connector_starrocks"}]
+readme = "README.md"
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+aiomysql = ">=0.1.1"
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+dl-connector-mysql = {path = "../dl_connector_mysql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+marshmallow = ">=3.19.0"
+pymysql = ">=1.0.2"
+python = ">=3.10, <3.13"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = ">=7.2.2"
+pytest-asyncio = ">=0.20.3"
+shortuuid = "*"
+
+[tool.poetry.plugins."dl_api_lib.connectors"]
+starrocks = "dl_connector_starrocks.api.connector:StarRocksApiConnector"
+
+[tool.poetry.plugins."dl_core.connectors"]
+starrocks = "dl_connector_starrocks.core.connector:StarRocksCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+starrocks = "dl_connector_starrocks.db_testing.connector:StarRocksDbTestingConnector"
+
+[tool.poetry.plugins."dl_formula.connectors"]
+starrocks = "dl_connector_starrocks.formula.connector:StarRocksFormulaConnector"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_starrocks = "dl_connector_starrocks.core.sa_dialect:BiStarRocksDialect"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "aiomysql",
+  "dl-core-testing",
+  "dl-formula-testing",
+  "dl-sqlalchemy-common",
+  "dl-testing",
+  "marshmallow",
+  "pymysql",
+  "pytest-asyncio",
+  "shortuuid",
+]
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_defs = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = []
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = [
+  "poetry-core",
+]
+
+[datalens.i18n.domains]
+dl_connector_starrocks = [
+  {path = "dl_connector_starrocks/api"},
+  {path = "dl_connector_starrocks/core"},
+]
+
+[datalens.pytest.db]
+labels = ["fat"]
+root_dir = "dl_connector_starrocks_tests/"
+target_path = "db"
+
+[datalens.pytest.unit]
+labels = ["no_compose"]
+root_dir = "dl_connector_starrocks_tests/"
+skip_compose = "true"
+target_path = "unit"
