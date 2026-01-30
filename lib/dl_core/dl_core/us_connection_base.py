@@ -390,6 +390,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def is_typed_query_raw_allowed(self) -> bool:
         return False
 
+    @property
+    def experimental_features_enabled(self) -> bool:
+        return False
+
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)
         if short:

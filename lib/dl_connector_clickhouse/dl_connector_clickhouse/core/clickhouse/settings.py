@@ -49,6 +49,8 @@ class ClickHouseConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixi
         "CONNECTORS__CLICKHOUSE__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_CLICKHOUSE_ENABLE_TABLE_DATASOURCE_FORM",
     }
 
+    ALLOW_EXPERIMENTAL_FEATURES: bool = False
+
 
 class ClickHouseSettingDefinition(ConnectorSettingsDefinition):
     settings_class = DeprecatedClickHouseConnectorSettings
