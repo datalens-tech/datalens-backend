@@ -17,6 +17,7 @@ from .auth import (
     RequestAuthCheckerProtocol,
     RouteMatcher,
 )
+from .gunicorn import GunicornWorker
 from .handlers import (
     BadRequestResponseSchema,
     BaseHandler,
@@ -62,6 +63,7 @@ __all__ = [
     "SubsystemReadinessAsyncCallback",
     "SubsystemReadinessCallback",
     "SubsystemReadinessSyncCallback",
+    "GunicornWorker",
     "HttpServerSettings",
     "HttpServerAppSettingsMixin",
     "HttpServerAppMixin",

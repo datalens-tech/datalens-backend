@@ -2,6 +2,7 @@ from .base import (
     BaseApp,
     BaseAppFactory,
     BaseAppSettings,
+    RuntimeStatus,
 )
 from .exceptions import (
     ApplicationError,
@@ -26,6 +27,7 @@ from .singleton import (
 
 
 __all__ = [
+    "RuntimeStatus",
     "BaseApp",
     "BaseAppSettings",
     "BaseAppFactory",

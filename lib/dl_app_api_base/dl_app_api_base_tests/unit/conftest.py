@@ -335,5 +335,6 @@ async def fixture_app_client(
 ) -> AsyncGenerator[aiohttp.ClientSession, None]:
     async with aiohttp.ClientSession(
         base_url=f"http://{app_settings.HTTP_SERVER.HOST}:{app_settings.HTTP_SERVER.PORT}",
+        timeout=aiohttp.ClientTimeout(total=1),
     ) as session:
         yield session

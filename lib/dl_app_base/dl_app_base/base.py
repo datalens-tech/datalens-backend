@@ -49,6 +49,10 @@ class BaseApp:
     _state: AppState = attr.field(factory=AppState)
 
     @property
+    def state(self) -> AppState:
+        return self._state
+
+    @property
     def startup_callbacks(self) -> Iterator[models.Callback]:
         yield from self._startup_callbacks
 
@@ -80,6 +84,10 @@ class BaseApp:
         self.logger.info("Startup Callbacks completed")
 
     async def on_shutdown(self) -> None:
+        if self._state.runtime_status != RuntimeStatus.RUNNING:
+            self.logger.warning("Application is not running, skipping shutdown")
+            return
+
         self.logger.info("Running ShutdownCallbacks")
         self._state.runtime_status = RuntimeStatus.STOPPING
 
@@ -127,16 +135,18 @@ class BaseApp:
         finally:
             finished_unexpectedly: list[asyncio.Task[None]] = []
             finished_with_exception: list[asyncio.Task[None]] = []
+            cancelled_tasks: list[asyncio.Task[None]] = []
             unfinished_tasks: list[asyncio.Task[None]] = []
 
             for task in tasks:
-                if task.done():
-                    if task.exception() is None:
-                        finished_unexpectedly.append(task)
-                    else:
-                        finished_with_exception.append(task)
-                else:
+                if not task.done():
                     unfinished_tasks.append(task)
+                elif task.cancelled():
+                    cancelled_tasks.append(task)
+                elif task.exception() is not None:
+                    finished_with_exception.append(task)
+                else:
+                    finished_unexpectedly.append(task)
 
             if finished_unexpectedly:
                 self.logger.info("Tasks that finished unexpectedly:")
@@ -146,6 +156,11 @@ class BaseApp:
             if finished_with_exception:
                 self.logger.info("Tasks that finished with exception:")
                 for task in finished_with_exception:
+                    self.logger.info("- %s", task.get_name())
+
+            if cancelled_tasks:
+                self.logger.info("Tasks that were cancelled:")
+                for task in cancelled_tasks:
                     self.logger.info("- %s", task.get_name())
 
             if unfinished_tasks:
@@ -208,17 +223,20 @@ class BaseAppFactory(Generic[AppType]):
         logger.info("Creating Application(%s) with settings: %s", self.app_class.__name__, self.settings)
 
         try:
-            app = self.app_class(
-                startup_callbacks=await self._get_startup_callbacks(),
-                shutdown_callbacks=await self._get_shutdown_callbacks(),
-                main_callbacks=await self._get_main_callbacks(),
-                logger=await self._get_logger(),
-            )
+            app = await self._get_application()
         except Exception as exc:
             raise exceptions.ConfigurationError from exc
 
         logger.info("Application successfully created")
         return app
+
+    async def _get_application(self) -> AppType:
+        return self.app_class(
+            startup_callbacks=await self._get_startup_callbacks(),
+            shutdown_callbacks=await self._get_shutdown_callbacks(),
+            main_callbacks=await self._get_main_callbacks(),
+            logger=await self._get_logger(),
+        )
 
     @singleton.singleton_class_method_result
     async def _get_startup_callbacks(
