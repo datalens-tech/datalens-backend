@@ -304,7 +304,7 @@ class DbCastTypeFunctionYQLTestSuite(
             cast_args=cast_args,
             ok=ok,
             ydb_data_test_table_field_types=ydb_data_test_table_field_types,
-            source_column="float_value",
+            source_column="double_value",
         )
 
     @pytest.mark.parametrize(
@@ -417,7 +417,7 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
         columns = [
             sa.Column("bool_value", sa.Boolean()),
             sa.Column("int64_value", sa.Integer(), primary_key=True),
-            sa.Column("float_value", ydb_dialect.YqlFloat()),
+            sa.Column("double_value", ydb_dialect.YqlDouble()),
             sa.Column("string_value", ydb_dialect.YqlString()),
             sa.Column("date_value", sa.Date()),
         ]
@@ -432,7 +432,7 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
             {
                 "bool_value": True,
                 "int64_value": 42,
-                "float_value": 0.1 + 0.2,
+                "double_value": 0.1 + 0.2,
                 "string_value": "lobster",
                 "date_value": datetime.date(2000, 1, 2),
             },
@@ -456,7 +456,7 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
     YDB_TYPE_FIELD_TYPES = {
         "bool_value": DataType.BOOLEAN,
         "int64_value": DataType.INTEGER,
-        "float_value": DataType.FLOAT,
+        "double_value": DataType.FLOAT,
         "string_value": DataType.STRING,
         "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
         "date_value": DataType.DATE,
