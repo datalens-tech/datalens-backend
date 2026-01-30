@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.misc_funcs import DefaultMiscFunctionalityConnectorTestSuite
+
+from dl_connector_greenplum_tests.db.formula.base import GreenplumTestBase
+
+
+class TestMiscFunctionalityGreenplum(GreenplumTestBase, DefaultMiscFunctionalityConnectorTestSuite):
+    pass

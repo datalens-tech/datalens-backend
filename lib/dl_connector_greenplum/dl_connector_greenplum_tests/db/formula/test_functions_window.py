@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.functions_window import DefaultWindowFunctionFormulaConnectorTestSuite
+
+from dl_connector_greenplum_tests.db.formula.base import GreenplumTestBase
+
+
+class TestWindowFunctionGreenplum(GreenplumTestBase, DefaultWindowFunctionFormulaConnectorTestSuite):
+    pass
