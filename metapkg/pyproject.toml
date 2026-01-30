@@ -133,6 +133,7 @@ dl-connector-oracle = {develop = true, path = "../lib/dl_connector_oracle"}
 dl-connector-postgresql = {develop = true, path = "../lib/dl_connector_postgresql"}
 dl-connector-promql = {develop = true, path = "../lib/dl_connector_promql"}
 dl-connector-snowflake = {develop = true, path = "../lib/dl_connector_snowflake"}
+dl-connector-starrocks = {develop = true, path = "../lib/dl_connector_starrocks"}
 dl-connector-trino = {develop = true, path = "../lib/dl_connector_trino"}
 dl-connector-ydb = {develop = true, path = "../lib/dl_connector_ydb"}
 dl-constants = {develop = true, path = "../lib/dl_constants"}

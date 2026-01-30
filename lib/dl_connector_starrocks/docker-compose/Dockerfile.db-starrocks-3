@@ -1,0 +1,4 @@
+FROM starrocks/allin1-ubuntu:3.1-latest
+
+# Expose MySQL protocol port and HTTP port
+EXPOSE 9030 8030

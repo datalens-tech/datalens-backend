@@ -1,0 +1,33 @@
+services:
+  db-starrocks-3:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-starrocks-3
+    ports:
+      - "59030:9030"  # MySQL protocol port
+      - "58030:8030"  # HTTP port
+    environment:
+      STARROCKS_ROOT_PASSWORD: "qwerty"
+    container_name: starrocks-test
+
+  # INFRA - Required for DataLens tests
+  pg-us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: pg-us
+    ports:
+     - "59310:5432"
+
+  us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: us
+    ports:
+     - "59311:8080"
+
+  redis-caches:
+    image: "bitnami/redis:5.0.8@sha256:3127620da977815556439a9dc347fff89432a79b6bb6e93a16f20ac4a34ce337"
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+     - "59312:6379"
