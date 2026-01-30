@@ -25,6 +25,9 @@ DIR_PATH = os.path.dirname(__file__)
 LOGGER = logging.getLogger(__name__)
 GUNICORN_HOST = "0.0.0.0"
 GUNICORN_PORT = 54010
+GUNICORN_STARTUP_TIMEOUT = 10
+GUNICORN_RESTART_TIMEOUT = 10
+GUNICORN_STARTUP_SLEEP_INTERVAL = 1
 
 
 @attr.define(kw_only=True)
@@ -190,6 +193,7 @@ class AppContextProtocol(Protocol):
 def fixture_app_context(
     monkeypatch: pytest.MonkeyPatch,
     callback_counters_path: str,
+    startup_callback_counter: CallbackCounter,
 ) -> AppContextProtocol:
     @contextlib.asynccontextmanager
     async def context(
@@ -221,7 +225,14 @@ def fixture_app_context(
             cwd=DIR_PATH,
         )
         LOGGER.info("Waiting for gunicorn to start")
-        await asyncio.sleep(2)
+
+        for _ in range(GUNICORN_STARTUP_TIMEOUT // GUNICORN_STARTUP_SLEEP_INTERVAL):
+            if startup_callback_counter.get() > 0:
+                break
+            await asyncio.sleep(GUNICORN_STARTUP_SLEEP_INTERVAL)
+        else:
+            raise RuntimeError("Gunicorn did not start")
+
         LOGGER.info("Gunicorn started")
         try:
             yield
@@ -269,7 +280,12 @@ async def test_startup_callback_failure(
     assert shutdown_callback_counter.get() == 0
 
     async with app_context(startup_callback_side_effect=CallbackSideEffect.RAISE_EXCEPTION):
-        ...
+        for _ in range(GUNICORN_STARTUP_TIMEOUT // GUNICORN_STARTUP_SLEEP_INTERVAL):
+            if startup_callback_counter.get() > 1:
+                break
+            await asyncio.sleep(GUNICORN_STARTUP_SLEEP_INTERVAL)
+        else:
+            raise RuntimeError("Gunicorn did not restart")
 
     assert startup_callback_counter.get() > 1
     assert main_callback_counter.get() == 0
@@ -288,7 +304,12 @@ async def test_main_callback_failure(
     assert shutdown_callback_counter.get() == 0
 
     async with app_context(main_callback_side_effect=CallbackSideEffect.RAISE_EXCEPTION):
-        ...
+        for _ in range(GUNICORN_STARTUP_TIMEOUT // GUNICORN_STARTUP_SLEEP_INTERVAL):
+            if startup_callback_counter.get() > 1:
+                break
+            await asyncio.sleep(GUNICORN_STARTUP_SLEEP_INTERVAL)
+        else:
+            raise RuntimeError("Gunicorn did not restart")
 
     restart_count = startup_callback_counter.get()
     assert restart_count > 1
