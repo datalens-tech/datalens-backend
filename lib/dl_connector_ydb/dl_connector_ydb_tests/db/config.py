@@ -3,6 +3,7 @@ import uuid
 
 import requests
 import sqlalchemy as sa
+import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_constants.enums import UserDataType
