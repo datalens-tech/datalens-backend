@@ -552,7 +552,7 @@ class USManagerBase:
 
             unversioned_data = self.postprocess_unversioned_data_after_serialize(
                 cls=entry_cls,
-                data_pack=data_pack,
+                data_pack=data_pack.unversioned_data,
                 serializer=serializer,
             )
 
