@@ -65,8 +65,10 @@ class USManagerFlaskMiddleware:
 
         if bi_context.user_id is None:
             LOGGER.info("User US manager will not be created due to no user info in RCI")
-        elif RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
+        elif RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
             LOGGER.info("User US manager will not be created due to US_HEADERS_TOKEN flag in target view")
+        elif RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
+            LOGGER.info("User US manager will not be created due to ONLY_SERVICES_ALLOWED flag in target view")
         else:
             usm: SyncUSManager
 
@@ -81,21 +83,21 @@ class USManagerFlaskMiddleware:
 
             flask.g.us_manager = usm
 
-        if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:
+        if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
             LOGGER.info("Creating service US manager with master token from headers")
             flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
                 rci=bi_context,
                 services_registry=services_registry,
                 is_token_stored=False,
             )
-        elif self.us_master_token is not None:
-            LOGGER.info("Creating service US manager with master token from settings")
+        elif self.us_master_token is not None or RequiredResourceCommon.S2S_AUTH in required_resources:
+            LOGGER.info("Creating service US manager")
             flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
                 rci=bi_context,
                 services_registry=services_registry,
             )
         else:
-            LOGGER.info("US master token was not provided. Service USM will not be created")
+            LOGGER.info("Neither US master token nor S2S auth resource was provided. Service USM will not be created")
             flask.g.service_us_manager = None
 
     def set_up(self, app: flask.Flask) -> USManagerFlaskMiddleware:
