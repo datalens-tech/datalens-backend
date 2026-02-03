@@ -62,26 +62,22 @@ class USManagerFlaskMiddleware:
 
         required_resources = get_required_resources()
 
+        # Try to create regular US manager
         if bi_context.user_id is None:
             LOGGER.info("User US manager will not be created due to no user info in RCI")
         elif RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
             LOGGER.info("User US manager will not be created due to US_HEADERS_TOKEN flag in target view")
         elif RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
             LOGGER.info("User US manager will not be created due to ONLY_SERVICES_ALLOWED flag in target view")
+        elif self.us_auth_mode == USAuthMode.regular:
+            LOGGER.info("Creating user US manager with regular auth mode")
+            flask.g.us_manager = self._usm_factory.get_regular_sync_usm(
+                rci=bi_context, services_registry=services_registry
+            )
         else:
-            usm: SyncUSManager
+            raise AssertionError(f"USAuthMode {self.us_auth_mode!r} is not supported for regular US manager")
 
-            if self.us_auth_mode == USAuthMode.regular:
-                LOGGER.info("Creating user US manager with regular auth mode")
-                usm = self._usm_factory.get_regular_sync_usm(rci=bi_context, services_registry=services_registry)
-            elif self.us_auth_mode == USAuthMode.master:
-                LOGGER.info("Creating user US manager with master auth mode")
-                usm = self._usm_factory.get_master_sync_usm(rci=bi_context, services_registry=services_registry)
-            else:
-                raise AssertionError(f"Mode is not supported by USManagerFlaskMiddleware: {self.us_auth_mode!r}")
-
-            flask.g.us_manager = usm
-
+        # Try to create service US manager
         if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
             LOGGER.info("Creating service US manager with master token from headers")
             flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
