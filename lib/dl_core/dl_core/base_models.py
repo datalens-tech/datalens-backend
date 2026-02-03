@@ -151,8 +151,8 @@ class BaseAttrsDataModel:
     @classmethod
     def get_secret_keys(cls) -> set[DataKey]:
         """
-        Returns a set of keys representing secret fields. These fields are directly serialized and deserialized inside
-        the `unversionedData` field.
+        Returns a set of keys representing secret fields. These fields are serialized with encrytion and deserialized
+        with decryption inside the `unversionedData` field.
         """
 
         return set()
