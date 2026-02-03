@@ -8,7 +8,6 @@ from typing import (
     Callable,
     ClassVar,
     Concatenate,
-    Optional,
     Sequence,
 )
 
@@ -156,9 +155,7 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         return ReqCtxInfoMiddleware.get_request_context_info()
 
     @classmethod
-    def get_schema_ctx(
-        cls, schema_operations_mode: Optional[OperationsMode] = None, editable_object: Any = None
-    ) -> dict:
+    def get_schema_ctx(cls, schema_operations_mode: OperationsMode | None = None, editable_object: Any = None) -> dict:
         return prepare_schema_context(
             usm=cls.get_us_manager(),
             op_mode=schema_operations_mode,
