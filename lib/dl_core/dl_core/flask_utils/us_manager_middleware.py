@@ -74,6 +74,12 @@ class USManagerFlaskMiddleware:
             flask.g.us_manager = self._usm_factory.get_regular_sync_usm(
                 rci=bi_context, services_registry=services_registry
             )
+        elif self.us_auth_mode == USAuthMode.master:  # TODO: to be removed in BI-6973
+            LOGGER.info("Creating user US manager with master auth mode")
+            flask.g.us_manager = self._usm_factory.get_master_sync_usm(
+                rci=bi_context,
+                services_registry=services_registry,
+            )
         else:
             raise AssertionError(f"USAuthMode {self.us_auth_mode!r} is not supported for regular US manager")
 
