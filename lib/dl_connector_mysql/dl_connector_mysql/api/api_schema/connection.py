@@ -29,7 +29,7 @@ class MySQLConnectionSchema(
         attribute="data.enforce_collate",
         required=False,
         dump_default=MySQLEnforceCollateMode.auto,
-        load_default=MySQLEnforceCollateMode.auto,
+        load_default=MySQLEnforceCollateMode.off,
         bi_extra=FieldExtra(editable=True),
     )
     ssl_enable = core_ma_fields.OnOffField(

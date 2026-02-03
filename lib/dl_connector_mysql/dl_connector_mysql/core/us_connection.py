@@ -38,7 +38,7 @@ class ConnectionMySQL(
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
-        enforce_collate: MySQLEnforceCollateMode = attr.ib(default=MySQLEnforceCollateMode.auto)
+        enforce_collate: MySQLEnforceCollateMode = attr.ib(default=MySQLEnforceCollateMode.off)
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
         ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
 

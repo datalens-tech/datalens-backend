@@ -14,7 +14,7 @@ class ConnectionMySQLDataStorageSchema(ConnectionSQLDataStorageSchema[Connection
         required=False,
         allow_none=False,
         dump_default=MySQLEnforceCollateMode.auto,
-        load_default=MySQLEnforceCollateMode.auto,
+        load_default=MySQLEnforceCollateMode.off,
     )
     ssl_enable = ma_fields.Boolean(
         required=False,
