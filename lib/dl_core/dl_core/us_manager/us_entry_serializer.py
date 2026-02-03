@@ -109,10 +109,12 @@ class USEntrySerializer(abc.ABC):
     @generic_profiler("us-serialize")
     def serialize(self, obj: USEntry) -> USDataPack:
         """
-        Serialize `USEntry` to `USDataPack`.
+        Serializes a `USEntry` object into a `USDataPack`.
 
-        This emthod converts object to dict and then extract secrets and unversioned data fields from `USDataPack.data`
-        and puts them into `USUnversionedDataPack`.
+        This method extracts secrets and unversioned data from the input `USEntry`
+        and moves them to the USUnversionedDataPack portion of the resulting
+        `USDataPack`. The `USDataPack` effectively becomes a container holding both
+        versioned data (from the original `USEntry`) and unversioned data.
         """
 
         raw_dict = self.serialize_raw(obj)
@@ -151,10 +153,11 @@ class USEntrySerializer(abc.ABC):
         data_strict: bool = True,
     ) -> USEntry:
         """
-        Deserialize `USDataPack` to `USEntry`.
+        Deserializes a `USDataPack` into a `USEntry` object.
 
-        This method takes secrets and unversioned data fields from `USUnversionedDataPack` and puts them in
-        `USDataPack.data`. Result dict is then deserialized into `USEntry` object.
+        This method merges unversioned data and secrets from the `USUnversionedDataPack`
+        into the `USDataPack`'s data dictionary. The combined data is then used to
+        construct and return a `USEntry` instance.
         """
 
         # Assumed that data_pack's dicts was decoupled with initial US response

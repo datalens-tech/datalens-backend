@@ -297,15 +297,19 @@ class USManagerBase:
             encrypted_value = self._crypto_controller.encrypt_with_actual_key(decrypted_value)
             secret_addressable.set(key, encrypted_value)
 
-    @generic_profiler("us-prepare-unversioned-data-for-deserialize")
-    def prepare_unversioned_data_before_deserialize(
+    @generic_profiler("us-unpack-unversioned-data-from-us")
+    def unpack_unversioned_data_from_us(
         self,
         cls: type[USEntry],
         unversioned_data: dict[str, Any],
         serializer: USEntrySerializer,
     ) -> USUnversionedDataPack:
         """
-        Prepares `unversionedData` for deserialization. Extracts and decrypts secrets and extracts unversioned data fields
+        Extracts and prepares unversioned data for deserialization.
+
+        This method processes the `unversioned_data` dictionary by:
+          - Decrypting any secrets contained within.
+          - Separating unversioned data fields for use during deserialization.
         """
 
         unversioned_data = copy.deepcopy(unversioned_data)
@@ -321,30 +325,36 @@ class USManagerBase:
 
         # Decrypt secrets
         for secret_key in declared_secret_keys:
-            sec_val = source_addressable.pop(secret_key)
-            assert not isinstance(sec_val, str)
-            decrypted_sec_val = self._crypto_controller.decrypt(sec_val)
-            unversioned_data_addressable.set(secret_key, decrypted_sec_val)
+            if source_addressable.contains(secret_key):
+                sec_val = source_addressable.pop(secret_key)
+                assert not isinstance(sec_val, str)
+                decrypted_sec_val = self._crypto_controller.decrypt(sec_val)
+                secrets_addressable.set(secret_key, decrypted_sec_val)
 
         # Extract unversioned fields
         for unversioned_key in declared_unversioned_keys:
-            unversioned_val = source_addressable.pop(unversioned_key)
-            secrets_addressable.set(unversioned_key, unversioned_val)
+            if source_addressable.contains(unversioned_key):
+                unversioned_val = source_addressable.pop(unversioned_key)
+                unversioned_data_addressable.set(unversioned_key, unversioned_val)
 
         if source_addressable.data:
             LOGGER.warning("Undeclared unversioned fields found")
 
         return data_pack
 
-    @generic_profiler("us-prepare-unversioned-data-for-serialize")
-    def postprocess_unversioned_data_after_serialize(
+    @generic_profiler("us-pack-unversioned-data-for-us")
+    def pack_unversioned_data_for_us(
         self,
         cls: type[USEntry],
         data_pack: USUnversionedDataPack,
         serializer: USEntrySerializer,
     ) -> dict[str, Any]:
         """
-        Converts `USUnversionedDataPack` to `unversionedData` dict and encrypts secrets
+        Serializes a `USUnversionedDataPack` into a dictionary suitable for US data packing.
+
+        This method takes a `USUnversionedDataPack`, extracts its unversioned data,
+        and handles the encryption of any secrets it may contain. The resulting
+        dictionary is then returned.
         """
 
         data_pack = copy.deepcopy(data_pack)
@@ -453,7 +463,7 @@ class USManagerBase:
 
             data_pack = USDataPack(
                 data=data,
-                unversioned_data=self.prepare_unversioned_data_before_deserialize(
+                unversioned_data=self.unpack_unversioned_data_from_us(
                     cls=entry_cls,
                     unversioned_data=unversioned_data,
                     serializer=serializer,
@@ -550,7 +560,7 @@ class USManagerBase:
                     unversioned_data=USUnversionedDataPack(),
                 )
 
-            unversioned_data = self.postprocess_unversioned_data_after_serialize(
+            unversioned_data = self.pack_unversioned_data_for_us(
                 cls=entry_cls,
                 data_pack=data_pack.unversioned_data,
                 serializer=serializer,
