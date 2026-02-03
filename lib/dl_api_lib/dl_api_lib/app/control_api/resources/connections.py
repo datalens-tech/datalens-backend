@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -71,6 +72,8 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 ns = API.namespace("Connections", path="/connections")
+
+USE_S2S_AUTH = os.getenv("USE_S2S_AUTH", "0") == "1"
 
 
 def _handle_conn_test_exc(exception: Exception) -> NoReturn:
@@ -164,7 +167,15 @@ class ConnectionTester(BIResource):
 @ns.route("/import")
 class ConnectionsImportList(BIResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
-        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+        {
+            RequiredResourceCommon.S2S_AUTH,
+            RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+        }
+        if USE_S2S_AUTH
+        else {
+            RequiredResourceCommon.SKIP_AUTH,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
+        }
     )
 
     @classmethod
@@ -353,7 +364,15 @@ class ConnectionItem(BIResource):
 @ns.route("/export/<connection_id>")
 class ConnectionExportItem(BIResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
-        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+        {
+            RequiredResourceCommon.S2S_AUTH,
+            RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+        }
+        if USE_S2S_AUTH
+        else {
+            RequiredResourceCommon.SKIP_AUTH,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
+        }
     )
 
     @put_to_request_context(endpoint_code="ConnectionExport")

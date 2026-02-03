@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 class RequiredResourceCommon(enum.Enum):
-    US_HEADERS_TOKEN = enum.auto()
+    US_HEADERS_TOKEN = enum.auto()  # DEPRECATED
     SKIP_AUTH = enum.auto()
+    S2S_AUTH = enum.auto()
+    ONLY_SERVICES_ALLOWED = enum.auto()
 
 
 def get_required_resources() -> frozenset[RequiredResourceCommon]:

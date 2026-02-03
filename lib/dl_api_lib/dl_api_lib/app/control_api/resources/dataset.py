@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 import logging
+import os
 from typing import (
     Any,
     ClassVar,
@@ -56,6 +57,8 @@ import dl_query_processing.exc
 LOGGER = logging.getLogger(__name__)
 
 ns = API.namespace("Datasets", path="/datasets")
+
+USE_S2S_AUTH = os.getenv("USE_S2S_AUTH", "0") == "1"
 
 VALIDATION_OK_MESSAGE = "Validation was successful"
 
@@ -310,7 +313,15 @@ class DatasetVersionItem(DatasetResource):
 @ns.route("/export/<dataset_id>")
 class DatasetExportItem(DatasetResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
-        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+        {
+            RequiredResourceCommon.S2S_AUTH,
+            RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+        }
+        if USE_S2S_AUTH
+        else {
+            RequiredResourceCommon.SKIP_AUTH,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
+        }
     )
 
     @put_to_request_context(endpoint_code="DatasetExport")
@@ -365,7 +376,15 @@ class DatasetExportItem(DatasetResource):
 @ns.route("/import")
 class DatasetImportCollection(DatasetResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
-        {RequiredResourceCommon.SKIP_AUTH, RequiredResourceCommon.US_HEADERS_TOKEN}
+        {
+            RequiredResourceCommon.S2S_AUTH,
+            RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+        }
+        if USE_S2S_AUTH
+        else {
+            RequiredResourceCommon.SKIP_AUTH,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
+        }
     )
 
     @classmethod

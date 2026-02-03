@@ -160,28 +160,32 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         cls, schema_operations_mode: Optional[OperationsMode] = None, editable_object: Any = None
     ) -> dict:
         return prepare_schema_context(
-            usm=cls.get_service_us_manager()
-            if RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
-            else cls.get_us_manager(),
+            usm=cls.get_us_manager(),
             op_mode=schema_operations_mode,
             editable_object=editable_object,
         )
 
     @classmethod
     def get_us_manager(cls) -> SyncUSManager:
+        if (
+            RequiredResourceCommon.S2S_AUTH in cls.REQUIRED_RESOURCES
+            or RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
+        ):
+            return cls._get_service_us_manager()
+        else:
+            return cls._get_regular_us_manager()
+
+    @classmethod
+    def _get_regular_us_manager(cls) -> SyncUSManager:
         return USManagerFlaskMiddleware.get_request_us_manager()
 
     @classmethod
-    def get_service_us_manager(cls) -> SyncUSManager:
+    def _get_service_us_manager(cls) -> SyncUSManager:
         return USManagerFlaskMiddleware.get_request_service_us_manager()
 
     @classmethod
     def get_service_registry(cls) -> ApiServiceRegistry:
-        usm = (
-            cls.get_service_us_manager()
-            if RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
-            else cls.get_us_manager()
-        )
+        usm = cls.get_us_manager()
         service_registry = usm.get_services_registry()
         assert isinstance(service_registry, ApiServiceRegistry)
         return service_registry
