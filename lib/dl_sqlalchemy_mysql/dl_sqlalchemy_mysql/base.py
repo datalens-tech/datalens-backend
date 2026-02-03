@@ -11,6 +11,70 @@ from dl_sqlalchemy_common.base import CompilerPrettyMixin
 class DLMYSQLCompilerBasic(UPSTREAM.statement_compiler):
     """Necessary overrides"""
 
+    def _add_collate(self, result):
+        collate = self.dialect.enforce_collate
+        if collate:
+            return "%s COLLATE %s" % (result, collate)
+        return result
+
+    def visit_like_op_binary(self, binary, operator, **kw):
+        result = super().visit_like_op_binary(binary, operator, **kw)
+        return self._add_collate(result)
+
+    def visit_not_like_op_binary(self, binary, operator, **kw):
+        result = super().visit_not_like_op_binary(binary, operator, **kw)
+        return self._add_collate(result)
+
+    def visit_grouping(self, grouping, asfrom=False, add_grouping_collate=False, **kwargs):
+        if add_grouping_collate:
+            result = grouping.element._compiler_dispatch(self, **kwargs)
+            result = self._add_collate(result)
+            return "(%s)" % (result,)
+        return super().visit_grouping(grouping, asfrom=asfrom, **kwargs)
+
+    def _func_with_collate(self, func, **kwargs):
+        result = "%s%s" % (
+            func.name,
+            self.function_argspec(func, add_grouping_collate=True, **kwargs),
+        )
+        return result
+
+    def visit_lower_func(self, func, **kwargs):
+        return self._func_with_collate(func, **kwargs)
+
+    def visit_upper_func(self, func, **kwargs):
+        return self._func_with_collate(func, **kwargs)
+
+    def visit_max_func(self, func, **kwargs):
+        return self._func_with_collate(func, **kwargs)
+
+    def visit_min_func(self, func, **kwargs):
+        return self._func_with_collate(func, **kwargs)
+
+    def order_by_clause(self, select, **kw):
+        order_by = select._order_by_clause
+        if order_by is not None and len(order_by):
+            order_by_clauses = []
+            for element in order_by:
+                text = self.process(element, **kw)
+                if self.dialect.enforce_collate:
+                    text = self._add_collate(text)
+                order_by_clauses.append(text)
+            return " ORDER BY " + ", ".join(order_by_clauses)
+        return ""
+
+    def group_by_clause(self, select, **kw):
+        group_by = select._group_by_clause
+        if group_by is not None and len(group_by):
+            group_by_clauses = []
+            for element in group_by:
+                text = self.process(element, **kw)
+                if self.dialect.enforce_collate:
+                    text = self._add_collate(text)
+                group_by_clauses.append(text)
+            return " GROUP BY " + ", ".join(group_by_clauses)
+        return ""
+
     # allow date and datetime literal_binds
     def render_literal_value(self, value, type_):
         type_to_literal = {
@@ -66,6 +130,10 @@ class DLMYSQLCompiler(DLMYSQLCompilerBasic, UPSTREAM.statement_compiler, Compile
 
 class DLMYSQLDialectBasic(UPSTREAM):
     statement_compiler = DLMYSQLCompilerBasic
+
+    def __init__(self, enforce_collate=None, **kwargs):
+        self.enforce_collate = enforce_collate
+        super().__init__(**kwargs)
 
 
 class DLMYSQLDialect(DLMYSQLDialectBasic):

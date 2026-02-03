@@ -28,3 +28,10 @@ class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
             local_infile=0,
             ssl=self._get_ssl_ctx() or {"ssl_check_hostname": False},
         )
+
+    def get_dialect_kwargs(self) -> dict:
+        result: dict = {}
+        enforce_collate = self._get_enforce_collate(self._target_dto)
+        if enforce_collate:
+            result.update(enforce_collate=enforce_collate)
+        return result

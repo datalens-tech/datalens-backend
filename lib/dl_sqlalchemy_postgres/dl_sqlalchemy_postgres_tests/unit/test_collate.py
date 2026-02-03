@@ -18,15 +18,31 @@ CI_EXPRS = [
     ("upper", sa.func.upper(sa.literal_column("'Ы'")).label("val_uc")),
 ]
 
+CI_EXPECTED_WITH_COLLATE = [
+    "SELECT 'Ы' ILIKE 'ы' COLLATE \"en_US\" AS val",
+    "SELECT lower('Ы' COLLATE \"en_US\") AS val_lc",
+    "SELECT upper('Ы' COLLATE \"en_US\") AS val_uc",
+]
 
-@pytest.fixture(params=CI_EXPRS, ids=[name for name, _ in CI_EXPRS])
-def ci_expr(request):
-    _, expr = request.param
-    yield expr
+CI_EXPECTED_WITHOUT_COLLATE = [
+    "SELECT 'Ы' ILIKE 'ы' AS val",
+    "SELECT lower('Ы') AS val_lc",
+    "SELECT upper('Ы') AS val_uc",
+]
+
+
+@pytest.fixture(
+    params=list(zip(CI_EXPRS, CI_EXPECTED_WITH_COLLATE, CI_EXPECTED_WITHOUT_COLLATE)),
+    ids=[name for name, _ in CI_EXPRS],
+)
+def ci_expr_with_expected(request):
+    """Fixture that yields (expr, expected_with_collate, expected_without_collate)"""
+    (name, expr), expected_ci, expected_no_ci = request.param
+    yield expr, expected_ci, expected_no_ci
 
 
 @pytest.mark.param
-def test_collate_option(engine_url, ci_expr):
+def test_collate_option(engine_url, ci_expr_with_expected):
     """
     ...
 
@@ -50,6 +66,7 @@ def test_collate_option(engine_url, ci_expr):
         => select lower('Ы' COLLATE "en_US");
         lower | ы
     """
+    ci_expr, expected_ci, expected_no_ci = ci_expr_with_expected
     ci_expr = sa.select([ci_expr])
     eng_ci = sa.create_engine(engine_url, enforce_collate="en_US")
     eng = sa.create_engine(engine_url)
@@ -58,6 +75,8 @@ def test_collate_option(engine_url, ci_expr):
     assert sql != sql_ci
     assert " COLLATE " in sql_ci
     assert " COLLATE " not in sql
+    assert sql_ci == expected_ci
+    assert sql == expected_no_ci
     print()
     print(sql_ci)
     print(sql)

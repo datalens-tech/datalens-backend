@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import ssl
-from typing import (
-    Any,
-    Optional,
-)
+from typing import Any
 
 import attr
 import sqlalchemy.dialects.mysql as sa_mysql
@@ -12,7 +9,10 @@ import sqlalchemy.dialects.mysql as sa_mysql
 import dl_configs
 from dl_type_transformer.native_type import SATypeSpec
 
-from dl_connector_mysql.core.constants import CONNECTION_TYPE_MYSQL
+from dl_connector_mysql.core.constants import (
+    CONNECTION_TYPE_MYSQL,
+    MySQLEnforceCollateMode,
+)
 from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
 
@@ -36,7 +36,7 @@ class BaseMySQLAdapter:
     # not in those sources but in SA: `binary`, `boolean`, `fixed`, `integer`,
     # `nchar`, `nvarchar`, `numeric`, `varbinary`.
 
-    _type_code_to_sa: Optional[dict[Any, SATypeSpec]] = {
+    _type_code_to_sa: dict[Any, SATypeSpec] | None = {
         1: sa_mysql.TINYINT,  # MYSQL_TYPE_TINY -> 'tinyint', 8-bit int  # untested
         2: sa_mysql.SMALLINT,  # MYSQL_TYPE_SHORT -> 'smallint', 16-bit int  # untested
         9: sa_mysql.MEDIUMINT,  # MYSQL_TYPE_INT24 -> 'mediumint', ?24-bit int?  # untested
@@ -78,7 +78,7 @@ class BaseMySQLAdapter:
         # themselves. Might have to look into the data for that.
     }
 
-    def _get_ssl_ctx(self, force_ssl: bool = False) -> Optional[ssl.SSLContext]:
+    def _get_ssl_ctx(self, force_ssl: bool = False) -> ssl.SSLContext | None:
         if not self._target_dto.ssl_enable and not force_ssl:
             return None
 
@@ -86,3 +86,11 @@ class BaseMySQLAdapter:
             return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
 
         return dl_configs.get_default_ssl_context()
+
+    @staticmethod
+    def _get_enforce_collate(target_dto: MySQLConnTargetDTO) -> str | None:
+        if target_dto.enforce_collate == MySQLEnforceCollateMode.auto:
+            raise Exception("Resolution of MySQLEnforceCollateMode.auto is not allowed at this point")
+        if target_dto.enforce_collate == MySQLEnforceCollateMode.on:
+            return "utf8mb4_general_ci"
+        return None

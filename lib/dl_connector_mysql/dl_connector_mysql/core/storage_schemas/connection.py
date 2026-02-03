@@ -2,12 +2,20 @@ from marshmallow import fields as ma_fields
 
 from dl_core.us_manager.storage_schemas.connection import ConnectionSQLDataStorageSchema
 
+from dl_connector_mysql.core.constants import MySQLEnforceCollateMode
 from dl_connector_mysql.core.us_connection import ConnectionMySQL
 
 
 class ConnectionMySQLDataStorageSchema(ConnectionSQLDataStorageSchema[ConnectionMySQL.DataModel]):
     TARGET_CLS = ConnectionMySQL.DataModel
 
+    enforce_collate = ma_fields.Enum(
+        MySQLEnforceCollateMode,
+        required=False,
+        allow_none=False,
+        dump_default=MySQLEnforceCollateMode.auto,
+        load_default=MySQLEnforceCollateMode.off,
+    )
     ssl_enable = ma_fields.Boolean(
         required=False,
         allow_none=False,
