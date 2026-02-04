@@ -458,7 +458,7 @@ def test_typed_dict_settings_with_env_and_upper_and_lower_key(
 
     with tmp_configs_utils.TmpConfigs() as tmp_configs:
         # with lower key
-        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_2"}}})
+        config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test_2"}}})
         monkeypatch.setenv("CONFIG_PATH", str(config_path))
         root = Root()
         assert isinstance(root.CHILDREN["child"], Child)
@@ -468,7 +468,7 @@ def test_typed_dict_settings_with_env_and_upper_and_lower_key(
     with tmp_configs_utils.TmpConfigs() as tmp_configs:
         # with upper key
         monkeypatch.setenv("CHILDREN__CHILD__SECRET", "secret_test")
-        config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test_3"}}})
+        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_3"}}})
         monkeypatch.setenv("CONFIG_PATH", str(config_path))
         root = Root()
         assert isinstance(root.CHILDREN["child"], Child)
@@ -503,10 +503,10 @@ def test_typed_dict_settings_with_fallback(
         assert root.CHILDREN["child"].SECRET == "secret_test"
 
     with tmp_configs_utils.TmpConfigs() as tmp_configs:
-        monkeypatch.setenv("CHILDREN_CHILD_SECRET", "secret_test")
-        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test"}}})
+        monkeypatch.setenv("CHILDREN_CHILD_SECRET", "secret_test_2")
+        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_2"}}})
         monkeypatch.setenv("CONFIG_PATH", str(config_path))
         root = Root(extra_fallback_env_keys=fallback_env_keys)
         assert isinstance(root.CHILDREN["child"], Child)
-        assert root.CHILDREN["child"].VALUE == "test"
-        assert root.CHILDREN["child"].SECRET == "secret_test"
+        assert root.CHILDREN["child"].VALUE == "test_2"
+        assert root.CHILDREN["child"].SECRET == "secret_test_2"
