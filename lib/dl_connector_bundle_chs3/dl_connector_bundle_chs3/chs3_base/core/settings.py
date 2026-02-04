@@ -35,7 +35,7 @@ class _RootSettings(dl_settings.BaseRootSettings):
 
 
 class FileS3ConnectorSettingsBase(dl_settings.BaseSettings):
-    model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator("CONN_FILE_"))
+    model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator("CONN_FILE_CH_"))
 
     SECURE: bool = True
     HOST: str
