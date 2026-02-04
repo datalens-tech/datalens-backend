@@ -15,12 +15,12 @@ from dl_connector_postgresql.core.postgresql.constants import (
     SOURCE_TYPE_PG_TABLE,
 )
 from dl_connector_postgresql.core.postgresql.dto import PostgresConnDTO
-from dl_connector_postgresql.core.postgresql.settings import PostgreSQLConnectorSettings
+from dl_connector_postgresql.core.postgresql.settings import DeprecatedPostgreSQLConnectorSettings
 from dl_connector_postgresql.core.postgresql_base.us_connection import ConnectionPostgreSQLBase
 
 
 class ConnectionPostgreSQL(
-    ConnectionSettingsMixin[PostgreSQLConnectorSettings],
+    ConnectionSettingsMixin[DeprecatedPostgreSQLConnectorSettings],
     ConnectionPostgreSQLBase,
 ):
     source_type = SOURCE_TYPE_PG_TABLE
@@ -28,7 +28,7 @@ class ConnectionPostgreSQL(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = PostgreSQLConnectorSettings
+    settings_type = DeprecatedPostgreSQLConnectorSettings
 
     def get_conn_dto(self) -> PostgresConnDTO:
         return PostgresConnDTO(

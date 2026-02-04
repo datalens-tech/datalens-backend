@@ -27,10 +27,6 @@ class TypedMeta(pydantic_model_construction.ModelMetaclass):
         cls._classes: dict[str, type["TypedBaseModel"]] = {}
         cls._unknown_class: type["TypedBaseModel"] | None = None
 
-    @property
-    def classes(cls) -> dict[str, type["TypedBaseModel"]]:
-        return cls._classes
-
 
 class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     """

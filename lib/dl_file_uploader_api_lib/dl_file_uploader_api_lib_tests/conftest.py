@@ -60,6 +60,7 @@ from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_task_interface.context import FileUploaderTaskContext
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
+    FileUploaderConnectorsSettings,
     FileUploaderWorkerSettings,
     SecureReader,
 )
@@ -84,11 +85,7 @@ from dl_testing.utils import (
     get_root_certificates,
 )
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import (
-    FileS3ConnectorSettingsBase,
-    _RootSettings,
-)
-from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
+from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
 
 
 if TYPE_CHECKING:
@@ -293,8 +290,8 @@ def tenant_id_header() -> dict[DLHeadersCommon, str]:
 
 @pytest.fixture(scope="session")
 def connectors_settings(s3_settings):
-    return {
-        CONNECTION_TYPE_FILE.value: FileS3ConnectorSettingsBase(
+    return FileUploaderConnectorsSettings(
+        FILE=DeprecatedFileS3ConnectorSettings(
             SECURE=False,
             HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
             PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,
@@ -302,12 +299,10 @@ def connectors_settings(s3_settings):
             PASSWORD="qwerty",
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-            root=_RootSettings(
-                S3_ENDPOINT_URL="http://s3-storage:8000",
-                FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
-            ),
-        )
-    }
+            BUCKET="bi-file-uploader",
+            S3_ENDPOINT="http://s3-storage:8000",
+        ),
+    )
 
 
 @pytest.fixture(scope="function")
@@ -333,6 +328,7 @@ def file_uploader_worker_settings(
         SENTRY_DSN=None,
         US_BASE_URL=us_config.base_url,
         US_MASTER_TOKEN=us_config.master_token,
+        CONNECTORS=connectors_settings,
         GSHEETS_APP=GoogleAppSettings(
             API_KEY="dummy",
             CLIENT_ID="dummy",
@@ -341,10 +337,7 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(
-        fallback=deprecated_settings,
-        CONNECTORS=connectors_settings,
-    )
+    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
     yield settings
 
 
