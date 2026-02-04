@@ -164,21 +164,7 @@ class BIResource(Resource, metaclass=BIResourceMeta):
 
     @classmethod
     def get_us_manager(cls) -> SyncUSManager:
-        if (
-            RequiredResourceCommon.ONLY_SERVICES_ALLOWED in cls.REQUIRED_RESOURCES
-            or RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
-        ):
-            return cls._get_service_us_manager()
-        else:
-            return cls._get_regular_us_manager()
-
-    @classmethod
-    def _get_regular_us_manager(cls) -> SyncUSManager:
         return USManagerFlaskMiddleware.get_request_us_manager()
-
-    @classmethod
-    def _get_service_us_manager(cls) -> SyncUSManager:
-        return USManagerFlaskMiddleware.get_request_service_us_manager()
 
     @classmethod
     def get_service_registry(cls) -> ApiServiceRegistry:

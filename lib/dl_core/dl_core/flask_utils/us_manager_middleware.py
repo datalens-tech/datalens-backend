@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 import logging
 
 import attr
@@ -62,46 +63,57 @@ class USManagerFlaskMiddleware:
 
         required_resources = get_required_resources()
 
-        # Try to create regular US manager
-        if bi_context.user_id is None:
-            LOGGER.info("User US manager will not be created due to no user info in RCI")
-        elif RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
-            LOGGER.info("User US manager will not be created due to US_HEADERS_TOKEN flag in target view")
-        elif RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
-            LOGGER.info("User US manager will not be created due to ONLY_SERVICES_ALLOWED flag in target view")
-        elif self.us_auth_mode == USAuthMode.regular:
-            LOGGER.info("Creating user US manager with regular auth mode")
-            flask.g.us_manager = self._usm_factory.get_regular_sync_usm(
-                rci=bi_context, services_registry=services_registry
-            )
-        elif self.us_auth_mode == USAuthMode.master:  # TODO: to be removed in BI-6973
-            LOGGER.info("Creating user US manager with master auth mode")
-            flask.g.us_manager = self._usm_factory.get_master_sync_usm(
+        # Try to create deprecated service US manager
+        flask.g.deprecated_service_us_manager = None
+        if self.us_master_token is not None:
+            LOGGER.info("Creating deprecated service US manager")
+            flask.g.deprecated_service_us_manager = self._usm_factory.get_master_sync_usm(
                 rci=bi_context,
                 services_registry=services_registry,
             )
-        else:
-            raise AssertionError(f"USAuthMode {self.us_auth_mode!r} is not supported for regular US manager")
 
-        # Try to create service US manager
+        flask.g.us_manager = None
         if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
             LOGGER.info("Creating service US manager with master token from headers")
-            flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
+            flask.g.us_manager = self._usm_factory.get_master_sync_usm(
                 rci=bi_context,
                 services_registry=services_registry,
                 is_token_stored=False,
             )
-        elif self.us_master_token is not None or RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
+            return
+
+        us_manager_creator = self._get_us_manager_creator()
+        if us_manager_creator is None:
+            return
+
+        flask.g.us_manager = us_manager_creator(
+            rci=bi_context,
+            services_registry=services_registry,
+        )
+
+    def _get_us_manager_creator(self) -> Callable[..., SyncUSManager] | None:
+        required_resources = get_required_resources()
+        if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
+            assert (
+                self.us_master_token is not None
+            ), "US master token must be set in factory to create USAuthContextMaster"
             LOGGER.info("Creating service US manager")
-            flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
-                rci=bi_context,
-                services_registry=services_registry,
-            )
-        else:
-            LOGGER.info(
-                "Neither US master token nor ONLY_SERVICES_ALLOWED flag was provided. Service USM will not be created"
-            )
-            flask.g.service_us_manager = None
+            return self._usm_factory.get_master_sync_usm
+
+        if self.us_auth_mode == USAuthMode.regular:
+            LOGGER.info("Creating user US manager with regular auth mode")
+            return self._usm_factory.get_regular_sync_usm
+
+        if self.us_auth_mode == USAuthMode.master:  # TODO: to be removed in BI-6973
+            LOGGER.info("Creating user US manager with master auth mode")
+            return self._usm_factory.get_master_sync_usm
+
+        LOGGER.info(
+            "Unable to match any US manager creator!\nrequired_resources: %s, us_auth_mode: %s",
+            required_resources,
+            self.us_auth_mode,
+        )
+        return None
 
     def set_up(self, app: flask.Flask) -> USManagerFlaskMiddleware:
         app.before_request(self.bind_us_managers_to_request)
@@ -115,9 +127,9 @@ class USManagerFlaskMiddleware:
         return flask.g.us_manager
 
     @classmethod
-    def get_request_service_us_manager(cls) -> SyncUSManager:
-        usm = flask.g.service_us_manager
-        if usm is not None:
-            return flask.g.service_us_manager
-        else:
+    def get_request_deprecated_service_us_manager(cls) -> SyncUSManager:
+        usm = flask.g.deprecated_service_us_manager
+        if usm is None:
             raise ValueError("Service USM was not created for current request")
+
+        return usm
