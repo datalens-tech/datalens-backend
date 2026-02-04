@@ -78,6 +78,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Double": dl_sqlalchemy_ydb.dialect.YqlDouble,
         "String": dl_sqlalchemy_ydb.dialect.YqlString,
         "Utf8": dl_sqlalchemy_ydb.dialect.YqlUtf8,
+        "DyNumber": sa.FLOAT,
         "Json": sa.TEXT,
         "Yson": sa.TEXT,
         "Uuid": dl_sqlalchemy_ydb.dialect.YqlUuid,
