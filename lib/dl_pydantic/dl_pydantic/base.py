@@ -6,6 +6,7 @@ from typing_extensions import Self
 class BaseModel(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(
         populate_by_name=True,
+        hide_input_in_errors=True,
     )
 
     def model_deepdiff(
