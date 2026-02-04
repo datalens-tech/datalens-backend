@@ -197,7 +197,7 @@ class ConnectionsImportList(BIResource):
     )
     @wrap_export_import_exception
     def post(self, body: dict) -> dict | tuple[list | dict, int]:
-        us_manager = self.get_service_us_manager()
+        us_manager = self.get_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
@@ -382,7 +382,7 @@ class ConnectionExportItem(BIResource):
     )
     @wrap_export_import_exception
     def get(self, connection_id: str) -> dict:
-        us_manager = self.get_service_us_manager()
+        us_manager = self.get_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)

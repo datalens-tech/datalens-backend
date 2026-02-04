@@ -127,8 +127,6 @@ class DatasetItem(BIResource):
         }
         us_manager = self.get_us_manager()
         us_manager.set_context("connection", connection_headers)
-        service_us_manager = self.get_service_us_manager()
-        service_us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         utils.need_permission_on_entry(ds, USPermissionKind.admin)
@@ -152,8 +150,6 @@ class DatasetItemFields(BIResource):
         }
         us_manager = self.get_us_manager()
         us_manager.set_context("connection", connection_headers)
-        service_us_manager = self.get_service_us_manager()
-        service_us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
         fields = [
@@ -339,7 +335,7 @@ class DatasetExportItem(DatasetResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_service_us_manager()
+        us_manager = self.get_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         tenant = self.get_current_rci().tenant
@@ -436,7 +432,7 @@ class DatasetImportCollection(DatasetResource):
 
         self.replace_conn_ids(data, body["id_mapping"])
 
-        us_manager = self.get_service_us_manager()
+        us_manager = self.get_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
