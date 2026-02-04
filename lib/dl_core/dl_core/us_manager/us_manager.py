@@ -65,6 +65,7 @@ from dl_core.us_manager.us_entry_serializer import (
     USDataPack,
     USEntrySerializer,
     USEntrySerializerMarshmallow,
+    USUnversionedDataPack,
 )
 from dl_core.us_manager.utils.fake_us_client import FakeUSClient
 import dl_retrier
@@ -296,6 +297,92 @@ class USManagerBase:
             encrypted_value = self._crypto_controller.encrypt_with_actual_key(decrypted_value)
             secret_addressable.set(key, encrypted_value)
 
+    @generic_profiler("us-unpack-unversioned-data-from-us")
+    def unpack_unversioned_data_from_us(
+        self,
+        cls: type[USEntry],
+        unversioned_data: dict[str, Any],
+        serializer: USEntrySerializer,
+    ) -> USUnversionedDataPack:
+        """
+        Extracts and prepares unversioned data for deserialization.
+
+        This method processes the `unversioned_data` dictionary by:
+          - Decrypting any secrets contained within.
+          - Separating unversioned data fields for use during deserialization.
+        """
+
+        unversioned_data = copy.deepcopy(unversioned_data)
+        data_pack = USUnversionedDataPack()
+
+        # Assumed that data_pack's dicts was decoupled with initial US response
+        source_addressable = AddressableData(unversioned_data)
+        unversioned_data_addressable = AddressableData(data_pack.unversioned_data)
+        secrets_addressable = AddressableData(data_pack.secrets)
+
+        declared_secret_keys = serializer.get_secret_keys(cls)
+        declared_unversioned_keys = serializer.get_unversioned_keys(cls)
+
+        # Decrypt secrets
+        for secret_key in declared_secret_keys:
+            if source_addressable.contains(secret_key):
+                sec_val = source_addressable.pop(secret_key)
+                assert not isinstance(sec_val, str)
+                decrypted_sec_val = self._crypto_controller.decrypt(sec_val)
+                secrets_addressable.set(secret_key, decrypted_sec_val)
+
+        # Extract unversioned fields
+        for unversioned_key in declared_unversioned_keys:
+            if source_addressable.contains(unversioned_key):
+                unversioned_val = source_addressable.pop(unversioned_key)
+                unversioned_data_addressable.set(unversioned_key, unversioned_val)
+
+        if source_addressable.data:
+            LOGGER.warning("Undeclared unversioned fields found")
+
+        return data_pack
+
+    @generic_profiler("us-pack-unversioned-data-for-us")
+    def pack_unversioned_data_for_us(
+        self,
+        cls: type[USEntry],
+        data_pack: USUnversionedDataPack,
+        serializer: USEntrySerializer,
+    ) -> dict[str, Any]:
+        """
+        Serializes a `USUnversionedDataPack` into a dictionary suitable for US data packing.
+
+        This method takes a `USUnversionedDataPack`, extracts its unversioned data,
+        and handles the encryption of any secrets it may contain. The resulting
+        dictionary is then returned.
+        """
+
+        data_pack = copy.deepcopy(data_pack)
+        unversioned_data: dict[str, Any] = dict()
+
+        # Assumed that data_pack's dicts was decoupled with initial US response
+        result_addressable = AddressableData(unversioned_data)
+        unversioned_data_addressable = AddressableData(data_pack.unversioned_data)
+        secrets_addressable = AddressableData(data_pack.secrets)
+
+        declared_secret_keys = serializer.get_secret_keys(cls)
+        declared_unversioned_keys = serializer.get_unversioned_keys(cls)
+
+        # Encrypt secrets
+        for secret_key in declared_secret_keys:
+            if secrets_addressable.contains(secret_key):
+                sec_val = secrets_addressable.pop(secret_key)
+                assert sec_val is None or isinstance(sec_val, str)
+                result_addressable.set(secret_key, self._crypto_controller.encrypt_with_actual_key(sec_val))
+
+        # Extract unversioned fields
+        for unversioned_key in declared_unversioned_keys:
+            if unversioned_data_addressable.contains(unversioned_key):
+                unversioned_val = unversioned_data_addressable.pop(unversioned_key)
+                result_addressable.set(unversioned_key, unversioned_val)
+
+        return result_addressable.data
+
     @generic_profiler("us-deserialize-dict-to-object")
     def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[type[USEntry]] = None) -> USEntry:
         """
@@ -367,22 +454,23 @@ class USManagerBase:
             )
         else:
             data = us_resp.get("data", dict())
-            secrets = us_resp.get("unversionedData", dict())
+            unversioned_data = us_resp.get("unversionedData", dict())
 
             assert isinstance(data, dict)
-            assert isinstance(secrets, dict)
-            data_pack = USDataPack(
-                data=data,
-                secrets=secrets,
-            )
-
-            data_pack = copy.deepcopy(data_pack)
-            if data_pack.secrets:
-                for key, secret in data_pack.secrets.items():
-                    assert not isinstance(secret, str)
-                    data_pack.secrets[key] = self._crypto_controller.decrypt(secret)
+            assert isinstance(unversioned_data, dict)
 
             serializer = self.get_us_entry_serializer(entry_cls)
+
+            data_pack = USDataPack(
+                data=data,
+                unversioned_data=self.unpack_unversioned_data_from_us(
+                    cls=entry_cls,
+                    unversioned_data=unversioned_data,
+                    serializer=serializer,
+                ),
+            )
+            data_pack = copy.deepcopy(data_pack)
+
             entry = serializer.deserialize(
                 entry_cls,
                 data_pack,
@@ -463,19 +551,24 @@ class USManagerBase:
             )
         else:
             entry_cls = type(entry)
+            serializer = self.get_us_entry_serializer(type(entry))
             if entry_cls.DataModel is not None:
-                serializer = self.get_us_entry_serializer(type(entry))
                 data_pack = serializer.serialize(entry)
             else:
-                data_pack = USDataPack(data=data_dict)
+                data_pack = USDataPack(
+                    data=data_dict,
+                    unversioned_data=USUnversionedDataPack(),
+                )
 
-            for key, secret in data_pack.secrets.items():
-                assert secret is None or isinstance(secret, str)
-                data_pack.secrets[key] = self._crypto_controller.encrypt_with_actual_key(secret)
+            unversioned_data = self.pack_unversioned_data_for_us(
+                cls=entry_cls,
+                data_pack=data_pack.unversioned_data,
+                serializer=serializer,
+            )
 
             save_params.update(
                 data=data_pack.data,
-                unversioned_data=data_pack.secrets,
+                unversioned_data=unversioned_data,
             )
 
         save_params.update(
