@@ -1,6 +1,7 @@
 import re
 from typing import (
     Generic,
+    Iterator,
     TypeVar,
 )
 
@@ -32,7 +33,31 @@ class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
 
 @attr.define(frozen=True, kw_only=True)
 class HttpServerAppMixin(dl_app_base.BaseApp):
-    ...
+    _aiohttp_app: aiohttp.web.Application = attr.field(factory=aiohttp.web.Application)
+    _aiohttp_app_host: str = attr.field()
+    _aiohttp_app_port: int = attr.field()
+
+    @property
+    def aiohttp_app(self) -> aiohttp.web.Application:
+        return self._aiohttp_app
+
+    @override
+    @property
+    def main_callbacks(self) -> Iterator[dl_app_base.Callback]:
+        yield from super().main_callbacks
+        yield dl_app_base.Callback(
+            coroutine=aiohttp.web._run_app(
+                app=self.aiohttp_app,
+                host=self._aiohttp_app_host,
+                port=self._aiohttp_app_port,
+                access_log=None,
+            ),
+            name="run_http_server",
+        )
+
+    @property
+    def non_aiohttp_main_callbacks(self) -> Iterator[dl_app_base.Callback]:
+        yield from super().main_callbacks
 
 
 AppType = TypeVar("AppType", bound=HttpServerAppMixin)
@@ -68,25 +93,16 @@ class HttpServerAppFactoryMixin(
     settings: HttpServerAppSettingsMixin
 
     @override
-    @dl_app_base.singleton_class_method_result
-    async def _get_main_callbacks(
-        self,
-    ) -> list[dl_app_base.Callback]:
-        result = await super()._get_main_callbacks()
-
-        result.append(
-            dl_app_base.Callback(
-                coroutine=aiohttp.web._run_app(
-                    app=await self._get_aiohttp_app(),
-                    host=self.settings.HTTP_SERVER.HOST,
-                    port=self.settings.HTTP_SERVER.PORT,
-                    access_log=None,
-                ),
-                name="run_http_server",
-            ),
+    async def _get_application(self) -> AppType:
+        return self.app_class(
+            startup_callbacks=await self._get_startup_callbacks(),
+            shutdown_callbacks=await self._get_shutdown_callbacks(),
+            main_callbacks=await self._get_main_callbacks(),
+            logger=await self._get_logger(),
+            aiohttp_app=await self._get_aiohttp_app(),
+            aiohttp_app_host=self.settings.HTTP_SERVER.HOST,
+            aiohttp_app_port=self.settings.HTTP_SERVER.PORT,
         )
-
-        return result
 
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app(
