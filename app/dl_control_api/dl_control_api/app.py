@@ -8,6 +8,7 @@ from dl_api_commons.sentry_config import (
     SentryConfig,
     hook_configure_configure_sentry_for_flask,
 )
+
 from dl_api_lib.app_settings import (
     ControlApiAppSettingsOS,
     ControlApiAppTestingsSettings,
