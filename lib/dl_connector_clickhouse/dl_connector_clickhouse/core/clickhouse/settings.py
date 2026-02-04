@@ -2,6 +2,7 @@ from typing import ClassVar
 
 import attr
 
+from dl_api_lib.connector_availability.base import s_attrib
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_core.connectors.settings.base import ConnectorSettings
@@ -25,7 +26,7 @@ class DeprecatedClickHouseConnectorSettings(
     DeprecatedDatasourceTemplateSettingsMixin,
     DeprecatedTableDatasourceSettingsMixin,
 ):
-    pass
+    ALLOW_EXPERIMENTAL_FEATURES: bool = s_attrib("ENABLE_DATASOURCE_TEMPLATE", missing=True)  # type: ignore
 
 
 def clickhouse_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedConnectorSettingsBase]:
@@ -47,6 +48,7 @@ class ClickHouseConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixi
     root_fallback_env_keys: ClassVar[dict[str, str]] = {
         "CONNECTORS__CLICKHOUSE__ENABLE_DATASOURCE_TEMPLATE": "CONNECTORS_CLICKHOUSE_ENABLE_DATASOURCE_TEMPLATE",
         "CONNECTORS__CLICKHOUSE__ENABLE_TABLE_DATASOURCE_FORM": "CONNECTORS_CLICKHOUSE_ENABLE_TABLE_DATASOURCE_FORM",
+        "CONNECTORS__CLICKHOUSE__ALLOW_EXPERIMENTAL_FEATURES": "CONNECTORS_CLICKHOUSE_ALLOW_EXPERIMENTAL_FEATURES",
     }
 
     ALLOW_EXPERIMENTAL_FEATURES: bool = False
