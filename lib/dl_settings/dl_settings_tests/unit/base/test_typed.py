@@ -428,3 +428,111 @@ def test_dict_factory_with_type_key_ignores_type_case() -> None:
     assert isinstance(base["child"], Child)
     base = Base.dict_with_type_key_factory({"ChiLd": {"value": "test"}})
     assert isinstance(base["child"], Child)
+
+
+def test_typed_dict_settings_without_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        VALUE: str
+        SECRET: str
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.WithFallbackEnvSource, dl_settings.BaseRootSettings):
+        CHILDREN: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        # OK
+        monkeypatch.setenv("CHILDREN__CHILD__SECRET", "secret_test")
+        config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILDREN["child"], Child)
+        assert root.CHILDREN["child"].VALUE == "test"
+        assert root.CHILDREN["child"].SECRET == "secret_test"
+
+
+def test_typed_dict_settings_with_env_and_upper_and_lower_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        VALUE: str
+        SECRET: str = "secret_test"
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.WithFallbackEnvSource, dl_settings.BaseRootSettings):
+        CHILDREN: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+        fallback_env_keys = {"CHILDREN__CHILD__VALUE": "CHILDREN_CHILD_VALUE"}
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        # without env
+        config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILDREN["child"], Child)
+        assert root.CHILDREN["child"].VALUE == "test"
+        assert root.CHILDREN["child"].SECRET == "secret_test"
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_2"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILDREN["child"], Child)
+        assert root.CHILDREN["child"].VALUE == "test_2"
+        assert root.CHILDREN["child"].SECRET == "secret_test"
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        monkeypatch.setenv("CHILDREN__CHILD__SECRET", "secret_test")
+
+        config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test_3"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILDREN["child"], Child)
+        assert root.CHILDREN["child"].VALUE == "test_3"
+        assert root.CHILDREN["child"].SECRET == "secret_test"
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        monkeypatch.setenv("CHILDREN__child__SECRET", "secret_test")
+
+        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_4"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root()
+        assert isinstance(root.CHILDREN["child"], Child)
+        assert root.CHILDREN["child"].VALUE == "test_4"
+        assert root.CHILDREN["child"].SECRET == "secret_test"
+
+
+def test_typed_dict_settings_with_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        VALUE: str
+        SECRET: str
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.WithFallbackEnvSource, dl_settings.BaseRootSettings):
+        CHILDREN: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
+
+    fallback_env_keys = {"CHILDREN__CHILD__SECRET": "CHILDREN_CHILD_SECRET"}
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        monkeypatch.setenv("CHILDREN_CHILD_SECRET", "secret_test")
+        config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        root = Root(extra_fallback_env_keys=fallback_env_keys)
+        assert isinstance(root.CHILDREN["child"], Child)
+        assert root.CHILDREN["child"].VALUE == "test"
+        assert root.CHILDREN["child"].SECRET == "secret_test"

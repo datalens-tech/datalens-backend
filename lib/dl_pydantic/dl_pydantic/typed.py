@@ -119,12 +119,51 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return {key: cls.factory(value) for key, value in data.items()}
 
     @classmethod
+    def merge_data_keys(cls, data: dict[str, Any]) -> None:
+        """
+        Merge keys that differ only by case into a single lowercase key.
+        For example: {'CHILD': {'VALUE': 'test_4'}, 'child': {'secret': 'secret_test'}}
+        becomes: {'child': {'VALUE': 'test_4', 'secret': 'secret_test'}}
+        """
+        # Group keys by their lowercase version
+        lower_to_keys: dict[str, list[str]] = {}
+        for key in data:
+            lower_key = key.lower()
+            if lower_key not in lower_to_keys:
+                lower_to_keys[lower_key] = []
+            lower_to_keys[lower_key].append(key)
+
+        # Merge values for keys that have case-insensitive duplicates
+        for lower_key, keys in lower_to_keys.items():
+            if len(keys) > 1:
+                # Merge all values into one dict
+                merged_value: dict[str, Any] = {}
+                for key in keys:
+                    value = data[key]
+                    if isinstance(value, dict):
+                        merged_value.update(value)
+                    else:
+                        raise ValueError(f"Cannot merge non-dict values for key '{key}'")
+
+                # Remove all original keys
+                for key in keys:
+                    del data[key]
+
+                # Add merged value with lowercase key
+                data[lower_key] = merged_value
+            elif keys[0] != lower_key:
+                # Single key but not lowercase - rename to lowercase
+                data[lower_key] = data.pop(keys[0])
+
+    @classmethod
     def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
         if not isinstance(data, dict):
             raise ValueError("Data must be mapping for dict factory")
 
         result: dict[str, base.BaseModel] = {}
         type_key = cls.type_key()
+
+        cls.merge_data_keys(data)
 
         for key, value in data.items():
             if isinstance(value, cls):
