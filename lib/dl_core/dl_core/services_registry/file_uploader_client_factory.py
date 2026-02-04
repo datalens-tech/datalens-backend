@@ -7,8 +7,6 @@ from types import TracebackType
 from typing import (
     Any,
     ClassVar,
-    Optional,
-    Union,
 )
 
 import aiohttp
@@ -65,23 +63,23 @@ class FileSourceDesc:
     file_id: str = attr.ib()
     source_id: str = attr.ib()
     title: str = attr.ib()
-    raw_schema: Optional[Union[RawSchemaType, list[dict[str, Any]]]] = attr.ib()
-    preview_id: Optional[str] = attr.ib(default=None)
+    raw_schema: RawSchemaType | list[dict[str, Any]] | None = attr.ib()
+    preview_id: str | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True)
 class GSheetsFileSourceDesc(FileSourceDesc):
-    spreadsheet_id: Optional[str] = attr.ib()
-    sheet_id: Optional[int] = attr.ib()
-    first_line_is_header: Optional[bool] = attr.ib()
+    spreadsheet_id: str | None = attr.ib()
+    sheet_id: int | None = attr.ib()
+    first_line_is_header: bool | None = attr.ib()
 
 
 @attr.s(frozen=True, kw_only=True)
 class YaDocsFileSourceDesc(FileSourceDesc):
-    public_link: Optional[str] = attr.ib()
-    private_path: Optional[str] = attr.ib()
-    first_line_is_header: Optional[bool] = attr.ib()
-    sheet_id: Optional[str] = attr.ib()
+    public_link: str | None = attr.ib()
+    private_path: str | None = attr.ib()
+    first_line_is_header: bool | None = attr.ib()
+    sheet_id: str | None = attr.ib()
 
 
 @attr.s(frozen=True)
@@ -269,7 +267,7 @@ class FileUploaderClient(BIAioHTTPClient):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> None:
         await self.close()
 
@@ -277,7 +275,7 @@ class FileUploaderClient(BIAioHTTPClient):
         return self
 
     def __exit__(
-        self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> None:
         self.close_sync()
 
@@ -293,11 +291,11 @@ class FileUploaderClientFactory:
     _file_uploader_settings: FileUploaderSettings = attr.ib()
     _ca_data: bytes = attr.ib()
     # TODO: Make tenant_id non-optional
-    _tenant_id: Optional[str] = attr.ib()
+    _tenant_id: str | None = attr.ib()
 
     _file_uploader_client_cls: ClassVar[type[FileUploaderClient]] = FileUploaderClient  # tests mockup point
 
-    def get_client(self, headers: Optional[THeaders] = None, cookies: Optional[TCookies] = None) -> FileUploaderClient:
+    def get_client(self, headers: THeaders | None = None, cookies: TCookies | None = None) -> FileUploaderClient:
         # Expect tenant to be set here
         assert self._tenant_id is not None
 

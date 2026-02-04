@@ -102,8 +102,8 @@ class ModelMapperMarshmallow:
     def create_field_for_type(
         self,
         the_type: Any,
-        attrib_descriptor: Optional[AttribDescriptor],
-        ma_attribute_name: Optional[str],
+        attrib_descriptor: AttribDescriptor | None,
+        ma_attribute_name: str | None,
         is_required: bool,
         is_optional: bool = False,
     ) -> FieldBundle:
@@ -164,7 +164,7 @@ class ModelMapperMarshmallow:
     def create_field_for_unwrapped_type(
         self,
         the_type: type,
-        attrib_descriptor: Optional[AttribDescriptor],
+        attrib_descriptor: AttribDescriptor | None,
         common_ma_field_kwargs: CommonAttributeProps,
     ) -> FieldBundle:
         if attr.has(the_type):

@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -87,22 +86,22 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_exports_history_url_path(self) -> Optional[str]:
+    def get_exports_history_url_path(self) -> str | None:
         raise NotImplementedError
 
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
-    _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
-    _formula_parser_factory: Optional[FormulaParserFactory] = attr.ib(kw_only=True)
-    _dataset_validator_factory: Optional["DatasetValidatorFactory"] = attr.ib(kw_only=True)
-    _field_id_generator_factory: Optional[FieldIdGeneratorFactory] = attr.ib(kw_only=True)
-    _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
-    _localizer_factory: Optional[LocalizerFactory] = attr.ib(kw_only=True, default=None)
-    _localizer_fallback: Optional[Localizer] = attr.ib(kw_only=True, default=None)
-    _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(kw_only=True, default=None)
+    _default_formula_parser_type: ParserType | None = attr.ib(kw_only=True, default=None)
+    _formula_parser_factory: FormulaParserFactory | None = attr.ib(kw_only=True)
+    _dataset_validator_factory: "DatasetValidatorFactory" | None = attr.ib(kw_only=True)
+    _field_id_generator_factory: FieldIdGeneratorFactory | None = attr.ib(kw_only=True)
+    _supported_functions_manager: SupportedFunctionsManager | None = attr.ib(kw_only=True, default=None)
+    _localizer_factory: LocalizerFactory | None = attr.ib(kw_only=True, default=None)
+    _localizer_fallback: Localizer | None = attr.ib(kw_only=True, default=None)
+    _connector_availability: ConnectorAvailabilityConfig | None = attr.ib(kw_only=True, default=None)
     _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
-    _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
+    _pivot_transformer_factory: PivotTransformerFactory | None = attr.ib(kw_only=True, default=None)
     _typed_query_processor_factory: TypedQueryProcessorFactory = attr.ib(kw_only=True)
     _typed_query_raw_processor_factory: TypedQueryRawProcessorFactory = attr.ib(kw_only=True)
 
@@ -174,7 +173,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     def get_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         return self._typed_query_raw_processor_factory
 
-    def get_exports_history_url_path(self) -> Optional[str]:
+    def get_exports_history_url_path(self) -> str | None:
         return self._exports_history_url_path
 
     def close(self) -> None:

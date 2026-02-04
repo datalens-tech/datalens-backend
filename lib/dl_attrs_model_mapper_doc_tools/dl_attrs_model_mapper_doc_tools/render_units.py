@@ -3,7 +3,6 @@ import os.path
 from typing import (
     Any,
     ClassVar,
-    Optional,
     Sequence,
     Union,
 )
@@ -41,12 +40,12 @@ class RenderContext:
         # Not a local relative url
         return ref
 
-    def localized_m_text(self, m_text: Optional[MText]) -> Optional[str]:
+    def localized_m_text(self, m_text: MText | None) -> str | None:
         if m_text is None:
             return None
         return m_text.at_locale(self.locale)
 
-    def localized_m_text_strict(self, m_text: Optional[MText]) -> str:
+    def localized_m_text_strict(self, m_text: MText | None) -> str:
         if m_text is None:
             raise ValueError("No m_text provided for strict localized text getter")
         ret = m_text.at_locale(self.locale)
@@ -148,7 +147,7 @@ class CompositeDocUnit(DocUnit, metaclass=abc.ABCMeta):
     add_headers_level: ClassVar[bool] = True
 
     @abc.abstractmethod
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         raise NotImplementedError()
 
     def render_md(self, context: RenderContext) -> Sequence[str]:
@@ -168,18 +167,18 @@ class CompositeDocUnit(DocUnit, metaclass=abc.ABCMeta):
 class DocUnitGroup(CompositeDocUnit):
     add_headers_level = False
 
-    content: Sequence[Optional[DocUnit]] = attr.ib()
+    content: Sequence[DocUnit | None] = attr.ib()
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         return self.content
 
 
 @attr.s()
 class DocSection(CompositeDocUnit):
     header: DocHeader = attr.ib()
-    content: Sequence[Optional[DocUnit]] = attr.ib()
+    content: Sequence[DocUnit | None] = attr.ib()
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         return [
             self.header,
             *self.content,
@@ -191,7 +190,7 @@ class MultiLineTableRow(DocUnit):
     items: Sequence[Union[str, DocUnit]] = attr.ib()
 
     @staticmethod
-    def convert_to_normalized_single_line_cells(cell_lines_list: Sequence[Sequence[str]]) -> Optional[Sequence[str]]:
+    def convert_to_normalized_single_line_cells(cell_lines_list: Sequence[Sequence[str]]) -> Sequence[str] | None:
         ret: list[str] = []
         for cell_lines in cell_lines_list:
             if len(cell_lines) > 1:
@@ -242,7 +241,7 @@ class MultiLineTable(CompositeDocUnit):
 
     rows: Sequence[MultiLineTableRow] = attr.ib()
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         return [
             EmptyLine(),
             DocText("#|"),
@@ -260,8 +259,8 @@ class FieldLine(DocUnit):
     nullable: bool
     required: bool
 
-    description: Optional[DocText] = None
-    type_ref: Optional[str] = None
+    description: DocText | None = None
+    type_ref: str | None = None
 
     def _get_type_md(self, render_ctx: RenderContext) -> str:
         type_text: str
@@ -298,15 +297,15 @@ class FieldLine(DocUnit):
 @attr.s()
 class OperationExampleDoc(CompositeDocUnit):
     title: Union[MText, str] = attr.ib()
-    description: Optional[MText] = attr.ib()
+    description: MText | None = attr.ib()
     rq: dict[str, Any] = attr.ib()
-    rs: Optional[dict[str, Any]] = attr.ib()
+    rs: dict[str, Any] | None = attr.ib()
 
     def _dump_dict(self, d: dict[str, Any]) -> str:
         yaml_text = yaml.safe_dump(d, default_flow_style=False, sort_keys=False)
         return f"```yaml\n{yaml_text}```"
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         rs_dict = self.rs
 
         return [
@@ -326,18 +325,18 @@ class OperationExampleDoc(CompositeDocUnit):
 @attr.s()
 class ClassDoc(CompositeDocUnit, metaclass=abc.ABCMeta):
     type: type = attr.ib()
-    header: Optional[DocHeader] = attr.ib()
-    description: Optional[MText] = attr.ib()
+    header: DocHeader | None = attr.ib()
+    description: MText | None = attr.ib()
 
 
 @attr.s()
 class RegularClassDoc(ClassDoc):
     fields: Sequence[FieldLine] = attr.ib()
-    discriminator_field_name: Optional[str] = attr.ib(default=None)
-    discriminator_field_value: Optional[str] = attr.ib(default=None)
+    discriminator_field_name: str | None = attr.ib(default=None)
+    discriminator_field_value: str | None = attr.ib(default=None)
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
-        discriminator_text: Optional[DocText] = None
+    def get_children(self) -> Sequence[DocUnit | None]:
+        discriminator_text: DocText | None = None
         if self.discriminator_field_value is not None:
             discriminator_text = DocText(f"`{self.discriminator_field_name}`:`{self.discriminator_field_value}`")
 
@@ -356,7 +355,7 @@ class GenericClassDoc(ClassDoc):
     discriminator_field_name: str = attr.ib()
     map_discriminator_object_doc: dict[str, RegularClassDoc] = attr.ib()
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         return [
             self.header,
             DocText([MText("Поле-дискриминатор: ", en="Discriminator field: "), f"`{self.discriminator_field_name}`"]),
@@ -375,7 +374,7 @@ class OperationDoc(CompositeDocUnit):
     response: RegularClassDoc = attr.ib()
     examples: list[OperationExampleDoc] = attr.ib()
 
-    def get_children(self) -> Sequence[Optional[DocUnit]]:
+    def get_children(self) -> Sequence[DocUnit | None]:
         return [
             self.header,
             DocText(self.description),

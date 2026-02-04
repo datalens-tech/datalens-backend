@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import aiohttp
@@ -69,7 +68,7 @@ class PingReadyView(BaseView):
 
         return True
 
-    async def is_rqe_ready(self, base_url: RQEBaseURL) -> Optional[int]:
+    async def is_rqe_ready(self, base_url: RQEBaseURL) -> int | None:
         session = aiohttp.ClientSession(
             connector=TCPConnector(force_close=True),
             timeout=ClientTimeout(
@@ -95,7 +94,7 @@ class PingReadyView(BaseView):
         return resp.status
 
     async def get(self) -> web.Response:
-        response_details: dict[str, Optional[int]] = dict()
+        response_details: dict[str, int | None] = dict()
         required_services = self.dl_request.services_registry.get_required_services()
 
         if RequiredService.POSTGRES in required_services:

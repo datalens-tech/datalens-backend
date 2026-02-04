@@ -5,7 +5,6 @@ import logging
 import typing
 from typing import (
     Any,
-    Optional,
 )
 
 import sqlalchemy as sa
@@ -27,7 +26,7 @@ class CITEXT(sqltypes.TEXT):
 
     __visit_name__ = "CITEXT"
 
-    def coerce_compared_value(self, op: Optional[Any], value: Any) -> sqltypes.TypeEngine[Any]:
+    def coerce_compared_value(self, op: Any | None, value: Any) -> sqltypes.TypeEngine[Any]:
         return self
 
 

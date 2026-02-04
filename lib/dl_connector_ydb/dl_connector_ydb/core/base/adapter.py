@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
     TypeVar,
 )
 
@@ -56,7 +55,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "ydb_request_settings": (ydb.BaseRequestSettings().with_operation_timeout(DEFAULT_YDB_REQUEST_TIMEOUT_SEC)),
     }
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         # Not useful.
         return None
 
@@ -101,7 +100,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         "Decimal(": sa.FLOAT,
     }
 
-    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
+    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> SATypeSpec | None:
         result = super()._cursor_column_to_sa(cursor_col)
         if result is not None:
             return result
@@ -116,7 +115,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
 
     _subselect_cursor_info_where_false: ClassVar[bool] = False
 
-    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Callable[[Any], Any] | None, ...]:
         type_names_norm = [col[1].lower().replace("?", "") for col in cursor_info.raw_cursor_description]
         return tuple(
             dl_connector_ydb.core.base.row_converters.ROW_CONVERTERS.get(type_name_norm, None)

@@ -7,7 +7,6 @@ import tempfile
 from typing import (
     Any,
     Callable,
-    Optional,
 )
 
 import attr
@@ -30,7 +29,7 @@ from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 def load_settings(
     env: SDict,
     settings_type: type[SettingsBase],
-    key_prefix: Optional[str] = None,
+    key_prefix: str | None = None,
     fallback_env: Any = None,
 ) -> Any:
     fallback_cfg_resolver = ConstantFallbackConfigResolver(fallback_env)
@@ -45,7 +44,7 @@ def load_settings(
 def perform_loader_env_check(
     env: SDict,
     expected_settings: Any,
-    key_prefix: Optional[str] = None,
+    key_prefix: str | None = None,
     fallback_env: Any = None,
 ) -> None:
     actual_settings = load_settings(
@@ -166,7 +165,7 @@ def test_composite_loading():
     class SomeSettings(SettingsBase):
         a: int = s_attrib("a")
         nested: NestedSettings = s_attrib("nested")
-        nullable_nested: Optional[NestedSettings] = s_attrib("nullable_nested", missing=None)
+        nullable_nested: NestedSettings | None = s_attrib("nullable_nested", missing=None)
 
     perform_loader_env_check(
         key_prefix=None,
@@ -188,7 +187,7 @@ def test_scalar_defaults():
     class SomeSettings(SettingsBase):
         a: int = s_attrib("a", fallback_cfg_key="THE_A")
         b: int = s_attrib("b", fallback_cfg_key="THE_B")
-        c: Optional[int] = s_attrib("c", fallback_cfg_key="THE_NON_EXISTING_KEY", missing=None)
+        c: int | None = s_attrib("c", fallback_cfg_key="THE_NON_EXISTING_KEY", missing=None)
 
     perform_loader_env_check(
         key_prefix=None,
@@ -267,7 +266,7 @@ def test_ignore():
 
     @attr.s(frozen=True)
     class DefaultedSettings(SettingsBase):
-        endpoint: Optional[Nested] = s_attrib(
+        endpoint: Nested | None = s_attrib(
             "EP",
             enabled_key_name="ENABLED",
             fallback_factory=lambda fb: Nested(host=fb.EP_HOST, port=fb.EP_PORT),
@@ -276,7 +275,7 @@ def test_ignore():
 
     @attr.s(frozen=True)
     class NonDefaultedSettings(SettingsBase):
-        endpoint: Optional[Nested] = s_attrib("EP", enabled_key_name="ENABLED")
+        endpoint: Nested | None = s_attrib("EP", enabled_key_name="ENABLED")
 
     # Check that endpoint is not despite of fallback
     perform_loader_env_check(
@@ -483,8 +482,8 @@ def test_fallback_only():
 
     @attr.s
     class TypedSettings(SettingsBase):
-        no_env_1: Optional[str] = s_attrib(None, fallback_cfg_key="SOME_KEY", missing=None)
-        via_env: Optional[str] = s_attrib("VIA_ENV", fallback_cfg_key="SOME_KEY")
+        no_env_1: str | None = s_attrib(None, fallback_cfg_key="SOME_KEY", missing=None)
+        via_env: str | None = s_attrib("VIA_ENV", fallback_cfg_key="SOME_KEY")
         no_env_nested: Nested = s_attrib(None, fallback_factory=lambda: Nested(a=1))
 
     perform_loader_env_check(
@@ -506,7 +505,7 @@ def test_fallback_value_propagation_in_nested_settings():
 
     @attr.s()
     class ConnBKey(SettingsBase):
-        id: Optional[str] = s_attrib("ID")
+        id: str | None = s_attrib("ID")
         secret: str = s_attrib("SECRET")
 
     @attr.s()
@@ -599,7 +598,7 @@ def test_complex_nested_with_required_dft_ffactory_no_env():
 
     @attr.s()
     class RootWithFallbackFactoryNone(SettingsBase):
-        nested_with_ff: Optional[Nested] = s_attrib("NWFF", fallback_factory=lambda: None)
+        nested_with_ff: Nested | None = s_attrib("NWFF", fallback_factory=lambda: None)
 
     perform_loader_env_check(
         dict(),
@@ -614,7 +613,7 @@ def test_complex_nested_with_required_dft_missing_no_env():
 
     @attr.s()
     class RootWithMissingNone(SettingsBase):
-        nested_with_ff: Optional[Nested] = s_attrib("NWFF", missing=None)
+        nested_with_ff: Nested | None = s_attrib("NWFF", missing=None)
 
     perform_loader_env_check(
         dict(),
@@ -629,7 +628,7 @@ def test_complex_nested_with_required_dft_not_defined_no_env():
 
     @attr.s()
     class RootWithMissingNone(SettingsBase):
-        nested_with_ff: Optional[Nested] = s_attrib("NWFF")
+        nested_with_ff: Nested | None = s_attrib("NWFF")
 
     with pytest.raises(ConfigFieldMissing) as exc:
         load_settings(
@@ -654,7 +653,7 @@ def test_complex_double_nested_with_required_dft_not_defined_partial_env():
 
     @attr.s()
     class RootWithMissingNone(SettingsBase):
-        nested_with_ff: Optional[Nested] = s_attrib("NWFF")
+        nested_with_ff: Nested | None = s_attrib("NWFF")
 
     with pytest.raises(ConfigFieldMissing) as exc:
         load_settings(
@@ -674,11 +673,11 @@ def test_complex_double_nested_dft_fallback_factory_nested_none():
 
     @attr.s()
     class Nested(SettingsBase):
-        val: Optional[Pair] = s_attrib("PAIR")
+        val: Pair | None = s_attrib("PAIR")
 
     @attr.s()
     class RootWithMissingNone(SettingsBase):
-        nested_with_ff: Optional[Nested] = s_attrib("NWFF", fallback_factory=lambda: Nested(val=None))
+        nested_with_ff: Nested | None = s_attrib("NWFF", fallback_factory=lambda: Nested(val=None))
 
     # Check regular loading
     perform_loader_env_check(
@@ -718,7 +717,7 @@ def test_json_value():
 
     @attr.s
     class TypedSettings(SettingsBase):
-        nested: Optional[Nested] = s_attrib(
+        nested: Nested | None = s_attrib(
             "N",
             json_converter=lambda js: Nested(dft_key=js["dft_key"], map_key_id_value=js["keys"]),
             enabled_key_name="ENABLED",

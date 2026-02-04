@@ -7,7 +7,6 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
 )
 from urllib.parse import (
@@ -54,15 +53,15 @@ class BaseConnLineConstructor(abc.ABC, Generic[_CONN_DTO_TV]):
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         raise NotImplementedError
 
     def _get_dsn_query_params(self) -> dict:
         return {}
 
-    def make_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
+    def make_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         # TODO?: replace with `get_conn_line`, delete `dsn_template`.
         conn_line = self._dsn_template.format(**self._get_dsn_params(db_name=db_name))
 
@@ -87,8 +86,8 @@ class ClassicSQLConnLineConstructor(
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         return dict(
             dialect=self._dialect_name,
@@ -115,7 +114,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     def get_engine_kwargs(self) -> dict:
         return {}
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         if isinstance(self._target_dto, BaseSQLConnTargetDTO):
             return self._target_dto.db_name
         raise NotImplementedError
@@ -123,7 +122,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     def _get_dsn_query_params(self) -> dict:
         return {}
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
+    def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         return self.conn_line_constructor_type(
             dsn_template=self.dsn_template,
             dialect_name=get_dialect_string(self.conn_type),
@@ -153,8 +152,8 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
     def _get_subselect_raw_cursor_info_and_data(
         self,
         subselect: sa.sql.elements.TextClause,
-        limit: Optional[int] = 1,
-        where_false: Optional[bool] = None,
+        limit: int | None = 1,
+        where_false: bool | None = None,
     ) -> dict:
         """
         Run a `select * limit 1` query, return cursor info.

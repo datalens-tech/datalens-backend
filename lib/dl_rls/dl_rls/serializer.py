@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Iterable,
     NamedTuple,
-    Optional,
 )
 
 from dl_constants.enums import RLSSubjectType
@@ -91,7 +90,7 @@ class FieldRLSSerializer:
     _line_re = re.compile(r"^'.+': " + _subjects_re_s)
 
     @classmethod
-    def _parse_single_line(cls, line: str) -> tuple[RLSPatternType, Optional[str], list[str]]:
+    def _parse_single_line(cls, line: str) -> tuple[RLSPatternType, str | None, list[str]]:
         """
         `'value: subjects'` line to `pattern_type, value, subject_names` tuple.
         """
@@ -136,7 +135,7 @@ class FieldRLSSerializer:
         return pattern_type, value, subject_names
 
     @classmethod
-    def _try_parse_single_line(cls, line: str, idx: int) -> tuple[RLSPatternType, Optional[str], list[str]]:
+    def _try_parse_single_line(cls, line: str, idx: int) -> tuple[RLSPatternType, str | None, list[str]]:
         try:
             return cls._parse_single_line(line)
         except ValueError as exc_value:
@@ -243,7 +242,7 @@ class FieldRLSSerializer:
 
     @classmethod
     def from_text_config(
-        cls, config: str, field_guid: str, subject_resolver: Optional[BaseSubjectResolver]
+        cls, config: str, field_guid: str, subject_resolver: BaseSubjectResolver | None
     ) -> list[RLSEntry]:
         if not config:
             return []

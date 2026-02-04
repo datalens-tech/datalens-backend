@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Optional,
     TypeVar,
     Union,
     no_type_check,
@@ -158,9 +157,9 @@ class _PatchedOver(Over):
 
 def over(
     clause_el: ClauseElement,
-    partition_by: Optional[ClauseElement] = None,
-    order_by: Optional[ClauseElement] = None,
-    rows: Optional[tuple[Optional[int], Optional[int]]] = None,
-    range_: Optional[tuple[Optional[int], Optional[int]]] = None,
+    partition_by: ClauseElement | None = None,
+    order_by: ClauseElement | None = None,
+    rows: tuple[int | None, int | None] | None = None,
+    range_: tuple[int | None, int | None] | None = None,
 ) -> _PatchedOver:
     return _PatchedOver(clause_el, partition_by=partition_by, order_by=order_by, rows=rows, range_=range_)

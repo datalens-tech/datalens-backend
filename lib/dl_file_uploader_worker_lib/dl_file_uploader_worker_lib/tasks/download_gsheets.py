@@ -7,7 +7,6 @@ import logging
 from typing import (
     AsyncIterator,
     Iterable,
-    Optional,
 )
 
 import aiogoogle
@@ -64,10 +63,10 @@ class NoToken(Exception):
 
 
 async def _get_gsheets_auth(
-    dfile_token: Optional[str],
-    conn_id: Optional[str],
+    dfile_token: str | None,
+    conn_id: str | None,
     usm: AsyncUSManager,
-) -> Optional[GSheetsOAuth2]:
+) -> GSheetsOAuth2 | None:
     if dfile_token is not None:  # if there is a token in dfile, then use it
         refresh_token = dfile_token
     elif conn_id is not None:  # otherwise, use the one from the connection
@@ -163,7 +162,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
     cls_meta = task_interface.DownloadGSheetTask
 
     async def run(self) -> TaskResult:
-        dfile: Optional[DataFile] = None
+        dfile: DataFile | None = None
         sources_to_update_by_sheet_id: dict[int, list[DataSource]] = defaultdict(list)
         usm = self._ctx.get_async_usm()
         usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
@@ -189,7 +188,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                 dfile.sources = []
             assert dfile.sources is not None
 
-            auth: Optional[GSheetsOAuth2] = None
+            auth: GSheetsOAuth2 | None = None
             if self.meta.authorized:
                 try:
                     dfile_token = dfile.user_source_properties.refresh_token
@@ -225,7 +224,7 @@ class DownloadGSheetTask(BaseExecutorTask[task_interface.DownloadGSheetTask, Fil
                     sources_to_update_by_sheet_id[src.user_source_dsrc_properties.sheet_id].append(src)
                 for sheet_sample in spreadsheet_sample.sheets:
                     source_status = FileProcessingStatus.in_progress
-                    has_header: Optional[bool] = None
+                    has_header: bool | None = None
                     raw_schema: list[SchemaColumn] = []
                     raw_schema_header: list[SchemaColumn] = []
                     raw_schema_body: list[SchemaColumn] = []

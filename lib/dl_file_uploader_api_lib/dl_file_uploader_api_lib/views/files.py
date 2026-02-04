@@ -8,7 +8,6 @@ from typing import (
     Awaitable,
     Callable,
     ClassVar,
-    Optional,
 )
 import uuid
 
@@ -59,7 +58,7 @@ S3_KEY_PARTS_SEPARATOR = "/"  # used to separate author user_id from the rest of
 
 
 def get_file_type_from_name(
-    filename: Optional[str],
+    filename: str | None,
     default_type: FileType = FileType.csv,
     allow_xlsx: bool = False,
 ) -> FileType:
@@ -222,7 +221,7 @@ class LinksView(FileUploaderBaseView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset()  # Don't skip CSRF check
 
     FILE_TYPE_TO_DATA_FILE_PREPARER_MAP: dict[
-        FileType, Callable[[str, RedisModelManager, Optional[str]], Awaitable[DataFile]]
+        FileType, Callable[[str, RedisModelManager, str | None], Awaitable[DataFile]]
     ] = {
         FileType.gsheets: gsheets_data_file_preparer,
     }
@@ -234,8 +233,8 @@ class LinksView(FileUploaderBaseView):
 
         rmm = self.dl_request.get_redis_model_manager()
 
-        refresh_token: Optional[str] = req_data["refresh_token"]
-        connection_id: Optional[str] = req_data["connection_id"]
+        refresh_token: str | None = req_data["refresh_token"]
+        connection_id: str | None = req_data["connection_id"]
         authorized: bool = req_data["authorized"]
         df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](req_data["url"], rmm, refresh_token)
 
@@ -265,7 +264,7 @@ class DocumentsView(FileUploaderBaseView):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset()  # Don't skip CSRF check
 
     FILE_TYPE_TO_DATA_FILE_PREPARER_MAP: dict[
-        FileType, Callable[[Optional[str], Optional[str], Optional[str], RedisModelManager], Awaitable[DataFile]]
+        FileType, Callable[[str | None, str | None, str | None, RedisModelManager], Awaitable[DataFile]]
     ] = {
         FileType.yadocs: yadocs_data_file_preparer,
     }
@@ -277,10 +276,10 @@ class DocumentsView(FileUploaderBaseView):
 
         rmm = self.dl_request.get_redis_model_manager()
 
-        oauth_token: Optional[str] = req_data["oauth_token"]
-        public_link: Optional[str] = req_data["public_link"]
-        private_path: Optional[str] = req_data["private_path"]
-        connection_id: Optional[str] = req_data["connection_id"]
+        oauth_token: str | None = req_data["oauth_token"]
+        public_link: str | None = req_data["public_link"]
+        private_path: str | None = req_data["private_path"]
+        connection_id: str | None = req_data["connection_id"]
         authorized: bool = req_data["authorized"]
 
         df = await self.FILE_TYPE_TO_DATA_FILE_PREPARER_MAP[file_type](oauth_token, private_path, public_link, rmm)

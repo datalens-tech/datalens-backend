@@ -9,7 +9,6 @@ from typing import (
     Any,
     Collection,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -392,7 +391,7 @@ class ReferenceDocGenerator:
                 self.generate_doc_toc(list_funcs=True)
 
     @staticmethod
-    def _get_func_base_class(name: str) -> Optional[type]:
+    def _get_func_base_class(name: str) -> type | None:
         """Find the first (base) class for the given function"""
         name = name.lower()
         for _i, definition in OPERATION_REGISTRY.items():

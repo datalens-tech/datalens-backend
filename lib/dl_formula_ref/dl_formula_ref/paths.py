@@ -3,7 +3,6 @@ from __future__ import annotations
 import os.path
 from typing import (
     NamedTuple,
-    Optional,
 )
 
 import attr
@@ -61,7 +60,7 @@ class PathRenderer:
     def child(self, name: str) -> PathRenderer:
         return attr.evolve(self, base_path=self._append_path(name))
 
-    def get_func_path(self, func_key: RefFunctionKey, anchor_name: Optional[str] = None) -> str:
+    def get_func_path(self, func_key: RefFunctionKey, anchor_name: str | None = None) -> str:
         raw_func = self._func_ref.get_func(func_key=func_key)
         filename = raw_func.internal_name.upper()
         path = self._get_relative_path(
@@ -74,7 +73,7 @@ class PathRenderer:
             path = f"{path}#{anchor_name}"
         return path
 
-    def get_cat_path(self, category_name: str, anchor_name: Optional[str] = None) -> str:
+    def get_cat_path(self, category_name: str, anchor_name: str | None = None) -> str:
         path = self._get_relative_path(
             self._cat_path_template.format(
                 category_name=category_name,
@@ -87,8 +86,8 @@ class PathRenderer:
     def get_func_link(
         self,
         func_name: str,
-        category_name: Optional[str] = None,
-        anchor_name: Optional[str] = None,
+        category_name: str | None = None,
+        anchor_name: str | None = None,
     ) -> FileLink:
         if category_name is None:
             found_in_categories = [raw_func.category.name for raw_func in self._func_ref.filter(name=func_name)]
@@ -108,7 +107,7 @@ class PathRenderer:
     def get_cat_link(
         self,
         category_name: str,
-        anchor_name: Optional[str] = None,
+        anchor_name: str | None = None,
     ) -> FileLink:
         return FileLink(
             name=HUMAN_CATEGORIES.get(category_name, category_name),

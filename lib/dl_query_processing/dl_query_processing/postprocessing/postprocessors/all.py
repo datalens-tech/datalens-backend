@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -29,13 +28,13 @@ if TYPE_CHECKING:
     from dl_query_processing.compilation.primitives import DetailedType  # type: ignore  # TODO: fix
 
 
-def stringify_or_null(value: Any) -> Optional[str]:
+def stringify_or_null(value: Any) -> str | None:
     if value is None:
         return value
     return str(value)
 
 
-def postprocess_array(value: Optional[Iterable[Any]]) -> Optional[Iterable[Optional[str]]]:
+def postprocess_array(value: Iterable[Any] | None) -> Iterable[str | None] | None:
     if value is None:
         return None
     return json.dumps(value, ensure_ascii=False)  # Frontend fully supports non-ASCII JSON
@@ -55,7 +54,7 @@ TYPE_PROCESSORS: dict[UserDataType, Callable[[Any], Any]] = {
 }
 
 
-def get_type_processor(field_type_info: Optional[DetailedType]) -> Callable[[Any], Any]:
+def get_type_processor(field_type_info: DetailedType | None) -> Callable[[Any], Any]:
     if field_type_info is None:
         return lambda val: val
 
@@ -78,7 +77,7 @@ def get_type_processor(field_type_info: Optional[DetailedType]) -> Callable[[Any
 # TODO FIX: Turn into generator when response streaming become real
 def postprocess_data(
     data: Iterable[Sequence[Any]],
-    field_types: Iterable[Optional[DetailedType]],
+    field_types: Iterable[DetailedType | None],
 ) -> PostprocessedData:
     columns_processors = [get_type_processor(ft) for ft in field_types]
 

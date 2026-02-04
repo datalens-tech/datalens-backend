@@ -2,7 +2,6 @@ import contextlib
 import datetime
 from typing import (
     Generator,
-    Optional,
 )
 
 from frozendict import frozendict
@@ -60,14 +59,12 @@ class YQLTestBase(FormulaConnectorTestBase):
         return DB_CONFIGURATIONS[self.dialect]
 
     @pytest.fixture(scope="class")
-    def ydb_data_table(self, dbe: DbEvaluator, table_schema_name: Optional[str]) -> Generator[sa.Table, None, None]:
+    def ydb_data_table(self, dbe: DbEvaluator, table_schema_name: str | None) -> Generator[sa.Table, None, None]:
         with self.make_ydb_data_table(dbe=dbe, table_schema_name=table_schema_name) as table:
             yield table
 
     @contextlib.contextmanager
-    def make_ydb_data_table(
-        self, dbe: DbEvaluator, table_schema_name: Optional[str]
-    ) -> Generator[sa.Table, None, None]:
+    def make_ydb_data_table(self, dbe: DbEvaluator, table_schema_name: str | None) -> Generator[sa.Table, None, None]:
         db = dbe.db
         table_spec = self.generate_table_spec(table_name_prefix="ydb_test_table")
 

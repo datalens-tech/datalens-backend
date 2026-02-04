@@ -8,7 +8,6 @@ from typing import (
     Callable,
     ClassVar,
     Collection,
-    Optional,
     Sequence,
     Union,
 )
@@ -60,11 +59,11 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         query: Select | str,
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]],
+        preparation_callback: Callable[[], Awaitable[None]] | None,
     ) -> TValuesChunkStream:
         """
         Execute SELECT statement.
@@ -78,7 +77,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         user_type: UserDataType,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation | None = None,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]] = None,
+        preparation_callback: Callable[[], Awaitable[None]] | None = None,
     ) -> TBIDataValue:
         """Execute a statement returning a scalar value."""
         if data_key is None:
@@ -103,12 +102,12 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         *,
         query: Union[str, sa.sql.selectable.Select],
         user_types: Sequence[UserDataType],
-        chunk_size: Optional[int] = None,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        chunk_size: int | None = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation | None = None,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]] = None,
+        preparation_callback: Callable[[], Awaitable[None]] | None = None,
     ) -> TValuesChunkStream:
         """Fetch data from a table"""
         if data_key is None:
@@ -181,11 +180,11 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         self,
         query_id: str,
         compiled_query: str,
-        target_connection_ref: Optional[ConnectionRef],
+        target_connection_ref: ConnectionRef | None,
     ) -> None:
         return
 
-    def post_query_execute(self, query_id: str, exec_exception: Optional[Exception]) -> None:
+    def post_query_execute(self, query_id: str, exec_exception: Exception | None) -> None:
         return
 
     def post_cache_usage(self, query_id: str, cache_full_hit: bool | None) -> None:

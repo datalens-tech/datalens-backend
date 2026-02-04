@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Optional,
 )
 
 from aiohttp import web
@@ -38,7 +37,7 @@ class MockErrorHandlingMW(AIOHTTPErrorHandler):
         return ErrorData(500, {}, ErrorLevel.error)
 
 
-def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]) -> type[web.View]:
+def get_view(the_endpoint_code: str | None, action: Callable[[], dict]) -> type[web.View]:
     if the_endpoint_code is not None:
 
         class EPView(web.View):
@@ -58,7 +57,7 @@ def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]) -> ty
 
 
 def register_view(
-    app: web.Application, path: str, ep_code: Optional[str]
+    app: web.Application, path: str, ep_code: str | None
 ) -> Callable[[Callable[[], dict]], Callable[[], dict]]:
     def deco(func: Callable[[], dict]) -> Callable[[], dict]:
         app.router.add_route("*", path, get_view(ep_code, func))

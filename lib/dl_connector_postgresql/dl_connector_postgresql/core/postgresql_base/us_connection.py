@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Optional,
 )
 
 import attr
@@ -26,7 +25,7 @@ class ConnectionPostgreSQLBase(ClassicConnectionSQL):
     class DataModel(ClassicConnectionSQL.DataModel):
         enforce_collate: PGEnforceCollateMode = attr.ib(default=PGEnforceCollateMode.auto)
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
-        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+        ssl_ca: str | None = attr.ib(kw_only=True, default=None)
 
     def get_parameter_combinations(
         self,

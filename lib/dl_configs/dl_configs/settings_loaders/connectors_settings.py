@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 from attr import make_class
 
@@ -15,6 +13,6 @@ def generate_connectors_settings_class(
     attrs: dict[str, attr.Attribute] = {}
     for conn_type, settings_class in settings_registry.items():
         field_name = conn_type.value.upper()
-        attrs[field_name] = s_attrib(field_name, type_class=Optional[settings_class], missing=None)
+        attrs[field_name] = s_attrib(field_name, type_class=settings_class | None, missing=None)
 
     return make_class("ConnectorSettingsByTypeGenerated", attrs=attrs, bases=(SettingsBase,), frozen=True)

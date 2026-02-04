@@ -7,7 +7,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 from dl_constants.enums import UserDataType
@@ -51,7 +50,7 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
         return True
 
     @property
-    def saved_raw_schema(self) -> Optional[list[SchemaColumn]]:
+    def saved_raw_schema(self) -> list[SchemaColumn] | None:
         assert self.conn_type is not None
         db_name = self.db_name
         assert db_name is not None

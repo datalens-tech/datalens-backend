@@ -3,7 +3,6 @@ import gettext
 import logging
 from typing import (
     Iterable,
-    Optional,
 )
 
 import attr
@@ -68,7 +67,7 @@ class LocalizerFactory:
         for localizer in localizers:
             self._localizers[localizer.locale].append(localizer)
 
-    def get_for_locale(self, locale: str, fallback: Optional[Localizer] = None) -> Localizer:
+    def get_for_locale(self, locale: str, fallback: Localizer | None = None) -> Localizer:
         localizers = self._localizers.get(locale)
         if localizers is None:
             LOGGER.info("Unknown locale %s", locale)

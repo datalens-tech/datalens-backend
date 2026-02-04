@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import typing
 
 import attr
 
@@ -13,4 +12,4 @@ from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceColl
 class PostgresConnDTOBase(DefaultSQLDTO):
     enforce_collate: PGEnforceCollateMode = attr.ib(kw_only=True, default=PGEnforceCollateMode.off)
     ssl_enable: bool = attr.ib(kw_only=True, default=False)
-    ssl_ca: typing.Optional[str] = attr.ib(kw_only=True, default=None)
+    ssl_ca: str | None = attr.ib(kw_only=True, default=None)

@@ -1,7 +1,6 @@
 from typing import (
     Any,
     Mapping,
-    Optional,
 )
 
 from dynamic_enum import DynamicEnum
@@ -14,7 +13,7 @@ class DynamicEnumField(ma_fields.Field):
         super().__init__(**kwargs)
         self._dyn_enum_cls = dyn_enum_cls
 
-    def _serialize(self, value: Any, attr: Optional[str], obj: Any, **kwargs: Any) -> Optional[str]:
+    def _serialize(self, value: Any, attr: str | None, obj: Any, **kwargs: Any) -> str | None:
         if value is None and self.allow_none:
             return None
 
@@ -23,7 +22,7 @@ class DynamicEnumField(ma_fields.Field):
 
         return value.value
 
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> Any:
+    def _deserialize(self, value: Any, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any) -> Any:
         if value is None and self.allow_none:
             return None
 

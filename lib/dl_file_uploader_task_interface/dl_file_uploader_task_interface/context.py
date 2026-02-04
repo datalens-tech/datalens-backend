@@ -1,5 +1,3 @@
-from typing import Optional
-
 import arq
 import attr
 
@@ -28,8 +26,8 @@ from dl_utils.aio import ContextVarExecutor
 @attr.s
 class SecureReaderSettings:
     socket: str = attr.ib()
-    endpoint: Optional[str] = attr.ib(default=None)
-    cafile: Optional[str] = attr.ib(default=None)
+    endpoint: str | None = attr.ib(default=None)
+    cafile: str | None = attr.ib(default=None)
 
 
 @attr.s
@@ -48,7 +46,7 @@ class FileUploaderTaskContext(BaseContext):
     def get_rci(self) -> RequestContextInfo:
         return RequestContextInfo.create_empty()
 
-    def get_service_registry(self, rci: Optional[RequestContextInfo] = None) -> ServicesRegistry:
+    def get_service_registry(self, rci: RequestContextInfo | None = None) -> ServicesRegistry:
         rci = rci or RequestContextInfo.create_empty()
         return create_sr_factory_from_env_vars(
             self.settings.CONNECTORS,
@@ -58,7 +56,7 @@ class FileUploaderTaskContext(BaseContext):
     def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:
         return dl_retrier.RetryPolicyFactory.from_settings(self.settings.US_CLIENT.RETRY_POLICY)
 
-    def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
+    def get_async_usm(self, rci: RequestContextInfo | None = None) -> AsyncUSManager:
         rci = rci or RequestContextInfo.create_empty()
         services_registry = self.get_service_registry(rci=rci)
         retry_policy_factory = self.get_retry_policy_factory()
@@ -72,7 +70,7 @@ class FileUploaderTaskContext(BaseContext):
             retry_policy_factory=retry_policy_factory,
         )
 
-    def make_task_processor(self, request_id: Optional[str]) -> TaskProcessor:
+    def make_task_processor(self, request_id: str | None) -> TaskProcessor:
         return make_task_processor(
             redis_pool=self.redis_pool,
             request_id=request_id,

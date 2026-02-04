@@ -1,6 +1,5 @@
 import datetime
 import logging
-from typing import Optional
 
 import attr
 import redis.asyncio
@@ -37,7 +36,7 @@ class FileConnectionDataSourceErrorTracker:
     _task_processor: TaskProcessor = attr.ib()
     _redis: redis.asyncio.Redis = attr.ib()
     _tenant_id: str = attr.ib()
-    _request_id: Optional[str] = attr.ib(default=None)
+    _request_id: str | None = attr.ib(default=None)
 
     _error_registry: dict[str, FileProcessingError] = attr.ib(init=False, factory=dict)
 
@@ -133,7 +132,7 @@ class FileConnectionDataSourceErrorTracker:
             await self._task_processor.schedule(delete_file_task)
             LOGGER.info(f"Scheduled task DeleteFileTask for source_id {src.id}, filename {src.s3_filename}")
 
-    async def finalize(self, mode: TaskExecutionMode, connection_id: Optional[str] = None) -> None:
+    async def finalize(self, mode: TaskExecutionMode, connection_id: str | None = None) -> None:
         """
         Deals with errors according to `mode`:
             - BASIC - do nothing

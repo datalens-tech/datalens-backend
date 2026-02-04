@@ -1,6 +1,5 @@
 from typing import (
     AbstractSet,
-    Optional,
 )
 
 import pytest
@@ -71,9 +70,9 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
         async_service_registry: ServicesRegistry,
         sync_us_manager: SyncUSManager,
         result_cnt: int,
-        limit: Optional[int] = None,
+        limit: int | None = None,
         from_subquery: bool = False,
-        subquery_limit: Optional[int] = None,
+        subquery_limit: int | None = None,
     ) -> None:
         assert limit is not None or (from_subquery and subquery_limit is not None)
         avatar_id = dataset_wrapper.get_root_avatar_strict().id
@@ -281,9 +280,9 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
         async_service_registry: ServicesRegistry,
         sync_us_manager: SyncUSManager,
         result_cnt: int,
-        limit: Optional[int] = None,
+        limit: int | None = None,
         from_subquery: bool = False,
-        subquery_limit: Optional[int] = None,
+        subquery_limit: int | None = None,
     ) -> None:
         assert limit is not None or (from_subquery and subquery_limit is not None)
         avatar_id = dataset_wrapper.get_root_avatar_strict().id

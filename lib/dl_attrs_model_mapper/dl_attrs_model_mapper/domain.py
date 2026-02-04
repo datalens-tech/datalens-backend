@@ -3,7 +3,6 @@ from typing import (
     Any,
     ClassVar,
     Collection,
-    Optional,
     Sequence,
 )
 
@@ -67,7 +66,7 @@ class AmmField:
 @attr.s()
 class AmmScalarField(AmmField):
     scalar_type: type = attr.ib()
-    scalar_type_identifier: Optional[str] = attr.ib(default=None)
+    scalar_type_identifier: str | None = attr.ib(default=None)
 
     TYPE_MAP: ClassVar[dict[type, str]] = {
         int: "number",
@@ -134,13 +133,13 @@ class AmmOneOfDescriptorField(AmmField):
 @attr.s(kw_only=True)
 class AmmEnumMemberDescriptor:
     key: str = attr.ib()
-    description: Optional[MText] = attr.ib(default=None)
+    description: MText | None = attr.ib(default=None)
 
 
 @attr.s(kw_only=True)
 class AmmEnumDescriptor:
     type_identifier: str = attr.ib()
-    description: Optional[MText] = attr.ib(default=None)
+    description: MText | None = attr.ib(default=None)
     members: list[AmmEnumMemberDescriptor] = attr.ib()
 
 
@@ -150,7 +149,7 @@ class AmmEnumDescriptor:
 @attr.s(kw_only=True)
 class AmmSchema(metaclass=abc.ABCMeta):
     clz: type = attr.ib()
-    identifier: Optional[str] = attr.ib(default=None)
+    identifier: str | None = attr.ib(default=None)
 
     @abc.abstractmethod
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry) -> dict[str, Any]:
@@ -160,7 +159,7 @@ class AmmSchema(metaclass=abc.ABCMeta):
 @attr.s()
 class AmmRegularSchema(AmmSchema):
     fields: dict[str, AmmField] = attr.ib()
-    description: Optional[MText] = attr.ib(default=None)
+    description: MText | None = attr.ib(default=None)
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry) -> dict[str, Any]:
         ret = {

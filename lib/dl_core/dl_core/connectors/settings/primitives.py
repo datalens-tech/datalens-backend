@@ -18,9 +18,9 @@ from dl_core.connectors.settings.base import ConnectorSettings
 def get_connectors_settings_config(
     full_cgf: ObjectLikeConfig,
     object_like_config_key: str,
-) -> Optional[ObjectLikeConfig]:
+) -> ObjectLikeConfig | None:
     assert hasattr(full_cgf, "CONNECTORS")
-    settings: Optional[ObjectLikeConfig] = getattr(full_cgf.CONNECTORS, object_like_config_key, None)
+    settings: ObjectLikeConfig | None = getattr(full_cgf.CONNECTORS, object_like_config_key, None)
     if settings is not None:
         for key, setting in settings.items():  # type: str, Any  # converts left ObjectLikeConfigs to dicts
             if isinstance(setting, (tuple, list)):

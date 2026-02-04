@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     cast,
 )
 import uuid
@@ -22,10 +21,10 @@ def make_conn_key(*args: str) -> str:
 def make_connection(
     us_manager: USManagerBase,
     conn_type: ConnectionType,
-    conn_name: Optional[str] = None,
-    data_dict: Optional[dict] = None,
-    conn_cls: Optional[type[ConnectionBase]] = None,
-    annotation: Optional[dict] = None,
+    conn_name: str | None = None,
+    data_dict: dict | None = None,
+    conn_cls: type[ConnectionBase] | None = None,
+    annotation: dict | None = None,
 ) -> ConnectionBase:
     conn_name = conn_name or "{} test conn {}".format(conn_type.name, uuid.uuid4())
     data_dict = data_dict or {}
@@ -53,8 +52,8 @@ def make_connection(
 def make_connection_from_db(
     us_manager: USManagerBase,
     db: Db,
-    conn_name: Optional[str] = None,
-    data_dict: Optional[dict] = None,
+    conn_name: str | None = None,
+    data_dict: dict | None = None,
 ) -> ConnectionBase:
     conn_type = db.conn_type
     credentials = db.get_conn_credentials()
@@ -73,9 +72,9 @@ def make_connection_from_db(
 def make_saved_connection(
     sync_usm: SyncUSManager,
     conn_type: ConnectionType,
-    conn_name: Optional[str] = None,
-    data_dict: Optional[dict] = None,
-    annotation: Optional[dict] = None,
+    conn_name: str | None = None,
+    data_dict: dict | None = None,
+    annotation: dict | None = None,
 ) -> ConnectionBase:
     conn = make_connection(
         us_manager=sync_usm,
@@ -99,8 +98,8 @@ def make_saved_connection(
 def make_saved_connection_from_db(
     sync_usm: SyncUSManager,
     db: Db,
-    conn_name: Optional[str] = None,
-    data_dict: Optional[dict] = None,
+    conn_name: str | None = None,
+    data_dict: dict | None = None,
 ) -> ConnectionBase:
     conn = make_connection_from_db(us_manager=sync_usm, db=db, conn_name=conn_name, data_dict=data_dict)
     sync_usm.save(conn)

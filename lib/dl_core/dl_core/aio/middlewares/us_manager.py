@@ -5,7 +5,6 @@ import contextlib
 import logging
 from typing import (
     AsyncGenerator,
-    Optional,
 )
 
 from aiohttp import web
@@ -37,7 +36,7 @@ def usm_tenant_resolver_middleware(
     crypto_keys_config: CryptoKeysConfig,
     dataset_id_match_info_code: str,
     conn_id_match_info_code: str,
-    us_master_token: Optional[str],
+    us_master_token: str | None,
     tenant_resolver: TenantResolver,
     ca_data: bytes,
     us_api_type: USApiType,

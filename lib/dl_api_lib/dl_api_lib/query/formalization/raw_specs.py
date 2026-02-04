@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Iterable,
-    Optional,
     TypeVar,
     Union,
 )
@@ -78,8 +77,8 @@ _FIELD_SPEC_TV = TypeVar("_FIELD_SPEC_TV", bound="RawFieldSpec")
 @attr.s(frozen=True)
 class RawFieldSpec:
     ref: FieldRef = attr.ib(kw_only=True, default=None)
-    legend_item_id: Optional[int] = attr.ib(kw_only=True, default=None)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    legend_item_id: int | None = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
 
     def clone(self: _FIELD_SPEC_TV, **updates: Any) -> _FIELD_SPEC_TV:
         return attr.evolve(self, **updates)
@@ -125,7 +124,7 @@ class RawTreeRoleSpec(RawDimensionRoleSpec):
 @attr.s(frozen=True)
 class RawSelectFieldSpec(RawFieldSpec):
     role_spec: RawRoleSpec = attr.ib(kw_only=True, default=RawRowRoleSpec(role=FieldRole.row))
-    label: Optional[str] = attr.ib(kw_only=True, default=None)
+    label: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -151,7 +150,7 @@ class RawFilterFieldSpec(RawFieldSpec):  # noqa
 
     operation: WhereClauseOperation = attr.ib(kw_only=True)
     values: list[FilterArgType] = attr.ib(kw_only=True)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -162,7 +161,7 @@ class RawParameterValueSpec(RawFieldSpec):
 @attr.s
 class RawQueryMetaInfo:
     query_type: QueryType = attr.ib(kw_only=True, default=QueryType.result)
-    row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
 
     def clone(self, **updates: Any) -> RawQueryMetaInfo:
         return attr.evolve(self, **updates)
@@ -171,8 +170,8 @@ class RawQueryMetaInfo:
 @attr.s(frozen=True)
 class RawQuerySpecUnion:
     # TODO: Combine with RawQuerySpecUnion
-    limit: Optional[int] = attr.ib(kw_only=True, default=None)
-    offset: Optional[int] = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True, default=None)
+    offset: int | None = attr.ib(kw_only=True, default=None)
     group_by_policy: GroupByPolicy = attr.ib(kw_only=True, default=GroupByPolicy.force)
     disable_rls: bool = attr.ib(kw_only=True, default=False)
     ignore_nonexistent_filters: bool = attr.ib(kw_only=True, default=True)
@@ -222,17 +221,17 @@ class RawRootBlockPlacement(RawBlockPlacement):
 class RawAfterBlockPlacement(RawBlockPlacement):
     type = QueryBlockPlacementType.after
 
-    dimension_values: Optional[list[RawDimensionValueSpec]] = attr.ib(default=None)
+    dimension_values: list[RawDimensionValueSpec] | None = attr.ib(default=None)
 
 
 @attr.s
 class RawBlockSpec:
     block_id: int = attr.ib(kw_only=True)
-    parent_block_id: Optional[int] = attr.ib(kw_only=True)
+    parent_block_id: int | None = attr.ib(kw_only=True)
     placement: RawBlockPlacement = attr.ib(kw_only=True, factory=RawRootBlockPlacement)
-    limit: Optional[int] = attr.ib(kw_only=True, default=None)
-    offset: Optional[int] = attr.ib(kw_only=True, default=None)
-    row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True, default=None)
+    offset: int | None = attr.ib(kw_only=True, default=None)
+    row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
 
 
 def spec_is_field_name_pseudo_dimension(spec: RawFieldSpec) -> bool:

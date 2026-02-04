@@ -10,7 +10,6 @@ import threading
 from typing import (
     Generator,
     Generic,
-    Optional,
     TypeVar,
     Union,
 )
@@ -130,7 +129,7 @@ class SynchronizedJobState(Generic[_STATE_ITEM_TV]):
     def state(self) -> JobState:
         return self._state
 
-    def wait_for_state_change(self, state: Optional[JobState] = None, timeout: Optional[float] = None) -> None:
+    def wait_for_state_change(self, state: JobState | None = None, timeout: float | None = None) -> None:
         self._ensure_monitor()
         target_state = state
         state_before = self._state
@@ -165,7 +164,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
     _worker_thread_start_confirmation_timeout: float = attr.ib(default=0.1)
 
     _loop: AbstractEventLoop = attr.ib(init=False, factory=asyncio.get_event_loop)
-    _worker_done_fut: Optional[asyncio.Future] = attr.ib(init=False, default=None)
+    _worker_done_fut: asyncio.Future | None = attr.ib(init=False, default=None)
 
     _ss: SynchronizedJobState = attr.ib(init=False, default=None)
     _startup_lock: asyncio.Lock = attr.ib(factory=asyncio.Lock)

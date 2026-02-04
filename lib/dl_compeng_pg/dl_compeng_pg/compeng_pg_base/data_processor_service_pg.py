@@ -6,7 +6,6 @@ import logging
 from typing import (
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -44,7 +43,7 @@ class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.AB
     _pool_min_size: int = attr.ib(default=DEFAULT_POOL_MIN_SIZE)
     _pool_max_size: int = attr.ib(default=DEFAULT_POOL_MAX_SIZE)
     _operation_timeout: float = attr.ib(default=DEFAULT_OPERATION_TIMEOUT)
-    _pool: Optional[_POOL_TV] = attr.ib(init=False, default=None)
+    _pool: _POOL_TV | None = attr.ib(init=False, default=None)
 
     @property
     def pool(self) -> _POOL_TV:

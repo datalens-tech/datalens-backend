@@ -25,14 +25,14 @@ class ModelTags(enum.Enum):
 
 @attr.s(frozen=True, kw_only=True)
 class Point:
-    name: Optional[str] = attr.ib(default=None)
+    name: str | None = attr.ib(default=None)
     x: int = attr.ib(metadata=AttribDescriptor(tags=frozenset({ModelTags.the_x})).to_meta())
     y: int = attr.ib()
 
 
 @attr.s(frozen=True, kw_only=True)
 class Polygon:
-    name: Optional[str] = attr.ib(default=None)
+    name: str | None = attr.ib(default=None)
     points: Sequence[Point] = attr.ib(converter=ensure_tuple)
 
 
@@ -41,7 +41,7 @@ class BigModel:
     name: str = attr.ib()
 
     main_polygon: Polygon = attr.ib()
-    optional_point: Optional[Point] = attr.ib()
+    optional_point: Point | None = attr.ib()
 
     list_of_lists_of_point: Sequence[Sequence[Point]] = attr.ib(converter=ensure_tuple_of_tuples)
     list_of_polygons: Sequence[Polygon] = attr.ib(converter=ensure_tuple)
@@ -60,7 +60,7 @@ INITIAL_INSTANCE = BigModel(
 
 
 def test_unwrap_container_stack_with_single_type():
-    assert unwrap_container_stack_with_single_type(list[Optional[str]]) == ((list, Optional), str)
+    assert unwrap_container_stack_with_single_type(list[str | None]) == ((list, Optional), str)
     assert unwrap_container_stack_with_single_type(Polygon) == ((), Polygon)
     assert unwrap_container_stack_with_single_type(list[list[Point]]) == ((list, list), Point)
 
@@ -83,7 +83,7 @@ def test_no_changes():
         def _should_process(self, meta: FieldMeta) -> bool:
             return True
 
-        def _process_single_object(self, obj: Any, meta: FieldMeta) -> Optional[Any]:
+        def _process_single_object(self, obj: Any, meta: FieldMeta) -> Any | None:
             return obj
 
     processor = EqualityProcessor()
@@ -93,7 +93,7 @@ def test_no_changes():
 
 
 def test_change_all_names():
-    def process_string(i: Optional[str]) -> str:
+    def process_string(i: str | None) -> str:
         if i is None:
             return "N/A"
         return f"The great {i}"
@@ -102,18 +102,18 @@ def test_change_all_names():
         def _should_process(self, meta: FieldMeta) -> bool:
             return meta.clz == str and meta.attrib_name == "name"
 
-        def _process_single_object(self, obj: Optional[str], meta: FieldMeta) -> Optional[str]:
+        def _process_single_object(self, obj: str | None, meta: FieldMeta) -> str | None:
             return process_string(obj)
 
     processor = NamePrependProcessor()
     result = processor.process(INITIAL_INSTANCE)
 
-    def rename_point(p: Optional[Point]) -> Optional[Point]:
+    def rename_point(p: Point | None) -> Point | None:
         if p is None:
             return None
         return attr.evolve(p, name=process_string(p.name))
 
-    def rename_polygon(poly: Optional[Polygon]) -> Optional[Polygon]:
+    def rename_polygon(poly: Polygon | None) -> Polygon | None:
         if poly is None:
             return None
         return attr.evolve(poly, name=process_string(poly.name), points=[rename_point(p) for p in poly.points])
@@ -138,18 +138,18 @@ def test_change_by_tag():
 
             return False
 
-        def _process_single_object(self, obj: Optional[int], meta: FieldMeta) -> Optional[int]:
+        def _process_single_object(self, obj: int | None, meta: FieldMeta) -> int | None:
             return new_x_value
 
     processor = TagProcessor()
     result = processor.process(INITIAL_INSTANCE)
 
-    def process_point(p: Optional[Point]) -> Optional[Point]:
+    def process_point(p: Point | None) -> Point | None:
         if p is None:
             return None
         return attr.evolve(p, x=100500)
 
-    def process_polygon(poly: Optional[Polygon]) -> Optional[Polygon]:
+    def process_polygon(poly: Polygon | None) -> Polygon | None:
         if poly is None:
             return None
         return attr.evolve(poly, points=[process_point(p) for p in poly.points])

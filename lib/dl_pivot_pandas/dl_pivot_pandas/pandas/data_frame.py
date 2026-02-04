@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Generator,
-    Optional,
 )
 
 import attr
@@ -48,7 +47,7 @@ class PdPivotDataFrame(PivotDataFrame):
     def iter_rows(self) -> Generator[tuple[PivotHeader, MeasureValues], None, None]:
         headers = self.iter_row_headers()
         for row in self._pd_df.itertuples(index=False):
-            values: tuple[Optional[DataCellVector], ...] = tuple(
+            values: tuple[DataCellVector | None, ...] = tuple(
                 (cell if isinstance(cell, DataCellVector) else None) for cell in row
             )
             yield next(headers), values
@@ -81,7 +80,7 @@ class PdSeriesPivotDataFrameBase(PivotDataFrame):
             yield PivotHeader(values=values, info=self.headers_info[values])
 
     def _get_values(self) -> MeasureValues:
-        values: tuple[Optional[DataCellVector], ...] = tuple(
+        values: tuple[DataCellVector | None, ...] = tuple(
             (value if isinstance(value, DataCellVector) else None) for value in self._pd_series.values
         )
         return values

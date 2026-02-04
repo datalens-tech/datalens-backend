@@ -4,7 +4,6 @@ import logging
 from typing import (
     Any,
     AsyncGenerator,
-    Optional,
 )
 
 import attr
@@ -45,7 +44,7 @@ def make_simple_cli_acm(conn_params: RedisConnParams) -> TClientACM:
     return cli_acm
 
 
-def get_redis_cli_acm_from_params(redis_conn_params: Optional[RedisConnParams]) -> Optional[TClientACM]:
+def get_redis_cli_acm_from_params(redis_conn_params: RedisConnParams | None) -> TClientACM | None:
     if redis_conn_params is None:
         return None
     return make_simple_cli_acm(conn_params=redis_conn_params)

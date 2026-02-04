@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, ClassVar, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, ClassVar, List, Tuple, Type, Union
 
 import attr
 
@@ -51,7 +51,7 @@ class ScriptsSupport:
 @attr.s
 class ScriptBase:
     script: ClassVar[str]
-    situation_enum: ClassVar[Optional[Type[IntEnum]]]
+    situation_enum: ClassVar[Type[IntEnum] | None]
     expected_result_length: ClassVar[int] = 2
 
     cli: Redis = attr.ib()
@@ -104,7 +104,7 @@ class ReqScript(ScriptBase):
         data_key: str,
         self_id: str,
         lock_ttl_sec: float,
-    ) -> Tuple[ReqScriptResult, Optional[bytes]]:
+    ) -> Tuple[ReqScriptResult, bytes | None]:
         _, (situation, param) = await self._eval_script(
             keys=[self._to_bytes(lock_key), self._to_bytes(data_key)],
             args=[self._to_bytes(self_id), self._to_msec(lock_ttl_sec)],
@@ -125,7 +125,7 @@ class RenewScript(ScriptBase):
     async def __call__(
         self,
         lock_key: str,
-        signal_key: Optional[str],
+        signal_key: str | None,
         self_id: str,
         lock_ttl_sec: float,
     ) -> int:
@@ -201,7 +201,7 @@ class FailScript(ScriptBase):
         signal_key: str,
         self_id: str,
         ignore_errors: bool = False,
-    ) -> Optional[int]:
+    ) -> int | None:
         res, (situation, param) = await self._eval_script(
             keys=[self._to_bytes(lock_key), self._to_bytes(signal_key)],
             args=[self._to_bytes(self_id)],
@@ -227,7 +227,7 @@ class FailScript(ScriptBase):
 
 class ForceSaveScript(ScriptBase):
     script: ClassVar[str] = CL_FORCE_SAVE_SCRIPT
-    situation_enum: ClassVar[Optional[Type[IntEnum]]] = None
+    situation_enum: ClassVar[Type[IntEnum] | None] = None
 
     async def __call__(
         self,

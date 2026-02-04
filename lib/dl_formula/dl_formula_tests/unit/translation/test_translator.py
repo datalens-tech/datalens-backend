@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import pytest
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import BinaryExpression
@@ -54,7 +52,7 @@ def T(
     restrict_funcs=False,
     field_types: dict[str, DataType] = None,
     table_name: str = None,
-    env: Optional[TranslationEnvironment] = None,
+    env: TranslationEnvironment | None = None,
 ):
     field_types = field_types or FIELD_TYPES
     if table_name:

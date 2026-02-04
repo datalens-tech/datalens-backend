@@ -10,7 +10,6 @@ from typing import (
     Generic,
     Iterable,
     NamedTuple,
-    Optional,
     TypeVar,
     Union,
 )
@@ -109,10 +108,10 @@ class FuncTranslationImplementationBase(abc.ABC):
         self,
         *raw_args: TranslationCtx,
         translator_cb: TranslateCallback,
-        partition_by: Optional[ClauseList] = None,
-        default_order_by: Optional[ClauseList] = None,
-        translation_ctx: Optional[TranslationCtx] = None,
-        translation_env: Optional[TranslationEnvironment] = None,
+        partition_by: ClauseList | None = None,
+        default_order_by: ClauseList | None = None,
+        translation_ctx: TranslationCtx | None = None,
+        translation_env: TranslationEnvironment | None = None,
     ) -> ClauseElement:
         """
         Attempts to translate the node by calling it with the given ``args``.
@@ -158,8 +157,8 @@ class FuncTranslationImplementationBase(abc.ABC):
         args: tuple[TranslationCtx, ...],
         *,
         translation_func: Callable,
-        translation_ctx: Optional[TranslationCtx] = None,
-        translation_env: Optional[TranslationEnvironment] = None,
+        translation_ctx: TranslationCtx | None = None,
+        translation_env: TranslationEnvironment | None = None,
     ) -> tuple[Iterable[Union[TranslationCtx, ClauseElement]], dict[str, Any]]:
         handled_args: Iterable[Union[TranslationCtx, ClauseElement]] = args
         if self.unwrap_args:
@@ -198,10 +197,10 @@ class FuncTranslationImplementation(FuncTranslationImplementationBase):  # noqa
         self,
         *raw_args: TranslationCtx,
         translator_cb: TranslateCallback,
-        partition_by: Optional[ClauseList] = None,
-        default_order_by: Optional[ClauseList] = None,
-        translation_ctx: Optional[TranslationCtx] = None,
-        translation_env: Optional[TranslationEnvironment] = None,
+        partition_by: ClauseList | None = None,
+        default_order_by: ClauseList | None = None,
+        translation_ctx: TranslationCtx | None = None,
+        translation_env: TranslationEnvironment | None = None,
     ) -> ClauseElement:
         translation_main = self.translation_main
         assert translation_main is not None
@@ -215,7 +214,7 @@ class FuncTranslationImplementation(FuncTranslationImplementationBase):  # noqa
         return self._await_conversion_to_sa(translation_main(*args, **kwargs), translator_cb=translator_cb)
 
 
-WinRangeTuple = tuple[Optional[int], Optional[int]]
+WinRangeTuple = tuple[int | None, int | None]
 
 
 @attr.s
@@ -226,18 +225,18 @@ class WindowFunctionImplementation(FuncTranslationImplementation):
     that are generated separately.
     """
 
-    translation_order_by: Optional[Callable[..., TransCallResult]] = attr.ib(default=None)
-    translation_range: Optional[Callable[..., WinRangeTuple]] = attr.ib(default=None)
-    translation_rows: Optional[Callable[..., WinRangeTuple]] = attr.ib(default=None)
+    translation_order_by: Callable[..., TransCallResult] | None = attr.ib(default=None)
+    translation_range: Callable[..., WinRangeTuple] | None = attr.ib(default=None)
+    translation_rows: Callable[..., WinRangeTuple] | None = attr.ib(default=None)
 
     def translate(
         self,
         *raw_args: TranslationCtx,
         translator_cb: TranslateCallback,
-        partition_by: Optional[ClauseList] = None,
-        default_order_by: Optional[ClauseList] = None,
-        translation_ctx: Optional[TranslationCtx] = None,
-        translation_env: Optional[TranslationEnvironment] = None,
+        partition_by: ClauseList | None = None,
+        default_order_by: ClauseList | None = None,
+        translation_ctx: TranslationCtx | None = None,
+        translation_env: TranslationEnvironment | None = None,
     ) -> ClauseElement:
         translation_main = self.translation_main
         assert translation_main is not None
@@ -295,9 +294,9 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
         translation: Callable[..., TransCallResult],
         unwrap_args: bool = True,
         as_winfunc: bool = False,
-        translation_order_by: Optional[Callable[..., TransCallResult]] = None,
-        translation_range: Optional[Callable[..., WinRangeTuple]] = None,
-        translation_rows: Optional[Callable[..., WinRangeTuple]] = None,
+        translation_order_by: Callable[..., TransCallResult] | None = None,
+        translation_range: Callable[..., WinRangeTuple] | None = None,
+        translation_rows: Callable[..., WinRangeTuple] | None = None,
     ) -> _TRANS_VAR_TV:
         translation_impl: FuncTranslationImplementationBase  # noqa
         if as_winfunc:
@@ -330,10 +329,10 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
         self,
         *args,
         translator_cb: TranslateCallback,
-        partition_by: Optional[ClauseList] = None,
-        default_order_by: Optional[ClauseList] = None,
-        translation_ctx: Optional[TranslationCtx] = None,
-        translation_env: Optional[TranslationEnvironment] = None,
+        partition_by: ClauseList | None = None,
+        default_order_by: ClauseList | None = None,
+        translation_ctx: TranslationCtx | None = None,
+        translation_env: TranslationEnvironment | None = None,
     ) -> ClauseElement:
         return self.value.translate(
             *args,
@@ -374,11 +373,11 @@ class TranslationResult(NamedTuple):
 
 
 class PartialTranslationResult(NamedTuple):
-    impl_callable: Optional[Callable[..., ClauseElement]] = None
-    transformed_args: Optional[list[TranslationCtx]] = None
-    data_type: Optional[DataType] = None
-    data_type_params: Optional[DataTypeParams] = None
-    context_flags: Optional[int] = None
+    impl_callable: Callable[..., ClauseElement] | None = None
+    transformed_args: list[TranslationCtx] | None = None
+    data_type: DataType | None = None
+    data_type_params: DataTypeParams | None = None
+    context_flags: int | None = None
 
 
 class ArgTransformer:
@@ -399,8 +398,8 @@ class NodeTranslation:
     __slots__ = ()
 
     # the following pair acts as a sort of identifier for the function/operator translation
-    name: ClassVar[Optional[str]] = None
-    arg_cnt: ClassVar[Optional[int]] = None
+    name: ClassVar[str | None] = None
+    arg_cnt: ClassVar[int | None] = None
 
     is_function: ClassVar[bool] = True
     is_aggregation: ClassVar[bool] = False
@@ -414,7 +413,7 @@ class NodeTranslation:
 
     scopes: ClassVar[int] = Scope.STABLE | Scope.EXPLICIT_USAGE | Scope.SUGGESTED | Scope.DOCUMENTED
 
-    arg_names: ClassVar[Optional[list[str]]] = None
+    arg_names: ClassVar[list[str] | None] = None
 
     @classmethod
     def match_types(cls, arg_types: list[DataType]) -> bool:
@@ -458,7 +457,7 @@ class NodeTranslation:
     def for_dialect(
         cls: type[_NODE_TRANS_TV],
         dialects: DialectCombo,
-        arg_transformer: Optional[ArgTransformer] = None,
+        arg_transformer: ArgTransformer | None = None,
     ) -> _NODE_TRANS_TV:
         raise NotImplementedError
 
@@ -470,8 +469,8 @@ class MultiVariantTranslation(NodeTranslation):
     __slots__ = ("_inst_variants", "_inst_arg_transformer")
 
     variants: ClassVar[list[TranslationVariant]] = []
-    argument_types: ClassVar[Optional[list[ArgTypeMatcher]]] = None
-    argument_flags: ClassVar[Optional[ArgFlagDispenser]] = None
+    argument_types: ClassVar[list[ArgTypeMatcher] | None] = None
+    argument_flags: ClassVar[ArgFlagDispenser | None] = None
     return_type: ClassVar[TypeStrategy] = FromArgs()
     return_type_params: ClassVar[TypeParamsStrategy] = ParamsEmpty()
     return_flags: ClassVar[ContextFlags] = 0
@@ -484,8 +483,8 @@ class MultiVariantTranslation(NodeTranslation):
 
     def __init__(
         self,
-        variants: Optional[list[TranslationVariant]] = None,
-        arg_transformer: Optional[ArgTransformer] = None,
+        variants: list[TranslationVariant] | None = None,
+        arg_transformer: ArgTransformer | None = None,
     ):
         if variants is None:
             variants = self.variants
@@ -533,7 +532,7 @@ class MultiVariantTranslation(NodeTranslation):
         return any(variant.match(dialect=dialect) for variant in self.get_variants())
 
     @classmethod
-    def _get_argument_flag_dispenser(cls, dialect: DialectCombo) -> Optional[ArgFlagDispenser]:
+    def _get_argument_flag_dispenser(cls, dialect: DialectCombo) -> ArgFlagDispenser | None:
         return cls.argument_flags
 
     @classmethod
@@ -616,7 +615,7 @@ class MultiVariantTranslation(NodeTranslation):
     def for_dialect(
         cls: type[_MULTI_NODE_TRANS_TV],
         dialects: DialectCombo,
-        arg_transformer: Optional[ArgTransformer] = None,
+        arg_transformer: ArgTransformer | None = None,
     ) -> _MULTI_NODE_TRANS_TV:
         assert len(cls.variants) == 1
         variant = next(iter(cls.variants))
@@ -626,7 +625,7 @@ class MultiVariantTranslation(NodeTranslation):
     def for_another_dialect(
         self,
         dialects: DialectCombo,
-        arg_transformer: Optional[ArgTransformer] = None,
+        arg_transformer: ArgTransformer | None = None,
     ) -> MultiVariantTranslation:
         variants = self.get_variants()
         assert len(variants) == 1
@@ -649,15 +648,15 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
 
     __slots__ = ("_inst_dialects",)
 
-    dialects: ClassVar[Optional[DialectCombo]] = None
+    dialects: ClassVar[DialectCombo | None] = None
 
     # Instance vars
-    _inst_dialects: Optional[DialectCombo]
+    _inst_dialects: DialectCombo | None
 
     def __init__(
         self,
-        dialects: Optional[DialectCombo] = None,
-        arg_transformer: Optional[ArgTransformer] = None,
+        dialects: DialectCombo | None = None,
+        arg_transformer: ArgTransformer | None = None,
     ):
         if dialects is None:
             dialects = self.dialects
@@ -685,14 +684,14 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
     def for_dialect(
         cls: type[_SINGLE_NODE_TRANS_TV],
         dialects: DialectCombo,
-        arg_transformer: Optional[ArgTransformer] = None,
+        arg_transformer: ArgTransformer | None = None,
     ) -> _SINGLE_NODE_TRANS_TV:
         return cls(dialects=dialects)
 
     def for_another_dialect(
         self,
         dialects: DialectCombo,
-        arg_transformer: Optional[ArgTransformer] = None,
+        arg_transformer: ArgTransformer | None = None,
     ) -> SingleVariantTranslationBase:
         func_class = type(self)
         return func_class(dialects=dialects, arg_transformer=arg_transformer)

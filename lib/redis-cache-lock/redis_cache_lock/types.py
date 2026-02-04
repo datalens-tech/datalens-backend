@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 # The cache wrap can return either the full result, or only the bytestring part.
 _GF_RET_TV = TypeVar("_GF_RET_TV")
 TGenerateResult = Tuple[bytes, _GF_RET_TV]
-TCacheResult = Tuple[bytes, Optional[_GF_RET_TV]]
+TCacheResult = Tuple[bytes, _GF_RET_TV | None]
 TGenerateFunc = Callable[[], Awaitable[TGenerateResult]]
 
 

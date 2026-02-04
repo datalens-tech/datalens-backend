@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     ClassVar,
-    Optional,
 )
 
 from aiohttp import web
@@ -21,7 +20,7 @@ LOGGER = logging.getLogger(__name__)
 class ArqRedisService:
     APP_KEY: ClassVar[str] = "ARQ_REDIS_SERVICE"
     _arq_settings: ArqRedisSettings = attr.ib()
-    _arq_pool: Optional[arq.ArqRedis] = attr.ib(init=False, default=None)
+    _arq_pool: arq.ArqRedis | None = attr.ib(init=False, default=None)
 
     async def init_hook(self, target_app: web.Application) -> None:
         target_app[self.APP_KEY] = self
@@ -36,7 +35,7 @@ class ArqRedisService:
 
     @classmethod
     def get_app_instance(cls, app: web.Application) -> ArqRedisService:
-        service: Optional[ArqRedisService] = app.get(cls.APP_KEY, None)
+        service: ArqRedisService | None = app.get(cls.APP_KEY, None)
         if service is None:
             raise ValueError("Redis was not initiated for application")
 

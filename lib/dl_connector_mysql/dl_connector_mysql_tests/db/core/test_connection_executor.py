@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -41,7 +40,7 @@ class MySQLSyncAsyncConnectionExecutorCheckBase(
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=CoreConnectionSettings.DB_NAME)
 
-    def check_db_version(self, db_version: Optional[str]) -> None:
+    def check_db_version(self, db_version: str | None) -> None:
         assert db_version is not None
         assert "." in db_version
 

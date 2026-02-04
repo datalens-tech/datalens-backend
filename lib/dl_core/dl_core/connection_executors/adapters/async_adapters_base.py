@@ -11,7 +11,6 @@ from typing import (
     Awaitable,
     Callable,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -168,7 +167,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
         # Redefine this method to enable `execute_typedQueryRaw`
         return AsyncTypedQueryRawActionNotImplemented()
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return None
 
     async def test(self) -> None:
@@ -184,7 +183,7 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
     async def execute(self, query: DBAdapterQuery) -> AsyncRawExecutionResult:  # TODO: Implement via action
         pass
 
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    async def get_db_version(self, db_ident: DBIdent) -> str | None:
         return await self._async_db_version_action.run_db_version_action(db_ident=db_ident)
 
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
@@ -213,9 +212,9 @@ class AsyncDBAdapter(metaclass=abc.ABCMeta):
 
     async def __aexit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         await self.close()
 

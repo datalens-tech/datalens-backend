@@ -8,7 +8,6 @@ from typing import (
     ClassVar,
     Generator,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -63,7 +62,7 @@ class TemplateValueRestorer(ValueRestorerBase):
 
     template_re: ClassVar[re.Pattern] = re.compile(r"\{\{(?P<field>[^{}]+)\}\}")
 
-    template: Optional[str] = attr.ib(kw_only=True)
+    template: str | None = attr.ib(kw_only=True)
     idx_by_field_id: dict[str, int] = attr.ib(kw_only=True)
 
     def restore_value(self, raw_row: Sequence[Any]) -> Any:

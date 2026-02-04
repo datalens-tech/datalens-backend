@@ -4,7 +4,7 @@ import asyncio
 import logging
 import time
 from contextlib import asynccontextmanager
-from typing import TYPE_CHECKING, Any, AsyncGenerator, List, Optional, Sequence, Tuple
+from typing import TYPE_CHECKING, Any, AsyncGenerator, List, Sequence, Tuple
 
 import redis.asyncio
 import attr
@@ -105,10 +105,10 @@ class SubscriptionManagerBase:
             psub=psub,
         )
 
-    async def get_direct(self, timeout: float) -> Optional[bytes]:
+    async def get_direct(self, timeout: float) -> bytes | None:
         raise NotImplementedError
 
-    async def get(self, timeout: float) -> Optional[bytes]:
+    async def get(self, timeout: float) -> bytes | None:
         try:
             return await asyncio.wait_for(
                 self.get_direct(timeout=timeout), timeout=timeout
@@ -144,7 +144,7 @@ class SubscriptionManager(SubscriptionManagerBase):
                 except (TypeError, ConnectionError):
                     LOGGER.warning("Couldn't unsubscribe from redis channel. Client can be closed.", exc_info=True)
 
-    async def get_direct(self, timeout: float) -> Optional[bytes]:
+    async def get_direct(self, timeout: float) -> bytes | None:
         t01 = time.monotonic()
         # Apparently, `ignore_subscribe_messages=True` doesn't make the
         # `get_message` wait further; instead, it makes `get_message` return a

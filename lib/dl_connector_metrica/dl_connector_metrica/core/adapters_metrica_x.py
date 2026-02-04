@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
     TypeVar,
 )
 from urllib.parse import (
@@ -75,10 +74,10 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
 
         return exc_cls, kw
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return None
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return ""
 
 

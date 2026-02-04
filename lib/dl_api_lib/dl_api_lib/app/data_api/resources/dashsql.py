@@ -8,7 +8,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Optional,
 )
 import uuid
 
@@ -69,7 +68,7 @@ LOGGER = logging.getLogger(__name__)
 TRowProcessor = Callable[[TRow], TRow]
 
 
-def parse_value(value: Optional[str], bi_type: UserDataType) -> IncomingDSQLParamType:
+def parse_value(value: str | None, bi_type: UserDataType) -> IncomingDSQLParamType:
     if value is None:
         return None
     if bi_type == UserDataType.string:
@@ -131,7 +130,7 @@ class DashSQLView(BaseView):
     dashsql_selector_cls: type[DashSQLCachedSelector] = DashSQLCachedSelector
 
     @property
-    def conn_id(self) -> Optional[str]:
+    def conn_id(self) -> str | None:
         return self.request.match_info.get("conn_id")
 
     def enrich_logging_context(self, conn: ConnectionBase) -> None:
@@ -224,7 +223,7 @@ class DashSQLView(BaseView):
         return _postprocess_row
 
     async def _postprocess_events(self, result_events: TResultEvents) -> TResultEvents:
-        postprocess_row: Optional[TRowProcessor] = None
+        postprocess_row: TRowProcessor | None = None
         async for event_name, event_data in result_events:
             if postprocess_row is None and event_name == DashSQLEvent.metadata.value:
                 assert isinstance(event_data, dict)
@@ -320,7 +319,7 @@ class DashSQLView(BaseView):
         # A slightly more explicit check (which should have been done in `get_by_id` anyway):
         need_permission_on_entry(conn, USPermissionKind.execute)
 
-        incoming_parameters: Optional[list[QueryIncomingParameter]] = None
+        incoming_parameters: list[QueryIncomingParameter] | None = None
         if raw_params is not None:
             incoming_parameters = [make_param_obj(name, param) for name, param in raw_params.items()]
 

@@ -4,7 +4,6 @@ from copy import deepcopy
 import logging
 from typing import (
     Any,
-    Optional,
 )
 
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
@@ -87,10 +86,10 @@ class DatasetResource(BIResource):
     @classmethod
     def get_dataset(
         cls,
-        dataset_id: Optional[str],
+        dataset_id: str | None,
         body: dict,
         load_dependencies: bool = True,
-        params: Optional[dict] = None,
+        params: dict | None = None,
     ) -> tuple[Dataset, DatasetUpdateInfo]:
         us_manager = (
             cls.get_service_us_manager()
@@ -131,7 +130,7 @@ class DatasetResource(BIResource):
         dataset: Dataset,
         service_registry: ServicesRegistry,
         us_entry_buffer: USEntryBuffer,
-        conn_id_mapping: Optional[dict] = None,
+        conn_id_mapping: dict | None = None,
     ) -> dict:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
         dsrc_coll_factory = service_registry.get_data_source_collection_factory(us_entry_buffer=us_entry_buffer)
@@ -258,9 +257,9 @@ class DatasetResource(BIResource):
         role = capabilities.resolve_source_role()  # the "main" role, not for preview
 
         # Determine dialect
-        dialect: Optional[DialectCombo] = DEFAULT_DATABASE_DIALECT
+        dialect: DialectCombo | None = DEFAULT_DATABASE_DIALECT
         one_source_id = dataset.get_single_data_source_id()
-        db_info: Optional[DbInfo]
+        db_info: DbInfo | None
 
         dataset_parameter_values = ds_accessor.get_parameter_values()
         dataset_template_enabled = ds_accessor.get_template_enabled()
@@ -312,7 +311,7 @@ class DatasetResource(BIResource):
 
         opt_data["sources"] = dict(items=[])
         connection_ids = set()
-        connection_types: set[Optional[ConnectionType]] = set()
+        connection_types: set[ConnectionType | None] = set()
 
         for source_id in ds_accessor.get_data_source_id_list():
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
@@ -432,7 +431,7 @@ class DatasetResource(BIResource):
         return {"options": opt_data}
 
     def make_dataset_response_data(
-        self, dataset: Dataset, us_entry_buffer: USEntryBuffer, conn_id_mapping: Optional[dict] = None
+        self, dataset: Dataset, us_entry_buffer: USEntryBuffer, conn_id_mapping: dict | None = None
     ) -> dict:
         service_registry = self.get_service_registry()
         ds_dict = self.dump_dataset_data(

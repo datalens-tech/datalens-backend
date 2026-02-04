@@ -9,7 +9,6 @@ from typing import (
     Callable,
     ClassVar,
     Generator,
-    Optional,
     TypeVar,
     Union,
 )
@@ -101,7 +100,7 @@ class BaseSAAdapter(
     _target_dto: _DBA_SA_DTO_TV = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     # Internals
-    _engine_cache: dict[tuple[Optional[str], bool], Engine] = attr.ib(init=False, factory=lambda: {})
+    _engine_cache: dict[tuple[str | None, bool], Engine] = attr.ib(init=False, factory=lambda: {})
     _error_transformer: ClassVar[DbErrorTransformer] = make_default_transformer_with_custom_rules()
 
     _COMMON_ENGINE_EVENT_LISTENERS: ClassVar[list[EventListenerSpec]] = [
@@ -116,24 +115,24 @@ class BaseSAAdapter(
         return cls(target_dto=target_dto, default_chunk_size=default_chunk_size, req_ctx_info=req_ctx_info)
 
     @property
-    def conn_id(self) -> Optional[str]:
+    def conn_id(self) -> str | None:
         return self._target_dto.conn_id
 
     @property
     def default_chunk_size(self) -> int:
         return self._default_chunk_size
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return self._target_dto.get_effective_host()
 
     def get_extra_engine_event_listeners(self) -> list[EventListenerSpec]:
         return []
 
     @final
-    def get_db_engine(self, db_name: Optional[str], disable_streaming: bool = False) -> Engine:
+    def get_db_engine(self, db_name: str | None, disable_streaming: bool = False) -> Engine:
         effective_db_name = self.get_db_name_for_query(db_name_from_query=db_name)
 
-        cache_key: tuple[Optional[str], bool] = effective_db_name, disable_streaming
+        cache_key: tuple[str | None, bool] = effective_db_name, disable_streaming
 
         if cache_key not in self._engine_cache:
             new_engine = self._get_db_engine(db_name=effective_db_name, disable_streaming=disable_streaming)
@@ -220,7 +219,7 @@ class BaseSAAdapter(
             self._test()
 
     @final
-    def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def get_db_version(self, db_ident: DBIdent) -> str | None:
         with self.handle_execution_error(
             debug_query=f"<get_db_version({db_ident})>", inspector_query=f"<get_db_version({db_ident})>"
         ):  # TODO: BI-6448
@@ -249,7 +248,7 @@ class BaseSAAdapter(
     @final
     def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         debug_compiled_query: str
-        exc_post_processor: Optional[Callable[[exc.DatabaseQueryError], None]] = None
+        exc_post_processor: Callable[[exc.DatabaseQueryError], None] | None = None
 
         if isinstance(table_def, TableIdent):
             debug_compiled_query = f"<get_columns({table_def})>"
@@ -282,7 +281,7 @@ class BaseSAAdapter(
         ):
             if isinstance(table_def, TableIdent):
                 columns = self._get_raw_columns_info(table_def)
-                indexes: Optional[tuple[RawIndexInfo, ...]] = None
+                indexes: tuple[RawIndexInfo, ...] | None = None
 
                 if fetch_idx_info and isinstance(table_def, TableIdent):
                     try:
@@ -314,7 +313,7 @@ class BaseSAAdapter(
     def _test(self) -> None:
         self.execute(DBAdapterQuery("select 1")).get_all()
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         """Return database version string for this connection"""
         return self.execute(get_db_version_query(db_ident)).get_all()[0][0]
 

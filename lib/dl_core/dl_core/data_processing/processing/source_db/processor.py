@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -29,7 +28,7 @@ if TYPE_CHECKING:
 class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
     _role: DataSourceRole = attr.ib(kw_only=True)
     _dataset: Dataset = attr.ib(kw_only=True)
-    _row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    _row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _is_bleeding_edge_user: bool = attr.ib(default=False)
     _default_cache_ttl_config: CacheTTLConfig = attr.ib(default=None)
@@ -43,7 +42,7 @@ class SourceDbOperationProcessor(ExecutorBasedOperationProcessor):
             us_entry_buffer=self._us_entry_buffer,
         )
 
-    def _make_db_ex_adapter(self) -> Optional[ProcessorDbExecAdapterBase]:
+    def _make_db_ex_adapter(self) -> ProcessorDbExecAdapterBase | None:
         return SourceDbExecAdapter(
             reporting_registry=self._reporting_registry,
             reporting_enabled=self._reporting_enabled,

@@ -7,7 +7,6 @@ from enum import (
 from typing import (
     Any,
     Literal,
-    Optional,
     Union,
     final,
 )
@@ -102,7 +101,7 @@ class CFGMeta:
         default=False
     )  # whether it is a service field involved only in inner logic and which needs to be skipped
     skip_if_null: bool = attr.ib(default=False)  # sometimes it is more convenient for the UI to receive undefined
-    key: Optional[str] = attr.ib(default=None)  # remap key
+    key: str | None = attr.ib(default=None)  # remap key
 
     def attr_meta(self) -> dict[str, CFGMeta]:
         return {self.METADATA_KEY: self}

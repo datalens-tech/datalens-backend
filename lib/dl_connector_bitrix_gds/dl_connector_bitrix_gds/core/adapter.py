@@ -7,7 +7,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Optional,
 )
 import uuid
 
@@ -88,9 +87,9 @@ def extract_select_column_name(column: Label) -> str:
 class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_BITRIX24
     _target_dto: BitrixGDSConnTargetDTO = attr.ib()
-    _redis_cli_acm: Optional[TClientACM] = attr.ib(init=False)
+    _redis_cli_acm: TClientACM | None = attr.ib(init=False)
 
-    table: Optional[BitrixGDSTable] = None
+    table: BitrixGDSTable | None = None
 
     _error_transformer = bitrix_error_transformer
 
@@ -101,7 +100,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
     def __attrs_post_init__(self) -> None:
         super().__attrs_post_init__()
-        redis_conn_params: Optional[RedisConnParams]
+        redis_conn_params: RedisConnParams | None
         if self._target_dto.redis_conn_params is not None:
             redis_conn_params = RedisConnParams(**self._target_dto.redis_conn_params)
         else:
@@ -181,7 +180,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
         return resp_body
 
-    def _parse_response_body_data(self, body: list, selected_columns: Optional[list] = None) -> dict:
+    def _parse_response_body_data(self, body: list, selected_columns: list | None = None) -> dict:
         if not len(body):
             raise ValueError("empty response")
         cols = body[0]
@@ -236,7 +235,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     def _parse_response_body(self, body: Any, dba_query: DBAdapterQuery) -> dict:
         assert isinstance(dba_query.query, sa.sql.Select)
         selected_columns_values = dba_query.query.selected_columns.values()
-        selected_columns: Optional[list[str]] = None
+        selected_columns: list[str] | None = None
         if "*" not in set(column.name for column in selected_columns_values):
             selected_columns = [extract_select_column_name(column) for column in selected_columns_values]
             # 'table."COLUMN_NAME"' -> 'COLUMN_NAME'
@@ -321,7 +320,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
 
     @generic_profiler_async("db-table-info")  # type: ignore  # TODO: fix
     async def get_table_info(
-        self, table_def: Optional[TableDefinition] = None, fetch_idx_info: bool = False
+        self, table_def: TableDefinition | None = None, fetch_idx_info: bool = False
     ) -> RawSchemaInfo:
         assert isinstance(table_def, TableIdent)
         table_name = table_def.table_name

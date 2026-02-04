@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Collection,
     Hashable,
-    Optional,
 )
 
 import attr
@@ -65,7 +64,7 @@ class DownloadOp(SingleSourceOp):
     supported_source_types = (DataSourceVS,)
     supported_dest_types = (DataStreamAsync,)
 
-    row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)

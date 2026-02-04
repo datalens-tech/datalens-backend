@@ -7,7 +7,6 @@ from typing import (
     Any,
     Iterable,
     Iterator,
-    Optional,
 )
 import urllib.parse
 
@@ -54,7 +53,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
     cls_meta = task_interface.ProcessExcelTask
 
     async def run(self) -> TaskResult:
-        dfile: Optional[DataFile] = None
+        dfile: DataFile | None = None
         sources_to_update_by_sheet_id: dict[int, list[DataSource]] = defaultdict(list)
         usm = self._ctx.get_async_usm()
         usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
@@ -121,7 +120,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                 sheetname = spreadsheet["sheetname"]
                 sheetdata = spreadsheet["data"]
                 source_status = FileProcessingStatus.in_progress
-                has_header: Optional[bool] = None
+                has_header: bool | None = None
                 raw_schema: list[SchemaColumn] = []
                 raw_schema_header: list[SchemaColumn] = []
                 raw_schema_body: list[SchemaColumn] = []
@@ -169,7 +168,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
                             exc_to_save = ex if isinstance(ex, exc.DLFileUploaderBaseError) else exc.ParseFailed()
                             src.error = FileProcessingError.from_exception(exc_to_save)
                             connection_error_tracker.add_error(src.id, src.error)
-                sheet_settings: Optional[FileSourceSettings] = None
+                sheet_settings: FileSourceSettings | None = None
 
                 for src in sheet_data_sources:
                     if src.is_applicable:

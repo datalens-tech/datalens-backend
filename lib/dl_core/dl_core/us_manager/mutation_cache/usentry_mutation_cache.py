@@ -3,7 +3,6 @@ import datetime
 import json
 import logging
 import time
-from typing import Optional
 
 import attr
 from redis.asyncio import Redis
@@ -23,7 +22,7 @@ class GenericCacheEngine(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    async def load(self, key: str) -> Optional[str]:
+    async def load(self, key: str) -> str | None:
         raise NotImplementedError()
 
 
@@ -35,7 +34,7 @@ class MemoryCacheEngine(GenericCacheEngine):
     async def save(self, key: str, data: str, ttl: float) -> None:
         self._cache[key] = (time.monotonic() + ttl, data)
 
-    async def load(self, key: str) -> Optional[str]:
+    async def load(self, key: str) -> str | None:
         cached = self._cache.get(key)
         if not cached:
             return None
@@ -60,7 +59,7 @@ class RedisCacheEngine(GenericCacheEngine):
             LOGGER.warning("Error while saving to redis cache: connection error")
             raise MutationCacheError() from e
 
-    async def load(self, key: str) -> Optional[str]:
+    async def load(self, key: str) -> str | None:
         try:
             return await self.redis.get(key)
         except redis.exceptions.ConnectionError as e:
@@ -138,7 +137,7 @@ class USEntryMutationCache:
         entry_id: str,
         revision_id: str,
         mutation_key: MutationKey,
-    ) -> Optional[USEntry]:
+    ) -> USEntry | None:
         key = USEntryMutationCacheKey(
             scope=expected_type.scope,  # type: ignore  # TODO: Fix
             entry_id=entry_id,

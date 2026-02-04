@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 
 from dl_configs.enums import RedisMode
@@ -24,7 +22,7 @@ class RedisSettings(SettingsBase):
     PORT: int = s_attrib("PORT")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
     DB: int = s_attrib("DB")  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
     PASSWORD: str = s_attrib("PASSWORD", sensitive=True, missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
-    SSL: Optional[bool] = s_attrib("SSL", missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool | None")  [assignment]
+    SSL: bool | None = s_attrib("SSL", missing=None)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool | None")  [assignment]
     SOCKET_TIMEOUT: float = s_attrib("SOCKET_TIMEOUT", missing=0.0)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "float")  [assignment]
     SOCKET_CONNECT_TIMEOUT: float = s_attrib("SOCKET_CONNECT_TIMEOUT", missing=0.0)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "float")  [assignment]
 

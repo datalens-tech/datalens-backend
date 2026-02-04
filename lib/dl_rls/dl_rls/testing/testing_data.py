@@ -2,7 +2,6 @@ import json
 import pkgutil
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -21,8 +20,8 @@ from dl_rls.subject_resolver import BaseSubjectResolver
 class RLS2ConfigEntry:
     # model only for testing with allowed missing values
     subject: RLSSubject = attr.ib()
-    field_guid: Optional[str] = attr.ib(default=None)
-    allowed_value: Optional[str] = attr.ib(default=None)
+    field_guid: str | None = attr.ib(default=None)
+    allowed_value: str | None = attr.ib(default=None)
     pattern_type: RLSPatternType = attr.ib(default=RLSPatternType.value)
 
 

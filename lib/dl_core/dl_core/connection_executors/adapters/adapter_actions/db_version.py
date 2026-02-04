@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -18,13 +17,13 @@ if TYPE_CHECKING:
 
 @attr.s(frozen=True)
 class AsyncDBVersionAdapterActionNone(AsyncDBVersionAdapterAction):
-    async def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    async def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         return None
 
 
 @attr.s(frozen=True)
 class AsyncDBVersionAdapterActionEmptyString(AsyncDBVersionAdapterAction):
-    async def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    async def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         return ""
 
 
@@ -32,7 +31,7 @@ class AsyncDBVersionAdapterActionEmptyString(AsyncDBVersionAdapterAction):
 class AsyncDBVersionAdapterActionViaFunctionQuery(AsyncDBVersionAdapterAction):
     _async_adapter: AsyncDBAdapter = attr.ib(kw_only=True)
 
-    async def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    async def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         result = await self._async_adapter.execute(get_db_version_query(db_ident))
         async for row in result.get_all_rows():
             return str(row[0])

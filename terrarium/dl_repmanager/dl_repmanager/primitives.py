@@ -10,7 +10,6 @@ import os
 from pathlib import Path
 from typing import (
     Any,
-    Optional,
     TypeVar,
 )
 
@@ -60,7 +59,7 @@ class ReqPackageSpec(_Clonable):
 
 @attr.s(frozen=True)
 class PypiReqPackageSpec(ReqPackageSpec):
-    version: Optional[str] = attr.ib(kw_only=True)
+    version: str | None = attr.ib(kw_only=True)
 
     def pretty(self) -> str:
         extra = ""

@@ -7,7 +7,6 @@ from typing import (
     Callable,
     Collection,
     Iterable,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -45,8 +44,8 @@ class AbstractStream:
 
 @attr.s
 class DataRequestMetaInfo:
-    query_id: Optional[str] = attr.ib(default=None, kw_only=True)
-    query: Optional[str] = attr.ib(default=None, kw_only=True)
+    query_id: str | None = attr.ib(default=None, kw_only=True)
+    query: str | None = attr.ib(default=None, kw_only=True)
     data_source_list: Collection[dl_core.data_source.DataSource] = attr.ib(default=(), kw_only=True)
     pass_db_query_to_user: bool = attr.ib(default=True, kw_only=True)
 
@@ -74,7 +73,7 @@ class DataStreamAsync(DataStreamBase):
 class AsyncVirtualStream(AbstractStream):
     """A representation of data that is being streamed in an external system (database)"""
 
-    _preparation_callback: Optional[Callable[[], Awaitable[None]]] = attr.ib(kw_only=True)
+    _preparation_callback: Callable[[], Awaitable[None]] | None = attr.ib(kw_only=True)
 
     async def prepare(self) -> None:
         if self._preparation_callback is None:

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Collection,
-    Optional,
 )
 
 from dl_formula.core.dialect import (
@@ -27,7 +26,7 @@ from dl_formula_ref.registry.tools import populate_registry_from_definitions
 
 
 class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
-    def __init__(self, funcs_by_key: Optional[dict[RefFunctionKey, RawMultiAudienceFunc]] = None):
+    def __init__(self, funcs_by_key: dict[RefFunctionKey, RawMultiAudienceFunc] | None = None):
         self._funcs_by_key = funcs_by_key or {}
 
     def __contains__(self, key: RefFunctionKey) -> bool:
@@ -40,7 +39,7 @@ class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
     def get_func(self, func_key: RefFunctionKey) -> RawMultiAudienceFunc:
         return self._funcs_by_key[func_key]
 
-    def filter(self, category: Optional[str] = None, name: Optional[str] = None) -> list[RawMultiAudienceFunc]:
+    def filter(self, category: str | None = None, name: str | None = None) -> list[RawMultiAudienceFunc]:
         result = []
         for func in self._funcs_by_key.values():
             if category is not None and func.category.name != category or name is not None and func.name != name:

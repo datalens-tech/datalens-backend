@@ -217,7 +217,7 @@ def test_optional_annotation() -> None:
     Base.register("child", Child)
 
     class Root(dl_pydantic.BaseModel):
-        child: typing.Optional[dl_pydantic.TypedAnnotation[Base]] = None
+        child: dl_pydantic.TypedAnnotation[Base] | None = None
 
     root = Root.model_validate({"child": {"type": "child"}})
     assert isinstance(root.child, Child)

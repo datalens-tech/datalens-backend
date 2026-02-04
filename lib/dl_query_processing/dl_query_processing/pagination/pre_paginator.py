@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     TypeVar,
 )
 
@@ -25,8 +24,8 @@ class QueryPrePaginator:
         self,
         block_legend: BlockLegend,
         block_ind: int,
-        limit: Optional[int],
-        offset: Optional[int],
+        limit: int | None,
+        offset: int | None,
     ) -> BlockLegend:
         """
         Set pagination for block specified by index ``block_ind``

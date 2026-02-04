@@ -5,7 +5,6 @@ import csv
 import logging
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -50,9 +49,9 @@ class FileParser(metaclass=abc.ABCMeta):
         dfile: DataFile,
         s3: S3Service,
         tpe: ContextVarExecutor,
-        file_settings: Optional[dict[str, Any]] = None,
+        file_settings: dict[str, Any] | None = None,
         sample_size: int = 1 * 1024 * 1024,
-        source_id: Optional[str] = None,
+        source_id: str | None = None,
     ):
         self.dfile = dfile
         self.s3 = s3
@@ -74,7 +73,7 @@ class FileParser(metaclass=abc.ABCMeta):
     async def guess_header_and_schema(
         self,
         dsrc: DataSource,
-    ) -> tuple[bool, list[SchemaColumn], Optional[FileSettings], FileSourceSettings]:
+    ) -> tuple[bool, list[SchemaColumn], FileSettings | None, FileSourceSettings]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -134,7 +133,7 @@ class CSVFileParser(FileParser):
     async def guess_header_and_schema(
         self,
         dsrc: DataSource,
-    ) -> tuple[bool, list[SchemaColumn], Optional[FileSettings], FileSourceSettings]:
+    ) -> tuple[bool, list[SchemaColumn], FileSettings | None, FileSourceSettings]:
         loop = asyncio.get_running_loop()
         await self.ensure_sample_text_loaded()
 
@@ -219,7 +218,7 @@ class SpreadsheetFileParser(FileParser):
     async def guess_header_and_schema(
         self,
         dsrc: DataSource,
-    ) -> tuple[bool, list[SchemaColumn], Optional[FileSettings], FileSourceSettings]:
+    ) -> tuple[bool, list[SchemaColumn], FileSettings | None, FileSourceSettings]:
         loop = asyncio.get_running_loop()
 
         file_source_settings = dsrc.file_source_settings

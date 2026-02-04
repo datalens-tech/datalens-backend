@@ -3,7 +3,6 @@ from importlib import metadata
 from typing import (
     Collection,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -21,7 +20,7 @@ class EntrypointClassManager(abc.ABC, Generic[_EP_CLS_TV]):
 
     entrypoint_group_name: str = attr.ib(kw_only=True)
 
-    def get_all_ep_classes(self, ep_filter: Optional[Collection[str]] = None) -> dict[str, type[_EP_CLS_TV]]:
+    def get_all_ep_classes(self, ep_filter: Collection[str] | None = None) -> dict[str, type[_EP_CLS_TV]]:
         entrypoints = list(metadata.entry_points().select(group=self.entrypoint_group_name))
         if ep_filter is not None:
             entrypoints = [ep for ep in entrypoints if ep.name in ep_filter]

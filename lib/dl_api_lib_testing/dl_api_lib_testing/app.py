@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 import flask
 
@@ -108,22 +106,22 @@ class TestingSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
         self,
         settings: AppSettings,
         ca_data: bytes,
-    ) -> Optional[InstallationSpecificServiceRegistryFactory]:
+    ) -> InstallationSpecificServiceRegistryFactory | None:
         return TestingServiceRegistryFactory()
 
-    def _get_entity_usage_checker(self, settings: AppSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: AppSettings) -> EntityUsageChecker | None:
         return None
 
     def _get_bleeding_edge_users(self, settings: AppSettings) -> tuple[str, ...]:
         return ()
 
-    def _get_rqe_caches_settings(self, settings: AppSettings) -> Optional[RQECachesSetting]:
+    def _get_rqe_caches_settings(self, settings: AppSettings) -> RQECachesSetting | None:
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: AppSettings) -> Optional[CacheTTLConfig]:
+    def _get_default_cache_ttl_settings(self, settings: AppSettings) -> CacheTTLConfig | None:
         return None
 
-    def _get_connector_availability(self, settings: AppSettings) -> Optional[ConnectorAvailabilityConfig]:
+    def _get_connector_availability(self, settings: AppSettings) -> ConnectorAvailabilityConfig | None:
         return settings.CONNECTOR_AVAILABILITY if isinstance(settings, ControlApiAppSettings) else None
 
 
@@ -133,7 +131,7 @@ class TestingControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], T
     def set_up_environment(
         self,
         app: flask.Flask,
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        testing_app_settings: ControlApiAppTestingsSettings | None = None,
     ) -> ControlApiEnvSetupResult:
         us_auth_mode: USAuthMode
         TrustAuthService(

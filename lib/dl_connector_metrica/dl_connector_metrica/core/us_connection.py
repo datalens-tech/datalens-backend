@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     ClassVar,
-    Optional,
     Sequence,
 )
 
@@ -55,7 +54,7 @@ def parse_metrica_ids(ids_str: str) -> Sequence[str]:
 
 
 class MetrikaBaseMixin(ConnectionBase):
-    metrica_host: Optional[str] = None
+    metrica_host: str | None = None
 
     def __init__(self, *args, **kwargs):  # type: ignore  # TODO: fix
         super().__init__(*args, **kwargs)
@@ -92,8 +91,8 @@ class MetrikaBaseMixin(ConnectionBase):
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         await super().validate_new_data(
             services_registry=services_registry,
@@ -123,8 +122,8 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
     class DataModel(ConnectionBase.DataModel):
         token: str = attr.ib(repr=secrepr)
         counter_id: str = attr.ib()  # single counter id or comma-separated counters list
-        counter_creation_date: Optional[date] = attr.ib(default=None)  # minimal date in case of multiple counters
-        accuracy: Optional[float] = attr.ib(default=None)  # sample share (0; 1]
+        counter_creation_date: date | None = attr.ib(default=None)  # minimal date in case of multiple counters
+        accuracy: float | None = attr.ib(default=None)  # sample share (0; 1]
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
@@ -149,7 +148,7 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
         )
 
     @property
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         return None
 
     @classmethod

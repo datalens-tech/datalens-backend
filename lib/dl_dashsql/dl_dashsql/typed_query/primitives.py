@@ -1,7 +1,6 @@
 from typing import (
     Any,
     Mapping,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -103,7 +102,7 @@ class TypedQueryRaw(TypedQueryBase):
 class TypedQueryRawResultData:
     status: int = attr.ib()
     headers: dict = attr.ib()
-    body: Optional[dict] = attr.ib()
+    body: dict | None = attr.ib()
 
 
 @attr.s(frozen=True, kw_only=True)

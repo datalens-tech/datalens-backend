@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -36,7 +35,7 @@ class SourceDataProcessorFactory(BaseClosableDataProcessorFactory):
         allow_cache_usage: bool = True,
         reporting_enabled: bool = True,
         # SOURCE_DB-specific
-        role: Optional[DataSourceRole] = None,
+        role: DataSourceRole | None = None,
         **kwargs: Any,
     ) -> ExecutorBasedOperationProcessor:
         assert role is not None

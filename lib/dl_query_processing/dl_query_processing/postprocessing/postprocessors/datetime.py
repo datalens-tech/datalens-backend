@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import datetime
-from typing import Optional
 
 import pytz
 
 
-def postprocess_datetime(value: datetime.datetime) -> Optional[str]:
+def postprocess_datetime(value: datetime.datetime) -> str | None:
     if value is None:
         return value
 
@@ -18,7 +17,7 @@ def postprocess_datetime(value: datetime.datetime) -> Optional[str]:
     return value.isoformat()
 
 
-def postprocess_genericdatetime(value: datetime.datetime) -> Optional[str]:
+def postprocess_genericdatetime(value: datetime.datetime) -> str | None:
     if value is None:
         return value
 
@@ -31,7 +30,7 @@ def postprocess_genericdatetime(value: datetime.datetime) -> Optional[str]:
 def make_postprocess_datetimetz(tzname: str):  # type: ignore  # TODO: fix
     tzobj = pytz.timezone(tzname)
 
-    def _postprocess_datetimetz(value: datetime.datetime, tzobj=tzobj) -> Optional[str]:  # type: ignore  # TODO: fix
+    def _postprocess_datetimetz(value: datetime.datetime, tzobj=tzobj) -> str | None:  # type: ignore  # TODO: fix
         if value is None:
             return value
 

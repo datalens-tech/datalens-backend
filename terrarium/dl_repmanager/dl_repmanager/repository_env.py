@@ -54,7 +54,6 @@ import re
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    Optional,
 )
 
 import attr
@@ -155,7 +154,7 @@ class ConfigContents:
     package_types: dict[str, PackageTypeConfig] = attr.ib(kw_only=True, factory=dict)
     metapackages: dict[str, MetaPackageSpec] = attr.ib(kw_only=True, factory=dict)
     custom_package_map: dict[str, str] = attr.ib(kw_only=True, factory=dict)
-    fs_editor_type: Optional[str] = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
+    fs_editor_type: str | None = attr.ib(kw_only=True, default=_DEFAULT_FS_EDITOR_TYPE)
     plugin_configs: list[PluginConfig] = attr.ib(kw_only=True, factory=list)
     edit_exclude_masks: frozenset[re.Pattern] = attr.ib(kw_only=True, default=frozenset())
 
@@ -173,7 +172,7 @@ def discover_config(base_path: Path, config_file_name: str) -> Path:
 @attr.s
 class RepoEnvironmentLoader:
     config_file_name: str = attr.ib(kw_only=True, default=DEFAULT_CONFIG_FILE_NAME)
-    override_fs_editor_type: Optional[str] = attr.ib(kw_only=True, default=None)
+    override_fs_editor_type: str | None = attr.ib(kw_only=True, default=None)
 
     def _load_params_from_yaml_file(self, config_path: Path) -> ConfigContents:
         with open(config_path) as config_file:
@@ -182,7 +181,7 @@ class RepoEnvironmentLoader:
         base_path = config_path.parent
         env_settings = config_data.get("dl_repo", {})
 
-        default_boilerplate_path_str: Optional[str] = env_settings.get("default_boilerplate_path")
+        default_boilerplate_path_str: str | None = env_settings.get("default_boilerplate_path")
 
         package_types: dict[str, PackageTypeConfig] = {}
         for package_type_data in env_settings.get("package_types", ()):
@@ -222,7 +221,7 @@ class RepoEnvironmentLoader:
 
         custom_package_map: dict[str, str] = dict(env_settings.get("custom_package_map", {}))
 
-        fs_editor_type: Optional[str] = env_settings.get("fs_editor")
+        fs_editor_type: str | None = env_settings.get("fs_editor")
 
         for include in env_settings.get("include", ()):
             included_config_contents = self._load_params_from_yaml_file(Path(base_path) / include)

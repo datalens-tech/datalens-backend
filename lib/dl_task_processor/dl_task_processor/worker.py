@@ -8,7 +8,6 @@ import socket
 import time
 from typing import (
     Any,
-    Optional,
     Protocol,
     Sequence,
 )
@@ -44,7 +43,7 @@ class DLArqWorker(Worker):
     def __init__(
         self,
         health_check_record_ttl: SecondsTimedelta,
-        metrics_sender: Optional[WorkerMetricsSenderProtocol] = None,
+        metrics_sender: WorkerMetricsSenderProtocol | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
@@ -109,7 +108,7 @@ class ArqWorker:
     _context_fab: BaseContextFabric = attr.ib()
     _redis_settings: RedisSettings = attr.ib()
     _worker_settings: WorkerSettings = attr.ib()
-    _metrics_sender: Optional[WorkerMetricsSenderProtocol] = attr.ib(default=None)
+    _metrics_sender: WorkerMetricsSenderProtocol | None = attr.ib(default=None)
     _arq_worker: DLArqWorker = attr.ib(default=None)
     _cron_tasks: Sequence[CronTask] = attr.ib(factory=list)
 
@@ -183,7 +182,7 @@ class HealthChecker:
         if not result:
             raise ValueError("Health check unsuccessful")
 
-    async def wait_for_ok(self, timeout: Optional[int] = None, cooldown: int = 1) -> None:
+    async def wait_for_ok(self, timeout: int | None = None, cooldown: int = 1) -> None:
         # you should use it only in tests
         start = time.monotonic()
         while (timeout is None) or (time.monotonic() - start < timeout):

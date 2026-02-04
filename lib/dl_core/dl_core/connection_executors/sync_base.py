@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -72,7 +71,7 @@ class SyncConnExecutorBase(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def get_db_version(self, db_ident: DBIdent) -> str | None:
         pass
 
     @abc.abstractmethod

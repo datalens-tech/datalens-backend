@@ -5,7 +5,6 @@ from typing import (
     Any,
     Iterator,
     NoReturn,
-    Optional,
 )
 
 import attr
@@ -53,7 +52,7 @@ class CommonInternalAPIClient(DLCommonAPIClient):
             ) from ma_exc
 
     def create_exc_data(
-        self, resp: Resp, operation: str, validation_errors: Optional[dict[str, Any]] = None
+        self, resp: Resp, operation: str, validation_errors: dict[str, Any] | None = None
     ) -> dl_api_commons.exc.APIResponseData:
         body: Any
         try:

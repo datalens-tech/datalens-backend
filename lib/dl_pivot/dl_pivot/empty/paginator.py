@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 from dl_pivot.base.paginator import PivotPaginator
@@ -17,8 +16,8 @@ class EmptyPivotPaginator(PivotPaginator):
     def paginate(
         self,
         pivot_dframe: PivotDataFrame,
-        limit_rows: Optional[int] = None,
-        offset_rows: Optional[int] = None,
+        limit_rows: int | None = None,
+        offset_rows: int | None = None,
     ) -> PivotDataFrame:
         assert isinstance(pivot_dframe, EmptyPivotDataFrame)
         return pivot_dframe

@@ -3,7 +3,6 @@ from __future__ import annotations
 import enum
 from typing import (
     ClassVar,
-    Optional,
     Union,
 )
 
@@ -23,16 +22,16 @@ class DbQueryExecutionReport:
 
     query_id: str
     dataset_id: str
-    user_id: Optional[str]
-    billing_folder_id: Optional[str]
+    user_id: str | None
+    billing_folder_id: str | None
     connection_id: str
     connection_type: ConnectionType
-    source: Optional[str]
-    username: Optional[str]
+    source: str | None
+    username: str | None
     execution_time: int
-    query: Optional[str]
+    query: str | None
     status: Union[Literal["success"], Literal["error"]]
-    error: Optional[str]
+    error: str | None
     host: str
 
     cache_used: bool

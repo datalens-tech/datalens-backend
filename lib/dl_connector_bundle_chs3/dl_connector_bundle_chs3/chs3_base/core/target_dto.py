@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 
 from dl_core.connection_executors.models.connection_target_dto_base import (
@@ -14,10 +12,10 @@ class BaseFileS3ConnTargetDTO(BaseAiohttpConnTargetDTO, BaseSQLConnTargetDTO):
     protocol: str = attr.ib(kw_only=True)
     disable_value_processing: bool = attr.ib(kw_only=True)
 
-    endpoint: Optional[str] = attr.ib(kw_only=True, default=None)
-    max_execution_time: Optional[int] = attr.ib(kw_only=True, default=None)
-    connect_timeout: Optional[int] = attr.ib(kw_only=True, default=None)
-    total_timeout: Optional[int] = attr.ib(kw_only=True, default=None)
+    endpoint: str | None = attr.ib(kw_only=True, default=None)
+    max_execution_time: int | None = attr.ib(kw_only=True, default=None)
+    connect_timeout: int | None = attr.ib(kw_only=True, default=None)
+    total_timeout: int | None = attr.ib(kw_only=True, default=None)
 
     s3_endpoint: str = attr.ib(kw_only=True)
     bucket: str = attr.ib(kw_only=True)

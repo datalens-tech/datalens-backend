@@ -10,7 +10,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Iterable,
-    Optional,
     Union,
 )
 
@@ -268,7 +267,7 @@ def hook_init_logging(
     app: Any,
     app_name: str = "rqe-sync",
     jaeger_service_name: str = "bi-rqe-sync",
-    app_prefix: Optional[str] = None,
+    app_prefix: str | None = None,
     **kwargs: Any,
 ) -> None:
     return hook_configure_logging(

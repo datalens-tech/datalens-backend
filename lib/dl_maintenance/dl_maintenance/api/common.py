@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -36,7 +35,7 @@ if TYPE_CHECKING:
 @attr.s(kw_only=True)
 class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
     _app_settings_cls: type[AppSettings] = attr.ib()
-    _app_factory_cls: Optional[type[SRFactoryBuilder]] = attr.ib(default=None)
+    _app_factory_cls: type[SRFactoryBuilder] | None = attr.ib(default=None)
 
     def get_app_settings(self) -> AppSettings:
         preload_api_lib()
@@ -55,7 +54,7 @@ class MaintenanceEnvironmentManager(MaintenanceEnvironmentManagerBase):
             fallbacks=CONNECTORS_SETTINGS_FALLBACKS,
         )
 
-    def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> Optional[SRFactory]:
+    def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> SRFactory | None:
         assert self._app_factory_cls is not None
         conn_opts_factory = ConnOptionsMutatorsFactory()
         settings = self.get_app_settings()

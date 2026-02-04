@@ -11,7 +11,6 @@ from enum import (
 )
 from typing import (
     Generic,
-    Optional,
     TypeVar,
     Union,
     cast,
@@ -28,7 +27,7 @@ _ENUM_TYPE = TypeVar("_ENUM_TYPE", bound=Enum)
 
 class _Normalizable(Generic[_ENUM_TYPE]):
     @classmethod
-    def normalize(cls, value: Union[_ENUM_TYPE, str, None]) -> Optional[_ENUM_TYPE]:
+    def normalize(cls, value: Union[_ENUM_TYPE, str, None]) -> _ENUM_TYPE | None:
         if isinstance(value, str):
             value = cast(type[_ENUM_TYPE], cls)[value]
         return value
@@ -222,7 +221,7 @@ class WhereClauseOperation(Enum):
 
 class DataSourceType(DynamicEnum):
     @classmethod
-    def normalize(cls, value: DataSourceType | str | None) -> Optional[DataSourceType]:
+    def normalize(cls, value: DataSourceType | str | None) -> DataSourceType | None:
         # FIXME: Remove this hack (used only in dsmaker)
         if isinstance(value, str):
             value = DataSourceType(value)

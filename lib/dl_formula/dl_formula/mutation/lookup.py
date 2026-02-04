@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     ClassVar,
-    Optional,
     Sequence,
 )
 
@@ -167,7 +166,7 @@ class AtDateLookupFunctionMutator(DateLookupFunctionMutatorBase):
         return []
 
 
-def _get_arg_error_node(node: nodes.FuncCall) -> Optional[aux_nodes.ErrorNode]:
+def _get_arg_error_node(node: nodes.FuncCall) -> aux_nodes.ErrorNode | None:
     func_name = node.name
     mutator = LOOKUP_MUTATOR_REGISTRY[func_name]
 

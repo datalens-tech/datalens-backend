@@ -4,7 +4,6 @@ import abc
 import json
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -103,7 +102,7 @@ class LegendFormalizer(abc.ABC):
         legend_item_id: int,
         item_spec: RawFieldSpec,
         ignore_nonexistent_filters: bool,
-    ) -> Optional[LegendItem]:
+    ) -> LegendItem | None:
         # Make role spec
         role_spec: RoleSpec
         if isinstance(item_spec, RawSelectFieldSpec):

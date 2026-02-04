@@ -2,7 +2,6 @@ import abc
 from typing import (
     ClassVar,
     Collection,
-    Optional,
 )
 
 import attr
@@ -48,23 +47,23 @@ class ApiSourceDefinition(abc.ABC):
 class ApiConnectionDefinition(abc.ABC):
     core_conn_def_cls: ClassVar[type[CoreConnectionDefinition]]
     api_generic_schema_cls: ClassVar[type[ConnectionSchema]]
-    alias: ClassVar[Optional[str]] = None  # TODO remove in favor of info provider
+    alias: ClassVar[str | None] = None  # TODO remove in favor of info provider
     info_provider_cls: ClassVar[type[ConnectionInfoProvider]]
-    form_factory_cls: ClassVar[Optional[type[ConnectionFormFactory]]] = None
+    form_factory_cls: ClassVar[type[ConnectionFormFactory] | None] = None
 
 
 @attr.s(frozen=True, auto_attribs=True, kw_only=True)
 class MQMFactoryKey:
     query_proc_mode: QueryProcessingMode
     backend_type: SourceBackendType
-    dialect: Optional[DialectCombo]
+    dialect: DialectCombo | None
 
 
 @attr.s(frozen=True, auto_attribs=True, kw_only=True)
 class MQMFactorySettingItem:
     query_proc_mode: QueryProcessingMode
     factory_cls: type[MultiQueryMutatorFactoryBase]
-    dialects: Collection[Optional[DialectCombo]] = attr.ib(default=(None,))
+    dialects: Collection[DialectCombo | None] = attr.ib(default=(None,))
 
 
 class ApiBackendDefinition(abc.ABC):
@@ -91,4 +90,4 @@ class ApiConnector(abc.ABC):
     connection_definitions: ClassVar[tuple[type[ApiConnectionDefinition], ...]] = ()
     source_definitions: ClassVar[tuple[type[ApiSourceDefinition], ...]] = ()
     translation_configs: ClassVar[frozenset[TranslationConfig]] = frozenset()
-    compeng_dialect: Optional[DialectCombo] = None
+    compeng_dialect: DialectCombo | None = None

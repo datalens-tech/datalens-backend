@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Iterable,
     NamedTuple,
-    Optional,
 )
 
 import attr
@@ -62,7 +61,7 @@ class RenderedFunc(NamedTuple):
     examples: list[str]
     signature_coll: FunctionSignatureCollection
     locale: str
-    crosslink_note: Optional[RenderedNote]
+    crosslink_note: RenderedNote | None
 
     @property
     def const_args(self) -> list[LocalizedFuncArg]:

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
     TypeVar,
 )
 
@@ -14,8 +13,8 @@ _CONNECT_OPTIONS_TV = TypeVar("_CONNECT_OPTIONS_TV", bound="ConnectOptions")
 
 @attr.s(frozen=True, hash=True)
 class ConnectOptions:
-    rqe_total_timeout: Optional[int] = attr.ib(default=None)
-    rqe_sock_read_timeout: Optional[int] = attr.ib(default=None)
+    rqe_total_timeout: int | None = attr.ib(default=None)
+    rqe_sock_read_timeout: int | None = attr.ib(default=None)
     fetch_table_indexes: bool = attr.ib(default=False)
     pass_db_messages_to_user: bool = attr.ib(default=False)
     pass_db_query_to_user: bool = attr.ib(default=False)

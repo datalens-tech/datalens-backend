@@ -1,7 +1,6 @@
 from typing import (
     Annotated,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -36,7 +35,7 @@ class DeprecatedCHYTConnectorSettings(DeprecatedConnectorSettingsBase, Deprecate
 
     PUBLIC_CLIQUES: tuple[str] = s_attrib("PUBLIC_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
     FORBIDDEN_CLIQUES: tuple[str] = s_attrib("FORBIDDEN_CLIQUES", missing_factory=tuple, env_var_converter=split_by_comma)  # type: ignore
-    DEFAULT_CLIQUE: Optional[str] = s_attrib("DEFAULT_CLIQUE", missing=None)  # type: ignore
+    DEFAULT_CLIQUE: str | None = s_attrib("DEFAULT_CLIQUE", missing=None)  # type: ignore
 
 
 def chyt_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedConnectorSettingsBase]:

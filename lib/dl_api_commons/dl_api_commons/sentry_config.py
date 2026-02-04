@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Optional,
     Sequence,
 )
 
@@ -13,7 +12,7 @@ from dl_api_commons.logging_sentry import cleanup_common_secret_data
 @attr.s(frozen=True)
 class SentryConfig:
     dsn: str = attr.ib(repr=False)
-    release: Optional[str] = attr.ib(default=None)
+    release: str | None = attr.ib(default=None)
 
 
 def configure_sentry(cfg: SentryConfig, extra_integrations: Sequence[Any] = ()) -> None:

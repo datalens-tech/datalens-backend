@@ -1,6 +1,5 @@
 import abc
 import logging
-from typing import Optional
 
 import arq
 import arq.jobs
@@ -94,9 +93,9 @@ class LocalProcessorImpl(BaseTaskProcessorImpl):
 class TaskProcessor:
     _impl: BaseTaskProcessorImpl = attr.ib()
     _state: TaskState = attr.ib()
-    _request_id: Optional[str] = attr.ib(default=None)
+    _request_id: str | None = attr.ib(default=None)
 
-    async def schedule(self, task: BaseTaskMeta, instance_id: Optional[InstanceID] = None) -> TaskInstance:
+    async def schedule(self, task: BaseTaskMeta, instance_id: InstanceID | None = None) -> TaskInstance:
         instance_id = instance_id or InstanceID.make()
         task_instance = TaskInstance(
             name=task.name,
@@ -120,7 +119,7 @@ class TaskProcessor:
         await self._impl.cancel(instance_id)
 
 
-def make_task_processor(redis_pool: arq.ArqRedis, request_id: Optional[str] = None) -> TaskProcessor:
+def make_task_processor(redis_pool: arq.ArqRedis, request_id: str | None = None) -> TaskProcessor:
     impl = ARQProcessorImpl(redis_pool)
     state = TaskState(DummyStateImpl())
     return TaskProcessor(impl=impl, state=state, request_id=request_id)
@@ -128,7 +127,7 @@ def make_task_processor(redis_pool: arq.ArqRedis, request_id: Optional[str] = No
 
 class TaskProcessorFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def make(self, request_id: Optional[str] = None) -> TaskProcessor:
+    def make(self, request_id: str | None = None) -> TaskProcessor:
         pass
 
     def cleanup(self) -> None:
@@ -142,12 +141,12 @@ class TaskProcessorFactory(metaclass=abc.ABCMeta):
 class ARQTaskProcessorFactory(TaskProcessorFactory):
     _redis_pool_settings: ArqRedisSettings = attr.ib()
 
-    _redis_pool: Optional[ArqRedis] = attr.ib(init=False, default=None)
+    _redis_pool: ArqRedis | None = attr.ib(init=False, default=None)
 
     def setup(self) -> None:
         self._redis_pool = await_sync(create_redis_pool(self._redis_pool_settings))
 
-    def make(self, request_id: Optional[str] = None) -> TaskProcessor:
+    def make(self, request_id: str | None = None) -> TaskProcessor:
         if self._redis_pool is None:
             self.setup()
         assert self._redis_pool is not None
@@ -163,7 +162,7 @@ class ARQTaskProcessorFactory(TaskProcessorFactory):
 
 
 class DummyTaskProcessorFactory(TaskProcessorFactory):
-    def make(self, req_id: Optional[str] = None) -> TaskProcessor:
+    def make(self, req_id: str | None = None) -> TaskProcessor:
         impl = DummyTaskProcessorImpl()
         state = TaskState(DummyStateImpl())
         return TaskProcessor(impl=impl, state=state, request_id=req_id)
@@ -174,12 +173,12 @@ class LocalTaskProcessorFactory(TaskProcessorFactory):
     _context_fab: BaseContextFabric = attr.ib()
     _registry: TaskRegistry = attr.ib()
 
-    _context: Optional[BaseContext] = attr.ib(init=False, default=None)
+    _context: BaseContext | None = attr.ib(init=False, default=None)
 
     def setup(self) -> None:
         self._context = await_sync(self._context_fab.make())
 
-    def make(self, request_id: Optional[str] = None) -> TaskProcessor:
+    def make(self, request_id: str | None = None) -> TaskProcessor:
         if self._context is None:
             self.setup()
         assert self._context is not None

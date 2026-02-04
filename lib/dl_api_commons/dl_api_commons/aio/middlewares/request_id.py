@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Optional
 
 from aiohttp import web
 import attr
@@ -37,9 +36,9 @@ class RequestId:
     header_name: str = attr.ib(default="X-Request-ID")
     dl_request_cls: type[aiohttp_wrappers.DLRequestBase] = attr.ib(default=aiohttp_wrappers.DLRequestBase)
     append_own_req_id: bool = attr.ib(default=False)
-    app_prefix: Optional[str] = attr.ib(default=None)
+    app_prefix: str | None = attr.ib(default=None)
     accept_logging_ctx: bool = attr.ib(default=False)
-    logging_ctx_header_name: Optional[str] = attr.ib(default=None)
+    logging_ctx_header_name: str | None = attr.ib(default=None)
     # Is used only for reporting registry to determine if request is anonymous
     #  Remove after adding mechanisms to detect if request in anonymous via RCI (e.g. based on user ID/AuthData)
     is_public_env: bool = attr.ib(default=False)

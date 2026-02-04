@@ -4,7 +4,6 @@ import decimal
 from typing import (
     Callable,
     ClassVar,
-    Optional,
     Sequence,
     TypeVar,
     Union,
@@ -280,8 +279,8 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             values: Sequence[VALUE_TV],
             idx: int,
             offset: int = 1,
-            default: Optional[VALUE_TV] = None,
-        ) -> Optional[VALUE_TV]:
+            default: VALUE_TV | None = None,
+        ) -> VALUE_TV | None:
             offset_idx = idx - offset
             if offset_idx < 0 or offset_idx >= len(values):
                 return default

@@ -7,7 +7,6 @@ from typing import (
     Awaitable,
     Callable,
     ClassVar,
-    Optional,
     Sequence,
     Union,
 )
@@ -56,11 +55,11 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
         query: Select | str,
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]],
+        preparation_callback: Callable[[], Awaitable[None]] | None,
     ) -> AsyncChunkedBase[Sequence[TBIDataValue]]:
         if preparation_callback is not None:
             await preparation_callback()

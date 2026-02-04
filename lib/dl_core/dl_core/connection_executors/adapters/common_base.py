@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -71,9 +70,7 @@ class CommonBaseDirectAdapter(Generic[_TARGET_DTO_TV], metaclass=abc.ABCMeta):
     def get_dialect(cls) -> DefaultDialect:
         return get_dialect_for_conn_type(cls.conn_type)
 
-    def compile_query_for_execution(
-        self, query: ClauseElement | str, dialect: Optional[sa.engine.Dialect] = None
-    ) -> str:
+    def compile_query_for_execution(self, query: ClauseElement | str, dialect: sa.engine.Dialect | None = None) -> str:
         """Should not be used unless it is impossible to avoid"""
         if isinstance(query, str):
             return query

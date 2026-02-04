@@ -13,7 +13,6 @@ from typing import (
     Hashable,
     Iterable,
     Mapping,
-    Optional,
     Sequence,
     TypeVar,
     Union,
@@ -32,9 +31,9 @@ class NodeMeta:
 
     def __init__(
         self,
-        position: Optional[Position] = None,
-        original_text: Optional[str] = None,
-        level_tag: Optional[LevelTag] = None,
+        position: Position | None = None,
+        original_text: str | None = None,
+        level_tag: LevelTag | None = None,
     ):
         self.position = position or Position()
         self.original_text = original_text
@@ -74,7 +73,7 @@ class FormulaItem(abc.ABC):
         return tuple(self.__children)
 
     @property
-    def internal_value(self) -> tuple[Optional[Hashable], ...]:
+    def internal_value(self) -> tuple[Hashable | None, ...]:
         return self.__internal_value
 
     @property
@@ -82,15 +81,15 @@ class FormulaItem(abc.ABC):
         return self.__meta.position
 
     @property
-    def original_text(self) -> Optional[str]:
+    def original_text(self) -> str | None:
         return self.__meta.original_text
 
     @property
-    def level_tag(self) -> Optional[LevelTag]:
+    def level_tag(self) -> LevelTag | None:
         return self.__meta.level_tag
 
     @property
-    def pos_range(self) -> tuple[Optional[int], Optional[int]]:
+    def pos_range(self) -> tuple[int | None, int | None]:
         return self.__meta.position.start, self.__meta.position.end
 
     @property
@@ -100,8 +99,8 @@ class FormulaItem(abc.ABC):
     def __init__(
         self,
         *children: FormulaItem,
-        internal_value: tuple[Optional[Hashable], ...] = (),
-        meta: Optional[NodeMeta] = None,
+        internal_value: tuple[Hashable | None, ...] = (),
+        meta: NodeMeta | None = None,
     ):
         for child in children:
             if not isinstance(child, FormulaItem):
@@ -121,10 +120,10 @@ class FormulaItem(abc.ABC):
         return
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert internal_value == ()
 
-    def get_scalar_value(self) -> Optional[Hashable]:
+    def get_scalar_value(self) -> Hashable | None:
         return self.__internal_value
 
     def stringify(self, with_meta: bool = False) -> str:
@@ -216,8 +215,8 @@ class FormulaItem(abc.ABC):
     def get_by_pos(
         self,
         pos: int,
-        node_types: Optional[tuple[type[FormulaItem], ...]] = None,
-    ) -> Optional[FormulaItem]:
+        node_types: tuple[type[FormulaItem], ...] | None = None,
+    ) -> FormulaItem | None:
         """
         Return the innermost node at position ``pos``.
         If ``node_types`` is given, then choose only among nodes of the listed types.
@@ -289,7 +288,7 @@ class FormulaItem(abc.ABC):
         return self.light_copy(children)
 
     def light_copy(
-        self: _FORMULA_ITEM_TV, children: Sequence[FormulaItem], *, meta: Optional[NodeMeta] = None
+        self: _FORMULA_ITEM_TV, children: Sequence[FormulaItem], *, meta: NodeMeta | None = None
     ) -> _FORMULA_ITEM_TV:
         """
         Creates a copy of self with new children nodes
@@ -373,7 +372,7 @@ class FormulaItem(abc.ABC):
     def enumerate(
         self,
         prefix: NodeHierarchyIndex = NodeHierarchyIndex(),  # noqa: B008
-        max_depth: Optional[int] = None,
+        max_depth: int | None = None,
     ) -> Generator[tuple[NodeHierarchyIndex, FormulaItem], None, None]:
         """
         Similar to the standard ``enumerate`` function,
@@ -389,7 +388,7 @@ class FormulaItem(abc.ABC):
         for child_i, child in enumerate(self.children):
             yield from child.enumerate(prefix=prefix + child_i, max_depth=child_max_depth)
 
-    def resolve_index(self, node: FormulaItem, pointer_eq: bool = True) -> Optional[NodeHierarchyIndex]:
+    def resolve_index(self, node: FormulaItem, pointer_eq: bool = True) -> NodeHierarchyIndex | None:
         """Get index for given ``node``."""
         for index, child in self.enumerate():
             if pointer_eq:
@@ -411,18 +410,18 @@ class FormulaItem(abc.ABC):
                 yield node
 
     @property
-    def start_pos(self) -> Optional[int]:
+    def start_pos(self) -> int | None:
         return self.position.start
 
     @property
-    def end_pos(self) -> Optional[int]:
+    def end_pos(self) -> int | None:
         return self.position.end
 
     @property
-    def complexity(self) -> Optional[int]:
+    def complexity(self) -> int | None:
         return self.__extract.complexity if self.__extract is not None else None
 
-    def _make_extract(self) -> Optional[NodeExtract]:
+    def _make_extract(self) -> NodeExtract | None:
         """
         Return a hashable immutable object that represents this node and its children.
         It should not contain any syntactic info so that can be used for optimization of data calculations.
@@ -439,7 +438,7 @@ class FormulaItem(abc.ABC):
         )
 
     @property
-    def extract(self) -> Optional[NodeExtract]:
+    def extract(self) -> NodeExtract | None:
         return self.__extract
 
     @property
@@ -503,7 +502,7 @@ class ExprWrapper(FormulaItem):
         assert len(children) == 1
 
     @classmethod
-    def make(cls: type[_FORMULA_ITEM_TV], expr: FormulaItem, *, meta: Optional[NodeMeta] = None) -> _FORMULA_ITEM_TV:
+    def make(cls: type[_FORMULA_ITEM_TV], expr: FormulaItem, *, meta: NodeMeta | None = None) -> _FORMULA_ITEM_TV:
         return cls(expr, meta=meta)
 
 
@@ -531,16 +530,16 @@ class BaseLiteral(FormulaItem):
         assert len(children) == 0
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert len(internal_value) == 1
         cls.validate_literal_value(internal_value[0])
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         pass
 
     @classmethod
-    def make(cls: type[_LITERAL_TV], value: Any, *, meta: Optional[NodeMeta] = None) -> _LITERAL_TV:
+    def make(cls: type[_LITERAL_TV], value: Any, *, meta: NodeMeta | None = None) -> _LITERAL_TV:
         internal_value = (value,)
         return cls(internal_value=internal_value, meta=meta)
 
@@ -591,7 +590,7 @@ class LiteralInteger(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, int)
 
 
@@ -601,7 +600,7 @@ class LiteralFloat(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, float)
 
 
@@ -611,7 +610,7 @@ class LiteralBoolean(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, bool)
 
 
@@ -621,7 +620,7 @@ class LiteralString(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, str)
 
 
@@ -631,7 +630,7 @@ class LiteralDate(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, datetime.date)
 
 
@@ -641,7 +640,7 @@ class LiteralDatetime(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, datetime.datetime)
 
 
@@ -651,7 +650,7 @@ class LiteralDatetimeTZ(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, datetime.datetime)
         if literal_value.tzinfo is None:
             raise TypeError("Expected non-empty datetime tzinfo")
@@ -663,7 +662,7 @@ class LiteralGenericDatetime(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, datetime.datetime)
 
 
@@ -688,12 +687,12 @@ class LiteralUuid(BaseLiteral):
     __slots__ = ()
 
     @classmethod
-    def make(cls, value: Union[uuid.UUID, str], *, meta: Optional[NodeMeta] = None) -> LiteralUuid:
+    def make(cls, value: Union[uuid.UUID, str], *, meta: NodeMeta | None = None) -> LiteralUuid:
         value = value if isinstance(value, uuid.UUID) else uuid.UUID(value)
         return super().make(value=value, meta=meta)
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, uuid.UUID)
 
 
@@ -703,7 +702,7 @@ class BaseLiteralArray(BaseLiteral):
     __slots__ = ()
 
 
-def _validate_array(literal_value: Optional[Hashable], item_type: type | tuple[type, ...]) -> None:
+def _validate_array(literal_value: Hashable | None, item_type: type | tuple[type, ...]) -> None:
     assert isinstance(literal_value, tuple)
     for el in literal_value:
         assert el is None or isinstance(el, item_type)
@@ -715,11 +714,11 @@ class LiteralArrayInteger(BaseLiteralArray):
     __slots__ = ()
 
     @classmethod
-    def make(cls, value: list[int], *, meta: Optional[NodeMeta] = None) -> LiteralArrayInteger:
+    def make(cls, value: list[int], *, meta: NodeMeta | None = None) -> LiteralArrayInteger:
         return super().make(value=tuple(value), meta=meta)
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         _validate_array(literal_value, int)
 
 
@@ -729,11 +728,11 @@ class LiteralArrayFloat(BaseLiteralArray):
     __slots__ = ()
 
     @classmethod
-    def make(cls, value: list[float], *, meta: Optional[NodeMeta] = None) -> LiteralArrayFloat:
+    def make(cls, value: list[float], *, meta: NodeMeta | None = None) -> LiteralArrayFloat:
         return super().make(value=tuple(value), meta=meta)
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         _validate_array(literal_value, float)
 
 
@@ -743,11 +742,11 @@ class LiteralArrayString(BaseLiteralArray):
     __slots__ = ()
 
     @classmethod
-    def make(cls, value: list[str], *, meta: Optional[NodeMeta] = None) -> LiteralArrayString:
+    def make(cls, value: list[str], *, meta: NodeMeta | None = None) -> LiteralArrayString:
         return super().make(value=tuple(value), meta=meta)
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         _validate_array(literal_value, str)
 
 
@@ -763,11 +762,11 @@ class LiteralTreeString(BaseLiteralArray):
     __slots__ = ()
 
     @classmethod
-    def make(cls, value: list[str], *, meta: Optional[NodeMeta] = None) -> LiteralTreeString:
+    def make(cls, value: list[str], *, meta: NodeMeta | None = None) -> LiteralTreeString:
         return super().make(value=tuple(value), meta=meta)
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         _validate_array(literal_value, str)
 
 
@@ -778,7 +777,7 @@ class ExpressionList(FormulaItem):
     autonomous = False
 
     @classmethod
-    def make(cls: type[_FORMULA_ITEM_TV], *children: FormulaItem, meta: Optional[NodeMeta] = None) -> _FORMULA_ITEM_TV:
+    def make(cls: type[_FORMULA_ITEM_TV], *children: FormulaItem, meta: NodeMeta | None = None) -> _FORMULA_ITEM_TV:
         return cls(*children, meta=meta)
 
 
@@ -790,7 +789,7 @@ class NamedItem(FormulaItem):
     show_names = FormulaItem.show_names + ("name",)
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert len(internal_value) == 1
         assert isinstance(internal_value[0], str)
 
@@ -808,8 +807,8 @@ class DimListNodeBase(FormulaItem):
     @classmethod
     def make(
         cls: type[_FORMULA_ITEM_TV],
-        dim_list: Optional[Sequence[FormulaItem]],
-        meta: Optional[NodeMeta] = None,
+        dim_list: Sequence[FormulaItem] | None,
+        meta: NodeMeta | None = None,
     ) -> _FORMULA_ITEM_TV:
         return cls(*(dim_list or ()), meta=meta)
 
@@ -885,10 +884,10 @@ class FuncCall(OperationCall):
         name: str,
         args: Iterable[FormulaItem],
         *,
-        lod: Optional[LodSpecifier] = None,
-        ignore_dimensions: Optional[IgnoreDimensions] = None,
-        before_filter_by: Optional[BeforeFilterBy] = None,
-        meta: Optional[NodeMeta] = None,
+        lod: LodSpecifier | None = None,
+        ignore_dimensions: IgnoreDimensions | None = None,
+        before_filter_by: BeforeFilterBy | None = None,
+        meta: NodeMeta | None = None,
     ) -> _FUNC_CALL_TV:
         if lod is None:
             lod = DefaultAggregationLodSpecifier()
@@ -927,7 +926,7 @@ class Unary(OperationCall):
         name: str,
         expr: FormulaItem,
         *,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> Unary:
         children = (expr,)
         internal_value = (name,)
@@ -954,7 +953,7 @@ class Binary(OperationCall):
         left: FormulaItem,
         right: FormulaItem,
         *,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> Binary:
         children = (left, right)
         internal_value = (name,)
@@ -983,7 +982,7 @@ class Ternary(OperationCall):
         second: FormulaItem,
         third: FormulaItem,
         *,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> Ternary:
         children = (first, second, third)
         internal_value = (name,)
@@ -996,7 +995,7 @@ class Field(NamedItem):
     __slots__ = ()
 
     @classmethod
-    def make(cls, name: str, meta: Optional[NodeMeta] = None) -> Field:
+    def make(cls, name: str, meta: NodeMeta | None = None) -> Field:
         children = ()
         internal_value = (name,)
         return cls(*children, internal_value=internal_value, meta=meta)
@@ -1047,8 +1046,8 @@ class Ordering(FormulaItem):
     @classmethod
     def make(
         cls,
-        expr_list: Optional[list[FormulaItem]] = None,
-        meta: Optional[NodeMeta] = None,
+        expr_list: list[FormulaItem] | None = None,
+        meta: NodeMeta | None = None,
     ) -> Ordering:
         children = expr_list or ()
         internal_value = ()
@@ -1067,8 +1066,8 @@ class FieldNameListNode(FormulaItem):
     @classmethod
     def make(
         cls: type[_FIELD_NAME_LIST_NODE_TV],
-        field_names: Optional[Collection[str]] = None,
-        meta: Optional[NodeMeta] = None,
+        field_names: Collection[str] | None = None,
+        meta: NodeMeta | None = None,
     ) -> _FIELD_NAME_LIST_NODE_TV:
         children = ()
         internal_value = (frozenset(field_names or ()),)
@@ -1079,7 +1078,7 @@ class FieldNameListNode(FormulaItem):
         assert not children
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert isinstance(internal_value, tuple)
         assert len(internal_value) == 1
         name_list = internal_value[0]
@@ -1145,12 +1144,12 @@ class WindowFuncCall(FuncCall):
         name: str,
         args: Iterable[FormulaItem],
         *,
-        ordering: Optional[Ordering] = None,
-        grouping: Optional[WindowGrouping] = None,
-        lod: Optional[LodSpecifier] = None,
-        ignore_dimensions: Optional[IgnoreDimensions] = None,
-        before_filter_by: Optional[BeforeFilterBy] = None,
-        meta: Optional[NodeMeta] = None,
+        ordering: Ordering | None = None,
+        grouping: WindowGrouping | None = None,
+        lod: LodSpecifier | None = None,
+        ignore_dimensions: IgnoreDimensions | None = None,
+        before_filter_by: BeforeFilterBy | None = None,
+        meta: NodeMeta | None = None,
     ) -> WindowFuncCall:
         if grouping is None:
             grouping = WindowGroupingTotal()
@@ -1188,7 +1187,7 @@ class IfPart(FormulaItem):
         assert len(children) == 2
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert internal_value == ()
 
     @classmethod
@@ -1197,7 +1196,7 @@ class IfPart(FormulaItem):
         cond: FormulaItem,
         expr: FormulaItem,
         *,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> IfPart:
         children = [cond, expr]
         return cls(*children, internal_value=(), meta=meta)
@@ -1222,16 +1221,16 @@ class IfBlock(FormulaItem):
             assert isinstance(child, IfPart)
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert internal_value == ()
 
     @classmethod
     def make(
         cls,
         if_list: list[IfPart],
-        else_expr: Optional[FormulaItem] = None,
+        else_expr: FormulaItem | None = None,
         *,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> IfBlock:
         for part in if_list:
             check_type(part, IfPart)
@@ -1255,7 +1254,7 @@ class WhenPart(FormulaItem):
         assert len(children) == 2
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert internal_value == ()
 
     @classmethod
@@ -1263,7 +1262,7 @@ class WhenPart(FormulaItem):
         cls,
         val: FormulaItem,
         expr: FormulaItem,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> WhenPart:
         children = [val, expr]
         return cls(*children, meta=meta)
@@ -1289,7 +1288,7 @@ class CaseBlock(FormulaItem):
             assert isinstance(child, WhenPart)
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert internal_value == ()
 
     @classmethod
@@ -1297,9 +1296,9 @@ class CaseBlock(FormulaItem):
         cls,
         case_expr: FormulaItem,
         when_list: list[WhenPart],
-        else_expr: Optional[FormulaItem] = None,
+        else_expr: FormulaItem | None = None,
         *,
-        meta: Optional[NodeMeta] = None,
+        meta: NodeMeta | None = None,
     ) -> CaseBlock:
         for part in when_list:
             check_type(part, WhenPart)

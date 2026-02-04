@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import ssl
-from typing import Optional
 
 from aiohttp.typedefs import Middleware
 
@@ -58,22 +57,22 @@ class StandaloneDataApiSRFactoryBuilder(SRFactoryBuilder[AppSettings]):
         self,
         settings: AppSettings,
         ca_data: bytes,
-    ) -> Optional[InstallationSpecificServiceRegistryFactory]:
+    ) -> InstallationSpecificServiceRegistryFactory | None:
         return None
 
-    def _get_entity_usage_checker(self, settings: AppSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: AppSettings) -> EntityUsageChecker | None:
         return None
 
     def _get_bleeding_edge_users(self, settings: AppSettings) -> tuple[str, ...]:
         return tuple()
 
-    def _get_rqe_caches_settings(self, settings: DataApiAppSettingsOS) -> Optional[RQECachesSetting]:  # type: ignore[override]
+    def _get_rqe_caches_settings(self, settings: DataApiAppSettingsOS) -> RQECachesSetting | None:  # type: ignore[override]
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: DataApiAppSettingsOS) -> Optional[CacheTTLConfig]:  # type: ignore[override]
+    def _get_default_cache_ttl_settings(self, settings: DataApiAppSettingsOS) -> CacheTTLConfig | None:  # type: ignore[override]
         return None
 
-    def _get_connector_availability(self, settings: AppSettings) -> Optional[ConnectorAvailabilityConfig]:
+    def _get_connector_availability(self, settings: AppSettings) -> ConnectorAvailabilityConfig | None:
         return None
 
 

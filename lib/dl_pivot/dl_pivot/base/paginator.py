@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 
@@ -16,7 +15,7 @@ class PivotPaginator(abc.ABC):
     def paginate(
         self,
         pivot_dframe: PivotDataFrame,
-        limit_rows: Optional[int] = None,
-        offset_rows: Optional[int] = None,
+        limit_rows: int | None = None,
+        offset_rows: int | None = None,
     ) -> PivotDataFrame:
         raise NotImplementedError

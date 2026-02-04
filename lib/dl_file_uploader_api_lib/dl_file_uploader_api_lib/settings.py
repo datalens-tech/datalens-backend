@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 
 from dl_configs.environments import is_setting_applicable
@@ -52,7 +50,7 @@ class DeprecatedFileUploaderAPISettings(DeprecatedFileUploaderBaseSettings):
         ),
     )
 
-    SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    SENTRY_DSN: str | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "SENTRY_DSN",
         fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_API",
         missing=None,

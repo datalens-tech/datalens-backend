@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -59,7 +58,7 @@ class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAP
             )
         return dto_pool
 
-    def mutate_for_dashsql(self, db_params: Optional[dict[str, str]] = None) -> Self:
+    def mutate_for_dashsql(self, db_params: dict[str, str] | None = None) -> Self:
         if db_params:
             # TODO: better exception class for HTTP 4xx response
             raise Exception("No db_params supported here at the moment")

@@ -4,7 +4,6 @@ from typing import (
     Any,
     ClassVar,
     Iterator,
-    Optional,
 )
 
 import attr
@@ -49,7 +48,7 @@ class ObjectLikeConfig(Mapping):
         return self._get_key(key)
 
     @classmethod
-    def from_dict(cls, data: dict, path: Optional[list] = None) -> "ObjectLikeConfig":
+    def from_dict(cls, data: dict, path: list | None = None) -> "ObjectLikeConfig":
         if path is None:
             path = []
 
@@ -85,7 +84,7 @@ class YamlFileConfigResolver(FallbackConfigResolver):
     config_path_key: ClassVar[str] = "CONFIG_PATH"
 
     @classmethod
-    def _get_config_path(cls, s_dict: SDict) -> Optional[str]:
+    def _get_config_path(cls, s_dict: SDict) -> str | None:
         path = s_dict.get(cls.config_path_key)
         LOGGER.info('Config path is "%s"', path)
         return path

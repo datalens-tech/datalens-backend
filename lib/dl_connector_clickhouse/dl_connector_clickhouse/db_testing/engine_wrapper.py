@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -17,7 +16,7 @@ from dl_db_testing.database.engine_wrapper import (
 
 @attr.s(frozen=True)
 class ClickhouseDbEngineConfig(DbEngineConfig):
-    cluster: Optional[str] = attr.ib(kw_only=True, default=None)
+    cluster: str | None = attr.ib(kw_only=True, default=None)
 
 
 class ClickHouseEngineWrapperBase(EngineWrapperBase):
@@ -34,7 +33,7 @@ class ClickHouseEngineWrapperBase(EngineWrapperBase):
             creds.pop("db_name")
         return creds
 
-    def load_table(self, table_name: str, schema: Optional[str] = None) -> sa.Table:
+    def load_table(self, table_name: str, schema: str | None = None) -> sa.Table:
         return CHTable(table_name, sa.MetaData(bind=self.engine), autoload=True)
 
     def drop_table(self, db_name: str, table: sa.Table) -> None:
@@ -50,8 +49,8 @@ class ClickHouseEngineWrapperBase(EngineWrapperBase):
         self,
         columns: Sequence[sa.Column],
         *,
-        schema: Optional[str] = None,
-        table_name: Optional[str] = None,
+        schema: str | None = None,
+        table_name: str | None = None,
     ) -> sa.Table:
         table_name = table_name or f"test_table_{shortuuid.uuid()[:10]}"
         table = CHTable(table_name, sa.MetaData(), *columns)

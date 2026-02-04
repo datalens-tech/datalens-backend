@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import logging
 import time
-from typing import Optional
 
 import attr
 import flask
@@ -33,7 +32,7 @@ LOG_HELPER = RequestLogHelper(logger=LOGGER)
 
 @attr.s
 class RequestIDService:
-    _request_id_app_prefix: Optional[str] = attr.ib()
+    _request_id_app_prefix: str | None = attr.ib()
     _append_local_req_id: bool = attr.ib(default=True)
     _accept_logging_context: bool = attr.ib(default=False)
     _logging_ctx_header_name: str = attr.ib(default=HEADER_LOGGING_CONTEXT)
@@ -115,8 +114,8 @@ def _post_log_request_id(response: flask.Response) -> flask.Response:
             response_timing = time.monotonic() - request_start_time
 
         rci = ReqCtxInfoMiddleware.get_last_resort_rci()
-        user_name: Optional[str] = None
-        user_id: Optional[str] = None
+        user_name: str | None = None
+        user_id: str | None = None
         if rci is not None:
             user_name = rci.user_name
             user_id = rci.user_id

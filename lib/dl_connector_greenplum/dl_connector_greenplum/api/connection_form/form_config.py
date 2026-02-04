@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -76,7 +75,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
 
     def _get_base_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
+        connector_settings: DeprecatedConnectorSettingsBase | None,
         host_section: Sequence[FormRow],
         username_section: Sequence[FormRow],
         db_name_section: Sequence[FormRow],
@@ -123,8 +122,8 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
-        tenant: Optional[TenantDef],
+        connector_settings: DeprecatedConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
         postgres_rc = PostgresRowConstructor(localizer=self._localizer)

@@ -4,7 +4,6 @@ from typing import (
     AbstractSet,
     Callable,
     Collection,
-    Optional,
 )
 
 import attr
@@ -68,7 +67,7 @@ class QueryExecutor:
     _compeng_processor_type: ProcessorType = attr.ib(kw_only=True)
     _source_db_processor_type: ProcessorType = attr.ib(kw_only=True)
     _allow_cache_usage: bool = attr.ib(kw_only=True)
-    _avatar_alias_mapper: Optional[Callable[[str], str]] = attr.ib(kw_only=True, default=None)
+    _avatar_alias_mapper: Callable[[str], str] | None = attr.ib(kw_only=True, default=None)
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _compeng_semaphore: asyncio.Semaphore = attr.ib(kw_only=True)
     _parameter_value_specs: list[ParameterValueSpec] | None = attr.ib(kw_only=True, default=None)
@@ -213,7 +212,7 @@ class QueryExecutor:
                 # 2. SELECT containing only constants or data-independent functions (see below)
                 # 3. Multiple FROMs - real JOIN is required here
 
-                root_avatar_id: Optional[str] = translated_flat_query.joined_from.root_from_id
+                root_avatar_id: str | None = translated_flat_query.joined_from.root_from_id
 
                 if is_empty_source:
                     # FIXME: This is quite a dirty hack and should be refactored in the long term
@@ -302,7 +301,7 @@ class QueryExecutor:
         role: DataSourceRole,
         translated_multi_query: TranslatedMultiQueryBase,
         from_subquery: bool,
-        subquery_limit: Optional[int],
+        subquery_limit: int | None,
     ) -> tuple[dict[AvatarId, AbstractStream], dict[AvatarId, str]]:
         base_avatar_ids = translated_multi_query.get_base_root_from_ids()
         required_avatar_ids: list[str] = [from_id for from_id in translated_multi_query.get_base_froms()]

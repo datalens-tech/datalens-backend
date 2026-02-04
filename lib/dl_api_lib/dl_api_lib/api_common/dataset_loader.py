@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     NamedTuple,
-    Optional,
 )
 
 import attr
@@ -70,7 +69,7 @@ class DatasetApiLoader:
         self,
         dataset: Dataset,
         us_manager: USManagerBase,
-        dataset_data: Optional[dict],
+        dataset_data: dict | None,
         allow_rls_change: bool = True,
         allow_settings_change: bool = True,
     ) -> DatasetUpdateInfo:
@@ -88,7 +87,7 @@ class DatasetApiLoader:
 
     def _ensure_additional_connections_are_preloaded(
         self,
-        dataset_data: Optional[dict],
+        dataset_data: dict | None,
         us_manager: USManagerBase,
     ) -> None:
         """
@@ -137,7 +136,7 @@ class DatasetApiLoader:
         updated_own_source_ids = []
         added_own_source_ids = []
         handled_source_ids = set()
-        old_src_coll: Optional[DataSourceCollection]
+        old_src_coll: DataSourceCollection | None
         dataset_parameter_values = ds_accessor.get_parameter_values()
         dataset_template_enabled = ds_accessor.get_template_enabled()
         for source_data in body.get("sources", []):

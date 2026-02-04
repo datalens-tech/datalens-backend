@@ -1,5 +1,4 @@
 import abc
-from typing import Optional
 
 import pytest
 
@@ -17,7 +16,7 @@ class GreenplumSQLConnectionTestSuite(DefaultConnectorConnectionTestSuite, metac
         self,
         control_api_sync_client: SyncHttpClientBase,
         saved_connection_id: str,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
     ) -> None:
         assert saved_connection_id
         response = control_api_sync_client.get(

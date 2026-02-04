@@ -4,7 +4,6 @@ from typing import (
     Any,
     Generic,
     Iterable,
-    Optional,
     TypeVar,
 )
 
@@ -75,7 +74,7 @@ class NodeValueMap(Generic[_MAP_VALUE_TV]):
         extract = validate_node_is_extractable(node)
         self._data[extract] = value
 
-    def get(self, node: nodes.FormulaItem) -> Optional[_MAP_VALUE_TV]:
+    def get(self, node: nodes.FormulaItem) -> _MAP_VALUE_TV | None:
         if node.extract is None:
             return None
         return self._data.get(node.extract)

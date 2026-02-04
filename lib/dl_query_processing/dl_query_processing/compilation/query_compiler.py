@@ -3,7 +3,6 @@ from __future__ import annotations
 from itertools import chain
 from itertools import count as it_count
 from typing import (
-    Optional,
     TypeVar,
 )
 
@@ -79,7 +78,7 @@ class QueryCompiler:
         self,
         formula: CompiledFormulaInfo,
         expr: formula_nodes.FormulaItem,
-        override_alias: Optional[str] = None,
+        override_alias: str | None = None,
     ) -> CompiledFormulaInfo:
         alias_kwarg = dict(alias=override_alias) if override_alias else {}
         return formula.clone(
@@ -87,7 +86,7 @@ class QueryCompiler:
             **alias_kwarg,
         )
 
-    def _get_override_alias(self, select_wrapper: SelectWrapperSpec) -> Optional[str]:
+    def _get_override_alias(self, select_wrapper: SelectWrapperSpec) -> str | None:
         if select_wrapper.type == SelectValueType.min:
             return "min_value"
         elif select_wrapper.type == SelectValueType.max:

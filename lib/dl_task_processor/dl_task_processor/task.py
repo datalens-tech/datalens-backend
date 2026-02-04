@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Generic,
     NewType,
-    Optional,
     TypeVar,
 )
 import uuid
@@ -52,7 +51,7 @@ class TaskInstance:
     name: TaskName = attr.ib()
     params: dict = attr.ib()
     attempt: int = attr.ib(default=0)
-    request_id: Optional[str] = attr.ib(default=None)
+    request_id: str | None = attr.ib(default=None)
 
 
 @attr.s
@@ -120,7 +119,7 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
     _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()
     _run_id: RunID = attr.ib()
-    _request_id: Optional[str] = attr.ib(default=None)
+    _request_id: str | None = attr.ib(default=None)
 
     @classmethod
     def from_params(
@@ -129,7 +128,7 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
         run_id: RunID,
         ctx: _BASE_TASK_CONTEXT_TV,
         params: dict,
-        request_id: Optional[str] = None,
+        request_id: str | None = None,
     ) -> "BaseExecutorTask":
         return cls(
             meta=cls.cls_meta(**params),

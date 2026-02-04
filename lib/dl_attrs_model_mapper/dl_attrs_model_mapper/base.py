@@ -6,7 +6,6 @@ import inspect
 from typing import (
     Any,
     ClassVar,
-    Optional,
     Sequence,
     TypeVar,
     Union,
@@ -28,7 +27,7 @@ class BaseClassDescriptor(metaclass=abc.ABCMeta):
     _REGISTRY: ClassVar[dict[type, BaseClassDescriptor]]
 
     _registered: bool = attr.ib(init=False, default=False)
-    _target_cls: Optional[type] = attr.ib(init=False, default=None)
+    _target_cls: type | None = attr.ib(init=False, default=None)
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         # Override registry for each subclass
@@ -85,16 +84,16 @@ class ModelDescriptor(BaseClassDescriptor):
 
     """
     is_abstract: bool = attr.ib(default=False)
-    type_discriminator: Optional[str] = attr.ib(default=None)
-    children_type_discriminator_attr_name: Optional[str] = attr.ib(default=None)
-    children_type_discriminator_aliases_attr_name: Optional[str] = attr.ib(default=None)
+    type_discriminator: str | None = attr.ib(default=None)
+    children_type_discriminator_attr_name: str | None = attr.ib(default=None)
+    children_type_discriminator_aliases_attr_name: str | None = attr.ib(default=None)
     api_types: list[enum.Enum] = attr.ib(factory=list)
     api_types_exclude: list[enum.Enum] = attr.ib(factory=list)
-    description: Optional[MText] = attr.ib(default=None)
+    description: MText | None = attr.ib(default=None)
 
     # Next fields will be filled during
-    _effective_type_discriminator: Optional[str] = attr.ib(init=False, default=None)
-    _effective_type_discriminator_aliases: Optional[tuple[str, ...]] = attr.ib(init=False, default=None)
+    _effective_type_discriminator: str | None = attr.ib(init=False, default=None)
+    _effective_type_discriminator_aliases: tuple[str, ...] | None = attr.ib(init=False, default=None)
 
     @property
     def effective_type_discriminator(self) -> str:
@@ -113,7 +112,7 @@ class ModelDescriptor(BaseClassDescriptor):
         return [parent_cls for parent_cls in inspect.getmro(the_type) if parent_cls in cls._REGISTRY]
 
     @classmethod
-    def resolve_type_discriminator_attr_name(cls, model_cls: type) -> Optional[str]:
+    def resolve_type_discriminator_attr_name(cls, model_cls: type) -> str | None:
         registered_parents_mro = cls.get_registered_parents_for(model_cls)
         parent_model_descriptors_with_children_type_discriminator_attr_name = [
             ModelDescriptor.get_for_type(parent_model_cls)
@@ -135,7 +134,7 @@ class ModelDescriptor(BaseClassDescriptor):
         )
 
     @classmethod
-    def resolve_type_discriminator_aliases_attr_name(cls, model_cls: type) -> Optional[str]:
+    def resolve_type_discriminator_aliases_attr_name(cls, model_cls: type) -> str | None:
         registered_parents_mro = cls.get_registered_parents_for(model_cls)
         parent_model_descriptors_with_children_type_discriminator_attr_name = [
             ModelDescriptor.get_for_type(parent_model_cls)
@@ -213,7 +212,7 @@ class AttribDescriptor:
     METADATA_KEY = "ATTRS_MODEL_MAPPER_META_KEY"
 
     enum_by_value: bool = attr.ib(default=False)
-    serialization_key: Optional[str] = attr.ib(default=None)
+    serialization_key: str | None = attr.ib(default=None)
     tags: frozenset[enum.Enum] = attr.ib(default=frozenset())
     load_only: bool = attr.ib(default=False)
     skip_none_on_dump: bool = attr.ib(default=False)
@@ -223,7 +222,7 @@ class AttribDescriptor:
         return {self.METADATA_KEY: self}
 
     @classmethod
-    def from_attrib(cls, attr_ib: attr.Attribute) -> Optional["AttribDescriptor"]:
+    def from_attrib(cls, attr_ib: attr.Attribute) -> "AttribDescriptor" | None:
         meta = attr_ib.metadata
         if cls.METADATA_KEY in meta:
             may_be_attrib_descriptor = meta[cls.METADATA_KEY]
@@ -233,7 +232,7 @@ class AttribDescriptor:
         return None
 
     @property
-    def description(self) -> Optional[MText]:
+    def description(self) -> MText | None:
         d = self._description
 
         if isinstance(d, str):
@@ -244,9 +243,9 @@ class AttribDescriptor:
 # TODO FIX: Consider to do not use subclassing in favor of some flags in model descriptor
 class MapperBaseModel(metaclass=abc.ABCMeta):  # noqa: B024
     @classmethod
-    def pre_load(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
+    def pre_load(cls, data: dict[str, Any]) -> dict[str, Any] | None:
         return None
 
     @classmethod
-    def post_dump(cls, data: dict[str, Any]) -> Optional[dict[str, Any]]:
+    def post_dump(cls, data: dict[str, Any]) -> dict[str, Any] | None:
         return None

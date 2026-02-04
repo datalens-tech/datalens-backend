@@ -6,7 +6,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Collection,
-    Optional,
 )
 
 import attr
@@ -94,8 +93,8 @@ class DatasetCapabilities:
 
     def _get_first_dsrc_collection(
         self,
-        ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> Optional["data_source.DataSourceCollection"]:
+        ignore_source_ids: Collection[str] | None = None,
+    ) -> "data_source.DataSourceCollection" | None:
         source_id = self._dataset.get_single_data_source_id(ignore_source_ids=ignore_source_ids)
         if source_id is not None:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id)
@@ -110,15 +109,15 @@ class DatasetCapabilities:
 
     def get_effective_connection_id(  # type: ignore  # TODO: fix
         self,
-        ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> Optional[str]:
+        ignore_source_ids: Collection[str] | None = None,
+    ) -> str | None:
         dsrc_coll = self._get_first_dsrc_collection(ignore_source_ids=ignore_source_ids)
         if dsrc_coll is not None:
             return dsrc_coll.effective_connection_id
 
     def get_supported_join_types(
         self,
-        ignore_source_ids: Optional[Collection[str]] = None,
+        ignore_source_ids: Collection[str] | None = None,
     ) -> set[JoinType]:
         ignore_source_ids = ignore_source_ids or ()
         role = self.resolve_source_role(ignore_source_ids=ignore_source_ids)
@@ -131,9 +130,9 @@ class DatasetCapabilities:
 
     def source_can_be_added(
         self,
-        connection_id: Optional[str],
+        connection_id: str | None,
         created_from: DataSourceType,
-        ignore_source_ids: Optional[Collection[str]] = None,
+        ignore_source_ids: Collection[str] | None = None,
     ) -> bool:
         """
         Check whether a data source with given connection and type can be added to the dataset.
@@ -158,7 +157,7 @@ class DatasetCapabilities:
 
     def get_compatible_source_types(
         self,
-        ignore_source_ids: Optional[Collection[str]] = None,
+        ignore_source_ids: Collection[str] | None = None,
     ) -> frozenset[DataSourceType]:
         """Return a frozen set of source types compatible with dataset's current state"""
 
@@ -188,7 +187,7 @@ class DatasetCapabilities:
 
     def get_compatible_connection_types(
         self,
-        ignore_connection_ids: Optional[Collection[str]] = None,
+        ignore_connection_ids: Collection[str] | None = None,
     ) -> frozenset[ConnectionType]:
         """Return a frozen set of connection types compatible with dataset's current state"""
 
@@ -228,7 +227,7 @@ class DatasetCapabilities:
     def resolve_source_role(
         self,
         for_preview: bool = False,
-        ignore_source_ids: Optional[Collection[str]] = None,
+        ignore_source_ids: Collection[str] | None = None,
         log_reasons: bool = False,
     ) -> DataSourceRole:
         """

@@ -4,7 +4,6 @@ from typing import (
     AbstractSet,
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -102,7 +101,7 @@ class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV])
         sync_us_manager: SyncUSManager,
         bi_query: BIQuery,
         from_subquery: bool = False,
-        subquery_limit: Optional[int] = None,
+        subquery_limit: int | None = None,
     ) -> DataStream:
         data_fetcher = DataFetcher(
             service_registry=service_registry,
@@ -125,9 +124,9 @@ class DefaultDatasetTestSuite(RegulatedTestCase, BaseDatasetTestClass[_CONN_TV],
         async_service_registry: ServicesRegistry,
         sync_us_manager: SyncUSManager,
         result_cnt: int,
-        limit: Optional[int] = None,
+        limit: int | None = None,
         from_subquery: bool = False,
-        subquery_limit: Optional[int] = None,
+        subquery_limit: int | None = None,
     ) -> None:
         assert limit is not None or (from_subquery and subquery_limit is not None)
         avatar_id = dataset_wrapper.get_root_avatar_strict().id

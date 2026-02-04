@@ -4,7 +4,6 @@ import csv
 import time
 from typing import (
     ClassVar,
-    Optional,
 )
 import uuid
 
@@ -101,7 +100,7 @@ class GSheetsUserSourceProperties(UserSourceProperties):
     file_type: FileType = attr.ib(default=FileType.gsheets)
 
     spreadsheet_id: str = attr.ib()
-    refresh_token: Optional[str] = attr.ib(default=None, repr=False)
+    refresh_token: str | None = attr.ib(default=None, repr=False)
 
     def get_secret_keys(self) -> set[DataKey]:
         return {DataKey(parts=("refresh_token",))}
@@ -111,10 +110,10 @@ class GSheetsUserSourceProperties(UserSourceProperties):
 class YaDocsUserSourceProperties(UserSourceProperties):
     file_type: FileType = attr.ib(default=FileType.yadocs)
 
-    private_path: Optional[str] = attr.ib(default=None)
-    public_link: Optional[str] = attr.ib(default=None)
+    private_path: str | None = attr.ib(default=None)
+    public_link: str | None = attr.ib(default=None)
 
-    oauth_token: Optional[str] = attr.ib(default=None, repr=False)
+    oauth_token: str | None = attr.ib(default=None, repr=False)
 
     def get_secret_keys(self) -> set[DataKey]:
         return {DataKey(parts=("oauth_token",))}
@@ -152,7 +151,7 @@ class FileProcessingError:
     details: dict = attr.ib(factory=dict)
 
     @classmethod
-    def from_exception(cls, exc: DLFileUploaderBaseError, level: Optional[ErrorLevel] = None) -> FileProcessingError:
+    def from_exception(cls, exc: DLFileUploaderBaseError, level: ErrorLevel | None = None) -> FileProcessingError:
         return cls(
             level=level or exc.default_level,
             message=exc.message,
@@ -170,13 +169,13 @@ class DataSource:
             takes_self=True,
         )
     )
-    preview_id: Optional[str] = attr.ib(default=None)
+    preview_id: str | None = attr.ib(default=None)
     title: str = attr.ib()
     raw_schema: list[SchemaColumn] = attr.ib()
-    file_source_settings: Optional[FileSourceSettings] = attr.ib(default=None)
-    user_source_dsrc_properties: Optional[UserSourceDataSourceProperties] = attr.ib(default=None)
+    file_source_settings: FileSourceSettings | None = attr.ib(default=None)
+    user_source_dsrc_properties: UserSourceDataSourceProperties | None = attr.ib(default=None)
     status: FileProcessingStatus = attr.ib()
-    error: Optional[FileProcessingError] = attr.ib(default=None)
+    error: FileProcessingError | None = attr.ib(default=None)
 
     @property
     def is_applicable(self) -> bool:
@@ -185,18 +184,18 @@ class DataSource:
 
 @attr.s(init=True, kw_only=True)
 class DataFile(RedisModelUserIdAuth):
-    s3_key: Optional[str] = attr.ib(default=None)
-    filename: Optional[str] = attr.ib()
-    file_type: Optional[FileType] = attr.ib(default=None)
-    file_settings: Optional[FileSettings] = attr.ib(default=None)
-    user_source_properties: Optional[UserSourceProperties] = attr.ib(default=None)
-    size: Optional[int] = attr.ib(default=None)
-    sources: Optional[list[DataSource]] = attr.ib(default=None)
+    s3_key: str | None = attr.ib(default=None)
+    filename: str | None = attr.ib()
+    file_type: FileType | None = attr.ib(default=None)
+    file_settings: FileSettings | None = attr.ib(default=None)
+    user_source_properties: UserSourceProperties | None = attr.ib(default=None)
+    size: int | None = attr.ib(default=None)
+    sources: list[DataSource] | None = attr.ib(default=None)
     status: FileProcessingStatus = attr.ib()
-    error: Optional[FileProcessingError] = attr.ib(default=None)
+    error: FileProcessingError | None = attr.ib(default=None)
 
     KEY_PREFIX: ClassVar[str] = "df"
-    DEFAULT_TTL: ClassVar[Optional[int]] = 3 * 60 * 60  # 3 hours
+    DEFAULT_TTL: ClassVar[int | None] = 3 * 60 * 60  # 3 hours
 
     @property
     def s3_key_old(self) -> str:
@@ -222,7 +221,7 @@ class DataFile(RedisModelUserIdAuth):
 
 @attr.s(init=True, kw_only=True)
 class DataSourcePreview(RedisModel):
-    preview_data: list[list[Optional[str]]] = attr.ib()
+    preview_data: list[list[str | None]] = attr.ib()
 
     KEY_PREFIX: ClassVar[str] = "df_preview"
 

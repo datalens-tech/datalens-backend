@@ -5,7 +5,6 @@ from typing import (
     Awaitable,
     Callable,
     ClassVar,
-    Optional,
 )
 
 from aiohttp import web
@@ -47,7 +46,7 @@ class TestingCSRFMiddleware(CSRFMiddleware):
 
 @pytest_asyncio.fixture(scope="function")
 async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
-    async def f(authorized: Optional[bool], secrets: tuple[str, ...]) -> TestClient:
+    async def f(authorized: bool | None, secrets: tuple[str, ...]) -> TestClient:
         async def non_csrf_handler(request: web.Request) -> web.Response:
             return web.json_response(dict(ok="ok"), status=200)
 

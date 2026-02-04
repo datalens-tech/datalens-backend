@@ -8,7 +8,6 @@ from typing import (
     ClassVar,
     Collection,
     NamedTuple,
-    Optional,
     Union,
 )
 
@@ -85,11 +84,11 @@ class SqlSourceBuilder:
         used_avatar_ids: set[AvatarId] = {root_avatar_id}
         used_avatar_ids_as_list: list[AvatarId] = []
 
-        relations_by_left: dict[Optional[AvatarId], list[JoinOnExpressionCtx]] = defaultdict(list)
+        relations_by_left: dict[AvatarId | None, list[JoinOnExpressionCtx]] = defaultdict(list)
         for rel in join_on_expressions:
             relations_by_left[rel.left_id].append(rel)
 
-        def _recursive_collect(avatar_id: Optional[AvatarId], ambiguous_relations: bool) -> None:
+        def _recursive_collect(avatar_id: AvatarId | None, ambiguous_relations: bool) -> None:
             avatar_user_relations = [
                 rel
                 for rel in relations_by_left[avatar_id]
@@ -196,7 +195,7 @@ class SqlSourceBuilder:
         for prep_src_info in prepared_sources:
             data_key = data_key.multi_extend(*prep_src_info.data_key.key_parts)
 
-        joint_source: Optional[SqlSourceType] = None
+        joint_source: SqlSourceType | None = None
         if not use_empty_source:
             joint_source = self.build_from_avatar_join_info(
                 root_avatar_id=root_avatar_id,

@@ -1,7 +1,6 @@
 import re
 from typing import (
     Callable,
-    Optional,
     Sequence,
 )
 
@@ -13,7 +12,7 @@ INLINE_LINK_RE = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 
 def process_links(
     txt: str,
-    link_processor: Optional[Callable[[DocLink], Optional[DocLink]]] = None,
+    link_processor: Callable[[DocLink], DocLink | None] | None = None,
 ) -> Sequence[str | DocLink]:
     """
     Tokenize `txt` into 2 types of tokens: plain text & links.
@@ -23,7 +22,7 @@ def process_links(
     If `link_processor` is `None` all links will be extracted as-is.
     """
     ret: list[str | DocLink] = []
-    effective_link_processor: Callable[[DocLink], Optional[DocLink]] = (
+    effective_link_processor: Callable[[DocLink], DocLink | None] = (
         link_processor if link_processor is not None else lambda x: x
     )
     pos = 0

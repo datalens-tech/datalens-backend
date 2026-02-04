@@ -5,7 +5,6 @@ from typing import (
     Any,
     Callable,
     NamedTuple,
-    Optional,
     Sequence,
 )
 
@@ -93,7 +92,7 @@ class YQLEngineWrapper(EngineWrapperBase):
             db_name=self.engine.url.query["database"],
         )
 
-    def get_version(self) -> Optional[str]:
+    def get_version(self) -> str | None:
         return None
 
     def _generate_table_description(self, columns: Sequence[sa.Column]) -> ydb.TableDescription:
@@ -118,8 +117,8 @@ class YQLEngineWrapper(EngineWrapperBase):
         self,
         columns: Sequence[sa.Column],
         *,
-        schema: Optional[str] = None,
-        table_name: Optional[str] = None,
+        schema: str | None = None,
+        table_name: str | None = None,
     ) -> sa.Table:
         table_name = table_name or f"test_table_{shortuuid.uuid()[:10]}"
         table = sa.Table(table_name, sa.MetaData(), *columns, schema=schema)

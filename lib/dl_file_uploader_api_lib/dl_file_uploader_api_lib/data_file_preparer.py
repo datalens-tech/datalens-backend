@@ -1,6 +1,5 @@
 import logging
 import re
-from typing import Optional
 import urllib.parse
 
 from dl_constants.enums import FileProcessingStatus
@@ -28,7 +27,7 @@ YADOCS_HOST_PATTERN = re.compile(YADOCS_HOST_PATTERN_STR)
 async def gsheets_data_file_preparer(
     url: str,
     redis_model_manager: RedisModelManager,
-    token: Optional[str],
+    token: str | None,
 ) -> DataFile:
     default_host: str = "docs.google.com"
     allowed_hosts: frozenset[str] = frozenset({default_host})
@@ -73,9 +72,9 @@ async def gsheets_data_file_preparer(
 
 
 async def yadocs_data_file_preparer(
-    oauth_token: Optional[str],
-    private_path: Optional[str],
-    public_link: Optional[str],
+    oauth_token: str | None,
+    private_path: str | None,
+    public_link: str | None,
     redis_model_manager: RedisModelManager,
 ) -> DataFile:
     example_url: str = "https://disk.yandex.ru/i/OyzdmFI0MUEEgA"

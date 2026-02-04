@@ -5,7 +5,6 @@ from typing import (
     Any,
     Collection,
     Iterator,
-    Optional,
     Sequence,
 )
 
@@ -71,7 +70,7 @@ class RowRoleSpec(DimensionRoleSpec):
 
 @attr.s(frozen=True)
 class TemplateRoleSpec(DimensionRoleSpec):
-    template: Optional[str] = attr.ib(kw_only=True, default=None)
+    template: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -115,7 +114,7 @@ class LegendItem:
     role_spec: RoleSpec = attr.ib(kw_only=True, factory=RoleSpec)
     data_type: UserDataType = attr.ib(kw_only=True)
     field_type: FieldType = attr.ib(kw_only=True)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
 
     @property
     def item_type(self) -> LegendItemType:

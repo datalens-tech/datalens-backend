@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import itertools
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -15,7 +14,7 @@ class Formatter:
     inline_separator: str = " "
     preferred_width: int = 120
 
-    def join(self, pieces: Sequence[str], cleanup: bool = True, separator: Optional[str] = None) -> str:
+    def join(self, pieces: Sequence[str], cleanup: bool = True, separator: str | None = None) -> str:
         if separator is None:
             separator = self.separator
         if cleanup:

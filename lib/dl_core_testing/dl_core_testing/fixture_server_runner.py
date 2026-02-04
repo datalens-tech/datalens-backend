@@ -9,7 +9,6 @@ import subprocess
 import sys
 import time
 from types import TracebackType
-from typing import Optional
 
 import attr
 import requests
@@ -74,12 +73,12 @@ class WSGIRunner:
     _module: str = attr.ib()
     _callable: str = attr.ib()
     _ping_path: str = attr.ib()
-    _bind_port: Optional[int] = attr.ib(default=None)
+    _bind_port: int | None = attr.ib(default=None)
     _bind_addr: str = attr.ib(default="127.0.0.1")
     _wait_time: float = attr.ib(default=15.0)
     _poll_time: float = attr.ib(default=0.5)
     _wait_term_time: float = attr.ib(default=5.0)
-    _env: Optional[dict[str, str]] = attr.ib(default=None)
+    _env: dict[str, str] | None = attr.ib(default=None)
 
     _proc: subprocess.Popen = attr.ib(init=False, default=None)
 
@@ -211,8 +210,8 @@ class WSGIRunner:
 
     def __exit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         self.shutdown()

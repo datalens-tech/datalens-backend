@@ -8,7 +8,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
     TypeVar,
 )
 import uuid
@@ -57,7 +56,7 @@ TS3Model = TypeVar("TS3Model", bound="S3Model")
 @attr.s(init=True, kw_only=True)
 class S3Model(SecretContainingMixin, metaclass=abc.ABCMeta):
     ID_PREFIX: ClassVar[str]
-    _manager: Optional[S3ModelManager] = attr.ib(default=None)
+    _manager: S3ModelManager | None = attr.ib(default=None)
 
     id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
 
@@ -83,7 +82,7 @@ class S3Model(SecretContainingMixin, metaclass=abc.ABCMeta):
         key = cls._generate_key_by_id(manager=manager, obj_id=obj_id)
         return await manager.get(key=key, target_cls=cls)  # type: ignore  # 2025-04-25 # TODO: Incompatible return value type (got "S3Model", expected "TS3Model")  [return-value]
 
-    async def save(self, persistent: Optional[bool] = False) -> None:
+    async def save(self, persistent: bool | None = False) -> None:
         assert self._manager
         await self._manager.save(self, persistent)
 
@@ -104,7 +103,7 @@ class S3ModelManager:
             takes_self=True,
         ),
     )
-    rci: Optional[RequestContextInfo] = attr.ib(default=None)
+    rci: RequestContextInfo | None = attr.ib(default=None)
 
     def _set_obj_attr(self, obj: S3Model, key: DataKey, value: Any) -> None:
         key_head = DataKey(parts=key.parts[:-1])
@@ -143,7 +142,7 @@ class S3ModelManager:
 
         return obj
 
-    async def get(self, key: str, target_cls: type[S3Model], post_load: Optional[Callable] = None) -> S3Model:
+    async def get(self, key: str, target_cls: type[S3Model], post_load: Callable | None = None) -> S3Model:
         sync_s3_client = self._s3_service.get_sync_client()
 
         # Try from persistent
@@ -174,7 +173,7 @@ class S3ModelManager:
 
         return obj
 
-    async def save(self, obj: S3Model, persistent: Optional[bool] = False) -> None:
+    async def save(self, obj: S3Model, persistent: bool | None = False) -> None:
         obj_key = obj.generate_key()
         data_json = self._serialize_object(obj)
         sync_s3_client = self._s3_service.get_sync_client()

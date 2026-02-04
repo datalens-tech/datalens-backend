@@ -1,5 +1,3 @@
-from typing import Optional
-
 from aiohttp import (
     hdrs,
     web,
@@ -15,11 +13,11 @@ ALL_METHODS = ("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT")
 
 def cors_middleware(
     allow_origins: tuple[str, ...],
-    expose_headers: Optional[tuple[str, ...]] = None,
-    allow_headers: Optional[tuple[str, ...]] = None,
+    expose_headers: tuple[str, ...] | None = None,
+    allow_headers: tuple[str, ...] | None = None,
     allow_methods: tuple[str, ...] = ALL_METHODS,
     allow_credentials: bool = False,
-    max_age: Optional[int] = None,
+    max_age: int | None = None,
 ) -> Middleware:
     @web.middleware
     async def middleware(request: web.Request, handler: Handler) -> web.StreamResponse:

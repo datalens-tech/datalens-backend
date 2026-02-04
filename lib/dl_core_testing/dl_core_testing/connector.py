@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_constants.enums import (
     ConnectionType,
     DataSourceType,
@@ -25,7 +23,7 @@ class TestingConnection(ConnectionBase):
         raise NotImplementedError
 
     @property
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         return 0
 
 

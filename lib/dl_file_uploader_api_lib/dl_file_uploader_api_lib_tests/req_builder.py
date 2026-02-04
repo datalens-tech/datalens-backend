@@ -1,7 +1,6 @@
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import aiohttp
@@ -54,8 +53,8 @@ class ReqBuilder:
     @classmethod
     def upload_gsheet(
         cls,
-        spreadsheet_id: Optional[str] = None,
-        url: Optional[str] = None,
+        spreadsheet_id: str | None = None,
+        url: str | None = None,
         authorized: bool = False,
         *,
         require_ok: bool = True,
@@ -79,9 +78,9 @@ class ReqBuilder:
     @classmethod
     def upload_documents(
         cls,
-        public_link: Optional[str] = None,
-        private_path: Optional[str] = None,
-        oauth_token: Optional[str] = None,
+        public_link: str | None = None,
+        private_path: str | None = None,
+        oauth_token: str | None = None,
         authorized: bool = False,
         *,
         require_ok: bool = True,
@@ -137,7 +136,7 @@ class ReqBuilder:
         )
 
     @classmethod
-    def source_info(cls, file_id: str, source_id: str, data_json: Optional[dict[str, Any]] = None) -> Req:
+    def source_info(cls, file_id: str, source_id: str, data_json: dict[str, Any] | None = None) -> Req:
         return Req(
             method="post",
             url=f"/api/v2/files/{file_id}/sources/{source_id}",
@@ -145,7 +144,7 @@ class ReqBuilder:
         )
 
     @classmethod
-    def apply_source_settings(cls, file_id: str, source_id: str, data_json: Optional[dict[str, Any]] = None) -> Req:
+    def apply_source_settings(cls, file_id: str, source_id: str, data_json: dict[str, Any] | None = None) -> Req:
         return Req(
             method="post",
             url=f"/api/v2/files/{file_id}/sources/{source_id}/apply_settings",
@@ -157,8 +156,8 @@ class ReqBuilder:
         cls,
         file_id: str,
         source_id: str,
-        master_token_header: Optional[dict[DLHeaders, str]],
-        data_json: Optional[dict[str, Any]] = None,
+        master_token_header: dict[DLHeaders, str] | None,
+        data_json: dict[str, Any] | None = None,
     ) -> Req:
         return Req(
             method="post",
@@ -172,8 +171,8 @@ class ReqBuilder:
         cls,
         file_id: str,
         source_id: str,
-        master_token_header: Optional[dict[DLHeaders, str]],
-        data_json: Optional[dict[str, Any]] = None,
+        master_token_header: dict[DLHeaders, str] | None,
+        data_json: dict[str, Any] | None = None,
         *,
         require_ok: bool = True,
     ) -> Req:
@@ -190,7 +189,7 @@ class ReqBuilder:
         cls,
         connection: GSheetsFileS3Connection | YaDocsFileS3Connection,
         save: bool,
-        file_type: Optional[str] = "gsheets",
+        file_type: str | None = "gsheets",
         *,
         require_ok: bool = True,
     ) -> Req:
@@ -235,7 +234,7 @@ class ReqBuilder:
     def cleanup(
         cls,
         tenant_id: str,
-        master_token_header: Optional[dict[DLHeaders, str]] = None,
+        master_token_header: dict[DLHeaders, str] | None = None,
         *,
         require_ok: bool = True,
     ) -> Req:
@@ -250,7 +249,7 @@ class ReqBuilder:
         )
 
     @classmethod
-    def rename_tenant_files(cls, master_token_header: Optional[dict[DLHeaders, str]], tenant_id: str) -> Req:
+    def rename_tenant_files(cls, master_token_header: dict[DLHeaders, str] | None, tenant_id: str) -> Req:
         return Req(
             method="post",
             url="/api/v2/rename_tenant_files",

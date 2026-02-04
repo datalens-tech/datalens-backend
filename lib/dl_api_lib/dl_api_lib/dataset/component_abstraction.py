@@ -4,7 +4,6 @@ from typing import (
     ClassVar,
     Generator,
     NamedTuple,
-    Optional,
     Union,
 )
 
@@ -90,7 +89,7 @@ class DatasetComponentAbstraction:
         )
         return dsrc_coll
 
-    def _get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollection]:
+    def _get_data_source_coll_opt(self, source_id: str) -> DataSourceCollection | None:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
         if not dsrc_coll_spec:
             return None
@@ -101,7 +100,7 @@ class DatasetComponentAbstraction:
         )
         return dsrc_coll
 
-    def get_component(self, component_ref: DatasetComponentRef) -> Optional[DatasetComponent]:
+    def get_component(self, component_ref: DatasetComponentRef) -> DatasetComponent | None:
         """Get dataset component by its ID and type"""
         if component_ref.component_type == ComponentType.data_source:
             return self._get_data_source_coll_opt(source_id=component_ref.component_id)
@@ -168,7 +167,7 @@ class DatasetComponentAbstraction:
         else:
             raise ValueError(f"Unsupported component_type {component_type.name}")
 
-    def validate_component_can_be_managed(self, component_ref: DatasetComponentRef, by: Optional[ManagedBy]) -> None:
+    def validate_component_can_be_managed(self, component_ref: DatasetComponentRef, by: ManagedBy | None) -> None:
         if by is not None:
             component = self.get_component(component_ref=component_ref)
             if component.managed_by != by:  # type: ignore  # TODO: fix

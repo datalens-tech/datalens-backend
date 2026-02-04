@@ -4,7 +4,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
     TypeVar,
     cast,
 )
@@ -22,12 +21,12 @@ class ReservedKeys:
 class SMeta:
     attrs_meta_key: ClassVar[str] = "s_meta"
 
-    name: Optional[str] = attr.ib()
-    fallback_cfg_key: Optional[str] = attr.ib(default=None)
-    fallback_factory: Optional[Callable[[Any], Any]] = attr.ib(default=None)
-    env_var_converter: Optional[Callable[[str], Any]] = attr.ib(default=None)
-    json_converter: Optional[Callable[[Any], Any]] = attr.ib(default=None)
-    enabled_key_name: Optional[str] = attr.ib(default=None)
+    name: str | None = attr.ib()
+    fallback_cfg_key: str | None = attr.ib(default=None)
+    fallback_factory: Callable[[Any], Any] | None = attr.ib(default=None)
+    env_var_converter: Callable[[str], Any] | None = attr.ib(default=None)
+    json_converter: Callable[[Any], Any] | None = attr.ib(default=None)
+    enabled_key_name: str | None = attr.ib(default=None)
     is_app_cfg_type: bool = attr.ib(default=False)
 
     def __attrs_post_init__(self) -> None:
@@ -39,21 +38,21 @@ class SMeta:
         return {self.attrs_meta_key: self}
 
     @classmethod
-    def from_attrib(cls, attrib: Any) -> Optional[SMeta]:
+    def from_attrib(cls, attrib: Any) -> SMeta | None:
         return attrib.metadata.get(cls.attrs_meta_key)
 
 
 def s_attrib(
-    key_name: Optional[str],
+    key_name: str | None,
     type_class: object = None,
-    fallback_cfg_key: Optional[str] = None,
-    fallback_factory: Optional[FallbackFactory] = None,
-    env_var_converter: Optional[Callable[[str], Any]] = None,
-    json_converter: Optional[Callable[[Any], Any]] = None,
+    fallback_cfg_key: str | None = None,
+    fallback_factory: FallbackFactory | None = None,
+    env_var_converter: Callable[[str], Any] | None = None,
+    json_converter: Callable[[Any], Any] | None = None,
     missing: Any = attr.NOTHING,
     missing_factory: Any = None,
     sensitive: bool = False,
-    enabled_key_name: Optional[str] = None,
+    enabled_key_name: str | None = None,
     is_app_cfg_type: bool = False,
 ) -> attr.Attribute:
     if is_app_cfg_type:
@@ -87,7 +86,7 @@ _REQUIRED_TV = TypeVar("_REQUIRED_TV")
 
 @attr.s(frozen=True)
 class RequiredValue:
-    message: Optional[str] = attr.ib(default=None)
+    message: str | None = attr.ib(default=None)
 
 
 def required(t: type[_REQUIRED_TV]) -> _REQUIRED_TV:

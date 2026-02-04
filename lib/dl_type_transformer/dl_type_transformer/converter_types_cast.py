@@ -5,7 +5,6 @@ import re
 from typing import (
     Any,
     Iterable,
-    Optional,
 )
 
 import dateutil.parser
@@ -30,7 +29,7 @@ def _to_float(value: Any) -> float:
     return float(value)
 
 
-def _to_date(value: str, formats: Optional[Iterable[str]] = None) -> datetime.date:
+def _to_date(value: str, formats: Iterable[str] | None = None) -> datetime.date:
     # TODO?: try `ciso8601.parse_datetime`, for correct ISO-8601, timezones, speed, etc.
     formats = formats or (
         "%Y-%m-%d",

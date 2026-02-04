@@ -49,7 +49,7 @@ class PreExitable:
     def __init__(self, cm: AsyncContextManager[_PE_RET_TV]) -> None:
         self._cm = cm
         self._state = CMState.initialized
-        self._exiting_task: Optional[asyncio.Future] = None
+        self._exiting_task: asyncio.Future | None = None
 
     async def __aenter__(self) -> _PE_RET_TV:
         assert self._state == CMState.initialized
@@ -116,7 +116,7 @@ class CacheShareItem:
     waiters: Set[Any] = attr.ib(factory=set)
 
 
-def get_current_task_name() -> Optional[str]:
+def get_current_task_name() -> str | None:
     current_task = asyncio.current_task()
     if current_task is not None:
         get_name = getattr(current_task, "get_name", None)  # python 3.7 doesn't
@@ -262,7 +262,7 @@ class HistoryHolder:
     """
 
     max_size: int = 10_000
-    func: Optional[Callable[[str, Dict[str, Any]], None]] = None
+    func: Callable[[str, Dict[str, Any]], None] | None = None
 
     history: List[Tuple[float, str, Dict[str, Any]]] = attr.ib(factory=list, repr=False)
 

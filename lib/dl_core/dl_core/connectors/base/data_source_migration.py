@@ -2,7 +2,6 @@ import abc
 from typing import (
     Any,
     Callable,
-    Optional,
     Sequence,
 )
 
@@ -79,8 +78,8 @@ class DefaultDataSourceMigrator(DataSourceMigrator):
 class MigrationKeyMappingItem:
     migration_dto_key: str = attr.ib(kw_only=True)
     source_spec_key: str = attr.ib(kw_only=True)
-    custom_export_resolver: Optional[Callable[[DataSourceSpec, str], Any]] = attr.ib(kw_only=True, default=None)
-    custom_import_resolver: Optional[Callable[[DataSourceMigrationInterface, str], Any]] = attr.ib(
+    custom_export_resolver: Callable[[DataSourceSpec, str], Any] | None = attr.ib(kw_only=True, default=None)
+    custom_import_resolver: Callable[[DataSourceMigrationInterface, str], Any] | None = attr.ib(
         kw_only=True, default=None
     )
 

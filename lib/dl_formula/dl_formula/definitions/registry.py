@@ -4,7 +4,6 @@ from collections import defaultdict
 from typing import (
     Generator,
     NamedTuple,
-    Optional,
     Sequence,
 )
 
@@ -18,7 +17,7 @@ from dl_formula.definitions.scope import Scope
 
 class FuncKey(NamedTuple):
     name: str
-    arg_cnt: Optional[int]
+    arg_cnt: int | None
     is_window: bool
 
     @property
@@ -72,7 +71,7 @@ class OperationRegistry:
         name: str,
         arg_types: Sequence[DataType],
         is_window: bool = False,
-        dialect: Optional[DialectCombo] = None,
+        dialect: DialectCombo | None = None,
         for_any_dialect: bool = False,
         required_scopes: int = Scope.EXPLICIT_USAGE,
     ) -> "op_base.NodeTranslation":

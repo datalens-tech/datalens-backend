@@ -9,7 +9,6 @@ from typing import (
     Any,
     AsyncIterable,
     Mapping,
-    Optional,
     Sequence,
 )
 
@@ -95,10 +94,10 @@ TResultEvents = AsyncIterable[TResultEvent]
 class DashSQLSelector:
     conn: ConnectionBase
     sql_query: str
-    incoming_parameters: Optional[list[QueryIncomingParameter]]
+    incoming_parameters: list[QueryIncomingParameter] | None
     db_params: dict[str, str]
     _service_registry: ServicesRegistry
-    connector_specific_params: Optional[Mapping[str, IncomingDSQLParamTypeExt]] = attr.ib(default=None)
+    connector_specific_params: Mapping[str, IncomingDSQLParamTypeExt] | None = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
         specific_param_keys = get_custom_dash_sql_key_names(conn_type=self.conn.conn_type)
@@ -238,7 +237,7 @@ class DashSQLCachedSelector(DashSQLSelector):
     def make_query_id(self) -> str:
         return "dashsql_{}".format(make_id())
 
-    def _get_jsonable_params(self) -> Optional[TJSONExt]:
+    def _get_jsonable_params(self) -> TJSONExt | None:
         if self.incoming_parameters is None:
             return None
         return tuple(
@@ -247,7 +246,7 @@ class DashSQLCachedSelector(DashSQLSelector):
             for param in self.incoming_parameters
         )
 
-    def _get_jsonable_connector_specific_params(self) -> Optional[TJSONExt]:
+    def _get_jsonable_connector_specific_params(self) -> TJSONExt | None:
         if self.connector_specific_params is None:
             return None
         return tuple((name, value) for name, value in self.connector_specific_params.items())
@@ -271,7 +270,7 @@ class DashSQLCachedSelector(DashSQLSelector):
             exec_result = await ce.execute(ce_query)
             return self.process_result(exec_result)
 
-        async def _generate_func() -> Optional[TJSONExtChunkStream]:
+        async def _generate_func() -> TJSONExtChunkStream | None:
             events = await _request_db()
             chunks = chunkify_by_one(events)  # not `await` for tricky reasons.
             # ^ At this point there's sometimes a chunk that contains one item

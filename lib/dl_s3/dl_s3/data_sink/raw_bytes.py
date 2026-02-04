@@ -4,7 +4,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
 )
 
 
@@ -21,11 +20,11 @@ LOGGER = logging.getLogger(__name__)
 
 class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     batch_size_in_bytes: int = 10 * 1024**2
-    max_batch_size: Optional[int] = None
+    max_batch_size: int | None = None
     max_file_size_bytes: ClassVar[int] = 200 * 1024**2
 
-    _upload_id: Optional[str] = None
-    _part_tags: Optional[list[tuple[int, str]]] = None
+    _upload_id: str | None = None
+    _part_tags: list[tuple[int, str]] | None = None
     _part_number: int = 1
     _multipart_upload_started: bool = False
     _chunks_saved: int = 0

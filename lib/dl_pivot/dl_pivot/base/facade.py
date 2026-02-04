@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Generator,
-    Optional,
 )
 
 import attr
@@ -92,7 +91,7 @@ class TableDataFacade(abc.ABC):
     def sort(self) -> None:
         self._sorter.sort()
 
-    def paginate(self, offset_rows: Optional[int], limit_rows: Optional[int]) -> None:
+    def paginate(self, offset_rows: int | None, limit_rows: int | None) -> None:
         self._pivot_dframe = self._paginator.paginate(
             pivot_dframe=self._pivot_dframe,
             offset_rows=offset_rows,

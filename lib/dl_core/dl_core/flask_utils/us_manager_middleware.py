@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 import attr
 import flask
@@ -37,8 +36,8 @@ class USManagerFlaskMiddleware:
     crypto_keys_config: CryptoKeysConfig = attr.ib(repr=False)
     ca_data: bytes = attr.ib()
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attr.ib()
-    us_master_token: Optional[str] = attr.ib(default=None, repr=False)
-    us_public_token: Optional[str] = attr.ib(default=None, repr=False)
+    us_master_token: str | None = attr.ib(default=None, repr=False)
+    us_public_token: str | None = attr.ib(default=None, repr=False)
 
     _usm_factory: USMFactory = attr.ib(init=False, default=None)
 

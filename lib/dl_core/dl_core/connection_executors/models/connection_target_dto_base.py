@@ -11,7 +11,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -29,13 +28,13 @@ if TYPE_CHECKING:
 
 @attr.s(frozen=True)
 class ConnTargetDTO(metaclass=abc.ABCMeta):
-    conn_id: Optional[str] = attr.ib()
+    conn_id: str | None = attr.ib()
 
     pass_db_messages_to_user: bool = attr.ib(default=False, kw_only=True)
     pass_db_query_to_user: bool = attr.ib(default=False, kw_only=True)
 
     @abc.abstractmethod
-    def get_effective_host(self) -> Optional[str]:
+    def get_effective_host(self) -> str | None:
         pass
 
     _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, type[ConnTargetDTO]]] = {}
@@ -78,9 +77,9 @@ class BaseSQLConnTargetDTO(ConnTargetDTO):
     port: int = attr.ib()
     username: str = attr.ib()
     password: str = attr.ib(repr=secrepr)
-    db_name: Optional[str] = attr.ib()
+    db_name: str | None = attr.ib()
 
-    def get_effective_host(self) -> Optional[str]:
+    def get_effective_host(self) -> str | None:
         return self.host
 
 

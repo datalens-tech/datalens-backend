@@ -4,7 +4,6 @@ import abc
 import json
 from typing import (
     NoReturn,
-    Optional,
 )
 
 import yaml
@@ -16,7 +15,7 @@ def _raise_error_no_key(key: str) -> NoReturn:
 
 class EnvParamGetter(abc.ABC):
     @abc.abstractmethod
-    def get_str_value(self, key: str) -> Optional[str]:
+    def get_str_value(self, key: str) -> str | None:
         raise NotImplementedError
 
     def get_str_value_strict(self, key: str) -> str:
@@ -25,7 +24,7 @@ class EnvParamGetter(abc.ABC):
             _raise_error_no_key(key)
         return str_value
 
-    def get_int_value(self, key: str) -> Optional[int]:
+    def get_int_value(self, key: str) -> int | None:
         str_value = self.get_str_value(key)
         if str_value is not None:
             return int(str_value)
@@ -37,7 +36,7 @@ class EnvParamGetter(abc.ABC):
             _raise_error_no_key(key)
         return int_value
 
-    def get_json_value(self, key: str) -> Optional[dict]:
+    def get_json_value(self, key: str) -> dict | None:
         str_value = self.get_str_value(key)
         if str_value is not None:
             return json.loads(str_value)
@@ -49,7 +48,7 @@ class EnvParamGetter(abc.ABC):
             _raise_error_no_key(key)
         return json_value
 
-    def get_yaml_value(self, key: str) -> Optional[dict]:
+    def get_yaml_value(self, key: str) -> dict | None:
         str_value = self.get_str_value(key)
         if str_value is not None:
             return yaml.safe_load(str_value)

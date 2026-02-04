@@ -3,7 +3,6 @@ from copy import deepcopy
 import enum
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -121,7 +120,7 @@ def test_round_trip():
 @ModelDescriptor()
 @attr.s
 class UnsafeFlat:
-    guard_animal: Optional[Animal] = attr.ib(metadata=AttribDescriptor(skip_none_on_dump=True).to_meta())
+    guard_animal: Animal | None = attr.ib(metadata=AttribDescriptor(skip_none_on_dump=True).to_meta())
     owner: Bio = attr.ib()
 
 
@@ -463,13 +462,13 @@ class Target1:
         defaulted_list = fields.List(fields.String(allow_none=True), attribute="defaulted_list", required=False)
 
     a: list[int]
-    optional_str: Optional[str]
-    defaulted_optional_str: Optional[str] = attr.ib(default=None)
+    optional_str: str | None
+    defaulted_optional_str: str | None = attr.ib(default=None)
     strict_bool: bool
     list_of_lists_of_str: list[list[str]]
-    optional_list_of_str: Optional[list[str]]
-    list_of_optional_str: list[Optional[str]]
-    defaulted_list: list[Optional[str]] = attr.ib(factory=lambda: [None])
+    optional_list_of_str: list[str] | None
+    list_of_optional_str: list[str | None]
+    defaulted_list: list[str | None] = attr.ib(factory=lambda: [None])
 
 
 @ModelDescriptor()
@@ -490,7 +489,7 @@ class TargetVariousMappings:
         )
 
     map_str_str: FrozenStrMapping[str]
-    map_str_optional_str: FrozenStrMapping[Optional[str]]
+    map_str_optional_str: FrozenStrMapping[str | None]
 
 
 @pytest.mark.parametrize(

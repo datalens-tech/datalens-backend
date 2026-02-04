@@ -3,9 +3,7 @@ from __future__ import annotations
 from collections import namedtuple
 from typing import (
     Any,
-    Optional,
     Sequence,
-    Union,
 )
 
 import attr
@@ -38,14 +36,14 @@ class SchemaColumn(_SchemaColumn):
     def __new__(  # type: ignore  # TODO: fix
         cls,
         name: str,
-        title: Optional[str] = None,
-        user_type: Optional[Union[UserDataType, str]] = None,
-        nullable: Optional[bool] = True,
-        native_type: Optional[GenericNativeType] = None,
+        title: str | None = None,
+        user_type: UserDataType | str | None = None,
+        nullable: bool | None = True,
+        native_type: GenericNativeType | None = None,
         source_id: Any = None,
-        has_auto_aggregation: Optional[bool] = None,
+        has_auto_aggregation: bool | None = None,
         lock_aggregation: bool = False,
-        description: Optional[str] = None,
+        description: str | None = None,
     ):
         title = title or name
         if isinstance(user_type, str):
@@ -71,7 +69,7 @@ class SchemaColumn(_SchemaColumn):
 @attr.s(slots=True, frozen=True)
 class IndexInfo:
     columns: Sequence[str] = attr.ib()
-    kind: Optional[IndexKind] = attr.ib()
+    kind: IndexKind | None = attr.ib()
 
 
 @attr.s(slots=True)
@@ -82,7 +80,7 @@ class SchemaInfo:
     converted: list[SchemaColumn] = attr.ib(default=None)
 
     # None value should be treated as "unknown/no info"
-    indexes: Optional[frozenset[IndexInfo]] = attr.ib(default=None)
+    indexes: frozenset[IndexInfo] | None = attr.ib(default=None)
 
     @indexes.validator
     def check_indexes(self, attribute: Any, value: Any) -> None:

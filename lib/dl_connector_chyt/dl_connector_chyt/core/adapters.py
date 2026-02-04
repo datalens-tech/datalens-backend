@@ -4,7 +4,6 @@ import abc
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import aiohttp
@@ -39,8 +38,8 @@ class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         new_safe_symbols = safe_db_symbols + ("*",)
         return super()._get_dsn_params(safe_db_symbols=new_safe_symbols, db_name=db_name, standard_auth=standard_auth)
@@ -97,7 +96,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
         host: str,
         table_path: str,
         secret_auth_headers: dict[str, str],
-    ) -> Optional[RawIndexInfo]:
+    ) -> RawIndexInfo | None:
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 make_url(
@@ -133,7 +132,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
         self,
         table_path: str,
         secret_auth_headers: dict[str, str],  # Strange name to prevent leaking to Sentry
-    ) -> Optional[RawIndexInfo]:
+    ) -> RawIndexInfo | None:
         raise NotImplementedError()
 
     @abc.abstractmethod
@@ -164,6 +163,6 @@ class CHYTAdapter(BaseCHYTAdapter):
         self,
         table_path: str,
         secret_auth_headers: dict[str, str],
-    ) -> Optional[RawIndexInfo]:
+    ) -> RawIndexInfo | None:
         assert isinstance(table_path, str) and table_path.startswith("//"), "Incorrect YT table path"
         return await self._fetch_yt_sorting_columns(self._target_dto.host, table_path, secret_auth_headers)

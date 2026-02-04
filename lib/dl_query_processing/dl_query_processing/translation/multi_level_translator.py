@@ -4,7 +4,6 @@ from collections import defaultdict
 import logging
 from typing import (
     Callable,
-    Optional,
 )
 
 import attr
@@ -42,7 +41,7 @@ class MultiLevelQueryTranslator:
     _verbose_logging: bool = attr.ib(kw_only=True, default=False)  # noqa
     _avatar_alias_mapper: Callable[[str], str] = attr.ib(kw_only=True, default=lambda s: s)  # noqa
     _dialect: DialectCombo = attr.ib(kw_only=True)
-    _compeng_dialect: Optional[DialectCombo] = attr.ib(kw_only=True)
+    _compeng_dialect: DialectCombo | None = attr.ib(kw_only=True)
 
     # Attributes for source_db
     _collect_stats: bool = attr.ib(kw_only=True, default=False)

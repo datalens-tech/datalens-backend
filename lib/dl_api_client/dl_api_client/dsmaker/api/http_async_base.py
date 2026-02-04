@@ -7,7 +7,6 @@ import json
 import time
 from typing import (
     Mapping,
-    Optional,
 )
 
 import attr
@@ -25,8 +24,8 @@ class AsyncHttpClientBase(abc.ABC):
         url: str,
         method: str,
         headers: dict,
-        data: Optional[str] = None,
-        content_type: Optional[str] = None,
+        data: str | None = None,
+        content_type: str | None = None,
     ) -> ClientResponse:
         raise NotImplementedError
 
@@ -43,12 +42,12 @@ class AsyncHttpApiBase(ApiBase):
         self,
         url: str,
         method: str,
-        data: Optional[dict] = None,
-        headers: Optional[dict] = None,
+        data: dict | None = None,
+        headers: dict | None = None,
         lock_timeout: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "lock_timeout" (default has type "None", argument has type "int")  [assignment]
     ) -> ClientResponse:
-        data_str: Optional[str] = None
-        content_type: Optional[str] = None
+        data_str: str | None = None
+        content_type: str | None = None
         if method not in ("get", "delete") and data is not None:
             content_type = "application/json"
             data_str = json.dumps(data)

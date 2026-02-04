@@ -7,7 +7,6 @@ from typing import (
     Any,
     Generator,
     Iterable,
-    Optional,
     TypeVar,
     Union,
     overload,
@@ -60,11 +59,11 @@ class SyncUSManager(USManagerBase):
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-        crypto_keys_config: Optional[CryptoKeysConfig] = None,
-        us_api_prefix: Optional[str] = None,
-        # caches_redis: Optional[aioredis.Redis] = None,
-        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
-        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
+        crypto_keys_config: CryptoKeysConfig | None = None,
+        us_api_prefix: str | None = None,
+        # caches_redis: aioredis.Redis | None = None,
+        lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
+        schema_migration_factory: EntrySchemaMigrationFactoryBase | None = None,
     ):
         super().__init__(
             bi_context=bi_context,
@@ -123,7 +122,7 @@ class SyncUSManager(USManagerBase):
 
     # CRUD
     #
-    def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
+    def save(self, entry: USEntry, update_revision: bool | None = None) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry, service_registry=self._services_registry)
         lifecycle_manager.pre_save_hook()
 
@@ -174,8 +173,8 @@ class SyncUSManager(USManagerBase):
         self,
         entry_id: str,
         expected_type: None = None,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
     ) -> USEntry:
         pass
 
@@ -183,9 +182,9 @@ class SyncUSManager(USManagerBase):
     def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[type[_ENTRY_TV]] = None,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        expected_type: type[_ENTRY_TV] | None = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
     ) -> _ENTRY_TV:
         pass
 
@@ -193,9 +192,9 @@ class SyncUSManager(USManagerBase):
     def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[type[USEntry]] = None,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        expected_type: type[USEntry] | None = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
     ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
@@ -216,8 +215,8 @@ class SyncUSManager(USManagerBase):
     def get_by_id_raw(
         self,
         entry_id: str,
-        expected_type: Optional[type[USEntry]] = None,
-        params: Optional[dict[str, str]] = None,
+        expected_type: type[USEntry] | None = None,
+        params: dict[str, str] | None = None,
     ) -> dict[str, Any]:
         """Get raw `u_resp` from response without deserialization"""
 
@@ -233,7 +232,7 @@ class SyncUSManager(USManagerBase):
     def deserialize_us_resp(
         self,
         us_resp: dict[str, Any],
-        expected_type: Optional[type[USEntry]] = None,
+        expected_type: type[USEntry] | None = None,
     ) -> USEntry:
         """Used on result of `get_by_id_raw()` call for proper deserialization flow"""
 
@@ -246,8 +245,8 @@ class SyncUSManager(USManagerBase):
     def get_migrated_entry(
         self,
         entry_id: str,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
     ) -> dict[str, Any]:
         us_resp = self._us_client.get_entry(
             entry_id,
@@ -273,22 +272,22 @@ class SyncUSManager(USManagerBase):
         pass
 
     @overload
-    def get_by_key(self, entry_key: str, expected_type: Optional[type[_ENTRY_TV]] = None) -> _ENTRY_TV:
+    def get_by_key(self, entry_key: str, expected_type: type[_ENTRY_TV] | None = None) -> _ENTRY_TV:
         pass
 
-    def get_by_key(self, entry_key: str, expected_type: Optional[type[USEntry]] = None) -> USEntry:
+    def get_by_key(self, entry_key: str, expected_type: type[USEntry] | None = None) -> USEntry:
         raise NotImplementedError()
 
     def get_collection(
         self,
-        entry_cls: Optional[type[_ENTRY_TV]],
-        entry_type: Optional[str] = None,
-        entry_scope: Optional[str] = None,
-        meta: Optional[dict[str, Union[str, int, None]]] = None,
+        entry_cls: type[_ENTRY_TV] | None,
+        entry_type: str | None = None,
+        entry_scope: str | None = None,
+        meta: dict[str, Union[str, int, None]] | None = None,
         all_tenants: bool = False,
         include_data: bool = True,
-        ids: Optional[Iterable[str]] = None,
-        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        ids: Iterable[str] | None = None,
+        creation_time: dict[str, Union[str, int, None]] | None = None,
         raise_on_broken_entry: bool = False,
     ) -> Generator[_ENTRY_TV, None, None]:
         entry_cls_scope = entry_cls.scope if entry_cls is not None else None
@@ -328,7 +327,7 @@ class SyncUSManager(USManagerBase):
     def get_raw_collection(
         self,
         entry_scope: str,
-        entry_type: Optional[str] = None,
+        entry_type: str | None = None,
         all_tenants: bool = False,
     ) -> Iterable[dict]:
         return self._us_client.entries_iterator(
@@ -353,7 +352,7 @@ class SyncUSManager(USManagerBase):
 
     # Locks
     #
-    def acquire_lock(self, entry: USEntry, duration: Optional[int] = None, wait_timeout: Optional[int] = None) -> str:
+    def acquire_lock(self, entry: USEntry, duration: int | None = None, wait_timeout: int | None = None) -> str:
         assert entry.uuid is not None
         lock_token = self._us_client.acquire_lock(entry.uuid, duration, wait_timeout)
         entry.lock = lock_token
@@ -367,7 +366,7 @@ class SyncUSManager(USManagerBase):
 
     @contextlib.contextmanager
     def locked_cm(
-        self, entry: USEntry, duration: Optional[int] = None, wait_timeout: Optional[int] = None
+        self, entry: USEntry, duration: int | None = None, wait_timeout: int | None = None
     ) -> Generator[None, None, None]:
         self.acquire_lock(entry, duration=duration, wait_timeout=wait_timeout)
         try:
@@ -380,9 +379,9 @@ class SyncUSManager(USManagerBase):
         self,
         expected_type: type[_ENTRY_TV],
         entry_id: str,
-        duration: Optional[int] = None,
-        wait_timeout: Optional[int] = None,
-        context_name: Optional[str] = None,
+        duration: int | None = None,
+        wait_timeout: int | None = None,
+        context_name: str | None = None,
     ) -> Generator[_ENTRY_TV, None, None]:
         lock_token = self._us_client.acquire_lock(entry_id, duration, wait_timeout)
         entry = None
@@ -415,7 +414,7 @@ class SyncUSManager(USManagerBase):
     def ensure_entry_preloaded(self, conn_ref: ConnectionRef) -> None:
         self._ensure_conn_in_cache(None, conn_ref)
 
-    def _ensure_conn_in_cache(self, referrer: Optional[USEntry], conn_ref: ConnectionRef) -> Optional[ConnectionBase]:
+    def _ensure_conn_in_cache(self, referrer: USEntry | None, conn_ref: ConnectionRef) -> ConnectionBase | None:
         conn: Union[USEntry, BrokenUSLink]
         if conn_ref in self._loaded_entries:
             conn = self._loaded_entries[conn_ref]

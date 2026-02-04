@@ -10,7 +10,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -138,8 +137,8 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
     async def _make_request(
         self,
         req_obj: dba_actions.RemoteDBAdapterAction,
-        rel_path: Optional[str] = None,
-        use_new_qe_serializer: Optional[str] = None,
+        rel_path: str | None = None,
+        use_new_qe_serializer: str | None = None,
     ) -> aiohttp.ClientResponse:
         if rel_path is None:
             rel_path = self.DEFAULT_REL_PATH
@@ -227,7 +226,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
     async def _make_request_parse_response(
         self,
         req_obj: dba_actions.NonStreamAction[_RESP_TV],
-        rel_path: Optional[str] = None,
+        rel_path: str | None = None,
     ) -> _RESP_TV:
         resp = await self._make_request(
             rel_path=rel_path,
@@ -386,10 +385,10 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
 
         return await self._execute_non_stream(query)
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return self._target_dto.get_effective_host()
 
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    async def get_db_version(self, db_ident: DBIdent) -> str | None:
         return await self._make_request_parse_response(
             dba_actions.ActionGetDBVersion(
                 target_conn_dto=self._target_dto,

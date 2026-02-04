@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     Sequence,
     Union,
 )
@@ -32,8 +31,8 @@ class FormulaHandlingError(formula_exc.FormulaError):
     def __init__(
         self,
         *errors: Union[FormulaErrorCtx],
-        stage: Optional[ProcessingStage] = None,
-        field: Optional[BIField] = None,
+        stage: ProcessingStage | None = None,
+        field: BIField | None = None,
     ):
         super().__init__(*errors)
         self.stage = stage
@@ -250,11 +249,11 @@ class DLFormulaError(DLBaseException):
 
     def __init__(
         self,
-        message: Optional[str] = None,
-        details: Optional[dict] = None,
+        message: str | None = None,
+        details: dict | None = None,
         orig: Exception = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "orig" (default has type "None", argument has type "Exception")  [assignment]
-        field: Optional[BIField] = None,
-        formula_errors: Optional[Sequence[FormulaErrorCtx]] = None,
+        field: BIField | None = None,
+        formula_errors: Sequence[FormulaErrorCtx] | None = None,
     ):
         details = {} if details is None else details.copy()
         if field is not None:

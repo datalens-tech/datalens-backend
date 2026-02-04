@@ -3,7 +3,6 @@ from typing import (
     Any,
     Iterable,
     Mapping,
-    Optional,
     Sequence,
 )
 
@@ -51,7 +50,7 @@ class RowMatcher:
     # internal stuff
     _required_legend_item_ids: set[int] = attr.ib(init=False)
     _match_dim_values: list[PostprocessedValue] = attr.ib(init=False)
-    _prev_legend_item_ids: Optional[Iterable[int]] = attr.ib(init=False, default=None)
+    _prev_legend_item_ids: Iterable[int] | None = attr.ib(init=False, default=None)
     _dimension_mask: list[int] = attr.ib(init=False, factory=list)
     _row_has_req_items: bool = attr.ib(init=False, default=False)
 
@@ -173,12 +172,12 @@ class DispersedAfterBinaryStreamMerger(BinaryStreamMerger):
         parent_stream: MergedQueryDataRowIterable,
         child_stream: MergedQueryDataRowIterable,
     ) -> MergedQueryDataRowIterable:
-        dim_indices: Optional[tuple[int, ...]] = None  # This value will be redefined
+        dim_indices: tuple[int, ...] | None = None  # This value will be redefined
         dim_values: tuple[Any, ...]
         # Create mapping of child stream values:
         # { <dimension_value_vector>: child_stream_row }
         child_row_map: dict[tuple[Any, ...], MergedQueryDataRow] = {}
-        prev_legend_item_ids: Optional[Sequence[int]] = None
+        prev_legend_item_ids: Sequence[int] | None = None
         for row in child_stream:
             if row.legend_item_ids is not prev_legend_item_ids:
                 # Recreate indices because the legend has changed
@@ -193,7 +192,7 @@ class DispersedAfterBinaryStreamMerger(BinaryStreamMerger):
             child_row_map[dim_values] = row
 
         # Iterate over parent stream and append child value after each match
-        prev_dim_values: Optional[tuple[Any, ...]] = None
+        prev_dim_values: tuple[Any, ...] | None = None
         fast_forward_row = False
         expected_parent_dim_set = {dim_spec.legend_item_id for dim_spec in self.disp_after_placement.parent_dimensions}
         for row in parent_stream:

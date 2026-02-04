@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Optional,
     OrderedDict,
     TypeVar,
     Union,
@@ -76,7 +75,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
         cls,
         generate_for: type[_TARGET_OBJECT_GENERATED_TV],
         field_map: dict[str, fields.Field],
-        fields_to_skip_on_none: Optional[set[str]] = None,
+        fields_to_skip_on_none: set[str] | None = None,
     ) -> type[BaseSchema[_TARGET_OBJECT_GENERATED_TV]]:
         # TODO FIX: Generate mnemonic class name
         class ResultingSchema(

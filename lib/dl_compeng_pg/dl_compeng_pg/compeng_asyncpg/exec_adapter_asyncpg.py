@@ -9,7 +9,6 @@ from typing import (
     Callable,
     ClassVar,
     Generator,
-    Optional,
     Sequence,
     Union,
 )
@@ -95,11 +94,11 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         query: Union[str, sa.sql.selectable.Select],
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]],
+        preparation_callback: Callable[[], Awaitable[None]] | None,
     ) -> AsyncChunked[Sequence[TBIDataValue]]:
         query_text, params = self._compile_query(query)
 

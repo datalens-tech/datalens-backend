@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import sys
 import time
-from typing import Optional
 
 from aiohttp import web
 
@@ -64,7 +63,7 @@ class DashSQLTypedQueryRawView(BaseView):
         return service_registry
 
     @property
-    def connection_id(self) -> Optional[str]:
+    def connection_id(self) -> str | None:
         return self.request.match_info.get("conn_id")
 
     async def get_connection(self) -> ConnectionBase:

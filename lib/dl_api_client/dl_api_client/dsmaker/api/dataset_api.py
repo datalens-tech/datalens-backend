@@ -5,7 +5,6 @@ from itertools import chain
 from typing import (
     Any,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -33,7 +32,7 @@ from dl_api_client.dsmaker.primitives import (
 
 @attr.s(frozen=True)
 class HttpDatasetApiResponse(HttpApiResponse):
-    _dataset: Optional[Dataset] = attr.ib(kw_only=True, default=None)
+    _dataset: Dataset | None = attr.ib(kw_only=True, default=None)
 
     @property
     def dataset(self) -> Dataset:
@@ -179,7 +178,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             # `fail_ok` should not mean `allow 5xx`
             assert response.status_code < 500, response.json
 
-        new_dataset: Optional[Dataset] = None
+        new_dataset: Dataset | None = None
         if response.status_code == HTTPStatus.OK:
             new_dataset = self.serial_adapter.load_dataset_from_response_body(dataset=dataset, body=response.json)
             if not dataset.created_:

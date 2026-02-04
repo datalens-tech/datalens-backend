@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     NamedTuple,
-    Optional,
 )
 
 
@@ -26,12 +25,12 @@ class NodeHierarchyIndex(NamedTuple):
             return NodeHierarchyIndex(indices=self.indices + tuple(other))
         raise TypeError(type(other))
 
-    def lsplit(self) -> tuple[Optional[int], NodeHierarchyIndex]:
+    def lsplit(self) -> tuple[int | None, NodeHierarchyIndex]:
         if not self:
             return None, NodeHierarchyIndex()
         return self.indices[0], NodeHierarchyIndex(indices=self.indices[1:])
 
-    def rsplit(self) -> tuple[NodeHierarchyIndex, Optional[int]]:
+    def rsplit(self) -> tuple[NodeHierarchyIndex, int | None]:
         if not self:
             return NodeHierarchyIndex(), None
         return NodeHierarchyIndex(indices=self.indices[:-1]), self.indices[-1]

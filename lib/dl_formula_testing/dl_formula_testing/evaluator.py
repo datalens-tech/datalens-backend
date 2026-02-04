@@ -7,7 +7,6 @@ import time
 from typing import (
     Any,
     Collection,
-    Optional,
     Union,
 )
 
@@ -84,12 +83,12 @@ class DbEvaluator:
     def translate_formula(
         self,
         formula: str | Formula,
-        context_flags: Optional[int] = None,
-        other_fields: Optional[dict] = None,
-        collect_errors: Optional[bool] = None,
-        field_types: Optional[dict[str, DataType]] = None,
-        group_by: Optional[list[str | Formula]] = None,
-        order_by: Optional[list[str | Formula]] = None,
+        context_flags: int | None = None,
+        other_fields: dict | None = None,
+        collect_errors: bool | None = None,
+        field_types: dict[str, DataType] | None = None,
+        group_by: list[str | Formula] | None = None,
+        order_by: list[str | Formula] | None = None,
         required_scopes: int = Scope.EXPLICIT_USAGE,
     ) -> TranslationCtx:
         other_fields = other_fields or {}
@@ -143,15 +142,15 @@ class DbEvaluator:
     def eval(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self,
         formula: Union[str, Formula],
-        from_: Optional[ClauseElement] = None,
+        from_: ClauseElement | None = None,
         where: str | Formula | None = None,
         many: bool = False,
-        other_fields: Optional[dict] = None,
-        order_by: Optional[list[str | Formula]] = None,
-        group_by: Optional[list[str | Formula]] = None,
+        other_fields: dict | None = None,
+        order_by: list[str | Formula] | None = None,
+        group_by: list[str | Formula] | None = None,
         first: bool = False,
         required_scopes: int = Scope.EXPLICIT_USAGE,
-        field_types: Optional[dict[str, DataType]] = None,
+        field_types: dict[str, DataType] | None = None,
     ):
         select_ctx = self.translate_formula(
             formula,
@@ -232,12 +231,12 @@ class DbEvaluator:
     def compile_formula(
         self,
         formula: Union[str, Formula],
-        from_: Optional[ClauseElement] = None,
+        from_: ClauseElement | None = None,
         where: str | Formula | None = None,
         many: bool = False,
-        other_fields: Optional[dict] = None,
-        order_by: Optional[list[str | Formula]] = None,
-        group_by: Optional[list[str | Formula]] = None,
+        other_fields: dict | None = None,
+        order_by: list[str | Formula] | None = None,
+        group_by: list[str | Formula] | None = None,
         first: bool = False,
         required_scopes: int = Scope.EXPLICIT_USAGE,
     ) -> str:

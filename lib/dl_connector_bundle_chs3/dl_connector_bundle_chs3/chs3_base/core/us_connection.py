@@ -7,7 +7,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -69,11 +68,11 @@ class BaseFileS3Connection(
         id: str = attr.ib()
         file_id: str = attr.ib()
         title: str = attr.ib()
-        preview_id: Optional[str] = attr.ib(default=None)
+        preview_id: str | None = attr.ib(default=None)
         status: FileProcessingStatus = attr.ib(default=FileProcessingStatus.in_progress)
-        s3_filename: Optional[str] = attr.ib(default=None)
-        s3_filename_suffix: Optional[str] = attr.ib(default=None)
-        raw_schema: Optional[list[SchemaColumn]] = attr.ib(factory=list[SchemaColumn])
+        s3_filename: str | None = attr.ib(default=None)
+        s3_filename_suffix: str | None = attr.ib(default=None)
+        raw_schema: list[SchemaColumn] | None = attr.ib(factory=list[SchemaColumn])
 
         def str_for_hash(self) -> str:
             return ",".join(
@@ -151,7 +150,7 @@ class BaseFileS3Connection(
         )
 
     @property
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         return 600
 
     def get_data_source_templates(
@@ -176,7 +175,7 @@ class BaseFileS3Connection(
             for source in self.data.sources
         ]
 
-    def get_file_source_by_id(self, id: Optional[str]) -> FileDataSource:
+    def get_file_source_by_id(self, id: str | None) -> FileDataSource:
         file_source = next(iter(src for src in self.data.sources if src.id == id), None)
         if file_source is None:
             raise exc.SourceDoesNotExist(f"DataSource id={id} not found in connection id={self.uuid}")
@@ -199,7 +198,7 @@ class BaseFileS3Connection(
                 f"DataSource id={id} not found in connection id={self.uuid} saved sources when trying to remove it"
             )
 
-    def get_saved_source_by_id(self, id: Optional[str]) -> FileDataSource:
+    def get_saved_source_by_id(self, id: str | None) -> FileDataSource:
         file_source = next(iter(src for src in self._saved_sources or [] if src.id == id), None)
         if file_source is None:
             raise exc.SourceDoesNotExist(f"DataSource id={id} not found in saved sources of connection id={self.uuid}")
@@ -208,8 +207,8 @@ class BaseFileS3Connection(
     def update_data_source(
         self,
         id: str,
-        role: Optional[DataSourceRole] = None,
-        raw_schema: Optional[list] = None,
+        role: DataSourceRole | None = None,
+        raw_schema: list | None = None,
         remove_raw_schema: bool = False,
         **parameters: Any,
     ) -> None:
@@ -262,7 +261,7 @@ class BaseFileS3Connection(
         except exc.EntryValidationError as err:
             raise err
 
-    _saved_sources: Optional[list[FileDataSource]] = None
+    _saved_sources: list[FileDataSource] | None = None
 
     async def _update_added_sources(self, sources_to_add: set[str]) -> None:
         """enriches freshly added or replaced sources with info from respective DataFiles from file-uploader-api"""
@@ -289,8 +288,8 @@ class BaseFileS3Connection(
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         assert isinstance(original_version, (type(self), type(None)))
         if original_version is None:

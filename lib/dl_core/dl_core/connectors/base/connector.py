@@ -6,7 +6,6 @@ from typing import (
     AbstractSet,
     Callable,
     ClassVar,
-    Optional,
 )
 
 from sqlalchemy.orm import Query
@@ -63,15 +62,15 @@ class CoreSourceDefinition(abc.ABC):
 class CoreConnectionDefinition(abc.ABC):
     conn_type: ClassVar[ConnectionType]
     connection_cls: ClassVar[type[ConnectionBase]]
-    us_storage_schema_cls: ClassVar[Optional[type[Schema]]] = None
+    us_storage_schema_cls: ClassVar[type[Schema] | None] = None
     type_transformer_cls: ClassVar[type[TypeTransformer]]  # TODO: Move to CoreBackendDefinition
-    sync_conn_executor_cls: ClassVar[Optional[type[ConnExecutorBase]]] = None
-    async_conn_executor_cls: ClassVar[Optional[type[AsyncConnExecutorBase]]] = None
+    sync_conn_executor_cls: ClassVar[type[ConnExecutorBase] | None] = None
+    async_conn_executor_cls: ClassVar[type[AsyncConnExecutorBase] | None] = None
     lifecycle_manager_cls: ClassVar[type[ConnectionLifecycleManager]] = DefaultConnectionLifecycleManager
     schema_migration_cls: ClassVar[type[ConnectionSchemaMigration]] = DefaultConnectionSchemaMigration
     dialect_string: ClassVar[str]
     data_source_migrator_cls: ClassVar[type[DataSourceMigrator]] = DefaultDataSourceMigrator
-    settings_definition: ClassVar[Optional[type[ConnectorSettingsDefinition]]] = None
+    settings_definition: ClassVar[type[ConnectorSettingsDefinition] | None] = None
     custom_dashsql_key_names: frozenset[str] = frozenset()
     allow_export: ClassVar[bool] = False
 
@@ -90,7 +89,7 @@ class CoreConnector(abc.ABC):
     source_definitions: ClassVar[tuple[type[CoreSourceDefinition], ...]] = ()
     # TODO: Move to CoreBackendDefinition:
     sa_types: ClassVar[
-        Optional[dict[tuple[SourceBackendType, GenericNativeType], Callable[[GenericNativeType], TypeEngine]]]
+        dict[tuple[SourceBackendType, GenericNativeType], Callable[[GenericNativeType], TypeEngine]] | None
     ] = None
     rqe_adapter_classes: ClassVar[AbstractSet[type[CommonBaseDirectAdapter]]] = frozenset()
     conn_security: ClassVar[AbstractSet[ConnSecuritySettings]] = frozenset()

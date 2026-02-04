@@ -3,7 +3,6 @@ import logging
 import time
 from typing import (
     ClassVar,
-    Optional,
 )
 
 from aiohttp import web
@@ -32,7 +31,7 @@ class CSRFMiddleware:
     csrf_secrets: tuple[str, ...] = attr.ib()
     csrf_methods: tuple[str, ...] = attr.ib(default=("POST", "PUT", "DELETE"))
 
-    def validate_csrf_token(self, token_header_value: Optional[str], user_token: str) -> bool:
+    def validate_csrf_token(self, token_header_value: str | None, user_token: str) -> bool:
         if not token_header_value:
             return False
 

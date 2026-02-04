@@ -4,7 +4,6 @@ import abc
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 from dl_i18n.localizer_base import Localizer
@@ -18,9 +17,9 @@ if TYPE_CHECKING:
 
 
 class EntityUsageNotAllowed(Exception):
-    _user_reason: Optional[str]
+    _user_reason: str | None
 
-    def __init__(self, *args: Any, user_reason: Optional[str] = None):
+    def __init__(self, *args: Any, user_reason: str | None = None):
         super().__init__(*args)
         self._user_reason = user_reason
 
@@ -36,7 +35,7 @@ class EntityUsageChecker(metaclass=abc.ABCMeta):
         rci: RequestContextInfo,
         dataset: Dataset,
         us_manager: USManagerBase,
-        localizer: Optional[Localizer] = None,
+        localizer: Localizer | None = None,
     ) -> None:
         pass
 

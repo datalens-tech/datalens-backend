@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Iterable,
-    Optional,
     TypeVar,
 )
 
@@ -48,7 +47,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_YDB
     dsn_template: ClassVar[str] = "{dialect}:///ydb/"  # 'yql:///ydb/'
 
-    def _get_ssl_ca(self) -> Optional[bytes]:
+    def _get_ssl_ca(self) -> bytes | None:
         if not self._target_dto.ssl_enable:
             return None
 

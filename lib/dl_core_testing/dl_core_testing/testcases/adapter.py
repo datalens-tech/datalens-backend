@@ -2,7 +2,6 @@ import abc
 from typing import (
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -44,9 +43,9 @@ class BaseAsyncAdapterTestClass(BaseConnectionExecutorTestClass, Generic[_TARGET
 
     async def _test_pass_db_query_to_user(
         self,
-        pass_db_query_to_user: Optional[bool],
+        pass_db_query_to_user: bool | None,
         query_to_send: str,
-        expected_query: Optional[str],
+        expected_query: str | None,
         conn_bi_context: RequestContextInfo,
         target_conn_dto: _TARGET_DTO_TV,
     ) -> None:

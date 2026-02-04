@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Collection,
-    Optional,
     Sequence,
 )
 
@@ -35,14 +34,14 @@ class PreparedFromInfo:
     created during the formation of complex ``SELECT`` statements.
     """
 
-    sql_source: Optional[SqlSourceType] = attr.ib(kw_only=True)
+    sql_source: SqlSourceType | None = attr.ib(kw_only=True)
     query_compiler: QueryCompiler = attr.ib(kw_only=True)
     supported_join_types: Collection[JoinType] = attr.ib(kw_only=True)
-    data_source_list: Optional[tuple[dl_core.data_source.DataSource, ...]] = attr.ib(kw_only=True)
-    db_name: Optional[str] = attr.ib(kw_only=True)
+    data_source_list: tuple[dl_core.data_source.DataSource, ...] | None = attr.ib(kw_only=True)
+    db_name: str | None = attr.ib(kw_only=True)
     connect_args: dict[str, Any] = attr.ib(kw_only=True)
     pass_db_query_to_user: bool = attr.ib(kw_only=True)
-    target_connection_ref: Optional[ConnectionRef] = attr.ib(kw_only=True)
+    target_connection_ref: ConnectionRef | None = attr.ib(kw_only=True)
     data_key: LocalKeyRepresentation = attr.ib(kw_only=True)
 
     def supports_join_type(self, join_type: JoinType) -> bool:

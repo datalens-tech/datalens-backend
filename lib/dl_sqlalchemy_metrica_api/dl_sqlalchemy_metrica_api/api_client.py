@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from json.decoder import JSONDecodeError
 import logging
-from typing import Optional
 
 import requests
 from requests.exceptions import RequestException
@@ -76,7 +75,7 @@ class MetrikaApiClient(object):
     host = METRIKA_API_HOST
     default_timeout = 60
 
-    def __init__(self, oauth_token: str, host: Optional[str] = None, default_timeout=-1, **kwargs):
+    def __init__(self, oauth_token: str, host: str | None = None, default_timeout=-1, **kwargs):
         if host is not None:
             self.host = host
         if default_timeout != -1:

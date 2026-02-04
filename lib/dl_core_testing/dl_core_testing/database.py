@@ -8,7 +8,6 @@ from typing import (
     Any,
     Callable,
     NamedTuple,
-    Optional,
     Sequence,
 )
 import uuid
@@ -58,8 +57,8 @@ class Db(DbBase[CoreDbConfig]):
     def eval(
         self,
         expr: sa.sql.ClauseElement,
-        from_: Optional[sa.sql.ClauseElement] = None,
-        user_t: Optional[UserDataType] = None,
+        from_: sa.sql.ClauseElement | None = None,
+        user_t: UserDataType | None = None,
     ) -> Any:
         value = self.base_eval(expr, from_=from_)
         if user_t is not None:
@@ -70,7 +69,7 @@ class Db(DbBase[CoreDbConfig]):
 def make_db_config(
     conn_type: ConnectionType,
     url: str,
-    cluster: Optional[str] = None,
+    cluster: str | None = None,
 ) -> CoreDbConfig:
     engine_config_kwargs: dict[str, Any] = {}
     if cluster is not None:
@@ -94,7 +93,7 @@ def make_db_from_config(db_config: CoreDbConfig) -> Db:
 def make_db(
     conn_type: ConnectionType,
     url: str,
-    cluster: Optional[str] = None,
+    cluster: str | None = None,
 ) -> Db:
     # FIXME: Switch to accepting a fully ready config here
     db_config = make_db_config(conn_type=conn_type, url=url, cluster=cluster)
@@ -119,7 +118,7 @@ class DbTable(DbTableBase):
 class C:
     name: str = attr.ib()
     user_type: UserDataType = attr.ib()
-    nullable: Optional[bool] = attr.ib(default=None)
+    nullable: bool | None = attr.ib(default=None)
     _sa_type: TypeEngine = attr.ib(default=None)
     _vg: Callable[[int, datetime.datetime], Any] = attr.ib(default=None)
 
@@ -219,14 +218,14 @@ def make_sample_data(
 # TODO FIX: Implement option to provide data via arguments
 def make_table(
     db: Db,
-    schema: Optional[str] = None,
+    schema: str | None = None,
     rows: int = 10,
     start_value: int = 0,
-    columns: Optional[list[C]] = None,
-    name: Optional[str] = None,
-    data: Optional[list[dict[str, Any]]] = None,
+    columns: list[C] | None = None,
+    name: str | None = None,
+    data: list[dict[str, Any]] | None = None,
     create_in_db: bool = True,
-    chunk_size: Optional[int] = None,
+    chunk_size: int | None = None,
 ) -> DbTable:
     backend_type = get_backend_type(conn_type=db.conn_type)
     columns = columns or C.full_house()
@@ -252,8 +251,8 @@ def make_table(
 
 def make_pg_table_with_enums(  # TODO: move to pg connector package
     db: Db,
-    schema: Optional[str] = None,
-    name: Optional[str] = None,
+    schema: str | None = None,
+    name: str | None = None,
 ) -> DbTable:
     table = db.table_from_columns(
         [
@@ -281,19 +280,19 @@ def make_pg_table_with_enums(  # TODO: move to pg connector package
 
 def make_table_with_arrays(
     db: Db,
-    schema: Optional[str] = None,
+    schema: str | None = None,
     rows: int = 10,
     start_value: int = 0,
-    columns: Optional[list[C]] = None,
-    name: Optional[str] = None,
-    data: Optional[list[dict[str, Any]]] = None,
+    columns: list[C] | None = None,
+    name: str | None = None,
+    data: list[dict[str, Any]] | None = None,
 ) -> DbTable:
     if columns is None:
         columns = C.full_house() + C.array_columns()
     return make_table(db=db, schema=schema, rows=rows, start_value=start_value, columns=columns, name=name, data=data)
 
 
-def make_schema(db: Db, schema_name: Optional[str] = None) -> str:
+def make_schema(db: Db, schema_name: str | None = None) -> str:
     schema_name = schema_name or f"sch_{shortuuid.uuid().lower()}"
     assert schema_name is not None
     db.create_schema(schema_name=schema_name)

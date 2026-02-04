@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 from clickhouse_sqlalchemy.quoting import Quoter
@@ -45,14 +44,14 @@ def require_file_configured(func: Callable) -> Callable:
 class BaseFileS3DataSource(ClickHouseDataSourceBase):
     preview_enabled: ClassVar[bool] = True
     store_raw_schema = True
-    _quoter: Optional[Quoter] = None
+    _quoter: Quoter | None = None
 
     @classmethod
     def is_compatible_with_type(cls, source_type: DataSourceType) -> bool:
         raise NotImplementedError
 
     @property
-    def origin_source_id(self) -> Optional[str]:
+    def origin_source_id(self) -> str | None:
         return self.spec.origin_source_id
 
     def _get_origin_src(self) -> BaseFileS3Connection.FileDataSource:
@@ -84,11 +83,11 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
         return True
 
     @property
-    def s3_endpoint(self) -> Optional[str]:
+    def s3_endpoint(self) -> str | None:
         return self.spec.s3_endpoint
 
     @property
-    def bucket(self) -> Optional[str]:
+    def bucket(self) -> str | None:
         return self.spec.bucket
 
     @property
@@ -113,7 +112,7 @@ class BaseFileS3DataSource(ClickHouseDataSourceBase):
     def _handle_component_errors(self) -> None:
         pass
 
-    def get_sql_source(self, alias: Optional[str] = None) -> SqlSourceType:
+    def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         origin_src = self._get_origin_src()
         status = origin_src.status
         raw_schema = self.spec.raw_schema

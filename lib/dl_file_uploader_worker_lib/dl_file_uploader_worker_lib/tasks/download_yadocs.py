@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     AsyncGenerator,
-    Optional,
 )
 
 import aiohttp
@@ -47,10 +46,10 @@ class NoToken(Exception):
 
 
 async def _get_yadocs_oauth_token(
-    dfile_token: Optional[str],
-    conn_id: Optional[str],
+    dfile_token: str | None,
+    conn_id: str | None,
     usm: AsyncUSManager,
-) -> Optional[str]:
+) -> str | None:
     if dfile_token is not None:  # if there is a token in dfile, then use it
         oauth_token = dfile_token
     elif conn_id is not None:  # otherwise, use the one from the connection
@@ -73,7 +72,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
     cls_meta = task_interface.DownloadYaDocsTask
 
     async def run(self) -> TaskResult:
-        dfile: Optional[DataFile] = None
+        dfile: DataFile | None = None
         redis = self._ctx.redis_service.get_redis()
         task_processor = self._ctx.make_task_processor(self._request_id)
         usm = self._ctx.get_async_usm()
@@ -92,7 +91,7 @@ class DownloadYaDocsTask(BaseExecutorTask[task_interface.DownloadYaDocsTask, Fil
 
             assert isinstance(dfile.user_source_properties, YaDocsUserSourceProperties)
 
-            oauth_token: Optional[str] = None
+            oauth_token: str | None = None
             if self.meta.authorized:
                 try:
                     dfile_token = dfile.user_source_properties.oauth_token

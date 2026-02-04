@@ -1,7 +1,6 @@
 from typing import (
     ClassVar,
     Mapping,
-    Optional,
     Sequence,
 )
 
@@ -42,7 +41,7 @@ class EnvParamGetterLoader:
         getter.initialize(config={})
         self._getters[name] = getter
 
-    def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> Optional[str]:  # type: ignore  # 2024-01-24 # TODO: Missing return statement  [return]
+    def _resolve_setting_item(self, setting: dict, requirement_getter: EnvParamGetter) -> str | None:  # type: ignore  # 2024-01-24 # TODO: Missing return statement  [return]
         if setting["type"] == "value":
             return setting["value"]
         if setting["type"] == "param":

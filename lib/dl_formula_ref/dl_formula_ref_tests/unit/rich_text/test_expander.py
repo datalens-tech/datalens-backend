@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_formula.core.datatype import DataType
 from dl_formula_ref.registry.aliased_res import (
     AliasedLinkResource,
@@ -163,7 +161,7 @@ def test_expand_macro_ref():
     def func_link_provider(func_name: str, category_name: str) -> tuple[str, str]:
         return (func_name, f'https://{func_name.lower()}{"-win" if category_name == "window" else ""}.funcs.com')
 
-    def cat_link_provider(category_name: str, anchor_name: Optional[str]) -> tuple[str, str]:
+    def cat_link_provider(category_name: str, anchor_name: str | None) -> tuple[str, str]:
         return (category_name, f"https://{category_name.lower()}.cats.com")
 
     expander = MacroExpander(

@@ -1,7 +1,6 @@
 from typing import (
     Any,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -42,9 +41,9 @@ class ExceptionWithData(Generic[_EXC_DATA_TV], Exception):
 @attr.s()
 class APIResponseData:
     operation: str = attr.ib()
-    status_code: Optional[int] = attr.ib()
-    response_body: Optional[Any] = attr.ib(repr=format_response_body)
-    response_body_validation_errors: Optional[dict[str, Any]] = attr.ib(default=None)
+    status_code: int | None = attr.ib()
+    response_body: Any | None = attr.ib(repr=format_response_body)
+    response_body_validation_errors: dict[str, Any] | None = attr.ib(default=None)
 
 
 class InternalAPIBadResponseErr(ExceptionWithData[APIResponseData]):
@@ -64,10 +63,10 @@ class MalformedAPIResponseErr(InternalAPIBadResponseErr):
 
 
 class InvalidHeaderException(Exception):
-    schema_validation_messages: Optional[dict]
+    schema_validation_messages: dict | None
     header_name: str
 
-    def __init__(self, *args: Any, header_name: str, schema_validation_messages: Optional[dict] = None):
+    def __init__(self, *args: Any, header_name: str, schema_validation_messages: dict | None = None):
         self.header_name = header_name
         self.schema_validation_messages = schema_validation_messages
         super().__init__(*args)

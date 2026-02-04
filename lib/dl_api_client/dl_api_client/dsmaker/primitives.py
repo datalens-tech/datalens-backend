@@ -12,7 +12,6 @@ from typing import (
     Collection,
     Generator,
     Generic,
-    Optional,
     TypeVar,
     Union,
 )
@@ -69,7 +68,7 @@ class ApiProxyObject:
     def prepare(self) -> None:
         """Custom initialization of properties"""
 
-    def _make_action(self, action: Action, data: Optional[dict] = None) -> UpdateAction:
+    def _make_action(self, action: Action, data: dict | None = None) -> UpdateAction:
         return UpdateAction(
             action=action,
             item=self,
@@ -99,7 +98,7 @@ class ApiProxyObject:
 class UpdateAction:
     action: Action
     item: ApiProxyObject
-    custom_data: Optional[dict]
+    custom_data: dict | None
     order_index: int = 0
 
 
@@ -192,7 +191,7 @@ class Container(Generic[_ITEM_TV]):
         """Return the number of items in the container."""
         return len(self._items)
 
-    def get_alias(self, id: str) -> Optional[str]:
+    def get_alias(self, id: str) -> str | None:
         """Find item by its ID and return its alias."""
         alias_by_id = {id: alias for alias, id in self._id_by_alias.items()}
         return alias_by_id.get(id)
@@ -213,10 +212,10 @@ class Container(Generic[_ITEM_TV]):
 @attr.s
 class DataSource(ApiProxyObject):
     connection_id: str = attr.ib(default=None)
-    source_type: Optional[DataSourceType] = attr.ib(default=None, converter=DataSourceType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    source_type: DataSourceType | None = attr.ib(default=None, converter=DataSourceType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     parameters: dict = attr.ib(default=None)
     raw_schema: list = attr.ib(factory=list)
-    index_info_set: Optional[list] = attr.ib(default=None)
+    index_info_set: list | None = attr.ib(default=None)
     title: str = attr.ib(default=None)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     valid: bool = attr.ib(default=True)
@@ -329,8 +328,8 @@ class _Column:
     # use attr.s on superclass of the "real" class so that comparison methods from ConditionMakerMixin are used
     title: str = attr.ib(default=None)
     name: str = attr.ib(default=None)
-    user_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
-    native_type: Optional[dict] = attr.ib(default=None)
+    user_type: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    native_type: dict | None = attr.ib(default=None)
     nullable: bool = attr.ib(default=True)
     description: str = attr.ib(default="")
     has_auto_aggregation: bool = attr.ib(default=False)
@@ -469,8 +468,8 @@ class NullParameterValueConstraint(BaseParameterValueConstraint):
 @attr.s
 class RangeParameterValueConstraint(BaseParameterValueConstraint):
     type: ParameterValueConstraintType = ParameterValueConstraintType.range
-    min: Optional[ParameterValue] = attr.ib(default=None)
-    max: Optional[ParameterValue] = attr.ib(default=None)
+    min: ParameterValue | None = attr.ib(default=None)
+    max: ParameterValue | None = attr.ib(default=None)
 
 
 @attr.s
@@ -509,11 +508,11 @@ class CollectionParameterValueConstraint(BaseParameterValueConstraint):
 
 def _make_pivot_role_spec(
     role: PivotRole,
-    annotation_type: Optional[str] = None,
-    target_legend_item_ids: Optional[list[int]] = None,
+    annotation_type: str | None = None,
+    target_legend_item_ids: list[int] | None = None,
     direction: OrderDirection = OrderDirection.asc,
-    measure_sorting_settings: Optional[PivotMeasureSorting] = None,
-    allow_roles: Optional[Collection[PivotRole]] = None,
+    measure_sorting_settings: PivotMeasureSorting | None = None,
+    allow_roles: Collection[PivotRole] | None = None,
 ) -> PivotRoleSpec:
     if allow_roles is not None:
         assert role in allow_roles
@@ -543,27 +542,27 @@ def _make_pivot_role_spec(
 
 @attr.s
 class _ResultField(ApiProxyObject):
-    title: Optional[str] = attr.ib(default=None)
+    title: str | None = attr.ib(default=None)
     calc_mode: CalcMode = attr.ib(default=CalcMode.direct, converter=CalcMode.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     aggregation: AggregationFunction = attr.ib(
         default=AggregationFunction.none, converter=AggregationFunction.normalize  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     )
     type: FieldType = attr.ib(default=FieldType.DIMENSION, converter=FieldType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
-    source: Optional[str] = attr.ib(default=None)
+    source: str | None = attr.ib(default=None)
     hidden: bool = attr.ib(default=False)
     description: str = attr.ib(default="")
     formula: str = attr.ib(default="")
-    initial_data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
-    cast: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
-    data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    initial_data_type: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    cast: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    data_type: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
     valid: bool = attr.ib(default=True)
     has_auto_aggregation: bool = attr.ib(default=False)
     lock_aggregation: bool = attr.ib(default=False)
-    avatar_id: Optional[str] = attr.ib(default=None)
+    avatar_id: str | None = attr.ib(default=None)
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
-    default_value: Optional[ParameterValue] = attr.ib(default=None)
-    value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(default=None)
-    template_enabled: Optional[bool] = attr.ib(default=None)
+    default_value: ParameterValue | None = attr.ib(default=None)
+    value_constraint: BaseParameterValueConstraint | None = attr.ib(default=None)
+    template_enabled: bool | None = attr.ib(default=None)
     ui_settings: str = attr.ib(default="")
 
     def set_name(self, name: str) -> None:
@@ -616,12 +615,12 @@ class _ResultField(ApiProxyObject):
     def as_req_legend_item(
         self,
         role: FieldRole = FieldRole.row,
-        range_type: Optional[RangeType] = None,
-        dimension_values: Optional[dict[int, Any]] = None,
-        tree_prefix: Optional[list] = None,
-        tree_level: Optional[int] = None,
-        legend_item_id: Optional[int] = None,
-        block_id: Optional[int] = None,
+        range_type: RangeType | None = None,
+        dimension_values: dict[int, Any] | None = None,
+        tree_prefix: list | None = None,
+        tree_level: int | None = None,
+        legend_item_id: int | None = None,
+        block_id: int | None = None,
     ) -> RequestLegendItem:
         role_spec: RoleSpec  # TODO: Move role_spec creation to a separate func
         if role == FieldRole.range:
@@ -666,7 +665,7 @@ class WhereClause:
     operation: WhereClauseOperation = attr.ib(kw_only=True)
     column: str = attr.ib(kw_only=True)
     values: list = attr.ib(kw_only=True)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
     ref: RequestLegendItemRef = attr.ib(kw_only=True)
 
     @ref.default
@@ -730,8 +729,8 @@ class OrderByRoleSpec(RoleSpec):
 @attr.s
 class LegendItemBase:  # noqa
     role_spec: RoleSpec = attr.ib(kw_only=True)
-    legend_item_id: Optional[int] = attr.ib(kw_only=True, default=None)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    legend_item_id: int | None = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -793,20 +792,20 @@ class DimensionValueSpec:
 class AfterBlockPlacement(BlockPlacement):
     type = QueryBlockPlacementType.after
 
-    dimension_values: Optional[list[DimensionValueSpec]] = attr.ib(default=None)
+    dimension_values: list[DimensionValueSpec] | None = attr.ib(default=None)
 
 
 @attr.s
 class BlockSpec:
     block_id: int = attr.ib(kw_only=True)
-    parent_block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    parent_block_id: int | None = attr.ib(kw_only=True, default=None)
     placement: BlockPlacement = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
 class PivotPagination:
-    offset_rows: Optional[int] = attr.ib(kw_only=True, default=None)
-    limit_rows: Optional[int] = attr.ib(kw_only=True, default=None)
+    offset_rows: int | None = attr.ib(kw_only=True, default=None)
+    limit_rows: int | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -837,12 +836,12 @@ class DimensionPivotRoleSpec(PivotRoleSpec):
 @attr.s
 class AnnotationPivotRoleSpec(PivotRoleSpec):
     annotation_type: str = attr.ib(kw_only=True)
-    target_legend_item_ids: Optional[list[int]] = attr.ib(kw_only=True)
+    target_legend_item_ids: list[int] | None = attr.ib(kw_only=True)
 
 
 @attr.s
 class PivotMeasureRoleSpec(PivotRoleSpec):
-    sorting: Optional[PivotMeasureSorting] = attr.ib(kw_only=True, default=None)
+    sorting: PivotMeasureSorting | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -853,7 +852,7 @@ class PivotItemBase:
 
 @attr.s(frozen=True)
 class RequestPivotItem(PivotItemBase):
-    title: Optional[str] = attr.ib(kw_only=True, default=None)
+    title: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
@@ -874,7 +873,7 @@ class PivotHeaderValue:
 
 @attr.s(slots=True)
 class PivotHeaderInfo:
-    sorting_direction: Optional[OrderDirection] = attr.ib(kw_only=True, default=None)
+    sorting_direction: OrderDirection | None = attr.ib(kw_only=True, default=None)
     role_spec: PivotHeaderRoleSpec = attr.ib(kw_only=True, factory=PivotHeaderRoleSpec)
 
 
@@ -887,15 +886,15 @@ class PivotMeasureSortingSettings:
 
 @attr.s(frozen=True)
 class PivotMeasureSorting:
-    column: Optional[PivotMeasureSortingSettings] = attr.ib(kw_only=True, default=None)
-    row: Optional[PivotMeasureSortingSettings] = attr.ib(kw_only=True, default=None)
+    column: PivotMeasureSortingSettings | None = attr.ib(kw_only=True, default=None)
+    row: PivotMeasureSortingSettings | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s
 class OrderedField:
     field_id: str = attr.ib(kw_only=True)
     direction: OrderDirection = attr.ib(kw_only=True)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
 
     def for_block(self, block_id: int) -> OrderedField:
         return attr.evolve(self, block_id=block_id)
@@ -905,7 +904,7 @@ class OrderedField:
 class ParameterFieldValue:
     field_id: str = attr.ib(kw_only=True)
     value: Any = attr.ib(kw_only=True)
-    block_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    block_id: int | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s
@@ -927,7 +926,7 @@ class ComponentErrorPack:
 class ComponentErrorRegistry:
     items: list[ComponentErrorPack] = attr.ib(factory=list)
 
-    def get_pack(self, id: str) -> Optional[ComponentErrorPack]:  # type: ignore  # TODO: fix
+    def get_pack(self, id: str) -> ComponentErrorPack | None:  # type: ignore  # TODO: fix
         for item in self.items:
             if item.id == id:
                 return item
@@ -941,10 +940,10 @@ class ResultSchemaAux:
 @attr.s
 class Dataset(ApiProxyObject):
     name: str = attr.ib(default=None)
-    revision_id: Optional[str] = attr.ib(default=None)
-    load_preview_by_default: Optional[bool] = attr.ib(default=True)
+    revision_id: str | None = attr.ib(default=None)
+    load_preview_by_default: bool | None = attr.ib(default=True)
     template_enabled: bool = attr.ib(default=False)
-    data_export_forbidden: Optional[bool] = attr.ib(default=False)
+    data_export_forbidden: bool | None = attr.ib(default=False)
     sources: Container[DataSource] = attr.ib(factory=Container, converter=Container)
     source_avatars: Container[SourceAvatar] = attr.ib(factory=Container, converter=Container)
     avatar_relations: Container[AvatarRelation] = attr.ib(factory=Container, converter=Container)
@@ -954,7 +953,7 @@ class Dataset(ApiProxyObject):
     rls2: dict[str, list[RLSEntry]] = attr.ib(factory=dict)
     component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
     obligatory_filters: list[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
-    annotation: Optional[dict] = attr.ib(default=None)
+    annotation: dict | None = attr.ib(default=None)
 
     def prepare(self) -> None:
         super().prepare()
@@ -975,7 +974,7 @@ class Dataset(ApiProxyObject):
         avatar_id = avatar.id if avatar is not None else kwargs.pop("avatar_id", None)
         return ResultField(avatar_id=avatar_id, **kwargs)
 
-    def find_field(self, title: Optional[str] = None, id: Optional[str] = None) -> ResultField:
+    def find_field(self, title: str | None = None, id: str | None = None) -> ResultField:
         for field in self.result_schema:
             if id is not None and field.id == id:
                 return field
@@ -986,8 +985,8 @@ class Dataset(ApiProxyObject):
     def measure_name_as_req_legend_item(
         self,
         role: FieldRole = FieldRole.row,
-        legend_item_id: Optional[int] = None,
-        block_id: Optional[int] = None,
+        legend_item_id: int | None = None,
+        block_id: int | None = None,
     ) -> RequestLegendItem:
         assert role in (FieldRole.row, FieldRole.info)
         if role == FieldRole.row:
@@ -1004,9 +1003,9 @@ class Dataset(ApiProxyObject):
     def placeholder_as_req_legend_item(
         self,
         role: FieldRole = FieldRole.row,
-        template: Optional[str] = None,
-        legend_item_id: Optional[int] = None,
-        block_id: Optional[int] = None,
+        template: str | None = None,
+        legend_item_id: int | None = None,
+        block_id: int | None = None,
     ) -> RequestLegendItem:
         role_spec: RoleSpec
         if role == FieldRole.template:
@@ -1030,11 +1029,11 @@ class Dataset(ApiProxyObject):
         self,
         legend_item_ids: list[int],
         role: PivotRole = PivotRole.pivot_row,
-        title: Optional[str] = None,
-        annotation_type: Optional[str] = None,
-        target_legend_item_ids: Optional[list[int]] = None,
+        title: str | None = None,
+        annotation_type: str | None = None,
+        target_legend_item_ids: list[int] | None = None,
         direction: OrderDirection = OrderDirection.asc,
-        measure_sorting_settings: Optional[PivotMeasureSorting] = None,
+        measure_sorting_settings: PivotMeasureSorting | None = None,
     ) -> RequestPivotItem:
         role_spec = _make_pivot_role_spec(
             role=role,

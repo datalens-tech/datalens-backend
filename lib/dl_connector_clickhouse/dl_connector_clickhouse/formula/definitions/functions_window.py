@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Optional,
     cast,
 )
 
@@ -67,10 +66,10 @@ class RankPercentileTranslationImplementation(FuncTranslationImplementationBase)
         self,
         *raw_args: TranslationCtx,
         translator_cb: TranslateCallback,
-        partition_by: Optional[ClauseList] = None,
-        default_order_by: Optional[ClauseList] = None,
-        translation_ctx: Optional[TranslationCtx] = None,
-        translation_env: Optional[TranslationEnvironment] = None,
+        partition_by: ClauseList | None = None,
+        default_order_by: ClauseList | None = None,
+        translation_ctx: TranslationCtx | None = None,
+        translation_env: TranslationEnvironment | None = None,
     ) -> ClauseElement:
         def translation_rank(value: Any, *args: Any) -> SAFunction:
             return sa.func.RANK(value)

@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 from attr import fields
 
@@ -34,9 +32,9 @@ class EmptyYetCoolConnectorSettings(DeprecatedConnectorSettingsBase):
 
 @attr.s(frozen=True)
 class ExpectedConnectorsSettings(SettingsBase):
-    EMPTY_YET_COOL: Optional[EmptyYetCoolConnectorSettings] = s_attrib("EMPTY_YET_COOL", missing=None)
-    FANTASTIC: Optional[FantasticConnectorSettings] = s_attrib("FANTASTIC", missing=None)
-    WONDERFUL: Optional[WonderfulConnectorSettings] = s_attrib("WONDERFUL", missing=None)
+    EMPTY_YET_COOL: EmptyYetCoolConnectorSettings | None = s_attrib("EMPTY_YET_COOL", missing=None)
+    FANTASTIC: FantasticConnectorSettings | None = s_attrib("FANTASTIC", missing=None)
+    WONDERFUL: WonderfulConnectorSettings | None = s_attrib("WONDERFUL", missing=None)
 
 
 def test_connectors_settings_class_generator():

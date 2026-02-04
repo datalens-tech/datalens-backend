@@ -7,7 +7,6 @@ import sys
 from typing import (
     BinaryIO,
     Iterator,
-    Optional,
     final,
 )
 
@@ -60,9 +59,9 @@ class CSVDialect:
     delimiter: str
     doublequote: bool
     skipinitialspace: bool
-    escapechar: Optional[str] = None
+    escapechar: str | None = None
     lineterminator: str = "\r\n"
-    quotechar: Optional[str] = '"'
+    quotechar: str | None = '"'
     quoting: int = csv.QUOTE_MINIMAL
 
 
@@ -206,7 +205,7 @@ def guess_header_and_schema(
     binary_data_stream: BinaryIO,
     encoding: CSVEncoding,
     dialect: csv.Dialect,
-    has_header: Optional[bool] = None,
+    has_header: bool | None = None,
 ) -> tuple[bool, list[SchemaColumn]]:
     text_io_wrapper = io.TextIOWrapper(binary_data_stream, encoding=encoding.value, newline="")
 
@@ -301,7 +300,7 @@ def reguess_header_and_schema_spreadsheet(
     return has_header, raw_schema
 
 
-def reduce_preview_size_inplace(preview: list[list[Optional[str]]]) -> None:
+def reduce_preview_size_inplace(preview: list[list[str | None]]) -> None:
     LOGGER.info("Trying to shorten cells to decrease preview size.")
     new_size = 0
     for row in preview:
@@ -318,7 +317,7 @@ def reduce_preview_size_inplace(preview: list[list[Optional[str]]]) -> None:
 
 
 @generic_profiler("prepare-preview")
-def prepare_preview(sample: str, dialect: csv.Dialect, has_header: bool) -> list[list[Optional[str]]]:
+def prepare_preview(sample: str, dialect: csv.Dialect, has_header: bool) -> list[list[str | None]]:
     csv.field_size_limit(sys.maxsize)  # TODO: wrap csv.Error exception if limit exceeded
 
     csv_reader = csv.reader(io.StringIO(sample, newline=""), dialect=dialect)
@@ -327,7 +326,7 @@ def prepare_preview(sample: str, dialect: csv.Dialect, has_header: bool) -> list
         # Skip header from preview
         next(csv_reader)
 
-    preview: list[list[Optional[str]]] = []
+    preview: list[list[str | None]] = []
     preview_size = 0
     for row in csv_reader:
         preview.append(row)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "append" of "list" has incompatible type "list[str]"; expected "list[str | None]"  [arg-type]
@@ -350,10 +349,10 @@ def prepare_preview(sample: str, dialect: csv.Dialect, has_header: bool) -> list
     return preview
 
 
-def prepare_preview_from_json_each_row(sample: bytes, has_header: bool) -> list[list[Optional[str]]]:
+def prepare_preview_from_json_each_row(sample: bytes, has_header: bool) -> list[list[str | None]]:
     sample_text = sample.decode("utf-8", errors="replace")
     sample_lines = iter(sample_text.splitlines())
-    preview: list[list[Optional[str]]] = []
+    preview: list[list[str | None]] = []
     preview_size = 0
     if has_header:
         next(sample_lines)

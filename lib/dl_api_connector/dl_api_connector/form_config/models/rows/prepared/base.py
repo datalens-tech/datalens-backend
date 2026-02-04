@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -32,4 +31,4 @@ class PreparedRow(FormRow):
 
 @attr.s(kw_only=True, frozen=True)
 class DisabledMixin(SerializableConfig):
-    disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+    disabled: bool | None = attr.ib(default=None, metadata=skip_if_null())

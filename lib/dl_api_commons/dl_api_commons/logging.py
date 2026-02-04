@@ -9,7 +9,6 @@ from typing import (
     Any,
     ClassVar,
     Iterable,
-    Optional,
     Pattern,
     Sequence,
 )
@@ -103,14 +102,14 @@ class RequestObfuscator:
         )
 
     def mask_sensitive_fields_by_name_in_json_recursive(
-        self, source: Optional[dict[str, Any]], extra_sensitive_key_names: Iterable[str] = ()
-    ) -> Optional[dict[str, Any]]:
+        self, source: dict[str, Any] | None, extra_sensitive_key_names: Iterable[str] = ()
+    ) -> dict[str, Any] | None:
         if source is None:
             return None
 
         all_sensitive_key_names = self.SENSITIVE_KEY_NAMES | frozenset(extra_sensitive_key_names)
 
-        def process_value(key_name: Optional[str], value: Any) -> Any:
+        def process_value(key_name: str | None, value: Any) -> Any:
             if value is None:
                 return None
 
@@ -181,7 +180,7 @@ class RequestLogHelper:
         )
 
     # TODO FIX: Make more strict typing for headers
-    def _normalize_headers(self, headers: Any) -> Optional[dict[str, str]]:
+    def _normalize_headers(self, headers: Any) -> dict[str, str] | None:
         if headers is None:
             return None
         if hasattr(headers, "items"):
@@ -198,17 +197,17 @@ class RequestLogHelper:
         self,
         request_method: str,
         request_path: str,
-        request_headers: Optional[dict],
+        request_headers: dict | None,
         response_status: int,
-        response_headers: Optional[dict],
-        response_timing: Optional[float],
+        response_headers: dict | None,
+        response_timing: float | None,
         # ...
-        user_id: Optional[str] = None,
-        username: Optional[str] = None,
+        user_id: str | None = None,
+        username: str | None = None,
         # extra extra for when they're not in the context.
         # TODO: tenant_id
-        request_id: Optional[str] = None,
-        endpoint_code: Optional[str] = None,
+        request_id: str | None = None,
+        endpoint_code: str | None = None,
     ) -> None:
         """
         Response pre-return detailed (extended) logging.

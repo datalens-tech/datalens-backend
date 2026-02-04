@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     Sequence,
     TypedDict,
     Union,
@@ -13,7 +12,7 @@ from dl_constants.enums import OperationsMode
 
 
 class SchemaKWArgs(TypedDict):
-    only: Optional[Sequence[str]]
+    only: Sequence[str] | None
     partial: Union[Sequence[str], bool]
     exclude: Sequence[str]
     load_only: Sequence[str]
@@ -25,4 +24,4 @@ class FieldExtra:
     partial_in: Sequence[OperationsMode] = ()
     exclude_in: Sequence[OperationsMode] = ()
     editable: Union[bool, Sequence[OperationsMode]] = ()
-    export_fake: Optional[bool] = False
+    export_fake: bool | None = False

@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 import attr
@@ -23,20 +22,20 @@ LOGGER = logging.getLogger(__name__)
 
 class CacheEngineFactory(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def get_cache_engine(self, entity_id: Optional[str]) -> Optional[EntityCacheEngineAsync]:
+    def get_cache_engine(self, entity_id: str | None) -> EntityCacheEngineAsync | None:
         pass
 
 
 @attr.s
 class DefaultCacheEngineFactory(CacheEngineFactory):
     _services_registry_ref: FutureRef[ServicesRegistry] = attr.ib()
-    cache_save_background: Optional[bool] = attr.ib(default=None)
+    cache_save_background: bool | None = attr.ib(default=None)
 
     @property
     def service_registry(self) -> ServicesRegistry:
         return self._services_registry_ref.ref
 
-    def get_cache_engine(self, entity_id: Optional[str]) -> Optional[EntityCacheEngineAsync]:
+    def get_cache_engine(self, entity_id: str | None) -> EntityCacheEngineAsync | None:
         if not entity_id:
             LOGGER.info("Can not create entity cache engine: no entity_id")
             return None

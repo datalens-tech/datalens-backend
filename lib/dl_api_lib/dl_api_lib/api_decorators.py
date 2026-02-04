@@ -4,7 +4,6 @@ import logging
 import sys
 from typing import (
     Callable,
-    Optional,
 )
 
 import flask
@@ -27,7 +26,7 @@ from dl_api_lib.schemas.main import get_api_model
 LOGGER = logging.getLogger(__name__)
 
 
-def abort_request(code, message=None, response_data: Optional[dict] = None) -> None:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def abort_request(code, message=None, response_data: dict | None = None) -> None:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     """
     Copy-paste of `flask_restx.abort`, but without passing additional data through **kwargs.
     So we can to pass field "code" to response json.
@@ -51,9 +50,9 @@ def abort_request(code, message=None, response_data: Optional[dict] = None) -> N
 
 def schematic_request(  # type: ignore  # TODO: fix
     ns: Namespace,
-    body: Optional[Schema] = None,
-    query: Optional[Schema] = None,
-    responses: Optional[dict[int, tuple[str, Optional[Schema]]]] = None,
+    body: Schema | None = None,
+    query: Schema | None = None,
+    responses: dict[int, tuple[str, Schema | None]] | None = None,
     dump: bool = True,
 ):
     """

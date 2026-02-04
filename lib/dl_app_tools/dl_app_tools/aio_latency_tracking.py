@@ -4,7 +4,6 @@ import asyncio
 import logging
 import math
 import time
-from typing import Optional
 
 
 LOGGER = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ class LatencyTracker:
         self._bins: dict[int, int] = {}
         self._last_log_time = time.monotonic()
         self._logger = LOGGER.getChild(self.__class__.__name__)
-        self._task: Optional[asyncio.Task] = None
+        self._task: asyncio.Task | None = None
 
     def _to_bin(self, value: float) -> int:
         return int(self.bins_base ** math.floor(math.log(value) / math.log(self.bins_base)))

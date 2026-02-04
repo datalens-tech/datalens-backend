@@ -8,7 +8,6 @@ import logging
 import time
 from typing import (
     Any,
-    Optional,
 )
 
 from aiohttp import web
@@ -77,14 +76,14 @@ class SentryRequestLoggingContextController(RequestLoggingContextController):
 @attr.s
 class RequestBootstrap:
     req_id_service: RequestId = attr.ib()
-    error_handler: Optional[AIOHTTPErrorHandler] = attr.ib(default=None)
-    timeout_sec: Optional[float] = attr.ib(default=None)
+    error_handler: AIOHTTPErrorHandler | None = attr.ib(default=None)
+    timeout_sec: float | None = attr.ib(default=None)
 
     @web.middleware
     async def middleware(self, request: web.Request, handler: Handler) -> web.StreamResponse:
-        dl_request: Optional[DLRequestBase] = None
+        dl_request: DLRequestBase | None = None
         result = None
-        err_code: Optional[str] = None
+        err_code: str | None = None
         try:
             with contextlib.ExitStack() as top_level_stack:
                 if self.error_handler is not None and self.error_handler.use_sentry:

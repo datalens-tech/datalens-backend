@@ -10,7 +10,6 @@ from typing import (
     ClassVar,
     Generator,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -98,7 +97,7 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
     def nonexistent_table_ident(self, existing_table_ident: TableIdent) -> TableIdent:
         return existing_table_ident.clone(table_name=f"nonexistent_table_{shortuuid.uuid().lower()}")
 
-    def check_db_version(self, db_version: Optional[str]) -> None:
+    def check_db_version(self, db_version: str | None) -> None:
         pass
 
     @pytest.fixture(scope="class")
@@ -165,8 +164,8 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         # Expected data
         user_type: UserDataType = attr.ib()
         nullable: bool = attr.ib(default=True)
-        nt_name: Optional[str] = attr.ib(default=None)
-        nt: Optional[GenericNativeType] = attr.ib(default=None)
+        nt_name: str | None = attr.ib(default=None)
+        nt: GenericNativeType | None = attr.ib(default=None)
 
         def get_expected_native_type(self, conn_type: ConnectionType) -> GenericNativeType:
             if self.nt is not None:
@@ -190,7 +189,7 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
         self,
         request: pytest.FixtureRequest,
         db: Db,
-        sample_table_schema: Optional[str],
+        sample_table_schema: str | None,
         sync_connection_executor: SyncConnExecutorBase,
     ) -> None:
         for schema_name, type_schema in self.get_schemas_for_type_recognition().items():

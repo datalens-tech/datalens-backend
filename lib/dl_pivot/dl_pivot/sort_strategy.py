@@ -16,7 +16,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Optional,
 )
 
 import attr
@@ -70,7 +69,7 @@ class SortValueNormalizer(abc.ABC):
 @attr.s
 class BaseSortValueNormalizer(SortValueNormalizer):
     _legend_item_ids: set[int] = attr.ib(init=False)
-    _value_converter: Optional[Callable[[Any], Any]] = attr.ib(init=False)
+    _value_converter: Callable[[Any], Any] | None = attr.ib(init=False)
 
     @_legend_item_ids.default
     def _make_legend_item_ids(self) -> set[int]:
@@ -80,7 +79,7 @@ class BaseSortValueNormalizer(SortValueNormalizer):
         return {item.legend_item_id for item in legend_items}
 
     @_value_converter.default
-    def _make_value_converter(self) -> Optional[Callable[[Any], Any]]:
+    def _make_value_converter(self) -> Callable[[Any], Any] | None:
         data_types = {self._legend.get_item(legend_item_id).data_type for legend_item_id in self._legend_item_ids}
         assert len(data_types) == 1, "Only single data type is supported within a pivot dimension"
         data_type = next(iter(data_types))

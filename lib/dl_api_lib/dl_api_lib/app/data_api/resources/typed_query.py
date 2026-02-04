@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     Any,
-    Optional,
 )
 
 from aiohttp import web
@@ -111,7 +110,7 @@ class DashSQLTypedQueryView(BaseView):
         return service_registry
 
     @property
-    def connection_id(self) -> Optional[str]:
+    def connection_id(self) -> str | None:
         # TODO: Move to some base class for connection-based views
         return self.request.match_info.get("conn_id")
 

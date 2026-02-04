@@ -9,7 +9,6 @@ from typing import (
     AsyncIterable,
     Awaitable,
     Callable,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -57,7 +56,7 @@ class AsyncExecutionResult:
     cursor_info: dict = attr.ib()
     result: AsyncIterable[TBIDataTable] = attr.ib()  # iterable of tables (chunks)
     # for `autodetect_user_types` result
-    user_types: Optional[list[UserDataType]] = attr.ib(default=None)
+    user_types: list[UserDataType] | None = attr.ib(default=None)
     # DB-specific result. Should be mutable, and get filled after `result` is consumed.
     result_footer: dict = attr.ib(factory=dict)
 
@@ -138,7 +137,7 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
 
     @final
     @init_required
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    async def get_db_version(self, db_ident: DBIdent) -> str | None:
         return await self._get_db_version(db_ident)
 
     @final
@@ -184,7 +183,7 @@ class AsyncConnExecutorBase(ConnExecutorBase, metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    async def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    async def _get_db_version(self, db_ident: DBIdent) -> str | None:
         pass
 
     @abc.abstractmethod

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -40,7 +39,7 @@ class ConnectionMySQL(
     class DataModel(ClassicConnectionSQL.DataModel):
         enforce_collate: MySQLEnforceCollateMode = attr.ib(default=MySQLEnforceCollateMode.off)
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
-        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+        ssl_ca: str | None = attr.ib(kw_only=True, default=None)
 
     def get_conn_dto(self) -> MySQLConnDTO:
         return MySQLConnDTO(

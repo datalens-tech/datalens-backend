@@ -10,7 +10,6 @@ from typing import (
     Callable,
     ClassVar,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -128,14 +127,14 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     """
 
     TARGET_ADAPTER_CLS: ClassVar[type[_DBA_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
-    REMOTE_ADAPTER_CLS: ClassVar[Optional[type[RemoteAsyncAdapter]]] = None
+    REMOTE_ADAPTER_CLS: ClassVar[type[RemoteAsyncAdapter] | None] = None
 
     # Constructor attributes
-    _tpe: Optional[ContextVarExecutor] = attr.ib()
+    _tpe: ContextVarExecutor | None = attr.ib()
 
     # Internals
-    _async_dba_pool: Optional[list[AsyncDBAdapter]] = attr.ib(init=False, default=None)
-    _sync_dba: Optional[SyncDirectDBAdapter] = attr.ib(init=False, default=None)
+    _async_dba_pool: list[AsyncDBAdapter] | None = attr.ib(init=False, default=None)
+    _sync_dba: SyncDirectDBAdapter | None = attr.ib(init=False, default=None)
     _initialization_lock = attr.ib(init=False, factory=asyncio.Lock)
     _dba_attempt_index: int = attr.ib(init=False, default=0)
 
@@ -151,7 +150,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
             raise ValueError("Executor created in WRAPPED mode (no TPE was provided). Async DBA was not created.")
         return self._async_dba_pool[self._dba_attempt_index]
 
-    def _get_sync_sa_adapter(self) -> Optional[SyncDirectDBAdapter]:
+    def _get_sync_sa_adapter(self) -> SyncDirectDBAdapter | None:
         """Method for sync conn executor wrapper. Please do not use it in other places."""
         if not self._is_initialized:
             raise ValueError("Connection executor was not initiated")
@@ -249,7 +248,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     async def _execute_query(self, query: DBAdapterQuery) -> AsyncRawExecutionResult | AsyncRawJsonExecutionResult:
         return await self._target_dba.execute(query)
 
-    def _autodetect_user_types(self, raw_cursor_info: dict) -> Optional[list[UserDataType]]:
+    def _autodetect_user_types(self, raw_cursor_info: dict) -> list[UserDataType] | None:
         db_types = raw_cursor_info.get("db_types")
         if not db_types:
             return None
@@ -300,7 +299,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         await self._target_dba.test()
 
     @_common_exec_wrapper
-    async def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    async def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return await self._target_dba.get_db_version(db_ident)
 
     @_common_exec_wrapper

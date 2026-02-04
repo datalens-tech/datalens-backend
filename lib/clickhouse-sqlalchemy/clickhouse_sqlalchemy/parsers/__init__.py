@@ -1,5 +1,5 @@
 
-# from typing import Dict, Callable, Optional
+# from typing import Dict, Callable
 from collections import namedtuple
 from . import base
 from .base import Parts, ParseError
@@ -89,7 +89,7 @@ def info_jsoncompact():
     )
 
 
-FORMATS = {  # Dict[Optional[str], Callable[[], FormatInfo]
+FORMATS = {  # Dict[str | None, Callable[[], FormatInfo]
     'default': info_tsv,
     'TabSeparatedWithNamesAndTypes': info_tsv,
     'TabSeparatedWithNamesAndTypes with totals': info_tsv_with_totals,

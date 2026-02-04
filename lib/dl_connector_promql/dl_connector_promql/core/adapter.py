@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
 )
 from urllib.parse import (
     quote_plus,
@@ -58,8 +57,8 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         return dict(
             dialect=self._dialect_name,
@@ -118,7 +117,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             path=self._target_dto.path,
         )
 
-    def get_session_auth(self) -> Optional[BasicAuth]:
+    def get_session_auth(self) -> BasicAuth | None:
         if (
             self._target_dto.auth_type == PromQLAuthType.password
             and self._target_dto.username

@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -13,7 +12,7 @@ from dl_formula.definitions.type_strategy import TypeStrategy
 @attr.s(frozen=True)
 class FunctionImplementationSpec:
     name: str = attr.ib(kw_only=True)
-    arg_cnt: Optional[int] = attr.ib(kw_only=True)
+    arg_cnt: int | None = attr.ib(kw_only=True)
     arg_names: Sequence[str] = attr.ib(kw_only=True)
     argument_types: Sequence[ArgTypeMatcher] = attr.ib(kw_only=True)
     return_type: TypeStrategy = attr.ib(kw_only=True)

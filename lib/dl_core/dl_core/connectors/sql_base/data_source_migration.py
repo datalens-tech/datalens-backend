@@ -1,6 +1,5 @@
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -21,37 +20,37 @@ from dl_core.data_source_spec.sql import (
 
 @attr.s(frozen=True)
 class SQLTableDSMI(DataSourceMigrationInterface):
-    schema_name: Optional[str] = attr.ib(kw_only=True, default=None)
-    table_name: Optional[str] = attr.ib(kw_only=True)
+    schema_name: str | None = attr.ib(kw_only=True, default=None)
+    table_name: str | None = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
 class SQLTableWDbDSMI(SQLTableDSMI):
-    db_name: Optional[str] = attr.ib(kw_only=True, default=None)
+    db_name: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
 class SQLSubselectDSMI(DataSourceMigrationInterface):
-    subsql: Optional[str] = attr.ib(kw_only=True)
+    subsql: str | None = attr.ib(kw_only=True)
 
 
 class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
-    table_source_type: ClassVar[Optional[DataSourceType]] = None
-    table_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]] = StandardSQLDataSourceSpec
+    table_source_type: ClassVar[DataSourceType | None] = None
+    table_dsrc_spec_cls: ClassVar[type[DataSourceSpec] | None] = StandardSQLDataSourceSpec
     with_db_name: ClassVar[bool] = False
 
-    subselect_source_type: ClassVar[Optional[DataSourceType]] = None
-    subselect_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]] = SubselectDataSourceSpec
+    subselect_source_type: ClassVar[DataSourceType | None] = None
+    subselect_dsrc_spec_cls: ClassVar[type[DataSourceSpec] | None] = SubselectDataSourceSpec
 
-    default_schema_name: ClassVar[Optional[str]] = None
+    default_schema_name: ClassVar[str | None] = None
 
     def _resolve_schema_name_for_export(
         self,
         source_spec: DataSourceSpec,
         attr_name: str,
-    ) -> Optional[str]:
+    ) -> str | None:
         assert attr_name == "schema_name"
-        schema_name: Optional[str] = getattr(source_spec, attr_name, None)
+        schema_name: str | None = getattr(source_spec, attr_name, None)
         if schema_name == self.default_schema_name:
             schema_name = None
         return schema_name
@@ -60,9 +59,9 @@ class DefaultSQLDataSourceMigrator(SpecBasedSourceMigrator):
         self,
         migration_dto: DataSourceMigrationInterface,
         attr_name: str,
-    ) -> Optional[str]:
+    ) -> str | None:
         assert attr_name == "schema_name"
-        schema_name: Optional[str] = getattr(migration_dto, attr_name, None)
+        schema_name: str | None = getattr(migration_dto, attr_name, None)
         if schema_name is None:
             schema_name = self.default_schema_name
         return schema_name

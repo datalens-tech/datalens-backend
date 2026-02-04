@@ -5,7 +5,6 @@ from typing import (
     Any,
     ClassVar,
     Iterable,
-    Optional,
     final,
 )
 
@@ -51,11 +50,11 @@ class BaseFileSourceSchema(Schema):
         target: type[BaseFileS3Connection.FileDataSource]
 
     @property
-    def operations_mode(self) -> Optional[CreateMode | ImportMode]:
+    def operations_mode(self) -> CreateMode | ImportMode | None:
         return self.context.get(self.CTX_KEY_OPERATIONS_MODE)
 
     @staticmethod
-    def get_field_extra(f: fields.Field) -> Optional[FieldExtra]:
+    def get_field_extra(f: fields.Field) -> FieldExtra | None:
         return f.metadata.get("bi_extra", None)
 
     @classmethod

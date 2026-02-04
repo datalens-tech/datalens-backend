@@ -13,7 +13,6 @@ from typing import (
     Collection,
     Generator,
     NamedTuple,
-    Optional,
 )
 
 from dynamic_enum import (
@@ -210,11 +209,11 @@ def register_default_dialect(dialect_name: DialectName, dialect_combo: DialectCo
 
 def from_name_and_version(
     dialect_name: DialectName,
-    dialect_version: Optional[str],
+    dialect_version: str | None,
 ) -> DialectCombo:
     """Return ``DialectCombo`` instance corresponding to the version string (``SELECT VERSION()``)"""
 
-    parsed_version: Optional[VersionType]
+    parsed_version: VersionType | None
     if dialect_version:
         version_match = re.search(r"(?P<version>\d+(\.\d+)+)", dialect_version)
         if version_match is None:

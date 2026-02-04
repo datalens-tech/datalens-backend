@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -38,10 +37,10 @@ _DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV", bound=DataStreamBase)
 
 class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_TV], metaclass=abc.ABCMeta):
     batch_size_in_bytes: int = 30 * 1024**2
-    max_batch_size: Optional[int] = None
+    max_batch_size: int | None = None
 
-    _upload_id: Optional[str] = None
-    _part_tags: Optional[list[tuple[int, str]]] = None
+    _upload_id: str | None = None
+    _part_tags: list[tuple[int, str]] | None = None
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
@@ -149,11 +148,11 @@ class S3JsonEachRowUntypedFileDataSink(S3FileDataSink[SimpleUntypedDataStream, l
 
 class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncDataStream]):
     batch_size_in_bytes: int = 30 * 1024**2
-    max_batch_size: Optional[int] = None
+    max_batch_size: int | None = None
     max_file_size_bytes: ClassVar[int] = 200 * 1024**2
 
-    _upload_id: Optional[str] = None
-    _part_tags: Optional[list[tuple[int, str]]] = None
+    _upload_id: str | None = None
+    _part_tags: list[tuple[int, str]] | None = None
     _part_number: int = 1
     _multipart_upload_started: bool = False
 

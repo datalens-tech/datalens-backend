@@ -7,7 +7,6 @@ from typing import (
     Iterable,
     Iterator,
     NamedTuple,
-    Optional,
     Sequence,
 )
 
@@ -56,7 +55,7 @@ class DataCellConverter:
     @_legend_item_id_map.default
     def _make_legend_item_id_map(self) -> dict[int, int]:
         main_field_items_by_field_id: dict[tuple[str, int], int] = {}
-        main_template_items_by_template: dict[tuple[Optional[str], int], int] = {}
+        main_template_items_by_template: dict[tuple[str | None, int], int] = {}
 
         legend_item_id_map: dict[int, int] = {}
         for item in self._legend.items:
@@ -113,7 +112,7 @@ class DataCellConverter:
 
 class TransposedDataRow(NamedTuple):
     dimensions: tuple[DataCellVector, ...]
-    value: Optional[DataCellVector]
+    value: DataCellVector | None
 
 
 @attr.s
@@ -136,7 +135,7 @@ class MeasureDataTransposer:
     _measure_piid_and_name_mask_transp: Sequence[tuple[int, str]] = attr.ib(init=False)
     _anno_piid_list_by_measure_liid: dict[int, list[int]] = attr.ib(init=False)
     _should_add_fake_measure: bool = attr.ib(init=False)
-    _measure_name_legend_item_id: Optional[int] = attr.ib(init=False)
+    _measure_name_legend_item_id: int | None = attr.ib(init=False)
 
     def __attrs_post_init__(self) -> None:
         self._dimension_pivot_item_ids = set()

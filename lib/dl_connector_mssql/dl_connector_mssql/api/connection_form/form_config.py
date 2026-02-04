@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
@@ -26,8 +24,8 @@ from dl_connector_mssql.core.settings import DeprecatedMSSQLConnectorSettings
 class MSSQLConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
-        tenant: Optional[TenantDef],
+        connector_settings: DeprecatedConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, DeprecatedMSSQLConnectorSettings)
 

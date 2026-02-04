@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     BinaryIO,
     Iterator,
-    Optional,
     cast,
 )
 
@@ -45,7 +44,7 @@ def make_s3_table_func_sql_source(
     filename: str,
     file_fmt: str,
     for_debug: bool = False,
-    raw_schema_override: Optional[list[SchemaColumn]] = None,
+    raw_schema_override: list[SchemaColumn] | None = None,
 ) -> str:
     source_raw_schema: list[SchemaColumn] = conn.get_file_source_by_id(source_id).raw_schema or []
     q = Quoter().quote_str
@@ -91,7 +90,7 @@ def copy_from_s3_to_s3(
     src_file: S3Object,
     dst_file: S3Object,
     file_type: FileType,
-    file_settings: Optional[FileSettings],
+    file_settings: FileSettings | None,
     file_source_settings: FileSourceSettings,
     raw_schema: list[SchemaColumn],
 ) -> None:

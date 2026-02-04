@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional
 
 from dl_query_processing.compilation.primitives import (
     CompiledMultiQueryBase,
@@ -19,5 +18,5 @@ class MultiQuerySplitterBase(abc.ABC):
         requirement_subtree: CompiledMultiQueryBase,
         query_id_gen: PrefixedIdGen,
         expr_id_gen: PrefixedIdGen,
-    ) -> Optional[CompiledMultiQueryPatch]:
+    ) -> CompiledMultiQueryPatch | None:
         raise NotImplementedError

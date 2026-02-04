@@ -14,7 +14,6 @@ from typing import (
     Generator,
     Iterable,
     Iterator,
-    Optional,
 )
 
 import attr
@@ -34,7 +33,7 @@ class CommitState(Enum):
 class CommitSavedStateItem:
     commit_id: str = attr.ib(kw_only=True)
     commit_state: CommitState = attr.ib(kw_only=True)
-    message: Optional[str] = attr.ib(kw_only=True)
+    message: str | None = attr.ib(kw_only=True)
     timestamp: int = attr.ib(kw_only=True)
 
 
@@ -52,8 +51,8 @@ class CommitPickerState:
         self,
         commit_id: str,
         state: CommitState,
-        message: Optional[str] = None,
-        timestamp: Optional[int] = None,
+        message: str | None = None,
+        timestamp: int | None = None,
     ) -> None:
         if state == CommitState.new:
             if commit_id in self._commit_state_items:
@@ -178,8 +177,8 @@ class CherryFarmer:
         self,
         commit_id: str,
         state: CommitState,
-        message: Optional[str] = None,
-        timestamp: Optional[int] = None,
+        message: str | None = None,
+        timestamp: int | None = None,
     ) -> None:
         if message == "":
             message = f"Set to state {state.name!r} at {datetime.datetime.utcnow().isoformat()}"
@@ -190,7 +189,7 @@ class CherryFarmer:
         commit_id: str,
         src_branch: str,
         dst_branch: str,
-    ) -> Optional[CommitRuntimeStateItem]:
+    ) -> CommitRuntimeStateItem | None:
         """Search for a commit that might be a cherry pick of another commit"""
         # Get commits with reversed branch roles
         commits = self._git_manager.iter_commits(base=src_branch, head=dst_branch, only_missing_commits=True)

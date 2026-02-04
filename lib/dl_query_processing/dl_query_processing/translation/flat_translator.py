@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Callable,
-    Optional,
 )
 
 import attr
@@ -51,7 +50,7 @@ from dl_query_processing.translation.primitives import (
 @attr.s
 class FlatQueryTranslator:
     _columns: ColumnRegistry = attr.ib(kw_only=True)
-    _inspect_env: Optional[InspectionEnvironment] = attr.ib(kw_only=True, factory=InspectionEnvironment)  # noqa
+    _inspect_env: InspectionEnvironment | None = attr.ib(kw_only=True, factory=InspectionEnvironment)  # noqa
     _function_scopes: int = attr.ib(kw_only=True)
     _dialect: DialectCombo = attr.ib(kw_only=True)
     # Generated attributes
@@ -140,14 +139,14 @@ class FlatQueryTranslator:
 
     def _get_detailed_types(
         self, compiled_flat_query: CompiledQuery, translated_select: list[ExpressionCtxExt]
-    ) -> Optional[list[Optional[DetailedType]]]:
+    ) -> list[DetailedType | None] | None:
         field_order = compiled_flat_query.meta.field_order
         if field_order is None:
             return None
 
-        result: list[Optional[DetailedType]] = []
+        result: list[DetailedType | None] = []
         for field_idx, field_id in field_order:
-            detailed_type: Optional[DetailedType]
+            detailed_type: DetailedType | None
             if field_id is None:
                 detailed_type = None
             else:

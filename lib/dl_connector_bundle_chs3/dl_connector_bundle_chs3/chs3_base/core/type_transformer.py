@@ -4,7 +4,6 @@ import datetime
 import re
 from typing import (
     Any,
-    Optional,
 )
 
 from clickhouse_sqlalchemy import types as ch_types
@@ -22,7 +21,7 @@ from dl_type_transformer.type_transformer import (
 from dl_connector_clickhouse.core.clickhouse_base.type_transformer import ClickHouseTypeTransformer
 
 
-def make_int_cleanup_spaces(value: Any) -> Optional[int]:
+def make_int_cleanup_spaces(value: Any) -> int | None:
     if isinstance(value, str):
         if " " in value:
             value = value.replace(" ", "")
@@ -32,7 +31,7 @@ def make_int_cleanup_spaces(value: Any) -> Optional[int]:
 _spaces_in_numbers_re = re.compile(r"(?<=\d) (?=\d)")
 
 
-def make_float_cleanup_spaces(value: Any) -> Optional[float]:
+def make_float_cleanup_spaces(value: Any) -> float | None:
     if isinstance(value, str):
         if "," in value:
             value = value.replace(",", ".")
@@ -41,7 +40,7 @@ def make_float_cleanup_spaces(value: Any) -> Optional[float]:
     return float(value)
 
 
-def make_boolean(value: Any) -> Optional[bool]:
+def make_boolean(value: Any) -> bool | None:
     if value is None:
         return None
     if isinstance(value, str):
@@ -53,7 +52,7 @@ def make_boolean(value: Any) -> Optional[bool]:
     return bool(value)
 
 
-def _make_datetime(value: Any) -> Optional[datetime.datetime]:
+def _make_datetime(value: Any) -> datetime.datetime | None:
     # should parse formats like:
     # %Y-%m-%d %H:%M:%S.%f
     # %Y-%m-%d %H:%M:%S.%f+timezone
@@ -95,7 +94,7 @@ class DatetimeFileCommonTypeCaster(TypeCaster):
 
 class DatetimeFileTypeCaster(DatetimeFileCommonTypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
-        dt: Optional[datetime.datetime] = DatetimeFileCommonTypeCaster.cast_func(value)
+        dt: datetime.datetime | None = DatetimeFileCommonTypeCaster.cast_func(value)
         if dt is not None:
             if dt.tzinfo is not None and dt.utcoffset() is not None:
                 dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore  # 2024-01-30 # TODO: No overload variant of "__sub__" of "datetime" matches argument type "None"  [operator]
@@ -110,7 +109,7 @@ class DatetimeTZFileTypeCaster(DatetimeFileCommonTypeCaster):
 
 class GenericDatetimeFileTypeCaster(DatetimeFileCommonTypeCaster):
     def _cast_for_input(self, value: Any) -> Any:
-        dt: Optional[datetime.datetime] = DatetimeFileCommonTypeCaster.cast_func(value)
+        dt: datetime.datetime | None = DatetimeFileCommonTypeCaster.cast_func(value)
         if dt is not None:
             if dt.tzinfo is not None and dt.utcoffset() is not None:
                 dt = dt.replace(tzinfo=None) - dt.utcoffset()  # type: ignore  # 2024-01-30 # TODO: No overload variant of "__sub__" of "datetime" matches argument type "None"  [operator]

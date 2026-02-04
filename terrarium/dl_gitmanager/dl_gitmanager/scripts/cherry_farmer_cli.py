@@ -5,7 +5,6 @@ from pathlib import Path
 import sys
 import time
 from typing import (
-    Optional,
     TextIO,
 )
 
@@ -167,7 +166,7 @@ class GitManagerTool(CliToolBase):
             timestamp=commit_state_item.saved_state.timestamp,
         )
 
-    def _prompt_mark_commit(self, commit_state_item: CommitRuntimeStateItem) -> tuple[CommitState, Optional[str]]:
+    def _prompt_mark_commit(self, commit_state_item: CommitRuntimeStateItem) -> tuple[CommitState, str | None]:
         while True:
             raw_state = input(f'{Fore.GREEN}Mark as [picked|ignored|new] or "exit"> {Style.RESET_ALL}')
             if raw_state == "exit":

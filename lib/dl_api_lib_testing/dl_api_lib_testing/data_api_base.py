@@ -6,7 +6,6 @@ from typing import (
     Generator,
     Iterable,
     NamedTuple,
-    Optional,
 )
 
 from aiohttp import web
@@ -151,7 +150,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     def data_api(
         self,
         data_api_sync_client: SyncHttpClientBase,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
     ) -> SyncHttpDataApiV2:
         return SyncHttpDataApiV2(client=data_api_sync_client, headers=bi_headers or {})
 
@@ -239,7 +238,7 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp
 
-    def get_preview(self, ds: Dataset, data_api: SyncHttpDataApiV2, limit: Optional[int] = None) -> HttpDataApiResponse:
+    def get_preview(self, ds: Dataset, data_api: SyncHttpDataApiV2, limit: int | None = None) -> HttpDataApiResponse:
         if limit:
             data_resp = data_api.get_preview(dataset=ds, limit=limit)
         else:

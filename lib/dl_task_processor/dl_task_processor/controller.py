@@ -2,7 +2,6 @@ import argparse
 import json
 from typing import (
     Iterable,
-    Optional,
 )
 
 import attr
@@ -103,7 +102,7 @@ class Cli:
     _registry: TaskRegistry = attr.ib()
 
     @classmethod
-    def parse_params(cls, args: Optional[list[str]] = None) -> argparse.Namespace:
+    def parse_params(cls, args: list[str] | None = None) -> argparse.Namespace:
         parser = argparse.ArgumentParser(description="Task Processor controller")
         subparsers = parser.add_subparsers(dest="subparser")
 

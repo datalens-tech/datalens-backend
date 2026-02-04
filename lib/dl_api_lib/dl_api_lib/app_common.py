@@ -5,7 +5,6 @@ import logging.config
 from typing import (
     TYPE_CHECKING,
     Generic,
-    Optional,
     TypeVar,
     final,
 )
@@ -88,11 +87,11 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         self,
         settings: TSettings,
         ca_data: bytes,
-    ) -> Optional[InstallationSpecificServiceRegistryFactory]:
+    ) -> InstallationSpecificServiceRegistryFactory | None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_entity_usage_checker(self, settings: TSettings) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: TSettings) -> EntityUsageChecker | None:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -100,15 +99,15 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_rqe_caches_settings(self, settings: TSettings) -> Optional[RQECachesSetting]:
+    def _get_rqe_caches_settings(self, settings: TSettings) -> RQECachesSetting | None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_default_cache_ttl_settings(self, settings: TSettings) -> Optional[CacheTTLConfig]:
+    def _get_default_cache_ttl_settings(self, settings: TSettings) -> CacheTTLConfig | None:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_connector_availability(self, settings: TSettings) -> Optional[ConnectorAvailabilityConfig]:
+    def _get_connector_availability(self, settings: TSettings) -> ConnectorAvailabilityConfig | None:
         raise NotImplementedError
 
     @property
@@ -145,7 +144,7 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             localization_factory.get_for_locale(locale=settings.DEFAULT_LOCALE) if settings.DEFAULT_LOCALE else None
         )
 
-        pivot_transformer_factory: Optional[PivotTransformerFactory] = None
+        pivot_transformer_factory: PivotTransformerFactory | None = None
         if settings.PIVOT_ENGINE_TYPE is not None:
             pivot_transformer_factory_cls = get_pivot_transformer_factory_cls(
                 pivot_engine_type=settings.PIVOT_ENGINE_TYPE

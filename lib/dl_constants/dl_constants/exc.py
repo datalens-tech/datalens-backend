@@ -1,7 +1,6 @@
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 from typing_extensions import final
@@ -22,7 +21,7 @@ class DLBaseException(Exception):
     _message: str
 
     default_message = "Internal Server Error"
-    formatting_messages: Optional[dict[frozenset[str], str]] = None
+    formatting_messages: dict[frozenset[str], str] | None = None
 
     # Auxiliary error info. Will not be shown to user (or will be shown as is only in intranet)
     debug_info: dict[str, Any]
@@ -35,11 +34,11 @@ class DLBaseException(Exception):
 
     def __init__(
         self,
-        message: Optional[str] = None,
-        details: Optional[dict[str, Any]] = None,
-        orig: Optional[Exception] = None,
-        debug_info: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
+        message: str | None = None,
+        details: dict[str, Any] | None = None,
+        orig: Exception | None = None,
+        debug_info: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
     ):
         self._message = message or self.default_message
         self.details = details or {}

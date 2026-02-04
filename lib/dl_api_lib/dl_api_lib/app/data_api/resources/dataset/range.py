@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Collection,
-    Optional,
 )
 
 from aiohttp import web
@@ -92,7 +91,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
     async def execute_query(
         self,
         block_spec: BlockSpec,
-        possible_data_lengths: Optional[Collection] = None,
+        possible_data_lengths: Collection | None = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> PostprocessedQuery:

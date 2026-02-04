@@ -1,17 +1,16 @@
 import enum
 from typing import (
-    Optional,
     overload,
 )
 
 
 class AuthFailureError(Exception):
     internal_message: str
-    user_message: Optional[str]
-    response_code: Optional[int]
+    user_message: str | None
+    response_code: int | None
 
     def __init__(
-        self, internal_message: str, *, user_message: Optional[str] = None, response_code: Optional[int] = None
+        self, internal_message: str, *, user_message: str | None = None, response_code: int | None = None
     ) -> None:
         self.internal_message = internal_message
         self.user_message = user_message
@@ -20,7 +19,7 @@ class AuthFailureError(Exception):
 
 
 class BadHeaderPrefixError(AuthFailureError):
-    response_code: Optional[int] = 401
+    response_code: int | None = 401
 
 
 class AuthTokenType(enum.Enum):

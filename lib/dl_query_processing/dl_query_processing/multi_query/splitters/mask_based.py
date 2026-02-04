@@ -7,7 +7,6 @@ from typing import (
     Any,
     ClassVar,
     Collection,
-    Optional,
     Sequence,
 )
 
@@ -122,8 +121,8 @@ class QuerySplitMask:
     add_formulas: tuple[AddFormulaInfo, ...] = attr.ib(kw_only=True)
     filter_indices: frozenset[int] = attr.ib(kw_only=True)
     add_filters: tuple[CompiledFormulaInfo, ...] = attr.ib(kw_only=True)
-    join_type: Optional[JoinType] = attr.ib(kw_only=True)
-    joining_node: Optional[formula_fork_nodes.QueryForkJoiningBase] = attr.ib(kw_only=True)
+    join_type: JoinType | None = attr.ib(kw_only=True)
+    joining_node: formula_fork_nodes.QueryForkJoiningBase | None = attr.ib(kw_only=True)
     is_base: bool = attr.ib(kw_only=True, default=False)
 
     # calculated props
@@ -285,13 +284,13 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         self,
         left_subquery_mask: QuerySplitMask,
         right_subquery_mask: QuerySplitMask,
-    ) -> Optional[CompiledJoinOnFormulaInfo]:
-        def and_part(condition: Optional[formula_nodes.Binary], part: formula_nodes.Binary) -> formula_nodes.Binary:
+    ) -> CompiledJoinOnFormulaInfo | None:
+        def and_part(condition: formula_nodes.Binary | None, part: formula_nodes.Binary) -> formula_nodes.Binary:
             if condition is None:
                 return part
             return formula_nodes.Binary.make(name="and", left=condition, right=part)
 
-        join_expr: Optional[formula_nodes.Binary] = None
+        join_expr: formula_nodes.Binary | None = None
 
         aliases_from_right_to_left: dict[str, str] = {}
         left_map = {add_formula.expr.extract: add_formula.alias for add_formula in left_subquery_mask.add_formulas}
@@ -376,7 +375,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         formula_split_masks: list[AliasedFormulaSplitMask],
         base_gb_alias_by_extract: dict[NodeExtract, str],
         formula_alias_to_subquery_id_map: dict[str, str],
-        substitute_error_node: Optional[formula_aux_nodes.ErrorNode] = None,
+        substitute_error_node: formula_aux_nodes.ErrorNode | None = None,
         exclude_indices: Collection[int] = frozenset(),
     ) -> list[CompiledFormulaInfo]:
         if exclude_indices:
@@ -496,7 +495,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
             for add_formula in subquery_mask.add_formulas:
                 formula_alias_to_subquery_id_map[add_formula.alias] = subquery_mask.subquery_id
 
-        substitute_error_node: Optional[formula_aux_nodes.ErrorNode] = None
+        substitute_error_node: formula_aux_nodes.ErrorNode | None = None
         if not subqueries_compatible:
             substitute_error_node = formula_aux_nodes.ErrorNode.make(
                 message="LOD dimensions are incompatible",
@@ -722,7 +721,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         split_masks: list[QuerySplitMask],
         base_formula_split_masks: list[AliasedFormulaSplitMask],
         base_filter_indices: set[int],
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Here we try to determine if there is a need to generate a "base" sub-query
         that all the explicitly generated ones will be joined to.
@@ -750,7 +749,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         # Try to find a candidate for being the base sub-query among the existing sub-query masks
         max_dimensions = max(mask.group_by_count for mask in split_masks)
 
-        max_query_id: Optional[str] = None
+        max_query_id: str | None = None
         max_query_has_all_base_dimensions = False
         max_query_has_all_base_filters = True
         max_query_has_direct_join = True
@@ -959,7 +958,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         requirement_subtree: CompiledMultiQueryBase,
         query_id_gen: PrefixedIdGen,
         expr_id_gen: PrefixedIdGen,
-    ) -> Optional[CompiledMultiQueryPatch]:
+    ) -> CompiledMultiQueryPatch | None:
         split_masks = self.get_split_masks(query, expr_id_gen=expr_id_gen, query_id_gen=query_id_gen)
         if not split_masks:
             return None

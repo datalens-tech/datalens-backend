@@ -7,7 +7,6 @@ from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Collection,
-    Optional,
 )
 
 import attr
@@ -44,7 +43,7 @@ class OperationProcessorAsyncBase(abc.ABC):
     _reporting_registry: ReportingRegistry = attr.ib(kw_only=True)
     _reporting_enabled: bool = attr.ib(kw_only=True, default=True)
     _cache_options_builder: DatasetOptionsBuilder = attr.ib(init=False)
-    _db_ex_adapter: Optional[ProcessorDbExecAdapterBase] = attr.ib(init=False, default=None)
+    _db_ex_adapter: ProcessorDbExecAdapterBase | None = attr.ib(init=False, default=None)
 
     def __attrs_post_init__(self) -> None:
         self._cache_options_builder = self._make_cache_options_builder()
@@ -55,7 +54,7 @@ class OperationProcessorAsyncBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _make_db_ex_adapter(self) -> Optional[ProcessorDbExecAdapterBase]:
+    def _make_db_ex_adapter(self) -> ProcessorDbExecAdapterBase | None:
         raise NotImplementedError
 
     @property
@@ -64,7 +63,7 @@ class OperationProcessorAsyncBase(abc.ABC):
         return self._db_ex_adapter
 
     @abc.abstractmethod
-    async def ping(self) -> Optional[int]:
+    async def ping(self) -> int | None:
         """Check processor readiness"""
 
     async def execute_operation(self, op: BaseOp, ctx: OpExecutionContext) -> AbstractStream:
@@ -82,9 +81,9 @@ class OperationProcessorAsyncBase(abc.ABC):
 
     async def __aexit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         await self.end()
 
@@ -168,7 +167,7 @@ class OperationProcessorAsyncBase(abc.ABC):
 
         LOGGER.info(f'Processor got operations: {", ".join([type(op).__name__ for op in operations])}')
 
-        exec_exception: Optional[Exception] = None
+        exec_exception: Exception | None = None
         try:
             # Execute and get output streams
             stream_list = await self.execute_operations(ctx=ctx, output_stream_ids=output_stream_ids)
@@ -200,7 +199,7 @@ class OperationProcessorAsyncBase(abc.ABC):
     def _save_end_exec_reporting_record(
         self,
         ctx: OpExecutionContext,
-        exec_exception: Optional[Exception],
+        exec_exception: Exception | None,
     ) -> None:
         report = DataProcessingEndReportingRecord(
             timestamp=time.time(),
@@ -212,5 +211,5 @@ class OperationProcessorAsyncBase(abc.ABC):
     def pre_run(self, ctx: OpExecutionContext) -> None:
         self._save_start_exec_reporting_record(ctx=ctx)
 
-    def post_run(self, ctx: OpExecutionContext, exec_exception: Optional[Exception]) -> None:
+    def post_run(self, ctx: OpExecutionContext, exec_exception: Exception | None) -> None:
         self._save_end_exec_reporting_record(ctx=ctx, exec_exception=exec_exception)

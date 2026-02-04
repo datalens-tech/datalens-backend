@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 from typing import (
-    Optional,
     Union,
 )
 
@@ -75,7 +74,7 @@ def utcize(dt: datetime.datetime) -> datetime.datetime:
     return dt.replace(tzinfo=datetime.timezone.utc)
 
 
-def utc_ts(*args, tzinfo: Optional[datetime.tzinfo] = None) -> float:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def utc_ts(*args, tzinfo: datetime.tzinfo | None = None) -> float:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
     if len(args) == 1:
         dt = args[0]
         if not isinstance(dt, datetime.datetime):

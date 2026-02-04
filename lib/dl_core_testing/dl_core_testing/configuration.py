@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     Collection,
-    Optional,
 )
 
 import attr
@@ -74,7 +73,7 @@ class CoreTestEnvironmentConfiguration:
     us_master_token: str = attr.ib(kw_only=True)
     fernet_key: str = attr.ib(kw_only=True, default=DEFAULT_FERNET_KEY)
 
-    core_connector_ep_names: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
+    core_connector_ep_names: Collection[str] | None = attr.ib(kw_only=True, default=None)
 
     redis_host: str = attr.ib(default="")
     redis_port: int = attr.ib(default=6379)

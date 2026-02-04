@@ -10,8 +10,6 @@ import time
 from typing import (
     Any,
     ClassVar,
-    Optional,
-    Union,
 )
 
 from aiogoogle import (
@@ -100,7 +98,7 @@ def google_api_error_to_file_uploader_exception(err: HTTPError) -> file_upl_exc.
 
 @attr.s
 class GSheetsOAuth2:
-    access_token: Optional[str] = attr.ib(repr=False)
+    access_token: str | None = attr.ib(repr=False)
     refresh_token: str = attr.ib(repr=False)
 
 
@@ -108,9 +106,9 @@ class AiohttpGSheetsSession(AiohttpSession):
     def __init__(
         self,
         *args: Any,
-        proxy: Optional[StrOrURL] = None,
-        proxy_headers: Optional[dict[str, str]] = None,
-        ssl: Optional[Union[SSLContext, bool, Fingerprint]] = True,
+        proxy: StrOrURL | None = None,
+        proxy_headers: dict[str, str] | None = None,
+        ssl: SSLContext | bool | Fingerprint | None = True,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, **kwargs)
@@ -194,13 +192,13 @@ class GSheetsClient:
     settings: GSheetsSettings = attr.ib()
     _tpe: ContextVarExecutor = attr.ib()
     _loop: AbstractEventLoop = attr.ib(init=False, factory=asyncio.get_event_loop)
-    auth: Optional[GSheetsOAuth2] = attr.ib(default=None)
+    auth: GSheetsOAuth2 | None = attr.ib(default=None)
 
     session_timeout: ClassVar[ClientTimeout] = ClientTimeout(total=180.0)
 
     last_request_size_bytes: int = attr.ib(init=False, default=-1)
-    _aiogoogle: Optional[Aiogoogle] = attr.ib(init=False, default=None)
-    _sheets_api: Optional[GoogleAPI] = attr.ib(init=False, default=None)
+    _aiogoogle: Aiogoogle | None = attr.ib(init=False, default=None)
+    _sheets_api: GoogleAPI | None = attr.ib(init=False, default=None)
 
     async def __aenter__(self: GSheetsClient) -> GSheetsClient:
         self._aiogoogle = Aiogoogle(
@@ -334,7 +332,7 @@ class GSheetsClient:
             number_format_type=number_format,
         )
 
-    def _get_sheet_data(self, sheet: dict[str, Any], num_rows: Optional[int] = None) -> list[list[Cell]]:
+    def _get_sheet_data(self, sheet: dict[str, Any], num_rows: int | None = None) -> list[list[Cell]]:
         data: list[list[Cell]] = []
         rows_read = 0
         for rowdata in sheet["data"][0].get("rowData", []):
@@ -395,7 +393,7 @@ class GSheetsClient:
         deadline = 220  # maximum number of seconds to keep sending requests
         current_backoff_sum = 0
         current_try = 0
-        resp_json: Optional[dict] = None
+        resp_json: dict | None = None
         while True:
             try:
                 if self.auth is not None:
@@ -433,7 +431,7 @@ class GSheetsClient:
         self.last_response_size_bytes = session.last_response_size_bytes
         return resp_json
 
-    async def _request_spreadsheet(self, spreadsheet_id: str, include_data: bool, range: Optional[str] = None) -> dict:
+    async def _request_spreadsheet(self, spreadsheet_id: str, include_data: bool, range: str | None = None) -> dict:
         await self._require_init()
         assert self._sheets_api is not None
 
@@ -466,7 +464,7 @@ class GSheetsClient:
         self,
         spreadsheet_id: str,
         include_data: bool = True,
-        num_rows: Optional[int] = None,
+        num_rows: int | None = None,
     ) -> Spreadsheet:
         """
         :param spreadsheet_id: ID of the spreadsheet to get, e.g. 1rnUFa7AiSKD5O80IKCvMy2cSZvLU1kRw9dxbtZbDMWc
@@ -480,7 +478,7 @@ class GSheetsClient:
         sheets = []
         for sheet in resp_json.get("sheets", []):
             sheet_properties = sheet["properties"]
-            data: Optional[list[list[Cell]]]
+            data: list[list[Cell]] | None
             if include_data:
                 data = await self._loop.run_in_executor(self._tpe, self._get_sheet_data, sheet, num_rows)
             else:
@@ -502,7 +500,7 @@ class GSheetsClient:
             sheets=sheets,
         )
 
-    async def get_spreadsheet_sample(self, spreadsheet_id: str, sample_rows: Optional[int] = None) -> Spreadsheet:
+    async def get_spreadsheet_sample(self, spreadsheet_id: str, sample_rows: int | None = None) -> Spreadsheet:
         """
         :param spreadsheet_id: spreadsheetId
         :param sample_rows: rows to request from every sheet (for values), default is `2600 / column count * 50` (~4 MB in each response, Google recommends 2 MB)

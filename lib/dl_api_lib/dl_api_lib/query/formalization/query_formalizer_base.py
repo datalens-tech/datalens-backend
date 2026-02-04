@@ -5,7 +5,6 @@ import logging
 from typing import (
     AbstractSet,
     Collection,
-    Optional,
     Sequence,
 )
 
@@ -92,7 +91,7 @@ class QuerySpecFormalizerBase(abc.ABC):
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
+    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], AvatarId | None]:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -102,7 +101,7 @@ class QuerySpecFormalizerBase(abc.ABC):
     ) -> list[ParameterValueSpec]:
         raise NotImplementedError
 
-    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[Optional[int], Optional[int]]:
+    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[int | None, int | None]:
         return block_spec.limit, block_spec.offset
 
     def make_query_meta(
@@ -110,7 +109,7 @@ class QuerySpecFormalizerBase(abc.ABC):
         block_spec: BlockSpec,
         phantom_select_ids: list[FieldId],
         select_specs: list[SelectFieldSpec],
-        root_avatar_id: Optional[AvatarId],
+        root_avatar_id: AvatarId | None,
     ) -> QueryMetaInfo:
         row_count_hard_limit = block_spec.row_count_hard_limit
         if row_count_hard_limit is None:

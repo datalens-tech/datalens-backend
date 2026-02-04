@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_constants.enums import NotificationLevel
 from dl_core.reporting.notifications import BaseNotification
 
@@ -17,7 +15,7 @@ class StaleDataNotification(BaseNotification):
 
 
 class DataUpdateFailureNotification(BaseNotification):
-    def __init__(self, err_code: str, request_id: Optional[str]) -> None:
+    def __init__(self, err_code: str, request_id: str | None) -> None:
         super().__init__()
         self.err_code = err_code
         self.request_id = request_id or "unknown"

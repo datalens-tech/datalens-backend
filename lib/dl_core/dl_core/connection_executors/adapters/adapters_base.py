@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Generator,
     Iterable,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -63,7 +62,7 @@ class DBAdapterQueryResult:
     cursor_info: dict = attr.ib()
     data_chunks: Iterable[Sequence] = attr.ib()
     # Notable difference from `cursor_info`: raw value is not meant to be serialized.
-    raw_cursor_info: Optional[ExecutionStepCursorInfo] = attr.ib(default=None)
+    raw_cursor_info: ExecutionStepCursorInfo | None = attr.ib(default=None)
 
     def get_all(self) -> list[Sequence]:
         """
@@ -140,13 +139,13 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
     def test(self) -> None:
         pass
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return None
 
     def execute_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         return self._sync_typed_query_action.run_typed_query_action(typed_query=typed_query)
 
-    # TODO CONSIDER: Make version with simplified interface execute(query: str, db_name: Optional[str] = None)
+    # TODO CONSIDER: Make version with simplified interface execute(query: str, db_name: str | None = None)
     @final
     def execute(self, query: DBAdapterQuery) -> DBAdapterQueryResult:
         steps_generator = self.execute_by_steps(query)
@@ -167,7 +166,7 @@ class SyncDirectDBAdapter(CommonBaseDirectAdapter[_TARGET_DTO_TV], metaclass=abc
             raw_cursor_info=cursor_info_step,
         )
 
-    def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def get_db_version(self, db_ident: DBIdent) -> str | None:
         return self._sync_db_version_action.run_db_version_action(db_ident=db_ident)
 
     def get_schema_names(self, db_ident: DBIdent) -> list[str]:

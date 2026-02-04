@@ -47,7 +47,6 @@ from typing import (
     Callable,
     ClassVar,
     Generator,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -65,7 +64,7 @@ class AutoEnumValue:
 
     __slots__ = ("__name",)
 
-    __name: Optional[str]
+    __name: str | None
 
     def __init__(self) -> None:
         self.__name = None
@@ -74,14 +73,14 @@ class AutoEnumValue:
         self.__name = name
         owner.declare(name)
 
-    def __get__(self, instance: Optional[DynamicEnum], owner: type[_DYNAMIC_ENUM_TV]) -> _DYNAMIC_ENUM_TV:
+    def __get__(self, instance: DynamicEnum | None, owner: type[_DYNAMIC_ENUM_TV]) -> _DYNAMIC_ENUM_TV:
         if self.__name is None:  # has not been set yet
             raise RuntimeError("Property is not bound to any class")
 
         assert self.__name is not None
         return owner(self.__name)
 
-    def __set__(self, instance: Optional[DynamicEnum], value: Any) -> None:
+    def __set__(self, instance: DynamicEnum | None, value: Any) -> None:
         raise AttributeError
 
 

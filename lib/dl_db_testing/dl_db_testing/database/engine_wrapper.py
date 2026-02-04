@@ -5,7 +5,6 @@ from typing import (
     Any,
     ClassVar,
     Generator,
-    Optional,
     Sequence,
 )
 import urllib.parse
@@ -55,7 +54,7 @@ class EngineWrapperBase:
 
     # Internals
     _engine: Engine = attr.ib(init=False, default=None)
-    _connection: Optional[Connection] = attr.ib(init=False, default=None, repr=False)
+    _connection: Connection | None = attr.ib(init=False, default=None, repr=False)
 
     def _db_connect_params(self) -> dict:
         return dict()
@@ -110,10 +109,10 @@ class EngineWrapperBase:
     def execute(self, query: Any, *multiparams: Any, **params: Any) -> sa.engine.CursorResult:
         return self._engine.execute(query, *multiparams, **params)
 
-    def has_table(self, table_name: str, schema: Optional[str] = None) -> bool:
+    def has_table(self, table_name: str, schema: str | None = None) -> bool:
         return self.dialect.has_table(self._engine, table_name, schema=schema)  # type: ignore  # 2024-01-29 # TODO: "has_table" of "Dialect" does not return a value  [func-returns-value]
 
-    def load_table(self, table_name: str, schema: Optional[str] = None) -> sa.Table:
+    def load_table(self, table_name: str, schema: str | None = None) -> sa.Table:
         return sa.Table(table_name, sa.MetaData(bind=self.engine), schema=schema, autoload=True)
 
     def create_table(self, table: sa.Table) -> None:
@@ -145,8 +144,8 @@ class EngineWrapperBase:
         self,
         columns: Sequence[sa.Column],
         *,
-        schema: Optional[str] = None,
-        table_name: Optional[str] = None,
+        schema: str | None = None,
+        table_name: str | None = None,
     ) -> sa.Table:
         table_name = table_name or f"test_table_{shortuuid.uuid()[:10].lower()}"
         table = sa.Table(table_name, sa.MetaData(), *columns, schema=schema)
@@ -183,7 +182,7 @@ class EngineWrapperBase:
     def insert_into_table(self, table: sa.Table, data: Sequence[dict]) -> None:
         self.execute(table.insert(data))
 
-    def get_version(self) -> Optional[str]:
+    def get_version(self) -> str | None:
         return self.execute(sa.select([sa.func.version()])).scalar()
 
     def test(self) -> bool:

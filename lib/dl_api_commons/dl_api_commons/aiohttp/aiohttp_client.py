@@ -14,7 +14,6 @@ from typing import (
     AsyncGenerator,
     Awaitable,
     Callable,
-    Optional,
 )
 
 import aiohttp
@@ -107,7 +106,7 @@ class BIAioHTTPClient:
 
     _ca_data: bytes | None = attr.ib(default=None)
     _ssl_context: ssl.SSLContext | None = attr.ib(default=None)
-    _session: Optional[aiohttp.ClientSession] = attr.ib(init=False, default=None)
+    _session: aiohttp.ClientSession | None = attr.ib(init=False, default=None)
 
     @property
     def ssl_context(self) -> ssl.SSLContext:
@@ -135,7 +134,7 @@ class BIAioHTTPClient:
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: TracebackType | None
     ) -> None:
         await self.close()
 
@@ -147,7 +146,7 @@ class BIAioHTTPClient:
         self,
         method: str,
         *args: Any,
-        retrier: Optional[BaseRetrier] = None,
+        retrier: BaseRetrier | None = None,
         **kwargs: Any,
     ) -> AsyncGenerator[aiohttp.ClientResponse, None]:
         if retrier is None:
@@ -162,14 +161,14 @@ class BIAioHTTPClient:
         self,
         method: str,
         path: str = "",
-        params: Optional[TParams] = None,
-        data: Optional[Any] = None,
-        json_data: Optional[Any] = None,
-        headers: Optional[THeaders] = None,
-        cookies: Optional[TCookies] = None,
-        conn_timeout_sec: Optional[float] = None,
-        read_timeout_sec: Optional[float] = None,
-    ) -> Optional[Any]:
+        params: TParams | None = None,
+        data: Any | None = None,
+        json_data: Any | None = None,
+        headers: THeaders | None = None,
+        cookies: TCookies | None = None,
+        conn_timeout_sec: float | None = None,
+        read_timeout_sec: float | None = None,
+    ) -> Any | None:
         if self._session is None:
             self._session = self._make_session()
 

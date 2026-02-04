@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 import flask
 from multidict import CIMultiDict
@@ -71,7 +69,7 @@ class ReqCtxInfoMiddleware:
         app.before_request(self._commit_rci)
 
     @classmethod
-    def get_last_resort_rci(cls) -> Optional[RequestContextInfo]:
+    def get_last_resort_rci(cls) -> RequestContextInfo | None:
         try:
             return cls.get_request_context_info()
         except FlaskRCINotSet:

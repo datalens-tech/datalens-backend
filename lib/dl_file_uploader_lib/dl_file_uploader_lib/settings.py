@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -19,7 +18,7 @@ from dl_configs.settings_submodels import (
 import dl_settings
 
 
-def _make_redis_persistent_settings(cfg: Any, db: int) -> Optional[RedisSettings]:
+def _make_redis_persistent_settings(cfg: Any, db: int) -> RedisSettings | None:
     # TODO: move this values to a separate key
     return (
         RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]

@@ -4,7 +4,6 @@ import logging
 import os
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -40,7 +39,7 @@ def create_sr_factory_from_env_vars(
     file_uploader_connectors_settings: FileUploaderConnectorsSettings,
     ca_data: bytes,
 ) -> DefaultSRFactory:
-    def get_conn_options(conn: ConnectionBase) -> Optional[ConnectOptions]:
+    def get_conn_options(conn: ConnectionBase) -> ConnectOptions | None:
         opts = conn.get_conn_options()
 
         if isinstance(opts, CHConnectOptions):
@@ -76,7 +75,7 @@ def get_async_service_us_manager(
     crypto_keys_config: CryptoKeysConfig,
     services_registry: ServicesRegistry,
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-    bi_context: Optional[RequestContextInfo] = None,
+    bi_context: RequestContextInfo | None = None,
 ) -> AsyncUSManager:
     usm = AsyncUSManager(
         us_api_prefix="private",

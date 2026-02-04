@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Optional
 
 import flask
 from flask import request
@@ -54,7 +53,7 @@ def handle_us_read_only_mode_error(error):  # type: ignore  # 2024-01-30 # TODO:
 @API.errorhandler(BadRequest)
 def handle_bad_request(error):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
     rci = ReqCtxInfoMiddleware.get_last_resort_rci()
-    req_id: Optional[str] = rci.request_id if rci is not None else None
+    req_id: str | None = rci.request_id if rci is not None else None
 
     LOGGER.warning(
         "Bad request on %s: %s, req_id: %s",

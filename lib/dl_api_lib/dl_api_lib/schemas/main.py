@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from typing import (
     Any,
-    Optional,
 )
 
 from flask_restx import (
@@ -27,10 +26,10 @@ from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 
 def get_api_model(
-    ma_schema: Optional[Schema],
+    ma_schema: Schema | None,
     ns: Namespace,
-    name: Optional[str] = None,
-    schema_fields: Optional[dict[str, ma_fields.Field]] = None,
+    name: str | None = None,
+    schema_fields: dict[str, ma_fields.Field] | None = None,
 ) -> RawModel:
     """Generate a ``flask_restx`` schema that will be used for generating Swagger documentation."""
 
@@ -106,10 +105,10 @@ class NormalizedDateTime(ma_fields.DateTime):
     def _serialize(
         self,
         value: str | datetime.datetime,
-        attr: Optional[str],
+        attr: str | None,
         obj: Any,
         **kwargs: Any,
-    ) -> Optional[str | float]:
+    ) -> str | float | None:
         if isinstance(value, str):
             value = datetime.datetime.strptime(value.split(".")[0], "%Y-%m-%d %H:%M:%S")
         return super()._serialize(value, attr, obj, **kwargs)

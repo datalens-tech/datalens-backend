@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import dl_formula.core.fork_nodes as fork_nodes
 import dl_formula.core.nodes as nodes
 from dl_formula.inspect.function import (
@@ -10,7 +8,7 @@ from dl_formula.inspect.function import (
 )
 
 
-def get_token(node: nodes.FormulaItem) -> Optional[str]:
+def get_token(node: nodes.FormulaItem) -> str | None:
     if isinstance(node, nodes.NamedItem):
         return node.name
     if isinstance(

@@ -7,7 +7,6 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     MutableMapping,
-    Optional,
     Sequence,
 )
 
@@ -53,19 +52,19 @@ LOGGER = logging.getLogger(__name__)
 
 @attr.s(frozen=True)
 class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
-    rqe_config: Optional[RQEConfig] = attr.ib()
-    tpe: Optional[ContextVarExecutor] = attr.ib()
+    rqe_config: RQEConfig | None = attr.ib()
+    tpe: ContextVarExecutor | None = attr.ib()
     conn_sec_mgr: ConnectionSecurityManager = attr.ib()
     ca_data: bytes = attr.ib()
 
     is_bleeding_edge_user: bool = attr.ib(default=False)
-    conn_cls_whitelist: Optional[frozenset[type[ConnectionBase]]] = attr.ib(default=None)
+    conn_cls_whitelist: frozenset[type[ConnectionBase]] | None = attr.ib(default=None)
     # User function that can override connect options.
     #  If factory returns `None` default connection connect options will be used
-    connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
+    connect_options_factory: ConnectOptionsFactory | None = attr.ib(default=None)
     # User function that can alter connect options (whether they were generated
     # by factory or from the conn).
-    connect_options_mutator: Optional[ConnectOptionsMutator] = attr.ib(default=None)
+    connect_options_mutator: ConnectOptionsMutator | None = attr.ib(default=None)
     force_non_rqe_mode: bool = attr.ib(default=False)
 
     DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE: dict[type[ConnectionBase], type[ConnExecutorBase]] = {}
@@ -128,7 +127,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         exec_mode, rqe_data = self._get_exec_mode_and_rqe_attrs(conn, executor_cls)
         LOGGER.info("Connection executor exec_mode = %s", exec_mode)
 
-        overridden_connect_options: Optional[ConnectOptions] = None
+        overridden_connect_options: ConnectOptions | None = None
         if self.connect_options_factory is not None:
             overridden_connect_options = self.connect_options_factory(conn)
 
@@ -177,7 +176,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
 
     def _get_exec_mode_and_rqe_attrs(
         self, conn: ConnectionBase, executor_cls: type[AsyncConnExecutorBase]
-    ) -> tuple[ExecutionMode, Optional[RemoteQueryExecutorData]]:
+    ) -> tuple[ExecutionMode, RemoteQueryExecutorData | None]:
         conn_dto = conn.get_conn_dto()
         conn_options = conn.get_conn_options()
         ce_cls = self.get_async_conn_executor_cls(conn)

@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 from typing import (
     Any,
-    Optional,
 )
 
 from sqlalchemy.sql.elements import ClauseElement
@@ -57,13 +56,13 @@ class TranslationCtx:
 
     def __init__(
         self,
-        collect_errors: Optional[bool] = None,
-        base_token: Optional[str] = None,
-        flags: Optional[ContextFlags] = None,
-        expression: Optional[ClauseElement] = None,
-        data_type: Optional[DataType] = None,
-        data_type_params: Optional[DataTypeParams] = None,
-        node: Optional[FormulaItem] = None,
+        collect_errors: bool | None = None,
+        base_token: str | None = None,
+        flags: ContextFlags | None = None,
+        expression: ClauseElement | None = None,
+        data_type: DataType | None = None,
+        data_type_params: DataTypeParams | None = None,
+        node: FormulaItem | None = None,
         required_scopes: int = Scope.EXPLICIT_USAGE,
     ):
         self.collect_errors = collect_errors if collect_errors is not None else self.default_collect_errors
@@ -102,7 +101,7 @@ class TranslationCtx:
         return copy.copy(self)
 
     @property
-    def extract(self) -> Optional[NodeExtract]:
+    def extract(self) -> NodeExtract | None:
         return self.node.extract if self.node is not None else None
 
     @property
@@ -162,8 +161,8 @@ class TranslationCtx:
         self,
         level: MessageLevel,
         message: str,
-        token: Optional[str] = None,
-        code: Optional[tuple[str, ...]] = None,
+        token: str | None = None,
+        code: tuple[str, ...] | None = None,
     ) -> None:
         token = token if token is not None else self.base_token
         position = self.node.position if self.node is not None else Position()
@@ -180,20 +179,20 @@ class TranslationCtx:
 
         self._messages[level].append(error)
 
-    def add_error(self, message: str, token: Optional[str] = None, code: Optional[tuple[str, ...]] = None) -> None:
+    def add_error(self, message: str, token: str | None = None, code: tuple[str, ...] | None = None) -> None:
         return self._add_message(level=MessageLevel.ERROR, message=message, token=token, code=code)
 
-    def add_warning(self, message: str, token: Optional[str] = None, code: Optional[tuple[str, ...]] = None) -> None:
+    def add_warning(self, message: str, token: str | None = None, code: tuple[str, ...] | None = None) -> None:
         return self._add_message(level=MessageLevel.WARNING, message=message, token=token, code=code)
 
-    def set_type(self, data_type: DataType, data_type_params: Optional[DataTypeParams] = None) -> None:
+    def set_type(self, data_type: DataType, data_type_params: DataTypeParams | None = None) -> None:
         self.data_type = data_type
         self.data_type_params = data_type_params if data_type_params is not None else DataTypeParams()
 
     def set_expression(self, expression: Any) -> None:
         self.expression = expression
 
-    def set_token(self, token: Optional[str]) -> None:
+    def set_token(self, token: str | None) -> None:
         self.base_token = token
 
     def set_flags(self, flags: ContextFlags) -> None:
@@ -213,10 +212,10 @@ class TranslationCtx:
 
     def child(
         self,
-        token: Optional[str] = None,
-        flags: Optional[int] = None,
-        node: Optional[FormulaItem] = None,
-        required_scopes: Optional[int] = None,
+        token: str | None = None,
+        flags: int | None = None,
+        node: FormulaItem | None = None,
+        required_scopes: int | None = None,
     ) -> "TranslationCtx":
         """
         Spawn new child context.

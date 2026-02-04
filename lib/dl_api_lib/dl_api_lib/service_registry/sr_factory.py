@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 import attr
@@ -33,14 +32,14 @@ if TYPE_CHECKING:
 @attr.s
 class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     service_registry_cls = DefaultApiServiceRegistry
-    _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
-    _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
+    _supported_functions_manager: SupportedFunctionsManager | None = attr.ib(kw_only=True, default=None)
+    _default_formula_parser_type: ParserType | None = attr.ib(kw_only=True, default=None)
     _field_id_generator_type: FieldIdGeneratorType = attr.ib(kw_only=True, default=FieldIdGeneratorType.readable)
-    _localizer_factory: Optional[LocalizerFactory] = attr.ib(default=None)
-    _localizer_fallback: Optional[Localizer] = attr.ib(default=None)
-    _connector_availability: Optional[ConnectorAvailabilityConfig] = attr.ib(default=None)
+    _localizer_factory: LocalizerFactory | None = attr.ib(default=None)
+    _localizer_fallback: Localizer | None = attr.ib(default=None)
+    _connector_availability: ConnectorAvailabilityConfig | None = attr.ib(default=None)
     _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
-    _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
+    _pivot_transformer_factory: PivotTransformerFactory | None = attr.ib(kw_only=True, default=None)
 
     def additional_sr_constructor_kwargs(
         self,

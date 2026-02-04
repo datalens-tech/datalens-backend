@@ -10,7 +10,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Generator,
-    Optional,
     Protocol,
     TextIO,
 )
@@ -27,7 +26,7 @@ class Tool(Protocol):
 
 
 @contextmanager
-def redirect_stdin(stream: Optional[TextIO] = None) -> Generator[None, None, None]:
+def redirect_stdin(stream: TextIO | None = None) -> Generator[None, None, None]:
     if stream is None:
         yield
 
@@ -45,11 +44,11 @@ class ToolRunner:
         self.parser = parser
         self.tool_cls = tool_cls
 
-    def run(self, args: list[str], stdin: Optional[str] = None):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def run(self, args: list[str], stdin: str | None = None):  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         stdin_str = stdin
         stdout = io.StringIO()
         stderr = io.StringIO()
-        stdin_stream: Optional[TextIO] = None
+        stdin_stream: TextIO | None = None
         if stdin_str:
             stdin_stream = io.StringIO()
             assert stdin_stream is not None

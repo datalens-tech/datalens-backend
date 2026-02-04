@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -33,7 +32,7 @@ class ServicesRegistryMiddleware:
         app.before_request(self.bind_services_registry_to_request)
         app.teardown_request(self.cleanup_request_services_registry)
 
-    def cleanup_request_services_registry(self, _: Optional[BaseException] = None) -> None:
+    def cleanup_request_services_registry(self, _: BaseException | None = None) -> None:
         try:
             services_registry = self.get_request_services_registry()
         except NoServiceRegistryForRequest:

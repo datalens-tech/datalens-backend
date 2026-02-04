@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -19,7 +18,7 @@ class TableReference:
 @attr.s
 class FormulaContext:
     formula: nodes.Formula = attr.ib(kw_only=True)
-    alias: Optional[str] = attr.ib(kw_only=True)
+    alias: str | None = attr.ib(kw_only=True)
 
 
 @attr.s

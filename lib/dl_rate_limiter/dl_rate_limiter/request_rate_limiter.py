@@ -24,7 +24,7 @@ class Request:
 @attr.s(auto_attribs=True)
 class RequestEventKeyTemplateHeader:
     key: str
-    regex: typing.Optional[re.Pattern] = None  # Should contain result group
+    regex: re.Pattern | None = None  # Should contain result group
 
     def generate_value(self, headers: typing.Mapping[str, str]) -> str:
         try:

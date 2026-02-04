@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     ClassVar,
-    Optional,
 )
 
 from dl_api_commons.base_models import TenantDef
@@ -78,8 +77,8 @@ class MetricaLikeBaseFormFactory(ConnectionFormFactory, metaclass=abc.ABCMeta):
 
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
-        tenant: Optional[TenantDef],
+        connector_settings: DeprecatedConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         assert connector_settings is not None
         rc = RowConstructor(localizer=self._localizer)

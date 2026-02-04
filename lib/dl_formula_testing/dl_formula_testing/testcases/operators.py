@@ -4,7 +4,6 @@ import datetime
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import pytest
@@ -22,7 +21,7 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
     subtraction_round_dt: ClassVar[bool] = True
     supports_string_int_multiplication: ClassVar[bool] = True
     supports_null_in: ClassVar[bool] = True
-    make_float_array_cast: Optional[str] = None
+    make_float_array_cast: str | None = None
 
     def test_negation(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:
         assert dbe.eval("-__LIT__(2)") == -2

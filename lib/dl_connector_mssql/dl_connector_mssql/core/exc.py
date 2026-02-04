@@ -1,7 +1,6 @@
 import re
 from typing import (
     Any,
-    Optional,
 )
 
 import dl_core.exc as exc
@@ -12,14 +11,14 @@ class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):
 
     def __init__(
         self,
-        db_message: Optional[str] = None,
-        query: Optional[str] = None,
-        inspector_query: Optional[str] = None,
-        message: Optional[str] = None,
-        details: Optional[dict[str, Any]] = None,
-        orig: Optional[Exception] = None,
-        debug_info: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
+        db_message: str | None = None,
+        query: str | None = None,
+        inspector_query: str | None = None,
+        message: str | None = None,
+        details: dict[str, Any] | None = None,
+        orig: Exception | None = None,
+        debug_info: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
     ):
         super(SyncMssqlSourceDoesNotExistError, self).__init__(
             db_message=db_message,

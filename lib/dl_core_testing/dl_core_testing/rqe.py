@@ -2,7 +2,6 @@ import contextlib
 from typing import (
     Collection,
     Generator,
-    Optional,
 )
 
 import attr
@@ -17,7 +16,7 @@ from dl_core_testing.fixture_server_runner import WSGIRunner
 @attr.s
 class RQEConfigurationMaker:
     ext_query_executer_secret_key: str = attr.ib(kw_only=True)
-    core_connector_whitelist: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
+    core_connector_whitelist: Collection[str] | None = attr.ib(kw_only=True, default=None)
     forbid_private_addr: str = attr.ib(default="0")
 
     @contextlib.contextmanager

@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Optional,
     Sequence,
 )
 
@@ -32,7 +31,7 @@ if TYPE_CHECKING:
 class ExampleResult:
     name: str = attr.ib(kw_only=True)
     result: str = attr.ib(kw_only=True)
-    source: Optional[str] = attr.ib(kw_only=True, default=None)
+    source: str | None = attr.ib(kw_only=True, default=None)
     group_by: Sequence[str] = attr.ib(kw_only=True, factory=list)
     order_by: Sequence[str] = attr.ib(kw_only=True, factory=list)
     formula_fields: Sequence[tuple[str, str]] = attr.ib(kw_only=True, factory=list)

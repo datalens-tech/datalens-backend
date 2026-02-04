@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
     Sequence,
     cast,
 )
@@ -97,7 +96,7 @@ class NativePivotSorter(PivotSorter):
         self._sort_key_list(key_list=key_list, directions=directions)
 
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
-        sorting_dim_values: Optional[tuple[DataCellVector, ...]] = None
+        sorting_dim_values: tuple[DataCellVector, ...] | None = None
         other_axis = self._complementary_axis(axis)
 
         for header in self._pivot_dframe.iter_axis_headers(axis):
@@ -139,7 +138,7 @@ class NativePivotSorter(PivotSorter):
 
         if self._axis_has_total(other_axis):  # hack for totals
             # Find the key
-            total_key: Optional[FlatPivotDataKey] = None
+            total_key: FlatPivotDataKey | None = None
             for dim_header in self._pivot_dframe.iter_axis_headers(other_axis):
                 if dim_header.info.role_spec.role == PivotHeaderRole.total:
                     total_key = FlatPivotDataKey(values=dim_header.values)

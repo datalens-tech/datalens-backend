@@ -14,7 +14,6 @@ from typing import (
     ClassVar,
     Collection,
     Coroutine,
-    Optional,
 )
 
 from aiohttp import web
@@ -111,7 +110,7 @@ class DatasetDataBaseView(BaseView):
     ds_accessor: DatasetComponentAccessor
 
     @property
-    def dataset_id(self) -> Optional[str]:
+    def dataset_id(self) -> str | None:
         return self.request.match_info.get("ds_id")
 
     @property
@@ -137,7 +136,7 @@ class DatasetDataBaseView(BaseView):
         return service_registry
 
     @property
-    def rev_id(self) -> Optional[str]:
+    def rev_id(self) -> str | None:
         return self.request.query.get("rev_id")
 
     @asynccontextmanager  # type: ignore  # TODO: fix
@@ -222,7 +221,7 @@ class DatasetDataBaseView(BaseView):
         us_manager: AsyncUSManager,
         allow_rls_change: bool,
         allow_settings_change: bool,
-        cached_dataset: Optional[Dataset],
+        cached_dataset: Dataset | None,
     ) -> DatasetUpdateInfo:
         services_registry = self.dl_request.services_registry
         assert isinstance(services_registry, ApiServiceRegistry)
@@ -401,13 +400,13 @@ class DatasetDataBaseView(BaseView):
         # Checks if updates has only field updates
         return all([isinstance(upd, FieldAction) for upd in updates])
 
-    def try_get_mutation_key(self, updates: list[Action]) -> Optional[MutationKey]:
+    def try_get_mutation_key(self, updates: list[Action]) -> MutationKey | None:
         return self.try_get_mutation_key_for_dataset(self.dataset_id, self.dataset.revision_id, updates)
 
     @staticmethod
     def try_get_mutation_key_for_dataset(
-        dataset_id: Optional[str], revision_id: Optional[str], updates: list[Action]
-    ) -> Optional[MutationKey]:
+        dataset_id: str | None, revision_id: str | None, updates: list[Action]
+    ) -> MutationKey | None:
         # Cheat: replace None revision_id with empty string to allow caching
         if revision_id is None:
             revision_id = ""
@@ -418,7 +417,7 @@ class DatasetDataBaseView(BaseView):
         return None
 
     @generic_profiler("mutation-cache-init")
-    def try_get_cache(self, allow_slave: bool) -> Optional[USEntryMutationCache]:
+    def try_get_cache(self, allow_slave: bool) -> USEntryMutationCache | None:
         try:
             mc_factory = self.dl_request.services_registry.get_mutation_cache_factory()
             if mc_factory is None:
@@ -437,9 +436,9 @@ class DatasetDataBaseView(BaseView):
 
     async def try_get_dataset_from_cache(
         self,
-        mutation_cache: Optional[USEntryMutationCache],
-        mutation_key: Optional[MutationKey],
-    ) -> Optional[Dataset]:
+        mutation_cache: USEntryMutationCache | None,
+        mutation_key: MutationKey | None,
+    ) -> Dataset | None:
         cached_dataset = await self.try_get_dataset_from_cache_by_id(
             self.dataset_id,
             self.dataset.revision_id,
@@ -459,11 +458,11 @@ class DatasetDataBaseView(BaseView):
     @staticmethod  # type: ignore  # TODO: fix
     @generic_profiler_async("mutation-cache-get")
     async def try_get_dataset_from_cache_by_id(
-        dataset_id: Optional[str],
-        revision_id: Optional[str],
-        mutation_cache: Optional[USEntryMutationCache],
-        mutation_key: Optional[MutationKey],
-    ) -> Optional[Dataset]:
+        dataset_id: str | None,
+        revision_id: str | None,
+        mutation_cache: USEntryMutationCache | None,
+        mutation_key: MutationKey | None,
+    ) -> Dataset | None:
         if mutation_key is None or mutation_cache is None:
             return None
         if dataset_id is None:
@@ -491,8 +490,8 @@ class DatasetDataBaseView(BaseView):
     @generic_profiler_async("mutation-cache-save")  # type: ignore  # TODO: fix
     async def try_save_dataset_to_cache(
         self,
-        mutation_cache: Optional[USEntryMutationCache],
-        mutation_key: Optional[MutationKey],
+        mutation_cache: USEntryMutationCache | None,
+        mutation_key: MutationKey | None,
         dataset: Dataset,
     ) -> None:
         if mutation_key is None:
@@ -533,7 +532,7 @@ class DatasetDataBaseView(BaseView):
         assert isinstance(services_registry, ApiServiceRegistry)
         loader = DatasetApiLoader(service_registry=services_registry)
 
-        cached_dataset: Optional[Dataset] = None
+        cached_dataset: Dataset | None = None
         with GenericProfiler("dataset-prepare"):
             if enable_mutation_caching:
                 mutation_cache = self.try_get_cache(allow_slave=False)
@@ -647,7 +646,7 @@ class DatasetDataBaseView(BaseView):
     async def execute_query(
         self,
         block_spec: BlockSpec,
-        possible_data_lengths: Optional[Collection] = None,
+        possible_data_lengths: Collection | None = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
     ) -> PostprocessedQuery:
@@ -736,11 +735,11 @@ class DatasetDataBaseView(BaseView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str] = None,
-        totals: Optional[PostprocessedRow] = None,
+        totals_query: str | None = None,
+        totals: PostprocessedRow | None = None,
     ) -> dict[str, Any]:
         add_fields_data = req_model.add_fields_data
-        fields_data: Optional[list[dict[str, Any]]] = None
+        fields_data: list[dict[str, Any]] | None = None
         if add_fields_data:
             fields_data = get_fields_data_serializable(self.dataset, for_result=True)
             LOGGER.info("Field schema data", extra=dict(fields=fields_data))
@@ -825,7 +824,7 @@ class DatasetDataBaseView(BaseView):
         )
 
     @staticmethod
-    def _check_dataset_revision_id(dataset_revision_id: Optional[str], req_model: DataRequestModel) -> None:
+    def _check_dataset_revision_id(dataset_revision_id: str | None, req_model: DataRequestModel) -> None:
         req_dataset_revision_id = req_model.dataset_revision_id
         if req_dataset_revision_id is not None and req_dataset_revision_id != dataset_revision_id:
             LOGGER.warning(

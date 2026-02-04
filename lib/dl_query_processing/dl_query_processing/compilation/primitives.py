@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Generator,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -39,9 +38,9 @@ class CompiledFormulaInfo:
     )
 
     formula_obj: formula_nodes.Formula = attr.ib()
-    alias: Optional[str] = attr.ib()
+    alias: str | None = attr.ib()
     avatar_ids: set[str] = attr.ib(factory=set)
-    original_field_id: Optional[str] = attr.ib(default=None)
+    original_field_id: str | None = attr.ib(default=None)
 
     @property
     def extract(self) -> QueryElementExtract:
@@ -184,7 +183,7 @@ class FromObject:
 
 @attr.s(frozen=True)
 class JoinedFromObject:
-    root_from_id: Optional[str] = attr.ib(kw_only=True, default=None)
+    root_from_id: str | None = attr.ib(kw_only=True, default=None)
     froms: Sequence[FromObject] = attr.ib(kw_only=True, default=())
 
     @property
@@ -230,8 +229,8 @@ class CompiledQuery:
     order_by: list[CompiledOrderByFormulaInfo] = attr.ib(kw_only=True, factory=list)
     join_on: list[CompiledJoinOnFormulaInfo] = attr.ib(kw_only=True, factory=list)
     joined_from: JoinedFromObject = attr.ib(kw_only=True, factory=JoinedFromObject)
-    limit: Optional[int] = attr.ib(kw_only=True, default=None)
-    offset: Optional[int] = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True, default=None)
+    offset: int | None = attr.ib(kw_only=True, default=None)
     meta: QueryMetaInfo = attr.ib(kw_only=True, factory=QueryMetaInfo)
 
     @property

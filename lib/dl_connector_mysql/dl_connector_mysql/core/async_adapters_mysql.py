@@ -7,7 +7,6 @@ import logging
 from typing import (
     Any,
     AsyncIterator,
-    Optional,
     TypeVar,
 )
 
@@ -96,7 +95,7 @@ class AsyncMySQLAdapter(
         dialect = DLMYSQLDialect(paramstyle="pyformat", enforce_collate=enforce_collate)
         return dialect
 
-    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> Optional[bool]:
+    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> bool | None:
         # See https://aiomysql.readthedocs.io/en/latest/cursors.html#Cursor.description
         # Although there are no known `nullable=False` cases for subselects in MySQL,
         # let's use here `null_ok` field from cursor rather than hardcoded value
@@ -111,10 +110,10 @@ class AsyncMySQLAdapter(
     ) -> _DBA_ASYNC_MYSQL_TV:
         return cls(target_dto=target_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size)
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return self._target_dto.db_name
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return self._target_dto.host
 
     async def _create_engine(
@@ -147,7 +146,7 @@ class AsyncMySQLAdapter(
                 raise
 
     @contextlib.asynccontextmanager
-    async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
+    async def _get_connection(self, db_name_from_query: str | None) -> AsyncIterator[aiomysql.sa.SAConnection]:
         db_name = self.get_db_name_for_query(db_name_from_query)
         engine = await self._get_engine(db_name)
 

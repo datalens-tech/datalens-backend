@@ -3,7 +3,6 @@ import datetime
 import logging
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -205,7 +204,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         LOGGER.info(f"Source {dst_source_id} not present in connection {conn.uuid}. Finishing task.")
                         return Success()
 
-                    raw_schema_override: Optional[list[SchemaColumn]]
+                    raw_schema_override: list[SchemaColumn] | None
                     if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
                         raw_schema_override = src_source.raw_schema
                     else:

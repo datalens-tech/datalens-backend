@@ -13,7 +13,7 @@ class YqlTimestamp(sa.types.DateTime):
     __visit_name__ = "Timestamp"
 
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
-        def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[datetime.datetime]:
+        def process(value: datetime.datetime | None) -> datetime.datetime | None:
             if value is None:
                 return None
             if not self.timezone:
@@ -41,7 +41,7 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
     __visit_name__ = "Datetime"
 
     def bind_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
-        def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[int]:
+        def process(value: datetime.datetime | None) -> int | None:
             if value is None:
                 return None
             if not self.timezone:
@@ -69,7 +69,7 @@ class YqlInterval(sa.types.Interval):
     __visit_name__ = "Interval"
 
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
-        def process(value: typing.Optional[datetime.timedelta] | int) -> typing.Optional[int]:
+        def process(value: datetime.timedelta | None | int) -> int | None:
             if value is None:
                 return None
             if isinstance(value, datetime.timedelta):

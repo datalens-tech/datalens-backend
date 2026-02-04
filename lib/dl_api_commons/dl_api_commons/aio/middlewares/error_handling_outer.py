@@ -8,7 +8,6 @@ from http import HTTPStatus
 import logging
 from typing import (
     Any,
-    Optional,
 )
 
 from aiohttp import web
@@ -34,7 +33,7 @@ class ErrorData:
     status_code: int
     response_body: dict[str, Any]
     level: ErrorLevel = attr.ib(validator=[attr.validators.instance_of(ErrorLevel)])
-    http_reason: Optional[str] = attr.ib(default=None)
+    http_reason: str | None = attr.ib(default=None)
 
 
 DEFAULT_INTERNAL_SERVER_ERROR_DATA = ErrorData(
@@ -47,7 +46,7 @@ DEFAULT_INTERNAL_SERVER_ERROR_DATA = ErrorData(
 
 @attr.s
 class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
-    sentry_app_name_tag: Optional[str] = attr.ib()
+    sentry_app_name_tag: str | None = attr.ib()
     use_sentry: bool = attr.ib(default=False)
 
     @sentry_app_name_tag.validator

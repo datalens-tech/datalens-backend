@@ -19,7 +19,6 @@ from typing import (
     Any,
     AsyncIterable,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
     Union,
@@ -191,7 +190,7 @@ class DatasetMetricCollector(USEntryCrawler):
         return self.usm.get_raw_collection(entry_scope="dataset", all_tenants=crawl_all_tenants)
 
     async def process_entry_get_save_flag(
-        self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None
+        self, entry: USEntry, logging_extra: dict[str, Any], usm: AsyncUSManager | None = None
     ) -> tuple[bool, str]:
         data = entry.data
         self._stats_collector.int_collector(M.ds_cnt_field_all).add_value(len(data["result_schema"]))

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -27,7 +26,7 @@ class HttpApiResponse(ApiResponse):
         return self._status_code
 
     @property
-    def bi_status_code(self) -> Optional[str]:
+    def bi_status_code(self) -> str | None:
         return self.json.get("code")
 
     @property

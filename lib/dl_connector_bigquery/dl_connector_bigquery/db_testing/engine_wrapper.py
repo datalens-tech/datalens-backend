@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -36,8 +35,8 @@ class BigQueryEngineWrapper(EngineWrapperBase):
         self,
         columns: Sequence[sa.Column],
         *,
-        schema: Optional[str] = None,
-        table_name: Optional[str] = None,
+        schema: str | None = None,
+        table_name: str | None = None,
     ) -> sa.Table:
         table = super().table_from_columns(
             columns=columns,

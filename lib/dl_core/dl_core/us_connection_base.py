@@ -10,7 +10,6 @@ from typing import (
     ClassVar,
     Generic,
     NamedTuple,
-    Optional,
     TypeVar,
     Union,
 )
@@ -95,8 +94,8 @@ class DataSourceTemplate(NamedTuple):
     connection_id: str
     # type-specific
     parameters: dict
-    tab_title: Optional[str] = None
-    form: Optional[list[dict[str, Any]]] = None
+    tab_title: str | None = None
+    form: list[dict[str, Any]] | None = None
     disabled: bool = False
 
     def get_param_hash(self) -> str:
@@ -261,8 +260,8 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     scope: ClassVar[str] = "connection"  # type: ignore  # TODO: fix
 
     conn_type: ConnectionType
-    source_type: ClassVar[Optional[DataSourceType]] = None
-    allowed_source_types: ClassVar[Optional[frozenset[DataSourceType]]] = None
+    source_type: ClassVar[DataSourceType | None] = None
+    allowed_source_types: ClassVar[frozenset[DataSourceType] | None] = None
     allow_cache: ClassVar[bool] = False
     allow_export: ClassVar[bool] = False
     is_always_internal_source: ClassVar[bool] = False
@@ -277,23 +276,23 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     def __init__(
         self,
-        uuid: Optional[str] = None,
-        data: Optional[dict] = None,
-        entry_key: Optional[EntryLocation] = None,
-        type_: Optional[str] = None,
-        meta: Optional[dict] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        is_locked: Optional[bool] = None,
-        is_favorite: Optional[bool] = None,
-        permissions_mode: Optional[str] = None,
-        initial_permissions: Optional[str] = None,
-        permissions: Optional[dict[str, bool]] = None,
-        full_permissions: Optional[dict[str, bool]] = None,
-        links: Optional[dict] = None,
+        uuid: str | None = None,
+        data: dict | None = None,
+        entry_key: EntryLocation | None = None,
+        type_: str | None = None,
+        meta: dict | None = None,
+        annotation: dict[str, Any] | None = None,
+        is_locked: bool | None = None,
+        is_favorite: bool | None = None,
+        permissions_mode: str | None = None,
+        initial_permissions: str | None = None,
+        permissions: dict[str, bool] | None = None,
+        full_permissions: dict[str, bool] | None = None,
+        links: dict | None = None,
         hidden: bool = False,
         data_strict: bool = True,
         migration_status: MigrationStatus = MigrationStatus.non_migrated,
-        entry_op_mode: Optional[OperationsMode] = None,
+        entry_op_mode: OperationsMode | None = None,
         *,
         us_manager: USManagerBase,
     ):
@@ -334,9 +333,9 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @attr.s(kw_only=True)
     class DataModel(ConnectionDataModelBase):
-        table_name: Optional[str] = attr.ib(default=None)
-        sample_table_name: Optional[str] = attr.ib(default=None)
-        name: Optional[str] = attr.ib(default=None)
+        table_name: str | None = attr.ib(default=None)
+        sample_table_name: str | None = attr.ib(default=None)
+        name: str | None = attr.ib(default=None)
         schema_version: str = attr.ib(default="1")
 
     @property
@@ -356,7 +355,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return frozenset()
 
     @property
-    def conn_ref(self) -> Optional[ConnectionRef]:
+    def conn_ref(self) -> ConnectionRef | None:
         if self.uuid is not None:
             return DefaultConnectionRef(conn_id=self.uuid)
 
@@ -420,9 +419,9 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         cls: type[_CB_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
-        type_: Optional[str] = None,
-        meta: Optional[dict] = None,
-        annotation: Optional[dict[str, Any]] = None,
+        type_: str | None = None,
+        meta: dict | None = None,
+        annotation: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> _CB_TV:
         if meta is None:
@@ -449,8 +448,8 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def update_data_source(
         self,
         id: str,
-        role: Optional[DataSourceRole] = None,
-        raw_schema: Optional[list] = None,
+        role: DataSourceRole | None = None,
+        raw_schema: list | None = None,
         remove_raw_schema: bool = False,
         **parameters: dict[str, Any],
     ) -> None:
@@ -465,7 +464,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         # A safe default:
         return []
 
-    def get_data_source_local_templates(self) -> Optional[list[DataSourceTemplate]]:
+    def get_data_source_local_templates(self) -> list[DataSourceTemplate] | None:
         """
         A list of available data sources that are stored in the metadata or
         code, i.e. don't require querying the actual database.
@@ -570,16 +569,16 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         """Override point for subclasses"""
 
     def validate_new_data_sync(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         """Convenience wrapper"""
         return await_sync(
@@ -590,7 +589,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             )
         )
 
-    def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+    def check_for_notifications(self) -> list[NotificationReportingRecord | None]:
         return []
 
     def get_import_warnings_list(self, localizer: Localizer) -> list[dict]:
@@ -670,7 +669,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @property
     @abc.abstractmethod
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         pass
 
     @property
@@ -690,7 +689,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def get_schema_names(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-        db_name: Optional[str] = None,
+        db_name: str | None = None,
     ) -> list[str]:
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_schema_names(DBIdent(db_name))
@@ -739,7 +738,7 @@ class RawSqlLevelConnectionMixin(ConnectionBase):
 
 class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
     has_schema: ClassVar[bool] = False
-    default_schema_name: ClassVar[Optional[str]] = None
+    default_schema_name: ClassVar[str | None] = None
 
     @attr.s(kw_only=True)
     class DataModel(
@@ -747,22 +746,22 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
         ConnRawSqlLevelDataModelMixin,
         ConnectionBase.DataModel,
     ):
-        host: Optional[str] = attr.ib(default=None)
-        port: Optional[int] = attr.ib(default=None)
-        db_name: Optional[str] = attr.ib(default=None)
-        username: Optional[str] = attr.ib(default=None)
-        password: Optional[str] = attr.ib(repr=secrepr, default=None)
+        host: str | None = attr.ib(default=None)
+        port: int | None = attr.ib(default=None)
+        db_name: str | None = attr.ib(default=None)
+        username: str | None = attr.ib(default=None)
+        password: str | None = attr.ib(repr=secrepr, default=None)
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
             return {DataKey(parts=("password",))}
 
     @property
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         return self.data.cache_ttl_sec
 
     @property
-    def db_name(self) -> Optional[str]:
+    def db_name(self) -> str | None:
         return self.data.db_name
 
     @property
@@ -832,7 +831,7 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
 
 class ClassicConnectionSQL(ConnectionSQL):
     @property
-    def password(self) -> Optional[str]:
+    def password(self) -> str | None:
         return self.data.password
 
     def parse_multihosts(self) -> tuple[str, ...]:
@@ -907,5 +906,5 @@ class UnknownConnection(ConnectionBase):
         raise NotImplementedError
 
     @property
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         return 0

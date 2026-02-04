@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Callable,
-    Optional,
 )
 
 
@@ -12,7 +11,7 @@ if TYPE_CHECKING:
     from dl_core.us_connection_base import ConnectionBase
 
 
-_T_CONN_OPTIONS_MUTATOR = Callable[["ConnectOptions", "ConnectionBase"], Optional["ConnectOptions"]]
+_T_CONN_OPTIONS_MUTATOR = Callable[["ConnectOptions", "ConnectionBase"], "ConnectOptions" | None]
 
 
 class ConnOptionsMutatorsFactory:
@@ -22,7 +21,7 @@ class ConnOptionsMutatorsFactory:
     def add_mutator(self, func: _T_CONN_OPTIONS_MUTATOR) -> None:
         self.mutators.append(func)
 
-    def __call__(self, conn: ConnectionBase) -> Optional[ConnectOptions]:
+    def __call__(self, conn: ConnectionBase) -> ConnectOptions | None:
         any_mutated = False
         conn_opts = conn.get_conn_options()
         for func in self.mutators:

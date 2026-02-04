@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     AbstractSet,
     Collection,
-    Optional,
     Sequence,
 )
 
@@ -273,7 +272,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
+    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], AvatarId | None]:
         return [], set(), None
 
     def make_parameter_value_specs(
@@ -487,7 +486,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], Optional[AvatarId]]:
+    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], AvatarId | None]:
         # Resolve avatars explicitly specified in fields
         deep_dep_mgr = self._dep_mgr_factory.get_field_deep_inter_dependency_manager()
         field_ava_dep_mgr = self._dep_mgr_factory.get_field_avatar_dependency_manager()
@@ -527,7 +526,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         relation_specs = [RelationSpec(relation_id=relation_id) for relation_id in sorted(required_relation_ids)]
         return relation_specs, required_avatar_ids, root_avatar_id
 
-    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[Optional[int], Optional[int]]:
+    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[int | None, int | None]:
         # Make defaults
         limit, offset = super().make_limit_offset(block_spec=block_spec)
 
@@ -542,7 +541,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         block_spec: BlockSpec,
         phantom_select_ids: list[FieldId],
         select_specs: list[SelectFieldSpec],
-        root_avatar_id: Optional[AvatarId],
+        root_avatar_id: AvatarId | None,
     ) -> QueryMetaInfo:
         query_meta = super().make_query_meta(
             block_spec=block_spec,
@@ -611,7 +610,7 @@ class SingleRowQuerySpecFormalizerBase(NoGroupByQuerySpecFormalizerBase):
     ) -> list[OrderByFieldSpec]:
         return []
 
-    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[Optional[int], Optional[int]]:
+    def make_limit_offset(self, block_spec: BlockSpec) -> tuple[int | None, int | None]:
         return (None, None)
 
 

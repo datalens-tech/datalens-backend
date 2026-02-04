@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Awaitable,
     Callable,
-    Optional,
     Sequence,
     Union,
 )
@@ -79,8 +78,8 @@ def get_query_type(connection: ConnectionBase, conn_sec_mgr: ConnectionSecurityM
 class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     _role: DataSourceRole = attr.ib(kw_only=True)
     _dataset: Dataset = attr.ib(kw_only=True)
-    _prep_component_manager: Optional[PreparedComponentManagerBase] = attr.ib(kw_only=True, default=None)
-    _row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    _prep_component_manager: PreparedComponentManagerBase | None = attr.ib(kw_only=True, default=None)
+    _row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
     _ce_factory: ConnExecutorFactory = attr.ib(kw_only=True)
     _rci: RequestContextInfo = attr.ib(kw_only=True)
@@ -102,7 +101,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         *,
         query_res_info: QueryAndResultInfo,
         joint_dsrc_info: PreparedFromInfo,
-        row_count_hard_limit: Optional[int] = None,
+        row_count_hard_limit: int | None = None,
     ) -> TValuesChunkStream:
         """Generate data stream from a data source"""
 
@@ -152,11 +151,11 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         query: Union[str, Select],
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]],
+        preparation_callback: Callable[[], Awaitable[None]] | None,
     ) -> TValuesChunkStream:
         assert not isinstance(query, str), "String queries are not supported by source DB processor"
         assert joint_dsrc_info is not None, "joint_dsrc_info is required for source DB processor"
@@ -176,7 +175,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         self,
         query_id: str,
         compiled_query: str,
-        target_connection_ref: Optional[ConnectionRef],
+        target_connection_ref: ConnectionRef | None,
     ) -> None:
         assert target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(entry_id=target_connection_ref)
@@ -203,7 +202,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         )
         self.add_reporting_record(record)
 
-    def _save_end_exec_reporting_record(self, query_id: str, exec_exception: Optional[Exception]) -> None:
+    def _save_end_exec_reporting_record(self, query_id: str, exec_exception: Exception | None) -> None:
         record = QueryExecutionEndReportingRecord(
             timestamp=time.time(),
             query_id=query_id,
@@ -223,7 +222,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         self,
         query_id: str,
         compiled_query: str,
-        target_connection_ref: Optional[ConnectionRef],
+        target_connection_ref: ConnectionRef | None,
     ) -> None:
         self._save_start_exec_reporting_record(
             query_id=query_id,
@@ -231,7 +230,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             target_connection_ref=target_connection_ref,
         )
 
-    def post_query_execute(self, query_id: str, exec_exception: Optional[Exception]) -> None:
+    def post_query_execute(self, query_id: str, exec_exception: Exception | None) -> None:
         self._save_end_exec_reporting_record(query_id=query_id, exec_exception=exec_exception)
 
     def post_cache_usage(self, query_id: str, cache_full_hit: bool | None) -> None:

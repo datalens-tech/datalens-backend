@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import (
     Any,
-    Optional,
     TypeVar,
 )
 
@@ -32,13 +31,13 @@ from dl_model_tools.typed_values import BIValue
 class Action:
     action: DatasetAction = attr.ib()
     order_index: int = attr.ib()
-    managed_by: Optional[ManagedBy] = attr.ib(default=None)
+    managed_by: ManagedBy | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True)
 class FieldBase:
-    guid: Optional[str] = attr.ib(default=None)
-    strict: Optional[bool] = attr.ib(default=None)
+    guid: str | None = attr.ib(default=None)
+    strict: bool | None = attr.ib(default=None)
 
     def as_dict(self) -> dict:
         return attr.asdict(self, recurse=False)
@@ -71,30 +70,30 @@ class DeleteField(FieldBase):
 
 @attr.s(frozen=True, kw_only=True)
 class UpdateField(FieldBase):
-    title: Optional[str] = attr.ib(default=None)
-    source: Optional[str] = attr.ib(default=None)
-    calc_mode: Optional[CalcMode] = attr.ib(default=None)
-    calc_spec: Optional[CalculationSpec] = attr.ib(default=None)
-    hidden: Optional[bool] = attr.ib(default=None)
-    description: Optional[str] = attr.ib(default=None)
-    aggregation: Optional[AggregationFunction] = attr.ib(default=None)
-    has_auto_aggregation: Optional[bool] = attr.ib(default=None)
-    lock_aggregation: Optional[bool] = attr.ib(default=None)
-    formula: Optional[str] = attr.ib(default=None)
-    guid_formula: Optional[str] = attr.ib(default=None)
-    cast: Optional[UserDataType] = attr.ib(default=None)
-    avatar_id: Optional[str] = attr.ib(default=None)
-    new_id: Optional[str] = attr.ib(default=None)
-    default_value: Optional[BIValue] = attr.ib(default=None)
+    title: str | None = attr.ib(default=None)
+    source: str | None = attr.ib(default=None)
+    calc_mode: CalcMode | None = attr.ib(default=None)
+    calc_spec: CalculationSpec | None = attr.ib(default=None)
+    hidden: bool | None = attr.ib(default=None)
+    description: str | None = attr.ib(default=None)
+    aggregation: AggregationFunction | None = attr.ib(default=None)
+    has_auto_aggregation: bool | None = attr.ib(default=None)
+    lock_aggregation: bool | None = attr.ib(default=None)
+    formula: str | None = attr.ib(default=None)
+    guid_formula: str | None = attr.ib(default=None)
+    cast: UserDataType | None = attr.ib(default=None)
+    avatar_id: str | None = attr.ib(default=None)
+    new_id: str | None = attr.ib(default=None)
+    default_value: BIValue | None = attr.ib(default=None)
     value_constraint: dict = attr.ib(default=None)
-    template_enabled: Optional[bool] = attr.ib(default=None)
-    ui_settings: Optional[str] = attr.ib(default=None)
+    template_enabled: bool | None = attr.ib(default=None)
+    ui_settings: str | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True)
 class AddField(UpdateField):
     title: str = attr.ib()
-    type: Optional[FieldType] = attr.ib(default=None)
+    type: FieldType | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
@@ -115,10 +114,10 @@ class ObligatoryFilterBase:
 
 @attr.s(frozen=True, kw_only=True)
 class AddUpdateObligatoryFilter(ObligatoryFilterBase):
-    field_guid: Optional[str] = attr.ib(default=None)
+    field_guid: str | None = attr.ib(default=None)
     default_filters: list[RawFilterFieldSpec] = attr.ib(default=[])
-    managed_by: Optional[ManagedBy] = attr.ib(default=None)
-    valid: Optional[bool] = attr.ib(default=None)
+    managed_by: ManagedBy | None = attr.ib(default=None)
+    valid: bool | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True)
@@ -164,10 +163,10 @@ class SourceAvatarBase(Action):
 
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
 class SourceAvatar(SourceAvatarBase):
-    source_id: Optional[str] = attr.ib(default=None)
-    title: Optional[str] = attr.ib(default=None)
-    is_root: Optional[bool] = attr.ib(default=None)
-    managed_by: Optional[ManagedBy] = attr.ib(default=None)
+    source_id: str | None = attr.ib(default=None)
+    title: str | None = attr.ib(default=None)
+    is_root: bool | None = attr.ib(default=None)
+    managed_by: ManagedBy | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
@@ -197,7 +196,7 @@ _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
 @attr.s()
 class DataRequestModel:
     # Dataset state
-    dataset: Optional[dict[str, Any]] = attr.ib(kw_only=True, default=None)  # TODO: schematize
+    dataset: dict[str, Any] | None = attr.ib(kw_only=True, default=None)  # TODO: schematize
     # Updates to apply to the given dataset state
     updates: list[Action] = attr.ib(kw_only=True, factory=list)
 
@@ -208,7 +207,7 @@ class DataRequestModel:
     add_fields_data: bool = attr.ib(kw_only=True, default=False)
     with_totals: bool = attr.ib(kw_only=True, default=False)
     autofill_legend: bool = attr.ib(kw_only=True, default=False)
-    dataset_revision_id: Optional[str] = attr.ib(kw_only=True, default=None)
+    dataset_revision_id: str | None = attr.ib(kw_only=True, default=None)
 
     def clone(self: _DRM_TV, **updates: Any) -> _DRM_TV:
         return attr.evolve(self, **updates)
@@ -216,7 +215,7 @@ class DataRequestModel:
 
 @attr.s()
 class ResultDataRequestModel(DataRequestModel):
-    result: Optional[RawResultSpec] = attr.ib(kw_only=True, default=None)
+    result: RawResultSpec | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s()

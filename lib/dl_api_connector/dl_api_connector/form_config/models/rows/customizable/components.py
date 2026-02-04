@@ -1,7 +1,6 @@
 import enum
 from typing import (
     Literal,
-    Optional,
 )
 
 import attr
@@ -42,8 +41,8 @@ class HiddenRowItem(RowItem, FormFieldMixin, InnerFieldMixin, DisplayConditionsM
 class LabelRowItem(RowItem, DisplayConditionsMixin):
     component_id = "label"
     text: str = attr.ib()
-    align: Optional[Align] = attr.ib(default=None, metadata=skip_if_null())
-    help_text: Optional[MarkdownStr] = attr.ib(default=None, metadata=remap_skip_if_null("helpText"))
+    align: Align | None = attr.ib(default=None, metadata=skip_if_null())
+    help_text: MarkdownStr | None = attr.ib(default=None, metadata=remap_skip_if_null("helpText"))
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -56,39 +55,37 @@ class SelectableOption:  # TODO rename to RadioButtonOption
 class InputRowItem(ControlRowItem, PlaceholderMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
-        multiline: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())  # false if undefined
-        type: Optional[Literal["text", "password", "number"]] = attr.ib(default="text", metadata=skip_if_null())
-        disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+        multiline: bool | None = attr.ib(default=None, metadata=skip_if_null())  # false if undefined
+        type: Literal["text", "password", "number"] | None = attr.ib(default="text", metadata=skip_if_null())
+        disabled: bool | None = attr.ib(default=None, metadata=skip_if_null())
 
     component_id = "input"
 
-    control_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
+    control_props: Props | None = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
 
 
 @attr.s(kw_only=True, frozen=True)
 class SelectOption(SerializableConfig):
     class Data(SerializableConfig):
-        description: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
+        description: str | None = attr.ib(default=None, metadata=skip_if_null())
 
     content: str = attr.ib()
     value: str = attr.ib()
-    data: Optional[Data] = attr.ib(default=None, metadata=skip_if_null())
+    data: Data | None = attr.ib(default=None, metadata=skip_if_null())
 
 
 @attr.s(kw_only=True, frozen=True)
 class SelectRowItem(ControlRowItem, PlaceholderMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
-        show_search: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("showSearch"))
-        has_clear: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("hasClear"))
-        multiple: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+        show_search: bool | None = attr.ib(default=None, metadata=remap_skip_if_null("showSearch"))
+        has_clear: bool | None = attr.ib(default=None, metadata=remap_skip_if_null("hasClear"))
+        multiple: bool | None = attr.ib(default=None, metadata=skip_if_null())
 
     component_id = "select"
 
-    available_values: Optional[list[SelectOption]] = attr.ib(
-        default=None, metadata=remap_skip_if_null("availableValues")
-    )
-    control_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
+    available_values: list[SelectOption] | None = attr.ib(default=None, metadata=remap_skip_if_null("availableValues"))
+    control_props: Props | None = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -114,8 +111,8 @@ class RadioGroupRowItemOption(SerializableConfig):
             view: View = attr.ib()
 
         text: str = attr.ib()
-        hint_text: Optional[MarkdownStr] = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
-        text_end_icon: Optional[TextEndIcon] = attr.ib(default=None, metadata=remap_skip_if_null("textEndIcon"))
+        hint_text: MarkdownStr | None = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
+        text_end_icon: TextEndIcon | None = attr.ib(default=None, metadata=remap_skip_if_null("textEndIcon"))
 
     content: ValueContent = attr.ib()
     value: str = attr.ib()
@@ -125,13 +122,13 @@ class RadioGroupRowItemOption(SerializableConfig):
 class RadioGroupRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
-        disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
+        disabled: bool | None = attr.ib(default=None, metadata=skip_if_null())
 
     component_id = "radio_group"
 
     options: list[RadioGroupRowItemOption] = attr.ib()
-    default_value: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("defaultValue"))
-    control_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
+    default_value: str | None = attr.ib(default=None, metadata=remap_skip_if_null("defaultValue"))
+    control_props: Props | None = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
 
     def __attrs_post_init__(self) -> None:
         if self.default_value is not None and self.default_value not in (
@@ -144,28 +141,28 @@ class RadioGroupRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFi
 class CheckboxRowItem(RowItem, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin, DefaultValueMixin):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
-        disabled: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
-        size: Optional[Literal["m", "l"]] = attr.ib(default=None, metadata=skip_if_null())
-        qa: Optional[str] = attr.ib(
+        disabled: bool | None = attr.ib(default=None, metadata=skip_if_null())
+        size: Literal["m", "l"] | None = attr.ib(default=None, metadata=skip_if_null())
+        qa: str | None = attr.ib(
             default=None, metadata=skip_if_null()
         )  # UI-specific testing stuff, should be removed at some point
 
     component_id = "checkbox"
 
     text: str = attr.ib()
-    control_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
+    control_props: Props | None = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
 
 
 @attr.s(kw_only=True, frozen=True)
 class DatepickerRowItem(ControlRowItem):
     @attr.s(kw_only=True, frozen=True)
     class Props(SerializableConfig):
-        size: Optional[Literal["s", "m", "l", "xl"]] = attr.ib(default=None, metadata=skip_if_null())
+        size: Literal["s", "m", "l", "xl"] | None = attr.ib(default=None, metadata=skip_if_null())
 
     component_id = "datepicker"
 
-    width: Optional[Width] = attr.ib(default=None, init=False, metadata=inner())  # not supported by Datepicker
-    control_props: Optional[Props] = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
+    width: Width | None = attr.ib(default=None, init=False, metadata=inner())  # not supported by Datepicker
+    control_props: Props | None = attr.ib(default=None, metadata=remap_skip_if_null("controlProps"))
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -173,7 +170,7 @@ class PlainTextRowItem(RowItem, DisplayConditionsMixin):
     component_id = "plain_text"
 
     text: str = attr.ib()
-    hint_text: Optional[MarkdownStr] = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
+    hint_text: MarkdownStr | None = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -190,7 +187,7 @@ class FileInputRowItem(RowItem, FormFieldMixin, InnerFieldMixin, DisplayConditio
 
 @attr.s(kw_only=True, frozen=True)
 class StyleItem(SerializableConfig):
-    width: Optional[Width] = attr.ib(default=None, metadata=skip_if_null())
+    width: Width | None = attr.ib(default=None, metadata=skip_if_null())
 
 
 @attr.s(kw_only=True, frozen=True)
@@ -199,16 +196,16 @@ class KeyValueRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin):
 
     @attr.s(kw_only=True, frozen=True)
     class KeySelectProps(SerializableConfig):
-        placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
-        width: Optional[Width] = attr.ib(default=None, metadata=skip_if_null())
+        placeholder: str | None = attr.ib(default=None, metadata=skip_if_null())
+        width: Width | None = attr.ib(default=None, metadata=skip_if_null())
 
     @attr.s(kw_only=True, frozen=True)
     class ValueInputProps(SerializableConfig):
-        placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
-        style: Optional[StyleItem] = attr.ib(default=None, metadata=skip_if_null())
-        hide_reveal_button: Optional[bool] = attr.ib(default=None, metadata=remap_skip_if_null("hideRevealButton"))
+        placeholder: str | None = attr.ib(default=None, metadata=skip_if_null())
+        style: StyleItem | None = attr.ib(default=None, metadata=skip_if_null())
+        hide_reveal_button: bool | None = attr.ib(default=None, metadata=remap_skip_if_null("hideRevealButton"))
 
-    secret: Optional[bool] = attr.ib(default=None, metadata=skip_if_null())
-    keys: Optional[list[SelectOption]] = attr.ib(default=None, metadata=skip_if_null())
-    key_select_props: Optional[KeySelectProps] = attr.ib(default=None, metadata=remap_skip_if_null("keySelectProps"))
-    value_input_props: Optional[ValueInputProps] = attr.ib(default=None, metadata=remap_skip_if_null("valueInputProps"))
+    secret: bool | None = attr.ib(default=None, metadata=skip_if_null())
+    keys: list[SelectOption] | None = attr.ib(default=None, metadata=skip_if_null())
+    key_select_props: KeySelectProps | None = attr.ib(default=None, metadata=remap_skip_if_null("keySelectProps"))
+    value_input_props: ValueInputProps | None = attr.ib(default=None, metadata=remap_skip_if_null("valueInputProps"))

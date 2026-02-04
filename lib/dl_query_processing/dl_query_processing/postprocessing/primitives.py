@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
     TypeVar,
     Union,
 )
@@ -64,8 +63,8 @@ class PostprocessedQueryBlock(BlockSpec):
 class PostprocessedQueryUnion:
     blocks: list[PostprocessedQueryBlock] = attr.ib(kw_only=True)
     legend: Legend = attr.ib(kw_only=True)
-    offset: Optional[int] = attr.ib(kw_only=True)
-    limit: Optional[int] = attr.ib(kw_only=True)
+    offset: int | None = attr.ib(kw_only=True)
+    limit: int | None = attr.ib(kw_only=True)
 
     def clone(self, **updates: Any) -> PostprocessedQueryUnion:
         return attr.evolve(self, **updates)

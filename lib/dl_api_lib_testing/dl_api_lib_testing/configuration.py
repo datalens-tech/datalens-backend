@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Collection,
-    Optional,
 )
 
 import attr
@@ -28,7 +27,7 @@ class ApiTestEnvironmentConfiguration:
     connector_availability_settings: ConnectorAvailabilityConfigSettings = attr.ib(
         factory=ConnectorAvailabilityConfigSettings,
     )
-    api_connector_ep_names: Optional[Collection[str]] = attr.ib(default=None)
+    api_connector_ep_names: Collection[str] | None = attr.ib(default=None)
 
     def get_api_library_config(self) -> ApiLibraryConfig:
         return ApiLibraryConfig(

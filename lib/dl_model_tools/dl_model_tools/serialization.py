@@ -18,7 +18,6 @@ from typing import (
     Callable,
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
     Union,
     get_args,
@@ -309,7 +308,7 @@ assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIAL
 class DataLensJSONEncoder(json.JSONEncoder):
     JSONABLERS_MAP = {cls.typeobj(): cls for cls in COMMON_SERIALIZERS}
 
-    def _get_preprocessor(self, typeobj: type) -> Optional[type[TypeSerializer]]:
+    def _get_preprocessor(self, typeobj: type) -> type[TypeSerializer] | None:
         if issubclass(typeobj, GenericNativeType):
             return NativeTypeSerializer
         return self.JSONABLERS_MAP.get(typeobj)
@@ -324,7 +323,7 @@ class DataLensJSONEncoder(json.JSONEncoder):
 
 
 class SafeDataLensJSONEncoder(DataLensJSONEncoder):
-    def _get_preprocessor(self, typeobj: type) -> Optional[type[TypeSerializer]]:
+    def _get_preprocessor(self, typeobj: type) -> type[TypeSerializer] | None:
         if (preprocessor := super()._get_preprocessor(typeobj)) is not None:
             return preprocessor
         return UnsupportedSerializer  # don't raise a TypeError and log warning
@@ -336,12 +335,12 @@ class DataLensJSONDecoder(json.JSONDecoder):
     def __init__(
         self,
         *,
-        object_hook: Optional[Callable[[dict[str, Any]], Any]] = None,
-        parse_float: Optional[Callable[[str], Any]] = None,
-        parse_int: Optional[Callable[[str], Any]] = None,
-        parse_constant: Optional[Callable[[str], Any]] = None,
+        object_hook: Callable[[dict[str, Any]], Any] | None = None,
+        parse_float: Callable[[str], Any] | None = None,
+        parse_int: Callable[[str], Any] | None = None,
+        parse_constant: Callable[[str], Any] | None = None,
         strict: bool = True,
-        object_pairs_hook: Optional[Callable[[list[tuple[str, Any]]], Any]] = None,
+        object_pairs_hook: Callable[[list[tuple[str, Any]]], Any] | None = None,
     ) -> None:
         assert object_hook is None
         super().__init__(

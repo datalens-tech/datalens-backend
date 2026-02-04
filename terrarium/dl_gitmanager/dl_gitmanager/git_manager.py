@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import (
     Generator,
     Iterable,
-    Optional,
 )
 
 import attr
@@ -107,5 +106,5 @@ class GitManager:
             )
         )
 
-    def get_submodule_manager(self, submodule: Submodule, path_prefix: Optional[Path] = None) -> GitManager:
+    def get_submodule_manager(self, submodule: Submodule, path_prefix: Path | None = None) -> GitManager:
         return type(self)(git_repo=submodule.module(), path_prefix=path_prefix or Path("."))

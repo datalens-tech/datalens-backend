@@ -6,7 +6,6 @@ import copy
 import logging
 from typing import (
     ClassVar,
-    Optional,
     TypeVar,
     Union,
 )
@@ -85,8 +84,8 @@ _ENTRY_TV = TypeVar("_ENTRY_TV", bound=USEntry)
 
 @attr.s(frozen=True)
 class CryptoKeyInfo:
-    key_id: Optional[str] = attr.ib()  # None value is None
-    key_kind: Optional[str] = attr.ib()
+    key_id: str | None = attr.ib()  # None value is None
+    key_kind: str | None = attr.ib()
 
 
 class USManagerBase:
@@ -112,14 +111,14 @@ class USManagerBase:
     def __init__(
         self,
         bi_context: RequestContextInfo,
-        crypto_keys_config: Optional[CryptoKeysConfig],
+        crypto_keys_config: CryptoKeysConfig | None,
         us_base_url: str,
-        us_api_prefix: Optional[str],
+        us_api_prefix: str | None,
         us_auth_context: USAuthContextBase,
         services_registry: ServicesRegistry,
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
-        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
+        lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
+        schema_migration_factory: EntrySchemaMigrationFactoryBase | None = None,
     ):
         # TODO FIX: Try to connect it together to eliminate possible divergence
         if services_registry is not None:
@@ -172,7 +171,7 @@ class USManagerBase:
         return self._crypto_keys_config.actual_key_id
 
     def get_lifecycle_manager(
-        self, entry: USEntry, service_registry: Optional[ServicesRegistry] = None
+        self, entry: USEntry, service_registry: ServicesRegistry | None = None
     ) -> EntryLifecycleManager:
         if service_registry is None:
             service_registry = self.get_services_registry()
@@ -181,7 +180,7 @@ class USManagerBase:
         )
 
     def get_schema_migration(
-        self, entry_scope: str, entry_type: str, service_registry: Optional[ServicesRegistry] = None
+        self, entry_scope: str, entry_type: str, service_registry: ServicesRegistry | None = None
     ) -> BaseEntrySchemaMigration:
         if service_registry is None:
             service_registry = self.get_services_registry()
@@ -215,9 +214,7 @@ class USManagerBase:
 
     # TODO FIX: Replace with on-import collecting of USEntry inheritors type/scope
     @classmethod
-    def _get_entry_class(
-        cls, *, us_scope: str, us_type: str, entry_key: Optional[EntryLocation] = None
-    ) -> type[USEntry]:
+    def _get_entry_class(cls, *, us_scope: str, us_type: str, entry_key: EntryLocation | None = None) -> type[USEntry]:
         err_msg = (
             f"Unknown combination of scope/type: {us_scope}/{us_type}"
             f" key={'not provided' if entry_key is None else entry_key.to_short_string()}"
@@ -384,7 +381,7 @@ class USManagerBase:
         return result_addressable.data
 
     @generic_profiler("us-deserialize-dict-to-object")
-    def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[type[USEntry]] = None) -> USEntry:
+    def _entry_dict_to_obj(self, us_resp: dict, expected_type: type[USEntry] | None = None) -> USEntry:
         """
         Deserialize US entry dict.
         :param us_resp: US response as-is
@@ -502,7 +499,7 @@ class USManagerBase:
         return self._entry_dict_to_obj(entry_data)
 
     @staticmethod
-    def _get_us_type_for_entry(entry: USEntry) -> Optional[str]:
+    def _get_us_type_for_entry(entry: USEntry) -> str | None:
         if isinstance(entry, ConnectionBase):
             us_type = entry.conn_type.name
         else:
@@ -584,7 +581,7 @@ class USManagerBase:
 
         return save_params
 
-    def _prepare_update_entry_params(self, entry: USEntry, update_revision: Optional[bool] = None) -> dict:
+    def _prepare_update_entry_params(self, entry: USEntry, update_revision: bool | None = None) -> dict:
         assert entry.uuid is not None
         save_params = self._get_entry_save_params(entry)
         assert "data" in save_params and "unversioned_data" in save_params
@@ -595,7 +592,7 @@ class USManagerBase:
 
         return save_params
 
-    def copy_entry(self, source: _ENTRY_TV, key: Optional[EntryLocation] = None) -> _ENTRY_TV:
+    def copy_entry(self, source: _ENTRY_TV, key: EntryLocation | None = None) -> _ENTRY_TV:
         if not isinstance(source, Dataset):
             raise ValueError("Only dataset can be copied at this time")
 
@@ -625,8 +622,8 @@ class USManagerBase:
     @staticmethod
     @contextmanager
     def _enrich_us_exception(  # type: ignore  # TODO: fix
-        entry_id: Optional[str] = None,
-        entry_scope: Optional[str] = None,
+        entry_id: str | None = None,
+        entry_scope: str | None = None,
     ):
         try:
             yield
@@ -649,7 +646,7 @@ class USManagerBase:
 
         return entry
 
-    def _get_entry_links(self, entry: Optional[USEntry]) -> set[ConnectionRef]:
+    def _get_entry_links(self, entry: USEntry | None) -> set[ConnectionRef]:
         if isinstance(entry, Dataset):
             lifecycle_manager = self.get_lifecycle_manager(entry=entry)
             linked_entries_refs: set[ConnectionRef] = {

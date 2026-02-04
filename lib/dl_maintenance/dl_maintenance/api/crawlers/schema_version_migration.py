@@ -1,7 +1,6 @@
 from typing import (
     Any,
     AsyncIterable,
-    Optional,
 )
 
 import attr
@@ -30,7 +29,7 @@ class SchemaVersionCrawler(USEntryCrawler):
         )
 
     async def process_entry_get_save_flag(
-        self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None
+        self, entry: USEntry, logging_extra: dict[str, Any], usm: AsyncUSManager | None = None
     ) -> tuple[bool, str]:
         if entry.data.get("schema_version") is None:
             entry.data["schema_version"] = "1"

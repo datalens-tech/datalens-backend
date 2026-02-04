@@ -1,5 +1,4 @@
 import typing
-from typing import Optional
 
 import attr
 
@@ -26,10 +25,10 @@ class RowConstructor:
 
     def host_row(
         self,
-        default_value: Optional[str] = None,
-        display_conditions: Optional[TDisplayConditions] = None,
-        label_help_text: Optional[str] = None,
-        disabled: Optional[bool] = None,
+        default_value: str | None = None,
+        display_conditions: TDisplayConditions | None = None,
+        label_help_text: str | None = None,
+        disabled: bool | None = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(Translatable("field_host"))
         return C.CustomizableRow(
@@ -48,9 +47,9 @@ class RowConstructor:
     def port_row(
         self,
         label_text: BaseTranslatable | None = None,  # noqa: B008
-        default_value: Optional[str] = None,
-        display_conditions: Optional[TDisplayConditions] = None,
-        disabled: Optional[bool] = None,
+        default_value: str | None = None,
+        display_conditions: TDisplayConditions | None = None,
+        disabled: bool | None = None,
     ) -> C.CustomizableRow:
         if label_text is None:
             label_text = Translatable("field_port")
@@ -73,10 +72,10 @@ class RowConstructor:
 
     def path_row(
         self,
-        default_value: Optional[str] = None,
-        display_conditions: Optional[TDisplayConditions] = None,
-        label_help_text: Optional[str] = None,
-        disabled: Optional[bool] = None,
+        default_value: str | None = None,
+        display_conditions: TDisplayConditions | None = None,
+        label_help_text: str | None = None,
+        disabled: bool | None = None,
     ) -> C.CustomizableRow:
         text = self._localizer.translate(Translatable("field_path"))
         return C.CustomizableRow(
@@ -95,10 +94,10 @@ class RowConstructor:
     def username_row(
         self,
         label_text: BaseTranslatable = Translatable("field_username"),  # noqa: B008
-        default_value: Optional[str] = None,
-        display_conditions: Optional[TDisplayConditions] = None,
-        control_props: Optional[C.InputRowItem.Props] = None,
-        inner: Optional[bool] = None,
+        default_value: str | None = None,
+        display_conditions: TDisplayConditions | None = None,
+        control_props: C.InputRowItem.Props | None = None,
+        inner: bool | None = None,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
@@ -117,7 +116,7 @@ class RowConstructor:
     def password_row(
         self,
         mode: ConnectionFormMode,
-        display_conditions: Optional[TDisplayConditions] = None,
+        display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
@@ -139,8 +138,8 @@ class RowConstructor:
     def db_name_row(
         self,
         label_text: BaseTranslatable = Translatable("field_db-name"),  # noqa: B008
-        default_value: Optional[str] = None,
-        display_conditions: Optional[TDisplayConditions] = None,
+        default_value: str | None = None,
+        display_conditions: TDisplayConditions | None = None,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
@@ -213,7 +212,7 @@ class RowConstructor:
     def _get_raw_sql_level_radio_group_option_text_end_icon(
         self,
         raw_sql_level: RawSQLLevel,
-    ) -> Optional[C.RadioGroupRowItemOption.ValueContent.TextEndIcon]:
+    ) -> C.RadioGroupRowItemOption.ValueContent.TextEndIcon | None:
         if raw_sql_level == RawSQLLevel.dashsql:
             return C.RadioGroupRowItemOption.ValueContent.TextEndIcon(
                 name=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.Name.circle_exclamation,
@@ -278,7 +277,7 @@ class RowConstructor:
         self,
         default_value: RawSQLLevel = RawSQLLevel.off,
         switch_off_value: RawSQLLevel = RawSQLLevel.off,
-        raw_sql_levels: Optional[list[RawSQLLevel]] = None,
+        raw_sql_levels: list[RawSQLLevel] | None = None,
     ) -> C.RawSqlLevelRow:
         if raw_sql_levels is None:
             raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]
@@ -312,7 +311,7 @@ class RowConstructor:
     def access_token_input_row(
         self,
         mode: ConnectionFormMode,
-        label_help_text: Optional[MarkdownStr] = None,
+        label_help_text: MarkdownStr | None = None,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
@@ -329,7 +328,7 @@ class RowConstructor:
             ]
         )
 
-    def auto_create_dash_row(self, default_value: Optional[bool] = True) -> C.CustomizableRow:
+    def auto_create_dash_row(self, default_value: bool | None = True) -> C.CustomizableRow:
         return C.CustomizableRow(
             items=[
                 C.CheckboxRowItem(
@@ -354,7 +353,7 @@ class RowConstructor:
         enabled_name: CommonFieldName,
         enabled_help_text: str,
         enabled_default_value: bool,
-        display_conditions: Optional[TDisplayConditions] = None,
+        display_conditions: TDisplayConditions | None = None,
     ) -> typing.Sequence[C.CustomizableRow]:
         if display_conditions is None:
             display_conditions = {}
@@ -398,7 +397,7 @@ class RowConstructor:
         ]
 
     def _make_data_export_forbidden_hint_text(
-        self, conn_id: str | None, exports_history_url_path: str | None, mode: Optional[ConnectionFormMode]
+        self, conn_id: str | None, exports_history_url_path: str | None, mode: ConnectionFormMode | None
     ) -> str | None:
         if mode == ConnectionFormMode.create or not (exports_history_url_path and conn_id):
             return None
@@ -407,8 +406,8 @@ class RowConstructor:
 
     def data_export_forbidden_row(
         self,
-        conn_id: Optional[str] = None,
-        exports_history_url_path: Optional[str] = None,
+        conn_id: str | None = None,
+        exports_history_url_path: str | None = None,
         mode: ConnectionFormMode = ConnectionFormMode.create,
     ) -> C.CustomizableRow:
         return C.CustomizableRow(

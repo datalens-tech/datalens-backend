@@ -5,7 +5,6 @@ from typing import (
     Any,
     Generator,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
     Union,
@@ -78,7 +77,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
     def execute(self, query: Any, *multiparams: Any, **params: Any) -> Any:
         return self._engine_wrapper.execute(query, *multiparams, **params)
 
-    def scalar(self, expr: Any, from_: Optional[sa.sql.ClauseElement] = None) -> Any:
+    def scalar(self, expr: Any, from_: sa.sql.ClauseElement | None = None) -> Any:
         assert isinstance(expr, sa.sql.ClauseElement)
         return self.execute(sa.select([expr]), from_=from_).scalar()
 
@@ -101,19 +100,19 @@ class DbBase(Generic[_DB_CONFIG_TV]):
         self.drop_table(table)
         self._engine_wrapper.create_table(table)
 
-    def create_view(self, query: str, name: str, schema: Optional[str] = None) -> None:
+    def create_view(self, query: str, name: str, schema: str | None = None) -> None:
         name = ".".join([self.quote(part) for part in (schema, name) if part])
         self.execute(f"CREATE VIEW {name} AS {query}")
 
-    def load_table(self, table_name: str, schema: Optional[str] = None) -> sa.Table:
+    def load_table(self, table_name: str, schema: str | None = None) -> sa.Table:
         return self._engine_wrapper.load_table(schema=schema, table_name=table_name)
 
     def table_from_columns(
         self,
         columns: Sequence[sa.Column],
         *,
-        schema: Optional[str] = None,
-        table_name: Optional[str] = None,
+        schema: str | None = None,
+        table_name: str | None = None,
     ) -> sa.Table:
         return self._engine_wrapper.table_from_columns(
             columns=columns,
@@ -127,7 +126,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
     def create_schema(self, schema_name: str) -> None:
         self._engine_wrapper.create_schema(schema_name=schema_name)
 
-    def base_eval(self, expr: sa.sql.ClauseElement, from_: Optional[sa.sql.ClauseElement] = None) -> Any:
+    def base_eval(self, expr: sa.sql.ClauseElement, from_: sa.sql.ClauseElement | None = None) -> Any:
         query = sa.select([expr])
         if from_ is not None:
             query = query.select_from(from_)
@@ -139,7 +138,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
             print("QUERY:", self.expr_as_str(query))
             raise
 
-    def get_version(self) -> Optional[str]:
+    def get_version(self) -> str | None:
         return self._engine_wrapper.get_version()
 
     def test(self) -> bool:
@@ -150,14 +149,14 @@ class DbBase(Generic[_DB_CONFIG_TV]):
 class DbTableBase:
     db: DbBase = attr.ib(kw_only=True)
     table: sa.Table = attr.ib(kw_only=True)
-    schema: Optional[str] = attr.ib(kw_only=True, default=None)
+    schema: str | None = attr.ib(kw_only=True, default=None)
     can_insert: bool = attr.ib(kw_only=True, default=True)
 
     @property
     def name(self) -> str:
         return self.table.name
 
-    def insert(self, data: Union[dict, list[dict]], chunk_size: Optional[int] = None) -> None:
+    def insert(self, data: Union[dict, list[dict]], chunk_size: int | None = None) -> None:
         chunk_size = chunk_size or 1000
         assert chunk_size is not None
 

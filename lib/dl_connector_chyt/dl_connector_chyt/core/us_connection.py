@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -65,13 +64,13 @@ class BaseConnectionCHYT(
     @attr.s(kw_only=True)
     class DataModel(ConnCacheableDataModelMixin, ConnRawSqlLevelDataModelMixin, ConnectionBase.DataModel):
         alias: str = attr.ib()
-        max_execution_time: Optional[int] = attr.ib(default=None)
+        max_execution_time: int | None = attr.ib(default=None)
 
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         chyt_settings = self._connector_settings
         if self.data.alias in chyt_settings.FORBIDDEN_CLIQUES:
@@ -81,7 +80,7 @@ class BaseConnectionCHYT(
             raise ma.ValidationError(message=err_msg)
 
     @property
-    def cache_ttl_sec_override(self) -> Optional[int]:
+    def cache_ttl_sec_override(self) -> int | None:
         return self.data.cache_ttl_sec
 
     def get_conn_options(self) -> CHYTConnectOptions:

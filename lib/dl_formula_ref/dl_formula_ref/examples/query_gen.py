@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -33,7 +32,7 @@ class QueryGenerator:
     def __attrs_post_init__(self) -> None:
         self._parser = get_parser(self._parser_type)
 
-    def _make_formula_ctx(self, formula: str, alias: Optional[str] = None) -> FormulaContext:
+    def _make_formula_ctx(self, formula: str, alias: str | None = None) -> FormulaContext:
         formula_obj = self._parser.parse(formula)
         return FormulaContext(formula=formula_obj, alias=alias)
 

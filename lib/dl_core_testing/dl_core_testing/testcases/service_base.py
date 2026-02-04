@@ -8,7 +8,6 @@ from typing import (
     Callable,
     ClassVar,
     NamedTuple,
-    Optional,
 )
 
 import pytest
@@ -63,8 +62,8 @@ class USConfig(NamedTuple):
 class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     conn_type: ClassVar[ConnectionType]
     core_test_config: ClassVar[CoreTestEnvironmentConfiguration]
-    connection_settings: ClassVar[Optional[DeprecatedConnectorSettingsBase]] = None
-    inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
+    connection_settings: ClassVar[DeprecatedConnectorSettingsBase | None] = None
+    inst_specific_sr_factory: ClassVar[InstallationSpecificServiceRegistryFactory | None] = None
     data_caches_enabled: ClassVar[bool] = False
     compeng_enabled: ClassVar[bool] = False
 
@@ -105,7 +104,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             await redis_client.connection_pool.disconnect()
 
     @pytest_asyncio.fixture(scope="function")
-    async def caches_redis_client_factory(self) -> AsyncGenerator[Optional[Callable[[bool], Redis]], None]:
+    async def caches_redis_client_factory(self) -> AsyncGenerator[Callable[[bool], Redis] | None, None]:
         if not self.data_caches_enabled:
             yield None
 
@@ -121,7 +120,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     @pytest_asyncio.fixture(scope="function")
     async def data_processor_service_factory(
         self,
-    ) -> AsyncGenerator[Optional[Callable[[ProcessorType], DataProcessorService]], None]:
+    ) -> AsyncGenerator[Callable[[ProcessorType], DataProcessorService] | None, None]:
         """
         PG CompEng pool fixture.
 
@@ -149,9 +148,9 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         conn_exec_factory_async_env: bool,
         conn_bi_context: RequestContextInfo,
         root_certificates_data: bytes,
-        caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-        data_processor_service_factory: Optional[Callable[[bool], DataProcessorService]] = None,
-        entity_usage_checker: Optional[EntityUsageChecker] = None,
+        caches_redis_client_factory: Callable[[bool], Redis | None] | None = None,
+        data_processor_service_factory: Callable[[bool], DataProcessorService] | None = None,
+        entity_usage_checker: EntityUsageChecker | None = None,
         **kwargs: Any,
     ) -> ServicesRegistry:
         sr_future_ref: FutureRef[ServicesRegistry] = FutureRef()
@@ -202,7 +201,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         self,
         root_certificates: bytes,
         conn_bi_context: RequestContextInfo,
-        # caches_redis_client_factory: Optional[Callable[[bool], Redis]],  # FIXME: switch to function scope to use
+        # caches_redis_client_factory: Callable[[bool], Redis] | None,  # FIXME: switch to function scope to use
     ) -> ServicesRegistry:
         return self.service_registry_factory(
             conn_exec_factory_async_env=True,

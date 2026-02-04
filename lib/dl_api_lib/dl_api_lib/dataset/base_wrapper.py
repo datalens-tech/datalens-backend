@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
     Sequence,
 )
 
@@ -127,7 +126,7 @@ class DatasetBaseWrapper:
         ds: Dataset,
         *,
         us_manager: USManagerBase,
-        block_spec: Optional[BlockSpec] = None,
+        block_spec: BlockSpec | None = None,
         function_scopes: int = Scope.EXPLICIT_USAGE,
         debug_mode: bool = False,
     ):
@@ -154,10 +153,10 @@ class DatasetBaseWrapper:
         self.dialect: DialectCombo = D.DUMMY
 
         # field-dependent stuff (helper mappings)
-        self.inspect_env: Optional[InspectionEnvironment] = None
-        self._column_reg: Optional[ColumnRegistry] = None
-        self._formula_compiler: Optional[FormulaCompiler] = None
-        self._query_spec: Optional[QuerySpec] = None
+        self.inspect_env: InspectionEnvironment | None = None
+        self._column_reg: ColumnRegistry | None = None
+        self._formula_compiler: FormulaCompiler | None = None
+        self._query_spec: QuerySpec | None = None
 
         self._reload_sources()
         self._reload_formalized_specs(block_spec=block_spec)
@@ -207,7 +206,7 @@ class DatasetBaseWrapper:
         )
         return dsrc_coll
 
-    def _get_data_source_strict(self, source_id: str, role: Optional[DataSourceRole] = None) -> DataSource:
+    def _get_data_source_strict(self, source_id: str, role: DataSourceRole | None = None) -> DataSource:
         if role is None:
             role = self.resolve_role()
         assert role is not None
@@ -300,7 +299,7 @@ class DatasetBaseWrapper:
         if self._query_spec is not None:
             self.load_exbuilders()
 
-    def _reload_formalized_specs(self, block_spec: Optional[BlockSpec] = None) -> None:
+    def _reload_formalized_specs(self, block_spec: BlockSpec | None = None) -> None:
         assert block_spec is not None, "block_spec must not be None in this implementation"
         self._query_spec = self._formalizer.make_query_spec(block_spec=block_spec)
         if self._formula_compiler is None:

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-from typing import Optional
 
 import attr
 
@@ -14,17 +13,17 @@ from dl_core.components.dependencies.relation_avatar_base import RelationAvatarD
 
 @attr.s
 class ComponentDependencyManagerFactoryBase(abc.ABC):
-    _field_shallow_inter_dependency_manager: Optional[FieldShallowInterDependencyManagerBase] = attr.ib(
+    _field_shallow_inter_dependency_manager: FieldShallowInterDependencyManagerBase | None = attr.ib(
         kw_only=True, default=None
     )
-    _field_deep_inter_dependency_manager: Optional[FieldDeepInterDependencyManagerBase] = attr.ib(
+    _field_deep_inter_dependency_manager: FieldDeepInterDependencyManagerBase | None = attr.ib(
         kw_only=True, default=None
     )
-    _field_avatar_dependency_manager: Optional[FieldAvatarDependencyManagerBase] = attr.ib(kw_only=True, default=None)
-    _relation_avatar_dependency_manager: Optional[RelationAvatarDependencyManagerBase] = attr.ib(
+    _field_avatar_dependency_manager: FieldAvatarDependencyManagerBase | None = attr.ib(kw_only=True, default=None)
+    _relation_avatar_dependency_manager: RelationAvatarDependencyManagerBase | None = attr.ib(
         kw_only=True, default=None
     )
-    _avatar_tree_resolver: Optional[AvatarTreeResolverBase] = attr.ib(kw_only=True, default=None)
+    _avatar_tree_resolver: AvatarTreeResolverBase | None = attr.ib(kw_only=True, default=None)
 
     @abc.abstractmethod
     def _make_field_shallow_inter_dependency_manager(self) -> FieldShallowInterDependencyManagerBase:

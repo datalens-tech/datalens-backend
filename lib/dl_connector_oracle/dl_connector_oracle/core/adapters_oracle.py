@@ -4,7 +4,6 @@ import ssl
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import oracledb
@@ -34,8 +33,8 @@ class OracleConnLineConstructor(ClassicSQLConnLineConstructor[OracleConnTargetDT
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         return dict(
             super()._get_dsn_params(
@@ -61,7 +60,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     def _test(self) -> None:
         self.execute(DBAdapterQuery("SELECT 1 FROM DUAL")).get_all()
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return self.execute(DBAdapterQuery("SELECT * FROM V$VERSION", db_name=db_ident.db_name)).get_all()[0][0]
 
     def normalize_sa_col_type(self, sa_col_type: TypeEngine) -> TypeEngine:
@@ -135,7 +134,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         # Notably, column names seem to be case-insensitive in oracle.
         return dialect.normalize_name(cursor_col[0])
 
-    def _cursor_column_to_sa(self, cursor_col, require: bool = True) -> Optional[SATypeSpec]:  # type: ignore  # TODO: fix
+    def _cursor_column_to_sa(self, cursor_col, require: bool = True) -> SATypeSpec | None:  # type: ignore  # TODO: fix
         """
         cursor_col:
 
@@ -174,7 +173,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
 
         return sa_type
 
-    def _cursor_column_to_nullable(self, cursor_col) -> Optional[bool]:  # type: ignore  # TODO: fix
+    def _cursor_column_to_nullable(self, cursor_col) -> bool | None:  # type: ignore  # TODO: fix
         return bool(cursor_col[6])
 
     def _make_cursor_info(self, cursor, db_session=None) -> dict:  # type: ignore  # TODO: fix
@@ -213,7 +212,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
     def _cursor_type_to_str(value: Any) -> str:
         return value.name.lower()
 
-    def _get_ssl_ctx(self) -> Optional[ssl.SSLContext]:
+    def _get_ssl_ctx(self) -> ssl.SSLContext | None:
         if not self._target_dto.ssl_enable:
             return None
 

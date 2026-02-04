@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
 )
 
 import sqlalchemy as sa
@@ -593,7 +592,7 @@ class WinRAvg2(WinRAvgBase):
     arg_cnt = 2
 
 
-def _resolve_mfunc_rows(raw_arg1: Literal, raw_arg2: Optional[Literal] = None) -> WinRangeTuple:
+def _resolve_mfunc_rows(raw_arg1: Literal, raw_arg2: Literal | None = None) -> WinRangeTuple:
     """
     Create range tuple for the following cases:
     ::

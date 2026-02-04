@@ -3,7 +3,6 @@ from __future__ import annotations
 from contextlib import contextmanager
 from typing import (
     Generator,
-    Optional,
 )
 
 import attr
@@ -70,7 +69,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         avatar_id: AvatarId,
         alias: str,
         from_subquery: bool,
-        subquery_limit: Optional[int],
+        subquery_limit: int | None,
     ) -> PreparedSingleFromInfo:
         avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)

@@ -2,7 +2,6 @@ import abc
 import logging
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -35,7 +34,7 @@ class MutationCacheEngineFactory(metaclass=abc.ABCMeta):
 class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
     _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib()
     cache_type: type[GenericCacheEngine] = attr.ib()
-    _saved_inmemory_engine: Optional[MemoryCacheEngine] = None
+    _saved_inmemory_engine: MemoryCacheEngine | None = None
 
     @classmethod
     def _get_memory_cache_engine_singleton(cls) -> MemoryCacheEngine:
@@ -47,7 +46,7 @@ class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
     def service_registry(self) -> "ServicesRegistry":
         return self._services_registry_ref.ref
 
-    def _get_redis_cache_engine(self, allow_slave: bool) -> Optional[RedisCacheEngine]:
+    def _get_redis_cache_engine(self, allow_slave: bool) -> RedisCacheEngine | None:
         try:
             redis_client = self.service_registry.get_mutations_redis_client(allow_slave)
             if redis_client is None:

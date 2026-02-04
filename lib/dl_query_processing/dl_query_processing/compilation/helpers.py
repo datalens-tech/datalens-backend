@@ -6,7 +6,6 @@ import logging
 from typing import (
     Any,
     Collection,
-    Optional,
 )
 
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -34,7 +33,7 @@ def make_joined_from_for_avatars(
     used_avatar_ids: Collection[str],
     ds_accessor: DatasetComponentAccessor,
     column_reg: ColumnRegistry,
-    root_avatar_id: Optional[str] = None,
+    root_avatar_id: str | None = None,
 ) -> JoinedFromObject:
     sorted_avatar_ids = sorted(used_avatar_ids)
     if root_avatar_id is None and sorted_avatar_ids:
@@ -112,7 +111,7 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
     Make a ``formula_nodes.Literal`` from given value ``val`` converted to given type ``data_type``.
     For use in filters and parameter fields
     """
-    node: Optional[formula_nodes.BaseLiteral] = None
+    node: formula_nodes.BaseLiteral | None = None
     try:
         # strings can contain any of the types, so handle them separately
         if isinstance(val, str):

@@ -11,7 +11,6 @@ from typing import (
     Any,
     Callable,
     Iterator,
-    Optional,
     Sequence,
     Union,
 )
@@ -411,7 +410,7 @@ def guess_cell_type_gsheet(cell: Cell, *args: Any, **kwargs: Any) -> ParsingData
     return number_format_to_parsing_data_type_map[number_format]
 
 
-def _choose_new_cell_type(new_type: ParsingDataType, prev_type: ParsingDataType) -> Optional[ParsingDataType]:
+def _choose_new_cell_type(new_type: ParsingDataType, prev_type: ParsingDataType) -> ParsingDataType | None:
     if prev_type.group == _TYPE_GROUP_NONE:
         return new_type
     if new_type.group == _TYPE_GROUP_NONE:
@@ -500,7 +499,7 @@ def make_result_types(
     has_header: bool,
     missing_title_generator: Callable[[int], str] = idx_to_file_notation,
 ) -> TResultTypes:
-    def get_value(value: str | Cell) -> Optional[str]:
+    def get_value(value: str | Cell) -> str | None:
         if isinstance(value, Cell):
             return str(value.value) if not value.empty else None
         return str(value)
@@ -522,7 +521,7 @@ def make_result_types(
 
 def guess_column_types(
     data_iter: Iterator,
-    sample_lines_count: Optional[int] = None,
+    sample_lines_count: int | None = None,
     cell_type_guesser: Callable[..., ParsingDataType] = guess_cell_type,
 ) -> TColumnTypes:
     column_types: TColumnTypes = {}
@@ -553,8 +552,8 @@ def guess_column_types(
 @generic_profiler("guess_types_and_header")
 def guess_types_and_header(
     data_iter: Iterator,
-    has_header: Optional[bool] = None,
-    sample_lines_count: Optional[int] = None,
+    has_header: bool | None = None,
+    sample_lines_count: int | None = None,
     **kwargs: Any,
 ) -> tuple[bool, TResultTypes]:
     if has_header is None or has_header:
@@ -577,7 +576,7 @@ def guess_types_and_header(
 @generic_profiler("guess_types_and_header_gsheets")
 def guess_types_and_header_gsheets(
     data_iter: Iterator,
-    sample_lines_count: Optional[int] = None,
+    sample_lines_count: int | None = None,
 ) -> tuple[bool, TResultTypes, TResultTypes, TResultTypes]:
     header = next(data_iter)  # assume first row is header
 
@@ -598,7 +597,7 @@ def guess_types_and_header_gsheets(
 @generic_profiler("guess_types_gsheets")
 def guess_types_gsheets(
     data_iter: Iterator,
-    sample_lines_count: Optional[int] = None,
+    sample_lines_count: int | None = None,
 ) -> TResultTypes:
     column_types = guess_column_types(data_iter, sample_lines_count, guess_cell_type_gsheet)
 
@@ -632,8 +631,8 @@ def make_excel_result_types(
     types: TColumnTypes,
     has_header: bool,
 ) -> TResultTypes:
-    def get_value(values: dict) -> Optional[str]:
-        value: Optional[str] = values.get("value")
+    def get_value(values: dict) -> str | None:
+        value: str | None = values.get("value")
         return value
 
     result_types: TResultTypes = []
@@ -654,7 +653,7 @@ def make_excel_result_types(
 @generic_profiler("guess_types_and_header_excel")
 def guess_types_and_header_excel(
     data_iter: Iterator,
-    sample_lines_count: Optional[int] = None,
+    sample_lines_count: int | None = None,
 ) -> tuple[bool, TResultTypes, TResultTypes, TResultTypes]:
     header = next(data_iter)  # assume first row is header
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -34,7 +33,7 @@ class FieldResolver:
             # if it still raises `FieldNotFound`, well, then it raises
         return field
 
-    def field_id_from_spec(self, field_ref: Optional[FieldRef]) -> FieldId:
+    def field_id_from_spec(self, field_ref: FieldRef | None) -> FieldId:
         if isinstance(field_ref, IdFieldRef):
             # Run the search against `result_schema` to make sure the field exists
             # And that the correct exception is thrown if it doesn't

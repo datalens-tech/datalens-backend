@@ -2,7 +2,6 @@ import asyncio
 import logging
 from typing import (
     Any,
-    Optional,
     Protocol,
     TypeAlias,
     runtime_checkable,
@@ -74,7 +73,7 @@ class _BIRedisSettings(Protocol):
     PASSWORD: str | None
     DB: int
     CLUSTER_NAME: str
-    SSL: Optional[bool]
+    SSL: bool | None
 
 
 def create_arq_redis_settings(settings: _BIRedisSettings) -> ArqRedisSettings:
@@ -112,12 +111,12 @@ class CronSchedule:
     month: month(s) to run the job on, 1 - 12
     """
 
-    second: Optional[set[int]] = attr.ib(default=None)
-    minute: Optional[set[int]] = attr.ib(default=None)
-    hour: Optional[set[int]] = attr.ib(default=None)
-    day: Optional[set[int]] = attr.ib(default=None)
-    weekday: Optional[set[int]] = attr.ib(default=None)
-    month: Optional[set[int]] = attr.ib(default=None)
+    second: set[int] | None = attr.ib(default=None)
+    minute: set[int] | None = attr.ib(default=None)
+    hour: set[int] | None = attr.ib(default=None)
+    day: set[int] | None = attr.ib(default=None)
+    weekday: set[int] | None = attr.ib(default=None)
+    month: set[int] | None = attr.ib(default=None)
 
 
 def make_cron_task(task: BaseTaskMeta, schedule: CronSchedule) -> CronTask:

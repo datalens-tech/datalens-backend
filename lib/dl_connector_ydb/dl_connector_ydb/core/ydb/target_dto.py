@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -22,7 +21,7 @@ class YDBConnTargetDTO(BaseSQLConnTargetDTO):
     auth_type: YDBAuthTypeMode = attr.ib()
 
     ssl_enable: bool = attr.ib(kw_only=True, default=False)
-    ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+    ssl_ca: str | None = attr.ib(kw_only=True, default=None)
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
         return {

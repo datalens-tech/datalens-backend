@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -49,13 +48,13 @@ class YDBConnection(
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
-        auth_type: Optional[YDBAuthTypeMode] = attr.ib(default=YDBAuthTypeMode.oauth)
-        username: Optional[str] = attr.ib(default="")
+        auth_type: YDBAuthTypeMode | None = attr.ib(default=YDBAuthTypeMode.oauth)
+        username: str | None = attr.ib(default="")
 
-        token: Optional[str] = attr.ib(default=None, repr=secrepr)
+        token: str | None = attr.ib(default=None, repr=secrepr)
 
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
-        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+        ssl_ca: str | None = attr.ib(kw_only=True, default=None)
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
@@ -103,8 +102,8 @@ class YDBConnection(
     def get_tables(
         self,
         conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase],
-        db_name: Optional[str] = None,
-        schema_name: Optional[str] = None,
+        db_name: str | None = None,
+        schema_name: str | None = None,
         search_text: str | None = None,
         limit: int | None = None,
         offset: int | None = None,

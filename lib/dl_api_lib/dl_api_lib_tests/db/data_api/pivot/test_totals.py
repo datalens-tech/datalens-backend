@@ -1,5 +1,3 @@
-from typing import Optional
-
 import pytest
 
 from dl_api_client.dsmaker.pivot_utils import check_pivot_response
@@ -108,7 +106,7 @@ class TestPivotWithTotals(DefaultApiTestBase):
         col_titles = pivot_abs.get_flat_column_headers()
         assert col_titles == ["", "Office Supplies", "Technology", ""]  # first '' is from formula, second is from total
 
-        def _get_value(value: Optional[tuple]) -> float:
+        def _get_value(value: tuple | None) -> float:
             if value is None:
                 return float("-inf")
             return float(value[0][0])

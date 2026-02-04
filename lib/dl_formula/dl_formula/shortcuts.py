@@ -5,7 +5,6 @@ import datetime as datetime_mod
 from functools import wraps
 from typing import (
     Any,
-    Optional,
     Sequence,
     Union,
 )
@@ -161,7 +160,7 @@ class NodeShortcut:
 
     def _normalize_raw_bfb(
         self,
-        before_filter_by: Optional[list[Union[nodes.Field, builtins.str]]] = None,
+        before_filter_by: list[Union[nodes.Field, builtins.str]] | None = None,
     ) -> nodes.BeforeFilterBy:
         return nodes.BeforeFilterBy.make(
             field_names=frozenset([f.name if isinstance(f, nodes.Field) else f for f in (before_filter_by or ())]),
@@ -182,16 +181,16 @@ class NodeShortcut:
         def _make_func(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
             def wrapper(
                 *pos_args: nodes.FormulaItem,
-                grouping: Optional[nodes.WindowGrouping] = None,
-                total: Optional[bool] = None,
-                within: Optional[list[nodes.FormulaItem]] = None,
-                among: Optional[list[nodes.FormulaItem]] = None,
-                order_by: Optional[list[nodes.FormulaItem]] = None,
-                before_filter_by: Optional[list[Union[nodes.Field, str]]] = None,
-                ignore_dimensions: Optional[nodes.IgnoreDimensions] = None,
-                lod: Optional[nodes.LodSpecifier] = None,
+                grouping: nodes.WindowGrouping | None = None,
+                total: bool | None = None,
+                within: list[nodes.FormulaItem] | None = None,
+                among: list[nodes.FormulaItem] | None = None,
+                order_by: list[nodes.FormulaItem] | None = None,
+                before_filter_by: list[Union[nodes.Field, str]] | None = None,
+                ignore_dimensions: nodes.IgnoreDimensions | None = None,
+                lod: nodes.LodSpecifier | None = None,
                 args: Sequence[nodes.FormulaItem] = (),
-                meta: Optional[nodes.NodeMeta] = None,
+                meta: nodes.NodeMeta | None = None,
             ) -> Union[nodes.FuncCall, nodes.WindowFuncCall]:
                 assert (
                     len([bool(spec) for spec in (grouping, total, within, among) if spec is not None]) <= 1
@@ -328,10 +327,10 @@ class NodeShortcut:
         self,
         joining: fork_nodes.QueryForkJoiningBase,
         result_expr: nodes.FormulaItem,
-        before_filter_by: Optional[list[Union[nodes.Field, builtins.str]]] = None,
-        lod: Optional[nodes.FixedLodSpecifier] = None,
+        before_filter_by: list[Union[nodes.Field, builtins.str]] | None = None,
+        lod: nodes.FixedLodSpecifier | None = None,
         join_type: fork_nodes.JoinType = fork_nodes.JoinType.left,
-        bfb_filter_mutations: Optional[fork_nodes.BfbFilterMutationCollectionSpec] = None,
+        bfb_filter_mutations: fork_nodes.BfbFilterMutationCollectionSpec | None = None,
     ) -> fork_nodes.QueryFork:
         before_filter_by_node = self._normalize_raw_bfb(before_filter_by=before_filter_by)
         return fork_nodes.QueryFork.make(
@@ -352,7 +351,7 @@ class NodeShortcut:
     def joining(
         self,
         *,
-        conditions: Optional[Sequence[fork_nodes.JoinConditionBase]] = None,
+        conditions: Sequence[fork_nodes.JoinConditionBase] | None = None,
     ) -> fork_nodes.QueryForkJoiningBase:
         if conditions is not None:
             return fork_nodes.QueryForkJoiningWithList.make(
@@ -364,7 +363,7 @@ class NodeShortcut:
         self,
         name: builtins.str,
         expr: nodes.FormulaItem,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> nodes.Unary:
         return nodes.Unary.make(name=name, expr=expr, meta=meta)
 
@@ -373,7 +372,7 @@ class NodeShortcut:
         name: builtins.str,
         left: nodes.FormulaItem,
         right: nodes.FormulaItem,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> nodes.Binary:
         return nodes.Binary.make(name=name, left=left, right=right, meta=meta)
 
@@ -383,14 +382,14 @@ class NodeShortcut:
         first: nodes.FormulaItem,
         second: nodes.FormulaItem,
         third: nodes.FormulaItem,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> nodes.Ternary:
         return nodes.Ternary.make(name=name, first=first, second=second, third=third, meta=meta)
 
     def not_(
         self,
         expr: nodes.FormulaItem,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> nodes.Unary:
         return self.unary("not", expr, meta=meta)
 

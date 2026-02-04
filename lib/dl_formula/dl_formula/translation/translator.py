@@ -4,7 +4,6 @@ import datetime
 from functools import singledispatchmethod
 from itertools import chain
 from typing import (
-    Optional,
     Union,
 )
 
@@ -44,8 +43,8 @@ class SqlAlchemyTranslator:
     def __init__(
         self,
         env: TranslationEnvironment,
-        restrict_funcs: Optional[bool] = None,
-        restrict_fields: Optional[bool] = None,
+        restrict_funcs: bool | None = None,
+        restrict_fields: bool | None = None,
         collect_stats: bool = False,
     ):
         self._env = env
@@ -159,8 +158,8 @@ class SqlAlchemyTranslator:
     def translate(
         self,
         formula: nodes.Formula,
-        collect_errors: Optional[bool] = None,
-        context_flags: Optional[int] = None,
+        collect_errors: bool | None = None,
+        context_flags: int | None = None,
     ) -> TranslationCtx:
         """
         Translate ``Formula`` object into an SQLAlchemy selectable,
@@ -275,7 +274,7 @@ class SqlAlchemyTranslator:
     @_translate_node.register(nodes.LiteralArrayString)
     @_translate_node.register(nodes.LiteralTreeString)
     def _translate_node_literal(self, node: nodes.BaseLiteral, ctx: TranslationCtx) -> None:
-        data_type_params: Optional[DataTypeParams] = None
+        data_type_params: DataTypeParams | None = None
         if isinstance(node, nodes.LiteralDatetimeTZ):
             data_type_params = DataTypeParams(timezone="UTC")  # not certain
         ctx.set_type(
@@ -295,7 +294,7 @@ class SqlAlchemyTranslator:
             ctx.set_expression(node.value)
 
     @_translate_node.register(nodes.Null)
-    def _translate_node_null(self, node: Optional[nodes.Null], ctx: TranslationCtx) -> None:
+    def _translate_node_null(self, node: nodes.Null | None, ctx: TranslationCtx) -> None:
         ctx.set_type(DataType.NULL)
         ctx.set_expression(sa.null())
 
@@ -387,16 +386,16 @@ class SqlAlchemyTranslator:
 
 def translate(
     formula: nodes.Formula,
-    dialect: Optional[DialectCombo] = None,
+    dialect: DialectCombo | None = None,
     required_scopes: int = Scope.EXPLICIT_USAGE,
-    restrict_funcs: Optional[bool] = None,
-    restrict_fields: Optional[bool] = None,
-    collect_errors: Optional[bool] = None,
+    restrict_funcs: bool | None = None,
+    restrict_fields: bool | None = None,
+    collect_errors: bool | None = None,
     collect_stats: bool = False,
-    field_types: Optional[dict[str, DataType]] = None,
-    context_flags: Optional[int] = None,
-    field_names: Optional[dict[str, tuple[str, ...]]] = None,
-    env: Optional[TranslationEnvironment] = None,
+    field_types: dict[str, DataType] | None = None,
+    context_flags: int | None = None,
+    field_names: dict[str, tuple[str, ...]] | None = None,
+    env: TranslationEnvironment | None = None,
 ) -> TranslationCtx:
     """Translate ``Formula`` tree object into an SQLAlchemy representation that can be used for queries"""
 
@@ -425,16 +424,16 @@ def translate(
 
 def translate_and_compile(
     formula: nodes.Formula,
-    dialect: Optional[DialectCombo] = None,
+    dialect: DialectCombo | None = None,
     required_scopes: int = Scope.EXPLICIT_USAGE,
-    restrict_funcs: Optional[bool] = None,
-    restrict_fields: Optional[bool] = None,
-    collect_errors: Optional[bool] = None,
+    restrict_funcs: bool | None = None,
+    restrict_fields: bool | None = None,
+    collect_errors: bool | None = None,
     collect_stats: bool = False,
-    field_types: Optional[dict[str, DataType]] = None,
-    context_flags: Optional[int] = None,
-    field_names: Optional[dict[str, tuple[str, ...]]] = None,
-    env: Optional[TranslationEnvironment] = None,
+    field_types: dict[str, DataType] | None = None,
+    context_flags: int | None = None,
+    field_names: dict[str, tuple[str, ...]] | None = None,
+    env: TranslationEnvironment | None = None,
 ) -> str:
     """Translate ``Formula`` tree object into an SQLAlchemy representation and compile it into raw SQL"""
 

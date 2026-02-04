@@ -6,7 +6,6 @@ from functools import reduce
 import logging
 from typing import (
     ClassVar,
-    Optional,
 )
 from typing import (
     TYPE_CHECKING,
@@ -49,7 +48,7 @@ class USUnversionedDataPack:
 @attr.s()
 class USDataPack:
     data: dict[str, Any] = attr.ib()
-    unversioned_data: USUnversionedDataPack = attr.ib()
+    secrets: dict[str, str | EncryptedData | None] = attr.ib(repr=False, factory=dict)
 
 
 class USEntrySerializer(abc.ABC):

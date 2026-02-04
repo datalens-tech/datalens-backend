@@ -7,7 +7,6 @@ import logging
 from typing import (
     Any,
     Iterator,
-    Optional,
 )
 
 import attr
@@ -51,7 +50,7 @@ class LocalizedSerializable(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-def _make_translatable(text: str, domain: Optional[str]) -> Translatable:
+def _make_translatable(text: str, domain: str | None) -> Translatable:
     translatable = Translatable(text)
     if domain is not None:
         translatable.domain = domain
@@ -157,7 +156,7 @@ class ConnectorIconSrcConfig:
 
 @attr.s(kw_only=True)
 class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
-    data: Optional[str] = attr.ib(default=None)
+    data: str | None = attr.ib(default=None)
 
     def as_dict(self, conn: Connector) -> dict[str, Any] | None:
         if not conn.connector_info_provider.icon_data_standard or not conn.connector_info_provider.icon_data_nav:
@@ -340,7 +339,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
         self.fill_icon_dict_by_conn_type()
         return list(self._icon_by_conn_type.values())
 
-    def get_icon(self, conn_type: str) -> Optional[dict[str, Any]]:
+    def get_icon(self, conn_type: str) -> dict[str, Any] | None:
         self.fill_icon_dict_by_conn_type()
         if conn_type not in self._icon_by_conn_type:
             raise ConnectorIconNotFoundException()
@@ -368,7 +367,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
             ),
         )
 
-    def get_available_connectors(self, localizer: Localizer, tenant: Optional[TenantDef]) -> dict[str, Any]:
+    def get_available_connectors(self, localizer: Localizer, tenant: TenantDef | None) -> dict[str, Any]:
         return dict(
             uncategorized=[connector.as_dict(localizer) for connector in self.uncategorized],
             sections=[section.as_dict(localizer) for section in self.sections],

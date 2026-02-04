@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Hashable,
     NamedTuple,
-    Optional,
 )
 
 
@@ -15,7 +14,7 @@ class NodeExtract(NamedTuple):
     """
 
     type_name: str
-    value: Optional[Hashable] = None  # Python primitive for internal non-FormulaItem attributes
+    value: Hashable | None = None  # Python primitive for internal non-FormulaItem attributes
     children: tuple["NodeExtract", ...] = ()
     complexity: int = 1  # A simple and fast way to know the complexity of the expression
 

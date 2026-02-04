@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Mapping,
-    Optional,
     Union,
 )
 
@@ -138,7 +137,7 @@ class DataSourceTemplateResponseField(ma_fields.Field):
         )
     )
 
-    def _serialize(self, value: Optional[dict], attr: Optional[str], obj: Any, **kwargs: Any) -> Optional[dict]:
+    def _serialize(self, value: dict | None, attr: str | None, obj: Any, **kwargs: Any) -> dict | None:
         if value is None:
             return None
         assert isinstance(value, dict)
@@ -149,12 +148,12 @@ class DataSourceTemplateResponseField(ma_fields.Field):
             value["source_type"] = st.name
         return value
 
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> Any:
+    def _deserialize(self, value: Any, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any) -> Any:
         raise Exception("Not Applicable")
 
 
 class VirtualFlagField(ma_fields.Field):
-    def _serialize(self, value: Union[str, ManagedBy, None], attr: Optional[str], obj: Any, **kwargs: Any) -> bool:
+    def _serialize(self, value: Union[str, ManagedBy, None], attr: str | None, obj: Any, **kwargs: Any) -> bool:
         if isinstance(value, str):
             value = ManagedBy[value]
         if value is None:

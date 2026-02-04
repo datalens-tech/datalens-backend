@@ -12,7 +12,6 @@ from typing import (
     ClassVar,
     ContextManager,
     Generator,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -129,7 +128,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     def _get_dsn_params_from_headers(self) -> dict[str, str]:
         return self._convert_headers_to_dsn_params(self.ch_utils.get_context_headers(self._req_ctx_info))
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: Optional[dict[str, Any]] = None) -> str:
+    def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         return self.conn_line_constructor_type(
             dsn_template=self.dsn_template,
             dialect_name=get_dialect_string(self.conn_type),
@@ -191,7 +190,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     ) -> tuple[type[exc.DatabaseQueryError], DBExcKWArgs]:
         exc_cls, kw = super().make_exc(wrapper_exc, orig_exc, debug_query, inspector_query)
 
-        ch_exc_cls: Optional[type[exc.DatabaseQueryError]] = None
+        ch_exc_cls: type[exc.DatabaseQueryError] | None = None
         if isinstance(wrapper_exc, ch_exc.DatabaseException):
             # Special case for ClickHouse
             # try to differentiate errors by error code
@@ -320,7 +319,7 @@ class ClickHouseAdapter(BaseClickHouseAdapter):
     warn_on_default_db_name_override = False
     ch_utils = ClickHouseUtils
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return self._target_dto.db_name or "system"
 
     def _get_table_indexes(self, table_ident: TableIdent) -> tuple[RawIndexInfo, ...]:
@@ -387,10 +386,10 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             path=self._target_dto.endpoint,
         )
 
-    def get_session_timeout(self) -> Optional[ClientTimeout]:  # type: ignore  # TODO: fix
+    def get_session_timeout(self) -> ClientTimeout | None:  # type: ignore  # TODO: fix
         return ClientTimeout(connect=self._target_dto.connect_timeout, total=self._target_dto.total_timeout)
 
-    def get_session_auth(self) -> Optional[BasicAuth]:
+    def get_session_auth(self) -> BasicAuth | None:
         return BasicAuth(
             login=self._target_dto.username,
             password=self._target_dto.password,
@@ -421,7 +420,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     def _get_current_tracing_headers(self) -> dict[str, str]:
         return {}
 
-    def _get_ssl_context(self) -> Optional[ssl.SSLContext]:
+    def _get_ssl_context(self) -> ssl.SSLContext | None:
         return None
 
     # TODO FIX: Add logging from dl_core.connection_executors.adapters.sa_utils.CursorLogger
@@ -481,7 +480,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
         event = None
         data = None
-        bytes_chunk: Optional[bytes] = None
+        bytes_chunk: bytes | None = None
         finish_sent = False
 
         async for bytes_chunk in resp.content.iter_chunked(self._http_read_chunk_size):
@@ -516,7 +515,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             if event != parser.parts.FINISHED:
                 # TODO: return a sensible user-facing error in this case
                 # (see a test in `bi-api/tests/db/result/test_error_handling.py`)
-                decoded_chunk: Optional[str] = bytes_chunk.decode(errors="replace") if bytes_chunk is not None else None
+                decoded_chunk: str | None = bytes_chunk.decode(errors="replace") if bytes_chunk is not None else None
                 raise exc.SourceProtocolError(
                     debug_info=dict(msg="Unexpected last event", event=event, data=data, chunk=decoded_chunk),
                     # TODO: provide the actual query
@@ -699,7 +698,7 @@ class AsyncClickHouseAdapter(BaseAsyncClickHouseAdapter):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
     ch_utils = ClickHouseUtils
 
-    def _get_ssl_context(self) -> Optional[ssl.SSLContext]:
+    def _get_ssl_context(self) -> ssl.SSLContext | None:
         if not self._target_dto.secure or self._target_dto.ssl_ca is None:
             return None
 

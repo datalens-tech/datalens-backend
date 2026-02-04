@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 import attr
@@ -37,7 +36,7 @@ class MaintenanceEnvironmentManagerBase:
             master_token=app_settings.US_MASTER_TOKEN,
         )
 
-    def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> Optional[SRFactory]:
+    def get_sr_factory(self, ca_data: bytes, is_async_env: bool) -> SRFactory | None:
         return None
 
     def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:

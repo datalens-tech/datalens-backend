@@ -9,7 +9,6 @@ from typing import (
     Callable,
     Generic,
     Iterable,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -124,7 +123,7 @@ class LazyAsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
 
     _initializer: Callable[[], Awaitable[AsyncChunkedBase[_ENTRY_TV]]] = attr.ib(repr=False)
     _finalizer: Callable[[], Awaitable[Any]] = attr.ib(repr=False)
-    _chunked: Optional[Awaitable[AsyncChunkedBase[_ENTRY_TV]]] = attr.ib(init=False, default=None)
+    _chunked: Awaitable[AsyncChunkedBase[_ENTRY_TV]] | None = attr.ib(init=False, default=None)
 
     @property
     def items(self) -> AsyncIterable[_ENTRY_TV]:

@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -35,7 +34,7 @@ class RootBlockPlacement(BlockPlacement):
 class AfterBlockPlacement(BlockPlacement):
     type = QueryBlockPlacementType.after
 
-    dimension_values: Optional[list[DimensionValueSpec]] = attr.ib(default=None)
+    dimension_values: list[DimensionValueSpec] | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True)
@@ -49,15 +48,15 @@ class DispersedAfterBlockPlacement(BlockPlacement):
 @attr.s(frozen=True)
 class BlockSpec:
     block_id: int = attr.ib(kw_only=True)
-    parent_block_id: Optional[int] = attr.ib(kw_only=True)  # FIXME: Maybe remove this altogether
+    parent_block_id: int | None = attr.ib(kw_only=True)  # FIXME: Maybe remove this altogether
     placement: BlockPlacement = attr.ib(kw_only=True, factory=RootBlockPlacement)
     legend_item_ids: list[int] = attr.ib(kw_only=True, default=None)
     legend: Legend = attr.ib(kw_only=True)
     group_by_policy: GroupByPolicy = attr.ib(kw_only=True, default=GroupByPolicy.force)
-    limit: Optional[int] = attr.ib(kw_only=True, default=None)
-    offset: Optional[int] = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True, default=None)
+    offset: int | None = attr.ib(kw_only=True, default=None)
     query_type: QueryType = attr.ib(kw_only=True, default=QueryType.result)
-    row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
     disable_rls: bool = attr.ib(kw_only=True, default=False)
     ignore_nonexistent_filters: bool = attr.ib(kw_only=True, default=True)
     allow_measure_fields: bool = attr.ib(kw_only=True, default=True)
@@ -69,9 +68,9 @@ class BlockSpec:
 
 @attr.s(frozen=True)
 class BlockLegendMeta:
-    limit: Optional[int] = attr.ib(kw_only=True, default=None)
-    offset: Optional[int] = attr.ib(kw_only=True, default=None)
-    row_count_hard_limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True, default=None)
+    offset: int | None = attr.ib(kw_only=True, default=None)
+    row_count_hard_limit: int | None = attr.ib(kw_only=True, default=None)
 
     def clone(self, **updates: Any) -> BlockLegendMeta:
         return attr.evolve(self, **updates)

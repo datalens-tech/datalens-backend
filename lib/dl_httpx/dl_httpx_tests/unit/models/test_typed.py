@@ -212,7 +212,7 @@ def test_optional_annotation() -> None:
     Base.register("child", Child)
 
     class Root(dl_httpx.BaseResponseSchema):
-        child: typing.Optional[dl_httpx.TypedSchemaAnnotation[Base]] = None
+        child: dl_httpx.TypedSchemaAnnotation[Base] | None = None
 
     root = Root.model_validate({"child": {"type": "child", "value": "test"}})
     assert isinstance(root.child, Child)

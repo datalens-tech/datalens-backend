@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 from dynamic_enum import (
     AutoEnumValue,
@@ -13,7 +11,7 @@ from dl_constants.enums import ConnectorAvailability
 @attr.s(kw_only=True)
 class TranslatableSettings(SettingsBase):
     text: str = attr.ib()
-    domain: Optional[str] = attr.ib(default=None)
+    domain: str | None = attr.ib(default=None)
 
 
 @attr.s(kw_only=True)
@@ -29,8 +27,8 @@ class ConnectorIconSrcType(DynamicEnum):
 @attr.s(kw_only=True)
 class ConnectorIconSrc:
     icon_type: ConnectorIconSrcType = attr.ib(default=ConnectorIconSrcType.data)
-    url_prefix: Optional[str] = attr.ib(default=None)
-    data: Optional[str] = attr.ib(default=None)
+    url_prefix: str | None = attr.ib(default=None)
+    data: str | None = attr.ib(default=None)
 
 
 @attr.s(kw_only=True)

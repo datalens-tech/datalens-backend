@@ -22,7 +22,6 @@ error_mgr.print_component_refs(phantom_refs)
 from collections import defaultdict
 from typing import (
     Any,
-    Optional,
 )
 import uuid
 
@@ -46,7 +45,7 @@ def _make_component_id() -> str:
 
 @attr.s
 class ComponentErrorManager:
-    _dataset: Optional[Dataset] = attr.ib(kw_only=True, default=None)
+    _dataset: Dataset | None = attr.ib(kw_only=True, default=None)
     _dca: DatasetComponentAbstraction = attr.ib(init=False)
     _us_manager: USManagerBase = attr.ib(kw_only=True)
 

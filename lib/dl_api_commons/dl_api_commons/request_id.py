@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-from typing import Optional
 
-
-def make_uuid_from_parts(current: str, parent: Optional[str]) -> str:
+def make_uuid_from_parts(current: str, parent: str | None) -> str:
     assert current
 
     if not parent:

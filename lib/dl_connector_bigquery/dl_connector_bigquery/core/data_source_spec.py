@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 
 from dl_core.data_source_spec.sql import (
@@ -23,4 +21,4 @@ class BigQueryTableDataSourceSpec(BigQueryDataSourceSpecMixin, TableSQLDataSourc
 
 @attr.s
 class BigQuerySubselectDataSourceSpec(BigQueryDataSourceSpecMixin, SubselectDataSourceSpec):
-    subsql: Optional[str] = attr.ib(kw_only=True, default=None)
+    subsql: str | None = attr.ib(kw_only=True, default=None)

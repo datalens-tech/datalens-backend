@@ -27,7 +27,7 @@ class FieldMeta:
     clz: type = attr.ib()
     attrib_name: str = attr.ib()
     container_stack: Sequence[Any] = attr.ib()
-    attrib_descriptor: Optional[AttribDescriptor] = attr.ib()
+    attrib_descriptor: AttribDescriptor | None = attr.ib()
 
     def pop_container(self) -> tuple[Any, "FieldMeta"]:
         if len(self.container_stack) == 0:
@@ -55,7 +55,7 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _process_single_object(self, obj: _PROCESSING_OBJECT_TV, meta: FieldMeta) -> Optional[_PROCESSING_OBJECT_TV]:
+    def _process_single_object(self, obj: _PROCESSING_OBJECT_TV, meta: FieldMeta) -> _PROCESSING_OBJECT_TV | None:
         raise NotImplementedError()
 
     @classmethod

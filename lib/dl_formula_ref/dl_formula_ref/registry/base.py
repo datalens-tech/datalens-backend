@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Optional,
     Sequence,
 )
 
@@ -145,7 +144,7 @@ class FunctionDocRegistryItem:
     def get_dialects(self, env: GenerationEnvironment) -> set[DialectCombo]:
         return self._dialect_extractor.get_dialects(item=self, env=env)
 
-    def _get_one_implementation_spec(self, env: GenerationEnvironment) -> Optional[FunctionImplementationSpec]:
+    def _get_one_implementation_spec(self, env: GenerationEnvironment) -> FunctionImplementationSpec | None:
         implementations = self.get_implementation_specs(env=env)
         if implementations:
             return implementations[0]

@@ -4,7 +4,6 @@ import abc
 import logging
 from typing import (
     ClassVar,
-    Optional,
     Sequence,
 )
 
@@ -27,10 +26,10 @@ class RedisConnParams:
     port: int = attr.ib()
     db: int = attr.ib()
     password: str = attr.ib(repr=secrepr)
-    ssl: Optional[bool] = attr.ib()
+    ssl: bool | None = attr.ib()
 
 
-async def extract_redis_conn_params(redis_cli: Optional[redis.asyncio.Redis]) -> Optional[RedisConnParams]:
+async def extract_redis_conn_params(redis_cli: redis.asyncio.Redis | None) -> RedisConnParams | None:
     if redis_cli is None:
         return None
     redis_conn_params = redis_cli.connection_pool.connection_kwargs
@@ -58,7 +57,7 @@ async def extract_redis_conn_params(redis_cli: Optional[redis.asyncio.Redis]) ->
 class RedisBaseService(metaclass=abc.ABCMeta):
     APP_KEY: ClassVar[str] = "REDIS_SERVICE"
     _instance_kind: RedisInstanceKind = attr.ib()
-    _ssl: Optional[bool] = attr.ib(default=None)
+    _ssl: bool | None = attr.ib(default=None)
 
     async def init_hook(self, target_app: web.Application) -> None:
         LOGGER.info(f"Initializing Redis {self._instance_kind.name}")
@@ -100,8 +99,8 @@ class RedisSentinelService(RedisBaseService):
     _namespace: str = attr.ib()
     _db: int = attr.ib()
     _password: str = attr.ib(repr=False)
-    _cached_master: Optional[redis.asyncio.Redis] = attr.ib(init=False, default=None)
-    _cached_slave: Optional[redis.asyncio.Redis] = attr.ib(init=False, default=None)
+    _cached_master: redis.asyncio.Redis | None = attr.ib(init=False, default=None)
+    _cached_slave: redis.asyncio.Redis | None = attr.ib(init=False, default=None)
 
     _sentinel_client: RedisSentinel = attr.ib(init=False, repr=False, hash=False, cmp=False)
 
@@ -139,7 +138,7 @@ class RedisSentinelService(RedisBaseService):
 @attr.s(kw_only=True)
 class SingleHostSimpleRedisService(RedisBaseService):
     _url: str = attr.ib()
-    _password: Optional[str] = attr.ib(default=None, repr=False)
+    _password: str | None = attr.ib(default=None, repr=False)
 
     _redis_pool: redis.asyncio.ConnectionPool = attr.ib(init=False, repr=False, hash=False, cmp=False)
 

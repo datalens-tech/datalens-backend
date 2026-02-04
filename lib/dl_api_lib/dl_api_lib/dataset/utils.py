@@ -5,7 +5,6 @@ import logging
 from typing import (
     Generator,
     Iterable,
-    Optional,
 )
 
 from dl_api_lib import utils as bi_utils
@@ -32,7 +31,7 @@ LOGGER = logging.getLogger(__name__)
 def _iter_data_source_collections(
     dataset: Dataset,
     us_entry_buffer: USEntryBuffer,
-    source_ids: Optional[Iterable[str]] = None,
+    source_ids: Iterable[str] | None = None,
 ) -> Generator[DataSourceCollection, None, None]:
     ds_accessor = DatasetComponentAccessor(dataset=dataset)
 

@@ -7,7 +7,6 @@ from typing import (
     ClassVar,
     Collection,
     Generator,
-    Optional,
 )
 
 import attr
@@ -85,7 +84,7 @@ class RepositoryNavigator:
     def _filter_imports(
         self,
         import_specs: list[ImportSpec],
-        mask: Optional[re.Pattern] = None,
+        mask: re.Pattern | None = None,
         exclude_standard: bool = True,
     ) -> list[ImportSpec]:
         std_modules = set(sys.stdlib_module_names)
@@ -118,7 +117,7 @@ class RepositoryNavigator:
     def collect_import_bases_from_module(
         self,
         module_name: str,
-        mask: Optional[re.Pattern] = None,
+        mask: re.Pattern | None = None,
         exclude_standard: bool = True,
     ) -> set[str]:
         def get_base_package_name(imported_name: str) -> str:

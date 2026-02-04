@@ -1,5 +1,4 @@
 import abc
-from typing import Optional
 import uuid
 
 import pytest
@@ -96,7 +95,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_connection_id: str,
         control_api_sync_client: SyncHttpClientBase,
         enriched_connection_params: dict,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
         control_api: SyncHttpDatasetApiV1,
     ) -> None:
         with self.create_connection(

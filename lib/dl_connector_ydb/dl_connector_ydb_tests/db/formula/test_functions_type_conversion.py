@@ -2,7 +2,6 @@ import contextlib
 import datetime
 from typing import (
     Generator,
-    Optional,
 )
 
 import pytest
@@ -409,7 +408,7 @@ class DbCastTypeFunctionYQLTestSuite(
 class DbCastYQLTestSuiteBase(YQLTestBase):
     @contextlib.contextmanager
     def make_ydb_type_test_data_table(
-        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+        self, dbe: DbEvaluator, table_schema_name: str | None
     ) -> Generator[sa.Table, None, None]:
         db = dbe.db
         table_spec = self.generate_table_spec(table_name_prefix="ydb_type_test_table")
@@ -447,7 +446,7 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
 
     @pytest.fixture(scope="class")
     def ydb_type_test_data_table(
-        self, dbe: DbEvaluator, table_schema_name: Optional[str]
+        self, dbe: DbEvaluator, table_schema_name: str | None
     ) -> Generator[sa.Table, None, None]:
         with self.make_ydb_type_test_data_table(dbe=dbe, table_schema_name=table_schema_name) as table:
             yield table

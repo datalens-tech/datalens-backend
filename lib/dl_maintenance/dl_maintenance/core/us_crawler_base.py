@@ -10,7 +10,6 @@ from typing import (
     AsyncGenerator,
     AsyncIterable,
     ClassVar,
-    Optional,
     Sequence,
 )
 
@@ -60,8 +59,8 @@ class USEntryCrawler:
     ENTRY_TYPE: ClassVar[type[USEntry]] = None  # type: ignore  # TODO: fix  # Must be set in subclass
 
     _dry_run: bool = attr.ib()  # should always be specified explicitly.
-    _usm: Optional[AsyncUSManager] = attr.ib(default=None)
-    _target_tenant: Optional[TenantDef] = attr.ib(default=None)
+    _usm: AsyncUSManager | None = attr.ib(default=None)
+    _target_tenant: TenantDef | None = attr.ib(default=None)
     _concurrency_limit: int = attr.ib(default=10)
     # internals
     _run_fired: bool = attr.ib(init=False, default=False)
@@ -112,7 +111,7 @@ class USEntryCrawler:
         raise NotImplementedError()
 
     async def process_entry_get_save_flag(
-        self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None
+        self, entry: USEntry, logging_extra: dict[str, Any], usm: AsyncUSManager | None = None
     ) -> tuple[bool, str]:
         raise NotImplementedError()
 
@@ -122,8 +121,8 @@ class USEntryCrawler:
         entry_id: str,
         logging_extra: dict[str, Any],
         usm: AsyncUSManager,
-        context_name: Optional[str] = None,
-    ) -> AsyncGenerator[Optional[USEntry], None]:
+        context_name: str | None = None,
+    ) -> AsyncGenerator[USEntry | None, None]:
         if self._dry_run:
             try:
                 entry = await usm.get_by_id(
@@ -353,7 +352,7 @@ class USEntryCrawler:
                 raise
 
     @staticmethod
-    def _calculate_diff_str(target_entry: USEntry, entry_handling_extra: dict[str, Any]) -> Optional[str]:
+    def _calculate_diff_str(target_entry: USEntry, entry_handling_extra: dict[str, Any]) -> str | None:
         try:
             if isinstance(target_entry, USMigrationEntry):
                 entry_diff = get_pre_save_top_level_dict(target_entry)

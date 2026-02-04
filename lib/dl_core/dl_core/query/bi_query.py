@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from itertools import chain
 from typing import (
-    Optional,
     Sequence,
     Union,
 )
@@ -32,8 +31,8 @@ class BIQuery:
     dimension_filters: Sequence[ExpressionCtx] = attr.ib(factory=tuple)
     measure_filters: Sequence[ExpressionCtx] = attr.ib(factory=tuple)
     distinct: bool = False
-    limit: Optional[int] = None
-    offset: Optional[int] = None
+    limit: int | None = None
+    offset: int | None = None
 
     def get_names(self) -> list[str]:
         names: list[str] = []

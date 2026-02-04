@@ -10,7 +10,6 @@ from typing import (
     Any,
     Callable,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -25,24 +24,24 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
         wrapped_function: _FUNC,
         maxsize: int,
         cache_exceptions: tuple[type[Exception], ...] = (),
-        cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
+        cache_qualifier: Callable[..., _QUALIFIER_VALUE_TV] | None = None,
     ):
         self._wrapped_function = wrapped_function
         self._cache_exceptions = cache_exceptions
         self._maxsize = maxsize
         self._cache_qualifier = cache_qualifier
-        self._cached_wrappers: dict[Optional[_QUALIFIER_VALUE_TV], _FUNC] = {}
+        self._cached_wrappers: dict[_QUALIFIER_VALUE_TV | None, _FUNC] = {}
         self._cached_wrappers_lock = threading.Lock()
 
-    def _get_qualifier_value(self, *args: Any, **kwargs: Any) -> Optional[_QUALIFIER_VALUE_TV]:
+    def _get_qualifier_value(self, *args: Any, **kwargs: Any) -> _QUALIFIER_VALUE_TV | None:
         if self._cache_qualifier is None:
             return None
         return self._cache_qualifier(*args, **kwargs)
 
     def _make_cached_wrapper(self) -> _FUNC:
         @lru_cache(self._maxsize)
-        def _cached_result_and_error_wrapper(*args: Any, **kwargs: Any) -> tuple[Optional[Exception], Any]:
-            error: Optional[Exception] = None
+        def _cached_result_and_error_wrapper(*args: Any, **kwargs: Any) -> tuple[Exception | None, Any]:
+            error: Exception | None = None
             result: Any = None
             try:
                 result = self._wrapped_function(*args, **kwargs)
@@ -73,7 +72,7 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
 
         return wrapper
 
-    def cache_info(self) -> dict[Optional[_QUALIFIER_VALUE_TV], _CacheInfo]:
+    def cache_info(self) -> dict[_QUALIFIER_VALUE_TV | None, _CacheInfo]:
         """Collect cache info objects for all existing cache qualifier values."""
         with self._cached_wrappers_lock:
             return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_info"  [attr-defined]
@@ -88,7 +87,7 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
 def multi_cached_with_errors(
     maxsize: int,
     cache_exceptions: tuple[type[Exception], ...] = (),
-    cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
+    cache_qualifier: Callable[..., _QUALIFIER_VALUE_TV] | None = None,
 ) -> Callable[[_FUNC], _FUNC]:
     """
     Parameterized decorator that works just like ``lru_cache``,

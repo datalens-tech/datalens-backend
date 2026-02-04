@@ -4,7 +4,6 @@ from enum import Enum
 from typing import (
     Any,
     Callable,
-    Optional,
 )
 
 import attr
@@ -51,9 +50,9 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
     class DataModel(ClassicConnectionSQL.DataModel):
         secure: bool = attr.ib(default=False)
         endpoint: str = attr.ib(default="")
-        cluster_name: Optional[str] = attr.ib(default=None)
-        max_execution_time: Optional[int] = attr.ib(default=None)
-        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+        cluster_name: str | None = attr.ib(default=None)
+        max_execution_time: int | None = attr.ib(default=None)
+        ssl_ca: str | None = attr.ib(kw_only=True, default=None)
         readonly: int = attr.ib(kw_only=True, default=2)
 
     def get_conn_dto(self) -> ClickHouseConnDTO:
@@ -75,7 +74,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
     @staticmethod
     def get_effective_conn_options(
         base_conn_opts: ConnectOptions,
-        user_max_execution_time: Optional[int],
+        user_max_execution_time: int | None,
         max_allowed_max_execution_time: int,
     ) -> CHConnectOptions:
         if user_max_execution_time is None:

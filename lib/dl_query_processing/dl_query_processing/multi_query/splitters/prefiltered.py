@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -62,7 +61,7 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
         requirement_subtree: CompiledMultiQueryBase,
         query_id_gen: PrefixedIdGen,
         expr_id_gen: PrefixedIdGen,
-    ) -> Optional[CompiledMultiQueryPatch]:
+    ) -> CompiledMultiQueryPatch | None:
         # First check if we really need to do anything
         if self.is_simple_query(query):
             return None
@@ -196,7 +195,7 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
             )
             subqueries.append(subquery)
 
-        new_root_from_id: Optional[str] = None
+        new_root_from_id: str | None = None
         if query.joined_from.root_from_id is not None:
             new_root_from_id = avatar_subq_map[query.joined_from.root_from_id]
 

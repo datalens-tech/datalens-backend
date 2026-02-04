@@ -1,12 +1,10 @@
-from typing import Optional
-
 import attr
 
 from dl_core.connection_executors.models.connection_target_dto_base import BaseAiohttpConnTargetDTO
 from dl_core.utils import secrepr
 
 
-def hide_pass(value: Optional[dict]) -> str:
+def hide_pass(value: dict | None) -> str:
     if value is None:
         return repr(value)
     if not value:
@@ -19,12 +17,12 @@ class BitrixGDSConnTargetDTO(BaseAiohttpConnTargetDTO):
     portal: str = attr.ib(kw_only=True)
     token: str = attr.ib(kw_only=True, repr=secrepr)
 
-    max_execution_time: Optional[int] = attr.ib()
-    connect_timeout: Optional[int] = attr.ib()
-    total_timeout: Optional[int] = attr.ib()
+    max_execution_time: int | None = attr.ib()
+    connect_timeout: int | None = attr.ib()
+    total_timeout: int | None = attr.ib()
 
-    redis_conn_params: Optional[dict] = attr.ib(repr=hide_pass)
-    redis_caches_ttl: Optional[int] = attr.ib()
+    redis_conn_params: dict | None = attr.ib(repr=hide_pass)
+    redis_caches_ttl: int | None = attr.ib()
 
-    def get_effective_host(self) -> Optional[str]:
+    def get_effective_host(self) -> str | None:
         return None  # Not Applicable

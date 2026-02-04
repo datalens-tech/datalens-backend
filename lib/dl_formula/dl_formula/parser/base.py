@@ -10,7 +10,6 @@ import time
 from typing import (
     Generator,
     NamedTuple,
-    Optional,
 )
 
 import attr
@@ -34,11 +33,11 @@ FORMULA_CACHE_SIZE = int(os.environ.get("FORMULA_CACHE_SIZE", 1000))
 class ParserStats(NamedTuple):
     global_cache_hits: dict[str, int]
     global_cache_misses: dict[str, int]
-    global_cache_maxsize: dict[str, Optional[int]]
+    global_cache_maxsize: dict[str, int | None]
     global_cache_currsize: dict[str, int]
     call_count: int
     call_time: float
-    avg_length: Optional[float]
+    avg_length: float | None
     length_counts: dict[int, int]
     length_avg_times: dict[int, float]
     length_median_times: dict[int, float]
@@ -110,11 +109,11 @@ class FunctionCapabilities(NamedTuple):
 
 def resolve_function_capabilities(
     name: str,
-    grouping: Optional[nodes.WindowGrouping] = None,
-    ordering: Optional[nodes.Ordering] = None,
-    before_filter_by: Optional[nodes.BeforeFilterBy] = None,
-    ignore_dimensions: Optional[nodes.IgnoreDimensions] = None,
-    lod: Optional[nodes.LodSpecifier] = None,
+    grouping: nodes.WindowGrouping | None = None,
+    ordering: nodes.Ordering | None = None,
+    before_filter_by: nodes.BeforeFilterBy | None = None,
+    ignore_dimensions: nodes.IgnoreDimensions | None = None,
+    lod: nodes.LodSpecifier | None = None,
 ) -> FunctionCapabilities:
     can_be_window_res = can_be_window(name)
     can_be_nonwindow_res = can_be_nonwindow(name)

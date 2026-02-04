@@ -1,5 +1,4 @@
 import re
-from typing import Optional
 
 from marshmallow import fields as ma_fields
 from marshmallow import validate as ma_validate
@@ -28,8 +27,8 @@ def cache_ttl_field(
     attribute: str,
     required: bool = False,
     allow_none: bool = True,
-    missing: Optional[int] = None,
-    default: Optional[int] = None,
+    missing: int | None = None,
+    default: int | None = None,
     bi_extra: FieldExtra = FieldExtra(editable=True),  # noqa: B008
 ) -> ma_fields.Integer:
     return ma_fields.Integer(
@@ -46,7 +45,7 @@ def secret_string_field(
     attribute: str,
     required: bool = True,
     allow_none: bool = False,
-    default: Optional[str] = None,
+    default: str | None = None,
     bi_extra: FieldExtra = FieldExtra(editable=True, export_fake=True),  # noqa: B008
 ) -> ma_fields.String:
     return ma_fields.String(

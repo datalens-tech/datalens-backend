@@ -5,7 +5,6 @@ import typing
 from typing import (
     Any,
     Callable,
-    Optional,
 )
 
 import attr
@@ -112,7 +111,7 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             postgresql_typnames=[OID_KNOWLEDGE.get(column[1]) for column in cursor.description],
         )
 
-    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Callable[[Any], Any] | None, ...]:
         return tuple(
             self._convert_bytea if col.type_code == 17 else None  # `bytea`
             for col in cursor_info.raw_cursor_description

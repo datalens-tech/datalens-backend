@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 import attr
@@ -134,14 +133,14 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
             column_count = raw_cursor_info.get("names") or raw_cursor_info.get("db_types") or 0
 
         # Resolve names
-        names: Optional[list[str]] = raw_cursor_info.get("names")
+        names: list[str] | None = raw_cursor_info.get("names")
         if not names:
             names = [f"col_{col_num}" for col_num in range(column_count)]
 
         assert names is not None
 
         # Resolve native types
-        db_types: Optional[list[Optional[GenericNativeType]]] = raw_cursor_info.get("db_types")
+        db_types: list[GenericNativeType | None] | None = raw_cursor_info.get("db_types")
         if not db_types:
             db_types = [None for _ in range(column_count)]
 

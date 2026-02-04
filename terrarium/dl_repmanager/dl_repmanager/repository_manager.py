@@ -5,7 +5,6 @@ import re
 from typing import (
     Callable,
     Mapping,
-    Optional,
     Sequence,
 )
 
@@ -414,7 +413,7 @@ class RepositoryManager:
     def compare_imports_and_requirements(
         self,
         package_module_name: str,
-        ignore_prefix: Optional[str] = None,
+        ignore_prefix: str | None = None,
         tests: bool = False,
     ) -> tuple[list[ReqPackageSpec], list[ReqPackageSpec]]:
         # TODO: Add support for namespace packages (e.g. google-api-core, google-auth)

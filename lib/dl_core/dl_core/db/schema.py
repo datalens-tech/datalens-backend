@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from dl_core.db.elements import SchemaColumn
 
 
 SAMPLE_ID_COLUMN_NAME = "__dl_sample_id"  # TODO: Move somewhere else - it has to do with sampling, not schemas
 
 
-def are_raw_schemas_same(first: Optional[list[SchemaColumn]], second: Optional[list[SchemaColumn]]) -> bool:
+def are_raw_schemas_same(first: list[SchemaColumn] | None, second: list[SchemaColumn] | None) -> bool:
     if first is None or second is None:
         return first == second
     if len(first) != len(second):

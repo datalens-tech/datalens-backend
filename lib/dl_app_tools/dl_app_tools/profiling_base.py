@@ -12,7 +12,6 @@ from typing import (
     Awaitable,
     Callable,
     Iterable,
-    Optional,
     TypeVar,
     Union,
     cast,
@@ -45,10 +44,10 @@ class ProfileResult:
         timing = prof_result.exec_time_sec
     """
 
-    exec_time_sec: Optional[float] = attr.ib(default=None)
-    log_data: Optional[TLogData] = attr.ib(default=None)
-    exc_info: Optional[TExcInfo] = attr.ib(default=None)
-    exc_value: Optional[Exception] = attr.ib(default=None)
+    exec_time_sec: float | None = attr.ib(default=None)
+    log_data: TLogData | None = attr.ib(default=None)
+    exc_info: TExcInfo | None = attr.ib(default=None)
+    exc_value: Exception | None = attr.ib(default=None)
 
 
 class GenericProfiler:
@@ -75,7 +74,7 @@ class GenericProfiler:
         return profilers_stack
 
     @classmethod
-    def reset_outer_stages(cls, outer_stages: Optional[TStageList] = None) -> None:
+    def reset_outer_stages(cls, outer_stages: TStageList | None = None) -> None:
         if isinstance(outer_stages, str):
             outer_stages = cls.load_stage_stack(outer_stages)
         elif outer_stages is None:
@@ -91,7 +90,7 @@ class GenericProfiler:
         cls.CTX_OUTER_STAGES.set(tuple(outer_stages))
 
     @classmethod
-    def reset_all(cls, outer_stages: Optional[TStageList] = None) -> None:
+    def reset_all(cls, outer_stages: TStageList | None = None) -> None:
         if cls.get_current_stages_stack():
             current_stack = cls.get_current_stages_stack_str()
             tb_limit = 5
@@ -124,17 +123,17 @@ class GenericProfiler:
     def __init__(
         self,
         stage: str,
-        extra_data: Optional[dict] = None,
-        logger: Optional[logging.Logger] = None,
+        extra_data: dict | None = None,
+        logger: logging.Logger | None = None,
     ):
         self.logger = LOGGER if logger is None else logger  # type: logging.Logger
         self.stage = stage
         self.extra_data = {} if extra_data is None else extra_data
 
-        self.start_time: Optional[float] = None
-        self.end_time: Optional[float] = None
-        self.profile_result: Optional[ProfileResult] = None
-        self._ot_span_context: Optional[opentracing.scope.Scope] = None  # Will be filled on __enter__
+        self.start_time: float | None = None
+        self.end_time: float | None = None
+        self.profile_result: ProfileResult | None = None
+        self._ot_span_context: opentracing.scope.Scope | None = None  # Will be filled on __enter__
 
     def _cleanup(self) -> None:
         self.start_time = None
@@ -185,7 +184,7 @@ class GenericProfiler:
     def post_profile(self) -> None:
         pass
 
-    def _save_profiling_log(self, exc_type: type[Exception], exc_info: Optional[TExcInfo] = None) -> TLogData:
+    def _save_profiling_log(self, exc_type: type[Exception], exc_info: TExcInfo | None = None) -> TLogData:
         assert self.end_time is not None
         assert self.start_time is not None
         time_diff = self.end_time - self.start_time
@@ -210,7 +209,7 @@ class GenericProfiler:
             exec_time_sec=round(time_diff, 4),
         )
 
-        log_exc_info: Optional[TExcInfo] = None
+        log_exc_info: TExcInfo | None = None
         if exc_info is not None:
             if isinstance(exc_info, tuple) and len(exc_info) == 3:
                 log_exc_info = exc_info
@@ -221,7 +220,7 @@ class GenericProfiler:
 
         return extra
 
-    def _update_profile_result(self, exc_info: Optional[TExcInfo] = None, log_data: Optional[TLogData] = None) -> None:
+    def _update_profile_result(self, exc_info: TExcInfo | None = None, log_data: TLogData | None = None) -> None:
         res = self.profile_result
         assert res is not None
 
@@ -239,8 +238,8 @@ _GP_FUNC_T = Callable[..., _GP_FUNC_RET_TV]
 
 def generic_profiler(
     stage: str,
-    extra_data: Optional[dict] = None,
-    logger: Optional[logging.Logger] = None,
+    extra_data: dict | None = None,
+    logger: logging.Logger | None = None,
 ) -> Callable[[_GP_FUNC_T], _GP_FUNC_T]:
     def generic_profiler_wrap(func: _GP_FUNC_T) -> _GP_FUNC_T:
         if inspect.iscoroutinefunction(func):
@@ -262,8 +261,8 @@ _GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_R
 
 def generic_profiler_async(
     stage: str,
-    extra_data: Optional[dict] = None,
-    logger: Optional[logging.Logger] = None,
+    extra_data: dict | None = None,
+    logger: logging.Logger | None = None,
 ) -> Callable[[_GPA_CORO_TV], _GPA_CORO_TV]:
     def generic_profiler_wrap_async(coro: _GPA_CORO_TV) -> _GPA_CORO_TV:
         if not inspect.iscoroutinefunction(coro):

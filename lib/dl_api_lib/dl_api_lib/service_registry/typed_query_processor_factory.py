@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import attr
@@ -53,7 +52,7 @@ class DefaultQueryProcessorFactory(TypedQueryProcessorFactory):
         allow_cache_usage = allow_cache_usage and connection.allow_cache
 
         use_cache: bool = False
-        cache_engine: Optional[EntityCacheEngineAsync] = None
+        cache_engine: EntityCacheEngineAsync | None = None
         if allow_cache_usage and connection.cache_ttl_sec_override:  # (ttl is not None and > 0)
             cache_engine_factory = self.service_registry.get_cache_engine_factory()
             if cache_engine_factory is not None:

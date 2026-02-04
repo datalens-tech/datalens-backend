@@ -15,7 +15,6 @@ from typing import (
     Awaitable,
     Callable,
     Iterable,
-    Optional,
     TypeVar,
     cast,
 )
@@ -86,7 +85,7 @@ class ContextVarExecutor(ThreadPoolExecutor):
 _WRAPPED_RT = TypeVar("_WRAPPED_RT")
 
 
-def await_sync(coro: Awaitable[_WRAPPED_RT], loop: Optional[asyncio.AbstractEventLoop] = None) -> _WRAPPED_RT:
+def await_sync(coro: Awaitable[_WRAPPED_RT], loop: asyncio.AbstractEventLoop | None = None) -> _WRAPPED_RT:
     if loop is None:
         loop = asyncio.get_event_loop()
 
@@ -110,7 +109,7 @@ class RunThread(threading.Thread):
 # Please, lord, have mercy on my soul, for I have sinned.
 def async_run(
     coro: typing.Coroutine[typing.Any, typing.Any, _WRAPPED_RT],
-    loop: typing.Optional[asyncio.AbstractEventLoop] = None,
+    loop: asyncio.AbstractEventLoop | None = None,
 ) -> _WRAPPED_RT:
     if loop is None:
         try:
@@ -137,7 +136,7 @@ _ITERABLE_T = TypeVar("_ITERABLE_T")
 
 def to_sync_iterable(
     async_iterable: AsyncIterable[_ITERABLE_T],
-    loop: Optional[asyncio.AbstractEventLoop] = None,
+    loop: asyncio.AbstractEventLoop | None = None,
 ) -> Iterable[_ITERABLE_T]:
     actual_loop = asyncio.get_event_loop() if loop is None else loop
 
@@ -170,7 +169,7 @@ class BIAsyncTimeout:
         return instance
 
     @classmethod
-    def from_params(cls, deadline: Optional[float], loop: asyncio.AbstractEventLoop) -> BIAsyncTimeout:
+    def from_params(cls, deadline: float | None, loop: asyncio.AbstractEventLoop) -> BIAsyncTimeout:
         return cls.from_vanilla(VanillaTimeout(deadline, loop))
 
     async def __aenter__(self) -> BIAsyncTimeout:
@@ -178,17 +177,17 @@ class BIAsyncTimeout:
 
     async def __aexit__(
         self,
-        exc_type: Optional[type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
-    ) -> Optional[bool]:
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> bool | None:
         return await self.vanilla_timeout.__aexit__(exc_type, exc_val, exc_tb)
 
 
-def timeout(delay: Optional[float]) -> BIAsyncTimeout:
+def timeout(delay: float | None) -> BIAsyncTimeout:
     loop = asyncio.get_running_loop()
     if delay is not None:
-        deadline = loop.time() + delay  # type: Optional[float]
+        deadline = loop.time() + delay  # type: float | None
     else:
         deadline = None
     return BIAsyncTimeout.from_params(deadline, loop)

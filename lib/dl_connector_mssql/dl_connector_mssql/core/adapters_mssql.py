@@ -6,7 +6,6 @@ import logging
 import re
 from typing import (
     Any,
-    Optional,
 )
 from urllib.parse import quote_plus
 
@@ -58,7 +57,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
         ]
     )  # {...}s are are left unquoted for future formatting in `get_conn_line`
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return self.execute(DBAdapterQuery("SELECT @@VERSION", db_name=db_ident.db_name)).get_all()[0][0]
 
     _type_code_to_sa = {
@@ -240,7 +239,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
     EXTRA_EXC_CLS = (pyodbc.Error, sa_exc.DBAPIError)
 
     @classmethod
-    def get_exc_class(cls, err_msg: str) -> Optional[type[exc.DatabaseQueryError]]:
+    def get_exc_class(cls, err_msg: str) -> type[exc.DatabaseQueryError] | None:
         err_match = cls._EXC_CODE_RE.match(err_msg)
         if err_match is not None:
             code = int(err_match.group("code"))

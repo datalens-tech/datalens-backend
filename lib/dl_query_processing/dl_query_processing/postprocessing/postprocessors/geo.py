@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from functools import lru_cache
 import json
-from typing import Optional
 
 
 DUMMY_GEO_VALUE = "__DUMMY_GEO_VALUE__"
 
 
 @lru_cache(maxsize=2**10)
-def postprocess_geopoint(value) -> Optional[str]:  # type: ignore  # TODO: fix
+def postprocess_geopoint(value) -> str | None:  # type: ignore  # TODO: fix
     value = str(value)
     if value == DUMMY_GEO_VALUE:
         return None
@@ -46,7 +45,7 @@ def postprocess_geopoint(value) -> Optional[str]:  # type: ignore  # TODO: fix
 
 
 @lru_cache(maxsize=2**10)
-def postprocess_geopolygon(value) -> Optional[str]:  # type: ignore  # TODO: fix
+def postprocess_geopolygon(value) -> str | None:  # type: ignore  # TODO: fix
     value = str(value)
     if value == DUMMY_GEO_VALUE:
         return None

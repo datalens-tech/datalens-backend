@@ -5,7 +5,6 @@ import os
 import time
 from typing import (
     TYPE_CHECKING,
-    Optional,
 )
 
 import requests
@@ -102,7 +101,7 @@ def prepare_united_storage(
     us_host: str,
     us_master_token: str,
     tenant_id: str = "common",
-    us_pg_dsn: Optional[str] = None,
+    us_pg_dsn: str | None = None,
     force: bool = False,
 ) -> None:
     if not force and not os.environ.get("CLEAR_US_DATABASE", ""):

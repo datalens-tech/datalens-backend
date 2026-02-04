@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 
@@ -43,7 +41,7 @@ class TestResult(DefaultApiTestBase):
         limit_ = 10
         offset_ = 5
 
-        def get_data(limit: Optional[int] = None, offset: Optional[int] = None) -> list[list]:
+        def get_data(limit: int | None = None, offset: int | None = None) -> list[list]:
             result_resp = data_api.get_result(
                 dataset=ds,
                 fields=[

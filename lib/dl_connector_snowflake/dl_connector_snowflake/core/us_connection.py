@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -58,15 +57,15 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
     class DataModel(ConnCacheableDataModelMixin, ConnRawSqlLevelDataModelMixin, ConnectionDataModelBase):
         account_name: str = attr.ib()
         user_name: str = attr.ib()
-        user_role: Optional[str] = attr.ib(default=None)
+        user_role: str | None = attr.ib(default=None)
         client_id: str = attr.ib()
         client_secret: str = attr.ib()
         refresh_token: str = attr.ib()
-        refresh_token_expire_time: Optional[datetime] = attr.ib(default=None)
+        refresh_token_expire_time: datetime | None = attr.ib(default=None)
 
-        schema: Optional[str] = attr.ib()
-        db_name: Optional[str] = attr.ib()
-        warehouse: Optional[str] = attr.ib()
+        schema: str | None = attr.ib()
+        db_name: str | None = attr.ib()
+        warehouse: str | None = attr.ib()
 
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
@@ -75,13 +74,13 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         if not re.fullmatch(ACCOUNT_NAME_RE, self.data.account_name):
             raise ma.ValidationError(message="Field account_name is not valid")
 
-    def check_for_notifications(self) -> list[Optional[NotificationReportingRecord]]:
+    def check_for_notifications(self) -> list[NotificationReportingRecord | None]:
         notifications = super().check_for_notifications()
 
         sf_auth_provider = SFAuthProvider.from_dto(self.get_conn_dto())
@@ -91,7 +90,7 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
         return notifications
 
     @property
-    def schema_name(self) -> Optional[str]:
+    def schema_name(self) -> str | None:
         return self.data.schema
 
     def get_conn_dto(self) -> SnowFlakeConnDTO:

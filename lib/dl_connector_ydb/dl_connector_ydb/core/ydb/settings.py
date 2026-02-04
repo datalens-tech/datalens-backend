@@ -1,6 +1,5 @@
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -23,8 +22,8 @@ from dl_connector_ydb.core.ydb.adapter import CONNECTION_TYPE_YDB
 
 @attr.s(frozen=True)
 class DeprecatedYDBConnectorSettings(DeprecatedConnectorSettingsBase, DeprecatedDatasourceTemplateSettingsMixin):
-    ENABLE_AUTH_TYPE_PICKER: Optional[bool] = s_attrib("ENABLE_AUTH_TYPE_PICKER", missing=False)  # type: ignore
-    DEFAULT_HOST_VALUE: Optional[str] = s_attrib("DEFAULT_HOST_VALUE", missing=None)  # type: ignore
+    ENABLE_AUTH_TYPE_PICKER: bool | None = s_attrib("ENABLE_AUTH_TYPE_PICKER", missing=False)  # type: ignore
+    DEFAULT_HOST_VALUE: str | None = s_attrib("DEFAULT_HOST_VALUE", missing=None)  # type: ignore
     DEFAULT_SSL_ENABLE_VALUE: bool = s_attrib("DEFAULT_SSL_ENABLE_VALUE", missing=True)  # type: ignore
 
 

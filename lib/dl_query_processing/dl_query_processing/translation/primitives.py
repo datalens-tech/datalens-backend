@@ -6,7 +6,6 @@ from typing import (
     Any,
     Iterable,
     NamedTuple,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -41,9 +40,9 @@ from dl_query_processing.enums import ExecutionLevel
 class DetailedType(NamedTuple):
     field_id: str
     data_type: UserDataType
-    # TODO: native_type: Optional[GenericNativeType] = None
-    formula_data_type: Optional[DataType] = None
-    formula_data_type_params: Optional[DataTypeParams] = None
+    # TODO: native_type: GenericNativeType | None = None
+    formula_data_type: DataType | None = None
+    formula_data_type_params: DataTypeParams | None = None
 
     @property
     def extract(self) -> QueryElementExtract:
@@ -62,7 +61,7 @@ _META_TV = TypeVar("_META_TV", bound="TranslatedQueryMetaInfo")
 
 @attr.s
 class TranslatedQueryMetaInfo(QueryMetaInfo):
-    detailed_types: Optional[list[Optional[DetailedType]]] = attr.ib(kw_only=True, factory=list)
+    detailed_types: list[DetailedType | None] | None = attr.ib(kw_only=True, factory=list)
 
     @property
     def extract(self) -> QueryElementExtract:
@@ -79,7 +78,7 @@ class TranslatedQueryMetaInfo(QueryMetaInfo):
     def from_comp_meta(
         cls: type[_META_TV],
         comp_meta: QueryMetaInfo,
-        detailed_types: Optional[list[Optional[DetailedType]]] = None,
+        detailed_types: list[DetailedType | None] | None = None,
     ) -> _META_TV:
         detailed_types = detailed_types or []
         assert detailed_types is not None
@@ -99,14 +98,14 @@ class ExpressionCtxExt(ExpressionCtx):
     which is not needed in other clauses.
     """
 
-    formula_data_type: Optional[DataType] = None
-    formula_data_type_params: Optional[DataTypeParams] = None
-    original_field_id: Optional[FieldId] = None
+    formula_data_type: DataType | None = None
+    formula_data_type_params: DataTypeParams | None = None
+    original_field_id: FieldId | None = None
 
 
 @attr.s(frozen=True)
 class TranslatedJoinedFromObject:
-    root_from_id: Optional[str] = attr.ib(kw_only=True, default=None)
+    root_from_id: str | None = attr.ib(kw_only=True, default=None)
     froms: Sequence[FromObject] = attr.ib(kw_only=True, default=())  # FIXME: switch to translated froms
 
     def iter_ids(self) -> Iterable[str]:
@@ -126,8 +125,8 @@ class TranslatedFlatQuery:
     order_by: list[OrderByExpressionCtx] = attr.ib(kw_only=True)
     join_on: list[JoinOnExpressionCtx] = attr.ib(kw_only=True)
     joined_from: TranslatedJoinedFromObject = attr.ib(kw_only=True)
-    limit: Optional[int] = attr.ib(kw_only=True)
-    offset: Optional[int] = attr.ib(kw_only=True)
+    limit: int | None = attr.ib(kw_only=True)
+    offset: int | None = attr.ib(kw_only=True)
     column_list: list[SchemaColumn] = attr.ib(kw_only=True)
     meta: TranslatedQueryMetaInfo = attr.ib(kw_only=True, factory=TranslatedQueryMetaInfo)
 

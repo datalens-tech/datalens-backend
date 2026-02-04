@@ -4,7 +4,6 @@ import datetime
 import logging
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -38,9 +37,9 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
 
     @attr.s(eq=False, kw_only=True)
     class FileDataSource(BaseFileS3Connection.FileDataSource):
-        spreadsheet_id: Optional[str] = attr.ib(default=None)
-        sheet_id: Optional[int] = attr.ib(default=None)
-        first_line_is_header: Optional[bool] = attr.ib(default=None)
+        spreadsheet_id: str | None = attr.ib(default=None)
+        sheet_id: int | None = attr.ib(default=None)
+        first_line_is_header: bool | None = attr.ib(default=None)
         data_updated_at: datetime.datetime = attr.ib(factory=lambda: datetime.datetime.now(datetime.timezone.utc))
 
         def __hash__(self) -> int:
@@ -84,12 +83,12 @@ class GSheetsFileS3Connection(BaseFileS3Connection):
     class DataModel(BaseFileS3Connection.DataModel):
         sources: list["GSheetsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "list[dl_connector_bundle_chs3.chs3_gsheets.core.us_connection.GSheetsFileS3Connection.FileDataSource]", base class "DataModel" defined the type as "list[dl_connector_bundle_chs3.chs3_base.core.us_connection.BaseFileS3Connection.FileDataSource]")  [assignment]
 
-        refresh_token: Optional[str] = attr.ib(default=None, repr=False)
+        refresh_token: str | None = attr.ib(default=None, repr=False)
         refresh_enabled: bool = attr.ib(default=False)
 
         def oldest_data_update_time(
-            self, exclude_statuses: Optional[set[FileProcessingStatus]] = None
-        ) -> Optional[datetime.datetime]:
+            self, exclude_statuses: set[FileProcessingStatus] | None = None
+        ) -> datetime.datetime | None:
             if exclude_statuses is None:
                 exclude_statuses = set()
 

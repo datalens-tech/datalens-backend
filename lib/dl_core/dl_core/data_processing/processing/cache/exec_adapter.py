@@ -4,7 +4,6 @@ from typing import (
     Awaitable,
     Callable,
     Collection,
-    Optional,
     Sequence,
     Union,
 )
@@ -36,7 +35,7 @@ from dl_utils.streaming import AsyncChunkedBase
 
 @attr.s
 class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
-    _dataset_id: Optional[str] = attr.ib(kw_only=True)
+    _dataset_id: str | None = attr.ib(kw_only=True)
     _main_processor: ExecutorBasedOperationProcessor = attr.ib(kw_only=True)
     _use_cache: bool = attr.ib(kw_only=True)
     _use_locked_cache: bool = attr.ib(kw_only=True)
@@ -56,11 +55,11 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         query: Union[str, Select],
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]],
+        preparation_callback: Callable[[], Awaitable[None]] | None,
     ) -> TValuesChunkStream:
         # Ignore preparation_callback - we do not need to prepare real data here
 
@@ -89,7 +88,7 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             )
             return typing.cast(TJSONExtChunkStream, result_data)
 
-        cache_full_hit: Optional[bool] = None
+        cache_full_hit: bool | None = None
         try:
             situation, result_iter = await cache_helper.run_with_cache(
                 allow_cache_read=self._use_cache,
@@ -145,7 +144,7 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         self,
         query_id: str,
         compiled_query: str,
-        target_connection_ref: Optional[ConnectionRef],
+        target_connection_ref: ConnectionRef | None,
     ) -> None:
         self._main_processor.db_ex_adapter.pre_query_execute(
             query_id=query_id,
@@ -156,6 +155,6 @@ class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
     def post_query_execute(
         self,
         query_id: str,
-        exec_exception: Optional[Exception],
+        exec_exception: Exception | None,
     ) -> None:
         self._main_processor.db_ex_adapter.post_query_execute(query_id=query_id, exec_exception=exec_exception)

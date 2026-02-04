@@ -3,7 +3,6 @@ import datetime
 import math
 from typing import (
     Generator,
-    Optional,
 )
 
 import attr
@@ -93,7 +92,7 @@ class CHS3ConnectionApiTestBase(BaseCHS3TestClass[FILE_CONN_TV], ConnectionTestB
         self,
         control_api_sync_client: SyncHttpClientBase,
         enriched_connection_params: dict,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
         sync_us_manager: SyncUSManager,
         sample_file_data_source: BaseFileS3Connection.FileDataSource,
     ) -> Generator[str, None, None]:

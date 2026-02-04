@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import typing
-from typing import Optional
 
 import attr
 
@@ -33,7 +32,7 @@ class PublicEnvEntityUsageChecker(EntityUsageChecker):
         rci: RequestContextInfo,
         dataset: us_dataset.Dataset,
         us_manager: USManagerBase,
-        localizer: Optional[Localizer] = None,
+        localizer: Localizer | None = None,
     ) -> None:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
         dsrc_coll_factory = DataSourceCollectionFactory(us_entry_buffer=us_manager.get_entry_buffer())

@@ -29,7 +29,7 @@ class CryptoController:
     def copy(self) -> "CryptoController":
         return attr.evolve(self)
 
-    def encrypt(self, key_id: str, plain_text: typing.Optional[str]) -> typing.Optional[EncryptedData]:
+    def encrypt(self, key_id: str, plain_text: str | None) -> EncryptedData | None:
         if plain_text is None:
             return None
 
@@ -41,7 +41,7 @@ class CryptoController:
             cypher_text=cypher_text,
         )
 
-    def decrypt(self, encrypted_data: typing.Optional[EncryptedData]) -> typing.Optional[str]:
+    def decrypt(self, encrypted_data: EncryptedData | None) -> str | None:
         if encrypted_data is None:
             return None
 
@@ -51,7 +51,7 @@ class CryptoController:
         plain_text = self._map_key_id_fernet_instance[key_id].decrypt(encoded_cypher_text).decode()
         return plain_text
 
-    def encrypt_with_actual_key(self, plain_text: typing.Optional[str]) -> typing.Optional[EncryptedData]:
+    def encrypt_with_actual_key(self, plain_text: str | None) -> EncryptedData | None:
         return self.encrypt(key_id=self._key_config.actual_key_id, plain_text=plain_text)
 
     @property

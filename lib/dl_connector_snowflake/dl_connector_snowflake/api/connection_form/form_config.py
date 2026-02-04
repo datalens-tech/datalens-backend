@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import unique
-from typing import Optional
 
 import attr
 
@@ -64,17 +63,17 @@ class OAuthSnowFlakeRow(PreparedRow, DisplayConditionsMixin):
         refresh_token = "refresh_token"
         refresh_token_expire_time = "refresh_token_expire_time"
 
-    fake_value: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("fakeValue"))
-    button_text: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("buttonText"))
+    fake_value: str | None = attr.ib(default=None, metadata=remap_skip_if_null("fakeValue"))
+    button_text: str | None = attr.ib(default=None, metadata=remap_skip_if_null("buttonText"))
 
 
 def _basic_input_row(
     label_text: str,
     field: FormFieldName,
-    help_text: Optional[MarkdownStr],
-    display_conditions: Optional[TDisplayConditions] = None,
+    help_text: MarkdownStr | None,
+    display_conditions: TDisplayConditions | None = None,
     password_input: bool = False,
-    fake_value: Optional[str] = None,
+    fake_value: str | None = None,
 ) -> C.CustomizableRow:
     return C.CustomizableRow(
         items=[
@@ -97,8 +96,8 @@ def _basic_input_row(
 class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
-        tenant: Optional[TenantDef],
+        connector_settings: DeprecatedConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
         on_create = self.mode == ConnectionFormMode.create

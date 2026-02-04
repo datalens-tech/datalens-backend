@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from http import HTTPStatus
 import json
-from typing import Optional
 
 import attr
 import pytest
@@ -52,7 +51,7 @@ class PreGeneratedLODTestRunner:
         data_rows = get_data_rows(result_resp)
         assert data_rows
 
-        def float_or_none(value: Optional[str]) -> Optional[float]:
+        def float_or_none(value: str | None) -> float | None:
             if value is None:
                 return None
             return float(value)

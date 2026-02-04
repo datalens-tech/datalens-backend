@@ -13,7 +13,6 @@ from typing import (
     Callable,
     Generator,
     Literal,
-    Optional,
     overload,
 )
 
@@ -58,7 +57,7 @@ def skip_outside_devhost(func):  # type: ignore  # 2024-01-24 # TODO: Function i
 
 
 def wait_for_initdb(
-    initdb_port: int, initdb_host: Optional[str] = None, timeout: int = 900, require: bool = False
+    initdb_port: int, initdb_host: str | None = None, timeout: int = 900, require: bool = False
 ) -> tuple[bool, str]:
     initdb_host = initdb_host or get_test_container_hostport("init-db").host
     # TODO: initdb_port?

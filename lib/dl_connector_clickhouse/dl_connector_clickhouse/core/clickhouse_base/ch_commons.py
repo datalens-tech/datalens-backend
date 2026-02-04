@@ -5,7 +5,6 @@ import re
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
     Pattern,
 )
 
@@ -39,8 +38,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 def get_ch_settings(
-    read_only_level: Optional[int] = None,
-    output_format_json_quote_denormals: Optional[int] = None,
+    read_only_level: int | None = None,
+    output_format_json_quote_denormals: int | None = None,
 ) -> dict:
     settings = {
         # https://clickhouse.com/docs/en/operations/settings/settings#settings-join_use_nulls
@@ -100,7 +99,7 @@ class ClickHouseBaseUtils:
     }
 
     @classmethod
-    def parse_message(cls, err_msg: str) -> Optional[ParsedErrorMsg]:
+    def parse_message(cls, err_msg: str) -> ParsedErrorMsg | None:
         match = cls.ch_err_msg_re.match(err_msg)
 
         if match is None:
@@ -117,13 +116,13 @@ class ClickHouseBaseUtils:
     @classmethod
     def get_exc_class_by_parsed_message(
         cls, msg: ParsedErrorMsg
-    ) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
+    ) -> tuple[type[exc.DatabaseQueryError], dict[str, str]] | None:
         if msg.code in cls.map_err_code_exc_cls:
             return cls.map_err_code_exc_cls[msg.code], {}
         return None
 
     @classmethod
-    def get_exc_class(cls, err_msg: str) -> Optional[tuple[type[exc.DatabaseQueryError], dict[str, str]]]:
+    def get_exc_class(cls, err_msg: str) -> tuple[type[exc.DatabaseQueryError], dict[str, str]] | None:
         parse_msg = cls.parse_message(err_msg)
         if parse_msg:
             return cls.get_exc_class_by_parsed_message(parse_msg)
@@ -148,7 +147,7 @@ class ClickHouseBaseUtils:
         return headers
 
     @classmethod
-    def get_tracing_sample_flag_override(cls, rci: DBAdapterScopedRCI) -> Optional[bool]:
+    def get_tracing_sample_flag_override(cls, rci: DBAdapterScopedRCI) -> bool | None:
         """
         Return overridden sample flag value. If value should not be overridden `None` will be returned.
         """
@@ -163,11 +162,11 @@ def create_column_sql(
     sa_dialect: DefaultDialect,
     col: SchemaColumn,
     tt: TypeTransformer,
-    partition_fields: Optional[list[str]] = None,
+    partition_fields: list[str] | None = None,
 ) -> str:
     native_type = tt.type_user_to_native(user_t=col.user_type, native_t=col.native_type)
 
-    nullable: Optional[bool]
+    nullable: bool | None
     if partition_fields and col.name in partition_fields:
         # Partition column cannot be nullable. Enforcing it in here.
         nullable = False

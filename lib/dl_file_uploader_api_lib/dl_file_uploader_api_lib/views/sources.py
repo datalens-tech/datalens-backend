@@ -4,7 +4,6 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 from aiohttp import web
@@ -87,8 +86,8 @@ class SourceStatusView(FileUploaderBaseView):
         )
 
 
-def get_compatible_user_type(user_type: Optional[UserDataType]) -> tuple[UserDataType, ...]:
-    compatible_types: dict[Optional[UserDataType], tuple[UserDataType, ...]] = {
+def get_compatible_user_type(user_type: UserDataType | None) -> tuple[UserDataType, ...]:
+    compatible_types: dict[UserDataType | None, tuple[UserDataType, ...]] = {
         UserDataType.string: (UserDataType.string,),
         UserDataType.integer: (
             UserDataType.integer,
@@ -113,9 +112,9 @@ def get_compatible_user_type(user_type: Optional[UserDataType]) -> tuple[UserDat
 
 
 def cast_preview_data(
-    preview_data: list[list[Optional[str]]],
+    preview_data: list[list[str | None]],
     raw_schema: RawSchemaType,
-) -> list[list[Optional[str]]]:
+) -> list[list[str | None]]:
     tt = get_type_transformer(CONNECTION_TYPE_FILE)  # FIXME
     for row in preview_data:
         for i, cell in enumerate(row):
@@ -147,8 +146,8 @@ async def get_preview_data(
     s3mm: S3ModelManager,
     task_processor: TaskProcessor,
     tenant_id: str,
-    preview_id: Optional[str],
-) -> list[list[Optional[str]]]:
+    preview_id: str | None,
+) -> list[list[str | None]]:
     if preview_id is None:
         preview_data = []
     else:
@@ -180,7 +179,7 @@ class SourceInfoView(FileUploaderBaseView):
     async def _make_source_resp(
         self,
         file_type: FileType,
-        user_source_properties: Optional[UserSourceProperties],
+        user_source_properties: UserSourceProperties | None,
         source: DataSource,
         column_type_overrides: RawSchemaType,
         rmm: RedisModelManager,
@@ -229,7 +228,7 @@ class SourceInfoView(FileUploaderBaseView):
 
         return source_resp
 
-    def _make_data_settings(self, source: DataSource, file_settings: Optional[FileSettings]) -> dict[str, Any]:
+    def _make_data_settings(self, source: DataSource, file_settings: FileSettings | None) -> dict[str, Any]:
         data_settings: dict[str, Any] = dict()
         if source.file_source_settings is not None:
             data_settings["first_line_is_header"] = source.file_source_settings.first_line_is_header
@@ -238,7 +237,7 @@ class SourceInfoView(FileUploaderBaseView):
             data_settings["delimiter"] = file_settings.delimiter
         return data_settings
 
-    def _make_options(self, file_type: FileType, source: DataSource) -> Optional[dict[str, Any]]:
+    def _make_options(self, file_type: FileType, source: DataSource) -> dict[str, Any] | None:
         if file_type == FileType.csv:
             return dict(
                 data_settings={
@@ -379,7 +378,7 @@ class SourceInternalParamsView(FileUploaderBaseView):
         source = dfile.get_source_by_id(req_data["source_id"])
         preview_id = source.preview_id
 
-        column_type_overrides: Optional[RawSchemaType] = req_data["raw_schema"]
+        column_type_overrides: RawSchemaType | None = req_data["raw_schema"]
         LOGGER.info(f"Got overrides for raw_schema: {column_type_overrides=}")
         if column_type_overrides is not None:
             raw_schema = get_raw_schema_with_overrides(source.raw_schema, column_type_overrides)

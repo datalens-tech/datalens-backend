@@ -6,7 +6,6 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
-    Optional,
     TypeVar,
     Union,
     overload,
@@ -26,7 +25,7 @@ class SecretStr(str):
 
 
 class Required(NamedTuple):
-    message: Optional[str] = None
+    message: str | None = None
 
 
 class Factory(Generic[_FACTORY_RET_TV]):
@@ -42,7 +41,7 @@ class EnvError(Exception):
 
 
 @overload
-def get_from_env(env_key: str, converter: Callable[[str], _RET_TV], default: Literal[None]) -> Optional[_RET_TV]:
+def get_from_env(env_key: str, converter: Callable[[str], _RET_TV], default: Literal[None]) -> _RET_TV | None:
     pass
 
 
@@ -67,7 +66,7 @@ def get_from_env(  # noqa
     env_key: str,
     converter: Callable[[str], _RET_TV],
     default: Union[_RET_TV, Factory[_RET_TV], Required, None] = Required(),  # noqa: B008
-) -> Optional[_RET_TV]:
+) -> _RET_TV | None:
     if env_key in os.environ:
         try:
             return converter(os.environ[env_key])

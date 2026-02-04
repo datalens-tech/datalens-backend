@@ -1,5 +1,4 @@
 import os
-from typing import Optional
 
 import attr
 from dotenv import (
@@ -30,7 +29,7 @@ class OsEnvParamGetter(EnvParamGetter):
         env_file = os.environ.get("DL_TESTS_ENV_FILE") or find_dotenv(filename=".env")
         self._env_from_file = dotenv_values(env_file)
 
-    def get_str_value(self, key: str) -> Optional[str]:
+    def get_str_value(self, key: str) -> str | None:
         env_value = os.environ.get(key)
 
         if env_value is None:

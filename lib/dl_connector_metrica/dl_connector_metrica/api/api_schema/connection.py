@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Optional,
 )
 
 from marshmallow import ValidationError
@@ -34,7 +33,7 @@ class ConnectionMetrikaLikeAPI(ConnectionMetaMixin, DataExportForbiddenMixin, Co
     )
 
     @validates_schema
-    def validate_counter_id(self, data: Optional[dict[str, Any]], *args: Any, **kwargs: Any) -> None:
+    def validate_counter_id(self, data: dict[str, Any] | None, *args: Any, **kwargs: Any) -> None:
         if data is None or "data" not in data or "counter_id" not in data["data"]:
             return
 

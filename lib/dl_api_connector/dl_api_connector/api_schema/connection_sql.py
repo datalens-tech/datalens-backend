@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Mapping,
-    Optional,
 )
 
 import marshmallow
@@ -45,7 +44,7 @@ class DBHostField(ma_fields.String):
         else:
             raise marshmallow.ValidationError("Unable to parse host: {}".format(user_hosts_str))
 
-    def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> Any:
+    def _deserialize(self, value: Any, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any) -> Any:
         user_host_str = super()._deserialize(value, attr, data, **kwargs)
 
         schema = self.parent
@@ -61,7 +60,7 @@ class DBHostField(ma_fields.String):
         return user_host_str
 
 
-def db_name_no_query_params(value: Optional[str]) -> Optional[str]:
+def db_name_no_query_params(value: str | None) -> str | None:
     if not value:
         return value
     if "?" in value:

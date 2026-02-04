@@ -1,5 +1,4 @@
 import enum
-from typing import Optional
 
 import attr
 
@@ -23,7 +22,7 @@ class DownloadGSheetTask(BaseTaskMeta):
     authorized: bool = attr.ib()
 
     tenant_id: str = attr.ib()
-    connection_id: Optional[str] = attr.ib(default=None)
+    connection_id: str | None = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
     schedule_parsing: bool = attr.ib(default=True)
 
@@ -36,7 +35,7 @@ class DownloadYaDocsTask(BaseTaskMeta):
     authorized: bool = attr.ib()
 
     tenant_id: str = attr.ib()
-    connection_id: Optional[str] = attr.ib(default=None)
+    connection_id: str | None = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
 
 
@@ -47,11 +46,11 @@ class ParseFileTask(BaseTaskMeta):
     file_id: str = attr.ib()
 
     tenant_id: str = attr.ib()
-    source_id: Optional[str] = attr.ib(default=None)
-    connection_id: Optional[str] = attr.ib(default=None)
+    source_id: str | None = attr.ib(default=None)
+    connection_id: str | None = attr.ib(default=None)
     exec_mode: TaskExecutionMode = attr.ib(default=TaskExecutionMode.BASIC)
-    file_settings: Optional[dict] = attr.ib(factory=dict)
-    source_settings: Optional[dict] = attr.ib(factory=dict)
+    file_settings: dict | None = attr.ib(factory=dict)
+    source_settings: dict | None = attr.ib(factory=dict)
 
 
 @attr.s
@@ -60,8 +59,8 @@ class ProcessExcelTask(BaseTaskMeta):
 
     file_id: str = attr.ib()
     tenant_id: str = attr.ib()
-    connection_id: Optional[str] = attr.ib(default=None)
-    exec_mode: Optional[TaskExecutionMode] = attr.ib(default=TaskExecutionMode.BASIC)
+    connection_id: str | None = attr.ib(default=None)
+    exec_mode: TaskExecutionMode | None = attr.ib(default=TaskExecutionMode.BASIC)
 
 
 @attr.s
@@ -93,14 +92,14 @@ class DeleteFileTask(BaseTaskMeta):
 
     s3_filename: str = attr.ib()
     tenant_id: str = attr.ib()
-    preview_id: Optional[str] = attr.ib(default=None)
+    preview_id: str | None = attr.ib(default=None)
 
 
 @attr.s
 class MigratePreviewRedisToS3Task(BaseTaskMeta):
     name = TaskName("migrate_preview")
 
-    preview_id: Optional[str] = attr.ib()
+    preview_id: str | None = attr.ib()
     tenant_id: str = attr.ib()
 
 
@@ -127,5 +126,5 @@ class CleanupTenantFilePreviewsTask(BaseTaskMeta):
 class RenameTenantFilesTask(BaseTaskMeta):
     name = TaskName("rename_tenant_files_task")
 
-    old_tenant_id: Optional[str] = attr.ib(default=None)
+    old_tenant_id: str | None = attr.ib(default=None)
     tenant_id: str = attr.ib()

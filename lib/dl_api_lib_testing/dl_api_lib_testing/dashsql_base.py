@@ -2,7 +2,6 @@ import abc
 from typing import (
     Any,
     Mapping,
-    Optional,
 )
 
 from aiohttp.test_utils import (
@@ -21,9 +20,9 @@ class DashSQLTestBase(DataApiTestBase, ConnectionTestBase, metaclass=abc.ABCMeta
         conn_id: str,
         query: str,
         fail_ok: bool = False,
-        params: Optional[dict] = None,
-        connector_specific_params: Optional[Mapping] = None,
-        headers: Optional[dict[str, str]] = None,
+        params: dict | None = None,
+        connector_specific_params: Mapping | None = None,
+        headers: dict[str, str] | None = None,
         with_export_info: bool = False,
     ) -> ClientResponse:
         request_body: dict[str, Any] = {"sql_query": query}

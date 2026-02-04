@@ -11,7 +11,6 @@ from typing import (
     Awaitable,
     Callable,
     ClassVar,
-    Optional,
     TypeVar,
     Union,
 )
@@ -56,8 +55,8 @@ TRedisModel = TypeVar("TRedisModel", bound="RedisModel")
 @attr.s(init=True, kw_only=True)
 class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
     KEY_PREFIX: ClassVar[str]
-    DEFAULT_TTL: ClassVar[Optional[int]] = None  # in seconds
-    _manager: Optional[RedisModelManager] = attr.ib(default=None)
+    DEFAULT_TTL: ClassVar[int | None] = None  # in seconds
+    _manager: RedisModelManager | None = attr.ib(default=None)
 
     id: str = attr.ib(factory=lambda: str(uuid.uuid4()))
 
@@ -91,7 +90,7 @@ class RedisModel(SecretContainingMixin, metaclass=abc.ABCMeta):
 class RedisModelUserIdAuth(RedisModel, metaclass=abc.ABCMeta):
     system_user_id: ClassVar[str] = "system"
 
-    user_id: Optional[str] = attr.ib(default=None)
+    user_id: str | None = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
         if self.user_id is None:
@@ -193,7 +192,7 @@ class RedisModelManager:
             takes_self=True,
         ),
     )
-    rci: Optional[RequestContextInfo] = attr.ib(default=None)
+    rci: RequestContextInfo | None = attr.ib(default=None)
 
     def _set_obj_attr(self, obj: RedisModel, key: DataKey, value: Any) -> None:
         key_head = DataKey(parts=key.parts[:-1])
@@ -232,7 +231,7 @@ class RedisModelManager:
 
         return obj
 
-    async def get(self, key: str, target_cls: type[RedisModel], post_load: Optional[Callable] = None) -> RedisModel:
+    async def get(self, key: str, target_cls: type[RedisModel], post_load: Callable | None = None) -> RedisModel:
         json_data = await self._redis.get(key)
         if json_data is None:
             LOGGER.info(f"RedisModel object not found: {key}")

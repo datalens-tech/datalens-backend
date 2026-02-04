@@ -7,7 +7,6 @@ from typing import (
     Any,
     Generator,
     Iterable,
-    Optional,
 )
 
 import attr
@@ -55,7 +54,7 @@ class PackageMetaReader:
 
     def get_package_type(
         self,
-    ) -> Optional[str]:  # FIXME: remove `Optional` after it is added to all toml files
+    ) -> str | None:  # FIXME: remove `Optional` after it is added to all toml files
         package_reg_name = self._get_meta_section().get("package_type")
         assert package_reg_name is None or isinstance(package_reg_name, str)
         return package_reg_name
@@ -113,7 +112,7 @@ class PackageMetaWriter(PackageMetaReader):
             section = self.toml_writer.get_editable_section(section_name)
             section.remove(item_name)
 
-    def _get_item_opt(self, section_name: str, item_name: str) -> Optional[dict[str, Any]]:
+    def _get_item_opt(self, section_name: str, item_name: str) -> dict[str, Any] | None:
         items = [item for item in self.iter_requirement_items(section_name=section_name) if item["name"] == item_name]
         if not items:
             return None

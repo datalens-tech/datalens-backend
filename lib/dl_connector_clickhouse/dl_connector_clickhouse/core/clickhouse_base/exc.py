@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 from typing import (
     Any,
-    Optional,
 )
 
 from dl_core import exc
@@ -14,14 +13,14 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
 
     def __init__(
         self,
-        db_message: Optional[str] = None,
-        query: Optional[str] = None,
-        inspector_query: Optional[str] = None,
-        message: Optional[str] = None,
-        details: Optional[dict[str, Any]] = None,
-        orig: Optional[Exception] = None,
-        debug_info: Optional[dict[str, Any]] = None,
-        params: Optional[dict[str, Any]] = None,
+        db_message: str | None = None,
+        query: str | None = None,
+        inspector_query: str | None = None,
+        message: str | None = None,
+        details: dict[str, Any] | None = None,
+        orig: Exception | None = None,
+        debug_info: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
     ):
         super(ClickHouseSourceDoesNotExistError, self).__init__(
             db_message=db_message,

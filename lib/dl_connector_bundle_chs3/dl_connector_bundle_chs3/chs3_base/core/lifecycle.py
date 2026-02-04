@@ -1,7 +1,6 @@
 import logging
 from typing import (
     Iterable,
-    Optional,
 )
 
 import attr
@@ -27,9 +26,7 @@ class FileConnTaskScheduler:
     _task_processor: TaskProcessor = attr.ib(kw_only=True)
     _rci: RequestContextInfo = attr.ib(kw_only=True)
 
-    def schedule_sources_delete(
-        self, conn: BaseFileS3Connection, source_to_del: Optional[Iterable[str]] = None
-    ) -> None:
+    def schedule_sources_delete(self, conn: BaseFileS3Connection, source_to_del: Iterable[str] | None = None) -> None:
         """Removes all _saved_sources if `sources_to_del` is not specified"""
 
         if source_to_del is None:
@@ -94,7 +91,7 @@ class FileConnTaskScheduler:
 class BaseFileS3ConnectionLifecycleManager(ConnectionLifecycleManager[BaseFileS3Connection]):
     ENTRY_CLS = BaseFileS3Connection
 
-    def get_task_processor(self, req_id: Optional[str] = None) -> TaskProcessor:
+    def get_task_processor(self, req_id: str | None = None) -> TaskProcessor:
         task_processor_factory = self._service_registry.get_task_processor_factory()
         task_processor = task_processor_factory.make(req_id)
         return task_processor

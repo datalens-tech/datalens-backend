@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import base64
 import json
-from typing import Optional
 
 from google.api_core.exceptions import GoogleAPIError
 from google.auth.credentials import Credentials as BQCredentials
@@ -34,8 +33,8 @@ class BigQueryConnLineConstructor(BaseConnLineConstructor[BigQueryConnTargetDTO]
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         return {
             "dialect": self._dialect_name,
@@ -66,7 +65,7 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
         # TODO: ARRAY
     }
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return self._target_dto.project_id
 
     def get_engine_kwargs(self) -> dict:
@@ -123,5 +122,5 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
             for _project_id, dataset_id, table_name in result.get_all()
         ]
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return None

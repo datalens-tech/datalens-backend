@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Generator,
-    Optional,
 )
 import weakref
 
@@ -99,13 +98,13 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
             raw_chunk_generator=data_generator(),
         )
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return self._sync_adapter.get_target_host()
 
     async def test(self) -> None:
         await self._loop.run_in_executor(self._tpe, self._sync_adapter.test)
 
-    async def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    async def get_db_version(self, db_ident: DBIdent) -> str | None:
         return await self._loop.run_in_executor(self._tpe, self._sync_adapter.get_db_version, db_ident)
 
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:

@@ -5,7 +5,6 @@ from typing import (
     Any,
     Iterable,
     Mapping,
-    Optional,
     Sequence,
     Union,
 )
@@ -40,9 +39,9 @@ class DataSourceStrictSchema(DataSourceSchema):
         self,
         data: Union[Mapping[str, Any], Iterable[Mapping[str, Any]]],
         *,
-        many: Optional[bool] = None,
-        partial: Optional[Union[bool, Sequence[str], AbstractSet[str]]] = None,
-        unknown: Optional[str] = None,
+        many: bool | None = None,
+        partial: bool | Sequence[str] | AbstractSet[str] | None = None,
+        unknown: str | None = None,
         **kwargs: Any,
     ) -> Any:
         assert isinstance(data, (dict, list))

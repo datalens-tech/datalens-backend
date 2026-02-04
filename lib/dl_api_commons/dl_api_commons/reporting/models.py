@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 
 from dl_api_commons.reporting.records import ReportingRecord
@@ -19,24 +17,24 @@ class QueryExecutionReportingRecord(ReportingRecord):
 
 @attr.s(frozen=True, auto_attribs=True)
 class QueryExecutionStartReportingRecord(QueryExecutionReportingRecord):
-    dataset_id: Optional[str]
-    query_type: Optional[ReportingQueryType]
+    dataset_id: str | None
+    query_type: ReportingQueryType | None
     connection_type: ConnectionType
     conn_reporting_data: dict
     query: str  # SQL query
-    workbook_id: Optional[str]
+    workbook_id: str | None
 
 
 @attr.s(frozen=True, auto_attribs=True)
 class QueryExecutionCacheInfoReportingRecord(QueryExecutionReportingRecord):
     # Note: using it as ternary: hit / miss / undefined (error/disabled/...)
     # TODO?: write a bi_core.data_processing.cache_processing.CacheSituation name too?
-    cache_full_hit: Optional[bool] = None
+    cache_full_hit: bool | None = None
 
 
 @attr.s(frozen=True, auto_attribs=True)
 class QueryExecutionEndReportingRecord(QueryExecutionReportingRecord):
-    exception: Optional[BaseException]
+    exception: BaseException | None
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -51,12 +49,12 @@ class DataProcessingStartReportingRecord(DataProcessingReportingRecord):
 
 @attr.s(frozen=True, auto_attribs=True)
 class DataProcessingEndReportingRecord(DataProcessingReportingRecord):
-    exception: Optional[Exception]
+    exception: Exception | None
 
 
 @attr.s(frozen=True, auto_attribs=True)
 class DataProcessingCacheInfoReportingRecord(DataProcessingReportingRecord):
-    cache_full_hit: Optional[bool] = None
+    cache_full_hit: bool | None = None
 
 
 @attr.s(frozen=True, auto_attribs=True)

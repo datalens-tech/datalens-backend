@@ -78,7 +78,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
-    Optional,
 )
 
 import attr
@@ -131,13 +130,13 @@ class ResultCacheEntry:
     """
 
     key_parts_str: str
-    metadata: Optional[dict[str, Any]] = None
-    details: Optional[dict[str, Any]] = None
+    metadata: dict[str, Any] | None = None
+    details: dict[str, Any] | None = None
 
-    _result_data: Optional[TJSONExt] = None
-    _result_data_redis_repr: Optional[bytes] = None
-    _is_compressed: Optional[bool] = None
-    _compress_alg: Optional[CompressAlg] = None
+    _result_data: TJSONExt | None = None
+    _result_data_redis_repr: bytes | None = None
+    _is_compressed: bool | None = None
+    _compress_alg: CompressAlg | None = None
 
     def __attrs_post_init__(self) -> None:
         if self._result_data is not None:
@@ -206,7 +205,7 @@ class ResultCacheEntry:
     def from_redis_data(
         cls,
         redis_data: bytes,
-        details: Optional[dict[str, Any]] = None,
+        details: dict[str, Any] | None = None,
     ) -> ResultCacheEntry:
         ser_obj = CacheMetadataSerialization(redis_data)
         metadata = ser_obj.metadata
@@ -223,7 +222,7 @@ class ResultCacheEntry:
         is_compressed = metadata["is_compressed"]
         assert isinstance(is_compressed, bool)
         compress_alg_name = metadata.get("compress_alg")
-        compress_alg: Optional[CompressAlg] = None
+        compress_alg: CompressAlg | None = None
 
         if is_compressed:
             if not compress_alg_name:
@@ -244,7 +243,7 @@ class ResultCacheEntry:
         )
 
     def to_redis_data_and_log_details(
-        self, compress: bool = False, compress_alg: Optional[CompressAlg] = None
+        self, compress: bool = False, compress_alg: CompressAlg | None = None
     ) -> tuple[bytes, dict[str, Any]]:
         result_data = self._result_data
         assert result_data is not None
@@ -289,7 +288,7 @@ class ResultCacheEntry:
     def to_redis_data(
         self,
         compress: bool = False,
-        compress_alg: Optional[CompressAlg] = None,
+        compress_alg: CompressAlg | None = None,
     ) -> bytes:
         """
         Convenience wrapper, primarily for tests.
@@ -313,7 +312,7 @@ class EntityCacheEntryManagerAsyncBase:
     local_key_rep: LocalKeyRepresentation
     cache_engine: EntityCacheEngineAsync
     write_ttl_sec: float
-    read_extend_ttl_sec: Optional[float] = None
+    read_extend_ttl_sec: float | None = None
     allow_cache_read: bool = True
 
     _starting: bool = False
@@ -322,7 +321,7 @@ class EntityCacheEntryManagerAsyncBase:
     def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
 
-    async def initialize(self) -> Optional[TJSONExt]:
+    async def initialize(self) -> TJSONExt | None:
         if self._starting or self._started:
             raise Exception("Already initialized and not finalized")
         self._starting = True
@@ -331,14 +330,14 @@ class EntityCacheEntryManagerAsyncBase:
         self._starting = False
         return result
 
-    async def _initialize(self) -> Optional[TJSONExt]:
+    async def _initialize(self) -> TJSONExt | None:
         raise NotImplementedError
 
     async def finalize(
         self,
-        result: Optional[TJSONExt],
-        error: Optional[Any] = None,
-        ttl_sec: Optional[float] = None,
+        result: TJSONExt | None,
+        error: Any | None = None,
+        ttl_sec: float | None = None,
     ) -> None:
         if not self._starting and not self._started:
             raise Exception("Not initialized")
@@ -350,16 +349,16 @@ class EntityCacheEntryManagerAsyncBase:
 
     async def _finalize(
         self,
-        result: Optional[TJSONExt],
-        error: Optional[Any] = None,
-        ttl_sec: Optional[float] = None,
+        result: TJSONExt | None,
+        error: Any | None = None,
+        ttl_sec: float | None = None,
     ) -> None:
         raise NotImplementedError
 
 
 @attr.s(auto_attribs=True, slots=True)
 class EntityCacheEntryManagerAsync(EntityCacheEntryManagerAsyncBase):
-    async def _initialize(self) -> Optional[TJSONExt]:
+    async def _initialize(self) -> TJSONExt | None:
         if not self.allow_cache_read:
             return None
         return await self.cache_engine._get_from_cache(
@@ -369,9 +368,9 @@ class EntityCacheEntryManagerAsync(EntityCacheEntryManagerAsyncBase):
 
     async def _finalize(
         self,
-        result: Optional[TJSONExt],
-        error: Optional[Any] = None,
-        ttl_sec: Optional[float] = None,
+        result: TJSONExt | None,
+        error: Any | None = None,
+        ttl_sec: float | None = None,
     ) -> None:
         if result is None:
             if error is None:
@@ -389,7 +388,7 @@ class RedisCacheLockWrapped(RedisCacheLock):
     """Local profiling additions to the RCL"""
 
     @generic_profiler_async("qcache-locked-get-data-slave")  # type: ignore  # TODO: fix
-    async def get_data_slave(self) -> Optional[bytes]:
+    async def get_data_slave(self) -> bytes | None:
         return await super().get_data_slave()
 
     @generic_profiler_async("qcache-locked-get-data-main")  # type: ignore  # TODO: fix
@@ -403,8 +402,8 @@ class RedisCacheLockWrapped(RedisCacheLock):
 
 @attr.s(auto_attribs=True, slots=True)
 class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
-    _rcl: Optional[RedisCacheLock] = None
-    _history_holder: Optional[HistoryHolder] = None
+    _rcl: RedisCacheLock | None = None
+    _history_holder: HistoryHolder | None = None
 
     @contextlib.asynccontextmanager
     async def _with_redis(self, *, master: bool = True, exclusive: bool = True) -> AsyncGenerator[Redis, None]:
@@ -454,7 +453,7 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
         return rcl
 
     @generic_profiler_async("qcache-locked-initialize")  # type: ignore  # TODO: fix
-    async def _initialize(self) -> Optional[TJSONExt]:
+    async def _initialize(self) -> TJSONExt | None:
         """
         WARNING: partially reimplements `EntityCacheEngineAsync._get_from_cache`.
         """
@@ -487,9 +486,9 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
     @generic_profiler_async("qcache-locked-finalize")  # type: ignore  # TODO: fix
     async def _finalize(
         self,
-        result: Optional[TJSONExt],
-        error: Optional[Any] = None,
-        ttl_sec: Optional[float] = None,
+        result: TJSONExt | None,
+        error: Any | None = None,
+        ttl_sec: float | None = None,
     ) -> None:
         rcl = self._rcl
         assert rcl is not None, "should have been created by now"
@@ -569,9 +568,9 @@ class EntityCacheEngineBase:
         local_key_rep: LocalKeyRepresentation,
         result: TJSONExt,
         compress: bool = False,
-        compress_alg: Optional[CompressAlg] = None,
-        ttl_sec: Optional[float] = None,
-        metadata: Optional[dict[str, Any]] = None,
+        compress_alg: CompressAlg | None = None,
+        ttl_sec: float | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> _CacheUpdateRequest:
         if ttl_sec is None:
             ttl_sec = self.DEFAULT_TTL_SEC
@@ -608,7 +607,7 @@ class EntityCacheEngineBase:
     def _make_full_key_and_log_details(
         self,
         local_key_rep: LocalKeyRepresentation,
-        new_ttl_sec: Optional[float] = None,
+        new_ttl_sec: float | None = None,
     ) -> tuple[str, dict]:
         full_key = self._get_key_query_cache_entry(local_key_rep)
 
@@ -623,10 +622,10 @@ class EntityCacheEngineBase:
     def _make_result_cache_entry(
         self,
         local_key_rep: LocalKeyRepresentation,
-        cache_entry_redis_data: Optional[bytes],
+        cache_entry_redis_data: bytes | None,
         details: dict[str, Any],
         allow_error_entry: bool = False,
-    ) -> Optional[ResultCacheEntry]:
+    ) -> ResultCacheEntry | None:
         if not cache_entry_redis_data:
             self._log_cache_miss(reason="no_data", details=details)
             return None
@@ -681,12 +680,12 @@ class EntityCacheEngineBase:
     def _log_after_read(self, full_key: str, cache_entry: ResultCacheEntry) -> None:
         LOGGER.info("Cache read from %r", full_key, extra=cache_entry.details)
 
-    def _log_cache_miss(self, reason: str, details: dict[str, Any], message: Optional[str] = None) -> None:
+    def _log_cache_miss(self, reason: str, details: dict[str, Any], message: str | None = None) -> None:
         full_key = details["cache_key"]
         details = dict(details, cache_miss_reason=reason)
         LOGGER.info("Cache miss at %r: %r: %r", full_key, reason, message or "-", extra=details)
 
-    def _log_cache_timeout(self, timeout: float, details: dict[str, Any], message: Optional[str] = None) -> None:
+    def _log_cache_timeout(self, timeout: float, details: dict[str, Any], message: str | None = None) -> None:
         full_key = details["cache_key"]
         details = dict(
             details,
@@ -706,7 +705,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
     """
 
     rc: Redis = attr.ib(kw_only=True)
-    rc_slave: Optional[Redis] = None
+    rc_slave: Redis | None = None
 
     CACHE_GET_TIMEOUT_SEC: float = 5.0
     CACHE_SAVE_TIMEOUT_SEC: float = 30.0  # should not be a problem since it happens in background
@@ -751,8 +750,8 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
         self,
         local_key_rep: LocalKeyRepresentation,
         result: TJSONExt,
-        metadata: Optional[dict[str, Any]] = None,
-        ttl_sec: Optional[float] = None,
+        metadata: dict[str, Any] | None = None,
+        ttl_sec: float | None = None,
     ) -> None:
         update_request = self._make_cache_update_request(
             local_key_rep=local_key_rep,
@@ -791,8 +790,8 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
     async def _get_from_cache(
         self,
         local_key_rep: LocalKeyRepresentation,
-        new_ttl_sec: Optional[float] = None,
-    ) -> Optional[TJSONExt]:
+        new_ttl_sec: float | None = None,
+    ) -> TJSONExt | None:
         full_key, details = self._make_full_key_and_log_details(local_key_rep=local_key_rep, new_ttl_sec=new_ttl_sec)
 
         read_timeout = self.CACHE_GET_TIMEOUT_SEC
@@ -823,8 +822,8 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
     async def _redis_get(
         self,
         full_key: str,
-        new_ttl_sec: Optional[float] = None,
-    ) -> Optional[bytes]:
+        new_ttl_sec: float | None = None,
+    ) -> bytes | None:
         rcli = self.rc
         if new_ttl_sec is not None:
             pipe = rcli.pipeline()
@@ -849,7 +848,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
         self,
         local_key_rep: LocalKeyRepresentation,
         **kwargs: Any,
-    ) -> Optional[EntityCacheEntryManagerAsyncBase]:
+    ) -> EntityCacheEntryManagerAsyncBase | None:
         return self.entity_cache_entry_manager_cls(
             local_key_rep=local_key_rep,
             cache_engine=self,

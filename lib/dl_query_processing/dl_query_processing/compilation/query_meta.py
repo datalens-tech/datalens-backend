@@ -4,7 +4,6 @@ from typing import (
     Any,
     Hashable,
     NamedTuple,
-    Optional,
 )
 
 import attr
@@ -18,14 +17,14 @@ from dl_query_processing.enums import (
 
 
 class QueryElementExtract(NamedTuple):
-    values: tuple[Optional[Hashable], ...]
+    values: tuple[Hashable | None, ...]
 
 
 @attr.s
 class QueryMetaInfo:
     query_type: QueryType = attr.ib(kw_only=True, default=QueryType.result)
     phantom_select_ids: list[str] = attr.ib(kw_only=True, factory=list)
-    field_order: Optional[list[tuple[int, str]]] = attr.ib(kw_only=True, default=None)
+    field_order: list[tuple[int, str]] | None = attr.ib(kw_only=True, default=None)
     row_count_hard_limit: int = attr.ib(kw_only=True, default=DataAPILimits.DEFAULT_SOURCE_DB_LIMIT)
     from_subquery: bool = attr.ib(kw_only=True, default=False)
     subquery_limit: int = attr.ib(kw_only=True, default=None)

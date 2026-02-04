@@ -10,7 +10,6 @@ from typing import (
     TYPE_CHECKING,
     Collection,
     Mapping,
-    Optional,
     Union,
 )
 
@@ -136,7 +135,7 @@ class FuncRenderer:
         result = self._rt_renderer.render(rich_text, env=self._rt_env)
         return result
 
-    def _as_param_text(self, text: str, params: Optional[dict[str, str]] = None) -> ParameterizedText:
+    def _as_param_text(self, text: str, params: dict[str, str] | None = None) -> ParameterizedText:
         return ParameterizedText.from_str(text=text, params=params or {})
 
     def render_note(self, note: ParameterizedNote) -> RenderedNote:
@@ -202,7 +201,7 @@ class FuncRenderer:
             if key.category.name != self._func_key.category_name
         ]
 
-    def get_counterpart_crosslink_note_and_refs(self, func_ref: FuncReference) -> Optional[ParameterizedNote]:
+    def get_counterpart_crosslink_note_and_refs(self, func_ref: FuncReference) -> ParameterizedNote | None:
         counterpart_keys = self.get_counterpart_keys(func_ref=func_ref)
         if not counterpart_keys:
             return None

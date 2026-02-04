@@ -5,7 +5,6 @@ from typing import (
     AbstractSet,
     Any,
     Generator,
-    Optional,
 )
 
 import attr
@@ -114,8 +113,8 @@ class ResultDataAbstraction:
 
     def _iter_split_rows_by_measure(
         self,
-        dimension_liids: Optional[frozenset[int]] = None,
-        measure_liids: Optional[frozenset[int]] = None,
+        dimension_liids: frozenset[int] | None = None,
+        measure_liids: frozenset[int] | None = None,
     ) -> Generator[tuple[DataCellTuple, DataCell], None, None]:
         liid_sets = {}
         if dimension_liids is not None:
@@ -129,8 +128,8 @@ class ResultDataAbstraction:
 
     def get_1d_mapper(
         self,
-        dimension_liids: Optional[frozenset[int]] = None,
-        measure_liids: Optional[frozenset[int]] = None,
+        dimension_liids: frozenset[int] | None = None,
+        measure_liids: frozenset[int] | None = None,
     ) -> DataCellMapper1D:
         return SimpleDataCellMapper1D(
             cells={

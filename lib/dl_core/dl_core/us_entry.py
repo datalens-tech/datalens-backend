@@ -7,7 +7,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Optional,
     TypeVar,
     Union,
 )
@@ -41,35 +40,35 @@ class USEntry:
     DataModel: ClassVar[Union[type[BaseAttrsDataModel], None]] = None
     dir_name: str | None = None
 
-    uuid: Optional[str] = None
+    uuid: str | None = None
     _data = None
-    entry_key: Optional[EntryLocation] = None
-    scope: Optional[str] = None
-    type_: Optional[str] = None
-    is_locked: Optional[bool] = None
-    is_favorite: Optional[bool] = None
-    permissions_mode: Optional[str] = None
-    initial_permissions: Optional[str] = None
-    permissions: Optional[dict[str, bool]] = None
-    full_permissions: Optional[dict[str, bool]] = None
+    entry_key: EntryLocation | None = None
+    scope: str | None = None
+    type_: str | None = None
+    is_locked: bool | None = None
+    is_favorite: bool | None = None
+    permissions_mode: str | None = None
+    initial_permissions: str | None = None
+    permissions: dict[str, bool] | None = None
+    full_permissions: dict[str, bool] | None = None
     hidden: bool
-    links: Optional[dict] = None
+    links: dict | None = None
     migration_status: MigrationStatus = MigrationStatus.non_migrated
-    entry_op_mode: Optional[OperationsMode] = None
+    entry_op_mode: OperationsMode | None = None
 
     _stored_in_db: bool = False
-    _us_resp: Optional[dict] = None
-    _lock: Optional[str] = None
-    _us_manager: Optional[USManagerBase]
+    _us_resp: dict | None = None
+    _lock: str | None = None
+    _us_manager: USManagerBase | None
 
     @classmethod
     def create_from_dict(
         cls: type[_USENTRY_TV],
         data_dict: Union[dict, BaseAttrsDataModel],
         ds_key: Union[EntryLocation, str, None] = None,
-        type_: Optional[str] = None,
+        type_: str | None = None,
         meta: Any = None,
-        annotation: Optional[dict[str, Any]] = None,
+        annotation: dict[str, Any] | None = None,
         *,
         us_manager: SyncUSManager,
         **kwargs: Any,
@@ -88,7 +87,7 @@ class USEntry:
         ):
             raise TypeError(f"Invalid object type for data_dict: {type(data_dict)}")
 
-        effective_entry_key: Optional[EntryLocation]
+        effective_entry_key: EntryLocation | None
 
         if ds_key is None:
             effective_entry_key = None
@@ -112,23 +111,23 @@ class USEntry:
 
     def __init__(
         self,
-        uuid: Optional[str] = None,
-        data: Optional[dict] = None,
-        entry_key: Optional[EntryLocation] = None,
-        type_: Optional[str] = None,
-        meta: Optional[dict] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        is_locked: Optional[bool] = None,
-        is_favorite: Optional[bool] = None,
-        permissions_mode: Optional[str] = None,
-        initial_permissions: Optional[str] = None,
-        permissions: Optional[dict[str, bool]] = None,
-        full_permissions: Optional[dict[str, bool]] = None,
-        links: Optional[dict] = None,
+        uuid: str | None = None,
+        data: dict | None = None,
+        entry_key: EntryLocation | None = None,
+        type_: str | None = None,
+        meta: dict | None = None,
+        annotation: dict[str, Any] | None = None,
+        is_locked: bool | None = None,
+        is_favorite: bool | None = None,
+        permissions_mode: str | None = None,
+        initial_permissions: str | None = None,
+        permissions: dict[str, bool] | None = None,
+        full_permissions: dict[str, bool] | None = None,
+        links: dict | None = None,
         hidden: bool = False,
         data_strict: bool = True,
         migration_status: MigrationStatus = MigrationStatus.non_migrated,
-        entry_op_mode: Optional[OperationsMode] = None,
+        entry_op_mode: OperationsMode | None = None,
         *,
         us_manager: USManagerBase,
     ):
@@ -167,11 +166,11 @@ class USEntry:
         self._stored_in_db = value
 
     @property
-    def lock(self) -> Optional[str]:
+    def lock(self) -> str | None:
         return self._lock
 
     @lock.setter
-    def lock(self, value: Optional[str]) -> None:
+    def lock(self, value: str | None) -> None:
         self._lock = value
 
     @property
@@ -213,7 +212,7 @@ class USEntry:
         self._data = value
 
     @property
-    def raw_us_key(self) -> Optional[str]:
+    def raw_us_key(self) -> str | None:
         """
         For backward compatibility.
         Returns private US key if workbook location is used and actual key if path location is used.
@@ -227,7 +226,7 @@ class USEntry:
         return None
 
     @property
-    def location_short_string(self) -> Optional[str]:
+    def location_short_string(self) -> str | None:
         loc = self.entry_key
         if loc:
             return loc.to_short_string()
@@ -265,23 +264,23 @@ class USEntry:
         return ret
 
     @property
-    def created_by(self) -> Optional[str]:
+    def created_by(self) -> str | None:
         return self._us_resp.get("createdBy") if isinstance(self._us_resp, dict) else None
 
     @property
-    def created_at(self) -> Optional[str]:
+    def created_at(self) -> str | None:
         return self._us_resp.get("createdAt") if isinstance(self._us_resp, dict) else None
 
     @property
-    def updated_at(self) -> Optional[str]:
+    def updated_at(self) -> str | None:
         return self._us_resp.get("updatedAt") if isinstance(self._us_resp, dict) else None
 
     @property
-    def revision_id(self) -> Optional[str]:
+    def revision_id(self) -> str | None:
         return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
 
     @property
-    def raw_tenant_id(self) -> Optional[str]:
+    def raw_tenant_id(self) -> str | None:
         if not isinstance(self._us_resp, dict):
             raise ValueError("Can not get tenantId from US entry without ._us_resp.")
 
@@ -308,26 +307,26 @@ class USEntry:
 class USMigrationEntry(USEntry):
     def __init__(
         self,
-        uuid: Optional[str] = None,
-        data: Optional[dict] = None,
-        entry_key: Optional[EntryLocation] = None,
-        type_: Optional[str] = None,
-        meta: Optional[dict] = None,
-        annotation: Optional[dict] = None,
-        is_locked: Optional[bool] = None,
-        is_favorite: Optional[bool] = None,
-        permissions_mode: Optional[str] = None,
-        initial_permissions: Optional[str] = None,
-        permissions: Optional[dict] = None,
-        full_permissions: Optional[dict] = None,
-        links: Optional[dict] = None,
+        uuid: str | None = None,
+        data: dict | None = None,
+        entry_key: EntryLocation | None = None,
+        type_: str | None = None,
+        meta: dict | None = None,
+        annotation: dict | None = None,
+        is_locked: bool | None = None,
+        is_favorite: bool | None = None,
+        permissions_mode: str | None = None,
+        initial_permissions: str | None = None,
+        permissions: dict | None = None,
+        full_permissions: dict | None = None,
+        links: dict | None = None,
         hidden: bool = False,
         data_strict: bool = True,
         migration_status: MigrationStatus = MigrationStatus.non_migrated,
-        entry_op_mode: Optional[OperationsMode] = None,
+        entry_op_mode: OperationsMode | None = None,
         *,
         us_manager: USManagerBase,
-        unversioned_data: Optional[dict[str, Any]],
+        unversioned_data: dict[str, Any] | None,
     ):
         super().__init__(
             uuid=uuid,

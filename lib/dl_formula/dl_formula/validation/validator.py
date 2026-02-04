@@ -4,7 +4,6 @@ import abc
 from contextlib import contextmanager
 from typing import (
     Iterable,
-    Optional,
 )
 
 import dl_formula.core.exc as exc
@@ -39,7 +38,7 @@ class Validator:
             if not self._collect_errors:
                 raise err
 
-    def get_from_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> Optional[ErrInfo]:
+    def get_from_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> ErrInfo | None:
         return self._env.generic_cache_valid[checker_cls].get(node)
 
     def mark_as_ok_in_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> None:
@@ -69,7 +68,7 @@ class ValidatorProxy:
         with self._validator.handle_error(checker_cls=self._checker_cls, node=node):
             yield
 
-    def get_from_cache(self, node: nodes.FormulaItem) -> Optional[ErrInfo]:
+    def get_from_cache(self, node: nodes.FormulaItem) -> ErrInfo | None:
         return self._validator.get_from_cache(checker_cls=self._checker_cls, node=node)
 
     def mark_as_ok_in_cache(self, node: nodes.FormulaItem) -> None:

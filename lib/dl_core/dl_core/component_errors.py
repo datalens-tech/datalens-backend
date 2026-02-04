@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -31,8 +30,8 @@ class ComponentErrorPack:
 
     def get_errors(
         self,
-        code: Optional[Sequence[str]] = None,
-        code_prefix: Optional[Sequence[str]] = None,
+        code: Sequence[str] | None = None,
+        code_prefix: Sequence[str] | None = None,
     ) -> list[ComponentError]:
         if code is not None and code_prefix is not None:
             raise ValueError("Cannot specify both code and code_prefix")
@@ -49,8 +48,8 @@ class ComponentErrorPack:
 
     def remove_errors(
         self,
-        code: Optional[Sequence[str]] = None,
-        code_prefix: Optional[Sequence[str]] = None,
+        code: Sequence[str] | None = None,
+        code_prefix: Sequence[str] | None = None,
     ) -> None:
         for err in self.get_errors(code=code, code_prefix=code_prefix):
             self.errors.remove(err)
@@ -71,7 +70,7 @@ ERROR_CLS_BY_COMP_TYPE: dict[ComponentType, type[ComponentError]] = {
 class ComponentErrorRegistry:
     items: list[ComponentErrorPack] = attr.ib(factory=list)
 
-    def get_pack(self, id: str) -> Optional[ComponentErrorPack]:
+    def get_pack(self, id: str) -> ComponentErrorPack | None:
         for item in self.items:
             if item.id == id:
                 return item
@@ -80,8 +79,8 @@ class ComponentErrorRegistry:
     def remove_errors(
         self,
         id: str,
-        code: Optional[Sequence[str]] = None,
-        code_prefix: Optional[Sequence[str]] = None,
+        code: Sequence[str] | None = None,
+        code_prefix: Sequence[str] | None = None,
     ) -> None:
         """
         Remove errors for object with given ID.
@@ -102,7 +101,7 @@ class ComponentErrorRegistry:
         message: str,
         code: Sequence[str],
         level: ComponentErrorLevel = ComponentErrorLevel.error,
-        details: Optional[dict] = None,
+        details: dict | None = None,
     ):
         details = details or {}
         error_cls = ERROR_CLS_BY_COMP_TYPE.get(type)

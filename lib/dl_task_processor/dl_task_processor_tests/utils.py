@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from typing import Optional
 
 import arq
 import attr
@@ -42,7 +41,7 @@ BROKEN_MARK = "mark_broken_task"
 class Context(BaseContext):
     tpe: ContextVarExecutor = attr.ib()
     tp: TaskProcessor = attr.ib()
-    _redis_pool: Optional[arq.ArqRedis] = attr.ib(default=None)
+    _redis_pool: arq.ArqRedis | None = attr.ib(default=None)
 
 
 @attr.s

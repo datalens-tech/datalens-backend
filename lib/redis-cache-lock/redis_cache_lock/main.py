@@ -50,11 +50,11 @@ class RedisCacheLock:
     data_ttl_sec: float
 
     lock_ttl_sec: float = 3.5
-    lock_renew_interval: Optional[float] = None
+    lock_renew_interval: float | None = None
     network_call_timeout_sec: float = 2.5
 
-    debug_log: Optional[Callable[[str, Dict[str, Any]], None]] = attr.ib(default=None, repr=False)
-    bg_task_callback: Optional[Callable[[asyncio.Task], None]] = attr.ib(default=None, repr=False)
+    debug_log: Callable[[str, Dict[str, Any]], None] | None = attr.ib(default=None, repr=False)
+    bg_task_callback: Callable[[asyncio.Task], None] | None = attr.ib(default=None, repr=False)
     enable_background_tasks: bool = False
     enable_slave_get: bool = True
 
@@ -76,17 +76,17 @@ class RedisCacheLock:
 
     # TODO: split this class into a config + CM pair
 
-    _situation: Optional[ReqResultInternal] = None
-    _cm_stack: Optional[AsyncExitStack] = None
-    _client: Optional[Redis] = None
-    _self_id: Optional[str] = None
+    _situation: ReqResultInternal | None = None
+    _cm_stack: AsyncExitStack | None = None
+    _client: Redis | None = None
+    _self_id: str | None = None
 
     @staticmethod
     def new_self_id() -> str:
         return new_self_id()
 
     @property
-    def situation(self) -> Optional[ReqResultInternal]:
+    def situation(self) -> ReqResultInternal | None:
         return self._situation
 
     @situation.setter
@@ -142,7 +142,7 @@ class RedisCacheLock:
             )
             yield client
 
-    def process_in_background(self, coro: Awaitable, name: Optional[str] = None) -> Any:
+    def process_in_background(self, coro: Awaitable, name: str | None = None) -> Any:
         """An overridable method for finalization background-task creation"""
         if name is None:
             name = repr(coro)
@@ -169,7 +169,7 @@ class RedisCacheLock:
     async def _finalize_maybe_in_background(
         self,
         coro: Awaitable,
-        name: Optional[str] = None,
+        name: str | None = None,
     ) -> Tuple[bool, Any]:
         """
         Depending on the settings, either await the `coro` directly (but with cancellation shield),
@@ -188,7 +188,7 @@ class RedisCacheLock:
         assert cm_stack is not None, "must be initialized for this method"
         return await cm_stack.enter_async_context(await_on_exit(coro))
 
-    async def get_data_slave(self) -> Optional[bytes]:
+    async def get_data_slave(self) -> bytes | None:
         data_key = self.data_key
         cli: Redis
         async with self._client_acm_managed(master=False) as cli:
@@ -196,7 +196,7 @@ class RedisCacheLock:
 
     async def _get_data(
         self,
-    ) -> Tuple[ReqResultInternal, Optional[bytes], Optional[SubscriptionManagerBase]]:
+    ) -> Tuple[ReqResultInternal, bytes | None, SubscriptionManagerBase | None]:
         self_id = self._self_id
         assert self_id is not None, "must be initialized for this method"
         cm_stack = self._cm_stack
@@ -204,7 +204,7 @@ class RedisCacheLock:
         cli = self._client
         assert cli is not None, "must be initialized for this method"
 
-        subscription: Optional[SubscriptionManagerBase] = None
+        subscription: SubscriptionManagerBase | None = None
 
         lock_key = self.lock_key
         data_key = self.data_key
@@ -274,7 +274,7 @@ class RedisCacheLock:
     async def _wait_for_result(
         self,
         sub: SubscriptionManagerBase,
-    ) -> Tuple[ReqResultInternal, Optional[bytes]]:
+    ) -> Tuple[ReqResultInternal, bytes | None]:
         # Lock should be renewed more often than `lock_ttl_sec`,
         # so waiting for the ttl duration should be sufficient.
         timeout = self.lock_ttl_sec
@@ -314,7 +314,7 @@ class RedisCacheLock:
 
         raise Exception("Programming Error")
 
-    async def _get_data_full(self) -> Tuple[ReqResultInternal, Optional[bytes]]:
+    async def _get_data_full(self) -> Tuple[ReqResultInternal, bytes | None]:
         assert self._situation == self.req_situation.starting
 
         cli = self._client
@@ -371,7 +371,7 @@ class RedisCacheLock:
     async def _save_data(
         self,
         data: bytes,
-        ttl_sec: Optional[float] = None,
+        ttl_sec: float | None = None,
     ) -> Any:
         self_id = self._self_id
         assert self_id is not None, "must be initialized for this method"
@@ -399,7 +399,7 @@ class RedisCacheLock:
     async def _force_save_data(
         self,
         data: bytes,
-        ttl_sec: Optional[float] = None,
+        ttl_sec: float | None = None,
     ) -> Any:
         cli = self._client
         assert cli is not None, "must be initialized for this method"
@@ -440,8 +440,8 @@ class RedisCacheLock:
     async def _handle_initialize(
         self,
         situation: ReqResultInternal,
-        result: Optional[bytes],
-    ) -> Optional[bytes]:
+        result: bytes | None,
+    ) -> bytes | None:
         if situation in (
             self.req_situation.cache_hit,
             self.req_situation.cache_hit_after_wait,
@@ -471,7 +471,7 @@ class RedisCacheLock:
             "RedisCacheLock error: Unexpected get_data_full outcome", situation
         )
 
-    async def initialize(self) -> Optional[bytes]:
+    async def initialize(self) -> bytes | None:
         """
         Attempt to read the data or lock the key or wait for data.
 
@@ -531,11 +531,11 @@ class RedisCacheLock:
 
     async def _handle_finalize(
         self,
-        result: Optional[
+        result: 
             bytes
-        ],  # must be specified but in some situations can be empty.
-        ttl_sec: Optional[float] = None,
-        force_save: Optional[bool] = None,
+         | None,  # must be specified but in some situations can be empty.
+        ttl_sec: float | None = None,
+        force_save: bool | None = None,
     ) -> Any:
         situation = self._situation
 
@@ -567,8 +567,8 @@ class RedisCacheLock:
 
     async def finalize(
         self,
-        result_serialized: Optional[bytes],
-        ttl_sec: Optional[float] = None,
+        result_serialized: bytes | None,
+        ttl_sec: float | None = None,
     ) -> None:
         try:
             return await self._handle_finalize(

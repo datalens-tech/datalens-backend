@@ -1,6 +1,5 @@
 from typing import (
     Collection,
-    Optional,
 )
 
 import attr
@@ -27,7 +26,7 @@ from dl_pivot.plugin_registration import (
 class ApiLibraryConfig:
     formula_lib_config: FormulaLibraryConfig = attr.ib(kw_only=True, default=FormulaLibraryConfig())
     core_lib_config: CoreLibraryConfig = attr.ib(kw_only=True, default=CoreLibraryConfig())
-    api_connector_ep_names: Optional[Collection[str]] = attr.ib(kw_only=True, default=None)
+    api_connector_ep_names: Collection[str] | None = attr.ib(kw_only=True, default=None)
 
 
 def preload_api_lib() -> None:

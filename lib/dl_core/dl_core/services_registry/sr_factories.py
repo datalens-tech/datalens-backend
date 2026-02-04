@@ -8,7 +8,6 @@ from typing import (
     Callable,
     ClassVar,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -62,11 +61,11 @@ class SRFactory(Generic[SERVICE_REGISTRY_TV], metaclass=abc.ABCMeta):
     def make_service_registry(
         self,
         request_context_info: RequestContextInfo,
-        mutations_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-        mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
-        reporting_registry: Optional[ReportingRegistry] = None,
-        caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-        data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
+        mutations_redis_client_factory: Callable[[bool], Redis | None] | None = None,
+        mutations_cache_factory: USEntryMutationCacheFactory | None = None,
+        reporting_registry: ReportingRegistry | None = None,
+        caches_redis_client_factory: Callable[[bool], Redis | None] | None = None,
+        data_processor_service_factory: Callable[[ProcessorType], DataProcessorService] | None = None,
     ) -> SERVICE_REGISTRY_TV:
         """
         :param request_context_info: RCI to pass to services registry.
@@ -82,23 +81,23 @@ class SRFactory(Generic[SERVICE_REGISTRY_TV], metaclass=abc.ABCMeta):
 @attr.s
 class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
     ca_data: bytes = attr.ib()
-    rqe_config: Optional[RQEConfig] = attr.ib()
+    rqe_config: RQEConfig | None = attr.ib()
     async_env: bool = attr.ib()
     env_manager_factory: EnvManagerFactory = attr.ib()
     # Config options
-    default_cache_ttl_config: Optional[CacheTTLConfig] = attr.ib(default=None)
+    default_cache_ttl_config: CacheTTLConfig | None = attr.ib(default=None)
     bleeding_edge_users: Sequence[str] = attr.ib(default=())
-    conn_cls_whitelist: Optional[frozenset[type[ConnectionBase]]] = attr.ib(default=None)
-    connect_options_factory: Optional[ConnectOptionsFactory] = attr.ib(default=None)
-    entity_usage_checker: Optional[EntityUsageChecker] = attr.ib(default=None)
+    conn_cls_whitelist: frozenset[type[ConnectionBase]] | None = attr.ib(default=None)
+    connect_options_factory: ConnectOptionsFactory | None = attr.ib(default=None)
+    entity_usage_checker: EntityUsageChecker | None = attr.ib(default=None)
     connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase] = attr.ib(factory=dict)
-    file_uploader_settings: Optional[FileUploaderSettings] = attr.ib(default=None)
-    redis_pool_settings: Optional[ArqRedisSettings] = attr.ib(default=None)
+    file_uploader_settings: FileUploaderSettings | None = attr.ib(default=None)
+    redis_pool_settings: ArqRedisSettings | None = attr.ib(default=None)
     force_non_rqe_mode: bool = attr.ib(default=False)
-    rqe_caches_settings: Optional[RQECachesSetting] = attr.ib(default=None)
+    rqe_caches_settings: RQECachesSetting | None = attr.ib(default=None)
     required_services: set[RequiredService] = attr.ib(factory=set)
-    inst_specific_sr_factory: Optional[InstallationSpecificServiceRegistryFactory] = attr.ib(default=None)
-    exports_history_url_path: Optional[str] = attr.ib(default=None)
+    inst_specific_sr_factory: InstallationSpecificServiceRegistryFactory | None = attr.ib(default=None)
+    exports_history_url_path: str | None = attr.ib(default=None)
     service_registry_cls: ClassVar[type[SERVICE_REGISTRY_TV]] = DefaultServicesRegistry  # type: ignore  # TODO: fix
 
     def is_bleeding_edge_user(self, request_context_info: RequestContextInfo) -> bool:
@@ -139,13 +138,13 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
     def make_service_registry(
         self,
         request_context_info: RequestContextInfo,
-        mutations_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-        mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
-        reporting_registry: Optional[ReportingRegistry] = None,
+        mutations_redis_client_factory: Callable[[bool], Redis | None] | None = None,
+        mutations_cache_factory: USEntryMutationCacheFactory | None = None,
+        reporting_registry: ReportingRegistry | None = None,
         # TODO: refactor usage of redis and pg here
         #  (some kind of multi-purpose factory instead of separate getters)
-        caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
-        data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
+        caches_redis_client_factory: Callable[[bool], Redis | None] | None = None,
+        data_processor_service_factory: Callable[[ProcessorType], DataProcessorService] | None = None,
     ) -> SERVICE_REGISTRY_TV:
         sr_ref: FutureRef[ServicesRegistry] = FutureRef()
 

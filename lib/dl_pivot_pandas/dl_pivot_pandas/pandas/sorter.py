@@ -5,7 +5,6 @@ from itertools import count
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
     Sequence,
     Union,
     cast,
@@ -118,7 +117,7 @@ class PdPivotSorterBase(PivotSorter):
         )
 
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
-        sorting_idx: Optional[int] = None
+        sorting_idx: int | None = None
 
         for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):

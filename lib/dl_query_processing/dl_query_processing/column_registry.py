@@ -6,7 +6,6 @@ from typing import (
     Callable,
     Collection,
     NamedTuple,
-    Optional,
 )
 
 from dl_core.components.ids import (
@@ -37,8 +36,8 @@ class AvatarColumn(NamedTuple):
 class ColumnRegistry:
     def __init__(
         self,
-        db_columns: Optional[Collection[SchemaColumn]] = None,
-        avatar_source_map: Optional[dict[AvatarId, SourceId]] = None,
+        db_columns: Collection[SchemaColumn] | None = None,
+        avatar_source_map: dict[AvatarId, SourceId] | None = None,
     ):
         self._db_columns = list(db_columns) if db_columns is not None else []
         self._avatar_source_map = avatar_source_map.copy() if avatar_source_map is not None else {}

@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 import pydantic
 
@@ -24,13 +22,13 @@ from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallbac
 @attr.s(frozen=True)
 class SecureReader(SettingsBase):
     SOCKET: str = s_attrib("SOCKET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
-    ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
-    CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    ENDPOINT: str | None = s_attrib("ENDPOINT", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    CAFILE: str | None = s_attrib("CAFILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
 
 
 @attr.s(frozen=True)
 class FileUploaderConnectorsSettings(SettingsBase):
-    FILE: Optional[DeprecatedFileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
+    FILE: DeprecatedFileS3ConnectorSettings | None = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
 
 
 def file_uploader_connectors_settings_fallback(full_cfg: ObjectLikeConfig) -> FileUploaderConnectorsSettings:
@@ -42,7 +40,7 @@ def file_uploader_connectors_settings_fallback(full_cfg: ObjectLikeConfig) -> Fi
 class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
     MAX_CONCURRENT_JOBS: int = s_attrib("MAX_CONCURRENT_JOBS", missing=15)  # type: ignore
 
-    SENTRY_DSN: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    SENTRY_DSN: str | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "DL_SENTRY_DSN",
         fallback_cfg_key="SENTRY_DSN_FILE_UPLOADER_WORKER",
         missing=None,

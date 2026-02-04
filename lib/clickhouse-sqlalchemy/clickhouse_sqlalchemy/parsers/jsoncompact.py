@@ -8,7 +8,6 @@ from __future__ import unicode_literals
 import enum
 import json
 import logging
-from typing import Optional
 
 from .base import (
     Parts,
@@ -73,7 +72,7 @@ class JSONCompactChunksParser(SansIOBase):
         self.state = self.STATE_START
         self._autoparse = autoparse
 
-    def receive_data(self, data: Optional[bytes]):
+    def receive_data(self, data: bytes | None):
         """ Add data to the internal receive buffer """
         if not data:
             return  # allow and ignore empty chunks, just in case.

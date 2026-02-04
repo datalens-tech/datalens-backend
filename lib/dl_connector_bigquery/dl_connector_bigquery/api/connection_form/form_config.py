@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import unique
-from typing import Optional
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
@@ -36,8 +35,8 @@ class BigQueryFieldName(FormFieldName):
 class BigQueryConnectionFormFactory(ConnectionFormFactory):
     def get_form_config(
         self,
-        connector_settings: Optional[DeprecatedConnectorSettingsBase],
-        tenant: Optional[TenantDef],
+        connector_settings: DeprecatedConnectorSettingsBase | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 

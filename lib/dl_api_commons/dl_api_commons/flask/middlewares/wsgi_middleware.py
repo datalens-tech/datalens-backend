@@ -12,7 +12,6 @@ import abc
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -32,8 +31,8 @@ if TYPE_CHECKING:
 class FlaskWSGIMiddleware(metaclass=abc.ABCMeta):
     _APP_FLAG_ATTR_NAME: ClassVar[str]
 
-    _app: Optional[flask.Flask] = attr.ib(init=False, default=None)
-    _original_wsgi_app: Optional[WSGICallable] = attr.ib(init=False, default=None)
+    _app: flask.Flask | None = attr.ib(init=False, default=None)
+    _original_wsgi_app: WSGICallable | None = attr.ib(init=False, default=None)
 
     @property
     def original_wsgi_app(self) -> WSGICallable:

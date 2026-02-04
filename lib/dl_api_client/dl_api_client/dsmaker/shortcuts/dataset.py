@@ -3,7 +3,6 @@ import typing
 from typing import (
     Any,
     Callable,
-    Optional,
 )
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
@@ -17,8 +16,8 @@ from dl_api_client.dsmaker.primitives import (
 def _add_anything_to_dataset(
     *,
     control_api: SyncHttpDatasetApiV1,
-    dataset: Optional[Dataset] = None,
-    dataset_id: Optional[str] = None,
+    dataset: Dataset | None = None,
+    dataset_id: str | None = None,
     updater: Callable[[Dataset], Dataset],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
@@ -44,8 +43,8 @@ def _add_anything_to_dataset(
 def add_formulas_to_dataset(
     *,
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
-    dataset: Optional[Dataset] = None,
-    dataset_id: Optional[str] = None,
+    dataset: Dataset | None = None,
+    dataset_id: str | None = None,
     formulas: dict[str, str],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
@@ -67,15 +66,15 @@ def add_formulas_to_dataset(
 
 class Parameter(typing.NamedTuple):
     default_value: ParameterValue
-    constraint: Optional[BaseParameterValueConstraint]
+    constraint: BaseParameterValueConstraint | None
     template_enabled: bool
 
 
 def add_parameters_to_dataset(
     *,
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
-    dataset: Optional[Dataset] = None,
-    dataset_id: Optional[str] = None,
+    dataset: Dataset | None = None,
+    dataset_id: str | None = None,
     parameters: dict[str, Parameter],
     exp_status: int = HTTPStatus.OK,
     save: bool = True,
@@ -105,7 +104,7 @@ def create_basic_dataset(
     api_v1: SyncHttpDatasetApiV1,  # FIXME: Rename to control_api
     connection_id: str,
     data_source_settings: dict[str, Any],
-    formulas: Optional[dict[str, str]] = None,
+    formulas: dict[str, str] | None = None,
     save: bool = True,
 ) -> Dataset:
     ds = Dataset()

@@ -3,7 +3,6 @@ from __future__ import annotations
 import dataclasses
 import logging
 import ssl
-from typing import Optional
 
 import flask
 
@@ -55,19 +54,19 @@ class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSetting
     ) -> StandaloneServiceRegistryFactory:
         return StandaloneServiceRegistryFactory()
 
-    def _get_entity_usage_checker(self, settings: ControlApiAppSettingsOS) -> Optional[EntityUsageChecker]:
+    def _get_entity_usage_checker(self, settings: ControlApiAppSettingsOS) -> EntityUsageChecker | None:
         return None
 
     def _get_bleeding_edge_users(self, settings: ControlApiAppSettingsOS) -> tuple[str, ...]:
         return tuple()
 
-    def _get_rqe_caches_settings(self, settings: ControlApiAppSettingsOS) -> Optional[RQECachesSetting]:
+    def _get_rqe_caches_settings(self, settings: ControlApiAppSettingsOS) -> RQECachesSetting | None:
         return None
 
-    def _get_default_cache_ttl_settings(self, settings: ControlApiAppSettingsOS) -> Optional[CacheTTLConfig]:
+    def _get_default_cache_ttl_settings(self, settings: ControlApiAppSettingsOS) -> CacheTTLConfig | None:
         return None
 
-    def _get_connector_availability(self, settings: ControlApiAppSettingsOS) -> Optional[ConnectorAvailabilityConfig]:
+    def _get_connector_availability(self, settings: ControlApiAppSettingsOS) -> ConnectorAvailabilityConfig | None:
         return settings.CONNECTOR_AVAILABILITY
 
 
@@ -78,7 +77,7 @@ class StandaloneControlApiAppFactory(
     def set_up_environment(
         self,
         app: flask.Flask,
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        testing_app_settings: ControlApiAppTestingsSettings | None = None,
     ) -> EnvSetupResult:
         auth_setup_result = self._setup_auth_middleware(app=app)
 
@@ -87,7 +86,7 @@ class StandaloneControlApiAppFactory(
     def _setup_auth_middleware(
         self,
         app: flask.Flask,
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        testing_app_settings: ControlApiAppTestingsSettings | None = None,
     ) -> AuthSetupResult:
         self._settings: ControlApiAppSettingsOS
         settings = self._settings.AUTH
@@ -113,7 +112,7 @@ class StandaloneControlApiAppFactory(
     def _setup_auth_middleware_none(
         self,
         app: flask.Flask,
-        testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+        testing_app_settings: ControlApiAppTestingsSettings | None = None,
     ) -> AuthSetupResult:
         from dl_api_commons.flask.middlewares.trust_auth import TrustAuthService
 

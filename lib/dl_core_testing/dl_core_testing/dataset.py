@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 import uuid
 
@@ -38,7 +37,7 @@ def add_dataset_source(
     editable_dataset_wrapper: EditableDatasetTestWrapper,
     created_from: DataSourceType,
     dsrc_params: dict,
-    title: Optional[str] = None,
+    title: str | None = None,
 ) -> None:
     def conn_executor_factory() -> SyncConnExecutorBase:
         return sync_usm.get_services_registry().get_conn_executor_factory().get_sync_conn_executor(conn=connection)
@@ -65,17 +64,17 @@ def add_dataset_source(
 
 def make_dataset(
     sync_usm: SyncUSManager,
-    connection: Optional[ConnectionBase] = None,
-    db_table: Optional[DbTable] = None,
-    schema_name: Optional[str] = None,
-    table_name: Optional[str] = None,
-    created_from: Optional[DataSourceType] = None,
-    db_name: Optional[str] = None,
-    yt_path: Optional[str] = None,
-    yt_cluster: Optional[str] = None,
-    ds_info: Optional[dict] = None,
-    dsrc_params: Optional[dict] = None,
-    created_via: Optional[DataSourceCreatedVia] = None,
+    connection: ConnectionBase | None = None,
+    db_table: DbTable | None = None,
+    schema_name: str | None = None,
+    table_name: str | None = None,
+    created_from: DataSourceType | None = None,
+    db_name: str | None = None,
+    yt_path: str | None = None,
+    yt_cluster: str | None = None,
+    ds_info: dict | None = None,
+    dsrc_params: dict | None = None,
+    created_via: DataSourceCreatedVia | None = None,
 ) -> Dataset:
     ds_info = dict(ds_info or {})
     db = db_table.db if db_table else None
@@ -127,7 +126,7 @@ def get_created_from(db: Db) -> DataSourceType:
     return source_type
 
 
-def data_source_settings_from_table(table: DbTable, db_name: Optional[str] = None) -> dict:
+def data_source_settings_from_table(table: DbTable, db_name: str | None = None) -> dict:
     source_type = get_created_from(db=table.db)
     data: dict[str, Any] = {  # this still requires connection_id to be defined
         "source_type": source_type,

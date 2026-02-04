@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -470,7 +469,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
     # It is potentially possible to plug into the sqlalchemy logic
     # (with a few extra raw sql queries),
     # but for now, a more simple mapping is preferred.
-    _type_code_to_sa: Optional[dict[Any, SATypeSpec]] = {
+    _type_code_to_sa: dict[Any, SATypeSpec] | None = {
         16: sa_pg.BOOLEAN,
         17: sa_pg.BYTEA,  # unsupported
         # 19: 'name',
@@ -504,7 +503,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
     }
 
     @staticmethod
-    def _convert_bytea(value: memoryview) -> Optional[str]:
+    def _convert_bytea(value: memoryview) -> str | None:
         str_value = bytes(value[:110]).decode("utf-8", errors="replace")
         if len(value) > 110 or len(str_value) > 100:
             str_value = str_value[:100]
@@ -513,7 +512,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
 
     # it's static because of typing hell in target_dto
     @staticmethod
-    def _get_enforce_collate(target_dto: PostgresConnTargetDTO) -> Optional[str]:
+    def _get_enforce_collate(target_dto: PostgresConnTargetDTO) -> str | None:
         if target_dto.enforce_collate == PGEnforceCollateMode.auto:
             raise Exception("Resolution of PGEnforceCollateMode.auto is not allowed at this point")
         if target_dto.enforce_collate == PGEnforceCollateMode.on:

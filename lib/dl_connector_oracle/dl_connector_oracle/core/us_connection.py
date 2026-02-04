@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -47,7 +46,7 @@ class ConnectionSQLOracle(
     class DataModel(ClassicConnectionSQL.DataModel):
         db_name_type: OracleDbNameType = attr.ib(default=OracleDbNameType.service_name)
         ssl_enable: bool = attr.ib(kw_only=True, default=False)
-        ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+        ssl_ca: str | None = attr.ib(kw_only=True, default=None)
 
     def get_conn_dto(self) -> OracleConnDTO:
         return OracleConnDTO(

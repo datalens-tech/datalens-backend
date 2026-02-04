@@ -14,21 +14,19 @@ import bi_ci.split_pytest_tasks as split_pytest_tasks
 
 
 class FolderContext(typing.Protocol):
-    def __call__(self, path: typing.Optional[str] = None) -> typing.ContextManager[str]:
+    def __call__(self, path: str | None = None) -> typing.ContextManager[str]:
         ...
 
 
 class FileContext(typing.Protocol):
-    def __call__(
-        self, path: typing.Optional[str] = None, data: typing.Optional[str] = None
-    ) -> typing.ContextManager[str]:
+    def __call__(self, path: str | None = None, data: str | None = None) -> typing.ContextManager[str]:
         ...
 
 
 @pytest.fixture(name="folder_context")
 def fixture_folder_context() -> FolderContext:
     @contextlib.contextmanager
-    def context(path: typing.Optional[str] = None) -> typing.ContextManager[str]:
+    def context(path: str | None = None) -> typing.ContextManager[str]:
         if path is None:
             path = f"/tmp/{uuid.uuid4()}"
 
@@ -45,7 +43,7 @@ def fixture_folder_context() -> FolderContext:
 @pytest.fixture(name="file_context")
 def fixture_file_context() -> FileContext:
     @contextlib.contextmanager
-    def context(path: typing.Optional[str] = None, data: typing.Optional[str] = None) -> typing.ContextManager[str]:
+    def context(path: str | None = None, data: str | None = None) -> typing.ContextManager[str]:
         if path is None:
             path = f"/tmp/{uuid.uuid4()}"
 

@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from typing import (
     ClassVar,
-    Optional,
     Union,
 )
 
@@ -32,7 +31,7 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
     supports_microseconds: ClassVar[bool]
     supports_utc: ClassVar[bool]
     supports_custom_tz: ClassVar[bool]
-    default_tz: ClassVar[Optional[datetime.tzinfo]] = None
+    default_tz: ClassVar[datetime.tzinfo | None] = None
     recognizes_datetime_type: ClassVar[bool] = True
 
     def test_number(self, dbe: DbEvaluator) -> None:

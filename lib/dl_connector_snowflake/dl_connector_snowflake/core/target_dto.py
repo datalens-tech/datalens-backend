@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
@@ -14,7 +12,7 @@ from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 class SnowFlakeConnTargetDTO(ConnTargetDTO):
     account_name: str = attr.ib()
     user_name: str = attr.ib()
-    user_role: Optional[str] = attr.ib()
+    user_role: str | None = attr.ib()
 
     schema: str = attr.ib()
     db_name: str = attr.ib()
@@ -35,5 +33,5 @@ class SnowFlakeConnTargetDTO(ConnTargetDTO):
             conn_id=dto.conn_id,
         )
 
-    def get_effective_host(self) -> Optional[str]:
+    def get_effective_host(self) -> str | None:
         return None

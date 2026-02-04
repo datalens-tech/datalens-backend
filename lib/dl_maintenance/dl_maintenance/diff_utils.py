@@ -4,7 +4,6 @@ import difflib
 from typing import (
     Any,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -168,7 +167,7 @@ def get_diff_text(  # type: ignore  # TODO: fix
     unified_n: int = 1,  # recommended: 1 for gron, 5 for yaml
     dumper=dump_gron,
     colorize: bool = True,
-) -> Optional[str]:
+) -> str | None:
     if not isinstance(entry, USMigrationEntry):
         return None
 

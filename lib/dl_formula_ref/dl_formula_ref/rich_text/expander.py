@@ -2,7 +2,6 @@ from functools import singledispatchmethod
 import re
 from typing import (
     Callable,
-    Optional,
 )
 
 import attr
@@ -80,12 +79,12 @@ BLOCK_TAG_RE = re.compile(r"\{\s*(?P<tag_name>" + _BLOCK_MACRO_CHOICES + r")(\s+
 @attr.s
 class MacroExpander:
     _resources: AliasedResourceRegistryBase = attr.ib(kw_only=True, factory=SimpleAliasedResourceRegistry)
-    _func_link_provider: Optional[Callable[[str, Optional[str]], tuple[str, str]]] = attr.ib(kw_only=True, default=None)
-    _cat_link_provider: Optional[Callable[[str, Optional[str]], tuple[str, str]]] = attr.ib(kw_only=True, default=None)
-    _args: Optional[list[FuncArg]] = attr.ib(kw_only=True, default=None)
+    _func_link_provider: Callable[[str, str | None], tuple[str, str]] | None = attr.ib(kw_only=True, default=None)
+    _cat_link_provider: Callable[[str, str | None], tuple[str, str]] | None = attr.ib(kw_only=True, default=None)
+    _args: list[FuncArg] | None = attr.ib(kw_only=True, default=None)
     _translation_callable: Callable[[str | Translatable], str] = attr.ib(kw_only=True, default=lambda s: s)
 
-    def _get_raw_link_url_by_alias(self, alias: str) -> Optional[str]:
+    def _get_raw_link_url_by_alias(self, alias: str) -> str | None:
         if alias not in self._resources:
             return None
 
@@ -97,11 +96,11 @@ class MacroExpander:
     def _get_raw_table_body_by_alias(self, alias: str) -> list[list[str | Translatable]]:
         return self._resources.get_table(alias).table_body
 
-    def _get_func_name_and_url(self, func_name: str, category_name: Optional[str] = None) -> tuple[str, str]:
+    def _get_func_name_and_url(self, func_name: str, category_name: str | None = None) -> tuple[str, str]:
         assert self._func_link_provider is not None
         return self._func_link_provider(func_name, category_name)
 
-    def _get_cat_name_and_url(self, category_name: str, anchor_name: Optional[str] = None) -> tuple[str, str]:
+    def _get_cat_name_and_url(self, category_name: str, anchor_name: str | None = None) -> tuple[str, str]:
         assert self._cat_link_provider is not None
         return self._cat_link_provider(category_name, anchor_name)
 
@@ -124,7 +123,7 @@ class MacroExpander:
     def _make_block_macro(
         self,
         tag_name: str,
-        block_param: Optional[str],
+        block_param: str | None,
         block_text: str,
         nested_replacements: dict[MacroReplacementKey, BaseTextElement],
     ) -> BaseTextElement:
@@ -158,10 +157,10 @@ class MacroExpander:
     def _get_block_replacements(self, text: str) -> dict[MacroReplacementKey, BaseTextElement]:
         block_replacements: dict[MacroReplacementKey, BaseTextElement] = {}
 
-        block_match: Optional[re.Match] = BLOCK_TAG_RE.search(text)
+        block_match: re.Match | None = BLOCK_TAG_RE.search(text)
         while block_match is not None and block_match.group("tag_name") != END_TAG:
             tag_name: str = block_match.group("tag_name")
-            block_param: Optional[str] = block_match.group("block_param")
+            block_param: str | None = block_match.group("block_param")
             block_text_start_pos = block_match.end()
             nested_block_replacements = self._get_block_replacements(text[block_text_start_pos:])
 
@@ -220,8 +219,8 @@ class MacroExpander:
     def _make_macro(self, macro_match: re.Match) -> BaseMacro:
         macro_type: str = macro_match.group("type").strip()
         first_value: str = macro_match.group("first_value").strip()
-        list_str: Optional[str] = macro_match.group("list")
-        second_value: Optional[str] = macro_match.group("second_value")
+        list_str: str | None = macro_match.group("list")
+        second_value: str | None = macro_match.group("second_value")
 
         if macro_type in LIST_MACROS:
             value_list = [first_value]

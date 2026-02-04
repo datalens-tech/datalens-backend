@@ -4,7 +4,6 @@ import datetime
 import logging
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -39,10 +38,10 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
 
     @attr.s(eq=False, kw_only=True)
     class FileDataSource(BaseFileS3Connection.FileDataSource):
-        public_link: Optional[str] = attr.ib(default=None)
-        private_path: Optional[str] = attr.ib(default=None)
-        sheet_id: Optional[str] = attr.ib(default=None)
-        first_line_is_header: Optional[bool] = attr.ib(default=None)
+        public_link: str | None = attr.ib(default=None)
+        private_path: str | None = attr.ib(default=None)
+        sheet_id: str | None = attr.ib(default=None)
+        first_line_is_header: bool | None = attr.ib(default=None)
         data_updated_at: datetime.datetime = attr.ib(factory=lambda: datetime.datetime.now(datetime.timezone.utc))
 
         def __hash__(self) -> int:
@@ -89,12 +88,12 @@ class YaDocsFileS3Connection(BaseFileS3Connection):
     class DataModel(BaseFileS3Connection.DataModel):
         sources: list["YaDocsFileS3Connection.FileDataSource"] = attr.ib()  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "list[dl_connector_bundle_chs3.chs3_yadocs.core.us_connection.YaDocsFileS3Connection.FileDataSource]", base class "DataModel" defined the type as "list[dl_connector_bundle_chs3.chs3_base.core.us_connection.BaseFileS3Connection.FileDataSource]")  [assignment]
 
-        oauth_token: Optional[str] = attr.ib(default=None, repr=False)
+        oauth_token: str | None = attr.ib(default=None, repr=False)
         refresh_enabled: bool = attr.ib(default=False)
 
         def oldest_data_update_time(
-            self, exclude_statuses: Optional[set[FileProcessingStatus]] = None
-        ) -> Optional[datetime.datetime]:
+            self, exclude_statuses: set[FileProcessingStatus] | None = None
+        ) -> datetime.datetime | None:
             if exclude_statuses is None:
                 exclude_statuses = set()
 

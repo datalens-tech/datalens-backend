@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Callable,
-    Optional,
 )
 
 import attr
@@ -81,7 +80,7 @@ class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTar
         13: ssa.BOOLEAN,
     }
 
-    def _cursor_column_to_sa(self, cursor_col, require: bool = True) -> Optional[SATypeSpec]:  # type: ignore  # TODO: fix
+    def _cursor_column_to_sa(self, cursor_col, require: bool = True) -> SATypeSpec | None:  # type: ignore  # TODO: fix
         """
         cursor_col:
 
@@ -115,10 +114,10 @@ class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTar
 
         return sa_type
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return None
 
-    def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
+    def get_db_name_for_query(self, db_name_from_query: str | None) -> str:
         return self._target_dto.db_name
 
     def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
@@ -129,7 +128,7 @@ class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTar
             creator=construct_creator_func(self._target_dto),
         ).execution_options(compiled_cache=None)
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return self.execute(DBAdapterQuery("SELECT CURRENT_VERSION()", db_name=db_ident.db_name)).get_all()[0][0]
 
     def normalize_sa_col_type(self, sa_col_type: TypeEngine) -> TypeEngine:

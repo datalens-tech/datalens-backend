@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Iterable,
-    Optional,
 )
 
 import attr
@@ -902,7 +901,7 @@ class BitrixGDSColumn:
 class BitrixGDSTable:
     type: BitrixGDSTableType = attr.ib()
     schema: Iterable[BitrixGDSColumn] = attr.ib()
-    daterange_col_name: Optional[str] = attr.ib(default=None)
+    daterange_col_name: str | None = attr.ib(default=None)
 
     def get_columns(self) -> list[str]:
         return [column.name for column in self.schema]

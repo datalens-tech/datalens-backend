@@ -19,9 +19,9 @@ Locale = Union[Literal["ru"], Literal["en"]]
 @attr.s(frozen=True)
 class MText:
     ru: str = attr.ib()
-    en: Optional[str] = attr.ib(default=None)
+    en: str | None = attr.ib(default=None)
 
-    def at_locale(self, locale: Locale) -> Optional[str]:
+    def at_locale(self, locale: Locale) -> str | None:
         if locale == "ru":
             return self.ru
         if locale == "en":
@@ -32,7 +32,7 @@ class MText:
 class CommonMAFieldKWArgs(typing.TypedDict):
     required: bool
     allow_none: bool
-    attribute: Optional[str]
+    attribute: str | None
     load_only: bool
 
 
@@ -40,9 +40,9 @@ class CommonMAFieldKWArgs(typing.TypedDict):
 class CommonAttributeProps:
     required: bool
     allow_none: bool
-    attribute_name: Optional[str]
+    attribute_name: str | None
     load_only: bool
-    description: Optional[MText]
+    description: MText | None
 
     def to_common_ma_field_kwargs(self) -> CommonMAFieldKWArgs:
         return dict(
@@ -106,7 +106,7 @@ def unwrap_container_stack_with_single_type(the_type: Any) -> tuple[Sequence[Any
         next_type = effective_type
 
 
-def ensure_tuple(col: Optional[Sequence]) -> Optional[tuple]:
+def ensure_tuple(col: Sequence | None) -> tuple | None:
     if col is None:
         return None
     if isinstance(col, tuple):
@@ -117,7 +117,7 @@ def ensure_tuple(col: Optional[Sequence]) -> Optional[tuple]:
         raise TypeError()
 
 
-def ensure_tuple_of_tuples(col: Optional[Sequence[Sequence]]) -> Optional[tuple[Optional[tuple], ...]]:
+def ensure_tuple_of_tuples(col: Sequence[Sequence] | None) -> tuple[tuple | None, ...] | None:
     if col is None:
         return None
     if isinstance(col, tuple) and all(isinstance(sub_col, tuple) for sub_col in col):

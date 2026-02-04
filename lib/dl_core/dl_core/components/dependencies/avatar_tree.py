@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from typing import (
     Collection,
-    Optional,
 )
 
 import attr
@@ -57,7 +56,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
 
     def expand_required_avatar_ids(
         self, required_avatar_ids: Collection[str]
-    ) -> tuple[Optional[AvatarId], set[AvatarId], set[RelationId]]:
+    ) -> tuple[AvatarId | None, set[AvatarId], set[RelationId]]:
         # TODO: this method is too big
         #  need to split it down to several methods
         if len(required_avatar_ids) == 1:

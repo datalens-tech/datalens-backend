@@ -20,7 +20,7 @@ class BaseSSLCertAdapter:
 
         return self.__file_name
 
-    def get_ssl_cert_path(self, ssl_ca: typing.Optional[str]) -> str:
+    def get_ssl_cert_path(self, ssl_ca: str | None) -> str:
         if ssl_ca is None:
             return bi_config_utils.get_root_certificates_path()
 
@@ -30,7 +30,7 @@ class BaseSSLCertAdapter:
         )
 
     @contextlib.contextmanager
-    def ssl_cert_context(self, ssl_ca: typing.Optional[str]) -> typing.Generator[None, None, None]:
+    def ssl_cert_context(self, ssl_ca: str | None) -> typing.Generator[None, None, None]:
         assert ssl_ca is not None, "Root CA can't be None for ssl connection context"
 
         crt_path = self.get_ssl_cert_path(ssl_ca=ssl_ca)

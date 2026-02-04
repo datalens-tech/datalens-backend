@@ -7,7 +7,6 @@ from base64 import (
 import json
 from typing import (
     Any,
-    Optional,
     Sequence,
 )
 
@@ -43,7 +42,7 @@ from dl_utils.utils import get_type_full_name
 
 
 class SATextField(fields.String):
-    def _serialize(self, value: Any, attr: Any, obj: Any, **kwargs: Any) -> Optional[str]:
+    def _serialize(self, value: Any, attr: Any, obj: Any, **kwargs: Any) -> str | None:
         assert isinstance(value, sa.sql.elements.TextClause)
         text_value = value.text
         return super()._serialize(text_value, attr, obj, **kwargs)
@@ -74,7 +73,7 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
             is_dashsql_query=data["is_dashsql_query"],
         )
 
-    def dump_conn_params(self, dba_query: DBAdapterQuery) -> Optional[dict]:
+    def dump_conn_params(self, dba_query: DBAdapterQuery) -> dict | None:
         conn_params = (
             dict(dba_query.connector_specific_params) if dba_query.connector_specific_params is not None else None
         )
@@ -83,7 +82,7 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
                 conn_params[k] = json.dumps(v, cls=DataLensJSONEncoder)
         return conn_params
 
-    def load_conn_params(self, conn_params: Optional[dict]) -> Optional[dict[str, Any]]:
+    def load_conn_params(self, conn_params: dict | None) -> dict[str, Any] | None:
         if conn_params is not None:
             for k, v in conn_params.items():
                 conn_params[k] = json.loads(v, cls=DataLensJSONDecoder)

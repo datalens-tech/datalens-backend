@@ -5,7 +5,6 @@ import logging
 from typing import (
     Any,
     Generator,
-    Optional,
 )
 
 from aiohttp import web
@@ -48,14 +47,14 @@ class TracingService:
             yield span
 
     @staticmethod
-    def set_span_tag(span: Optional[opentracing.Span], tag_name: str, tag_value: Any) -> None:
+    def set_span_tag(span: opentracing.Span | None, tag_name: str, tag_value: Any) -> None:
         if span is None:
             return
         span.set_tag(tag_name, tag_value)
 
     @web.middleware
     async def middleware(self, request: web.Request, handler: Handler) -> web.StreamResponse:  # type: ignore[return]
-        root_span: Optional[opentracing.Span] = None
+        root_span: opentracing.Span | None = None
         operation_name = get_endpoint_code(request)
 
         with contextlib.ExitStack() as exit_stack:

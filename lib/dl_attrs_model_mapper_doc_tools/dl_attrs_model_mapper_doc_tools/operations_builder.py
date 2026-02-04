@@ -2,7 +2,6 @@ import enum
 from typing import (
     Any,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -25,8 +24,8 @@ _OPERATION_KIND_ENUM_TV = TypeVar("_OPERATION_KIND_ENUM_TV", bound=enum.Enum)
 
 @attr.s(auto_attribs=True, kw_only=True)
 class OperationExample:
-    title: Optional[MText] = None
-    description: Optional[MText] = None
+    title: MText | None = None
+    description: MText | None = None
     rq: Any
     rs: Any
 

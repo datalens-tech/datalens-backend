@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 from typing import (
     Iterable,
-    Optional,
 )
 
 import antlr4
@@ -39,7 +38,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         self._text = text
         self._pos_conv = PositionConverter(text=text)
 
-    def _make_node_meta(self, *ctxes: antlr4.ParserRuleContext) -> Optional[nodes.NodeMeta]:
+    def _make_node_meta(self, *ctxes: antlr4.ParserRuleContext) -> nodes.NodeMeta | None:
         first_ctx = ctxes[0]
         last_ctx = ctxes[-1]
         return nodes.NodeMeta(
@@ -47,7 +46,7 @@ class CustomDataLensVisitor(DataLensVisitor):
             original_text=self._text[first_ctx.start.start : last_ctx.stop.stop + 1],
         )
 
-    def _make_position(self, *ctxes: antlr4.ParserRuleContext) -> Optional[Position]:
+    def _make_position(self, *ctxes: antlr4.ParserRuleContext) -> Position | None:
         first_ctx = ctxes[0]
         last_ctx = ctxes[-1]
         return self._pos_conv.merge_positions(
@@ -361,7 +360,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         str_children, node_children = self._separate_children(ctx, exclude=",()")
         raw_exlist_nodes = [child for child in ctx.children if not isinstance(child, TerminalNodeImpl)][1:]
         op_name = "".join(str_children).lower()
-        child_meta: Optional[nodes.NodeMeta] = None
+        child_meta: nodes.NodeMeta | None = None
         if raw_exlist_nodes:
             child_meta = self._make_node_meta(*raw_exlist_nodes)
         return nodes.Binary.make(
