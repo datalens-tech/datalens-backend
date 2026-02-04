@@ -13,3 +13,4 @@ class ConnectionClickhouseDataStorageSchema(
     TARGET_CLS = ConnectionClickhouse.DataModel
 
     readonly = ma_fields.Integer(required=False, load_default=2, dump_default=2)
+    experimental_features = ma_fields.Boolean(required=False, load_default=False)

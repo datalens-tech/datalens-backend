@@ -376,6 +376,7 @@ class ExtendedAggregationQueryMutator(QueryMutator):
     _allow_empty_dimensions_for_forks: bool = attr.ib(kw_only=True)
     _allow_arbitrary_toplevel_lod_dimensions: bool = attr.ib(kw_only=True)
     _new_subquery_mode: bool = attr.ib(kw_only=True, default=False)
+    _use_subquery_fork: bool = attr.ib(kw_only=True, default=False)
 
     def mutate_query(self, compiled_query: CompiledQuery) -> CompiledQuery:
         global_dimensions = [formula.formula_obj.expr for formula in compiled_query.group_by]
@@ -421,7 +422,10 @@ class ExtendedAggregationQueryMutator(QueryMutator):
             fork_mutators += [
                 DefaultAtomicQueryMutator(
                     mutations=[
-                        ExtAggregationToQueryForkMutation(global_dimensions=global_dimensions),
+                        ExtAggregationToQueryForkMutation(
+                            global_dimensions=global_dimensions,
+                            use_subquery_fork=self._use_subquery_fork,
+                        ),
                     ]
                 ),
             ]
