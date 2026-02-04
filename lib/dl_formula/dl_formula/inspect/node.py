@@ -80,17 +80,26 @@ def is_default_lod_aggregation(node: nodes.FormulaItem) -> bool:
     return False
 
 
-def qfork_is_aggregation(node: fork_nodes.QueryFork) -> bool:
+def qfork_is_aggregation(node: fork_nodes.QueryFork | fork_nodes.SubQueryFork) -> bool:
+    if isinstance(node, fork_nodes.SubQueryFork):
+        # Treated as having inherited LOD
+        return False
     return not isinstance(node.lod, nodes.InheritedLodSpecifier) and is_aggregate_function(  # Only lookups have these
         node.result_expr
     )
 
 
-def qfork_is_window(node: fork_nodes.QueryFork) -> bool:
+def qfork_is_window(node: fork_nodes.QueryFork | fork_nodes.SubQueryFork) -> bool:
+    if isinstance(node, fork_nodes.SubQueryFork):
+        # Treated as having inherited LOD
+        return False
     return not isinstance(node.lod, nodes.InheritedLodSpecifier) and is_window_function(  # Only lookups have these
         node.result_expr
     )
 
 
-def qfork_is_lookup(node: fork_nodes.QueryFork) -> bool:
+def qfork_is_lookup(node: fork_nodes.QueryFork | fork_nodes.SubQueryFork) -> bool:
+    if isinstance(node, fork_nodes.SubQueryFork):
+        # Treated as having inherited LOD
+        return True
     return isinstance(node.lod, nodes.InheritedLodSpecifier)  # Only lookups have these

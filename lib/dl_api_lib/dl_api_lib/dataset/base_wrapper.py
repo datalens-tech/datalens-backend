@@ -235,7 +235,18 @@ class DatasetBaseWrapper:
             filter_compiler=self.make_filter_compiler(),
         )
 
+    def _get_connection_experimental_features(self) -> bool:
+        source_id = self._ds.get_single_data_source_id()
+        if source_id is None:
+            return False
+        role = self.resolve_role()
+        dsrc = self._get_data_source_strict(source_id=source_id, role=role)
+        connection = dsrc.connection
+        return connection.experimental_features_enabled
+
     def make_query_mutators(self) -> Sequence[QueryMutator]:
+        use_subquery_fork = self._get_connection_experimental_features()
+
         return [
             OptimizingQueryMutator(
                 dialect=self.dialect,
@@ -245,6 +256,7 @@ class DatasetBaseWrapper:
                 allow_empty_dimensions_for_forks=self._validation_mode,
                 allow_arbitrary_toplevel_lod_dimensions=self._validation_mode,
                 new_subquery_mode=True,
+                use_subquery_fork=use_subquery_fork,
             ),
         ]
 

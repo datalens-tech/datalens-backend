@@ -17,6 +17,7 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormMode,
 )
 from dl_api_connector.form_config.models.common import (
+    BooleanField,
     CommonFieldName,
     FormFieldName,
 )
@@ -34,6 +35,7 @@ from dl_connector_clickhouse.core.clickhouse.settings import DeprecatedClickHous
 @unique
 class ClickHouseFieldName(FormFieldName):
     readonly = "readonly"
+    experimental_features = "experimental_features"
 
 
 @attr.s
@@ -63,16 +65,47 @@ class ClickHouseRowConstructor:
             ]
         )
 
+    def experimental_features_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("label_experimental-features")),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+                C.RadioButtonRowItem(
+                    name=ClickHouseFieldName.experimental_features,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_experimental-features-off")),
+                            value=BooleanField.off.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_experimental-features-on")),
+                            value=BooleanField.on.value,
+                        ),
+                    ],
+                    default_value=BooleanField.off.value,
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+            ]
+        )
+
 
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_PORT = "8443"
 
+    def _experimental_features_allowed(self, connector_settings: DeprecatedConnectorSettingsBase | None) -> bool:
+        assert isinstance(connector_settings, DeprecatedClickHouseConnectorSettings)
+        return connector_settings.ALLOW_EXPERIMENTAL_FEATURES
+
     def _get_implicit_form_fields(self) -> set[TFieldName]:
         return set()
 
-    @staticmethod
-    def get_common_api_schema_items() -> list[FormFieldApiSchema]:
-        return [
+    def get_common_api_schema_items(
+        self,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
+    ) -> list[FormFieldApiSchema]:
+        items = [
             FormFieldApiSchema(name=CommonFieldName.host, required=True),
             FormFieldApiSchema(name=CommonFieldName.port, required=True),
             FormFieldApiSchema(name=CommonFieldName.username),
@@ -82,6 +115,9 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
             FormFieldApiSchema(name=ClickHouseFieldName.readonly),
         ]
+        if self._experimental_features_allowed(connector_settings=connector_settings):
+            items.append(FormFieldApiSchema(name=ClickHouseFieldName.experimental_features))
+        return items
 
     def _get_edit_api_schema(
         self,
@@ -89,7 +125,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
-                *self.get_common_api_schema_items(),
+                *self.get_common_api_schema_items(connector_settings=connector_settings),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
             ],
@@ -114,7 +150,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
-                *self.get_common_api_schema_items(),
+                *self.get_common_api_schema_items(connector_settings=connector_settings),
                 *self._get_top_level_check_api_schema_items(),
             ]
         )
@@ -161,7 +197,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
         form_params = self._get_form_params()
 
-        return [
+        rows = [
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
@@ -177,6 +213,9 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             ),
             clickhouse_rc.readonly_mode_row(),
         ]
+        if self._experimental_features_allowed(connector_settings=connector_settings):
+            rows.append(clickhouse_rc.experimental_features_row())
+        return rows
 
     def get_form_config(
         self,
