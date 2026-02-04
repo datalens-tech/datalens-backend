@@ -91,14 +91,16 @@ class USManagerFlaskMiddleware:
                 services_registry=services_registry,
                 is_token_stored=False,
             )
-        elif self.us_master_token is not None or RequiredResourceCommon.S2S_AUTH in required_resources:
+        elif self.us_master_token is not None or RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
             LOGGER.info("Creating service US manager")
             flask.g.service_us_manager = self._usm_factory.get_master_sync_usm(
                 rci=bi_context,
                 services_registry=services_registry,
             )
         else:
-            LOGGER.info("Neither US master token nor S2S auth resource was provided. Service USM will not be created")
+            LOGGER.info(
+                "Neither US master token nor ONLY_SERVICES_ALLOWED flag was provided. Service USM will not be created"
+            )
             flask.g.service_us_manager = None
 
     def set_up(self, app: flask.Flask) -> USManagerFlaskMiddleware:

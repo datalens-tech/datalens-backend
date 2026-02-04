@@ -314,7 +314,6 @@ class DatasetVersionItem(DatasetResource):
 class DatasetExportItem(DatasetResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
         {
-            RequiredResourceCommon.S2S_AUTH,
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
         }
         if USE_S2S_AUTH
@@ -377,7 +376,6 @@ class DatasetExportItem(DatasetResource):
 class DatasetImportCollection(DatasetResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
         {
-            RequiredResourceCommon.S2S_AUTH,
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
         }
         if USE_S2S_AUTH

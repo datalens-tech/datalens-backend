@@ -165,7 +165,7 @@ class BIResource(Resource, metaclass=BIResourceMeta):
     @classmethod
     def get_us_manager(cls) -> SyncUSManager:
         if (
-            RequiredResourceCommon.S2S_AUTH in cls.REQUIRED_RESOURCES
+            RequiredResourceCommon.ONLY_SERVICES_ALLOWED in cls.REQUIRED_RESOURCES
             or RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
         ):
             return cls._get_service_us_manager()
