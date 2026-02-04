@@ -1731,6 +1731,7 @@ develop = true
 [package.dependencies]
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
@@ -1825,11 +1826,9 @@ dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
-dl-settings = {path = "../dl_settings"}
 dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
-pydantic = "*"
 pytest = "*"
 pytest-mock = "*"
 sqlalchemy = "*"
@@ -2101,6 +2100,7 @@ develop = true
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
@@ -2139,6 +2139,7 @@ dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-cache-engine = {path = "../dl_cache_engine"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
@@ -2210,6 +2211,7 @@ attrs = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
@@ -2244,6 +2246,7 @@ clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-core-testing = {path = "../dl_core_testing"}
@@ -2284,6 +2287,7 @@ asyncpg = "*"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
@@ -2309,6 +2313,7 @@ dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-api-lib = {path = "../dl_api_lib"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
@@ -2339,6 +2344,7 @@ develop = true
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
@@ -2433,6 +2439,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-core-testing = {path = "../dl_core_testing"}
@@ -2468,6 +2475,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
@@ -2795,6 +2803,7 @@ dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
+dl-constants = {path = "../../lib/dl_constants"}
 dl-core = {path = "../../lib/dl_core"}
 dl-logging = {path = "../../lib/dl_logging"}
 dl-model-tools = {path = "../../lib/dl_model_tools"}
@@ -2929,7 +2938,9 @@ arq = "*"
 attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
+dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
 dl-retrier = {path = "../dl_retrier"}
@@ -2958,7 +2969,6 @@ attrs = "*"
 botocore = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
-dl-api-lib = {path = "../dl_api_lib"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
@@ -2968,7 +2978,6 @@ dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-s3 = {path = "../dl_s3"}
-dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
