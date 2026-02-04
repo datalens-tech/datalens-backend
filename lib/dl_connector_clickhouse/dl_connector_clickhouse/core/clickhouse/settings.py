@@ -2,9 +2,9 @@ from typing import ClassVar
 
 import attr
 
-from dl_api_lib.connector_availability.base import s_attrib
 from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,

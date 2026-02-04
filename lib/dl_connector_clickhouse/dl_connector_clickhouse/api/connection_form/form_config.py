@@ -94,8 +94,8 @@ class ClickHouseRowConstructor:
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_PORT = "8443"
 
-    def _experimental_features_allowed(self, connector_settings: ConnectorSettings | None) -> bool:
-        assert isinstance(connector_settings, ClickHouseConnectorSettings)
+    def _experimental_features_allowed(self, connector_settings: DeprecatedConnectorSettingsBase | None) -> bool:
+        assert isinstance(connector_settings, DeprecatedClickHouseConnectorSettings)
         return connector_settings.ALLOW_EXPERIMENTAL_FEATURES
 
     def _get_implicit_form_fields(self) -> set[TFieldName]:
@@ -103,7 +103,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def get_common_api_schema_items(
         self,
-        connector_settings: ConnectorSettings | None,
+        connector_settings: DeprecatedConnectorSettingsBase | None,
     ) -> list[FormFieldApiSchema]:
         items = [
             FormFieldApiSchema(name=CommonFieldName.host, required=True),
