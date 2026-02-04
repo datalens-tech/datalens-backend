@@ -26,7 +26,7 @@ class DeprecatedClickHouseConnectorSettings(
     DeprecatedDatasourceTemplateSettingsMixin,
     DeprecatedTableDatasourceSettingsMixin,
 ):
-    ALLOW_EXPERIMENTAL_FEATURES: bool = s_attrib("ALLOW_EXPERIMENTAL_FEATURES", missing=True)  # type: ignore
+    ALLOW_EXPERIMENTAL_FEATURES: bool = s_attrib("ALLOW_EXPERIMENTAL_FEATURES", missing=False)  # type: ignore
 
 
 def clickhouse_settings_fallback(full_cfg: ObjectLikeConfig) -> dict[str, DeprecatedConnectorSettingsBase]:
