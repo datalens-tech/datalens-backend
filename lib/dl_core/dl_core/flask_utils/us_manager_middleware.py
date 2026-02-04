@@ -63,15 +63,6 @@ class USManagerFlaskMiddleware:
 
         required_resources = get_required_resources()
 
-        # Try to create deprecated service US manager
-        flask.g.deprecated_service_us_manager = None
-        if self.us_master_token is not None:
-            LOGGER.info("Creating deprecated service US manager")
-            flask.g.deprecated_service_us_manager = self._usm_factory.get_master_sync_usm(
-                rci=bi_context,
-                services_registry=services_registry,
-            )
-
         flask.g.us_manager = None
         if RequiredResourceCommon.US_HEADERS_TOKEN in required_resources:  # DEPRECATED
             LOGGER.info("Creating service US manager with master token from headers")
@@ -125,11 +116,3 @@ class USManagerFlaskMiddleware:
     @classmethod
     def get_request_us_manager(cls) -> SyncUSManager:
         return flask.g.us_manager
-
-    @classmethod
-    def get_request_deprecated_service_us_manager(cls) -> SyncUSManager:
-        usm = flask.g.deprecated_service_us_manager
-        if usm is None:
-            raise ValueError("Service USM was not created for current request")
-
-        return usm
