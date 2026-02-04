@@ -119,11 +119,13 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return {key: cls.factory(value) for key, value in data.items()}
 
     @classmethod
-    def merge_data_keys(cls, data: dict[str, Any]) -> None:
+    def merge_data_keys(cls, data: dict[str, Any]) -> dict[str, Any]:
         """
         Merge keys that differ only by case into a single lowercase key.
         For example: {'CHILD': {'VALUE': 'test_4'}, 'child': {'secret': 'secret_test'}}
         becomes: {'child': {'VALUE': 'test_4', 'secret': 'secret_test'}}
+
+        Returns a new dictionary with merged keys.
         """
         # Group keys by their lowercase version
         lower_to_keys: dict[str, list[str]] = {}
@@ -133,7 +135,8 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
                 lower_to_keys[lower_key] = []
             lower_to_keys[lower_key].append(key)
 
-        # Merge values for keys that have case-insensitive duplicates
+        # Build result dict with merged values
+        result: dict[str, Any] = {}
         for lower_key, keys in lower_to_keys.items():
             if len(keys) > 1:
                 # Merge all values into one dict
@@ -144,16 +147,12 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
                         merged_value.update(value)
                     else:
                         raise ValueError(f"Cannot merge non-dict values for key '{key}'")
+                result[lower_key] = merged_value
+            else:
+                # Single key - use lowercase version
+                result[lower_key] = data[keys[0]]
 
-                # Remove all original keys
-                for key in keys:
-                    del data[key]
-
-                # Add merged value with lowercase key
-                data[lower_key] = merged_value
-            elif keys[0] != lower_key:
-                # Single key but not lowercase - rename to lowercase
-                data[lower_key] = data.pop(keys[0])
+        return result
 
     @classmethod
     def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
@@ -163,7 +162,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         result: dict[str, base.BaseModel] = {}
         type_key = cls.type_key()
 
-        cls.merge_data_keys(data)
+        data = cls.merge_data_keys(data)
 
         for key, value in data.items():
             if isinstance(value, cls):
