@@ -8,7 +8,7 @@ def _check_duplicated_case_insensitive_fields_from_dicts(target: dict[str, Any],
             raise ValueError(f"Can't merge duplicated field '{source_key}'")
 
 
-def _merge_keys(data: dict[str, Any]) -> dict[str, Any]:
+def _merge_dict_keys(data: dict[str, Any]) -> dict[str, Any]:
     """
     Merge keys that differ only by case into a single lowercase key.
     For example: {'CHILD': {'VALUE': 'test_4'}, 'child': {'secret': 'secret_test'}}

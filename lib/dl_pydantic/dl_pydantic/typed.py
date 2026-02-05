@@ -14,7 +14,7 @@ import pydantic_core
 from typing_extensions import Self
 
 import dl_pydantic.base as base
-from dl_pydantic.utils import _merge_keys
+from dl_pydantic.utils import _merge_dict_keys
 
 
 LOGGER = logging.getLogger(__name__)
@@ -127,7 +127,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         result: dict[str, base.BaseModel] = {}
         type_key = cls.type_key()
 
-        data = _merge_keys(data)
+        data = _merge_dict_keys(data)
 
         for key, value in data.items():
             if isinstance(value, cls):
