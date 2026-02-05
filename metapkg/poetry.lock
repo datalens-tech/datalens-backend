@@ -1856,6 +1856,7 @@ dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
+gunicorn = "*"
 jinja2 = "*"
 pydantic = "*"
 typing-extensions = "*"
