@@ -510,3 +510,17 @@ def test_typed_dict_settings_with_fallback(
         assert isinstance(root.CHILDREN["child"], Child)
         assert root.CHILDREN["child"].VALUE == "test_2"
         assert root.CHILDREN["child"].SECRET == "secret_test_2"
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        monkeypatch.setenv("CHILDREN_CHILD_SECRET", "secret_test_2")
+        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_2", "SECRET": "test_secret"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        with pytest.raises(ValueError):
+            root = Root(extra_fallback_env_keys=fallback_env_keys)
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        monkeypatch.setenv("CHILDREN_CHILD_SECRET", "secret_test_2")
+        config_path = tmp_configs.add({"CHILDREN": {"CHILD": {"VALUE": "test_2", "secret": "test_secret"}}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        with pytest.raises(ValueError):
+            root = Root(extra_fallback_env_keys=fallback_env_keys)

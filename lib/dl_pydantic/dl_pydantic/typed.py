@@ -14,6 +14,7 @@ import pydantic_core
 from typing_extensions import Self
 
 import dl_pydantic.base as base
+from dl_pydantic.utils import _merge_keys
 
 
 LOGGER = logging.getLogger(__name__)
@@ -119,42 +120,6 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return {key: cls.factory(value) for key, value in data.items()}
 
     @classmethod
-    def merge_data_keys(cls, data: dict[str, Any]) -> dict[str, Any]:
-        """
-        Merge keys that differ only by case into a single lowercase key.
-        For example: {'CHILD': {'VALUE': 'test_4'}, 'child': {'secret': 'secret_test'}}
-        becomes: {'child': {'VALUE': 'test_4', 'secret': 'secret_test'}}
-
-        Returns a new dictionary with merged keys.
-        """
-        # Group keys by their lowercase version
-        lower_to_keys: dict[str, list[str]] = {}
-        for key in data:
-            lower_key = key.lower()
-            if lower_key not in lower_to_keys:
-                lower_to_keys[lower_key] = []
-            lower_to_keys[lower_key].append(key)
-
-        # Build result dict with merged values
-        result: dict[str, Any] = {}
-        for lower_key, keys in lower_to_keys.items():
-            if len(keys) > 1:
-                # Merge all values into one dict
-                merged_value: dict[str, Any] = {}
-                for key in keys:
-                    value = data[key]
-                    if isinstance(value, dict):
-                        merged_value.update(value)
-                    else:
-                        raise ValueError(f"Cannot merge non-dict values for key '{key}'")
-                result[lower_key] = merged_value
-            else:
-                # Single key - use lowercase version
-                result[lower_key] = data[keys[0]]
-
-        return result
-
-    @classmethod
     def dict_with_type_key_factory(cls, data: dict[str, Any]) -> dict[str, base.BaseModel]:
         if not isinstance(data, dict):
             raise ValueError("Data must be mapping for dict factory")
@@ -162,7 +127,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         result: dict[str, base.BaseModel] = {}
         type_key = cls.type_key()
 
-        data = cls.merge_data_keys(data)
+        data = _merge_keys(data)
 
         for key, value in data.items():
             if isinstance(value, cls):
