@@ -20,6 +20,8 @@ class ExtAggregationToQueryForkMutation(DimensionResolvingMutationBase):
     for future LOD handling.
     """
 
+    _use_subquery_fork: bool = attr.ib(kw_only=True, default=False)
+
     def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         return is_aggregate_function(node)
 
@@ -59,6 +61,10 @@ class ExtAggregationToQueryForkMutation(DimensionResolvingMutationBase):
             meta=old.meta,
         )
 
+        if self._use_subquery_fork:
+            return fork_nodes.SubQueryFork.make(
+                result_expr=old_updated,
+            )
         return fork_nodes.QueryFork.make(
             join_type=fork_nodes.JoinType.inner,
             result_expr=old_updated,
