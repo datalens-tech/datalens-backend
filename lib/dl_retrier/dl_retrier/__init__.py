@@ -3,12 +3,14 @@ from .exc import (
     RetrierTimeoutError,
     RetrierUnretryableError,
 )
-from .policy import (
+from .factory import (
     BaseRetryPolicyFactory,
     DefaultRetryPolicyFactory,
+    RetryPolicyFactory,
+)
+from .policy import (
     Retry,
     RetryPolicy,
-    RetryPolicyFactory,
 )
 from .settings import (
     RetryPolicyFactorySettings,
