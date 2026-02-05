@@ -212,7 +212,7 @@ def fixture_app_context(
         gunicorn_process = subprocess.Popen(
             [
                 "gunicorn",
-                "dl_app_api_base_tests.unit.gunicorn.test_worker:get_app",
+                "test_worker:get_app",
                 "--bind",
                 f"{GUNICORN_HOST}:{GUNICORN_PORT}",
                 "--workers",
