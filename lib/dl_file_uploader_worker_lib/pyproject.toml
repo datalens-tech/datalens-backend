@@ -15,6 +15,7 @@ attrs = "*"
 botocore = "*"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-api-commons = {path = "../dl_api_commons"}
+dl-api-lib = {path = "../dl_api_lib"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
@@ -24,6 +25,7 @@ dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
 dl-s3 = {path = "../dl_s3"}
+dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}

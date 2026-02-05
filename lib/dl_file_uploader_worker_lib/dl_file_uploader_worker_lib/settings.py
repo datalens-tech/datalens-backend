@@ -1,9 +1,12 @@
-from typing import Optional
+from typing import (
+    Annotated,
+    Optional,
+)
 
 import attr
 import pydantic
 
-from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
+from dl_api_lib.app_settings import postload_connectors_settings
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.settings_submodels import GoogleAppSettings
@@ -11,14 +14,17 @@ from dl_configs.utils import (
     get_root_certificates_path,
     split_by_comma,
 )
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.us_manager.settings import USClientSettings
 from dl_file_uploader_lib.settings import (
     DeprecatedFileUploaderBaseSettings,
     FileUploaderBaseSettings,
 )
+import dl_settings
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
-from dl_connector_bundle_chs3.file.core.settings import file_s3_settings_fallback
+from dl_connector_bundle_chs3.chs3_gsheets.core.constants import CONNECTION_TYPE_GSHEETS_V2
+from dl_connector_bundle_chs3.chs3_yadocs.core.constants import CONNECTION_TYPE_YADOCS
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 @attr.s(frozen=True)
@@ -26,16 +32,6 @@ class SecureReader(SettingsBase):
     SOCKET: str = s_attrib("SOCKET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     ENDPOINT: Optional[str] = s_attrib("ENDPOINT", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
     CAFILE: Optional[str] = s_attrib("CAFILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
-
-
-@attr.s(frozen=True)
-class FileUploaderConnectorsSettings(SettingsBase):
-    FILE: Optional[DeprecatedFileS3ConnectorSettings] = s_attrib("FILE", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileS3ConnectorSettings | None")  [assignment]
-
-
-def file_uploader_connectors_settings_fallback(full_cfg: ObjectLikeConfig) -> FileUploaderConnectorsSettings:
-    settings = file_s3_settings_fallback(full_cfg)
-    return FileUploaderConnectorsSettings(**settings)
 
 
 @attr.s(frozen=True)
@@ -50,11 +46,6 @@ class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
 
     US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
     US_MASTER_TOKEN: str = s_attrib("US_MASTER_TOKEN", sensitive=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
-
-    CONNECTORS: FileUploaderConnectorsSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "FileUploaderConnectorsSettings")  [assignment]
-        "CONNECTORS",
-        fallback_factory=file_uploader_connectors_settings_fallback,
-    )
 
     GSHEETS_APP: GoogleAppSettings = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "GoogleAppSettings")  [assignment]
         # TODO: check gsheets connector availability
@@ -81,5 +72,26 @@ class DeprecatedFileUploaderWorkerSettings(DeprecatedFileUploaderBaseSettings):
     )
 
 
+def file_uploader_worker_postload_connectors_settings(
+    value: dict[str, ConnectorSettings]
+) -> dict[str, ConnectorSettings]:
+    """
+    Validator function to populate missing connector settings with defaults for file uploader worker app.
+
+    In yaml/envs for file-worker application, we only specify settings for the CONNECTION_TYPE_FILE connector,
+    and reuse these same settings for CONNECTION_TYPE_GSHEETS_V2 and CONNECTION_TYPE_YADOCS.
+    """
+    conn_types_to_fill_manually = [CONNECTION_TYPE_GSHEETS_V2.value, CONNECTION_TYPE_YADOCS.value]
+    conn_file_settings = value[CONNECTION_TYPE_FILE.value]
+    assert isinstance(conn_file_settings, ConnectorSettings)
+    for conn_type in conn_types_to_fill_manually:
+        value[conn_type] = conn_file_settings
+    return postload_connectors_settings(value)
+
+
 class FileUploaderWorkerSettings(FileUploaderBaseSettings):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
+    CONNECTORS: Annotated[
+        dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings],
+        pydantic.AfterValidator(file_uploader_worker_postload_connectors_settings),
+    ] = pydantic.Field(default_factory=dict)
