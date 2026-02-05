@@ -23,6 +23,7 @@ class OpenApiSpec:
     info: Info | None = None
     tags: list[Tag] = attrs.field(factory=list)
     routes: Sequence[OpenApiRouteProtocol] = attrs.field(factory=list)
+    external_route_prefix: str = ""
 
     @property
     def raw(self) -> dict:
@@ -99,7 +100,7 @@ class OpenApiSpec:
                         "application/json": {"schema": response_schema.model_json_schema()},
                     },
                 }
-            paths[route.path][route.method.lower()] = {
+            paths[f"{self.external_route_prefix}{route.path}"][route.method.lower()] = {
                 "tags": route.handler.OPENAPI_TAGS,
                 "summary": route.handler.OPENAPI_DESCRIPTION,
                 "parameters": parameters,
