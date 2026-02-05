@@ -186,7 +186,7 @@ DEFINITIONS_ARRAY = [
     base.FuncFloatArrayFromFloatArray.for_dialect(D.CLICKHOUSE),
     base.FuncFloatArrayFromStringArray(
         variants=[
-            V(D.CLICKHOUSE, lambda array: sa.func.arrayMap(Lambda(lambda x: sa.func.toFloat64OrNull(x)), array)),
+            V(D.CLICKHOUSE, lambda array: sa.func.arrayMap(Lambda(lambda x: sa.func.toFloat64(x)), array)),
         ]
     ),
     # cast_arr_int
@@ -198,7 +198,7 @@ DEFINITIONS_ARRAY = [
     ),
     base.FuncIntArrayFromStringArray(
         variants=[
-            V(D.CLICKHOUSE, lambda array: sa.func.arrayMap(Lambda(lambda x: sa.func.toInt64OrNull(x)), array)),
+            V(D.CLICKHOUSE, lambda array: sa.func.arrayMap(Lambda(lambda x: sa.func.toInt64(x)), array)),
         ]
     ),
     # cast_arr_str
