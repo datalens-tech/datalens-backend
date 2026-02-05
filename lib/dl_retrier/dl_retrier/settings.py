@@ -1,17 +1,18 @@
 import pydantic
 
+import dl_retrier.policy as policy
 import dl_settings
 
 
 class RetryPolicySettings(dl_settings.BaseSettings):
-    total_timeout: float = 120
-    connect_timeout: float = 30
-    request_timeout: float = 30
-    retries_count: int = 10
-    retryable_codes: set[int] = pydantic.Field(default_factory=lambda: set([500, 501, 502, 503, 504, 521]))
-    backoff_initial: float = 0.5
-    backoff_factor: float = 2.0
-    backoff_max: float = 120.0
+    total_timeout: float = policy.DEFAULT_RETRY_POLICY.total_timeout
+    connect_timeout: float = policy.DEFAULT_RETRY_POLICY.connect_timeout
+    request_timeout: float = policy.DEFAULT_RETRY_POLICY.request_timeout
+    retries_count: int = policy.DEFAULT_RETRY_POLICY.retries_count
+    retryable_codes: frozenset[int] = policy.DEFAULT_RETRY_POLICY.retryable_codes
+    backoff_initial: float = policy.DEFAULT_RETRY_POLICY.backoff_initial
+    backoff_factor: float = policy.DEFAULT_RETRY_POLICY.backoff_factor
+    backoff_max: float = policy.DEFAULT_RETRY_POLICY.backoff_max
 
 
 class RetryPolicyFactorySettings(dl_settings.BaseSettings):
