@@ -140,7 +140,7 @@ class HttpServerAppFactoryMixin(
                         methods=frozenset(["GET"]),
                     ),
                     auth.RouteMatcher(
-                        path_regex=re.compile(r"^/api/v1/docs/.*$"),
+                        path_regex=re.compile(rf"^{self.settings.OPEN_API.DOCS_PATH}.*$"),
                         methods=frozenset(["GET"]),
                     ),
                 ],
