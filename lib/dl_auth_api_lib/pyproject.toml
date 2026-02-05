@@ -16,6 +16,7 @@ dl-core = {path = "../dl_core"}
 dl-settings = {path = "../dl_settings"}
 marshmallow = "*"
 pydantic = "*"
+pydantic-settings = "*"
 python = ">=3.10, <3.13"
 typing-extensions = "*"
 

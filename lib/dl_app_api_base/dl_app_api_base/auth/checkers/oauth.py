@@ -22,7 +22,7 @@ class OAuthUserSettings(dl_settings.BaseSettings):
 
 
 class OAuthCheckerSettings(dl_settings.BaseSettings):
-    USERS: dict[str, OAuthUserSettings]
+    USERS: dict[str, OAuthUserSettings] = pydantic.Field(default_factory=dict)
     HEADER_KEY: str = "Authorization"
     HEADER_PREFIX: str = "Bearer "
 
