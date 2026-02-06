@@ -28,7 +28,7 @@ class TypedBaseSettings(base_settings.BaseSettings, dl_pydantic.TypedBaseModel):
             if registered_type.lower() == type_lower:
                 return registered_type
 
-        return None
+        raise ValueError(f"Unknown type: {type_lower} ....")
 
     @classmethod
     def _prepare_data(cls, data: dict[str, Any]) -> dict[str, Any]:
