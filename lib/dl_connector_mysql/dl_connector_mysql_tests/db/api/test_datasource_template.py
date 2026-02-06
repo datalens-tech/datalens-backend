@@ -4,7 +4,7 @@ from dl_connector_mysql.core.constants import (
     SOURCE_TYPE_MYSQL_SUBSELECT,
     SOURCE_TYPE_MYSQL_TABLE,
 )
-from dl_connector_mysql.core.settings import DeprecatedMySQLConnectorSettings
+from dl_connector_mysql.core.settings import MySQLConnectorSettings
 from dl_connector_mysql_tests.db.api.base import (
     MySQLDataApiTestBase,
     MySQLDatasetTestBase,
@@ -13,7 +13,7 @@ from dl_connector_mysql_tests.db.api.base import (
 
 class BaseTableTestSourceTemplate(dl_api_lib_testing.BaseTableTestSourceTemplate):
     source_type = SOURCE_TYPE_MYSQL_TABLE
-    conn_settings_cls = DeprecatedMySQLConnectorSettings
+    conn_settings_cls = MySQLConnectorSettings
 
 
 class TestTableControlApiSourceTemplate(
@@ -50,7 +50,7 @@ class TestTableDataApiSourceTemplate(
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
     source_type = SOURCE_TYPE_MYSQL_SUBSELECT
-    conn_settings_cls = DeprecatedMySQLConnectorSettings
+    conn_settings_cls = MySQLConnectorSettings
 
 
 class TestSubselectControlApiSourceTemplate(

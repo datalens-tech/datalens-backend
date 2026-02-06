@@ -25,11 +25,11 @@ from dl_connector_oracle.core.constants import (
     OracleDbNameType,
 )
 from dl_connector_oracle.core.dto import OracleConnDTO
-from dl_connector_oracle.core.settings import DeprecatedOracleConnectorSettings
+from dl_connector_oracle.core.settings import OracleConnectorSettings
 
 
 class ConnectionSQLOracle(
-    ConnectionSettingsMixin[DeprecatedOracleConnectorSettings],
+    ConnectionSettingsMixin[OracleConnectorSettings],
     ClassicConnectionSQL,
 ):
     has_schema: ClassVar[bool] = True
@@ -41,7 +41,7 @@ class ConnectionSQLOracle(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = DeprecatedOracleConnectorSettings
+    settings_type = OracleConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):

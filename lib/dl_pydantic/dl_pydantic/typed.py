@@ -56,6 +56,10 @@ class TypedMeta(pydantic_model_construction.ModelMetaclass):
         cls._classes: dict[str, type["TypedBaseModel"]] = {}
         cls._unknown_class: type["TypedBaseModel"] | None = None
 
+    @property
+    def classes(cls) -> dict[str, type["TypedBaseModel"]]:
+        return cls._classes
+
 
 class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     """
@@ -107,7 +111,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             if registered_type.lower() == data_type_lower:
                 return registered_type
 
-        return None
+        raise ValueError(f"Unknown type: {data_type} .")
 
     @classmethod
     def factory(cls, data: Any) -> Self:

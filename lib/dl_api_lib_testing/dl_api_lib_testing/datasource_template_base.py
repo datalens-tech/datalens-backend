@@ -24,12 +24,9 @@ from dl_api_client.dsmaker.primitives import (
 )
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 import dl_constants.enums as dl_constants_enums
-from dl_constants.enums import (
-    ConnectionType,
-    DataSourceType,
-)
+from dl_constants.enums import DataSourceType
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core_testing.database import DbTable
 
 
@@ -58,11 +55,11 @@ class BaseTestSourceTemplate(ConnectionTestBase):
     connector_enable_datasource_template: ClassVar[bool] = True
 
     @pytest.fixture(scope="class")
-    def connectors_settings(self) -> dict[ConnectionType, DeprecatedConnectorSettingsBase]:
+    def connectors_settings(self) -> dict[str, ConnectorSettings]:
         settings = self.conn_settings_cls(  # type: ignore
             ENABLE_DATASOURCE_TEMPLATE=self.connector_enable_datasource_template,
         )
-        return {self.conn_type: settings}
+        return {self.conn_type.value: settings}
 
     @pytest.fixture(name="parameter_fields")
     def fixture_parameter_fields(self) -> dict[str, ResultField]:
@@ -161,7 +158,7 @@ class BaseTestSourceTemplate(ConnectionTestBase):
 
 
 class BaseTableTestSourceTemplate(BaseTestSourceTemplate):
-    conn_settings_cls: ClassVar[DeprecatedConnectorSettingsBase]
+    conn_settings_cls: ClassVar[ConnectorSettings]
     table_name_pattern: ClassVar[str] = "table_.*"
     invalid_table_name: ClassVar[str] = "table_invalid"
     failed_constraint_table_name: ClassVar[str] = "failed_constraint_table_name"
@@ -203,7 +200,7 @@ class BaseTableTestSourceTemplate(BaseTestSourceTemplate):
 
 
 class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
-    conn_settings_cls: ClassVar[DeprecatedConnectorSettingsBase]
+    conn_settings_cls: ClassVar[ConnectorSettings]
 
     @pytest.fixture(name="datasource_parameters")
     def fixture_datasource_parameters(self) -> dict[str, str]:

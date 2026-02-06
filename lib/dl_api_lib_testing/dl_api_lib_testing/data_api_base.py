@@ -26,6 +26,7 @@ from dl_api_lib.app_settings import (
     DeprecatedDataApiAppSettings,
 )
 from dl_api_lib_testing.app import TestingDataApiAppFactory
+from dl_api_lib_testing.app_settings import TestingDataApiAppSettings
 from dl_api_lib_testing.base import ApiTestBase
 from dl_api_lib_testing.client import (
     TestClientConverterAiohttpToFlask,
@@ -33,10 +34,9 @@ from dl_api_lib_testing.client import (
 )
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.dataset_base import DatasetTestBase
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.rqe import RQEConfig
-from dl_constants.enums import ConnectionType
 from dl_core.components.ids import FieldIdGeneratorType
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core_testing.database import DbTable
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 from dl_testing.utils import get_root_certificates_path
@@ -107,7 +107,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
-        settings = DataApiAppSettings(fallback=deprecated_settings)
+        settings = TestingDataApiAppSettings(fallback=deprecated_settings)
 
         return settings
 
@@ -119,7 +119,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     def data_api_app(
         self,
         data_api_app_factory: DataApiAppFactory,
-        connectors_settings: dict[ConnectionType, DeprecatedConnectorSettingsBase],
+        connectors_settings: dict[str, ConnectorSettings],
     ) -> web.Application:
         return data_api_app_factory.create_app(
             connectors_settings=connectors_settings,

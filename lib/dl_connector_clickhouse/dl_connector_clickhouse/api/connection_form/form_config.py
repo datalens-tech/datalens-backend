@@ -23,13 +23,13 @@ from dl_api_connector.form_config.models.common import (
 )
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_i18n.localizer_base import Localizer
 
 from dl_connector_clickhouse.api.connection_info import ClickHouseConnectionInfoProvider
 from dl_connector_clickhouse.api.i18n.localizer import Translatable
-from dl_connector_clickhouse.core.clickhouse.settings import DeprecatedClickHouseConnectorSettings
+from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
 
 
 @unique
@@ -94,8 +94,8 @@ class ClickHouseRowConstructor:
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_PORT = "8443"
 
-    def _experimental_features_allowed(self, connector_settings: DeprecatedConnectorSettingsBase | None) -> bool:
-        assert isinstance(connector_settings, DeprecatedClickHouseConnectorSettings)
+    def _experimental_features_allowed(self, connector_settings: ConnectorSettings | None) -> bool:
+        assert isinstance(connector_settings, ClickHouseConnectorSettings)
         return connector_settings.ALLOW_EXPERIMENTAL_FEATURES
 
     def _get_implicit_form_fields(self) -> set[TFieldName]:
@@ -103,7 +103,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def get_common_api_schema_items(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> list[FormFieldApiSchema]:
         items = [
             FormFieldApiSchema(name=CommonFieldName.host, required=True),
@@ -121,7 +121,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def _get_edit_api_schema(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -133,7 +133,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def _get_create_api_schema(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
         edit_api_schema: FormActionApiSchema,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
@@ -146,7 +146,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def _get_check_api_schema(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -158,37 +158,37 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     def _get_host_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.host_row()]
 
     def _get_port_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.port_row(label_text=Translatable("field_click-house-port"), default_value=self.DEFAULT_PORT)]
 
     def _get_username_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.username_row()]
 
     def _get_password_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
         return [rc.password_row(mode=self.mode)]
 
     def _get_common_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
-        assert connector_settings is not None and isinstance(connector_settings, DeprecatedClickHouseConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
         clickhouse_rc = ClickHouseRowConstructor(localizer=self._localizer)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
@@ -219,7 +219,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
