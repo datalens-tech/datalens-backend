@@ -99,7 +99,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return data
 
     @classmethod
-    def _get_class_name(cls, data: dict[str, Any]) -> str | None:
+    def _get_class_name(cls, data: dict[str, Any]) -> str:
         type_key = cls.type_key()
         if type_key not in data:
             raise ValueError(f"Data must contain '{type_key}' key")
@@ -111,7 +111,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             if registered_type.lower() == data_type_lower:
                 return registered_type
 
-        return None
+        raise ValueError(f"Unknown type: {data_type} .")
 
     @classmethod
     def factory(cls, data: Any) -> Self:
