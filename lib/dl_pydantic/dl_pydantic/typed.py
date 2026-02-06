@@ -99,7 +99,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return data
 
     @classmethod
-    def _get_class_name(cls, data: dict[str, Any]) -> str:
+    def _get_class_name(cls, data: dict[str, Any]) -> str | None:
         type_key = cls.type_key()
         if type_key not in data:
             raise ValueError(f"Data must contain '{type_key}' key")
