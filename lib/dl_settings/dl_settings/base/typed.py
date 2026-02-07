@@ -12,6 +12,8 @@ import dl_settings.base.settings as base_settings
 
 
 class TypedBaseSettings(base_settings.BaseSettings, dl_pydantic.TypedBaseModel):
+    type: str = pydantic.Field(alias="TYPE")
+
     @classmethod
     def _get_class_name(cls, data: dict[str, Any]) -> str | None:
         type_key = cls.type_key()

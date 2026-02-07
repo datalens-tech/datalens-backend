@@ -22,13 +22,6 @@ LOGGER = logging.getLogger(__name__)
 TypedBaseModelT = TypeVar("TypedBaseModelT", bound="TypedBaseModel")
 
 
-def _check_duplicated_case_insensitive_fields_from_dicts(target: dict[str, Any], source: dict[str, Any]) -> None:
-    target_with_lower_keys = {key.lower() for key in target}
-    for source_key in source:
-        if source_key.lower() in target_with_lower_keys:
-            raise ValueError(f"Can't merge duplicated field '{source_key}'")
-
-
 def _merge_dict_keys(data: dict[str, Any]) -> dict[str, Any]:
     """
     Merge keys that differ only by case into a single lowercase key.
@@ -38,15 +31,23 @@ def _merge_dict_keys(data: dict[str, Any]) -> dict[str, Any]:
     Returns a new dictionary with merged keys.
     """
     result: dict[str, Any] = {}
-    for key, value in data.items():
+    for key, source in data.items():
         key_lower = key.lower()
         if key_lower not in result:
-            result[key_lower] = value
+            result[key_lower] = source
             continue
-        if not isinstance(result[key_lower], dict) or not isinstance(value, dict):
+
+        target = result[key_lower]
+        if not isinstance(target, dict) or not isinstance(source, dict):
             raise ValueError("Can't merge non-dict")
-        _check_duplicated_case_insensitive_fields_from_dicts(result[key_lower], value)
-        result[key_lower].update(value)
+
+        target_keys = {key for key in target}
+        source_keys = {key for key in source}
+
+        if target_keys & source_keys:
+            raise ValueError(f"Can't merge duplicated keys: {target_keys & source_keys}")
+
+        target.update(source)
 
     return result
 
