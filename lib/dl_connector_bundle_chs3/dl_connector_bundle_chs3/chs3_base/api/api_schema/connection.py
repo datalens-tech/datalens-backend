@@ -61,7 +61,7 @@ class BaseFileS3ConnectionSchema(ConnectionSchema, DataExportForbiddenMixin):
         if isinstance(self.operations_mode, ExportMode):
             return data
 
-        usm = USManagerFlaskMiddleware.get_request_us_manager()
+        usm = USManagerFlaskMiddleware.get_request_regular_us_manager()
         service_registry = usm.get_services_registry()
         fu_client_factory = service_registry.get_file_uploader_client_factory()
 
