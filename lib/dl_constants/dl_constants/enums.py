@@ -280,7 +280,7 @@ class ManagedBy(_Normalizable["ManagedBy"], Enum):
 
 
 @unique
-class USAuthMode(Enum):
+class USAuthMode(Enum):  # TODO: to be removed in BI-6973
     master = "master"
     public = "public"
     regular = "regular"
