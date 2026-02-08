@@ -85,7 +85,7 @@ class DatasetCollection(DatasetResource):
     )
     def post(self, body: dict) -> dict:
         """Create dataset"""
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         dataset = Dataset.create_from_dict(
             Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
             ds_key=self.generate_dataset_location(body),
@@ -125,7 +125,7 @@ class DatasetItem(BIResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
@@ -148,7 +148,7 @@ class DatasetItemFields(BIResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
@@ -183,7 +183,7 @@ class DatasetCopy(DatasetResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
@@ -221,7 +221,7 @@ class DatasetVersionItem(DatasetResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         if "rev_id" in query:
@@ -267,7 +267,7 @@ class DatasetVersionItem(DatasetResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         with us_manager.get_locked_entry_cm(Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT) as ds:
@@ -335,7 +335,7 @@ class DatasetExportItem(DatasetResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_us_manager()
+        us_manager = self.get_private_us_manager()
         us_manager.set_context("connection", connection_headers)
 
         tenant = self.get_current_rci().tenant
@@ -432,7 +432,7 @@ class DatasetImportCollection(DatasetResource):
 
         self.replace_conn_ids(data, body["id_mapping"])
 
-        us_manager = self.get_us_manager()
+        us_manager = self.get_private_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
@@ -492,7 +492,7 @@ class DatasetVersionValidator(DatasetResource):
         body: dict | None = None,
     ) -> tuple[dict, HTTPStatus]:
         """Validate dataset version schema"""
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
 
         # Pass dataset_id to US from URL
         if dataset_id is not None:
@@ -559,7 +559,7 @@ class DatasetVersionFieldValidator(DatasetResource):
         body: dict | None = None,
     ) -> tuple[dict, HTTPStatus]:
         """Validate formula field of dataset version"""
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
 
         # Pass dataset_id to US from URL
         if dataset_id is not None:

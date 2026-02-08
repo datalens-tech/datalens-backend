@@ -116,7 +116,7 @@ class ConnectionParamsTester(BIResource):
 class ConnectionTester(BIResource):
     @schematic_request(ns=ns)
     def post(self, connection_id: str) -> None | tuple[list | dict, int]:
-        usm = self.get_us_manager()
+        usm = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
 
         # Pass dataset_id to US from URL
@@ -197,7 +197,7 @@ class ConnectionsImportList(BIResource):
     )
     @wrap_export_import_exception
     def post(self, body: dict) -> dict | tuple[list | dict, int]:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_private_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
@@ -246,7 +246,7 @@ class ConnectionsList(BIResource):
     @put_to_request_context(endpoint_code="ConnectionCreate")
     @schematic_request(ns=ns)
     def post(self) -> dict | tuple[list | dict, int]:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
 
         conn_availability = self.get_service_registry().get_connector_availability()
         conn_type = request.json and request.json.get("type")
@@ -283,7 +283,7 @@ class ConnectionItem(BIResource):
         },
     )
     def get(self, connection_id: str, query: dict) -> dict:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
 
         # Pass dataset_id to US from URL
@@ -318,7 +318,7 @@ class ConnectionItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionDelete")
     @schematic_request(ns=ns)
     def delete(self, connection_id: str) -> None:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
 
         conn = us_manager.get_by_id(
             connection_id,
@@ -332,7 +332,7 @@ class ConnectionItem(BIResource):
     @put_to_request_context(endpoint_code="ConnectionUpdate")
     @schematic_request(ns=ns)
     def put(self, connection_id: str) -> None | tuple[list | dict, int]:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
 
         with us_manager.get_locked_entry_cm(ConnectionBase, connection_id) as conn:  # type: ignore  # TODO: fix
             need_permission_on_entry(conn, USPermissionKind.edit)
@@ -382,7 +382,7 @@ class ConnectionExportItem(BIResource):
     )
     @wrap_export_import_exception
     def get(self, connection_id: str) -> dict:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_private_us_manager()
         tenant = self.get_current_rci().tenant
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
@@ -422,7 +422,7 @@ def _dump_source_templates(tpls: list[DataSourceTemplate] | None) -> list[dict[s
 class ConnectionInfoMetadataSources(BIResource):
     @schematic_request(ns=ns, responses={200: ("Success", ConnectionSourceTemplatesResponseSchema())})
     def get(self, connection_id: str) -> dict[str, list[dict[str, Any]] | None]:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
 
         # Pass dataset_id to US from URL
@@ -460,7 +460,7 @@ class ConnectionDBNames(BIResource):
         responses={200: ("Success", ConnectionDBNamesResponseSchema()), 400: ("Failed", BadRequestResponseSchema())},
     )
     def get(self, connection_id: str) -> dict[str, list[str]]:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
 
         # Pass dataset_id to US from URL
@@ -501,7 +501,7 @@ class ConnectionInfoSourceListingOptions(BIResource):
         },
     )
     def get(self, connection_id: str) -> dict:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
 
         # Pass dataset_id to US from URL
@@ -546,7 +546,7 @@ class ConnectionInfoSources(BIResource):
         },
     )
     def get(self, connection_id: str, query: dict) -> dict:
-        us_manager = self.get_us_manager()
+        us_manager = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
 
         # Pass dataset_id to US from URL
@@ -601,7 +601,7 @@ class ConnectionInfoSourceSchema(BIResource):
         responses={200: ("Success", ConnectionInfoSourceSchemaResponseSchema())},
     )
     def post(self, connection_id: str, body: dict) -> dict:
-        connection = self.get_us_manager().get_by_id(
+        connection = self.get_regular_us_manager().get_by_id(
             connection_id,
             expected_type=ConnectionBase,
             context_name="connection",

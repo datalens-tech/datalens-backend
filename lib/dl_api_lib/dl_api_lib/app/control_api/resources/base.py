@@ -157,7 +157,7 @@ class BIResource(Resource, metaclass=BIResourceMeta):
     @classmethod
     def get_schema_ctx(cls, schema_operations_mode: OperationsMode | None = None, editable_object: Any = None) -> dict:
         return prepare_schema_context(
-            usm=cls.get_regular_us_manager(),
+            usm=cls.get_us_manager_based_on_required_resources(),
             op_mode=schema_operations_mode,
             editable_object=editable_object,
         )
@@ -171,8 +171,15 @@ class BIResource(Resource, metaclass=BIResourceMeta):
         return USManagerFlaskMiddleware.get_request_private_us_manager()
 
     @classmethod
+    def get_us_manager_based_on_required_resources(cls) -> SyncUSManager:
+        if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in cls.REQUIRED_RESOURCES:
+            return cls.get_private_us_manager()
+
+        return cls.get_regular_us_manager()
+
+    @classmethod
     def get_service_registry(cls) -> ApiServiceRegistry:
-        usm = cls.get_regular_us_manager()
+        usm = cls.get_us_manager_based_on_required_resources()
         service_registry = usm.get_services_registry()
         assert isinstance(service_registry, ApiServiceRegistry)
         return service_registry

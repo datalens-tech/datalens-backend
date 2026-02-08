@@ -91,7 +91,7 @@ class DatasetResource(BIResource):
         load_dependencies: bool = True,
         params: Optional[dict] = None,
     ) -> tuple[Dataset, DatasetUpdateInfo]:
-        us_manager = cls.get_us_manager()
+        us_manager = cls.get_us_manager_based_on_required_resources()
         if dataset_id:
             try:
                 dataset = us_manager.get_by_id(
