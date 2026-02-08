@@ -125,7 +125,7 @@ class DatasetItem(BIResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_regular_us_manager()
+        us_manager = self.get_us_manager_based_on_required_resources()
         us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
@@ -148,7 +148,7 @@ class DatasetItemFields(BIResource):
         connection_headers = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
-        us_manager = self.get_regular_us_manager()
+        us_manager = self.get_us_manager_based_on_required_resources()
         us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
