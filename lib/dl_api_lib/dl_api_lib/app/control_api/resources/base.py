@@ -172,6 +172,11 @@ class BIResource(Resource, metaclass=BIResourceMeta):
 
     @classmethod
     def get_us_manager_based_on_required_resources(cls) -> SyncUSManager:
+        if (
+            RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
+        ):  # DEPRECATED, to be removed after DLPROJECTS-500
+            return cls.get_private_us_manager()
+
         if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in cls.REQUIRED_RESOURCES:
             return cls.get_private_us_manager()
 
