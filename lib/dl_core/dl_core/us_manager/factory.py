@@ -125,7 +125,6 @@ class USMFactory:
         rci: RequestContextInfo,
         services_registry: ServicesRegistry,
     ) -> SyncUSManager:
-        assert rci.user_id is not None, "User ID must be set in RCI to create regular US manager"
         return SyncUSManager(
             us_auth_context=self.get_regular_us_auth_ctx_from_rci(rci),
             us_base_url=self.us_base_url,
