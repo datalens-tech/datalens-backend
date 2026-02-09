@@ -71,7 +71,18 @@ def parse_excel_data(data: BinaryIO, feature_excel_read_only: bool) -> list:
         sheet = wb[sheetname]
         if feature_excel_read_only:
             sheet.reset_dimensions()
-            sheet.calculate_dimension(force=True)
+            try:
+                sheet.calculate_dimension(force=True)
+            except UnboundLocalError as e:
+                # there is a bug in openpyxl that causes `calculate_dimensions`
+                # to fail with an undeclared variable if there are no rows on the worksheet
+                # https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2111
+                LOGGER.exception("Failed to calculate dimensions: %s", e)
+                if not list(*sheet.rows):
+                    sheet._max_row = 0
+                    sheet._max_column = 0
+                else:
+                    raise
 
         result.append(
             {
