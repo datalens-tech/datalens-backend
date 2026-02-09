@@ -239,6 +239,9 @@ async def test_parse_excel_non_string_header(
     assert preview.preview_data[0] == ["1", "2", "3"]
 
 
+@pytest.mark.xfail(
+    reason="the issue with invalid_excel.xlsx got fixed in datalens-backend#1509, so we don't have an invalid file at the moment to use in this test"
+)
 @pytest.mark.asyncio
 async def test_parse_invalid_excel(
     task_processor_client,
