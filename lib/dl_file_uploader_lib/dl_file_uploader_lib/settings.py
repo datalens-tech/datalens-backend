@@ -66,8 +66,8 @@ class DeprecatedFileUploaderBaseSettings:
 
 
 class FileUploaderBaseSettings(dl_settings.BaseRootSettingsWithFallback):
-    S3: dl_settings.TypedAnnotation[S3ClientSettings] = NotImplemented
-    S3_UPLOADS: dl_settings.TypedAnnotation[S3ClientSettings] = None
+    S3: S3ClientSettings
+    S3_UPLOADS: S3ClientSettings | None = None
 
     fallback_env_keys = {
         "S3__ENDPOINT_URL": "S3_ENDPOINT_URL",

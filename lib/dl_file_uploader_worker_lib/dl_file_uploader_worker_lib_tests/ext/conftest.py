@@ -37,11 +37,6 @@ def file_uploader_worker_settings(
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
-        S3=S3Settings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
         S3_TMP_BUCKET_NAME="bi-file-uploader-tmp",
         S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         SENTRY_DSN=None,
@@ -56,7 +51,14 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
+    settings = FileUploaderWorkerSettings(
+        S3=S3Settings(
+            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
+            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        ),
+        fallback=deprecated_settings,
+    )
     yield settings
 
 

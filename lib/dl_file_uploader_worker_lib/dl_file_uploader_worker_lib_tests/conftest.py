@@ -39,6 +39,7 @@ from dl_core_testing.environment import (
 )
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.s3_model.base import S3ModelManager
+from dl_file_uploader_lib.settings import S3ClientSettings
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
@@ -191,11 +192,6 @@ def file_uploader_worker_settings(
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
-        S3=S3Settings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
         S3_TMP_BUCKET_NAME="bi-file-uploader-tmp",
         S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         SENTRY_DSN=None,
@@ -210,7 +206,14 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
+    settings = FileUploaderWorkerSettings(
+        S3=S3ClientSettings(
+            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
+            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        ),
+        fallback=deprecated_settings,
+    )
     yield settings
 
 
