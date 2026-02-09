@@ -6,7 +6,6 @@ import pytest
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
 from dl_configs.settings_submodels import (
     GoogleAppSettings,
-    S3Settings,
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
@@ -14,6 +13,7 @@ from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
     FileUploaderWorkerSettings,
 )
+from dl_s3.s3_service import S3ClientSettings
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
@@ -52,7 +52,7 @@ def file_uploader_worker_settings(
         SECURE_READER=secure_reader,
     )
     settings = FileUploaderWorkerSettings(
-        S3=S3Settings(
+        S3=S3ClientSettings(
             ENDPOINT_URL=s3_settings.ENDPOINT_URL,
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,

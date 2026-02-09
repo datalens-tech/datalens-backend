@@ -42,7 +42,7 @@ from dl_task_processor.arq_redis import ArqRedisService
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
 
-LOGGER = logging.getLogget(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 _TSettings = TypeVar("_TSettings", bound=FileUploaderAPISettings)

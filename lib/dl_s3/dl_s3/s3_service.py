@@ -15,9 +15,10 @@ import aiohttp
 import attr
 import boto3
 from botocore.httpsession import get_cert_path
-import dl_settings
 import pydantic
 import typing_extensions
+
+import dl_settings
 
 
 if TYPE_CHECKING:
