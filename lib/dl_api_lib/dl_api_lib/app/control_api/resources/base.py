@@ -172,14 +172,17 @@ class BIResource(Resource, metaclass=BIResourceMeta):
 
     @classmethod
     def get_us_manager_based_on_required_resources(cls) -> SyncUSManager:
+        if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in cls.REQUIRED_RESOURCES:
+            LOGGER.info("Getting private USM based on ONLY_SERVICES_ALLOWED flag")
+            return cls.get_private_us_manager()
+
         if (
             RequiredResourceCommon.US_HEADERS_TOKEN in cls.REQUIRED_RESOURCES
         ):  # DEPRECATED, to be removed after DLPROJECTS-500
+            LOGGER.info("Getting private USM based on US_HEADERS_TOKEN flag")
             return cls.get_private_us_manager()
 
-        if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in cls.REQUIRED_RESOURCES:
-            return cls.get_private_us_manager()
-
+        LOGGER.info("Getting regular USM")
         return cls.get_regular_us_manager()
 
     @classmethod

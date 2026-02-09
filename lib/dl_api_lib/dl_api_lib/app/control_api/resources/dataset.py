@@ -311,6 +311,7 @@ class DatasetExportItem(DatasetResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
         {
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
         }
         if USE_S2S_AUTH
         else {
@@ -373,6 +374,7 @@ class DatasetImportCollection(DatasetResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
         {
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
         }
         if USE_S2S_AUTH
         else {

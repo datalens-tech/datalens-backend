@@ -169,6 +169,7 @@ class ConnectionsImportList(BIResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
         {
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
         }
         if USE_S2S_AUTH
         else {
@@ -365,6 +366,7 @@ class ConnectionExportItem(BIResource):
     REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResourceCommon]] = frozenset(
         {
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED,
+            RequiredResourceCommon.US_HEADERS_TOKEN,
         }
         if USE_S2S_AUTH
         else {
