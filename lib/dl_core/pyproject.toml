@@ -57,7 +57,6 @@ dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-testing = {path = "../dl_testing"}
-flaky = "*"
 pytest = "*"
 pytest-asyncio = "*"
 
