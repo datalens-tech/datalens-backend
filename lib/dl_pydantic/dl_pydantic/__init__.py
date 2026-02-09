@@ -1,4 +1,5 @@
 from .base import BaseModel
+from .exceptions import UnknownTypeException
 from .jsonable import (
     JsonableDate,
     JsonableDatetime,
@@ -27,4 +28,5 @@ __all__ = [
     "TypedListAnnotation",
     "TypedDictAnnotation",
     "TypedDictWithTypeKeyAnnotation",
+    "UnknownTypeException",
 ]

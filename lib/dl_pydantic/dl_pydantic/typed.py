@@ -14,6 +14,7 @@ import pydantic_core
 from typing_extensions import Self
 
 import dl_pydantic.base as base
+import dl_pydantic.exceptions as exceptions
 
 
 LOGGER = logging.getLogger(__name__)
@@ -96,7 +97,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return data
 
     @classmethod
-    def _get_class_name(cls, data: dict[str, Any]) -> str | None:
+    def _get_class_name(cls, data: dict[str, Any]) -> str:
         type_key = cls.type_key()
         if type_key not in data:
             raise ValueError(f"Data must contain '{type_key}' key")
@@ -108,7 +109,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             if registered_type.lower() == data_type_lower:
                 return registered_type
 
-        return None
+        raise exceptions.UnknownTypeException(f"Unknown type: {data_type}")
 
     @classmethod
     def factory(cls, data: Any) -> Self:
@@ -118,17 +119,15 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         if not isinstance(data, dict):
             raise ValueError("Data must be dict")
 
-        class_name = cls._get_class_name(data)
-        if class_name is not None:
-            if class_name not in cls._classes:
-                raise ValueError(f"Unknown type: {class_name}")
-
-            class_ = cls._classes[class_name]
-            data[cls.type_key()] = class_name
-        elif cls._unknown_class is not None:
+        try:
+            class_name = cls._get_class_name(data)
+        except exceptions.UnknownTypeException as exc:
+            if cls._unknown_class is None:
+                raise exc
             class_ = cls._unknown_class
         else:
-            raise ValueError(f"Unknown type: {class_name}")
+            class_ = cls._classes[class_name]
+            data[cls.type_key()] = class_name
 
         data = class_._prepare_data(data)
 
