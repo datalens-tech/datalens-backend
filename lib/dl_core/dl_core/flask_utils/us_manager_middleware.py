@@ -59,10 +59,6 @@ class USManagerFlaskMiddleware:
         services_registry: ServicesRegistry,
         required_resources: frozenset[RequiredResourceCommon],
     ) -> SyncUSManager | None:
-        if rci.user_id is None:
-            LOGGER.info("User US manager will not be created due to no user info in RCI")
-            return None
-
         if (
             RequiredResourceCommon.US_HEADERS_TOKEN in required_resources
         ):  # DEPRECATED, to be removed after DLPROJECTS-500
@@ -71,6 +67,10 @@ class USManagerFlaskMiddleware:
 
         if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
             LOGGER.info("User US manager will not be created due to ONLY_SERVICES_ALLOWED flag in target view")
+            return None
+
+        if rci.user_id is None:
+            LOGGER.info("User US manager will not be created due to no user info in RCI")
             return None
 
         if self.us_auth_mode == USAuthMode.master:  # TODO: to be removed in BI-6973
