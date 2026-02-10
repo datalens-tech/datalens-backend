@@ -8,6 +8,7 @@ on:
 jobs:
   request-copilot:
     name: Request Copilot to review PR
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
 
     steps:
