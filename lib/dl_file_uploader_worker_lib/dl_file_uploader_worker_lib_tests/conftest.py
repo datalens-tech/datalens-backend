@@ -23,7 +23,6 @@ from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
     GoogleAppSettings,
     RedisSettings,
-    S3Settings,
 )
 from dl_core.loader import (
     CoreLibraryConfig,
@@ -137,8 +136,8 @@ def redis_arq_settings(redis_app_settings):
 
 
 @pytest.fixture(scope="session")
-def s3_settings() -> S3Settings:
-    return S3Settings(
+def s3_settings() -> S3ClientSettings:
+    return S3ClientSettings(
         ENDPOINT_URL=f'http://{get_test_container_hostport("s3-storage").as_pair()}',
         ACCESS_KEY_ID="accessKey1",
         SECRET_ACCESS_KEY="verySecretKey1",
@@ -291,7 +290,9 @@ async def s3_client(s3_settings) -> AsyncS3Client:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def s3_service(s3_settings: S3Settings, s3_tmp_bucket, s3_persistent_bucket, root_certificates) -> S3Service:
+async def s3_service(
+    s3_settings: S3ClientSettings, s3_tmp_bucket, s3_persistent_bucket, root_certificates
+) -> S3Service:
     service = S3Service(
         access_key_id=s3_settings.ACCESS_KEY_ID,
         secret_access_key=s3_settings.SECRET_ACCESS_KEY,

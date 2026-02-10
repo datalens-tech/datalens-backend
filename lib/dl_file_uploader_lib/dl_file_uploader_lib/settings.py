@@ -12,9 +12,7 @@ from dl_configs.settings_loaders.meta_definition import (
     required,
     s_attrib,
 )
-from dl_configs.settings_submodels import (
-    RedisSettings,
-)
+from dl_configs.settings_submodels import RedisSettings
 from dl_s3.s3_service import S3ClientSettings
 import dl_settings
 

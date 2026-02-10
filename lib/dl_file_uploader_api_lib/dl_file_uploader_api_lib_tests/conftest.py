@@ -30,7 +30,6 @@ from dl_configs.settings_submodels import (
     CsrfSettings,
     GoogleAppSettings,
     RedisSettings,
-    S3Settings,
 )
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.loader import (
@@ -136,8 +135,8 @@ def redis_arq_settings(redis_app_settings):
 
 
 @pytest.fixture(scope="session")
-def s3_settings() -> S3Settings:  # TODO NOW rewrite this with new S3ClientSettings
-    return S3Settings(
+def s3_settings() -> S3ClientSettings:
+    return S3ClientSettings(
         ENDPOINT_URL=f'http://{get_test_container_hostport("s3-storage").as_pair()}',
         ACCESS_KEY_ID="accessKey1",
         SECRET_ACCESS_KEY="verySecretKey1",

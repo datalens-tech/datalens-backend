@@ -4,9 +4,7 @@ import aiohttp.web
 import pytest
 
 from dl_configs.crypto_keys import get_dummy_crypto_keys_config
-from dl_configs.settings_submodels import (
-    GoogleAppSettings,
-)
+from dl_configs.settings_submodels import GoogleAppSettings
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
 from dl_file_uploader_worker_lib.settings import (

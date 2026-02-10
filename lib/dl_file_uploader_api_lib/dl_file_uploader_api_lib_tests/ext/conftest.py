@@ -3,9 +3,7 @@ import os
 import pytest
 import pytest_asyncio
 
-from dl_configs.settings_submodels import (
-    GoogleAppSettings,
-)
+from dl_configs.settings_submodels import GoogleAppSettings
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
     FileUploaderWorkerSettings,
