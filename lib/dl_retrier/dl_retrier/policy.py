@@ -1,4 +1,5 @@
 import datetime
+import http
 from typing import (
     Iterator,
     TypeAlias,
@@ -102,7 +103,17 @@ DEFAULT_RETRY_POLICY: RetryPolicy = RetryPolicy(
     connect_timeout=30,
     request_timeout=30,
     retries_count=10,
-    retryable_codes=frozenset([500, 501, 502, 503, 504, 521]),
+    retryable_codes=frozenset(
+        [
+            http.HTTPStatus.TOO_MANY_REQUESTS,
+            http.HTTPStatus.INTERNAL_SERVER_ERROR,
+            http.HTTPStatus.NOT_IMPLEMENTED,
+            http.HTTPStatus.BAD_GATEWAY,
+            http.HTTPStatus.SERVICE_UNAVAILABLE,
+            http.HTTPStatus.GATEWAY_TIMEOUT,
+            521,  # Web Server Is Down
+        ]
+    ),
     backoff_initial=0.5,
     backoff_factor=2,
     backoff_max=120,
