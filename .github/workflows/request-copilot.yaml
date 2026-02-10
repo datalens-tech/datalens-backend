@@ -1,0 +1,18 @@
+name: Request Copilot to review PR
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [main]
+
+jobs:
+  request-copilot:
+    name: Request Copilot to review PR
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+
+    steps:
+      - name: review-copilot-action
+        id: review-copilot-action
+        uses: datalens-tech/review-copilot-action@v1
+        with:
+          copilot_token: ${{ secrets.OVSDS_COPILOT_REVIEWER_TOKEN }}
