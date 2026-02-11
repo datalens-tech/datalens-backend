@@ -815,7 +815,6 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
             assert row_no_sum[0] == row_with_sum[0]  # The dimension
             assert row_no_sum[1] == row_with_sum[1]  # The measure
 
-    @pytest.mark.xfail(reason="https://github.com/datalens-tech/datalens-backend/issues/531")  # FIXME
     def test_bfb_with_unknown_field(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(
             api_v1=control_api,
