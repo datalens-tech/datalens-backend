@@ -30,6 +30,8 @@ class FileS3ConnectorSettingsBase(ConnectorSettings):
     SECRET_ACCESS_KEY: str = pydantic.Field(repr=False)
 
     REPLACE_SECRET_SALT: str = pydantic.Field(repr=False, default_factory=lambda: str(uuid.uuid4()))
+    # ^ Note that this is used in a query, which, in turn, is used in a cache key at the moment
+    #   This means that the value must be set explicitly to preserve caches between restarts and instances
 
     root: _RootSettings = pydantic.Field(default_factory=_RootSettings)
 
