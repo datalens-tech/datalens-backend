@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 class RequiredResourceCommon(enum.Enum):
-    US_HEADERS_TOKEN = enum.auto()
+    US_HEADERS_TOKEN = enum.auto()  # DEPRECATED
     SKIP_AUTH = enum.auto()
+    ONLY_SERVICES_ALLOWED = enum.auto()  # Private USM will be created by default
+    PRIVATE_US_MANAGER = enum.auto()  # For regular endpoints, where private USM is needed
 
 
 def get_required_resources() -> frozenset[RequiredResourceCommon]:

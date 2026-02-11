@@ -34,7 +34,7 @@ class MetricaConnectionAvailableCounters(BIResource):
     @schematic_request(ns=ns, responses={200: ("Success", MetricaConnectionAvailableCountersSchema())})
     @generic_profiler("metrica-available-counters")
     def get(self, connection_id: str) -> dict:
-        conn = self.get_us_manager().get_by_id(
+        conn = self.get_regular_us_manager().get_by_id(
             connection_id,
             expected_type=ConnectionBase,
             context_name="connection",
