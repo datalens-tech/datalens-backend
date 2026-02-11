@@ -1,9 +1,10 @@
 import asyncio
 import datetime
 import logging
+from typing import Mapping
 
 import attrs
-import temporalio.api.workflowservice.v1
+import temporalio.api
 import temporalio.client
 import temporalio.service
 from typing_extensions import Self
@@ -133,6 +134,17 @@ class TemporalClient:
             )
         except temporalio.service.RPCError as e:
             exc.wrap_temporal_error(e)
+
+    async def add_search_attributes(
+        self,
+        search_attributes: Mapping[str, temporalio.api.enums.v1.IndexedValueType.ValueType],
+    ) -> None:
+        await self.base_client.operator_service.add_search_attributes(
+            temporalio.api.operatorservice.v1.AddSearchAttributesRequest(
+                namespace=self.base_client.namespace,
+                search_attributes=search_attributes,
+            ),
+        )
 
     async def start_workflow(
         self,

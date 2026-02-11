@@ -1,5 +1,6 @@
 import abc
 import dataclasses
+import enum
 import functools
 import logging
 from typing import (
@@ -16,6 +17,7 @@ from typing import (
 import pydantic
 import temporalio.activity
 import temporalio.api.common.v1
+import temporalio.common
 import temporalio.converter
 import temporalio.workflow
 
@@ -28,6 +30,20 @@ with temporalio.workflow.unsafe.imports_passed_through():
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class SearchAttribute(str, enum.Enum):
+    RESULT_TYPE = "ResultType"
+    RESULT_CODE = "ResultCode"
+
+    @property
+    def keyword(self) -> temporalio.common.SearchAttributeKey[str]:
+        return temporalio.common.SearchAttributeKey.for_keyword(self.value)
+
+
+class ResultType(str, enum.Enum):
+    SUCCESS = "Success"
+    ERROR = "Error"
 
 
 def _generate_workflow_id() -> str:
@@ -223,7 +239,9 @@ class BaseWorkflowParams(BaseModel):
 
 
 class BaseWorkflowResult(BaseResultModel):
-    ...
+    @property
+    def search_attributes(self) -> list[temporalio.common.SearchAttributeUpdate]:
+        return []
 
 
 class BaseWorkflowError(BaseWorkflowResult):
@@ -316,6 +334,21 @@ def _workflow_logging_middleware(
     return inner
 
 
+def _search_attributes_middleware(
+    func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
+) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
+    @functools.wraps(func)
+    async def inner(
+        self: _WorkflowType,
+        params: WorkflowParamsT,
+    ) -> WorkflowResultT:
+        result = await func(self, params)
+        temporalio.workflow.upsert_search_attributes(result.search_attributes)
+        return result
+
+    return inner
+
+
 class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, WorkflowResultT]):
     name: ClassVar[str]
     logger: ClassVar[logging.Logger]
@@ -331,6 +364,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
     # 4. This approach, which is not very elegant, but it works and is type-safe
     def __init_subclass__(cls, **kwargs: Any) -> None:
         cls.run = _workflow_logging_middleware(cls.run)  # type: ignore
+        cls.run = _search_attributes_middleware(cls.run)  # type: ignore
 
     @abc.abstractmethod
     async def run(self, params: WorkflowParamsT) -> WorkflowResultT:
