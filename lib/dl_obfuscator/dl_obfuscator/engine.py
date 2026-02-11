@@ -14,7 +14,7 @@ from dl_obfuscator.secret_keeper import SecretKeeper
 
 ObfuscatableData = str | None | dict[str, "ObfuscatableData"] | list["ObfuscatableData"]
 
-_request_obfuscators: ContextVar[list[BaseObfuscator] | None] = ContextVar("request_obfuscators", default=None)
+_request_obfuscators: ContextVar[tuple[BaseObfuscator, ...] | None] = ContextVar("request_obfuscators", default=None)
 
 
 @attr.s
@@ -29,9 +29,9 @@ class ObfuscationEngine:
     def add_request_obfuscator(self, obfuscator: BaseObfuscator) -> None:
         current = _request_obfuscators.get()
         if current is None:
-            _request_obfuscators.set([obfuscator])
+            _request_obfuscators.set((obfuscator,))
         else:
-            current.append(obfuscator)
+            _request_obfuscators.set((*current, obfuscator))
 
     def clear_request_obfuscators(self) -> None:
         _request_obfuscators.set(None)
@@ -64,8 +64,8 @@ class ObfuscationEngine:
         ...
 
     def obfuscate(self, data: ObfuscatableData, context: ObfuscationContext) -> ObfuscatableData:
-        if not data:
-            return data
+        if data is None:
+            return None
         if isinstance(data, str):
             return self._obfuscate_text(data, context)
         if isinstance(data, dict):
