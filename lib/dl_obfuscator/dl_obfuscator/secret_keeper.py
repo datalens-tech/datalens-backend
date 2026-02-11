@@ -1,4 +1,12 @@
+import logging
+
 import attr
+
+
+LOGGER = logging.getLogger(__name__)
+
+MIN_SECRET_LENGTH = 3
+MIN_PARAM_LENGTH = 3
 
 
 @attr.s
@@ -8,11 +16,17 @@ class SecretKeeper:
     _secrets: dict[str, str] = attr.ib(factory=dict, repr=False)
     _params: dict[str, str] = attr.ib(factory=dict, repr=False)
 
-    def add_secret(self, secret: str, name: str | None = None) -> None:
-        self._secrets[secret] = name or "hidden"
+    def add_secret(self, secret: str, name: str) -> None:
+        if len(secret) >= MIN_SECRET_LENGTH:
+            self._secrets[secret] = name
+        else:
+            LOGGER.warning("Secret %r is too short (len=%d), skipping", name, len(secret))
 
-    def add_param(self, param: str, name: str | None = None) -> None:
-        self._params[param] = name or "hidden"
+    def add_param(self, param: str, name: str) -> None:
+        if len(param) >= MIN_PARAM_LENGTH:
+            self._params[param] = name
+        else:
+            LOGGER.warning("Param %r is too short (len=%d), skipping", name, len(param))
 
     @property
     def secrets(self) -> dict[str, str]:
