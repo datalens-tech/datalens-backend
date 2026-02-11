@@ -63,7 +63,7 @@ class DeprecatedFileUploaderBaseSettings:
 
 
 class FileUploaderBaseSettings(dl_settings.BaseRootSettingsWithFallback):
-    S3: S3ClientSettings
+    S3: S3ClientSettings = NotImplemented
     S3_UPLOADS: S3ClientSettings | None = None
 
     fallback_env_keys = {
