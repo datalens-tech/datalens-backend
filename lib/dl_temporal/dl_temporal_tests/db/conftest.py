@@ -16,7 +16,7 @@ def fixture_temporal_hostport() -> dl_testing.HostPort:
     dl_testing.wait_for_port(
         host=hostport.host,
         port=hostport.port,
-        timeout_seconds=30,
+        timeout_seconds=60,
     )
 
     return hostport
