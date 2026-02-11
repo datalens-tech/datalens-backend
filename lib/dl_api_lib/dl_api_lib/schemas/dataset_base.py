@@ -92,7 +92,7 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
 
     field_guid = ma_fields.String(dump_default=None, load_default=None)
     allowed_value = ma_fields.String(dump_default=None, load_default=None)
-    pattern_type = ma_fields.Enum(RLSPatternType, load_default=RLSPatternType.value)
+    pattern_type = ma_fields.Enum(RLSPatternType, load_default=RLSPatternType)
     subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
@@ -126,7 +126,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     # TODO: dump/load as is and update usage on front end respectively
     calc_spec = ma_fields.Nested(CalculationSpecSchema)
 
-    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
+    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none)
     aggregation_locked = ma_fields.Boolean(readonly=True, allow_none=True, load_default=False, dump_only=True)
     autoaggregated = ma_fields.Boolean(readonly=True, allow_none=True, dump_only=True)
     has_auto_aggregation = ma_fields.Boolean(allow_none=True)
