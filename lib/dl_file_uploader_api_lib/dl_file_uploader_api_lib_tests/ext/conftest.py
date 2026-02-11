@@ -3,14 +3,12 @@ import os
 import pytest
 import pytest_asyncio
 
-from dl_configs.settings_submodels import (
-    GoogleAppSettings,
-    S3Settings,
-)
+from dl_configs.settings_submodels import GoogleAppSettings
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
     FileUploaderWorkerSettings,
 )
+from dl_s3.s3_service import S3ClientSettings
 from dl_testing.env_params.generic import GenericEnvParamGetter
 
 
@@ -40,11 +38,6 @@ def file_uploader_worker_settings(
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
-        S3=S3Settings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
         S3_TMP_BUCKET_NAME="bi-file-uploader-tmp",
         S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         SENTRY_DSN=None,
@@ -61,5 +54,10 @@ def file_uploader_worker_settings(
     settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=connectors_settings,
+        S3=S3ClientSettings(
+            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
+            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        ),
     )
     yield settings

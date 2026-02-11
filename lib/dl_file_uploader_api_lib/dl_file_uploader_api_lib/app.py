@@ -1,4 +1,5 @@
 import abc
+import logging
 from typing import (
     Generic,
     TypeVar,
@@ -39,6 +40,9 @@ from dl_file_uploader_lib.settings_utils import init_redis_service
 from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_redis import ArqRedisService
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 _TSettings = TypeVar("_TSettings", bound=FileUploaderAPISettings)
@@ -122,7 +126,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         app.on_startup.append(redis_service.init_hook)
         app.on_shutdown.append(redis_service.tear_down_hook)
 
-        s3_service_for_uploads = S3Service(
+        s3_service_internal = InternalS3Service(
             access_key_id=self._settings.S3.ACCESS_KEY_ID,
             secret_access_key=self._settings.S3.SECRET_ACCESS_KEY,
             endpoint_url=self._settings.S3.ENDPOINT_URL,
@@ -131,20 +135,25 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             tmp_bucket_name=self._settings.S3_TMP_BUCKET_NAME,
             persistent_bucket_name=self._settings.S3_PERSISTENT_BUCKET_NAME,
         )
-        app.on_startup.append(s3_service_for_uploads.init_hook)
-        app.on_shutdown.append(s3_service_for_uploads.tear_down_hook)
+        app.on_startup.append(s3_service_internal.init_hook)
+        app.on_shutdown.append(s3_service_internal.tear_down_hook)
 
-        s3_service_internal = InternalS3Service(
-            access_key_id=self._settings.S3.ACCESS_KEY_ID,
-            secret_access_key=self._settings.S3.SECRET_ACCESS_KEY,
-            endpoint_url=self._settings.S3.ENDPOINT_URL,
+        if self._settings.S3_UPLOADS is None:
+            LOGGER.debug("S3_UPLOADS settings are not set, using same S3 as internal")
+            s3_settings_for_uploads = self._settings.S3
+        else:
+            s3_settings_for_uploads = self._settings.S3_UPLOADS
+        s3_service_for_uploads = S3Service(
+            access_key_id=s3_settings_for_uploads.ACCESS_KEY_ID,
+            secret_access_key=s3_settings_for_uploads.SECRET_ACCESS_KEY,
+            endpoint_url=s3_settings_for_uploads.ENDPOINT_URL,
+            use_virtual_host_addressing=s3_settings_for_uploads.USE_VIRTUAL_HOST_ADDRESSING,
             ca_data=ca_data,
             tmp_bucket_name=self._settings.S3_TMP_BUCKET_NAME,
             persistent_bucket_name=self._settings.S3_PERSISTENT_BUCKET_NAME,
-            # InternalS3Service ignores virtual_host_addressing parameter, so not passing it at all
         )
-        app.on_startup.append(s3_service_internal.init_hook)
-        app.on_shutdown.append(s3_service_internal.tear_down_hook)
+        app.on_startup.append(s3_service_for_uploads.init_hook)
+        app.on_shutdown.append(s3_service_for_uploads.tear_down_hook)
 
         arq_redis_service = ArqRedisService(arq_settings=create_arq_redis_settings(self._settings.REDIS_ARQ))
         app.on_startup.append(arq_redis_service.init_hook)

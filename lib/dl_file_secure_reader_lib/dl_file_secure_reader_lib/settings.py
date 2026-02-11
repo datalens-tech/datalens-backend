@@ -6,7 +6,7 @@ import dl_settings
 class FileSecureReaderSettings(
     dl_settings.BaseSettings,
 ):
-    FEATURE_EXCEL_READ_ONLY: bool = pydantic.Field(default=False)
+    FEATURE_EXCEL_READ_ONLY: bool = True
 
 
 class FileSecureReaderAppSettings(

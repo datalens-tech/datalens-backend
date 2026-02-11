@@ -3,7 +3,6 @@ import abc
 import pytest
 import sqlalchemy as sa
 
-from dl_configs.settings_submodels import S3Settings
 from dl_constants.enums import UserDataType
 from dl_core.connection_executors import (
     AsyncConnExecutorBase,
@@ -16,6 +15,7 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite,
 )
+from dl_s3.s3_service import S3ClientSettings
 from dl_testing.regulated_test import RegulatedTestParams
 from dl_testing.s3_utils import s3_tbl_func_maker
 
@@ -68,7 +68,7 @@ class CHS3AsyncConnectionExecutorTestBase(
         sample_table: DbTable,
         saved_connection: FILE_CONN_TV,
         async_connection_executor: AsyncConnExecutorBase,
-        s3_settings: S3Settings,
+        s3_settings: S3ClientSettings,
         sample_s3_file: str,
     ) -> None:
         schema_line = self._get_s3_func_schema_for_table(sample_table)
@@ -101,7 +101,7 @@ class CHS3AsyncConnectionExecutorTestBase(
         sample_table: DbTable,
         saved_connection: FILE_CONN_TV,
         async_connection_executor: AsyncConnExecutorBase,
-        s3_settings: S3Settings,
+        s3_settings: S3ClientSettings,
         sample_s3_file: str,
     ) -> None:
         schema_line = self._get_s3_func_schema_for_table(sample_table)

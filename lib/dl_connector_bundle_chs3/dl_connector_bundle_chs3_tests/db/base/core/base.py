@@ -19,7 +19,6 @@ from dl_api_commons.base_models import (
     RequestContextInfo,
     TenantCommon,
 )
-from dl_configs.settings_submodels import S3Settings
 from dl_constants.enums import DataSourceType
 from dl_core.db import SchemaColumn
 from dl_core.services_registry import ServicesRegistry
@@ -29,6 +28,7 @@ from dl_core_testing.fixtures.primitives import FixtureTableSpec
 from dl_core_testing.fixtures.sample_tables import TABLE_SPEC_SAMPLE_SUPERSTORE
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_file_uploader_worker_lib.utils.parsing_utils import get_field_id_generator
+from dl_s3.s3_service import S3ClientSettings
 from dl_task_processor.processor import (
     DummyTaskProcessorFactory,
     TaskProcessorFactory,
@@ -92,8 +92,8 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
         return core_test_config.get_redis_setting_maker()
 
     @pytest.fixture(scope="session")
-    def s3_settings(self) -> S3Settings:
-        return S3Settings(
+    def s3_settings(self) -> S3ClientSettings:
+        return S3ClientSettings(
             ENDPOINT_URL=test_config.S3_ENDPOINT_URL,
             ACCESS_KEY_ID=self.connection_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=self.connection_settings.SECRET_ACCESS_KEY,
@@ -132,7 +132,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
         )
 
     @pytest_asyncio.fixture(scope="function")
-    async def s3_client(self, s3_settings: S3Settings) -> AsyncS3Client:
+    async def s3_client(self, s3_settings: S3ClientSettings) -> AsyncGenerator[AsyncS3Client, None]:
         async with create_s3_client(s3_settings) as client:
             yield client
 
@@ -160,7 +160,7 @@ class BaseCHS3TestClass(BaseConnectionTestClass[FILE_CONN_TV], metaclass=abc.ABC
         self,
         s3_client: AsyncS3Client,
         s3_bucket: str,
-        s3_settings: S3Settings,
+        s3_settings: S3ClientSettings,
         sample_table: DbTable,
     ) -> AsyncGenerator[str, None]:
         filename = f"my_file_{uuid.uuid4()}.native"

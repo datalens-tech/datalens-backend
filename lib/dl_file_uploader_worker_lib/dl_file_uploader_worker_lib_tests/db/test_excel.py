@@ -239,6 +239,9 @@ async def test_parse_excel_non_string_header(
     assert preview.preview_data[0] == ["1", "2", "3"]
 
 
+@pytest.mark.xfail(
+    reason="the issue with invalid_excel.xlsx got fixed in datalens-backend#1509, so we don't have an invalid file at the moment to use in this test"
+)
 @pytest.mark.asyncio
 async def test_parse_invalid_excel(
     task_processor_client,
@@ -268,3 +271,35 @@ async def test_parse_invalid_excel(
     for src in df.sources:
         assert src.status == FileProcessingStatus.failed
     assert df.error.code == ["FILE", "PARSE_FAILED", "INVALID_EXCEL"]
+
+
+@pytest.mark.asyncio
+async def test_parse_excel_empty_sheets(
+    task_processor_client,
+    task_state,
+    s3_client,
+    redis_model_manager,
+    uploaded_excel_empty_sheets_id,
+    reader_app,
+):
+    rmm = redis_model_manager
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_empty_sheets_id)
+    assert df.status == FileProcessingStatus.in_progress
+
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_excel_empty_sheets_id,
+            tenant_id="common",
+        )
+    )
+    result = await wait_task(task, task_state)
+
+    await sleep(60)
+    assert result[-1] == "success"
+
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_excel_empty_sheets_id)
+    assert df.id == uploaded_excel_empty_sheets_id
+    assert df.status == FileProcessingStatus.ready
+
+    assert df.sources[0].is_applicable
+    assert not df.sources[1].is_applicable  # this sheet is empty

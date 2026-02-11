@@ -10,7 +10,6 @@ import uuid
 
 import aiopg.sa
 import asyncpg
-import flaky
 import pytest
 import pytest_asyncio
 
@@ -32,10 +31,16 @@ async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> list[dic
     client_addr client_hostname client_port
     backend_start xact_start query_start
     state_change state query""".split()
-    active_queries_query = "SELECT {cols} FROM pg_stat_activity  -- active_queries_query".format(
-        cols=", ".join(columns)
-    )
     ctx = OpExecutionContext(processing_id="", streams=[], operations=[])
+    # Get the PID of our connection to filter only our queries
+    connection_pid = await pg_adapter.scalar(
+        query="SELECT pg_backend_pid()",
+        user_type=UserDataType.integer,
+        ctx=ctx,
+    )
+    active_queries_query = (
+        f"SELECT {', '.join(columns)} FROM pg_stat_activity WHERE pid = {connection_pid} -- active_queries_query"
+    )
     queries_resp = await pg_adapter.fetch_data_from_select(
         query=active_queries_query,
         user_types=[UserDataType.string] * len(columns),
@@ -90,11 +95,8 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
         await pg_adapter.drop_table(table_name=table_name)
         assert not await self.table_exists(pg_adapter=pg_adapter, table_name=table_name)
 
-    @flaky.flaky(max_runs=5)  # FIXME: https://github.com/datalens-tech/datalens-backend/issues/438
     @pytest.mark.asyncio
     async def test_insert_fetch(self, pg_adapter: PostgreSQLExecAdapterAsync):
-        queries_before = await get_active_queries(pg_adapter)
-
         table_name = f"table_{uuid.uuid4()}"
         names = ["int_value", "str_value", "bool_value"]
         user_types = [UserDataType.integer, UserDataType.string, UserDataType.boolean]
@@ -120,9 +122,8 @@ class BaseTestPGOpExecAdapter(DefaultCoreTestClass):
         original_as_lists = [list(row) for row in await AsyncChunked.from_chunked_iterable(raw_data).all()]
         assert fetched_as_lists == original_as_lists
 
-        queries_after = await get_active_queries(pg_adapter)
-        new_queries = [q for q in queries_after if q not in queries_before]
-        assert not new_queries, "should have no new active queries"
+        active_queries = await get_active_queries(pg_adapter)
+        assert not active_queries, "should have no active queries"
 
         if not isinstance(pg_adapter, AsyncpgExecAdapter):
             # FIXME (asyncpg): cannot DROP TABLE "table_8df53688-8f9b-4a6a-a281-cdf954075f3a"

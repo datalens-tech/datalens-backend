@@ -191,6 +191,18 @@ async def uploaded_invalid_excel_id(uploaded_invalid_excel) -> str:
     yield uploaded_invalid_excel.id
 
 
+@pytest_asyncio.fixture(scope="function")
+async def uploaded_excel_empty_sheets(uploaded_excel_file) -> DataFile:
+    filename = "empty_sheet.xlsx"
+    data_file_desc = await uploaded_excel_file(filename)
+    yield data_file_desc
+
+
+@pytest_asyncio.fixture(scope="function")
+async def uploaded_excel_empty_sheets_id(uploaded_excel_empty_sheets) -> str:
+    yield uploaded_excel_empty_sheets.id
+
+
 @pytest.fixture(scope="class")
 def reader_app_settings() -> FileSecureReaderSettings:
     return FileSecureReaderSettings()

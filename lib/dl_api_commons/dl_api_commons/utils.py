@@ -1,3 +1,5 @@
+import http
+
 import requests
 import requests.adapters
 
@@ -28,7 +30,15 @@ def get_retriable_requests_session() -> requests.Session:
     retry_conf = requests.adapters.Retry(
         total=5,
         backoff_factor=0.5,
-        status_forcelist=[500, 501, 502, 503, 504, 521],
+        status_forcelist=[
+            http.HTTPStatus.TOO_MANY_REQUESTS,
+            http.HTTPStatus.INTERNAL_SERVER_ERROR,
+            http.HTTPStatus.NOT_IMPLEMENTED,
+            http.HTTPStatus.BAD_GATEWAY,
+            http.HTTPStatus.SERVICE_UNAVAILABLE,
+            http.HTTPStatus.GATEWAY_TIMEOUT,
+            521,  # Web Server Is Down
+        ],
         redirect=10,
         method_whitelist=frozenset(["HEAD", "TRACE", "GET", "PUT", "OPTIONS", "DELETE", "POST"]),
         # # TODO:
