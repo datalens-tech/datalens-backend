@@ -151,6 +151,7 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
 
     class ResponseSchema(dl_app_api_base.BaseResponseSchema):
         request_id: str
+        child_request_id: str
         user_ip: str
 
     async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
@@ -159,6 +160,7 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
         return dl_app_api_base.Response.with_model(
             schema=self.ResponseSchema(
                 request_id=request_context.get_request_id(),
+                child_request_id=request_context.generate_child_request_id(),
                 user_ip=request_context.get_user_ip(),
             ),
             status=http.HTTPStatus.OK,
