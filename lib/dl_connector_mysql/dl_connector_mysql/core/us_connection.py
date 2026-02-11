@@ -22,11 +22,11 @@ from dl_connector_mysql.core.constants import (
     MySQLEnforceCollateMode,
 )
 from dl_connector_mysql.core.dto import MySQLConnDTO
-from dl_connector_mysql.core.settings import DeprecatedMySQLConnectorSettings
+from dl_connector_mysql.core.settings import MySQLConnectorSettings
 
 
 class ConnectionMySQL(
-    ConnectionSettingsMixin[DeprecatedMySQLConnectorSettings],
+    ConnectionSettingsMixin[MySQLConnectorSettings],
     ClassicConnectionSQL,
 ):
     source_type = SOURCE_TYPE_MYSQL_TABLE
@@ -34,7 +34,7 @@ class ConnectionMySQL(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = DeprecatedMySQLConnectorSettings
+    settings_type = MySQLConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):

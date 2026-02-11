@@ -18,7 +18,6 @@ from redis.asyncio import Redis
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
 from dl_configs.settings_submodels import RedisSettings
@@ -29,6 +28,7 @@ from dl_constants.enums import (
 from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
 from dl_core.aio.web_app_services.data_processing.factory import make_compeng_service
 from dl_core.connections_security.base import InsecureConnectionSecurityManager
+from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
@@ -63,7 +63,7 @@ class USConfig(NamedTuple):
 class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     conn_type: ClassVar[ConnectionType]
     core_test_config: ClassVar[CoreTestEnvironmentConfiguration]
-    connection_settings: ClassVar[Optional[DeprecatedConnectorSettingsBase]] = None
+    connection_settings: ClassVar[Optional[ConnectorSettings]] = None
     inst_specific_sr_factory: ClassVar[Optional[InstallationSpecificServiceRegistryFactory]] = None
     data_caches_enabled: ClassVar[bool] = False
     compeng_enabled: ClassVar[bool] = False
@@ -171,7 +171,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
                 ca_data=root_certificates_data,
                 entity_usage_checker=entity_usage_checker,
             ),
-            connectors_settings={self.conn_type: self.connection_settings} if self.connection_settings else {},
+            connectors_settings={self.conn_type.value: self.connection_settings} if self.connection_settings else {},
             inst_specific_sr=(
                 self.inst_specific_sr_factory.get_inst_specific_sr(sr_future_ref)
                 if self.inst_specific_sr_factory is not None

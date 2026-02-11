@@ -42,7 +42,6 @@ from dl_file_uploader_lib.settings import S3ClientSettings
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
-    FileUploaderConnectorsSettings,
     FileUploaderWorkerSettings,
     SecureReader,
 )
@@ -78,7 +77,11 @@ from dl_testing.s3_utils import (
 )
 from dl_testing.utils import get_root_certificates
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import DeprecatedFileS3ConnectorSettings
+from dl_connector_bundle_chs3.chs3_base.core.settings import (
+    FileS3ConnectorSettingsBase,
+    _RootSettings,
+)
+from dl_connector_bundle_chs3.file.core.constants import CONNECTION_TYPE_FILE
 
 
 if TYPE_CHECKING:
@@ -163,9 +166,9 @@ def secure_reader():
 
 
 @pytest.fixture(scope="session")
-def connectors_settings(s3_settings):
-    return FileUploaderConnectorsSettings(
-        FILE=DeprecatedFileS3ConnectorSettings(
+def file_connectors_settings_dict(s3_settings):
+    return {
+        CONNECTION_TYPE_FILE.value: FileS3ConnectorSettingsBase(
             SECURE=False,
             HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
             PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,
@@ -173,8 +176,27 @@ def connectors_settings(s3_settings):
             PASSWORD="qwerty",
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-            BUCKET="bi-file-uploader",
-            S3_ENDPOINT="http://s3-storage:8000",
+            root=_RootSettings(
+                S3_ENDPOINT_URL="http://s3-storage:8000",
+                FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
+            ),
+        ),
+    }
+
+
+@pytest.fixture(scope="session")
+def file_connectors_settings(s3_settings):
+    return FileS3ConnectorSettingsBase(
+        SECURE=False,
+        HOST=get_test_container_hostport("db-clickhouse", original_port=8123).host,
+        PORT=get_test_container_hostport("db-clickhouse", original_port=8123).port,
+        USERNAME="datalens",
+        PASSWORD="qwerty",
+        ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+        SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        root=_RootSettings(
+            S3_ENDPOINT_URL="http://s3-storage:8000",
+            FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         ),
     )
 
@@ -184,7 +206,7 @@ def file_uploader_worker_settings(
     redis_app_settings,
     redis_arq_settings,
     s3_settings,
-    connectors_settings,
+    file_connectors_settings_dict,
     us_config,
     secure_reader,
 ):
@@ -196,7 +218,6 @@ def file_uploader_worker_settings(
         SENTRY_DSN=None,
         US_BASE_URL=us_config.base_url,
         US_MASTER_TOKEN=us_config.master_token,
-        CONNECTORS=connectors_settings,
         GSHEETS_APP=GoogleAppSettings(
             API_KEY="dummy",
             CLIENT_ID="dummy",
@@ -206,12 +227,13 @@ def file_uploader_worker_settings(
         SECURE_READER=secure_reader,
     )
     settings = FileUploaderWorkerSettings(
+        fallback=deprecated_settings,
+        CONNECTORS=file_connectors_settings_dict,
         S3=S3ClientSettings(
             ENDPOINT_URL=s3_settings.ENDPOINT_URL,
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
         ),
-        fallback=deprecated_settings,
     )
     yield settings
 
@@ -407,21 +429,21 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
 
 
 @pytest_asyncio.fixture(scope="function")
-async def chs3_conn(connectors_settings):
+async def chs3_conn(file_connectors_settings):
     with connect_ch(
         host=get_test_container_hostport("db-clickhouse", original_port=9000).host,
         port=get_test_container_hostport("db-clickhouse", original_port=9000).port,
-        user=connectors_settings.FILE.USERNAME,
-        password=connectors_settings.FILE.PASSWORD,
+        user=file_connectors_settings.USERNAME,
+        password=file_connectors_settings.PASSWORD,
         secure=False,
     ) as ch_conn:
         yield ch_conn
 
 
 @pytest_asyncio.fixture(scope="function")
-async def read_chs3_file(chs3_conn, connectors_settings):
+async def read_chs3_file(chs3_conn, file_connectors_settings):
     def reader(s3_filename):
-        c_file = connectors_settings.FILE
+        c_file = file_connectors_settings
         with chs3_conn.cursor() as cursor:
             cursor.execute(
                 f"""

@@ -28,7 +28,7 @@ def file_uploader_worker_settings(
     redis_app_settings,
     redis_arq_settings,
     s3_settings,
-    connectors_settings,
+    file_connectors_settings_dict,
     us_config,
     secure_reader,
 ):
@@ -40,7 +40,6 @@ def file_uploader_worker_settings(
         SENTRY_DSN=None,
         US_BASE_URL=us_config.base_url,
         US_MASTER_TOKEN=us_config.master_token,
-        CONNECTORS=connectors_settings,
         GSHEETS_APP=GoogleAppSettings(
             API_KEY=env_param_getter.get_str_value("GOOGLE_API_KEY"),
             CLIENT_ID="dummy",  # TODO test auth properly
@@ -50,12 +49,13 @@ def file_uploader_worker_settings(
         SECURE_READER=secure_reader,
     )
     settings = FileUploaderWorkerSettings(
+        fallback=deprecated_settings,
+        CONNECTORS=file_connectors_settings_dict,
         S3=S3ClientSettings(
             ENDPOINT_URL=s3_settings.ENDPOINT_URL,
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
         ),
-        fallback=deprecated_settings,
     )
     yield settings
 

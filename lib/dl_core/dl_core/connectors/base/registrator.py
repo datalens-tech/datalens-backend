@@ -82,8 +82,6 @@ class CoreConnectorRegistrator:
         if conn_def.settings_definition is not None:
             register_connector_settings_class(
                 conn_type=conn_def.conn_type,
-                settings_class=conn_def.settings_definition.settings_class,
-                fallback=conn_def.settings_definition.fallback,
                 pydantic_settings_class=conn_def.settings_definition.pydantic_settings_class,
             )
         register_data_source_migrator(conn_type=conn_def.conn_type, migrator_cls=conn_def.data_source_migrator_cls)
