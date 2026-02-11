@@ -88,10 +88,12 @@ class RequestContextInfo:
 
     @property
     def client_ip(self) -> str | None:
-        if self.real_ip is not None:
-            return self.real_ip
-        if self.forwarder_for is not None:
-            ip_list = [ip.strip() for ip in self.forwarder_for.split(",")]
+        real_ip = self.real_ip
+        if real_ip is not None:
+            return real_ip
+        forwarded_for = self.forwarded_for
+        if forwarded_for is not None:
+            ip_list = [ip.strip() for ip in forwarded_for.split(",")]
             if len(ip_list) > 1:
                 return ip_list[-2]
             else:
