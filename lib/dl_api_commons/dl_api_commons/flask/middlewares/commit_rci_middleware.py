@@ -22,14 +22,14 @@ class ReqCtxInfoMiddleware:
     It should be setup after request id & auth middleware.
     """
 
-    plain_headers: tuple[str, ...] = attr.ib(  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "plain_headers"  [var-annotated]
+    plain_headers: tuple[str, ...] = attr.ib(
         default=(),
         converter=lambda extra: append_extra_headers_and_normalize(
             default=DEFAULT_RCI_PLAIN_HEADERS,
             extra=extra,
         ),
     )
-    secret_headers: tuple[str, ...] = attr.ib(  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "secret_headers"  [var-annotated]
+    secret_headers: tuple[str, ...] = attr.ib(
         default=(),
         converter=lambda extra: append_extra_headers_and_normalize(
             default=DEFAULT_RCI_SECRET_HEADERS,

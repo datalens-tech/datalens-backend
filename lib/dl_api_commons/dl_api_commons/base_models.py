@@ -62,6 +62,10 @@ class RequestContextInfo:
         return self.plain_headers.get(dl_constants.DLHeadersCommon.FORWARDED_FOR.value)
 
     @property
+    def real_ip(self) -> str | None:
+        return self.plain_headers.get(dl_constants.DLHeadersCommon.REAL_IP.value)
+
+    @property
     def workbook_id(self) -> str | None:
         return self.plain_headers.get(dl_constants.DLHeadersCommon.WORKBOOK_ID.value)
 
@@ -79,6 +83,8 @@ class RequestContextInfo:
 
     @property
     def client_ip(self) -> str | None:
+        if self.real_ip is not None:
+            return self.real_ip
         if self.forwarder_for is not None:
             ip_list = [ip.strip() for ip in self.forwarder_for.split(",")]
             if len(ip_list) > 1:

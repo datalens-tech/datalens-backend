@@ -17,6 +17,7 @@ INTERNAL_HEADER_PROFILING_STACK = "X-DL-Profiling-Stack"
 # Headers that will be stored to request context info
 DEFAULT_RCI_PLAIN_HEADERS = (
     DLHeadersCommon.FORWARDED_FOR.value,
+    DLHeadersCommon.REAL_IP.value,
     "User-Agent",
     "X-DL-Folder-ID",
     DLHeadersCommon.TENANT_ID.value,
