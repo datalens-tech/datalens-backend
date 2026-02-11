@@ -18,12 +18,13 @@ if TYPE_CHECKING:
     from types_aiobotocore_s3.type_defs import LifecycleRuleOutputTypeDef
 
     from dl_configs.settings_submodels import S3Settings
+    from dl_file_uploader_lib.settings import S3ClientSettings
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-def create_s3_client(s3_settings: S3Settings) -> aiobotocore.session.ClientCreatorContext:
+def create_s3_client(s3_settings: S3Settings | S3ClientSettings) -> aiobotocore.session.ClientCreatorContext:
     session = aiobotocore.session.get_session()
     return session.create_client(
         service_name="s3",
@@ -33,7 +34,7 @@ def create_s3_client(s3_settings: S3Settings) -> aiobotocore.session.ClientCreat
     )
 
 
-def create_sync_s3_client(s3_settings: S3Settings) -> SyncS3Client:
+def create_sync_s3_client(s3_settings: S3Settings | S3ClientSettings) -> SyncS3Client:
     session = boto3.Session()
     return session.client(
         service_name="s3",
@@ -91,7 +92,7 @@ S3_TBL_FUNC_TEMPLATE = """s3(
 '{schema_line}')"""
 
 
-def s3_tbl_func_maker(s3_settings: S3Settings) -> Callable[..., str]:
+def s3_tbl_func_maker(s3_settings: S3ClientSettings) -> Callable[..., str]:
     def table_function(  # type: ignore  # TODO: fix
         for_: str,
         conn_dto,

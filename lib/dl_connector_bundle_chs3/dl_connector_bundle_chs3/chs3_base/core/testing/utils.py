@@ -1,5 +1,5 @@
-from dl_configs.settings_submodels import S3Settings
 from dl_core_testing.database import DbTable
+from dl_s3.s3_service import S3ClientSettings
 from dl_testing.s3_utils import s3_tbl_func_maker
 
 from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
@@ -8,7 +8,7 @@ from dl_connector_bundle_chs3.chs3_base.core.dto import BaseFileS3ConnDTO
 def create_s3_native_from_ch_table(
     filename: str,
     s3_bucket: str,
-    s3_settings: S3Settings,
+    s3_settings: S3ClientSettings,
     clickhouse_table: DbTable,
     tbl_schema: str,
 ) -> None:

@@ -30,7 +30,6 @@ from dl_configs.settings_submodels import (
     CsrfSettings,
     GoogleAppSettings,
     RedisSettings,
-    S3Settings,
 )
 from dl_constants.api_constants import DLHeadersCommon
 from dl_core.loader import (
@@ -66,6 +65,7 @@ from dl_file_uploader_worker_lib.settings import (
 )
 from dl_file_uploader_worker_lib.testing.task_processor_client import get_task_processor_client
 import dl_retrier
+from dl_s3.s3_service import S3ClientSettings
 from dl_task_processor.processor import TaskProcessor
 from dl_task_processor.state import (
     BITaskStateImpl,
@@ -135,8 +135,8 @@ def redis_arq_settings(redis_app_settings):
 
 
 @pytest.fixture(scope="session")
-def s3_settings() -> S3Settings:
-    return S3Settings(
+def s3_settings() -> S3ClientSettings:
+    return S3ClientSettings(
         ENDPOINT_URL=f'http://{get_test_container_hostport("s3-storage").as_pair()}',
         ACCESS_KEY_ID="accessKey1",
         SECRET_ACCESS_KEY="verySecretKey1",
@@ -179,18 +179,20 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
             TIME_LIMIT=3600 * 12,
             SECRET="123321",
         ),
-        S3=S3Settings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
         S3_TMP_BUCKET_NAME="bi-file-uploader-tmp",
         S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         FILE_UPLOADER_MASTER_TOKEN="valid-master-token",
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         ALLOW_XLSX=True,
     )
-    settings = FileUploaderAPISettings(fallback=deprecated_settings)
+    settings = FileUploaderAPISettings(
+        S3=S3ClientSettings(
+            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
+            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        ),
+        fallback=deprecated_settings,
+    )
     yield settings
 
 
@@ -318,11 +320,6 @@ def file_uploader_worker_settings(
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
-        S3=S3Settings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
         S3_TMP_BUCKET_NAME="bi-file-uploader-tmp",
         S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         SENTRY_DSN=None,
@@ -337,7 +334,14 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
+    settings = FileUploaderWorkerSettings(
+        S3=S3ClientSettings(
+            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
+            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        ),
+        fallback=deprecated_settings,
+    )
     yield settings
 
 

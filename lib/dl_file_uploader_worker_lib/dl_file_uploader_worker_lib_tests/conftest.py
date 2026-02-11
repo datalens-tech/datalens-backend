@@ -23,7 +23,6 @@ from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import (
     GoogleAppSettings,
     RedisSettings,
-    S3Settings,
 )
 from dl_core.loader import (
     CoreLibraryConfig,
@@ -39,6 +38,7 @@ from dl_core_testing.environment import (
 )
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.s3_model.base import S3ModelManager
+from dl_file_uploader_lib.settings import S3ClientSettings
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import (
     DeprecatedFileUploaderWorkerSettings,
@@ -136,8 +136,8 @@ def redis_arq_settings(redis_app_settings):
 
 
 @pytest.fixture(scope="session")
-def s3_settings() -> S3Settings:
-    return S3Settings(
+def s3_settings() -> S3ClientSettings:
+    return S3ClientSettings(
         ENDPOINT_URL=f'http://{get_test_container_hostport("s3-storage").as_pair()}',
         ACCESS_KEY_ID="accessKey1",
         SECRET_ACCESS_KEY="verySecretKey1",
@@ -191,11 +191,6 @@ def file_uploader_worker_settings(
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
-        S3=S3Settings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
         S3_TMP_BUCKET_NAME="bi-file-uploader-tmp",
         S3_PERSISTENT_BUCKET_NAME="bi-file-uploader",
         SENTRY_DSN=None,
@@ -210,7 +205,14 @@ def file_uploader_worker_settings(
         CRYPTO_KEYS_CONFIG=get_dummy_crypto_keys_config(),
         SECURE_READER=secure_reader,
     )
-    settings = FileUploaderWorkerSettings(fallback=deprecated_settings)
+    settings = FileUploaderWorkerSettings(
+        S3=S3ClientSettings(
+            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
+            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
+            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
+        ),
+        fallback=deprecated_settings,
+    )
     yield settings
 
 
@@ -288,7 +290,9 @@ async def s3_client(s3_settings) -> AsyncS3Client:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def s3_service(s3_settings: S3Settings, s3_tmp_bucket, s3_persistent_bucket, root_certificates) -> S3Service:
+async def s3_service(
+    s3_settings: S3ClientSettings, s3_tmp_bucket, s3_persistent_bucket, root_certificates
+) -> S3Service:
     service = S3Service(
         access_key_id=s3_settings.ACCESS_KEY_ID,
         secret_access_key=s3_settings.SECRET_ACCESS_KEY,

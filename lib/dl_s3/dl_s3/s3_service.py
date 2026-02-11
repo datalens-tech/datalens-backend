@@ -15,7 +15,10 @@ import aiohttp
 import attr
 import boto3
 from botocore.httpsession import get_cert_path
+import pydantic
 import typing_extensions
+
+import dl_settings
 
 
 if TYPE_CHECKING:
@@ -24,6 +27,13 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class S3ClientSettings(dl_settings.BaseSettings):
+    ENDPOINT_URL: str
+    ACCESS_KEY_ID: str = pydantic.Field(repr=False)
+    SECRET_ACCESS_KEY: str = pydantic.Field(repr=False)
+    USE_VIRTUAL_HOST_ADDRESSING: bool = pydantic.Field(default=False)
 
 
 class S3AIOHTTPSessionWithSSL(aiobotocore.httpsession.AIOHTTPSession):
