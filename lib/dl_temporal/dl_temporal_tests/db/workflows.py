@@ -41,9 +41,22 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
     workflow_datetime_result: dl_pydantic.JsonableDatetime
     workflow_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
 
+    @property
+    def search_attributes(self) -> list[temporalio.common.SearchAttributeUpdate]:
+        return [
+            *super().search_attributes,
+            dl_temporal.SearchAttribute.RESULT_TYPE.keyword.value_set(dl_temporal.ResultType.SUCCESS),
+        ]
+
 
 class WorkflowError(dl_temporal.BaseWorkflowError):
-    ...
+    @property
+    def search_attributes(self) -> list[temporalio.common.SearchAttributeUpdate]:
+        return [
+            *super().search_attributes,
+            dl_temporal.SearchAttribute.RESULT_TYPE.keyword.value_set(dl_temporal.ResultType.ERROR),
+            dl_temporal.SearchAttribute.RESULT_CODE.keyword.value_set("ERROR_RESULT_CODE"),
+        ]
 
 
 @dl_temporal.define_workflow

@@ -4,6 +4,8 @@ from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio
+import temporalio.api
+import temporalio.api.enums.v1
 
 import dl_temporal
 import dl_testing
@@ -75,3 +77,16 @@ async def fixture_register_namespace(
         )
     except dl_temporal.AlreadyExists:
         pass
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def fixture_add_search_attributes(
+    temporal_client: dl_temporal.TemporalClient,
+    register_namespace: None,
+) -> None:
+    await temporal_client.add_search_attributes(
+        search_attributes={
+            dl_temporal.base.SearchAttribute.RESULT_TYPE.value: temporalio.api.enums.v1.IndexedValueType.INDEXED_VALUE_TYPE_KEYWORD,
+            dl_temporal.base.SearchAttribute.RESULT_CODE.value: temporalio.api.enums.v1.IndexedValueType.INDEXED_VALUE_TYPE_KEYWORD,
+        },
+    )

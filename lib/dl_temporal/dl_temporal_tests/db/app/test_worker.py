@@ -51,6 +51,12 @@ async def test_default(
     assert result.workflow_datetime_result == params.workflow_datetime_param
     assert result.workflow_datetime_with_timezone_result == params.workflow_datetime_with_timezone_param
 
+    workflow_desc = await workflow_handler.describe()
+    assert workflow_desc.search_attributes.get(dl_temporal.base.SearchAttribute.RESULT_TYPE) == [
+        dl_temporal.base.ResultType.SUCCESS,
+    ]
+    assert workflow_desc.search_attributes.get(dl_temporal.base.SearchAttribute.RESULT_CODE) is None
+
 
 @pytest.mark.asyncio
 async def test_error(
@@ -81,3 +87,11 @@ async def test_error(
 
     result: workflows.WorkflowError = await workflow_handler.result()
     assert isinstance(result, workflows.WorkflowError)
+
+    workflow_desc = await workflow_handler.describe()
+    assert workflow_desc.search_attributes.get(dl_temporal.base.SearchAttribute.RESULT_TYPE) == [
+        dl_temporal.base.ResultType.ERROR,
+    ]
+    assert workflow_desc.search_attributes.get(dl_temporal.base.SearchAttribute.RESULT_CODE) == [
+        "ERROR_RESULT_CODE",
+    ]

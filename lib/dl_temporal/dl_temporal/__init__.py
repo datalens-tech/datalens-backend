@@ -9,6 +9,8 @@ from .base import (
     BaseWorkflowError,
     BaseWorkflowParams,
     BaseWorkflowResult,
+    ResultType,
+    SearchAttribute,
     WorkflowProtocol,
     define_activity,
     define_workflow,
@@ -53,4 +55,6 @@ __all__ = [
     "AlreadyExists",
     "PermissionDenied",
     "create_worker",
+    "SearchAttribute",
+    "ResultType",
 ]
