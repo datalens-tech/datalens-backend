@@ -59,7 +59,16 @@ class RequestContextInfo:
 
     @property
     def forwarder_for(self) -> str | None:
+        # TODO migrate all usages to `forwarded_for` and remove
+        return self.forwarded_for
+
+    @property
+    def forwarded_for(self) -> str | None:
         return self.plain_headers.get(dl_constants.DLHeadersCommon.FORWARDED_FOR.value)
+
+    @property
+    def real_ip(self) -> str | None:
+        return self.plain_headers.get(dl_constants.DLHeadersCommon.REAL_IP.value)
 
     @property
     def workbook_id(self) -> str | None:
@@ -79,8 +88,12 @@ class RequestContextInfo:
 
     @property
     def client_ip(self) -> str | None:
-        if self.forwarder_for is not None:
-            ip_list = [ip.strip() for ip in self.forwarder_for.split(",")]
+        real_ip = self.real_ip
+        if real_ip is not None:
+            return real_ip
+        forwarded_for = self.forwarded_for
+        if forwarded_for is not None:
+            ip_list = [ip.strip() for ip in forwarded_for.split(",")]
             if len(ip_list) > 1:
                 return ip_list[-2]
             else:
