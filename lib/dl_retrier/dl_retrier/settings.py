@@ -1,3 +1,5 @@
+from typing import Mapping
+
 import pydantic
 
 import dl_retrier.policy as policy
@@ -16,7 +18,7 @@ class RetryPolicySettings(dl_settings.BaseSettings):
 
 
 class RetryPolicyFactorySettings(dl_settings.BaseSettings):
-    RETRY_POLICIES: dict[str, RetryPolicySettings] = pydantic.Field(default_factory=dict)
+    RETRY_POLICIES: Mapping[str, RetryPolicySettings] = pydantic.Field(default_factory=dict)
     DEFAULT_POLICY: RetryPolicySettings = pydantic.Field(default_factory=RetryPolicySettings)
 
 
