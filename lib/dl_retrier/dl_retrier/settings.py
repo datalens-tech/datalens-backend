@@ -5,14 +5,14 @@ import dl_settings
 
 
 class RetryPolicySettings(dl_settings.BaseSettings):
-    total_timeout: float = policy.DEFAULT_RETRY_POLICY.total_timeout
-    connect_timeout: float = policy.DEFAULT_RETRY_POLICY.connect_timeout
-    request_timeout: float = policy.DEFAULT_RETRY_POLICY.request_timeout
-    retries_count: int = policy.DEFAULT_RETRY_POLICY.retries_count
-    retryable_codes: frozenset[int] = policy.DEFAULT_RETRY_POLICY.retryable_codes
-    backoff_initial: float = policy.DEFAULT_RETRY_POLICY.backoff_initial
-    backoff_factor: float = policy.DEFAULT_RETRY_POLICY.backoff_factor
-    backoff_max: float = policy.DEFAULT_RETRY_POLICY.backoff_max
+    TOTAL_TIMEOUT: float = policy.DEFAULT_RETRY_POLICY.total_timeout
+    CONNECT_TIMEOUT: float = policy.DEFAULT_RETRY_POLICY.connect_timeout
+    REQUEST_TIMEOUT: float = policy.DEFAULT_RETRY_POLICY.request_timeout
+    RETRIES_COUNT: int = policy.DEFAULT_RETRY_POLICY.retries_count
+    RETRYABLE_CODES: frozenset[int] = policy.DEFAULT_RETRY_POLICY.retryable_codes
+    BACKOFF_INITIAL: float = policy.DEFAULT_RETRY_POLICY.backoff_initial
+    BACKOFF_FACTOR: float = policy.DEFAULT_RETRY_POLICY.backoff_factor
+    BACKOFF_MAX: float = policy.DEFAULT_RETRY_POLICY.backoff_max
 
 
 class RetryPolicyFactorySettings(dl_settings.BaseSettings):
