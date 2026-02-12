@@ -181,9 +181,8 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             except exceptions.UnknownTypeException:
                 LOGGER.error("Skipping unknown type '%s' in dict_with_type_key_factory for %s", key, cls.__name__)
                 continue
-            else:
-                result[result_cls.type] = result_cls
 
+            result[result_cls.type] = result_cls
         return result
 
     @classmethod
