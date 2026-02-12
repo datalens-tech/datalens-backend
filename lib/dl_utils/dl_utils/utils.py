@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import Enum
 import functools
 from itertools import islice
@@ -7,7 +5,6 @@ import operator
 from typing import (
     Any,
     Iterable,
-    Optional,
     TypeVar,
 )
 import uuid
@@ -99,7 +96,7 @@ def join_in_chunks(pieces: Iterable[str], sep: str, max_len: int) -> Iterable[st
 _ENUM_TV = TypeVar("_ENUM_TV", bound=Enum)
 
 
-def enum_not_none(val: Optional[_ENUM_TV]) -> _ENUM_TV:
+def enum_not_none(val: _ENUM_TV | None) -> _ENUM_TV:
     assert val is not None
     return val
 
@@ -108,7 +105,7 @@ def make_url(
     protocol: str,
     host: str,
     port: int,
-    path: Optional[str] = None,
+    path: str | None = None,
 ) -> str:
     # TODO FIX: Sanitize/use urllib
     if path is None:
@@ -130,8 +127,27 @@ def hide_url_args(url_or_path: str) -> str:
     return f"{path}?{hidden_params}{fragment}"
 
 
-def request_id_generator(prefix: Optional[str] = None) -> str:
+def request_id_generator(prefix: str | None = None) -> str:
     result = uuid.uuid4().hex
     if prefix is not None:
         result = prefix + "." + result
+    return result
+
+
+def make_uuid_from_parts(current: str, parent: str | None = None) -> str:
+    assert current
+
+    if not parent:
+        return current
+
+    uuid_maxlen = 120
+    uuid_sep = "--"  # need to be a non-word character, to get successfully separated by elasticsearch
+    cutted_replace = "..."
+
+    if len(parent) + len(current) > uuid_maxlen:
+        cutted_half_len = int((uuid_maxlen - len(current) - len(cutted_replace)) / 2)
+        cutted_parent = parent[:cutted_half_len] + cutted_replace + parent[-cutted_half_len:]
+        parent = cutted_parent
+
+    result = parent + uuid_sep + current
     return result

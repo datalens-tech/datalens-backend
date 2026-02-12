@@ -5,7 +5,6 @@ from .base_models import (
 )
 from .exc import NotFoundErr
 from .logging import RequestObfuscator
-from .request_id import make_uuid_from_parts
 from .tracing import get_current_tracing_headers
 from .utils import (
     stringify_dl_cookies,
@@ -14,7 +13,6 @@ from .utils import (
 
 
 __all__ = (
-    "make_uuid_from_parts",
     "TenantCommon",
     "TenantDef",
     "NotFoundErr",

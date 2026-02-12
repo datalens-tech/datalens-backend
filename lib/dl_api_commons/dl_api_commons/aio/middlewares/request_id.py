@@ -7,7 +7,6 @@ from typing import Optional
 from aiohttp import web
 import attr
 
-from dl_api_commons import make_uuid_from_parts
 from dl_api_commons.aio.middlewares.commons import get_endpoint_code
 from dl_api_commons.aiohttp import aiohttp_wrappers
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
@@ -62,7 +61,7 @@ class RequestId:
         parent_request_id = dl_request.request.headers.get(self.header_name)
 
         if self.append_own_req_id:
-            request_id = make_uuid_from_parts(
+            request_id = dl_utils.make_uuid_from_parts(
                 current=dl_utils.request_id_generator(self.app_prefix),
                 parent=parent_request_id,
             )

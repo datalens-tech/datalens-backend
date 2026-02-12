@@ -27,7 +27,11 @@ class HeadersRequestContextMixin(request_context.BaseRequestContext):
         )
 
     def generate_child_request_id(self) -> str:
-        return dl_utils.request_id_generator(prefix=self.get_request_id())
+        request_id = self.get_request_id()
+        return dl_utils.make_uuid_from_parts(
+            current=dl_utils.request_id_generator(),
+            parent=request_id,
+        )
 
     @dl_app_base.singleton_class_method_result
     def get_user_ip(self) -> str:

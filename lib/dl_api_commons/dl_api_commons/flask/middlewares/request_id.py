@@ -9,7 +9,6 @@ import attr
 import flask
 from flask import request
 
-from dl_api_commons import make_uuid_from_parts
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
@@ -45,7 +44,7 @@ class RequestIDService:
         current_req_id: str
 
         if self._append_local_req_id:
-            current_req_id = make_uuid_from_parts(
+            current_req_id = dl_utils.make_uuid_from_parts(
                 current=dl_utils.request_id_generator(self._request_id_app_prefix),
                 parent=incoming_req_id,
             )
