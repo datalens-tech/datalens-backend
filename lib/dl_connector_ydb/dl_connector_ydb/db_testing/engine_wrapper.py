@@ -81,6 +81,10 @@ SA_TYPE_TO_YDB_TYPE: dict[type[TypeEngine], YdbTypeSpec] = {
     ydb_dialect.YqlInterval64: YdbTypeSpec(
         ydb.PrimitiveType.Interval64, to_sql_str=lambda x: f"CAST({x} as Interval64)"
     ),
+    # Interval64
+    ydb_dialect.YqlInterval64: YdbTypeSpec(
+        ydb.PrimitiveType.Interval64, to_sql_str=lambda x: f"CAST({x} as Interval64)"
+    ),
 }
 
 
