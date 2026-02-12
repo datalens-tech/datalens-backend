@@ -25,26 +25,26 @@ class RetryPolicyFactory:
         policies: dict[str, policy.RetryPolicy] = {}
         for key, policy_settings in settings.RETRY_POLICIES.items():
             policies[key] = policy.RetryPolicy(
-                total_timeout=policy_settings.total_timeout,
-                connect_timeout=policy_settings.connect_timeout,
-                request_timeout=policy_settings.request_timeout,
-                retries_count=policy_settings.retries_count,
-                retryable_codes=frozenset(policy_settings.retryable_codes),
-                backoff_initial=policy_settings.backoff_initial,
-                backoff_factor=policy_settings.backoff_factor,
-                backoff_max=policy_settings.backoff_max,
+                total_timeout=policy_settings.TOTAL_TIMEOUT,
+                connect_timeout=policy_settings.CONNECT_TIMEOUT,
+                request_timeout=policy_settings.REQUEST_TIMEOUT,
+                retries_count=policy_settings.RETRIES_COUNT,
+                retryable_codes=frozenset(policy_settings.RETRYABLE_CODES),
+                backoff_initial=policy_settings.BACKOFF_INITIAL,
+                backoff_factor=policy_settings.BACKOFF_FACTOR,
+                backoff_max=policy_settings.BACKOFF_MAX,
             )
 
         return cls(
             default_policy=policy.RetryPolicy(
-                total_timeout=settings.DEFAULT_POLICY.total_timeout,
-                connect_timeout=settings.DEFAULT_POLICY.connect_timeout,
-                request_timeout=settings.DEFAULT_POLICY.request_timeout,
-                retries_count=settings.DEFAULT_POLICY.retries_count,
-                retryable_codes=frozenset(settings.DEFAULT_POLICY.retryable_codes),
-                backoff_initial=settings.DEFAULT_POLICY.backoff_initial,
-                backoff_factor=settings.DEFAULT_POLICY.backoff_factor,
-                backoff_max=settings.DEFAULT_POLICY.backoff_max,
+                total_timeout=settings.DEFAULT_POLICY.TOTAL_TIMEOUT,
+                connect_timeout=settings.DEFAULT_POLICY.CONNECT_TIMEOUT,
+                request_timeout=settings.DEFAULT_POLICY.REQUEST_TIMEOUT,
+                retries_count=settings.DEFAULT_POLICY.RETRIES_COUNT,
+                retryable_codes=frozenset(settings.DEFAULT_POLICY.RETRYABLE_CODES),
+                backoff_initial=settings.DEFAULT_POLICY.BACKOFF_INITIAL,
+                backoff_factor=settings.DEFAULT_POLICY.BACKOFF_FACTOR,
+                backoff_max=settings.DEFAULT_POLICY.BACKOFF_MAX,
             ),
             policies=frozendict.frozendict(policies),
         )
