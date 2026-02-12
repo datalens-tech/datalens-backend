@@ -9,6 +9,7 @@ from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
@@ -27,6 +28,10 @@ from dl_auth_api_lib.views import google as google_views
 from dl_auth_api_lib.views import snowflake as snowflake_views
 from dl_auth_api_lib.views import yandex as yandex_views
 from dl_core.aio.ping_view import PingView
+from dl_obfuscator import (
+    OBFUSCATION_ENGINE_KEY,
+    create_obfuscation_engine,
+)
 
 
 _TSettings = TypeVar("_TSettings", bound=AuthAPISettings)
@@ -67,11 +72,15 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
             ).middleware,
             *self.get_auth_middlewares(),
             commit_rci_middleware(),
+            obfuscation_context_middleware(),
         ]
 
         app = web.Application(
             middlewares=middleware_list,
         )
+
+        if self._settings.obfuscation_enabled:
+            app[OBFUSCATION_ENGINE_KEY] = create_obfuscation_engine()
 
         app.router.add_route("get", "/oauth/ping", PingView)
 

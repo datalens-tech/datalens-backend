@@ -71,4 +71,4 @@ class DeprecatedFileUploaderAPISettings(DeprecatedFileUploaderBaseSettings):
 
 
 class FileUploaderAPISettings(FileUploaderBaseSettings):
-    ...
+    OBFUSCATION_ENABLED: bool = False

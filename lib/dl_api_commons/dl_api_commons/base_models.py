@@ -10,6 +10,7 @@ from typing_extensions import Self
 
 import dl_auth
 import dl_constants
+from dl_obfuscator.secret_keeper import SecretKeeper
 
 
 @attr.s()
@@ -44,6 +45,7 @@ class RequestContextInfo:
     _plain_headers: CIMultiDict = attr.ib(factory=CIMultiDict)
     _secret_headers: CIMultiDict = attr.ib(repr=False, factory=CIMultiDict)
     auth_data: dl_auth.AuthData | None = attr.ib(repr=False, default=None)
+    secret_keeper: SecretKeeper = attr.ib(factory=SecretKeeper, repr=False)
 
     @property
     def x_dl_context(self) -> dict[str, str]:
@@ -136,6 +138,7 @@ class RequestContextInfo:
         plain_headers: CIMultiDict | dict | None,
         secret_headers: CIMultiDict | dict | None,
         auth_data: dl_auth.AuthData | None = None,
+        secret_keeper: SecretKeeper | None = None,
     ) -> Self:
         return cls(
             request_id=request_id,
@@ -148,6 +151,7 @@ class RequestContextInfo:
             plain_headers=cls.normalize_headers_dict(plain_headers),
             secret_headers=cls.normalize_headers_dict(secret_headers),
             auth_data=auth_data,
+            secret_keeper=secret_keeper or SecretKeeper(),
         )
 
     def clone(self, **kwargs: Any) -> Self:
