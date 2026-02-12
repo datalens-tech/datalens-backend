@@ -386,10 +386,12 @@ class ConnectorsSettingsMixin(AppSettings):
 
 class ControlApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
+    OBFUSCATION_ENABLED: bool = False
 
 
 class DataApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
+    OBFUSCATION_ENABLED: bool = False
 
 
 class AppSettingsOS(

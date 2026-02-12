@@ -25,4 +25,4 @@ class DeprecatedRQESettings:
 
 
 class RQESettings(dl_settings.BaseRootSettingsWithFallback):
-    ...
+    OBFUSCATION_ENABLED: bool = False

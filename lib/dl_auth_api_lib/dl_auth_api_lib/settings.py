@@ -16,3 +16,4 @@ class AuthAPISettings(dl_settings.BaseRootSettings):
 
     auth_clients: dl_settings.TypedDictAnnotation[BaseOAuthClient] = pydantic.Field(default_factory=dict)
     sentry_dsn: str | None = None
+    obfuscation_enabled: bool = False
