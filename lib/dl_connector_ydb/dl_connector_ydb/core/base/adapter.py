@@ -17,14 +17,10 @@ import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
-from dl_core.connection_executors.models.db_adapter_data import RawColumnInfo
 from dl_core.connection_models import (
     DBIdent,
-    SATextTableDefinition,
-    TableDefinition,
     TableIdent,
 )
-from dl_core.utils import sa_plain_text
 import dl_sqlalchemy_ydb.dialect
 import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
@@ -156,37 +152,3 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         )
 
         return f"({str(query) % ()})"
-
-    def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
-        # Check if target path is view
-        # Note: sa.inspect.get_columns cannot be used on YDB VIEW as it does not have schema. However schema can be determined using subselect.
-        if isinstance(table_def, TableIdent):
-            assert table_def.table_name is not None
-
-            db_engine = self.get_db_engine(table_def.db_name)
-            connection = db_engine.connect()
-
-            try:
-                # SA db_engine -> SA connection -> DBAPI connection -> YDB driver
-                driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "_driver"  [attr-defined]
-                assert driver
-
-                if table_def.db_name is None:
-                    table_path = table_def.table_name
-                elif table_def.table_name.startswith("/"):
-                    table_path = table_def.table_name
-                else:
-                    table_path = table_def.db_name.rstrip("/") + "/" + table_def.table_name
-
-                result = driver.scheme_client.describe_path(table_path)
-
-                if result.is_view():
-                    return self._get_subselect_table_info(
-                        SATextTableDefinition(
-                            sa_plain_text(self.make_subselect_query(table_def)),
-                        ),
-                    ).columns
-            finally:
-                connection.close()
-
-        return super()._get_raw_columns_info(table_def)
