@@ -176,9 +176,13 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             else:
                 raise ValueError(f"Value must be dict or {cls.__name__}")
 
-            result_cls = cls.factory(value)
-            result[result_cls.type] = result_cls
+            try:
+                result_cls = cls.factory(value)
+            except exceptions.UnknownTypeException:
+                LOGGER.error("Skipping unknown type '%s' in dict_with_type_key_factory for %s", key, cls.__name__)
+                continue
 
+            result[result_cls.type] = result_cls
         return result
 
     @classmethod

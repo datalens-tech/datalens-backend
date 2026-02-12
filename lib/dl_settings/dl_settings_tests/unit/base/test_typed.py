@@ -526,3 +526,37 @@ def test_typed_dict_settings_with_fallback(
         assert isinstance(root.CHILDREN["child"], Child)
         assert root.CHILDREN["child"].VALUE == "test_2"
         assert root.CHILDREN["child"].SECRET == "secret_test_2"
+
+
+def test_dict_with_type_key_factory_skips_unknown_types(caplog: pytest.LogCaptureFixture) -> None:
+    class Base(dl_settings.TypedBaseSettings):
+        ...
+
+    class Child(Base):
+        value: str
+
+    Base.register("child", Child)
+
+    result = Base.dict_with_type_key_factory(
+        {
+            "child": {"value": "test"},
+            "unknown_type": {"some_field": "some_value"},
+        }
+    )
+
+    assert len(result) == 1
+    assert "child" in result
+    assert isinstance(result["child"], Child)
+    assert result["child"].value == "test"
+    assert "unknown_type" not in result
+
+    assert any("Skipping unknown type 'unknown_type'" in record.message for record in caplog.records)
+
+    result = Base.dict_with_type_key_factory(
+        {
+            "unknown_type_1": {"some_field": "some_value"},
+            "unknown_type_2": {"another_field": "another_value"},
+        }
+    )
+
+    assert result == {}
