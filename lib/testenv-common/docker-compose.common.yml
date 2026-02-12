@@ -69,6 +69,12 @@ services:
       - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
     depends_on:
       - temporal-postgresql
+    healthcheck:
+      test: ["CMD", "tctl", "--address", "temporal:7233", "workflow", "list"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   temporal-ui: # Use in dev environment only, not in CI
     image: temporalio/ui:2.31.2
