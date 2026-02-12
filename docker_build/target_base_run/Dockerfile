@@ -23,7 +23,7 @@ RUN apt-get update \
 
 # Configure libraries for MSSQL
 RUN cat /usr/share/tdsodbc/odbcinst.ini >> /etc/odbcinst.ini
-ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc:/usr/local/openssl/lib
 
 # install python 3.10
 RUN bash /tmp/install_py_310.sh
