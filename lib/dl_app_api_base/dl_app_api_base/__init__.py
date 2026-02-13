@@ -36,6 +36,7 @@ from .handlers import (
 from .headers import HeadersRequestContextMixin
 from .middlewares import (
     ErrorHandlingMiddleware,
+    LoggingContextMiddleware,
     LoggingMiddleware,
 )
 from .openapi import (
@@ -70,6 +71,7 @@ __all__ = [
     "HttpServerAppFactoryMixin",
     "BaseSchema",
     "ErrorResponseSchema",
+    "LoggingContextMiddleware",
     "BadRequestResponseSchema",
     "Route",
     "BaseRequestSchema",

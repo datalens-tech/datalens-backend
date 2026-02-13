@@ -156,6 +156,9 @@ class HttpServerAppFactoryMixin(
         request_context_middlewares = request_context.RequestContextMiddleware(
             request_context_manager=request_context_manager,
         )
+        logging_context_middleware = middlewares.LoggingContextMiddleware(
+            request_context_provider=request_context_manager,
+        )
         logging_middleware = middlewares.LoggingMiddleware(
             request_context_provider=request_context_manager,
         )
@@ -166,6 +169,7 @@ class HttpServerAppFactoryMixin(
 
         return [
             request_context_middlewares.process,
+            logging_context_middleware.process,
             logging_middleware.process,
             error_handling_middleware.process,
             auth_middleware.process,

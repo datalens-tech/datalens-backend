@@ -1,6 +1,7 @@
 import http
 
 import attr
+import opentelemetry.sdk.trace
 
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.request_context as request_context
@@ -44,3 +45,14 @@ class HeadersRequestContextMixin(request_context.BaseRequestContext):
             raise UserIpNotFoundErrorResponseSchema().http_error(http.HTTPStatus.BAD_REQUEST)
 
         return user_ip
+
+    @dl_app_base.singleton_class_method_result
+    def get_trace_id(self) -> str:
+        uber_trace_id = self._aiohttp_request.headers.get(dl_constants.DLHeadersCommon.UBER_TRACE_ID.value)
+
+        if uber_trace_id:
+            return uber_trace_id.split(":")[0]
+
+        trace_id_generator = opentelemetry.sdk.trace.RandomIdGenerator()
+        trace_id = trace_id_generator.generate_trace_id()
+        return f"{trace_id:032x}"

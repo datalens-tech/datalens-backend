@@ -1854,11 +1854,13 @@ attrs = "*"
 dl-app-base = {path = "../dl_app_base"}
 dl-constants = {path = "../dl_constants"}
 dl-json = {path = "../dl_json"}
+dl-logging = {path = "../dl_logging"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 gunicorn = "*"
 jinja2 = "*"
+opentelemetry-sdk = "*"
 pydantic = "*"
 typing-extensions = "*"
 
@@ -5662,6 +5664,52 @@ files = [
 et-xmlfile = "*"
 
 [[package]]
+name = "opentelemetry-api"
+version = "1.39.1"
+description = "OpenTelemetry Python API"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "opentelemetry_api-1.39.1-py3-none-any.whl", hash = "sha256:2edd8463432a7f8443edce90972169b195e7d6a05500cd29e6d13898187c9950"},
+    {file = "opentelemetry_api-1.39.1.tar.gz", hash = "sha256:fbde8c80e1b937a2c61f20347e91c0c18a1940cecf012d62e65a7caf08967c9c"},
+]
+
+[package.dependencies]
+importlib-metadata = ">=6.0,<8.8.0"
+typing-extensions = ">=4.5.0"
+
+[[package]]
+name = "opentelemetry-sdk"
+version = "1.39.1"
+description = "OpenTelemetry Python SDK"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "opentelemetry_sdk-1.39.1-py3-none-any.whl", hash = "sha256:4d5482c478513ecb0a5d938dcc61394e647066e0cc2676bee9f3af3f3f45f01c"},
+    {file = "opentelemetry_sdk-1.39.1.tar.gz", hash = "sha256:cf4d4563caf7bff906c9f7967e2be22d0d6b349b908be0d90fb21c8e9c995cc6"},
+]
+
+[package.dependencies]
+opentelemetry-api = "1.39.1"
+opentelemetry-semantic-conventions = "0.60b1"
+typing-extensions = ">=4.5.0"
+
+[[package]]
+name = "opentelemetry-semantic-conventions"
+version = "0.60b1"
+description = "OpenTelemetry Semantic Conventions"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "opentelemetry_semantic_conventions-0.60b1-py3-none-any.whl", hash = "sha256:9fa8c8b0c110da289809292b0591220d3a7b53c1526a23021e977d68597893fb"},
+    {file = "opentelemetry_semantic_conventions-0.60b1.tar.gz", hash = "sha256:87c228b5a0669b748c76d76df6c364c369c28f1c465e50f661e39737e84bc953"},
+]
+
+[package.dependencies]
+opentelemetry-api = "1.39.1"
+typing-extensions = ">=4.5.0"
+
+[[package]]
 name = "opentracing"
 version = "2.4.0"
 description = "OpenTracing API for Python. See documentation at http://opentracing.io"
@@ -6999,6 +7047,7 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
+    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -9446,4 +9495,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "4e22bf59047b8da95a767041a2d3546f96818ba35c9123778f55e88117e25355"
+content-hash = "3683b4fdc08d877e2e5708e08b97f12c41324f00e5cc54d913e20fc514b443fb"
