@@ -5,6 +5,8 @@ from .base import (
     BaseResponseSchema,
     BaseSchema,
     ErrorResponseSchema,
+    Response,
+    ResponseException,
     Route,
 )
 from .health import (
@@ -14,13 +16,13 @@ from .health import (
     SubsystemReadinessCallback,
     SubsystemReadinessSyncCallback,
 )
-from .responses import Response
 
 
 __all__ = [
     "LivenessProbeHandler",
     "ReadinessProbeHandler",
     "Response",
+    "ResponseException",
     "SubsystemReadinessAsyncCallback",
     "SubsystemReadinessCallback",
     "SubsystemReadinessSyncCallback",

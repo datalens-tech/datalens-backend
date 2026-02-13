@@ -4,6 +4,7 @@ import logging
 import aiohttp.typedefs
 import aiohttp.web
 import attr
+import pydantic
 
 import dl_app_api_base.auth.exc as auth_exc
 import dl_app_api_base.auth.request_context as auth_request_context
@@ -17,6 +18,7 @@ LOGGER = logging.getLogger(__name__)
 class UnauthorizedResponseSchema(handlers.ErrorResponseSchema):
     message: str = "Unauthorized"
     code: str = "ERR.API.UNAUTHORIZED"
+    status_code: pydantic.json_schema.SkipJsonSchema[http.HTTPStatus] = http.HTTPStatus.UNAUTHORIZED
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -36,9 +38,6 @@ class AuthMiddleware:
             await context.get_auth_user()
         except auth_exc.AuthError:
             LOGGER.exception("Authentication failed")
-            return handlers.Response.with_model(
-                schema=UnauthorizedResponseSchema(),
-                status=http.HTTPStatus.UNAUTHORIZED,
-            )
+            raise UnauthorizedResponseSchema().as_exception()
 
         return await handler(request)
