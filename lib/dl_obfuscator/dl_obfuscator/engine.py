@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-from contextvars import ContextVar
 from typing import overload
 
 import attr
@@ -14,36 +11,26 @@ from dl_obfuscator.secret_keeper import SecretKeeper
 
 ObfuscatableData = str | None | dict[str, "ObfuscatableData"] | list["ObfuscatableData"]
 
-_request_obfuscators: ContextVar[tuple[BaseObfuscator, ...] | None] = ContextVar("request_obfuscators", default=None)
-
 
 @attr.s
 class ObfuscationEngine:
     """Core engine responsible for applying obfuscation rules"""
 
     _base_obfuscators: list[BaseObfuscator] = attr.ib(factory=list)
+    _request_obfuscators: list[BaseObfuscator] = attr.ib(factory=list)
 
     def add_base_obfuscator(self, obfuscator: BaseObfuscator) -> None:
         self._base_obfuscators.append(obfuscator)
 
     def add_request_obfuscator(self, obfuscator: BaseObfuscator) -> None:
-        current = _request_obfuscators.get()
-        if current is None:
-            _request_obfuscators.set((obfuscator,))
-        else:
-            _request_obfuscators.set((*current, obfuscator))
-
-    def clear_request_obfuscators(self) -> None:
-        _request_obfuscators.set(None)
+        self._request_obfuscators.append(obfuscator)
 
     def _obfuscate_text(self, text: str, context: ObfuscationContext) -> str:
-        for obfuscator in self._base_obfuscators:
+        for obfuscator in self._request_obfuscators:
             text = obfuscator.obfuscate(text, context)
 
-        request_obfuscators = _request_obfuscators.get()
-        if request_obfuscators is not None:
-            for obfuscator in request_obfuscators:
-                text = obfuscator.obfuscate(text, context)
+        for obfuscator in self._base_obfuscators:
+            text = obfuscator.obfuscate(text, context)
 
         return text
 
@@ -77,12 +64,22 @@ class ObfuscationEngine:
         )
 
 
-def create_obfuscation_engine(
+def create_base_obfuscators(
     global_keeper: SecretKeeper | None = None,
-) -> ObfuscationEngine:
-    engine = ObfuscationEngine()
+) -> tuple[BaseObfuscator, ...]:
+    obfuscators: list[BaseObfuscator] = []
     if global_keeper is None:
         global_keeper = SecretKeeper()
-    engine.add_base_obfuscator(SecretObfuscator(keeper=global_keeper))
-    engine.add_base_obfuscator(RegexObfuscator())
+    obfuscators.append(SecretObfuscator(keeper=global_keeper))
+    obfuscators.append(RegexObfuscator())
+    return tuple(obfuscators)
+
+
+def create_request_engine(
+    base_obfuscators: tuple[BaseObfuscator, ...],
+    secret_keeper: SecretKeeper | None = None,
+) -> ObfuscationEngine:
+    engine = ObfuscationEngine(base_obfuscators=list(base_obfuscators))
+    if secret_keeper is not None:
+        engine.add_request_obfuscator(SecretObfuscator(keeper=secret_keeper))
     return engine

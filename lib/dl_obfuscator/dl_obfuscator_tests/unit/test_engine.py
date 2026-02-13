@@ -9,8 +9,8 @@ from dl_obfuscator import (
     ObfuscationEngine,
     SecretKeeper,
     SecretObfuscator,
-    setup_request_obfuscation,
-    teardown_request_obfuscation,
+    create_base_obfuscators,
+    create_request_engine,
 )
 from dl_obfuscator.engine import ObfuscatableData
 
@@ -141,10 +141,9 @@ class TestContextIsolation:
     @pytest.mark.asyncio
     async def test_concurrent_request_isolation(self) -> None:
         """Verify concurrent async tasks have isolated request obfuscators."""
-        engine = ObfuscationEngine()
         global_keeper = SecretKeeper()
         global_keeper.add_secret("GLOBAL_SECRET", "global")
-        engine.add_base_obfuscator(SecretObfuscator(keeper=global_keeper))
+        base_obfuscators = create_base_obfuscators(global_keeper=global_keeper)
 
         results: dict[str, str] = {}
         all_ready = asyncio.Event()
@@ -156,7 +155,10 @@ class TestContextIsolation:
             nonlocal ready_count
             keeper = SecretKeeper()
             keeper.add_secret(secret, f"req_{request_id}")
-            setup_request_obfuscation(engine=engine, secret_keeper=keeper)
+            engine = create_request_engine(
+                base_obfuscators=base_obfuscators,
+                secret_keeper=keeper,
+            )
 
             ready_count += 1
             if ready_count == 3:
@@ -164,7 +166,6 @@ class TestContextIsolation:
             await all_ready.wait()
 
             results[request_id] = engine.obfuscate(text, ObfuscationContext.LOGS)
-            teardown_request_obfuscation(engine=engine)
 
         await asyncio.gather(
             simulate_request("A", "SECRET_A"),
@@ -182,8 +183,9 @@ class TestContextIsolation:
 
     @pytest.mark.asyncio
     async def test_cleanup_does_not_affect_other_requests(self) -> None:
-        """Verify teardown in one request doesn't clear another's obfuscators."""
-        engine = ObfuscationEngine()
+        """Verify per-request engines are fully isolated — one engine's lifecycle doesn't affect another."""
+        base_obfuscators = create_base_obfuscators()
+
         both_ready = asyncio.Event()
         ready_count = 0
         results: dict[str, str] = {}
@@ -192,29 +194,32 @@ class TestContextIsolation:
             nonlocal ready_count
             keeper = SecretKeeper()
             keeper.add_secret("EARLY_SECRET", "early")
-            setup_request_obfuscation(engine=engine, secret_keeper=keeper)
+            _engine = create_request_engine(
+                base_obfuscators=base_obfuscators,
+                secret_keeper=keeper,
+            )
 
             ready_count += 1
             if ready_count == 2:
                 both_ready.set()
             await both_ready.wait()
-
-            teardown_request_obfuscation(engine=engine)
 
         async def late_request() -> None:
             nonlocal ready_count
             keeper = SecretKeeper()
             keeper.add_secret("LATE_SECRET", "late")
-            setup_request_obfuscation(engine=engine, secret_keeper=keeper)
+            engine = create_request_engine(
+                base_obfuscators=base_obfuscators,
+                secret_keeper=keeper,
+            )
 
             ready_count += 1
             if ready_count == 2:
                 both_ready.set()
             await both_ready.wait()
 
-            await asyncio.sleep(1)  # let early request tear down first
+            await asyncio.sleep(0.1)  # let early request finish first
             results["late"] = engine.obfuscate("LATE_SECRET and EARLY_SECRET here", ObfuscationContext.LOGS)
-            teardown_request_obfuscation(engine=engine)
 
         await asyncio.gather(early_request(), late_request())
         assert results["late"] == "***late*** and EARLY_SECRET here"

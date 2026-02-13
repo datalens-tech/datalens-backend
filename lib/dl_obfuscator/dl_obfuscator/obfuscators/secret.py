@@ -7,7 +7,7 @@ from dl_obfuscator.secret_keeper import SecretKeeper
 
 @attr.s
 class SecretObfuscator(BaseObfuscator):
-    _keeper: SecretKeeper = attr.ib(factory=SecretKeeper, repr=False)
+    _keeper: SecretKeeper = attr.ib(repr=False)
 
     def obfuscate(self, text: str, context: ObfuscationContext) -> str:
         secrets = self._keeper.secrets
