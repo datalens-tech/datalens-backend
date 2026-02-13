@@ -16,6 +16,7 @@ from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventL
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
+from dl_api_commons.flask.middlewares.rci_headers_middleware import RCIHeadersMiddleware
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
 from dl_api_commons.flask.middlewares.tracing import (
     TracingContextMiddleware,
@@ -127,6 +128,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         RequestIDService(
             request_id_app_prefix=self._settings.app_prefix,
         ).set_up(app)
+        RCIHeadersMiddleware().set_up(app)
         profiling_middleware.set_up(app, accept_outer_stages=False)
 
         env_setup_result = self.set_up_environment(app=app, testing_app_settings=testing_app_settings)

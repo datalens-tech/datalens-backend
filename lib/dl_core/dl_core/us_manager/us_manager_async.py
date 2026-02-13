@@ -69,7 +69,7 @@ class AsyncUSManager(USManagerBase):
             prefix=us_api_prefix,
             auth_ctx=us_auth_context,
             context_request_id=bi_context.request_id,
-            context_forwarded_for=bi_context.forwarder_for,
+            context_forwarded_for=bi_context.forwarded_for,
             context_workbook_id=bi_context.workbook_id,
             ca_data=ca_data,
             retry_policy_factory=retry_policy_factory,

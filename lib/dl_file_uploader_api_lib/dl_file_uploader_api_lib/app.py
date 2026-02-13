@@ -13,6 +13,7 @@ from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.cors import cors_middleware
 from dl_api_commons.aio.middlewares.csrf import CSRFMiddleware
 from dl_api_commons.aio.middlewares.master_key import master_key_middleware
+from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
@@ -105,6 +106,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
                 master_key=self._settings.FILE_UPLOADER_MASTER_TOKEN,
                 header=DLHeadersCommon.FILE_UPLOADER_MASTER_TOKEN,
             ),
+            rci_headers_middleware(),
             *self.get_auth_middlewares(),
             commit_rci_middleware(),
             self.CSRF_MIDDLEWARE_CLS(

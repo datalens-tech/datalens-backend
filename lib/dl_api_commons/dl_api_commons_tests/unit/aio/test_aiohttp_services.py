@@ -66,6 +66,7 @@ def test_service_header_validation_fail() -> None:
 
 @pytest.mark.asyncio
 async def test_commit_rci_middleware(caplog: pytest.LogCaptureFixture, aiohttp_client: TestClient) -> None:
+    # TODO BI-7021 modify this test to actually check commit_rci after removing header population from commit_rci_middleware
     caplog.set_level("INFO")
 
     app = web.Application(
