@@ -9,6 +9,7 @@ from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
@@ -65,6 +66,7 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
                 req_id_service=req_id_service,
                 error_handler=error_handler,
             ).middleware,
+            rci_headers_middleware(),
             *self.get_auth_middlewares(),
             commit_rci_middleware(),
         ]

@@ -13,6 +13,7 @@ from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
@@ -223,6 +224,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 error_handler=error_handler,
                 timeout_sec=self._settings.COMMON_TIMEOUT_SEC,
             ).middleware,
+            rci_headers_middleware(),
             *env_setup_result.auth_mw_list,
             commit_rci_middleware(),
             *env_setup_result.sr_middleware_list,

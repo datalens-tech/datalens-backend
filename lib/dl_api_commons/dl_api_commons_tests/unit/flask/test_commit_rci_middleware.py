@@ -2,25 +2,24 @@ import flask
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
-from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
-from dl_api_commons.flask.middlewares.request_id import RequestIDService
+import dl_api_commons.flask.middlewares as dl_api_commons_flask_middlewares
 
 
 def test_integration(caplog: pytest.LogCaptureFixture) -> None:
+    # TODO BI-7021 modify this test to actually check commit_rci after removing header population from commit_rci_middleware
     caplog.set_level("DEBUG")
     caplog.clear()
     app = flask.Flask(__name__)
 
-    ContextVarMiddleware().wrap_flask_app(app)
+    dl_api_commons_flask_middlewares.ContextVarMiddleware().wrap_flask_app(app)
 
-    RequestLoggingContextControllerMiddleWare().set_up(app)
-    RequestIDService(
+    dl_api_commons_flask_middlewares.RequestLoggingContextControllerMiddleWare().set_up(app)
+    dl_api_commons_flask_middlewares.RequestIDService(
         request_id_app_prefix=None,
         append_local_req_id=False,
     ).set_up(app)
-    ReqCtxInfoMiddleware(
+    dl_api_commons_flask_middlewares.RCIHeadersMiddleware().set_up(app)
+    dl_api_commons_flask_middlewares.ReqCtxInfoMiddleware(
         plain_headers=("include-me",),
     ).set_up(app)
 
@@ -28,7 +27,7 @@ def test_integration(caplog: pytest.LogCaptureFixture) -> None:
 
     @app.route("/test")
     def test_connection() -> flask.Response:
-        rci_lst.append(ReqCtxInfoMiddleware.get_request_context_info())
+        rci_lst.append(dl_api_commons_flask_middlewares.ReqCtxInfoMiddleware.get_request_context_info())
         return flask.jsonify({})
 
     client = app.test_client()
