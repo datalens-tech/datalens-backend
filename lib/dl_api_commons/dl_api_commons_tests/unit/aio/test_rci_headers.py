@@ -10,7 +10,7 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 @pytest.mark.asyncio
 async def test_rci_headers_populates_without_commit(aiohttp_client: TestClient) -> None:
     app = web.Application(
-        dl_api_commons_aio_middlewares=[
+        middlewares=[
             dl_api_commons_aio_middlewares.RequestBootstrap(
                 req_id_service=dl_api_commons_aio_middlewares.RequestId(),
             ).middleware,
@@ -65,7 +65,7 @@ async def test_rci_headers_populates_without_commit(aiohttp_client: TestClient) 
 @pytest.mark.asyncio
 async def test_rci_headers_with_commit_rci(aiohttp_client: TestClient) -> None:
     app = web.Application(
-        dl_api_commons_aio_middlewares=[
+        middlewares=[
             dl_api_commons_aio_middlewares.RequestBootstrap(
                 req_id_service=dl_api_commons_aio_middlewares.RequestId(),
             ).middleware,
