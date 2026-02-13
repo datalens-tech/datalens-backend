@@ -29,6 +29,11 @@ class BaseModel(pydantic.BaseModel):
         )
 
 
+class BaseSchema(BaseModel):
+    ...
+
+
 __all__ = [
     "BaseModel",
+    "BaseSchema",
 ]

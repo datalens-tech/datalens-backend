@@ -17,7 +17,7 @@ import dl_pydantic
 LOGGER = logging.getLogger(__name__)
 
 
-class BaseSchema(dl_pydantic.BaseModel):
+class BaseSchema(dl_pydantic.BaseSchema):
     ...
 
 

@@ -38,7 +38,7 @@ class BaseRequest:
         return {}
 
 
-class BaseSchema(dl_pydantic.BaseModel):
+class BaseSchema(dl_pydantic.BaseSchema):
     def model_get_body(
         self,
         *,
