@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import attr
 import flask
 from multidict import CIMultiDict
