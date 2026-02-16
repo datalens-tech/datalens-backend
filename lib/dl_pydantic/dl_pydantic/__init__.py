@@ -1,4 +1,7 @@
-from .base import BaseModel
+from .base import (
+    BaseModel,
+    BaseSchema,
+)
 from .exceptions import UnknownTypeException
 from .jsonable import (
     JsonableDate,
@@ -18,6 +21,7 @@ from .typed import (
 
 __all__ = [
     "BaseModel",
+    "BaseSchema",
     "JsonableDate",
     "JsonableDatetime",
     "JsonableDatetimeWithTimeZone",
