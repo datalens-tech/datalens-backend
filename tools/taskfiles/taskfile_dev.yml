@@ -97,7 +97,9 @@ tasks:
         command_status=0;
         for LIB_PATH in $LIB_PATHS; do
           ITERATION_COMMAND=${COMMAND//%s/$LIB_PATH};
-          echo "Going to run '$ITERATION_COMMAND'";
+          if [ "{{.CLI_SILENT}}" == "false" ]; then
+            echo "Going to run '$ITERATION_COMMAND'";
+          fi
           set +e;
           eval $ITERATION_COMMAND || command_status=$?;
           set -e;
@@ -215,10 +217,10 @@ tasks:
     cmds:
       - task: _run-for-each-lib
         vars:
-          COMMAND: 'task dev:_deptry LIB_PATH=%s'
+          COMMAND: 'task {{ if eq .CLI_SILENT true }}--silent{{ end }} dev:_deptry LIB_PATH=%s'
       - task: _run-for-each-lib
         vars:
-          COMMAND: 'task dev:_deptry-tests-dependencies LIB_PATH=%s'
+          COMMAND: 'task {{ if eq .CLI_SILENT true }}--silent{{ end }} dev:_deptry-tests-dependencies LIB_PATH=%s'
 
   _mypy:
     desc: Run mypy on package
@@ -238,7 +240,7 @@ tasks:
     cmds:
       - task: _run-for-each-lib
         vars:
-          COMMAND: 'task dev:_mypy LIB_PATH=%s'
+          COMMAND: 'task --silent dev:_mypy LIB_PATH=%s'
 
   lint:
     desc: Lint code

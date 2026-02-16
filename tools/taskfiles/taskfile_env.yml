@@ -4,9 +4,6 @@ vars:
   PACKAGE_NAME:
     sh: basename {{.USER_WORKING_DIR}}
 
-  DOCKER_HOST:
-    sh: cat ./.env | grep -e 'DOCKER_HOST=.*' | cut -d '=' -f 2
-
 tasks:
   mk_dot_env:
     cmds:
@@ -30,17 +27,3 @@ tasks:
     #    sources:
     #      - requirements-localhost.txt
     silent: true
-
-  devenv:
-    dir: '/{{.USER_WORKING_DIR}}'
-    cmds:
-      - docker-compose up --build
-    env:
-      DOCKER_HOST: '{{.DOCKER_HOST}}'
-
-  devenv-d:
-    dir: '/{{.USER_WORKING_DIR}}'
-    cmds:
-      - docker-compose up --build -d
-    env:
-      DOCKER_HOST: '{{.DOCKER_HOST}}'
