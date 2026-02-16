@@ -44,6 +44,8 @@ class ReqCtxInfoMiddleware:
         # TODO CONSIDER: raise if something is missing
         temp_rci = self.get_temp_rci()
 
+        # TODO BI-7021 header population in RCI is moved to a dedicated middleware
+        # need to update all app factories to use the new middleware and then remove header population from here
         final_rci = temp_rci.clone(
             # TODO CONSIDER: Add default user agent if not passed in header
             plain_headers=CIMultiDict(

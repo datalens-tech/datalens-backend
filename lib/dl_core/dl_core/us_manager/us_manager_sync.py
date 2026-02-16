@@ -85,7 +85,7 @@ class SyncUSManager(USManagerBase):
             prefix=self._us_api_prefix,
             auth_ctx=self._us_auth_context,
             context_request_id=self._bi_context.request_id if self._bi_context is not None else None,
-            context_forwarded_for=self._bi_context.forwarder_for,
+            context_forwarded_for=self._bi_context.forwarded_for,
             context_workbook_id=self._bi_context.workbook_id,
             retry_policy_factory=self._retry_policy_factory,
         )

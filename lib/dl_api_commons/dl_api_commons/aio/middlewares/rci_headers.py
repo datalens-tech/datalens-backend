@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import (
     Optional,
     Sequence,
@@ -20,7 +18,7 @@ from dl_api_commons.headers import (
 )
 
 
-def commit_rci_middleware(
+def rci_headers_middleware(
     rci_extra_plain_headers: Optional[Sequence[str]] = None,
     rci_extra_secret_headers: Optional[Sequence[str]] = None,
 ) -> Middleware:
@@ -31,11 +29,9 @@ def commit_rci_middleware(
 
     @web.middleware
     @aiohttp_wrappers.DLRequestBase.use_dl_request
-    async def actual_commit_rci_middleware(
+    async def actual_rci_headers_middleware(
         dl_request: aiohttp_wrappers.DLRequestBase, handler: Handler
     ) -> web.StreamResponse:
-        # TODO BI-7021 header population in RCI is moved to a dedicated middleware
-        # need to update all app factories to use the new middleware and then remove header population from here
         headers = dl_request.request.headers
         dl_request.replace_temp_rci(
             dl_request.temp_rci.clone(
@@ -47,7 +43,6 @@ def commit_rci_middleware(
                 ),
             )
         )
-        dl_request.commit_rci()
         return await handler(dl_request.request)
 
-    return actual_commit_rci_middleware
+    return actual_rci_headers_middleware
