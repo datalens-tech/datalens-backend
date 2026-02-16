@@ -39,7 +39,6 @@ class TrinoConnectionDataStorageSchemaBase(Schema):
         ListingSources,
         required=False,
         allow_none=False,
-        dump_default=ListingSources.on,
         load_default=ListingSources.on,
     )
 
