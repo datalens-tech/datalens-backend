@@ -614,8 +614,8 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - run: task --silent dev:toml-sort FIX=false
+      - run: task --silent dev:toml-sort
       - run: task --silent dev:deptry FAIL_FAST=false
-      - run: |
-          task cq:check_dir -- .
-          task cq:check_dir_strict -- .
+      - run: task --silent dev:black
+      - run: task --silent dev:isort
+      - run: task --silent dev:ruff
