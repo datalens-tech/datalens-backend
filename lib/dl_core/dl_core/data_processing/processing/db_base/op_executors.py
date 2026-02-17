@@ -45,6 +45,7 @@ from dl_core.data_processing.stream_base import (
 )
 import dl_core.exc as exc
 from dl_core.utils import make_id
+from dl_obfuscator import get_request_obfuscation_engine
 
 
 LOGGER = logging.getLogger(__name__)
@@ -102,7 +103,11 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         joint_dsrc_info = source_stream.prep_src_info.clone(sql_source=query)
 
         query_debug_str = compile_query_for_debug(query=query, dialect=query_compiler.dialect)
-        query_inspector_str = compile_query_for_inspector(query=query, dialect=query_compiler.dialect)
+        query_inspector_str = compile_query_for_inspector(
+            query=query,
+            dialect=query_compiler.dialect,
+            obfuscation_engine=get_request_obfuscation_engine(),
+        )
         LOGGER.info(f"Going to database with SQL query:\n{query_debug_str}")
 
         query_id = make_id()

@@ -61,8 +61,8 @@ from dl_dashsql.typed_query.query_serialization import get_typed_query_serialize
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_obfuscator import (
-    OBFUSCATION_ENGINE_KEY,
-    create_obfuscation_engine,
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    create_base_obfuscators,
 )
 
 
@@ -315,7 +315,7 @@ def create_sync_app() -> flask.Flask:
     AIOEventLoopMiddleware().wrap_flask_app(app)
 
     if settings.OBFUSCATION_ENABLED:
-        app.config[OBFUSCATION_ENGINE_KEY] = create_obfuscation_engine()
+        app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators()
         setup_obfuscation_context_middleware(app)
 
     RequestLoggingContextControllerMiddleWare().set_up(app)

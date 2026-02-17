@@ -107,7 +107,11 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         """Generate data stream from a data source"""
 
         debug_query = compile_query_for_debug(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
-        inspector_query = compile_query_for_inspector(query_res_info.query, joint_dsrc_info.query_compiler.dialect)
+        inspector_query = compile_query_for_inspector(
+            query_res_info.query,
+            joint_dsrc_info.query_compiler.dialect,
+            obfuscation_engine=self._rci.obfuscation_engine,
+        )
         LOGGER.info(f"SQL query for dataset: {debug_query}")
 
         assert joint_dsrc_info.target_connection_ref is not None
