@@ -8,19 +8,19 @@ echo 'Installing taskfile tool...'
 TMP_DIR="$(mktemp -d)"
 
 base_url="https://github.com/go-task/task/releases/download"
-version="v3.29.1"
+version="3.48.0"
 case $(arch) in
 "aarch64"|"arm64")
     arch="arm64"
-    checksum="a7688f188e2f21218a27c383e82ebc24d61677c9609c890ebed68a1fb21e3551"
+    checksum="4aea2e015c0b07e998fed1d12dcb6b050b1c2a1a89e17e2c87a8026e40a2d35c"
     ;;
 *)
     arch="amd64"
-    checksum="e411770abf73d5e094100ab7a1c8278f35b591ecadbfd778200b6b2ad1ee340b"
+    checksum="c61513b91cacc2d958cfd7b62b4e67e7e386e43b924fc129ffffcc34c805833a"
     ;;
 esac
 
-download_url="${base_url}/${version}/task_linux_${arch}.deb"
+download_url="${base_url}/v${version}/task_${version}_linux_${arch}.deb"
 filename="task.deb"
 
 cd "$TMP_DIR"
