@@ -152,6 +152,16 @@ tasks:
       vars:
         - VENV_PATH
 
+  clean-caches:
+    desc: Clean caches
+    cmds:
+      - echo "Cleaning mypy cache"
+      - find {{.PROJECT_ROOT_PATH}} -type d -name .mypy_cache -exec rm -rf {} +
+      - echo "Cleaning ruff cache"
+      - find {{.PROJECT_ROOT_PATH}} -type d -name .ruff_cache -exec rm -rf {} +
+      - echo "Cleaning python cache"
+      - find {{.PROJECT_ROOT_PATH}} -type d -name __pycache__ -exec rm -rf {} +
+
   toml-sort:
     desc: Sort toml files
     dir: "{{.USER_WORKING_DIR}}"
@@ -233,7 +243,7 @@ tasks:
         vars:
           DIR: "{{.LIB_PATH}}"
           CLI_ARGS: |
-            mypy .
+            mypy --cache-dir={{.PROJECT_ROOT_PATH}}/.mypy_cache .
 
   mypy:
     desc: Run mypy
