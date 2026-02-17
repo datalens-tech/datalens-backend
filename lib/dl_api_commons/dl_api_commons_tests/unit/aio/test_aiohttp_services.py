@@ -1,16 +1,14 @@
 from aiohttp import web
 from aiohttp.test_utils import TestClient
-from multidict import CIMultiDict
 import pytest
 
-from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+import dl_api_commons.aio.middlewares as dl_api_commons_aio_middlewares
+from dl_api_commons.aio.middlewares.commons import DLRequestBase
 from dl_api_commons.aio.middlewares.error_handling_outer import (
     AIOHTTPErrorHandler,
     ErrorData,
     ErrorLevel,
 )
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.server_header import ServerHeader
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 
@@ -66,97 +64,31 @@ def test_service_header_validation_fail() -> None:
 
 @pytest.mark.asyncio
 async def test_commit_rci_middleware(caplog: pytest.LogCaptureFixture, aiohttp_client: TestClient) -> None:
-    # TODO BI-7021 modify this test to actually check commit_rci after removing header population from commit_rci_middleware
     caplog.set_level("INFO")
 
     app = web.Application(
         middlewares=[
-            RequestBootstrap(
-                req_id_service=RequestId(),
+            dl_api_commons_aio_middlewares.RequestBootstrap(
+                req_id_service=dl_api_commons_aio_middlewares.RequestId(),
             ).middleware,
-            commit_rci_middleware(
-                rci_extra_plain_headers=("X-Add-Me", "x-add-me-2"), rci_extra_secret_headers=("X-Add-Me-Secret",)
-            ),
+            dl_api_commons_aio_middlewares.rci_headers_middleware(),
+            dl_api_commons_aio_middlewares.commit_rci_middleware(),
         ]
     )
 
-    class TestView(DLRequestView):
+    class TestView(DLRequestView[DLRequestBase]):
         async def get(self) -> web.Response:
-            rci = self.dl_request.rci
-            return web.json_response(
-                {
-                    "secret_headers": [[k, v] for k, v in rci.secret_headers.items()],
-                    "plain_headers": [[k, v] for k, v in rci.plain_headers.items()],
-                    "req_id": rci.request_id,
-                }
-            )
+            assert self.dl_request.is_rci_committed()
+            return web.json_response({})
 
     app.router.add_route("*", "/simple_view", TestView)
     client = await aiohttp_client(app)  # type: ignore[operator]
 
-    async def get_headers(inbound_headers: CIMultiDict) -> dict:
-        resp = await client.get("/simple_view", headers=inbound_headers, skip_auto_headers=("User-Agent",))
-        try:
-            assert resp.status == 200
-            return await resp.json()
-        finally:
-            resp.close()
-
-    actual_headers = await get_headers(
-        CIMultiDict(
-            (
-                ("X-Add-Me", "plain_val"),
-                ("X-Ignore-Me", "some"),
-                ("X-Add-Me-Secret", "secret_val"),
-                (
-                    "X-Request-Id",
-                    "reqid1",
-                ),
-                ("X-Chart-Id", "some_chart_id"),
-                ("Host", "127.0.0.1"),
-                ("Accept-Language", "en"),
-            )
-        )
-    )
-
-    assert actual_headers == {
-        "secret_headers": [["X-Add-Me-Secret", "secret_val"]],
-        "plain_headers": [
-            ["Host", "127.0.0.1"],
-            ["X-Add-Me", "plain_val"],
-            ["X-Chart-Id", "some_chart_id"],
-            ["Accept-Language", "en"],
-        ],
-        "req_id": "reqid1",
-    }
-
-    actual_headers = await get_headers(
-        CIMultiDict(
-            (
-                ("x-add-me", "plain_val"),
-                ("x-ignore-me", "some"),
-                ("x-add-me-secret", "secret_val"),
-                (
-                    "x-request-id",
-                    "reqid2",
-                ),
-                ("x-chart-id", "some_chart_id"),
-                ("host", "127.0.0.1"),
-                ("Accept-Language", "en"),
-            )
-        )
-    )
-
-    assert actual_headers == {
-        "secret_headers": [["x-add-me-secret", "secret_val"]],
-        "plain_headers": [
-            ["Host", "127.0.0.1"],
-            ["x-add-me", "plain_val"],
-            ["x-chart-id", "some_chart_id"],
-            ["Accept-Language", "en"],
-        ],
-        "req_id": "reqid2",
-    }
+    resp = await client.get("/simple_view")
+    try:
+        assert resp.status == 200
+    finally:
+        resp.close()
 
 
 @pytest.mark.asyncio
@@ -209,8 +141,8 @@ async def test_error_handling_middleware(
 
     app = web.Application(
         middlewares=[
-            RequestBootstrap(
-                req_id_service=RequestId(),
+            dl_api_commons_aio_middlewares.RequestBootstrap(
+                req_id_service=dl_api_commons_aio_middlewares.RequestId(),
                 error_handler=ErrorHandler(sentry_app_name_tag=None),
             ).middleware,
         ]
