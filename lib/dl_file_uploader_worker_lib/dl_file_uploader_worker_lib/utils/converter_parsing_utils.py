@@ -618,6 +618,7 @@ def guess_cell_type_excel(cell: dict, *args: Any, **kwargs: Any) -> ParsingDataT
         "d": _DATETIME_PARSING_DATA_TYPE,
         "i": _INTEGER_PARSING_DATA_TYPE,
         "n": _FLOAT_PARSING_DATA_TYPE,
+        "b": _BOOLEAN_PARSING_DATA_TYPE,
     }
 
     if value is None or value == "":
