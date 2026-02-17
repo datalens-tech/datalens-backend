@@ -58,11 +58,6 @@ class RequestContextInfo:
         return CIMultiDictProxy(self._secret_headers)
 
     @property
-    def forwarder_for(self) -> str | None:
-        # TODO migrate all usages to `forwarded_for` and remove
-        return self.forwarded_for
-
-    @property
     def forwarded_for(self) -> str | None:
         return self.plain_headers.get(dl_constants.DLHeadersCommon.FORWARDED_FOR.value)
 
