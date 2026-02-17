@@ -76,8 +76,8 @@ class ZitadelAsyncTokenStorage(ZitadelBaseTokenStorage):
 
 
 __all__ = [
-    "SyncClientProtocol",
     "AsyncClientProtocol",
-    "ZitadelSyncTokenStorage",
+    "SyncClientProtocol",
     "ZitadelAsyncTokenStorage",
+    "ZitadelSyncTokenStorage",
 ]

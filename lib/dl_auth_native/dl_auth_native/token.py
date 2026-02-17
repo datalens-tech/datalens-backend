@@ -70,10 +70,10 @@ class Decoder:
 
 
 __all__ = [
+    "DecodeError",
     "Decoder",
     "DecoderProtocol",
     "Payload",
     "TokenError",
-    "DecodeError",
     "ValidationError",
 ]

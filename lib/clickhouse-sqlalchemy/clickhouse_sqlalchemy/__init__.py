@@ -9,7 +9,8 @@ VERSION = tuple(int(piece) for piece in __version__.split('.'))
 
 
 __all__ = (
-    'get_declarative_base',
-    'make_session',
-    'Table', 'select'
+    "Table",
+    "get_declarative_base",
+    "make_session",
+    "select",
 )

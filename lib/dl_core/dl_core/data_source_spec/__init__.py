@@ -17,16 +17,16 @@ from .type_mapping import (
 
 
 __all__ = [
-    "DataSourceSpec",
     "DataSourceCollectionSpec",
-    "SQLDataSourceSpecBase",
-    "SubselectDataSourceSpec",
+    "DataSourceSpec",
     "DbSQLDataSourceSpec",
-    "TableSQLDataSourceSpec",
     "IndexedSQLDataSourceSpec",
-    "StandardSQLDataSourceSpec",
+    "SQLDataSourceSpecBase",
     "SchemaSQLDataSourceSpec",
+    "StandardSQLDataSourceSpec",
     "StandardSchemaSQLDataSourceSpec",
+    "SubselectDataSourceSpec",
+    "TableSQLDataSourceSpec",
     "get_data_source_spec_class",
     "register_data_source_spec_class",
 ]

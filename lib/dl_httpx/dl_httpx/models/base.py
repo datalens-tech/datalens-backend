@@ -60,7 +60,7 @@ class BaseResponseSchema(BaseSchema):
 
 
 __all__ = [
+    "BaseRequest",
     "BaseResponseSchema",
     "BaseSchema",
-    "BaseRequest",
 ]

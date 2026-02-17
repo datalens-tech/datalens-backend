@@ -136,6 +136,6 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
 
 
 __all__ = [
-    "WithFallbackGetAttr",
     "WithFallbackEnvSource",
+    "WithFallbackGetAttr",
 ]

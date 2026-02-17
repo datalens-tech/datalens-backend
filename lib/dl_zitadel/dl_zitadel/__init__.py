@@ -14,11 +14,11 @@ from .services import (
 
 
 __all__ = [
-    "ZitadelSyncClient",
-    "ZitadelAsyncClient",
-    "Token",
-    "ZitadelSyncTokenStorage",
-    "ZitadelAsyncTokenStorage",
     "AioHTTPMiddleware",
     "FlaskMiddleware",
+    "Token",
+    "ZitadelAsyncClient",
+    "ZitadelAsyncTokenStorage",
+    "ZitadelSyncClient",
+    "ZitadelSyncTokenStorage",
 ]

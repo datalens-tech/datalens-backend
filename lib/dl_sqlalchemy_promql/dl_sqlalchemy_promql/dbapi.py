@@ -16,10 +16,9 @@ from dl_sqlalchemy_promql.errors import (
 
 
 __all__ = (
-    "connect",
     "Connection",
-    "DatabaseError",
     "DataError",
+    "DatabaseError",
     "Error",
     "IntegrityError",
     "InterfaceError",
@@ -28,6 +27,7 @@ __all__ = (
     "OperationalError",
     "ProgrammingError",
     "Warning",
+    "connect",
 )
 
 

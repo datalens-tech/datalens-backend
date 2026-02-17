@@ -12,11 +12,11 @@ from .temporal import (
 
 
 __all__ = [
-    "TemporalWorkerSettings",
-    "TemporalWorkerAppFactoryMixin",
-    "TemporalWorkerAppMixin",
-    "TemporalWorkerAppSettingsMixin",
     "BaseTemporalWorkerApp",
     "BaseTemporalWorkerAppFactory",
     "BaseTemporalWorkerAppSettings",
+    "TemporalWorkerAppFactoryMixin",
+    "TemporalWorkerAppMixin",
+    "TemporalWorkerAppSettingsMixin",
+    "TemporalWorkerSettings",
 ]

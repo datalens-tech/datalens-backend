@@ -19,14 +19,13 @@ from .collection import (
 
 
 __all__ = (
+    "BaseSQLDataSource",
     "DataSource",
+    "DataSourceCollection",
+    "DataSourceCollectionFactory",
     "DbInfo",
     "SQLDataSource",
     "StandardSQLDataSource",
-    "BaseSQLDataSource",
     "get_data_source_class",
-    "DataSourceCollection",
-    "DataSourceCollection",
-    "DataSourceCollectionFactory",
     "get_parameters_hash",
 )

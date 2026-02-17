@@ -121,6 +121,6 @@ DEFAULT_RETRY_POLICY: RetryPolicy = RetryPolicy(
 
 
 __all__ = [
-    "RetryPolicy",
     "DEFAULT_RETRY_POLICY",
+    "RetryPolicy",
 ]

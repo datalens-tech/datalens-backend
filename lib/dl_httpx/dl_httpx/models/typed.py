@@ -52,6 +52,6 @@ else:
 __all__ = [
     "TypedBaseSchema",
     "TypedSchemaAnnotation",
-    "TypedSchemaListAnnotation",
     "TypedSchemaDictAnnotation",
+    "TypedSchemaListAnnotation",
 ]

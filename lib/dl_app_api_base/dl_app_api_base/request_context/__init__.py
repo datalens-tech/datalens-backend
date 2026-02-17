@@ -12,7 +12,7 @@ __all__ = [
     "BaseRequestContext",
     "BaseRequestContextDependencies",
     "BaseRequestContextManager",
-    "RequestContextProviderProtocol",
     "RequestContextManagerProtocol",
     "RequestContextMiddleware",
+    "RequestContextProviderProtocol",
 ]

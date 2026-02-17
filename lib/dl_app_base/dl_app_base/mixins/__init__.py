@@ -7,8 +7,8 @@ from .certificates import (
 
 
 __all__ = [
-    "CertificatesAppSettingsMixin",
-    "CertificatesAppMixin",
     "CertificatesAppFactoryMixin",
+    "CertificatesAppMixin",
+    "CertificatesAppSettingsMixin",
     "CertificatesSettings",
 ]

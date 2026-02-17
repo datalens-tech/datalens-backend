@@ -7,8 +7,8 @@ from .components import (
 
 
 __all__ = (
-    "OAuthTokenRow",
     "CacheTTLRow",
     "CollapseRow",
+    "OAuthTokenRow",
     "RawSqlLevelRow",
 )

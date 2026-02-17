@@ -72,6 +72,6 @@ class DefaultRetryPolicyFactory:
 
 __all__ = [
     "BaseRetryPolicyFactory",
-    "RetryPolicyFactory",
     "DefaultRetryPolicyFactory",
+    "RetryPolicyFactory",
 ]
