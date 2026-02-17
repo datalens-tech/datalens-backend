@@ -13,8 +13,8 @@ from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
 from dl_api_commons.aio.middlewares.cors import cors_middleware
 from dl_api_commons.aio.middlewares.csrf import CSRFMiddleware
 from dl_api_commons.aio.middlewares.master_key import master_key_middleware
-from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
+from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.middlewares.tracing import TracingService
@@ -40,9 +40,9 @@ from dl_file_uploader_api_lib.views import misc as misc_views
 from dl_file_uploader_api_lib.views import sources as sources_views
 from dl_file_uploader_lib.settings_utils import init_redis_service
 from dl_obfuscator import (
-    OBFUSCATION_ENGINE_KEY,
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
     SecretKeeper,
-    create_obfuscation_engine,
+    create_base_obfuscators,
 )
 from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_redis import ArqRedisService
@@ -114,8 +114,8 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             ),
             rci_headers_middleware(),
             *self.get_auth_middlewares(),
-            commit_rci_middleware(),
             obfuscation_context_middleware(),
+            commit_rci_middleware(),
             self.CSRF_MIDDLEWARE_CLS(
                 csrf_header_name=self._settings.CSRF.HEADER_NAME,
                 csrf_time_limit=self._settings.CSRF.TIME_LIMIT,
@@ -134,7 +134,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             global_keeper = SecretKeeper()
             if self._settings.FILE_UPLOADER_MASTER_TOKEN:
                 global_keeper.add_secret(self._settings.FILE_UPLOADER_MASTER_TOKEN, "file_uploader_master_token")
-            app[OBFUSCATION_ENGINE_KEY] = create_obfuscation_engine(global_keeper=global_keeper)
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(global_keeper=global_keeper)
 
         app.on_response_prepare.append(req_id_service.on_response_prepare)
 

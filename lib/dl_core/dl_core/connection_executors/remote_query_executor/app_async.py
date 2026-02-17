@@ -71,8 +71,8 @@ from dl_dashsql.typed_query.result_serialization import (
 import dl_logging
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_obfuscator import (
-    OBFUSCATION_ENGINE_KEY,
-    create_obfuscation_engine,
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    create_base_obfuscators,
 )
 from dl_utils.aio import ContextVarExecutor
 
@@ -335,7 +335,7 @@ def create_async_qe_app(
     app = web.Application(middlewares=middleware_list)
 
     if obfuscation_enabled:
-        app[OBFUSCATION_ENGINE_KEY] = create_obfuscation_engine()
+        app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators()
 
     app.on_response_prepare.append(req_id_service.on_response_prepare)
     ServerHeader("DataLens QE").add_signal_handlers(app)

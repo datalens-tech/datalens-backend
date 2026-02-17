@@ -77,9 +77,9 @@ from dl_core.aio.web_app_services.redis import (
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.us_manager.factory import USMFactory
 from dl_obfuscator import (
-    OBFUSCATION_ENGINE_KEY,
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
     SecretKeeper,
-    create_obfuscation_engine,
+    create_base_obfuscators,
 )
 
 
@@ -235,8 +235,8 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             ).middleware,
             rci_headers_middleware(),
             *env_setup_result.auth_mw_list,
-            commit_rci_middleware(),
             obfuscation_context_middleware(),
+            commit_rci_middleware(),
             *env_setup_result.sr_middleware_list,
             *env_setup_result.usm_middleware_list,
             json_body_middleware(),
@@ -250,7 +250,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             global_keeper = SecretKeeper()
             if self._settings.US_MASTER_TOKEN:
                 global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
-            app[OBFUSCATION_ENGINE_KEY] = create_obfuscation_engine(global_keeper=global_keeper)
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(global_keeper=global_keeper)
 
         wrapper = AppWrapper(
             allow_query_cache_usage=self._settings.CACHES_ON,

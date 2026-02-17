@@ -15,6 +15,7 @@ from dl_obfuscator import (
     ObfuscationContext,
     get_request_obfuscation_engine,
 )
+from dl_obfuscator.engine import ObfuscationEngine
 
 
 LOGGER = logging.getLogger(__name__)
@@ -44,7 +45,11 @@ def compile_query_for_debug(query: ClauseElement | str, dialect: Dialect) -> str
         return "-"
 
 
-def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) -> str:
+def compile_query_for_inspector(
+    query: ClauseElement | str,
+    dialect: Dialect,
+    obfuscation_engine: ObfuscationEngine | None = None,
+) -> str:
     # TODO: BI-6448
     if isinstance(query, str):
         compiled = query
@@ -59,9 +64,8 @@ def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) ->
             LOGGER.exception("Failed to compile query for inspector")
             return "-"
 
-    engine = get_request_obfuscation_engine()
-    if engine is not None:
-        compiled = engine.obfuscate(compiled, ObfuscationContext.INSPECTOR)
+    if obfuscation_engine is not None:
+        compiled = obfuscation_engine.obfuscate(compiled, ObfuscationContext.INSPECTOR)
 
     return compiled
 
