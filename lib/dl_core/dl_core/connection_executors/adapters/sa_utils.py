@@ -11,6 +11,10 @@ from sqlalchemy.sql.elements import ClauseElement
 
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models import DBIdent
+from dl_obfuscator import (
+    ObfuscationContext,
+    get_request_obfuscation_engine,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -53,6 +57,12 @@ def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) ->
     except Exception:
         LOGGER.exception("Failed to compile query for inspector")
         return "-"
+
+    engine = get_request_obfuscation_engine()
+    if engine is not None:
+        compiled = engine.obfuscate(compiled, ObfuscationContext.INSPECTOR)
+
+    return compiled
 
 
 def compile_query_with_literal_binds_if_possible(
@@ -116,6 +126,10 @@ class CursorLogger:
         span.finish()
 
         execution_time_seconds = time.monotonic() - query_start_time
+
+        obfuscation_engine = get_request_obfuscation_engine()
+        if obfuscation_engine is not None:
+            statement = obfuscation_engine.obfuscate(statement, ObfuscationContext.TRACING)
 
         extra = dict(
             event_code="db_exec",

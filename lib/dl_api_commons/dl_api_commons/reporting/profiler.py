@@ -26,6 +26,10 @@ from dl_api_commons.reporting.models import (
 )
 from dl_api_commons.reporting.records import ReportingRecord
 from dl_constants.api_constants import DLContextKey
+from dl_obfuscator import (
+    ObfuscationContext,
+    get_request_obfuscation_engine,
+)
 
 
 if TYPE_CHECKING:
@@ -60,6 +64,13 @@ class DefaultReportingProfiler(ReportingProfiler):
 
     def get_profiling_logger(self) -> logging.Logger:
         return logging.getLogger(PROFILING_LOG_NAME)
+
+    def _obfuscate_query(self, query: str | None) -> str | None:
+        engine = get_request_obfuscation_engine()
+        if engine is None:
+            return query
+        return engine.obfuscate(query, ObfuscationContext.USAGE_TRACKING)
+
 
     def _find_record_of_type(
         self,
@@ -128,7 +139,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             **self.rci.get_reporting_extra(),
             connection_type=start_record.connection_type.name,
             execution_time=int(round((end_timestamp - start_record.timestamp) * 1000)),
-            query=start_record.query,
+            query=self._obfuscate_query(start_record.query),
             status="success" if error is None else "error",
             error=error_text,
             err_code=err_code,
