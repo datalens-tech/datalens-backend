@@ -162,7 +162,7 @@ tasks:
           DIR: "{{.PROJECT_ROOT_PATH}}"
           CLI_ARGS: 'toml-sort {{if eq .FIX "true"}}--in-place{{else}}--check{{end}} {{.TOML_FILES}}'
     vars:
-      FIX: '{{.FIX | default "true"}}'
+      FIX: '{{.FIX | default "false"}}'
       TOML_FILES:
         sh: |
           find {{.CLI_ARGS | default "."}} -name 'pyproject.toml' \
@@ -242,28 +242,53 @@ tasks:
         vars:
           COMMAND: 'task --silent dev:_mypy LIB_PATH=%s'
 
+  black:
+    desc: Run black
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - echo "Running black..."
+      - task: venv-python
+        vars:
+          CLI_ARGS: 'black --config {{.LINTERS_PYPROJECT_TOML_PATH}} {{if eq .FIX "true"}}--safe{{else}}--check{{end}} {{.LINT_PATH}}'
+    vars:
+      FIX: '{{.FIX | default "false"}}'
+      LINT_PATH: '{{.CLI_ARGS | default "."}}'
+
+  isort:
+    desc: Run isort
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - echo "Running isort..."
+      - task: venv-python
+        vars:
+          CLI_ARGS: 'isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} {{if ne .FIX "true"}}--check-only{{end}} {{.LINT_PATH}}'
+    vars:
+      FIX: '{{.FIX | default "false"}}'
+      LINT_PATH: '{{.CLI_ARGS | default "."}}'
+
+  ruff:
+    desc: Run ruff
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - echo "Running ruff..."
+      - task: venv-python
+        vars:
+          CLI_ARGS: 'ruff check {{if eq .FIX "true"}}--fix{{end}} {{.LINT_PATH}}'
+    vars:
+      FIX: '{{.FIX | default "false"}}'
+      LINT_PATH: '{{.CLI_ARGS | default "."}}'
+
   lint:
     desc: Lint code
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - echo "Running black checks..."
-      - task: venv-python
-        vars:
-          CLI_ARGS: "black --config {{.LINTERS_PYPROJECT_TOML_PATH}} --check {{.LINT_PATH}}"
+      - task: black
 
-      - echo "Running isort checks..."
-      - task: venv-python
-        vars:
-          CLI_ARGS: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} --check-only {{.LINT_PATH}}"
+      - task: isort
 
-      - echo "Running ruff checks..."
-      - task: venv-python
-        vars:
-          CLI_ARGS: "ruff check {{.LINT_PATH}}"
+      - task: ruff
 
       - task: toml-sort
-        vars:
-          FIX: 'false'
 
       - task: deptry
 
@@ -275,20 +300,17 @@ tasks:
     desc: Lint fix code
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
-      - echo "Running black fixes..."
-      - task: venv-python
+      - task: black
         vars:
-          CLI_ARGS: "black --safe --config {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
+          FIX: 'true'
 
-      - echo "Running isort fixes..."
-      - task: venv-python
+      - task: isort
         vars:
-          CLI_ARGS: "isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} {{.LINT_PATH}}"
+          FIX: 'true'
 
-      - echo "Running ruff fixes..."
-      - task: venv-python
+      - task: ruff
         vars:
-          CLI_ARGS: "ruff check --fix {{.LINT_PATH}}"
+          FIX: 'true'
 
       - task: toml-sort
         vars:
