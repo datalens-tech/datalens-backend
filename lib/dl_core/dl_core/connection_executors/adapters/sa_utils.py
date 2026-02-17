@@ -47,16 +47,17 @@ def compile_query_for_debug(query: ClauseElement | str, dialect: Dialect) -> str
 def compile_query_for_inspector(query: ClauseElement | str, dialect: Dialect) -> str:
     # TODO: BI-6448
     if isinstance(query, str):
-        return query
-    try:
+        compiled = query
+    else:
         try:
-            return str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
-        except NotImplementedError:
-            compiled = query.compile(dialect=dialect)
-            return make_debug_query(str(compiled), compiled.params)
-    except Exception:
-        LOGGER.exception("Failed to compile query for inspector")
-        return "-"
+            try:
+                compiled = str(query.compile(dialect=dialect, compile_kwargs={"literal_binds": True}))
+            except NotImplementedError:
+                compiled_obj = query.compile(dialect=dialect)
+                compiled = make_debug_query(str(compiled_obj), compiled_obj.params)
+        except Exception:
+            LOGGER.exception("Failed to compile query for inspector")
+            return "-"
 
     engine = get_request_obfuscation_engine()
     if engine is not None:
