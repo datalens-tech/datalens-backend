@@ -40,6 +40,9 @@ includes:
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
       EXCLUDE_TOML_SORT: |
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
+      EXCLUDE_SORT_ALL: |
+        {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
+        {{.ROOT_DIR}}/metapkg/.*
       PARENT_BRANCH: '{{.PARENT_BRANCH | default "main"}}'
 
   cc:

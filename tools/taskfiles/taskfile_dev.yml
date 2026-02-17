@@ -288,6 +288,28 @@ tasks:
       FIX: '{{.FIX | default "false"}}'
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
 
+  sort-all:
+    desc: Sort __all__ in Python files
+    dir: "{{.USER_WORKING_DIR}}"
+    cmds:
+      - echo "Running sort-all..."
+      - task: venv-bin
+        vars:
+          CLI_ARGS: 'sort-all {{if eq .FIX "true"}}--no-error-on-fix{{else}}--check{{end}} {{.PY_FILES}}'
+    vars:
+      FIX: '{{.FIX | default "true"}}'
+      PY_FILES:
+        sh: |
+          find {{.CLI_ARGS | default "."}} -name '*.py' \
+          | sort \
+          | xargs -n1 realpath \
+          {{ if .EXCLUDE_SORT_ALL -}}
+            {{- range $i, $path := .EXCLUDE_SORT_ALL | splitLines -}}
+              {{- if ne $path "" }} | grep -v "^{{$path}}$" {{ end -}}
+            {{- end -}}
+          {{- end -}}
+          | tr '\n' ' '
+
   lint:
     desc: Lint code
     dir: "{{.USER_WORKING_DIR}}"
@@ -297,6 +319,8 @@ tasks:
       - task: isort
 
       - task: ruff
+
+      - task: sort-all
 
       - task: toml-sort
 
@@ -319,6 +343,10 @@ tasks:
           FIX: 'true'
 
       - task: ruff
+        vars:
+          FIX: 'true'
+
+      - task: sort-all
         vars:
           FIX: 'true'
 
