@@ -13,6 +13,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-settings = {path = "../dl_settings"}
 marshmallow = "*"
 pydantic = "*"

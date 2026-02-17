@@ -25,6 +25,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-json = {path = "../dl_json"}
 dl-logging = {path = "../dl_logging"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}

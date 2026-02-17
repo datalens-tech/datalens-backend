@@ -17,6 +17,7 @@ from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMid
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
 from dl_api_commons.flask.middlewares.rci_headers_middleware import RCIHeadersMiddleware
+from dl_api_commons.flask.middlewares.obfuscation_context import setup_obfuscation_context_middleware
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
 from dl_api_commons.flask.middlewares.tracing import (
     TracingContextMiddleware,
@@ -35,6 +36,11 @@ from dl_core import profiling_middleware
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
+from dl_obfuscator import (
+    OBFUSCATION_ENGINE_KEY,
+    SecretKeeper,
+    create_obfuscation_engine,
+)
 import dl_retrier
 
 
@@ -134,6 +140,14 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         env_setup_result = self.set_up_environment(app=app, testing_app_settings=testing_app_settings)
 
         ReqCtxInfoMiddleware().set_up(app)
+
+        if self._settings.OBFUSCATION_ENABLED:
+            global_keeper = SecretKeeper()
+            if self._settings.US_MASTER_TOKEN:
+                # just for example for now. More secrets will be added in BI-6492
+                global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+            app.config[OBFUSCATION_ENGINE_KEY] = create_obfuscation_engine(global_keeper=global_keeper)
+        setup_obfuscation_context_middleware(app)
 
         conn_opts_mutators_factory = self._get_conn_opts_mutators_factory()
 
