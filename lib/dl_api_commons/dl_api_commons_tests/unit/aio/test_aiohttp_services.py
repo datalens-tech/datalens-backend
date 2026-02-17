@@ -63,9 +63,7 @@ def test_service_header_validation_fail() -> None:
 
 
 @pytest.mark.asyncio
-async def test_commit_rci_middleware(caplog: pytest.LogCaptureFixture, aiohttp_client: TestClient) -> None:
-    caplog.set_level("INFO")
-
+async def test_commit_rci_middleware(aiohttp_client: TestClient) -> None:
     app = web.Application(
         middlewares=[
             dl_api_commons_aio_middlewares.RequestBootstrap(
