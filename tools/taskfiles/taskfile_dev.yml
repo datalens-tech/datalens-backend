@@ -297,7 +297,7 @@ tasks:
         vars:
           CLI_ARGS: 'sort-all {{if eq .FIX "true"}}--no-error-on-fix{{else}}--check{{end}} {{.PY_FILES}}'
     vars:
-      FIX: '{{.FIX | default "true"}}'
+      FIX: '{{.FIX | default "false"}}'
       PY_FILES:
         sh: |
           find {{.CLI_ARGS | default "."}} -name '*.py' \
