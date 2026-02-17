@@ -2,14 +2,26 @@ name: Request Copilot to review PR
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, labeled]
     branches: [main]
+  workflow_dispatch:
 
 jobs:
+  check_permission:
+    name: "Check for copilot-review label"
+    runs-on: [self-hosted, linux, k8s-runner-no-compose]
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'copilot-review') ||
+      (github.event_name == 'pull_request' && github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, 'copilot-review'))
+    steps:
+      - name: Check passed
+        run: echo "Label found or manual dispatch. Proceeding to request copilot."
+
   request-copilot:
     name: Request Copilot to review PR
-    if: github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    needs: check_permission
+    runs-on: [self-hosted, linux, k8s-runner-no-compose]
 
     steps:
       - name: review-copilot-action
