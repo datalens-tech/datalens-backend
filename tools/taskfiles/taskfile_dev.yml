@@ -232,7 +232,7 @@ tasks:
         vars:
           COMMAND: 'task {{ if eq .CLI_SILENT true }}--silent{{ end }} dev:_deptry-tests-dependencies LIB_PATH=%s'
 
-  _mypy:
+  mypy_package:
     desc: Run mypy on package
     requires:
       vars:
@@ -250,7 +250,7 @@ tasks:
     cmds:
       - task: _run-for-each-lib
         vars:
-          COMMAND: 'task --silent dev:_mypy LIB_PATH=%s'
+          COMMAND: 'task --silent dev:mypy_package LIB_PATH=%s'
 
   black:
     desc: Run black
