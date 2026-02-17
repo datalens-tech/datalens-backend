@@ -3,6 +3,6 @@ from .base import BIPGDialect
 
 
 __all__ = (
-    "BIPGDialect",
     "AsyncBIPGDialect",
+    "BIPGDialect",
 )

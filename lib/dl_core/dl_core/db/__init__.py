@@ -12,9 +12,9 @@ from dl_core.db.schema import (
 
 
 __all__ = (
-    "SchemaColumn",
-    "SchemaInfo",
     "IndexInfo",
     "SAMPLE_ID_COLUMN_NAME",
+    "SchemaColumn",
+    "SchemaInfo",
     "are_raw_schemas_same",
 )

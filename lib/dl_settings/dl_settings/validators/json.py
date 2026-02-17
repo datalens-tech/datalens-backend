@@ -21,6 +21,6 @@ json_dict_validator = pydantic.BeforeValidator(parse_json_dict)
 
 
 __all__ = [
-    "parse_json_dict",
     "json_dict_validator",
+    "parse_json_dict",
 ]

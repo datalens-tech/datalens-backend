@@ -16,15 +16,15 @@ from .data import (
 
 
 __all__ = [
+    "AuthData",
     "AuthProviderProtocol",
     "AuthProviderSettings",
+    "AuthTarget",
+    "NoAuthData",
     "NoAuthProvider",
     "NoAuthProviderSettings",
     "OauthAuthProvider",
     "OauthAuthProviderSettings",
     "USMasterTokenAuthProvider",
     "USMasterTokenAuthProviderSettings",
-    "AuthData",
-    "AuthTarget",
-    "NoAuthData",
 ]

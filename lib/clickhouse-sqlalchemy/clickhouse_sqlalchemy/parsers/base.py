@@ -7,9 +7,9 @@ from __future__ import unicode_literals
 
 
 __all__ = (
-    'Parts',
-    'ParseError',
-    'SansIOBase',
+    "ParseError",
+    "Parts",
+    "SansIOBase",
 )
 
 from ..util.compat import to_str

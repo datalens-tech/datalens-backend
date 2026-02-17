@@ -87,9 +87,9 @@ else:
 
 
 __all__ = [
-    "TypedBaseSettings",
     "TypedAnnotation",
-    "TypedListAnnotation",
+    "TypedBaseSettings",
     "TypedDictAnnotation",
     "TypedDictWithTypeKeyAnnotation",
+    "TypedListAnnotation",
 ]

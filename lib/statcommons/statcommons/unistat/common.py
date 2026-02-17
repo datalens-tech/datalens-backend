@@ -15,9 +15,9 @@ import socket
 
 
 __all__ = (
-    "get_sys_memstatus",
-    "get_context_data",
     "get_common_prefix",
+    "get_context_data",
+    "get_sys_memstatus",
     "maybe_float_size",
 )
 

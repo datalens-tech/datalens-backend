@@ -91,6 +91,6 @@ def get_test_container_hostport(
 
 
 __all__ = [
-    "get_test_container_hostport",
     "HostPort",
+    "get_test_container_hostport",
 ]

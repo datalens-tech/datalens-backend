@@ -19,14 +19,14 @@ from .settings import (
 
 
 __all__ = [
+    "BaseRetryPolicyFactory",
+    "DefaultRetryPolicyFactory",
     "RetrierError",
     "RetrierTimeoutError",
     "RetrierUnretryableError",
     "Retry",
     "RetryPolicy",
-    "BaseRetryPolicyFactory",
     "RetryPolicyFactory",
-    "DefaultRetryPolicyFactory",
-    "RetryPolicySettings",
     "RetryPolicyFactorySettings",
+    "RetryPolicySettings",
 ]

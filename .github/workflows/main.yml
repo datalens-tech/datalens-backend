@@ -617,5 +617,6 @@ jobs:
       - run: task --silent dev:black
       - run: task --silent dev:isort
       - run: task --silent dev:ruff
+      - run: task --silent dev:sort-all
       - run: task --silent dev:toml-sort
       - run: task --silent dev:deptry FAIL_FAST=false

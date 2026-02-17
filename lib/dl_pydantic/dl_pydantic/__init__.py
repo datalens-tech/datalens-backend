@@ -27,10 +27,10 @@ __all__ = [
     "JsonableDatetimeWithTimeZone",
     "JsonableTimedelta",
     "JsonableUUID",
-    "TypedBaseModel",
     "TypedAnnotation",
-    "TypedListAnnotation",
+    "TypedBaseModel",
     "TypedDictAnnotation",
     "TypedDictWithTypeKeyAnnotation",
+    "TypedListAnnotation",
     "UnknownTypeException",
 ]

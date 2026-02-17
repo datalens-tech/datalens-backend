@@ -23,6 +23,6 @@ class RetryPolicyFactorySettings(dl_settings.BaseSettings):
 
 
 __all__ = [
-    "RetryPolicySettings",
     "RetryPolicyFactorySettings",
+    "RetryPolicySettings",
 ]

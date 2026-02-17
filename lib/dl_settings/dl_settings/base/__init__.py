@@ -17,14 +17,14 @@ from .typed import (
 
 
 __all__ = [
-    "BaseSettings",
     "BaseRootSettings",
-    "TypedBaseSettings",
+    "BaseRootSettingsWithFallback",
+    "BaseSettings",
     "TypedAnnotation",
-    "TypedListAnnotation",
+    "TypedBaseSettings",
     "TypedDictAnnotation",
     "TypedDictWithTypeKeyAnnotation",
-    "WithFallbackGetAttr",
+    "TypedListAnnotation",
     "WithFallbackEnvSource",
-    "BaseRootSettingsWithFallback",
+    "WithFallbackGetAttr",
 ]

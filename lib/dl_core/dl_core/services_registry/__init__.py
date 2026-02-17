@@ -7,6 +7,6 @@ from dl_core.services_registry.top_level import (
 
 
 __all__ = (
-    "ServicesRegistry",
     "DefaultServicesRegistry",
+    "ServicesRegistry",
 )

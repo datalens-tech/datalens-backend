@@ -88,8 +88,8 @@ class BaseMiddleware:
 
 
 __all__ = [
-    "BaseMiddleware",
-    "AuthResult",
     "AuthData",
+    "AuthResult",
+    "BaseMiddleware",
     "MiddlewareSettings",
 ]

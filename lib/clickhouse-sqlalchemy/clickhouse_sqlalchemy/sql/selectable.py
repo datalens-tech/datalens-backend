@@ -7,7 +7,7 @@ from clickhouse_sqlalchemy.ext.clauses import ArrayJoin
 from ..ext.clauses import sample_clause
 
 
-__all__ = ('Select', 'select')
+__all__ = ("Select", "select")
 
 
 class Join(StandardJoin):

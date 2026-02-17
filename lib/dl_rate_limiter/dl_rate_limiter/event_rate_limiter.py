@@ -149,8 +149,8 @@ class AsyncRedisEventRateLimiter:
 
 
 __all__ = [
-    "AsyncRedisEventRateLimiter",
     "AsyncEventRateLimiterProtocol",
+    "AsyncRedisEventRateLimiter",
     "SyncEventRateLimiterProtocol",
     "SyncRedisEventRateLimiter",
 ]

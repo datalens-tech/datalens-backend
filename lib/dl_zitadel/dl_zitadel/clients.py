@@ -240,7 +240,7 @@ class ZitadelAsyncClient(ZitadelBaseClient):
 
 
 __all__ = [
+    "Token",
     "ZitadelAsyncClient",
     "ZitadelSyncClient",
-    "Token",
 ]

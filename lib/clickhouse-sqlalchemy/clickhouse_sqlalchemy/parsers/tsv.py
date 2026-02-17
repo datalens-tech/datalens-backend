@@ -5,10 +5,10 @@ from .base import Parts, ParseError, to_str
 
 
 __all__ = [
-    'parse_tsv_line',
-    'parse_TabSeparatedWithNamesAndTypes_general',
-    'parse_TabSeparatedWithNamesAndTypes',
-    'parse_TabSeparatedWithNamesAndTypes_with_totals',
+    "parse_TabSeparatedWithNamesAndTypes",
+    "parse_TabSeparatedWithNamesAndTypes_general",
+    "parse_TabSeparatedWithNamesAndTypes_with_totals",
+    "parse_tsv_line",
 ]
 
 

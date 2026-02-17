@@ -436,11 +436,11 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
 
 
 __all__ = [
-    "HttpxBaseClient",
-    "HttpxSyncClient",
+    "HttpStatusHttpxClientException",
     "HttpxAsyncClient",
+    "HttpxBaseClient",
     "HttpxClientDependencies",
     "HttpxClientT",
-    "HttpStatusHttpxClientException",
+    "HttpxSyncClient",
     "RequestHttpxClientException",
 ]

@@ -5,6 +5,6 @@ from .logging_context import LoggingContextMiddleware
 
 __all__ = [
     "ErrorHandlingMiddleware",
-    "LoggingMiddleware",
     "LoggingContextMiddleware",
+    "LoggingMiddleware",
 ]

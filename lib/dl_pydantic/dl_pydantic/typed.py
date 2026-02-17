@@ -247,9 +247,9 @@ else:
 
 
 __all__ = [
-    "TypedBaseModel",
     "TypedAnnotation",
-    "TypedListAnnotation",
+    "TypedBaseModel",
     "TypedDictAnnotation",
     "TypedDictWithTypeKeyAnnotation",
+    "TypedListAnnotation",
 ]

@@ -14,11 +14,11 @@ from .token import (
 
 __all__ = [
     "AioHTTPMiddleware",
-    "FlaskMiddleware",
-    "MiddlewareSettings",
+    "DecodeError",
     "Decoder",
     "DecoderProtocol",
+    "FlaskMiddleware",
+    "MiddlewareSettings",
     "Payload",
-    "DecodeError",
     "ValidationError",
 ]

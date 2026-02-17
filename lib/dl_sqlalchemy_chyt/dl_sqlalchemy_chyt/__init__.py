@@ -10,9 +10,9 @@ from .base import (
 
 
 __all__ = (
+    "BICHYTDialect",
     "CHYTTableExpression",
+    "CHYTTableSubselect",
     "CHYTTablesConcat",
     "CHYTTablesRange",
-    "CHYTTableSubselect",
-    "BICHYTDialect",
 )

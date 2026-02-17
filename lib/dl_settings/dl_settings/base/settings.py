@@ -63,6 +63,6 @@ class BaseRootSettings(pydantic_settings.BaseSettings):
 
 
 __all__ = [
-    "BaseSettings",
     "BaseRootSettings",
+    "BaseSettings",
 ]

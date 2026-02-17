@@ -10,11 +10,11 @@ from .request_id import (
 
 
 __all__ = [
-    "RequestIDService",
-    "RequestContextInfo",
-    "ContextVarMiddleware",
-    "RequestLoggingContextControllerMiddleWare",
-    "ReqCtxInfoMiddleware",
-    "RCIHeadersMiddleware",
     "AIOEventLoopMiddleware",
+    "ContextVarMiddleware",
+    "RCIHeadersMiddleware",
+    "ReqCtxInfoMiddleware",
+    "RequestContextInfo",
+    "RequestIDService",
+    "RequestLoggingContextControllerMiddleWare",
 ]

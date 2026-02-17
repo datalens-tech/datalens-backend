@@ -17,6 +17,6 @@ __all__ = [
     "BaseSchema",
     "TypedBaseSchema",
     "TypedSchemaAnnotation",
-    "TypedSchemaListAnnotation",
     "TypedSchemaDictAnnotation",
+    "TypedSchemaListAnnotation",
 ]

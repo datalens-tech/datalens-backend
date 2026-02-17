@@ -145,11 +145,11 @@ class AsyncRequestRateLimiter:
 
 __all__ = [
     "AsyncRequestRateLimiter",
-    "SyncRequestRateLimiter",
-    "RequestEventKeyTemplateHeader",
-    "RequestEventKeyTemplate",
-    "RequestPattern",
-    "Request",
     "AsyncRequestRateLimiterProtocol",
+    "Request",
+    "RequestEventKeyTemplate",
+    "RequestEventKeyTemplateHeader",
+    "RequestPattern",
+    "SyncRequestRateLimiter",
     "SyncRequestRateLimiterProtocol",
 ]
