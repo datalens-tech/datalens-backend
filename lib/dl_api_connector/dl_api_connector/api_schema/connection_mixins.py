@@ -28,3 +28,20 @@ class DataExportForbiddenMixin(marshmallow.Schema):
         dump_default="off",
         bi_extra=FieldExtra(editable=True),
     )
+
+
+class CacheInvalidationMixin(marshmallow.Schema):
+    cache_invalidation_enabled = core_ma_fields.OnOffField(
+        attribute="data.cache_invalidation_enabled",
+        required=False,
+        load_default=False,
+        dump_default="off",
+        bi_extra=FieldExtra(editable=True),
+    )
+    cache_invalidation_throttling_interval_sec = ma_fields.Integer(
+        attribute="data.cache_invalidation_throttling_interval_sec",
+        required=False,
+        load_default=10,
+        dump_default=10,
+        bi_extra=FieldExtra(editable=True),
+    )

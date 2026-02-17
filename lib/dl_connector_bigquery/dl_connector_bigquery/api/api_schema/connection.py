@@ -5,13 +5,16 @@ from dl_api_connector.api_schema.connection_base_fields import (
     cache_ttl_field,
     secret_string_field,
 )
-from dl_api_connector.api_schema.connection_mixins import RawSQLLevelMixin
+from dl_api_connector.api_schema.connection_mixins import (
+    CacheInvalidationMixin,
+    RawSQLLevelMixin,
+)
 from dl_api_connector.api_schema.extras import FieldExtra
 
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 
 
-class BigQueryConnectionSchema(ConnectionSchema, RawSQLLevelMixin):
+class BigQueryConnectionSchema(ConnectionSchema, RawSQLLevelMixin, CacheInvalidationMixin):
     TARGET_CLS = ConnectionSQLBigQuery
 
     project_id = ma_fields.String(attribute="data.project_id", required=True, bi_extra=FieldExtra(editable=True))

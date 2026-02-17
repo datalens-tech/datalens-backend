@@ -13,7 +13,10 @@ from dl_api_connector.api_schema.connection_base_fields import (
     cache_ttl_field,
     secret_string_field,
 )
-from dl_api_connector.api_schema.connection_mixins import DataExportForbiddenMixin
+from dl_api_connector.api_schema.connection_mixins import (
+    CacheInvalidationMixin,
+    DataExportForbiddenMixin,
+)
 from dl_api_connector.api_schema.extras import FieldExtra
 
 from dl_connector_bitrix_gds.core.us_connection import BitrixGDSConnection
@@ -29,7 +32,9 @@ class BitrixPortalValidator(ma_validate.Validator):
         return portal
 
 
-class BitrixGDSConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, ConnectionSchema):
+class BitrixGDSConnectionSchema(
+    ConnectionMetaMixin, DataExportForbiddenMixin, CacheInvalidationMixin, ConnectionSchema
+):
     TARGET_CLS = BitrixGDSConnection
 
     portal = ma_fields.String(

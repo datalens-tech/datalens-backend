@@ -12,6 +12,7 @@ from dl_api_connector.api_schema.connection_base_fields import (
     secret_string_field,
 )
 from dl_api_connector.api_schema.connection_mixins import (
+    CacheInvalidationMixin,
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
 )
@@ -21,7 +22,9 @@ from dl_api_connector.api_schema.extras import FieldExtra
 from dl_connector_chyt.core.us_connection import ConnectionCHYTToken
 
 
-class CHYTConnectionSchema(ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin, ConnectionSchema):
+class CHYTConnectionSchema(
+    ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin, CacheInvalidationMixin, ConnectionSchema
+):
     TARGET_CLS = ConnectionCHYTToken
 
     ALLOW_MULTIHOST = False

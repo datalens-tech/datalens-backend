@@ -14,6 +14,7 @@ from dl_api_connector.api_schema.connection_base_fields import (
     cache_ttl_field,
     secret_string_field,
 )
+from dl_api_connector.api_schema.connection_mixins import CacheInvalidationMixin
 from dl_api_connector.api_schema.extras import FieldExtra
 from dl_core.utils import (
     parse_comma_separated_hosts,
@@ -69,7 +70,7 @@ def db_name_no_query_params(value: Optional[str]) -> Optional[str]:
     return value
 
 
-class ClassicSQLConnectionSchema(ConnectionSchema):
+class ClassicSQLConnectionSchema(ConnectionSchema, CacheInvalidationMixin):
     ALLOW_MULTI_HOST = False
 
     host = DBHostField(attribute="data.host", required=True, bi_extra=FieldExtra(editable=True))
