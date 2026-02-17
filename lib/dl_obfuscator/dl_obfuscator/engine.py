@@ -1,4 +1,7 @@
-from typing import overload
+from typing import (
+    TypeVar,
+    cast,
+)
 
 import attr
 
@@ -10,6 +13,8 @@ from dl_obfuscator.secret_keeper import SecretKeeper
 
 
 ObfuscatableData = str | None | dict[str, "ObfuscatableData"] | list["ObfuscatableData"]
+
+_ObfuscatableT = TypeVar("_ObfuscatableT", bound=ObfuscatableData)
 
 
 @attr.s
@@ -34,31 +39,15 @@ class ObfuscationEngine:
 
         return text
 
-    @overload
-    def obfuscate(self, data: str, context: ObfuscationContext) -> str:
-        ...
-
-    @overload
-    def obfuscate(self, data: None, context: ObfuscationContext) -> None:
-        ...
-
-    @overload
-    def obfuscate(self, data: dict[str, ObfuscatableData], context: ObfuscationContext) -> dict[str, ObfuscatableData]:
-        ...
-
-    @overload
-    def obfuscate(self, data: list[ObfuscatableData], context: ObfuscationContext) -> list[ObfuscatableData]:
-        ...
-
-    def obfuscate(self, data: ObfuscatableData, context: ObfuscationContext) -> ObfuscatableData:
+    def obfuscate(self, data: _ObfuscatableT, context: ObfuscationContext) -> _ObfuscatableT:
         if data is None:
             return None
         if isinstance(data, str):
-            return self._obfuscate_text(data, context)
+            return cast(_ObfuscatableT, self._obfuscate_text(data, context))
         if isinstance(data, dict):
-            return {key: self.obfuscate(value, context) for key, value in data.items()}
+            return cast(_ObfuscatableT, {key: self.obfuscate(value, context) for key, value in data.items()})
         if isinstance(data, list):
-            return [self.obfuscate(item, context) for item in data]
+            return cast(_ObfuscatableT, [self.obfuscate(item, context) for item in data])
         raise TypeError(
             f"Cannot obfuscate type {type(data).__name__}. Only str, None, dict[str, ...], list are supported."
         )
