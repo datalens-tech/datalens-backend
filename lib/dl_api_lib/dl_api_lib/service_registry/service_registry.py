@@ -8,6 +8,7 @@ from typing import (
 
 import attr
 
+from dl_api_commons.base_models import FeatureFlags
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.formula_parser_factory import FormulaParserFactory
@@ -90,6 +91,10 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     def get_exports_history_url_path(self) -> Optional[str]:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_feature_flags(self) -> FeatureFlags:
+        raise NotImplementedError
+
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
@@ -105,6 +110,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
     _typed_query_processor_factory: TypedQueryProcessorFactory = attr.ib(kw_only=True)
     _typed_query_raw_processor_factory: TypedQueryRawProcessorFactory = attr.ib(kw_only=True)
+    _feature_flags: FeatureFlags = attr.ib(kw_only=True, factory=FeatureFlags)
 
     _multi_query_mutator_factory_factory: SRMultiQueryMutatorFactory = attr.ib(
         init=False,
@@ -176,6 +182,9 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
 
     def get_exports_history_url_path(self) -> Optional[str]:
         return self._exports_history_url_path
+
+    def get_feature_flags(self) -> FeatureFlags:
+        return self._feature_flags
 
     def close(self) -> None:
         if self._formula_parser_factory is not None:

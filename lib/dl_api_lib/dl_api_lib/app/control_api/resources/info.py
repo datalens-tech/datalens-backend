@@ -208,11 +208,13 @@ class ConnectorForm(BIResource):
         conn_id = query.get("conn_id", None)
         exports_history_url_path = self.get_service_registry().get_exports_history_url_path()
         user_id = self.get_current_rci().user_id
+        feature_flags = self.get_service_registry().get_feature_flags()
 
         form_params = FormConfigParams(
             user_id=user_id,
             conn_id=conn_id,
             exports_history_url_path=exports_history_url_path,
+            feature_flags=feature_flags,
         )
 
         form_factory = form_factory_cls(mode=mode, localizer=localizer, form_params=form_params)

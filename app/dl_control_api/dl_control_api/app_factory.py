@@ -7,6 +7,7 @@ from typing import Optional
 
 import flask
 
+from dl_api_commons.base_models import FeatureFlags
 from dl_api_lib.app.control_api.app import (
     ControlApiAppFactory,
     EnvSetupResult,
@@ -69,6 +70,11 @@ class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSetting
 
     def _get_connector_availability(self, settings: ControlApiAppSettingsOS) -> Optional[ConnectorAvailabilityConfig]:
         return settings.CONNECTOR_AVAILABILITY
+
+    def _get_feature_flags(self, settings: ControlApiAppSettingsOS) -> FeatureFlags:
+        return FeatureFlags(
+            is_invalidation_cache_enabled=settings.IS_INVALIDATION_CACHE_ENABLED,
+        )
 
 
 class StandaloneControlApiAppFactory(
