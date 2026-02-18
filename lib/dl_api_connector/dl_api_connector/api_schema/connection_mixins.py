@@ -44,7 +44,7 @@ class QueryCacheMixin(marshmallow.Schema):
     cache_invalidation_throttling_interval_sec = ma_fields.Integer(
         attribute="data.cache_invalidation_throttling_interval_sec",
         required=False,
-        load_default=10,
-        dump_default=10,
+        load_default=30,
+        dump_default=30,
         bi_extra=FieldExtra(editable=True),
     )
