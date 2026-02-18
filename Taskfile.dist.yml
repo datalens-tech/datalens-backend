@@ -12,21 +12,26 @@ includes:
   env:
     taskfile: tools/taskfiles/taskfile_env.yml
     dir: tools
+    optional: true
 
   gen:
     taskfile: tools/taskfiles/taskfile_gen.yml
     dir: tools
+    optional: true
 
   release:
     taskfile: tools/taskfiles/taskfile_release.yaml
     dir: tools
+    optional: true
 
   e2e:
     taskfile: tools/e2e/Taskfile.yaml
     dir: tools/e2e
+    optional: true
 
   dev:
     taskfile: tools/taskfiles/taskfile_dev.yml
+    optional: true
     vars:
       PROJECT_ROOT_PATH: '{{.ROOT_DIR}}'
       PYPROJECT_TOML_PATH: '{{.ROOT_DIR}}/metapkg/pyproject.toml'
@@ -55,3 +60,4 @@ includes:
   ops:
     taskfile: tools/taskfiles/taskfile_ops.yml
     dir: tools
+    optional: true

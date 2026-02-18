@@ -562,17 +562,10 @@ jobs:
     name: "🐲 mypy"
     timeout-minutes: ${{ inputs.mypy_timeout_minutes && fromJSON(inputs.mypy_timeout_minutes ) || 20 }}
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
-      - name: Checkout code, just to get access to .github/execute_mypy...
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 1
       - name: run mypy
         run: |
           . /venv/bin/activate
-          execute-mypy-multi /src --processes=4
+          execute-mypy-multi /src --processes=4 --exclude=/src
         env:
           PYTHONUNBUFFERED: "1"
 
@@ -607,13 +600,6 @@ jobs:
     env:
       VENV_PATH: /venv
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          fetch-depth: 1
       - run: task --silent dev:black
       - run: task --silent dev:isort
       - run: task --silent dev:ruff
