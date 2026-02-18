@@ -239,7 +239,13 @@ jobs:
         all-packages: |
           ./lib/*
           ./app/*
-        package-dependencies-resolution-method: ${{ github.event.inputs.run_all_tests == 'true' && 'poetry-all' || 'poetry-path' }}
+        package-dependencies-resolution-method: >-
+          ${{
+            (
+              github.event.inputs.run_all_tests == 'true'
+              || contains(github.event.pull_request.labels.*.name, 'run_ci_for_all_packages')
+            ) && 'poetry-all' || 'poetry-path'
+          }}
         poetry-path-dependencies-groups: |
           tool.poetry.dependencies
           tool.poetry.group.tests.dependencies
