@@ -98,8 +98,11 @@ def get_mypy_targets(pkg_dir: Path) -> list[str]:
     return [dirname]
 
 
-def get_python_packages(root: Path) -> Iterable[str]:
+def get_python_packages(root: Path, exclude: Iterable[Path] = ()) -> Iterable[str]:
+    exclude_resolved = {p.resolve() for p in exclude}
     for path in root.rglob(f"*{PYPROJECT_TOML}"):
+        if path.parent.resolve() in exclude_resolved:
+            continue
         yield str(path.parent).replace(PYPROJECT_TOML, "")
 
 
@@ -125,19 +128,22 @@ async def run_mypy(request: MypyRequest, cache_queue: CacheQueue) -> MypyResult:
     )
 
 
-def main(root: Path, *, targets_file: Path = None, processes: int = 1) -> None:  # type: ignore # clize can't recognize type annotation "Optional"
+def main(root: Path, *, targets_file: Path = None, processes: int = 1, exclude: str = None) -> None:  # type: ignore # clize can't recognize type annotation "Optional"
     """
     Run mypy on the datalens backend code.
     We have to run mypy separately on each project
     because mypy reads its settings from pyproject.toml from its current working directory.
 
     This script DOESN'T check mypy in tests.
+
+    :param exclude: Comma-separated list of directories to exclude from package discovery
     """
     package_rel_paths: Iterable[str]
     if targets_file is not None:
         package_rel_paths = json.load(open(targets_file))
     else:
-        package_rel_paths = get_python_packages(root)
+        exclude_paths = [Path(p.strip()) for p in exclude.split(",")] if exclude else []
+        package_rel_paths = get_python_packages(root, exclude=exclude_paths)
 
     base_mypy_cache_dir = Path("/tmp/mypy_cache")
     base_mypy_cache_dir.mkdir(exist_ok=True)
