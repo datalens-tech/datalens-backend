@@ -14,21 +14,7 @@ import dl_utils
 
 @pytest.fixture(name="temporal_hostport")
 def fixture_temporal_hostport() -> dl_testing.HostPort:
-    hostport = dl_testing.get_test_container_hostport("temporal")
-    dl_testing.wait_for_port(
-        host=hostport.host,
-        port=hostport.port,
-        timeout_seconds=60,
-    )
-
-    return hostport
-
-
-@pytest.fixture(name="temporal_ui_hostport")
-def fixture_temporal_ui_hostport() -> dl_testing.HostPort:
-    hostport = dl_testing.get_test_container_hostport(service_key="temporal-ui", dc_filename="docker-compose-dev.yml")
-
-    return hostport
+    return dl_testing.get_test_container_hostport("temporal")
 
 
 @pytest.fixture(name="temporal_namespace")
@@ -47,7 +33,7 @@ async def fixture_temporal_client(
             port=temporal_hostport.port,
             namespace=temporal_namespace,
             tls=False,
-            lazy=False,
+            lazy=True,
         )
     )
 
