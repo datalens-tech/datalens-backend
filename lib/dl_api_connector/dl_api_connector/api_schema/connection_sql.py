@@ -10,11 +10,8 @@ import marshmallow
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
-from dl_api_connector.api_schema.connection_base_fields import (
-    cache_ttl_field,
-    secret_string_field,
-)
-from dl_api_connector.api_schema.connection_mixins import CacheInvalidationMixin
+from dl_api_connector.api_schema.connection_base_fields import secret_string_field
+from dl_api_connector.api_schema.connection_mixins import QueryCacheMixin
 from dl_api_connector.api_schema.extras import FieldExtra
 from dl_core.utils import (
     parse_comma_separated_hosts,
@@ -70,7 +67,7 @@ def db_name_no_query_params(value: Optional[str]) -> Optional[str]:
     return value
 
 
-class ClassicSQLConnectionSchema(ConnectionSchema, CacheInvalidationMixin):
+class ClassicSQLConnectionSchema(ConnectionSchema, QueryCacheMixin):
     ALLOW_MULTI_HOST = False
 
     host = DBHostField(attribute="data.host", required=True, bi_extra=FieldExtra(editable=True))
@@ -80,4 +77,3 @@ class ClassicSQLConnectionSchema(ConnectionSchema, CacheInvalidationMixin):
     db_name = ma_fields.String(
         attribute="data.db_name", allow_none=True, bi_extra=FieldExtra(editable=True), validate=db_name_no_query_params
     )
-    cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")

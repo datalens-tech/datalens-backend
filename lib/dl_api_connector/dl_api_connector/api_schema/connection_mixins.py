@@ -3,6 +3,7 @@ from __future__ import annotations
 import marshmallow
 from marshmallow import fields as ma_fields
 
+from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field
 from dl_api_connector.api_schema.extras import FieldExtra
 from dl_constants.enums import RawSQLLevel
 import dl_core.marshmallow as core_ma_fields
@@ -30,7 +31,9 @@ class DataExportForbiddenMixin(marshmallow.Schema):
     )
 
 
-class CacheInvalidationMixin(marshmallow.Schema):
+class QueryCacheMixin(marshmallow.Schema):
+    cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")
+
     cache_invalidation_enabled = core_ma_fields.OnOffField(
         attribute="data.cache_invalidation_enabled",
         required=False,
