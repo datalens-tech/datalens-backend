@@ -9,6 +9,7 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.aio.web_app_services.gsheets import GSheetsSettings
 from dl_core.aio.web_app_services.redis import RedisBaseService
 from dl_core.services_registry.top_level import ServicesRegistry
+from dl_core.united_storage_client import USAuthContextPrivateBase
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_file_uploader_task_interface.utils_service_registry import (
     create_sr_factory_from_env_vars,
@@ -44,6 +45,7 @@ class FileUploaderTaskContext(BaseContext):
     secure_reader_settings: SecureReaderSettings = attr.ib()
     tenant_resolver: TenantResolver = attr.ib()
     ca_data: bytes = attr.ib()
+    us_auth_context: USAuthContextPrivateBase = attr.ib()
 
     def get_rci(self) -> RequestContextInfo:
         return RequestContextInfo.create_empty()
@@ -64,7 +66,7 @@ class FileUploaderTaskContext(BaseContext):
         retry_policy_factory = self.get_retry_policy_factory()
         return get_async_service_us_manager(
             us_host=self.settings.US_BASE_URL,
-            us_master_token=self.settings.US_MASTER_TOKEN,
+            us_auth_context=self.us_auth_context,
             services_registry=services_registry,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,

@@ -16,7 +16,7 @@ from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import USAuthContextPrivateBase
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 import dl_retrier
 
@@ -59,7 +59,7 @@ def create_sr_factory_from_env_vars(
 
 def get_async_service_us_manager(
     us_host: str,
-    us_master_token: str,
+    us_auth_context: USAuthContextPrivateBase,
     ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
     services_registry: ServicesRegistry,
@@ -69,7 +69,7 @@ def get_async_service_us_manager(
     usm = AsyncUSManager(
         us_api_prefix="private",
         us_base_url=us_host,
-        us_auth_context=USAuthContextMaster(us_master_token=us_master_token),
+        us_auth_context=us_auth_context,
         crypto_keys_config=crypto_keys_config,
         bi_context=bi_context or RequestContextInfo.create_empty(),
         services_registry=services_registry,

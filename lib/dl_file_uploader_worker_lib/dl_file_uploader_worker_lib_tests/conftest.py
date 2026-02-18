@@ -286,6 +286,7 @@ async def task_processor_local_client(
 ):
     context_fab = FileUploaderContextFab(
         file_uploader_worker_settings,
+        us_auth_context=USAuthContextMaster(us_master_token=file_uploader_worker_settings.US_MASTER_TOKEN),
         ca_data=root_certificates,
     )
     context = await context_fab.make()

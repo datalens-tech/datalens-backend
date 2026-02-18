@@ -5,6 +5,7 @@ from typing import AsyncGenerator
 
 import arq
 
+from dl_core.united_storage_client import USAuthContextMaster
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_file_uploader_worker_lib.tasks import REGISTRY
@@ -77,6 +78,7 @@ async def task_processor_local_client(
     context_fab = FileUploaderContextFab(
         settings=file_uploader_worker_settings,
         ca_data=ca_data,
+        us_auth_context=USAuthContextMaster(us_master_token=file_uploader_worker_settings.US_MASTER_TOKEN),
     )
     context = await context_fab.make()
     executor = Executor(context=context, state=task_state, registry=REGISTRY)
