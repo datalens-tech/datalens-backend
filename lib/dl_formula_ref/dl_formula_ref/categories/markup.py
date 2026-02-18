@@ -36,7 +36,7 @@ CATEGORY_MARKUP = FunctionDocCategory(
             "storage_prices_link": AliasedLinkResource(url=_("../../storage/pricing.md#prices-storage")),
             "image_source_restrictions": AliasedTextResource(
                 body=_(
-                    "Images can be added from the `yastat.net`, `yastatic.net`, `direct.yandex.ru`, `functions.yandexcloud.net`, or "
+                    "Images can be added from the `yastat.net`, `yastatic.net`, `direct.yandex.ru`, `functions.yandexcloud.net`, `storage.yandexcloud.net`, or "
                     "`storage.yandex.net` domains. The easiest way is to upload and publish the image in "
                     "{link: storage_link: Yandex Object Storage} (see the pricing {link: storage_prices_link: here}).\n"
                 ),
