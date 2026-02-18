@@ -15,18 +15,14 @@ on:
       - unlabeled
   workflow_dispatch:
     inputs:
-      run_all_tests:
+      run_for_all_packages:
         type: boolean
         default: false
-        description: "Run all tests"
-      run_mypy_only:
+        description: "Run for all packages"
+      skip_tests:
         type: boolean
         default: false
-        description: "Check to only run mypy"
-      mypy_timeout_minutes:
-        type: number
-        default: 20
-        description: "Timeout for pytest JOB in minutes"
+        description: "Skip tests"
 
 jobs:
   drop-ci-approved-label:
@@ -242,7 +238,7 @@ jobs:
         package-dependencies-resolution-method: >-
           ${{
             (
-              github.event.inputs.run_all_tests == 'true'
+              github.event.inputs.run_for_all_packages == 'true'
               || contains(github.event.pull_request.labels.*.name, 'run_ci_for_all_packages')
             ) && 'poetry-all' || 'poetry-path'
           }}
@@ -288,9 +284,7 @@ jobs:
       - router
       - check-skip-tests-label
       - gh_build_image
-    if: ${{ needs.check-skip-tests-label.outputs.result != 'true' }}
-
-    # if: ${{ github.event.inputs.run_mypy_only != 'true' }}
+    if: ${{ needs.check-skip-tests-label.outputs.result != 'true' && github.event.inputs.skip_tests != 'true' }}
     container:
       image: ${{ needs.gh_build_image.outputs.IMAGE }}
       credentials:
@@ -555,25 +549,52 @@ jobs:
           CONTAINER_NETWORK: "${{ job.container.network }}"
           COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
 
+  mypy_split:
+    runs-on: ubuntu-22.04
+    needs: router
+    outputs:
+      matrix: ${{ steps.split.outputs.matrix }}
+    steps:
+      - name: Split packages into groups
+        id: split
+        uses: ovsds/split-matrix-action@v0
+        with:
+          matrix: ${{ needs.router.outputs.changed-packages }}
+          target-group-size: 10
+          result-item-prefix: "/src/"
+
   mypy:
-    runs-on: [ self-hosted, linux, k8s-runner-fat ]
-    needs: gh_build_image
+    name: "🐲 mypy (group ${{ strategy.job-index }})"
+    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    needs: [ mypy_split, gh_build_image ]
+    if: ${{ needs.mypy_split.outputs.matrix != '[]' }}
     container:
       image: ${{ needs.gh_build_image.outputs.IMAGE }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-    name: "🐲 mypy"
-    timeout-minutes: ${{ inputs.mypy_timeout_minutes && fromJSON(inputs.mypy_timeout_minutes ) || 20 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        lib_paths: ${{ fromJson(needs.mypy_split.outputs.matrix) }}
+    env:
+      VENV_PATH: /venv
     steps:
       - name: run mypy
-        run: |
-          . /venv/bin/activate
-          execute-mypy-multi /src --processes=4 --exclude=/src
+        run: task --silent dev:mypy FAIL_FAST=false
         env:
-          PYTHONUNBUFFERED: "1"
+          LIB_PATHS: ${{ matrix.lib_paths }}
+
+  mypy-results:
+    name: Mypy results
+    runs-on: ubuntu-22.04
+    needs: mypy
+    if: always() && !cancelled()
+    steps:
+      - name: Collect Result
+        uses: ovsds/collect-needs-result-action@v1
+        with:
+          needs_json: ${{ toJson(needs) }}
 
   test-results:
     name: Test results
