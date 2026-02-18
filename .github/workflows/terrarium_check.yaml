@@ -1,4 +1,4 @@
-name: terrarium_check
+name: "🐊 Terrarium Check"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

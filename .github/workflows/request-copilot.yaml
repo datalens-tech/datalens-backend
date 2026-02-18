@@ -1,4 +1,4 @@
-name: Request Copilot to review PR
+name: "🤖 Request Copilot to Review PR"
 
 on:
   pull_request:

@@ -1,4 +1,4 @@
-name: main
+name: "🔄 Main"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

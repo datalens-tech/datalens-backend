@@ -1,4 +1,4 @@
-name: "🐳 Build Debian Docker image"
+name: "🐳 Build Debian Docker Image"
 
 on:
   workflow_dispatch:

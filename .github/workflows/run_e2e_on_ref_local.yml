@@ -1,4 +1,4 @@
-name: "Run E2E tests on ref (local)"
+name: "🧪 Run E2E Tests on Ref (Local)"
 
 on:
   workflow_dispatch:
