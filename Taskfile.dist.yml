@@ -42,7 +42,7 @@ includes:
         {{.ROOT_DIR}}
         {{.ROOT_DIR}}/metapkg
         {{.ROOT_DIR}}/terrarium/bi_ci/bi_ci_tests/unit/resources
-        {{.ROOT_DIR}}/terrarium/dl_repmanager/.venv/.*
+        {{.ROOT_DIR}}/terrarium/dl_repmanager
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
       EXCLUDE_TOML_SORT: |
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
