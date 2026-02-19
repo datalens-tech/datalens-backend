@@ -1,6 +1,10 @@
 from collections import OrderedDict
 import itertools
+import logging
 from typing import Any
+
+
+LOGGER = logging.getLogger(__name__)
 
 import attr
 
@@ -18,6 +22,7 @@ from dl_formula.mutation.mutation import (
 )
 from dl_query_processing.compilation.primitives import CompiledQuery
 from dl_query_processing.enums import QueryPart
+from dl_query_processing.exc import InconsistentSelectAggregation
 from dl_query_processing.multi_query.splitters.mask_based import (
     AddFormulaInfo,
     AliasedFormulaSplitMask,
@@ -565,7 +570,9 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             # Nothing to do in this case
             return query
 
-        assert len(agg_statuses) == 1, f"Inconsistent aggregation status among SELECT items. Got: {agg_statuses}"
+        if len(agg_statuses) != 1:
+            LOGGER.warning("Inconsistent aggregation status among SELECT items. Got: %s", agg_statuses)
+            raise InconsistentSelectAggregation("Inconsistent aggregation status among SELECT items.")
         agg_status = next(iter(agg_statuses))
         if not agg_status:
             # SELECT items are not aggregated
