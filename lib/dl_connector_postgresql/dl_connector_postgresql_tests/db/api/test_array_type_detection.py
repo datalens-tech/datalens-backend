@@ -8,7 +8,7 @@ from dl_constants.enums import UserDataType
 from dl_connector_postgresql_tests.db.api.base import PostgreSQLDashSQLConnectionTest
 
 
-class TestPostgreSQLArrayTypes(PostgreSQLDashSQLConnectionTest, DefaultDashSQLTestSuite):
+class TestPostgreSQLArrayTypeDetection(PostgreSQLDashSQLConnectionTest, DefaultDashSQLTestSuite):
     @pytest.fixture(scope="function")
     def array_types_table_name(self, db):
         name = f"test_array_types_{shortuuid.uuid().lower()}"
