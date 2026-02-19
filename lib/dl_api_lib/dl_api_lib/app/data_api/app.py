@@ -4,6 +4,7 @@ import abc
 import functools
 import logging.config
 from typing import (
+    ClassVar,
     Generic,
     TypeVar,
 )
@@ -73,6 +74,7 @@ from dl_core.aio.web_app_services.redis import (
     SingleHostSimpleRedisService,
 )
 from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.us_manager.factory import USMFactory
 
 
 LOGGER = logging.getLogger(__name__)
@@ -113,6 +115,7 @@ TDataApiSettings = TypeVar("TDataApiSettings", bound=DataApiAppSettings)
 @attr.s(kw_only=True)
 class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     _settings: TDataApiSettings = attr.ib()
+    private_us_manager_factory_class: ClassVar[type[USMFactory]] = USMFactory
 
     @abc.abstractmethod
     def get_app_version(self) -> str:

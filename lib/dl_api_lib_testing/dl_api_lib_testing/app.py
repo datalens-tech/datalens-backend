@@ -199,10 +199,12 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
 
         usm_middleware_list = [
             service_us_manager_middleware(
+                us_manager_factory_class=self.private_us_manager_factory_class,
                 us_master_token=self._settings.US_MASTER_TOKEN,
                 **common_us_kw,
             ),
             service_us_manager_middleware(
+                us_manager_factory_class=self.private_us_manager_factory_class,
                 us_master_token=self._settings.US_MASTER_TOKEN,
                 as_user_usm=True,
                 **common_us_kw,

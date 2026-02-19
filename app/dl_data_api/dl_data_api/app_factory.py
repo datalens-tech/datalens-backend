@@ -131,10 +131,12 @@ class StandaloneDataApiAppFactory(
         if self._settings.AUTH is not None and self._settings.AUTH == "NONE":
             usm_middleware_list = [
                 service_us_manager_middleware(
+                    us_manager_factory_class=self.private_us_manager_factory_class,
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     **common_us_kw,
                 ),
                 service_us_manager_middleware(
+                    us_manager_factory_class=self.private_us_manager_factory_class,
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     as_user_usm=True,
                     **common_us_kw,
@@ -144,6 +146,7 @@ class StandaloneDataApiAppFactory(
             usm_middleware_list = [
                 us_manager_middleware(**common_us_kw),
                 service_us_manager_middleware(
+                    us_manager_factory_class=self.private_us_manager_factory_class,
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     **common_us_kw,
                 ),
