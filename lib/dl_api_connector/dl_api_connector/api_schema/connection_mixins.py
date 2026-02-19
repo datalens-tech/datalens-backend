@@ -34,12 +34,6 @@ class DataExportForbiddenMixin(marshmallow.Schema):
 class QueryCacheMixin(marshmallow.Schema):
     cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")
 
-    cache_invalidation_enabled = core_ma_fields.OnOffField(
-        attribute="data.cache_invalidation_enabled",
-        required=False,
-        load_default=False,
-        bi_extra=FieldExtra(editable=True),
-    )
     cache_invalidation_throttling_interval_sec = ma_fields.Integer(
         attribute="data.cache_invalidation_throttling_interval_sec",
         required=False,
