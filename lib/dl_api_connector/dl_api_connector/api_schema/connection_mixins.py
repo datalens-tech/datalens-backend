@@ -47,4 +47,5 @@ class QueryCacheMixin(marshmallow.Schema):
         load_default=30,
         dump_default=30,
         bi_extra=FieldExtra(editable=True),
+        allow_none=True,
     )
