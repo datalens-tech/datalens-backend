@@ -35,7 +35,7 @@ class LoggingContextMiddleware:
             )
             dl_logging.reset_context()
 
-        dl_logging.put_to_context("request_id", request_id)
+        dl_logging.put_to_context("parent_request_id", request_id)
         dl_logging.put_to_context("trace_id", request_context.get_trace_id())
 
         try:
