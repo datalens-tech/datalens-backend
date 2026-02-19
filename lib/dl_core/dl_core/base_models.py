@@ -176,7 +176,7 @@ class ConnectionDataModelBase(BaseAttrsDataModel):
 class ConnCacheableDataModelMixin:
     cache_ttl_sec: int | None = attr.ib(kw_only=True, default=None)  # Override for default cache TTL
     cache_invalidation_enabled: bool | None = attr.ib(kw_only=True, default=False)
-    cache_invalidation_throttling_interval_sec: int | None = attr.ib(kw_only=True, default=30)
+    cache_invalidation_throttling_interval_sec: int | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s

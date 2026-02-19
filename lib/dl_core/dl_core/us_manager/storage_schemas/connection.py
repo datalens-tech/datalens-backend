@@ -34,6 +34,13 @@ class ConnectionBaseDataStorageSchema(BaseConnectionDataStorageSchema[_CB_DATA_T
 class CacheableConnectionDataSchemaMixin:
     cache_ttl_sec = ma_fields.Integer(required=False, allow_none=True, load_default=None, dump_default=None)
 
+    cache_invalidation_enabled = ma_fields.Boolean(
+        required=False, allow_none=False, load_default=False, dump_default=False
+    )
+    cache_invalidation_throttling_interval_sec = ma_fields.Integer(
+        required=False, allow_none=True, load_default=None, dump_default=None
+    )
+
 
 class SubselectConnectionDataSchemaMixin:
     raw_sql_level = ma_fields.Enum(RawSQLLevel, dump_default=RawSQLLevel.off)
