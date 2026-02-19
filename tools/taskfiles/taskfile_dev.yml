@@ -55,16 +55,16 @@ tasks:
       - echo "Cleaning unused envs in {{.VENV_PATH}}"
       - for env in "$UNUSED_ENVS"; do
           echo "Removing $env";
-          poetry env remove $env --directory={{.PYPROJECT_TOML_PATH}};
+          poetry env remove $env --directory=$(dirname {{.PYPROJECT_TOML_PATH}});
         done;
       - echo "Initializing python virtual environment in {{.VENV_PATH}}"
-      - poetry install --directory={{.PYPROJECT_TOML_PATH}} --sync --no-root --with mypy
+      - poetry install --directory=$(dirname {{.PYPROJECT_TOML_PATH}}) --sync --no-root --with mypy
     requires:
       vars:
         - PYPROJECT_TOML_PATH
     vars:
       UNUSED_ENVS:
-        sh: poetry env list --no-ansi --directory={{.PYPROJECT_TOML_PATH}}
+        sh: poetry env list --no-ansi --directory=$(dirname {{.PYPROJECT_TOML_PATH}})
           | sed 's/ (Activated)//g'
           | grep -v \".venv\" || true
 
