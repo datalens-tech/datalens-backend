@@ -45,4 +45,4 @@ requires = [
 
 [datalens.pytest.db]
 root_dir = "dl_file_secure_reader_lib_tests/"
-target_path = "db"
+target_path = "db unit"
