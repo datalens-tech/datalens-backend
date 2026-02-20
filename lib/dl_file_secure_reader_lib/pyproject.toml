@@ -17,6 +17,8 @@ pydantic = "*"
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+dl-constants = {path = "../dl_constants"}
+dl-file-uploader-worker-lib = {path = "../dl_file_uploader_worker_lib"}
 pytest = "*"
 
 [tool.mypy]
