@@ -303,3 +303,72 @@ async def test_parse_excel_empty_sheets(
 
     assert df.sources[0].is_applicable
     assert not df.sources[1].is_applicable  # this sheet is empty
+
+
+@pytest.mark.asyncio
+async def test_excel_type_detection(
+    task_processor_client,
+    task_state,
+    s3_client,
+    s3_model_manager,
+    redis_model_manager,
+    uploaded_types_test_excel_id,
+    reader_app,
+    default_async_usm_per_test,
+):
+    rmm = redis_model_manager
+
+    task = await task_processor_client.schedule(
+        ProcessExcelTask(
+            file_id=uploaded_types_test_excel_id,
+            tenant_id="common",
+        )
+    )
+    result = await wait_task(task, task_state)
+    await sleep(60)
+
+    assert result[-1] == "success"
+
+    df = await DataFile.get(manager=rmm, obj_id=uploaded_types_test_excel_id)
+    assert df.id == uploaded_types_test_excel_id
+    assert df.status == FileProcessingStatus.ready
+
+    assert len(df.sources) == 1
+    dsrc = df.sources[0]
+    assert dsrc.status == FileProcessingStatus.ready
+    assert dsrc.title == "excel_types.xlsx – TypeTestSheet"
+    assert [sch.user_type for sch in dsrc.raw_schema] == [
+        UserDataType.integer,
+        UserDataType.float,
+        UserDataType.string,
+        UserDataType.genericdatetime,  # This is date column, but openyxl detects it as datetime
+        UserDataType.genericdatetime,
+        UserDataType.boolean,
+    ]
+    assert [sch.name for sch in dsrc.raw_schema] == [
+        "integer_column",
+        "float_column",
+        "string_column",
+        "date_column",
+        "datetime_column",
+        "boolean_column",
+    ]
+    assert [sch.title for sch in dsrc.raw_schema] == [
+        "Integer Column",
+        "Float Column",
+        "String Column",
+        "Date Column",
+        "DateTime Column",
+        "Boolean Column",
+    ]
+
+    preview = await S3DataSourcePreview.get(manager=s3_model_manager, obj_id=dsrc.preview_id)
+    assert preview.id == dsrc.preview_id
+    assert preview.preview_data[0] == [
+        "1",
+        "1.1",
+        "text1",
+        "2023-01-01 00:00:00",
+        "2023-01-01 10:00:00",
+        "True",
+    ]
