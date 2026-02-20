@@ -35,7 +35,7 @@ module = "openpyxl.*"
 [tool.pytest.ini_options]
 addopts = "-ra"
 minversion = "6.0"
-testpaths = ["dl_file_secure_reader_lib_tests/db"]
+testpaths = ["dl_file_secure_reader_lib_tests/db", "dl_file_secure_reader_lib_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
@@ -45,4 +45,8 @@ requires = [
 
 [datalens.pytest.db]
 root_dir = "dl_file_secure_reader_lib_tests/"
-target_path = "db unit"
+target_path = "db"
+
+[datalens.pytest.unit]
+root_dir = "dl_file_secure_reader_lib_tests/"
+target_path = "unit"
