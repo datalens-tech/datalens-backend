@@ -581,7 +581,7 @@ jobs:
       VENV_PATH: /venv
     steps:
       - name: run mypy
-        run: task --silent dev:mypy FAIL_FAST=false
+        run: task -d ./src --silent dev:mypy FAIL_FAST=false
         env:
           LIB_PATHS: ${{ matrix.lib_paths }}
 
@@ -627,9 +627,9 @@ jobs:
     env:
       VENV_PATH: /venv
     steps:
-      - run: task --silent dev:black
-      - run: task --silent dev:isort
-      - run: task --silent dev:ruff
-      - run: task --silent dev:sort-all
-      - run: task --silent dev:toml-sort
-      - run: task --silent dev:deptry FAIL_FAST=false
+      - run: task -d ./src --silent dev:black
+      - run: task -d ./src --silent dev:isort
+      - run: task -d ./src --silent dev:ruff
+      - run: task -d ./src --silent dev:sort-all
+      - run: task -d ./src --silent dev:toml-sort
+      - run: task -d ./src --silent dev:deptry FAIL_FAST=false
