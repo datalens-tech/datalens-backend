@@ -41,14 +41,21 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
         ]
 
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         edit_api_schema = FormActionApiSchema(
-            items=[
-                *common_api_schema_items,
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            ]
+            items=self._filter_nulls(
+                [
+                    *common_api_schema_items,
+                    FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                    FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                    if is_invalidation_cache_enabled
+                    else None,
+                    FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                    FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+                ]
+            )
         )
 
         create_api_schema = FormActionApiSchema(

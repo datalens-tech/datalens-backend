@@ -171,29 +171,36 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         return set()
 
     def _get_schema_items(self) -> list[FormFieldApiSchema]:
-        return [
-            FormFieldApiSchema(name=TrinoFormFieldName.auth_type, required=True),
-            FormFieldApiSchema(name=CommonFieldName.host, required=True),
-            FormFieldApiSchema(name=CommonFieldName.port, required=True),
-            FormFieldApiSchema(name=CommonFieldName.username, required=True),
-            FormFieldApiSchema(
-                name=CommonFieldName.password,
-                required=self.mode == ConnectionFormMode.create,
-                default_action=FormFieldApiAction.skip,
-            ),
-            FormFieldApiSchema(
-                name=TrinoFormFieldName.jwt,
-                required=self.mode == ConnectionFormMode.create,
-                default_action=FormFieldApiAction.skip,
-            ),
-            FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-            FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
-            FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-            FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            FormFieldApiSchema(name=TrinoFormFieldName.listing_sources),
-            FormFieldApiSchema(name=CommonFieldName.ssl_enable),
-            FormFieldApiSchema(name=CommonFieldName.ssl_ca),
-        ]
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
+        return self._filter_nulls(
+            [
+                FormFieldApiSchema(name=TrinoFormFieldName.auth_type, required=True),
+                FormFieldApiSchema(name=CommonFieldName.host, required=True),
+                FormFieldApiSchema(name=CommonFieldName.port, required=True),
+                FormFieldApiSchema(name=CommonFieldName.username, required=True),
+                FormFieldApiSchema(
+                    name=CommonFieldName.password,
+                    required=self.mode == ConnectionFormMode.create,
+                    default_action=FormFieldApiAction.skip,
+                ),
+                FormFieldApiSchema(
+                    name=TrinoFormFieldName.jwt,
+                    required=self.mode == ConnectionFormMode.create,
+                    default_action=FormFieldApiAction.skip,
+                ),
+                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                if is_invalidation_cache_enabled
+                else None,
+                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+                FormFieldApiSchema(name=TrinoFormFieldName.listing_sources),
+                FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
+            ]
+        )
 
     def _get_schema_conditions(self) -> list[FormFieldApiActionCondition]:
         return [

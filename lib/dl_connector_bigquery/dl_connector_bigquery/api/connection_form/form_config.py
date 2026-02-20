@@ -46,13 +46,20 @@ class BigQueryConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=BigQueryFieldName.credentials, required=self.mode == ConnectionFormMode.create),
         ]
 
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         edit_api_schema = FormActionApiSchema(
-            items=[
-                *common_api_schema_items,
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-            ]
+            items=self._filter_nulls(
+                [
+                    *common_api_schema_items,
+                    FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                    FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                    if is_invalidation_cache_enabled
+                    else None,
+                    FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                ]
+            )
         )
 
         create_api_schema = FormActionApiSchema(
@@ -68,9 +75,6 @@ class BigQueryConnectionFormFactory(ConnectionFormFactory):
                 *self._get_top_level_check_api_schema_items(),
             ]
         )
-
-        form_params = self._get_form_params()
-        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         return ConnectionForm(
             title=BigQueryConnectionInfoProvider.get_title(self._localizer),

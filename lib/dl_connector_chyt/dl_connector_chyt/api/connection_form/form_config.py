@@ -78,13 +78,20 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
         ]
 
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         edit_api_schema = FormActionApiSchema(
-            items=[
-                *common_api_schema_items,
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-            ]
+            items=self._filter_nulls(
+                [
+                    *common_api_schema_items,
+                    FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                    FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                    if is_invalidation_cache_enabled
+                    else None,
+                    FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                ]
+            )
         )
 
         create_api_schema = FormActionApiSchema(
@@ -104,9 +111,6 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
             raw_sql_levels.append(RawSQLLevel.template)
-
-        form_params = self._get_form_params()
-        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         return ConnectionForm(
             title=CHYTConnectionInfoProvider.get_title(self._localizer),
