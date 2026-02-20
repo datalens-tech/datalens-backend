@@ -45,6 +45,7 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
             items=[
                 *common_api_schema_items,
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
             ]

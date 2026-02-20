@@ -44,6 +44,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                     required=self.mode == ConnectionFormMode.create,
                 ),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
                 FormFieldApiSchema(name=PostgreSQLFieldName.enforce_collate),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),

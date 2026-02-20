@@ -127,6 +127,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             items=[
                 *self.get_common_api_schema_items(connector_settings=connector_settings),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
             ],
         )
