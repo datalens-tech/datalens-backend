@@ -341,7 +341,7 @@ async def test_excel_type_detection(
         UserDataType.integer,
         UserDataType.float,
         UserDataType.string,
-        UserDataType.genericdatetime,  # This is date column, but openyxl detects it as datetime
+        UserDataType.genericdatetime,  # This is date column, but openpyxl detects it as datetime
         UserDataType.genericdatetime,
         UserDataType.boolean,
     ]
