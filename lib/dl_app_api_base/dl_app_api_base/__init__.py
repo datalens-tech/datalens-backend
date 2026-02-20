@@ -17,6 +17,11 @@ from .auth import (
     RequestAuthCheckerProtocol,
     RouteMatcher,
 )
+from .error_handling import (
+    ErrorHandlerProtocol,
+    ErrorHandlingMiddleware,
+    MapErrorHandler,
+)
 from .gunicorn import GunicornWorker
 from .handlers import (
     BadRequestResponseSchema,
@@ -35,7 +40,6 @@ from .handlers import (
 )
 from .headers import HeadersRequestContextMixin
 from .middlewares import (
-    ErrorHandlingMiddleware,
     LoggingContextMiddleware,
     LoggingMiddleware,
 )
@@ -68,6 +72,7 @@ __all__ = [
     "BaseRequestSchema",
     "BaseResponseSchema",
     "BaseSchema",
+    "ErrorHandlerProtocol",
     "ErrorHandlingMiddleware",
     "ErrorResponseSchema",
     "GunicornWorker",
@@ -82,6 +87,7 @@ __all__ = [
     "LivenessProbeHandler",
     "LoggingContextMiddleware",
     "LoggingMiddleware",
+    "MapErrorHandler",
     "OAuthChecker",
     "OAuthCheckerSettings",
     "OAuthResult",

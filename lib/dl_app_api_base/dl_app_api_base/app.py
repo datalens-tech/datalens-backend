@@ -12,6 +12,7 @@ import pydantic
 from typing_extensions import override
 
 import dl_app_api_base.auth as auth
+import dl_app_api_base.error_handling as error_handling
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.headers as headers
 import dl_app_api_base.middlewares as middlewares
@@ -148,6 +149,14 @@ class HttpServerAppFactoryMixin(
         ]
 
     @dl_app_base.singleton_class_method_result
+    async def _get_response_error_handlers(
+        self,
+    ) -> list[error_handling.ErrorHandlerProtocol]:
+        return [
+            error_handling.MapErrorHandler(map=error_handling.DEFAULT_ERROR_MAP).process,
+        ]
+
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app_middlewares(
         self,
     ) -> list[aiohttp.typedefs.Middleware]:
@@ -162,7 +171,9 @@ class HttpServerAppFactoryMixin(
         logging_middleware = middlewares.LoggingMiddleware(
             request_context_provider=request_context_manager,
         )
-        error_handling_middleware = middlewares.ErrorHandlingMiddleware()
+        error_handling_middleware = error_handling.ErrorHandlingMiddleware(
+            error_handlers=await self._get_response_error_handlers(),
+        )
         auth_middleware = auth.AuthMiddleware(
             request_context_provider=request_context_manager,
         )
