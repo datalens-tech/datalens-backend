@@ -23,8 +23,6 @@ target "ci_with_src" {
       bake_ctx_dl_src_lib = "target:dl_src_lib",
       bake_ctx_dl_src_terrarium  = "target:dl_src_terrarium"
       bake_ctx_dl_src_ci = "target:dl_src_ci"
-      bake_ctx_project_root = "${DL_B_SOURCES_ROOT}"
-      bake_ctx_tools_taskfiles = "${DL_B_SOURCES_ROOT}/tools/taskfiles"
     }
   )
   args = {
@@ -37,12 +35,8 @@ target "ci_with_src" {
     "COPY --from=bake_ctx_dl_src_lib / /src/",
     "COPY --from=bake_ctx_dl_src_terrarium / /src/",
     "COPY --from=bake_ctx_dl_src_ci / /src/",
-    "COPY --from=bake_ctx_project_root Taskfile.dist.yml /src/Taskfile.yml",
-    "COPY --from=bake_ctx_project_root pyproject.toml /src/pyproject.toml",
-    "COPY --from=bake_ctx_tools_taskfiles / /src/tools/taskfiles/",
     "RUN . /venv/bin/activate && pip install -e /src/terrarium/bi_ci",
     "RUN . /venv/bin/activate && pip install -e /src/terrarium/dl_gitmanager",
     "RUN . /venv/bin/activate && cd /src/metapkg/ && poetry install --no-root --with=dev --with=ci --with=mypy",
-    "WORKDIR /src",
   ])
 }

@@ -580,6 +580,14 @@ jobs:
     env:
       VENV_PATH: /venv
     steps:
+      - uses: datalens-tech/cleanup-folder-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - name: run mypy
         run: task --silent dev:mypy FAIL_FAST=false
         env:
@@ -627,6 +635,14 @@ jobs:
     env:
       VENV_PATH: /venv
     steps:
+      - uses: datalens-tech/cleanup-folder-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 1
+      - uses: datalens-tech/fix-dubious-ownership-action@v1
       - run: task --silent dev:black
       - run: task --silent dev:isort
       - run: task --silent dev:ruff
