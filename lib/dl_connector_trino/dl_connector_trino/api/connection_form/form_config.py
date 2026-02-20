@@ -124,9 +124,6 @@ class TrinoRowConstructor(RowConstructor):
             ]
         )
 
-    def cache_ttl_row(self) -> C.CacheTTLRow:
-        return C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec)
-
     def trino_ssl_rows(
         self,
         display_conditions: TDisplayConditions | None = None,
@@ -267,6 +264,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         check_api_schema = self._get_check_api_schema(connector_settings)
 
         form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         return ConnectionForm(
             title=TrinoConnectionInfoProvider.get_title(self._localizer),
@@ -282,8 +280,9 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.jwt_row(
                         mode=self.mode, display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value}
                     ),
-                    rc.cache_ttl_row(),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if is_invalidation_cache_enabled else None,
                     rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),
                     *rc.trino_ssl_rows(),
                     rc.data_export_forbidden_row(

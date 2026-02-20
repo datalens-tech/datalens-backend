@@ -46,6 +46,13 @@ class CacheTTLRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledM
 
 
 @attr.s(kw_only=True, frozen=True)
+class CacheInvalidationRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, DisabledMixin):
+    type = "cache_invalidation_throttling_interval_sec"
+
+    label_text: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("labelText"))
+
+
+@attr.s(kw_only=True, frozen=True)
 class CollapseRow(PreparedRow, DisplayConditionsMixin, FormFieldMixin, InnerFieldMixin):
     type = "collapse"
 

@@ -196,10 +196,12 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             raw_sql_levels.append(RawSQLLevel.template)
 
         form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         rows = [
-            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
+            *(rc.cache_rows() if is_invalidation_cache_enabled else []),
             rc.collapse_advanced_settings_row(),
             *rc.ssl_rows(
                 enabled_name=CommonFieldName.secure,
@@ -215,7 +217,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         ]
         if self._experimental_features_allowed(connector_settings=connector_settings):
             rows.append(clickhouse_rc.experimental_features_row())
-        return rows
+        return self._filter_nulls(rows)
 
     def get_form_config(
         self,

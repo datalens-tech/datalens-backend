@@ -192,6 +192,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             raw_sql_levels.append(RawSQLLevel.template)
 
         form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         if connector_settings.ENABLE_AUTH_TYPE_PICKER:
             rows = [
@@ -203,8 +204,9 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 ydb_rc.password_row(
                     display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
                 ),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                 rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
+                *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                 rc.collapse_advanced_settings_row(),
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,
@@ -220,8 +222,9 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         else:
             rows = [
                 *db_section_rows,
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                 rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
+                *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                 rc.collapse_advanced_settings_row(),
                 *rc.ssl_rows(
                     enabled_name=CommonFieldName.ssl_enable,
@@ -236,7 +239,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
             ]
         return ConnectionForm(
             title=YDBConnectionInfoProvider.get_title(self._localizer),
-            rows=rows,
+            rows=self._filter_nulls(rows),
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,

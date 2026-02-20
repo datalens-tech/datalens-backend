@@ -68,24 +68,30 @@ class BigQueryConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         return ConnectionForm(
             title=BigQueryConnectionInfoProvider.get_title(self._localizer),
-            rows=[
-                C.CustomizableRow(
-                    items=[
-                        C.LabelRowItem(text=self._localizer.translate(Translatable("label_project-id"))),
-                        C.InputRowItem(name=BigQueryFieldName.project_id, width="m"),
-                    ]
-                ),
-                C.CustomizableRow(
-                    items=[
-                        C.LabelRowItem(text=self._localizer.translate(Translatable("label_service-acc-key-file"))),
-                        C.FileInputRowItem(name=BigQueryFieldName.credentials),
-                    ]
-                ),
-                rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect]),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-            ],
+            rows=self._filter_nulls(
+                [
+                    C.CustomizableRow(
+                        items=[
+                            C.LabelRowItem(text=self._localizer.translate(Translatable("label_project-id"))),
+                            C.InputRowItem(name=BigQueryFieldName.project_id, width="m"),
+                        ]
+                    ),
+                    C.CustomizableRow(
+                        items=[
+                            C.LabelRowItem(text=self._localizer.translate(Translatable("label_service-acc-key-file"))),
+                            C.FileInputRowItem(name=BigQueryFieldName.credentials),
+                        ]
+                    ),
+                    rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect]),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
+                ]
+            ),
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,
