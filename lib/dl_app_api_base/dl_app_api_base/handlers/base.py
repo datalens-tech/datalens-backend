@@ -6,8 +6,11 @@ from typing import (
     ClassVar,
 )
 
+import aiohttp.typedefs as aiohttp_typedefs
 import aiohttp.web
+import aiohttp.web as aiohttp_web
 import attrs
+import pydantic
 from typing_extensions import Self
 
 import dl_json
@@ -21,33 +24,97 @@ class BaseSchema(dl_pydantic.BaseSchema):
     ...
 
 
-class BaseResponseSchema(BaseSchema):
+class Response(aiohttp_web.Response):
+    @classmethod
+    def with_bytes(
+        cls,
+        body: bytes,
+        status: int = http.HTTPStatus.OK,
+        reason: str | None = None,
+        headers: aiohttp_typedefs.LooseHeaders | None = None,
+        content_type: str | None = None,
+    ) -> Self:
+        return cls(
+            body=body,
+            status=status,
+            reason=reason,
+            headers=headers,
+            content_type=content_type,
+        )
+
+    @classmethod
+    def with_data(
+        cls,
+        data: Any,
+        status: int = http.HTTPStatus.OK,
+        reason: str | None = None,
+        headers: aiohttp_typedefs.LooseHeaders | None = None,
+    ) -> Self:
+        body = dl_json.dumps_bytes(data)
+        return cls.with_bytes(
+            body=body,
+            status=status,
+            reason=reason,
+            headers=headers,
+            content_type="application/json",
+        )
+
+    @classmethod
+    def with_model(
+        cls,
+        schema: BaseSchema,
+        status: int = http.HTTPStatus.OK,
+        reason: str | None = None,
+        headers: aiohttp_typedefs.LooseHeaders | None = None,
+    ) -> Self:
+        return cls.with_data(
+            data=schema.model_dump(mode="json"),
+            status=status,
+            reason=reason,
+            headers=headers,
+        )
+
+    @classmethod
+    def with_status(
+        cls,
+        status: int = http.HTTPStatus.OK,
+        reason: str | None = None,
+        headers: aiohttp_typedefs.LooseHeaders | None = None,
+    ) -> Self:
+        return cls(
+            status=status,
+            reason=reason,
+            headers=headers,
+        )
+
+
+class ResponseException(Response, Exception):
     ...
 
 
-class HttpError(aiohttp.web.HTTPError):
-    def __init__(
-        self,
-        status: int,
-        text: str,
-    ):
-        self.status_code = status
-        super().__init__(text=text)
+class BaseResponseSchema(BaseSchema):
+    ...
 
 
 class ErrorResponseSchema(BaseResponseSchema):
     message: str
     code: str
+    status_code: pydantic.json_schema.SkipJsonSchema[http.HTTPStatus]
 
-    def http_error(self, status: int) -> HttpError:
-        json_data = self.model_dump(mode="json")
-        raw_data = dl_json.dumps_str(json_data)
-        return HttpError(text=raw_data, status=status)
+    def as_data(self) -> dict[str, Any]:
+        return self.model_dump(mode="json", exclude={"status_code"})
+
+    def as_response(self) -> Response:
+        return Response.with_data(data=self.as_data(), status=self.status_code)
+
+    def as_exception(self) -> ResponseException:
+        return ResponseException.with_data(data=self.as_data(), status=self.status_code)
 
 
 class BadRequestResponseSchema(ErrorResponseSchema):
     message: str = "Bad request"
     code: str = "ERR.API.BAD_REQUEST"
+    status_code: pydantic.json_schema.SkipJsonSchema[http.HTTPStatus] = http.HTTPStatus.BAD_REQUEST
 
 
 class BaseRequestSchema(BaseSchema):
@@ -81,9 +148,9 @@ class BaseRequestSchema(BaseSchema):
         try:
             return await cls.from_request(request)
         except ValueError:
-            LOGGER.exception(f"Bad request: {request.text}")
-            response = BadRequestResponseSchema()
-            raise response.http_error(status=http.HTTPStatus.BAD_REQUEST)
+            text = await request.text()
+            LOGGER.exception(f"Bad request: {text}")
+            raise BadRequestResponseSchema().as_exception()
 
 
 class BaseHandler(abc.ABC):

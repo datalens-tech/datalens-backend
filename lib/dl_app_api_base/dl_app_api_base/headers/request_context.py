@@ -1,5 +1,3 @@
-import http
-
 import attr
 import opentelemetry.sdk.trace
 
@@ -42,7 +40,7 @@ class HeadersRequestContextMixin(request_context.BaseRequestContext):
         )
 
         if user_ip is None:
-            raise UserIpNotFoundErrorResponseSchema().http_error(http.HTTPStatus.BAD_REQUEST)
+            raise UserIpNotFoundErrorResponseSchema().as_exception()
 
         return user_ip
 
