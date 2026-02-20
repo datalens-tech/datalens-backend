@@ -452,7 +452,8 @@ class RowConstructor:
                 text=self._localizer.translate(Translatable("label_cache-settings")),
             ),
             C.CacheTTLRow(
-                name=CommonFieldName.cache_ttl_sec, display_conditions={CommonFieldName.cache_settings: "opened"}
+                name=CommonFieldName.cache_ttl_sec,
+                display_conditions={CommonFieldName.cache_settings: "opened"},
             ),
             C.CacheInvalidationRow(
                 name=CommonFieldName.cache_invalidation_throttling_interval_sec,
