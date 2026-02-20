@@ -650,7 +650,7 @@ CRM_PRODUCT = [
     {"name": "TYPE", "type": "string"},
     {"name": "PARENT_ID", "type": "integer"},
     {"name": "MEASURE", "type": "string"},
-    {"name": "PRICE", "type": "integer"},
+    {"name": "PRICE", "type": "string"},
 ]
 
 
