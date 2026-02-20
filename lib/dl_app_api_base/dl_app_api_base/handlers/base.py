@@ -97,6 +97,17 @@ class BaseResponseSchema(BaseSchema):
 
 
 class ErrorResponseSchema(BaseResponseSchema):
+    """
+    Base response schema for error responses.
+    Use as_response() to return response from handlers and middlewares
+    Use as_exception() to return response only from places where
+    return statement is not possible without obstructing original return value (like checkers in middlewares)
+
+    Example:
+    >>> return ErrorResponseSchema().as_response()
+    >>> raise ErrorResponseSchema().as_exception()
+    """
+
     message: str
     code: str
     status_code: pydantic.json_schema.SkipJsonSchema[http.HTTPStatus]

@@ -19,6 +19,7 @@ from .auth import (
 )
 from .error_handling import (
     ErrorHandlerProtocol,
+    ErrorHandlingMiddleware,
     MapErrorHandler,
 )
 from .gunicorn import GunicornWorker
@@ -71,6 +72,7 @@ __all__ = [
     "BaseRequestSchema",
     "BaseResponseSchema",
     "BaseSchema",
+    "ErrorHandlerProtocol",
     "ErrorHandlingMiddleware",
     "ErrorResponseSchema",
     "GunicornWorker",
@@ -85,6 +87,7 @@ __all__ = [
     "LivenessProbeHandler",
     "LoggingContextMiddleware",
     "LoggingMiddleware",
+    "MapErrorHandler",
     "OAuthChecker",
     "OAuthCheckerSettings",
     "OAuthResult",
