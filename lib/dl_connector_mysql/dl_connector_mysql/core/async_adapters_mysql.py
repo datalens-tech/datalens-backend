@@ -167,7 +167,9 @@ class AsyncMySQLAdapter(
         debug_query = None
         inspector_query = None
         if self._target_dto.pass_db_query_to_user:
-            inspector_query = db_adapter_query.inspector_query or compile_query_for_inspector(query, self._dialect)
+            inspector_query = db_adapter_query.inspector_query or compile_query_for_inspector(
+                query, self._dialect, obfuscation_engine=self._req_ctx_info.obfuscation_engine
+            )
             debug_query = db_adapter_query.debug_compiled_query or compile_query_for_debug(
                 query, self._dialect
             )  # TODO: BI-6448 move debug query out the if

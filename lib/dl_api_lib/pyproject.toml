@@ -23,6 +23,7 @@ dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-pivot = {path = "../dl_pivot"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}

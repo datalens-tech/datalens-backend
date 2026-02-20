@@ -14,6 +14,7 @@ from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
 from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
@@ -75,6 +76,11 @@ from dl_core.aio.web_app_services.redis import (
 )
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.us_manager.factory import USMFactory
+from dl_obfuscator import (
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    SecretKeeper,
+    create_base_obfuscators,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -136,6 +142,9 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     @property
     def _is_async_env(self) -> bool:
         return True
+
+    def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
+        return None
 
     def set_up_routes(self, app: web.Application) -> None:
         app.router.add_route("get", "/ping", PingView)
@@ -229,6 +238,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             ).middleware,
             rci_headers_middleware(),
             *env_setup_result.auth_mw_list,
+            obfuscation_context_middleware(),
             commit_rci_middleware(),
             *env_setup_result.sr_middleware_list,
             *env_setup_result.usm_middleware_list,
@@ -238,6 +248,15 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         app = web.Application(
             middlewares=middleware_list,
         )
+
+        if self._settings.OBFUSCATION_ENABLED:
+            global_keeper = SecretKeeper()
+            if self._settings.US_MASTER_TOKEN:
+                global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                global_keeper=global_keeper,
+                extra_regex_patterns=self._get_extra_regex_patterns(),
+            )
 
         wrapper = AppWrapper(
             allow_query_cache_usage=self._settings.CACHES_ON,

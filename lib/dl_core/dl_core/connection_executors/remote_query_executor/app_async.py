@@ -19,6 +19,7 @@ import aiodns
 from aiohttp import web
 
 from dl_api_commons.aio.middlewares.body_signature import body_signature_validation_middleware
+from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aio.server_header import ServerHeader
@@ -69,6 +70,10 @@ from dl_dashsql.typed_query.result_serialization import (
 )
 import dl_logging
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
+from dl_obfuscator import (
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    create_base_obfuscators,
+)
 from dl_utils.aio import ContextVarExecutor
 
 
@@ -303,7 +308,11 @@ class ActionHandlingView(BaseView):
             raise NotImplementedError(f"Action {action} is not implemented in QE")
 
 
-def create_async_qe_app(hmac_keys: Sequence[bytes], forbid_private_addr: bool = False) -> web.Application:
+def create_async_qe_app(
+    hmac_keys: Sequence[bytes],
+    forbid_private_addr: bool = False,
+    obfuscation_enabled: bool = False,
+) -> web.Application:
     req_id_service = RequestId(
         header_name=HEADER_REQUEST_ID,
         accept_logging_ctx=True,
@@ -311,16 +320,23 @@ def create_async_qe_app(hmac_keys: Sequence[bytes], forbid_private_addr: bool = 
     error_handler = RQEErrorHandler(
         sentry_app_name_tag=None,
     )
-    app = web.Application(
-        middlewares=[
-            RequestBootstrap(
-                req_id_service=req_id_service,
-                error_handler=error_handler,
-            ).middleware,
-            # TODO FIX: Add profiling middleware.
-            body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
-        ]
-    )
+    middleware_list = [
+        RequestBootstrap(
+            req_id_service=req_id_service,
+            error_handler=error_handler,
+        ).middleware,
+        # TODO FIX: Add profiling middleware.
+        body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
+    ]
+
+    if obfuscation_enabled:
+        middleware_list.append(obfuscation_context_middleware())
+
+    app = web.Application(middlewares=middleware_list)
+
+    if obfuscation_enabled:
+        app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators()
+
     app.on_response_prepare.append(req_id_service.on_response_prepare)
     ServerHeader("DataLens QE").add_signal_handlers(app)
 
@@ -353,6 +369,7 @@ def get_configured_qe_app() -> web.Application:
     return create_async_qe_app(
         hmac_keys=tuple(hmac_key.encode() for hmac_key in hmac_keys),
         forbid_private_addr=settings.FORBID_PRIVATE_ADDRESSES,
+        obfuscation_enabled=settings.OBFUSCATION_ENABLED,
     )
 
 

@@ -22,6 +22,7 @@ from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventL
 from dl_api_commons.flask.middlewares.body_signature import BodySignatureValidator
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
 from dl_api_commons.flask.middlewares.logging_context import RequestLoggingContextControllerMiddleWare
+from dl_api_commons.flask.middlewares.obfuscation_context import setup_obfuscation_context_middleware
 from dl_api_commons.flask.middlewares.request_id import RequestIDService
 from dl_api_commons.flask.middlewares.tracing import TracingMiddleware
 from dl_app_tools.profiling_base import GenericProfiler
@@ -59,6 +60,10 @@ from dl_core.logging_config import hook_configure_logging
 from dl_dashsql.typed_query.query_serialization import get_typed_query_serializer
 from dl_dashsql.typed_query.result_serialization import get_typed_query_result_serializer
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
+from dl_obfuscator import (
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    create_base_obfuscators,
+)
 
 
 if TYPE_CHECKING:
@@ -308,6 +313,10 @@ def create_sync_app() -> flask.Flask:
     ).wrap_flask_app(app)
     ContextVarMiddleware().wrap_flask_app(app)
     AIOEventLoopMiddleware().wrap_flask_app(app)
+
+    if settings.OBFUSCATION_ENABLED:
+        app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators()
+        setup_obfuscation_context_middleware(app)
 
     RequestLoggingContextControllerMiddleWare().set_up(app)
     RequestIDService(

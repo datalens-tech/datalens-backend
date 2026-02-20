@@ -9,6 +9,7 @@ from aiohttp.typedefs import Middleware
 import attr
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
+from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
 from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
@@ -28,6 +29,10 @@ from dl_auth_api_lib.views import google as google_views
 from dl_auth_api_lib.views import snowflake as snowflake_views
 from dl_auth_api_lib.views import yandex as yandex_views
 from dl_core.aio.ping_view import PingView
+from dl_obfuscator import (
+    OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    create_base_obfuscators,
+)
 
 
 _TSettings = TypeVar("_TSettings", bound=AuthAPISettings)
@@ -40,6 +45,9 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
     @abc.abstractmethod
     def get_auth_middlewares(self) -> list[Middleware]:
         raise NotImplementedError()
+
+    def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
+        return None
 
     def set_up_sentry(self, secret_sentry_dsn: str, release: str | None) -> None:
         configure_sentry_for_aiohttp(
@@ -68,12 +76,18 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
             ).middleware,
             rci_headers_middleware(),
             *self.get_auth_middlewares(),
+            obfuscation_context_middleware(),
             commit_rci_middleware(),
         ]
 
         app = web.Application(
             middlewares=middleware_list,
         )
+
+        if self._settings.obfuscation_enabled:
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                extra_regex_patterns=self._get_extra_regex_patterns(),
+            )
 
         app.router.add_route("get", "/oauth/ping", PingView)
 
