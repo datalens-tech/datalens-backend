@@ -12,11 +12,13 @@ import pytest_mock
 import respx
 
 import dl_auth
+import dl_constants
 import dl_httpx
 import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
+REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
 
 
 @pytest.mark.asyncio
@@ -366,3 +368,48 @@ async def test_auth_provider(
         "test-header-key2": "test-header-value2",
         "cookie": "test-cookie-key1=test-cookie-value1; test-cookie-key2=test-cookie-value2",
     }
+
+
+class TestHttpxAsyncClient(dl_httpx.HttpxAsyncClient):
+    @property
+    def _mutators(self) -> list[dl_httpx.RetryRequestMutator]:
+        return [
+            *super()._mutators,
+            dl_httpx.RequestIdRetryMutator(),
+        ]
+
+
+@pytest.mark.asyncio
+async def test_retry_mutates_request_id(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    retry_policy_factory_settings: dl_retrier.RetryPolicyFactorySettings,
+) -> None:
+    captured_ids: list[str] = []
+
+    def capture_request_id(request: httpx.Request) -> httpx.Response:
+        captured_ids.append(request.headers.get(REQUEST_ID_HEADER, ""))
+        return httpx.Response(500)
+
+    respx_mock.get("https://example.com/api/data").mock(side_effect=capture_request_id)
+
+    async with TestHttpxAsyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(retry_policy_factory_settings),
+        ),
+    ) as client:
+        request = client.prepare_raw_request(
+            "GET",
+            "/api/data",
+            headers={REQUEST_ID_HEADER: "test-base-id"},
+        )
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
+            async with client.send(request):
+                pass
+
+    assert len(captured_ids) == 3
+    assert captured_ids[0] == "test-base-id"
+    assert captured_ids[1] == "test-base-id/2"
+    assert captured_ids[2] == "test-base-id/3"

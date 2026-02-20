@@ -17,6 +17,10 @@ from .models import (
     TypedSchemaDictAnnotation,
     TypedSchemaListAnnotation,
 )
+from .retry_mutator import (
+    RequestIdRetryMutator,
+    RetryRequestMutator,
+)
 from .testing import TestingHttpxClient
 
 
@@ -32,6 +36,8 @@ __all__ = [
     "HttpxSyncClient",
     "NoRetriesHttpxClientException",
     "RequestHttpxClientException",
+    "RequestIdRetryMutator",
+    "RetryRequestMutator",
     "TestingHttpxClient",
     "TypedBaseSchema",
     "TypedSchemaAnnotation",

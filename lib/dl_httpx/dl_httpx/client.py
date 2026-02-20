@@ -23,6 +23,7 @@ import dl_auth
 import dl_configs
 import dl_constants
 from dl_httpx.models import BaseRequest
+from dl_httpx.retry_mutator import RetryRequestMutator
 import dl_retrier
 
 
@@ -132,6 +133,10 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     def _client_name(self) -> str:
         return self.__class__.__name__
 
+    @property
+    def _mutators(self) -> list[RetryRequestMutator]:
+        return []
+
     def _prepare_url(self, url: str) -> str:
         return urljoin(self._base_url, url)
 
@@ -219,6 +224,7 @@ class HttpxSyncRetrier:
     _retry_policy: dl_retrier.RetryPolicy
     _client_name: str
     _logger: logging.Logger
+    _mutators: list[RetryRequestMutator] = attrs.field(factory=list)
 
     def send(
         self,
@@ -228,6 +234,9 @@ class HttpxSyncRetrier:
         last_known_result: httpx.Response | Exception | None = None
 
         for retry in self._retry_policy.iter_retries():
+            for mutator in self._mutators:
+                mutator.on_retry(request, retry)
+
             if retry.sleep_before_seconds > 0:
                 time.sleep(retry.sleep_before_seconds)
 
@@ -282,6 +291,7 @@ class HttpxAsyncRetrier:
     _retry_policy: dl_retrier.RetryPolicy
     _client_name: str
     _logger: logging.Logger
+    _mutators: list[RetryRequestMutator] = attrs.field(factory=list)
 
     async def send(
         self,
@@ -291,6 +301,9 @@ class HttpxAsyncRetrier:
         last_known_result: httpx.Response | Exception | None = None
 
         for retry in self._retry_policy.iter_retries():
+            for mutator in self._mutators:
+                mutator.on_retry(request, retry)
+
             if retry.sleep_before_seconds > 0:
                 await asyncio.sleep(retry.sleep_before_seconds)
 
@@ -373,6 +386,7 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
             retry_policy=retry_policy,
             logger=self._logger,
             client_name=self._client_name,
+            mutators=self._mutators,
         )
         response = retrier.send(self._send, request)
         response = self._process_response(response)
@@ -422,6 +436,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
             retry_policy=retry_policy,
             client_name=self._client_name,
             logger=self._logger,
+            mutators=self._mutators,
         )
         response = await retrier.send(self._send, request)
         response = self._process_response(response)
