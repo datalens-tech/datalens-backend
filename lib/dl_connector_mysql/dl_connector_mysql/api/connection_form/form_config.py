@@ -142,21 +142,28 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
         self,
         connector_settings: ConnectorSettings | None,
     ) -> FormActionApiSchema:
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         return FormActionApiSchema(
-            items=[
-                FormFieldApiSchema(name=CommonFieldName.host, required=True),
-                FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                FormFieldApiSchema(name=CommonFieldName.username, required=True),
-                FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
-                FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-                FormFieldApiSchema(name=MySQLFieldName.enforce_collate),
-                FormFieldApiSchema(name=CommonFieldName.ssl_enable),
-                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
-                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            ],
+            items=self._filter_nulls(
+                [
+                    FormFieldApiSchema(name=CommonFieldName.host, required=True),
+                    FormFieldApiSchema(name=CommonFieldName.port, required=True),
+                    FormFieldApiSchema(name=CommonFieldName.username, required=True),
+                    FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
+                    FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+                    FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                    FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                    if is_invalidation_cache_enabled
+                    else None,
+                    FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                    FormFieldApiSchema(name=MySQLFieldName.enforce_collate),
+                    FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                    FormFieldApiSchema(name=CommonFieldName.ssl_ca),
+                    FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+                ]
+            ),
         )
 
     def _get_create_api_schema(

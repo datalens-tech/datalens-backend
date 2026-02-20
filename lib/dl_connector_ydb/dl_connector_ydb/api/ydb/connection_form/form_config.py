@@ -152,12 +152,19 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         ]
 
     def _get_base_edit_api_schema(self) -> FormActionApiSchema:
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         return FormActionApiSchema(
-            items=[
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-            ]
+            items=self._filter_nulls(
+                [
+                    FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                    FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                    if is_invalidation_cache_enabled
+                    else None,
+                    FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                ]
+            )
         )
 
     def _get_base_create_api_schema(self, edit_api_schema: FormActionApiSchema) -> FormActionApiSchema:
