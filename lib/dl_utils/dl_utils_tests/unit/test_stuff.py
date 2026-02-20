@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from dl_utils.utils import (
-    hide_url_args,
-    join_in_chunks,
-)
+import dl_utils
 
 
 def test_join_in_chunks():
@@ -15,7 +12,7 @@ def test_join_in_chunks():
     max_len = 10
     # ...
     tst_result = list(
-        join_in_chunks(
+        dl_utils.utils.join_in_chunks(
             values,
             sep,
             max_len=max_len,
@@ -44,4 +41,17 @@ def test_join_in_chunks():
     ],
 )
 def test_hide_url_args(url_or_path: str, expected: str):
-    assert hide_url_args(url_or_path) == expected
+    assert dl_utils.utils.hide_url_args(url_or_path) == expected
+
+
+@pytest.mark.parametrize(
+    "request_id,attempt,expected",
+    [
+        ("abc123", 1, "abc123"),
+        ("abc123", 2, "abc123/2"),
+        ("abc123", 3, "abc123/3"),
+        ("parent--sp.abc123", 2, "parent--sp.abc123/2"),
+    ],
+)
+def test_append_retry_suffix(request_id: str, attempt: int, expected: str) -> None:
+    assert dl_utils.append_retry_suffix(request_id, attempt) == expected

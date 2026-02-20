@@ -134,6 +134,12 @@ def request_id_generator(prefix: str | None = None) -> str:
     return result
 
 
+def append_retry_suffix(request_id: str, attempt_number: int) -> str:
+    if attempt_number <= 1:
+        return request_id
+    return f"{request_id}/{attempt_number}"
+
+
 def make_uuid_from_parts(current: str, parent: str | None = None) -> str:
     assert current
 

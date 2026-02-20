@@ -51,3 +51,12 @@ def fixture_mock_auth_provider(
 ) -> dl_auth.AuthProviderProtocol:
     auth_provider = mocker.MagicMock(spec=dl_auth.AuthProviderProtocol)
     return auth_provider
+
+
+@pytest.fixture(name="retry_policy_factory_settings")
+def fixture_retry_policy_factory_settings() -> dl_retrier.RetryPolicyFactorySettings:
+    return dl_retrier.RetryPolicyFactorySettings(
+        DEFAULT_POLICY=dl_retrier.RetryPolicySettings(
+            RETRIES_COUNT=2,
+        ),
+    )
