@@ -143,6 +143,9 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     def _is_async_env(self) -> bool:
         return True
 
+    def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
+        return None
+
     def set_up_routes(self, app: web.Application) -> None:
         app.router.add_route("get", "/ping", PingView)
         app.router.add_route("get", "/ping_ready", PingReadyView)
@@ -250,7 +253,10 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             global_keeper = SecretKeeper()
             if self._settings.US_MASTER_TOKEN:
                 global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
-            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(global_keeper=global_keeper)
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                global_keeper=global_keeper,
+                extra_regex_patterns=self._get_extra_regex_patterns(),
+            )
 
         wrapper = AppWrapper(
             allow_query_cache_usage=self._settings.CACHES_ON,

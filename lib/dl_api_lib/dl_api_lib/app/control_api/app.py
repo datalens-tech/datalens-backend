@@ -87,6 +87,9 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(self._settings.US_CLIENT.RETRY_POLICY),
         )
 
+    def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
+        return None
+
     def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
         conn_opts_mutators_factory = ConnOptionsMutatorsFactory()
 
@@ -144,7 +147,10 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             if self._settings.US_MASTER_TOKEN:
                 # just for example for now. More secrets will be added in BI-6492
                 global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
-            app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(global_keeper=global_keeper)
+            app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                global_keeper=global_keeper,
+                extra_regex_patterns=self._get_extra_regex_patterns(),
+            )
         setup_obfuscation_context_middleware(app)
 
         ReqCtxInfoMiddleware().set_up(app)

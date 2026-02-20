@@ -65,6 +65,9 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
     def get_auth_middlewares(self) -> list[Middleware]:
         raise NotImplementedError()
 
+    def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
+        return None
+
     def set_up_sentry(self, secret_sentry_dsn: str, release: str) -> None:
         configure_sentry_for_aiohttp(
             SentryConfig(
@@ -134,7 +137,10 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
             global_keeper = SecretKeeper()
             if self._settings.FILE_UPLOADER_MASTER_TOKEN:
                 global_keeper.add_secret(self._settings.FILE_UPLOADER_MASTER_TOKEN, "file_uploader_master_token")
-            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(global_keeper=global_keeper)
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                global_keeper=global_keeper,
+                extra_regex_patterns=self._get_extra_regex_patterns(),
+            )
 
         app.on_response_prepare.append(req_id_service.on_response_prepare)
 
