@@ -205,6 +205,7 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
         check_api_schema = self._get_check_api_schema(connector_settings)
 
         form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         return ConnectionForm(
             title=PromQLConnectionInfoProvider.get_title(self._localizer),
@@ -221,12 +222,13 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
                     rc.auth_header_row(
                         self.mode, display_conditions={PromQLFormFieldName.auth_type: PromQLAuthType.header.value}
                     ),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     C.CustomizableRow(
                         items=[
                             C.CheckboxRowItem(name=CommonFieldName.secure, text="HTTPS", default_value=True),
                         ]
                     ),
+                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),
                     rc.data_export_forbidden_row(
                         conn_id=form_params.conn_id,

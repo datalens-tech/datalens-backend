@@ -93,6 +93,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
             raw_sql_levels.append(RawSQLLevel.template)
 
         form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         return ConnectionForm(
             title=GreenplumConnectionInfoProvider.get_title(self._localizer),
@@ -103,8 +104,9 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                     *db_name_section,
                     *username_section,
                     rc.password_row(mode=self.mode),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
+                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),
                     postgres_rc.enforce_collate_row(),
                     rc.data_export_forbidden_row(
