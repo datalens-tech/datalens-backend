@@ -1,5 +1,6 @@
 from dl_connector_ydb.formula.definitions.conditional_blocks import DEFINITIONS_COND_BLOCKS
 from dl_connector_ydb.formula.definitions.functions_aggregation import DEFINITIONS_AGG
+from dl_connector_ydb.formula.definitions.functions_array import DEFINITIONS_ARRAY
 from dl_connector_ydb.formula.definitions.functions_datetime import DEFINITIONS_DATETIME
 from dl_connector_ydb.formula.definitions.functions_hash import DEFINITIONS_HASH
 from dl_connector_ydb.formula.definitions.functions_logical import DEFINITIONS_LOGICAL
@@ -27,4 +28,5 @@ DEFINITIONS = [
     *DEFINITIONS_UNARY,
     *DEFINITIONS_BINARY,
     *DEFINITIONS_TERNARY,
+    *DEFINITIONS_ARRAY,
 ]
