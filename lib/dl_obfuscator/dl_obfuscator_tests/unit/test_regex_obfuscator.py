@@ -87,6 +87,15 @@ class TestStandardFormatPatterns:
         result = obfuscator.obfuscate(text, ObfuscationContext.LOGS)
         assert "some_long_oauth_token_value_1234567890" not in result
 
+    @pytest.mark.parametrize(
+        "keyword",
+        ["basic", "Basic", "BASIC", "bAsIc"],
+    )
+    def test_basic_case_insensitive(self, obfuscator: RegexObfuscator, keyword: str) -> None:
+        text = f"credentials: {keyword} dXNlcjpwYXNzd29yZA=="
+        result = obfuscator.obfuscate(text, ObfuscationContext.LOGS)
+        assert "dXNlcjpwYXNzd29yZA==" not in result
+
 
 class TestExtraPatternsIntegration:
     def test_extra_patterns_combined_with_defaults(self) -> None:

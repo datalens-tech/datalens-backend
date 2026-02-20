@@ -10,12 +10,12 @@ from dl_obfuscator.obfuscators.base import BaseObfuscator
 @attr.s
 class RegexObfuscator(BaseObfuscator):
     DEFAULT_PATTERNS: ClassVar[tuple[str, ...]] = (
-        r"ey[JKL][\w\\-]{13,}\.ey[JKL][\w\\-]{8,}\.[\w\\-]{20,}",  # JWT
-        r"[a-z0-9]{3,20}://[a-zA-Z0-9_\-\\]{3,20}:[^$][^:@/\s]{6,40}@[a-z0-9.\-]{10,}",  # Credentials in URL (user:pass@host)
+        r"ey[JKL][\w-]{13,}\.ey[JKL][\w-]{8,}\.[\w-]{20,}",  # JWT
+        r"[a-z0-9]{3,20}://[a-zA-Z0-9_-]{3,20}:[^$][^:@/\s]{6,40}@[a-z0-9.-]{10,}",  # Credentials in URL
         r"Authorization:\s*\S+(?:\s+\S+)?",
-        r"[B|b][A|a][S|s][I|i][C|c] [A-Za-z0-9+/=]{16,}",
-        r"[B|b][E|e][A|a][R|r][E|e][R|r] \S{20,}",
-        r"[O|o][A|a][U|u][T|t][H|h] \S{20,}",
+        r"[Bb][Aa][Ss][Ii][Cc] [A-Za-z0-9+/=]{16,}",
+        r"[Bb][Ee][Aa][Rr][Ee][Rr] \S{20,}",
+        r"[Oo][Aa][Uu][Tt][Hh] \S{20,}",
     )
 
     patterns: tuple[str, ...] = attr.ib()

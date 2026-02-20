@@ -1,5 +1,6 @@
 import re
 import time
+from typing import Callable
 
 import flaky
 import pytest
@@ -75,7 +76,7 @@ class TestRegexBenchmark:
     def test_sequential_faster_than_combined(
         self,
         scenario_name: str,
-        text_factory: object,
+        text_factory: Callable[[], str],
     ) -> None:
         """Sequential is faster for the hot path: clean text and sparse matches."""
         text = text_factory()
