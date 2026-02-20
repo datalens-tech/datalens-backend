@@ -4,7 +4,10 @@ from typing import Optional
 import attr
 
 from dl_api_connector.form_config.models import rows as C
-from dl_api_connector.form_config.models.base import ConnectionFormMode
+from dl_api_connector.form_config.models.base import (
+    ConnectionFormMode,
+    FormRow,
+)
 from dl_api_connector.form_config.models.common import (
     BooleanField,
     CommonFieldName,
@@ -440,3 +443,20 @@ class RowConstructor:
                 ),
             ]
         )
+
+    def cache_rows(self) -> list[FormRow]:
+        return [
+            C.CollapseRow(
+                inner=True,
+                name=CommonFieldName.cache_settings,
+                text=self._localizer.translate(Translatable("label_cache-settings")),
+            ),
+            C.CacheTTLRow(
+                name=CommonFieldName.cache_ttl_sec,
+                display_conditions={CommonFieldName.cache_settings: "opened"},
+            ),
+            C.CacheInvalidationRow(
+                name=CommonFieldName.cache_invalidation_throttling_interval_sec,
+                display_conditions={CommonFieldName.cache_settings: "opened"},
+            ),
+        ]

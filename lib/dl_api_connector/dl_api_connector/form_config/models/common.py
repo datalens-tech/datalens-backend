@@ -47,11 +47,13 @@ class CommonFieldName(FormFieldName):
     db_name = "db_name"
     raw_sql_level = "raw_sql_level"
     cache_ttl_sec = "cache_ttl_sec"
+    cache_invalidation_throttling_interval_sec = "cache_invalidation_throttling_interval_sec"
     secure = "secure"
     access_token = "access_token"
     token = "token"
     is_auto_create_dashboard = "is_auto_create_dashboard"
     advanced_settings = "advanced_settings"
+    cache_settings = "cache_settings"
     ssl_enable = "ssl_enable"
     data_export_forbidden = "data_export_forbidden"
     ssl_ca = "ssl_ca"
@@ -78,7 +80,7 @@ class AnnotationFieldName(FormFieldName):
 @unique
 class InnerFieldName(Enum):
     """
-    Prepared rows/components can have inner fields that can' be controlled by the config,
+    Prepared rows/components can have inner fields that can't be controlled by the config,
     but can be used in conditions
 
     Each row/component can have its own set of inner fields,
