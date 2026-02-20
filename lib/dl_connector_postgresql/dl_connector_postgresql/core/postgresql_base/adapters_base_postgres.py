@@ -500,7 +500,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
         1186: sa_pg.INTERVAL,  # unsupported
         1700: sa_pg.NUMERIC,  # untested
         2950: sa_pg.UUID,  # untested
-        11020: sa_pg.ENUM,  # untested
+        3500: sa_pg.ENUM,  # TODO: BI-7051  # unsupported: "CREATE TYPE XXX AS ENUM" creates new type with new OID
     }
 
     @staticmethod
