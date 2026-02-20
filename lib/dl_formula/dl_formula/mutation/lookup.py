@@ -208,6 +208,8 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
         err_node = _get_arg_error_node(old)
         if err_node is not None:
             return err_node
+        if ignore_dim_errors := old.ignore_dimensions.list_node_type(aux_nodes.ErrorNode):
+            return ignore_dim_errors[0]
 
         mutator = LOOKUP_MUTATOR_REGISTRY[func_name]
 
