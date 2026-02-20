@@ -171,7 +171,15 @@ class TenantCommon(TenantDef):
 
 
 @attr.s(frozen=True)
+class FeatureFlags:
+    """Temporary feature flags."""
+
+    is_invalidation_cache_enabled: bool = attr.ib(default=False)
+
+
+@attr.s(frozen=True)
 class FormConfigParams:
     conn_id: str | None = attr.ib(default=None)
     exports_history_url_path: str | None = attr.ib(default=None)
     user_id: str | None = attr.ib(default=None)
+    feature_flags: FeatureFlags = attr.ib(factory=FeatureFlags)

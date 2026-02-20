@@ -12,6 +12,7 @@ from typing import (
 
 import attr
 
+from dl_api_commons.base_models import FeatureFlags
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
 from dl_api_lib.app_settings import AppSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
@@ -110,6 +111,9 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
     def _get_connector_availability(self, settings: TSettings) -> Optional[ConnectorAvailabilityConfig]:
         raise NotImplementedError
 
+    def _get_feature_flags(self, settings: TSettings) -> FeatureFlags:
+        return FeatureFlags()
+
     @property
     def _extra_translation_configs(self) -> set[TranslationConfig]:
         return set()
@@ -179,5 +183,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             ca_data=ca_data,
             pivot_transformer_factory=pivot_transformer_factory,
             exports_history_url_path=settings.EXPORTS_HISTORY_URL_PATH,
+            feature_flags=self._get_feature_flags(settings),
         )
         return sr_factory

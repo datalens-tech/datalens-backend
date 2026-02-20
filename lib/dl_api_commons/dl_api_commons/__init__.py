@@ -1,4 +1,6 @@
 from .base_models import (
+    FeatureFlags,
+    FormConfigParams,
     RequestContextInfo,
     TenantCommon,
     TenantDef,
@@ -13,6 +15,8 @@ from .utils import (
 
 
 __all__ = (
+    "FeatureFlags",
+    "FormConfigParams",
     "NotFoundErr",
     "RequestContextInfo",
     "RequestObfuscator",
