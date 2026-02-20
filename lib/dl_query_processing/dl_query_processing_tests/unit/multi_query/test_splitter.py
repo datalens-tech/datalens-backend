@@ -1,9 +1,14 @@
+import pytest
+
 from dl_constants.enums import (
     JoinType,
     OrderDirection,
 )
 import dl_formula.core.fork_nodes as formula_fork_nodes
 from dl_formula.core.index import NodeHierarchyIndex
+from dl_formula.inspect.function import can_be_aggregate
+from dl_formula.inspect.registry.item import BasicOpItem
+from dl_formula.inspect.registry.registry import LOWLEVEL_OP_REGISTRY
 from dl_formula.shortcuts import n
 from dl_query_processing.compilation.primitives import (
     AvatarFromObject,
@@ -20,6 +25,7 @@ from dl_query_processing.enums import (
     ExecutionLevel,
     QueryPart,
 )
+from dl_query_processing.exc import InconsistentSelectAggregation
 from dl_query_processing.multi_query.mutators.splitter_based import SplitterMultiQueryMutator
 from dl_query_processing.multi_query.splitters.mask_based import (
     AddFormulaInfo,
@@ -29,6 +35,7 @@ from dl_query_processing.multi_query.splitters.mask_based import (
     SubqueryType,
 )
 from dl_query_processing.multi_query.splitters.prefiltered import PrefilteredFieldMultiQuerySplitter
+from dl_query_processing.multi_query.splitters.query_fork import QueryForkQuerySplitter
 from dl_query_processing.utils.name_gen import PrefixedIdGen
 
 
@@ -517,3 +524,76 @@ def test_field_splitter():
         ],
     )
     assert expected_result == actual_result
+
+
+def test_mutate_cropped_query_inconsistent_aggregation():
+    """
+    Test that mutate_cropped_query raises InconsistentSelectAggregation
+    """
+    already_registered = LOWLEVEL_OP_REGISTRY.can_be_aggregate("sum")
+    if not already_registered:
+        LOWLEVEL_OP_REGISTRY.add(
+            BasicOpItem(
+                name="sum",
+                arg_cnt=1,
+                is_function=True,
+                is_aggregate=True,
+                is_window=False,
+                uses_default_ordering=False,
+                supports_grouping=False,
+                supports_ordering=False,
+                supports_lod=True,
+                supports_ignore_dimensions=False,
+                supports_bfb=True,
+            )
+        )
+    can_be_aggregate.cache_clear()
+    splitter = QueryForkQuerySplitter()
+    dim_formula = CompiledFormulaInfo(
+        alias="dim_1",
+        formula_obj=n.formula(n.field("asd")),
+        original_field_id="field_dim",
+        avatar_ids={"ava_1"},
+    )
+    query = CompiledQuery(
+        id="qq",
+        level_type=ExecutionLevel.source_db,
+        select=[
+            # Dimension (will be skipped because it's in group_by)
+            dim_formula,
+            # Aggregated expression
+            CompiledFormulaInfo(
+                alias="agg_1",
+                formula_obj=n.formula(n.func.SUM(n.field("qwe"))),
+                original_field_id="field_agg",
+                avatar_ids={"ava_1"},
+            ),
+            # Non-aggregated expression
+            CompiledFormulaInfo(
+                alias="non_agg_1",
+                formula_obj=n.formula(n.field("zxc")),
+                original_field_id="field_non_agg",
+                avatar_ids={"ava_1"},
+            ),
+        ],
+        group_by=[dim_formula],
+        joined_from=JoinedFromObject(
+            root_from_id="ava_1",
+            froms=[
+                AvatarFromObject(
+                    id="ava_1",
+                    avatar_id="ava_1",
+                    source_id="src_1",
+                    alias="ava_1",
+                    columns=(
+                        FromColumn(id="qwe", name="qwe"),
+                        FromColumn(id="asd", name="asd"),
+                        FromColumn(id="zxc", name="zxc"),
+                    ),
+                ),
+            ],
+        ),
+    )
+
+    with pytest.raises(InconsistentSelectAggregation):
+        splitter.mutate_cropped_query(query)

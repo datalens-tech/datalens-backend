@@ -19,6 +19,9 @@ python = ">=3.10, <3.13"
 pytz = "*"
 typing-extensions = "*"
 
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
+
 [tool.deptry.package_module_name_map]
 python-dateutil = "dateutil"
 

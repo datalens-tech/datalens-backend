@@ -3578,7 +3578,7 @@ description = "BI YDB SQLAlchemy Dialect"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 packaging = "*"
@@ -9520,4 +9520,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "589d40323dabb0c83da12722449859a24369eb189cbaf1c90de7becee954d46d"
+content-hash = "e3f67fcd3f0570d672641bbd458ea6ee68d9c1c4767968119e8ef4101e05d954"

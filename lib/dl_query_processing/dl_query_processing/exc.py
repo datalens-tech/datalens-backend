@@ -70,6 +70,11 @@ class InvalidQueryStructure(DLBaseException):
     default_message = "Failed to compile data query."
 
 
+class InconsistentSelectAggregation(InvalidQueryStructure):
+    err_code = InvalidQueryStructure.err_code + ["INCONSISTENT_AGGREGATION"]
+    default_message = "Inconsistent aggregation among SELECT items."
+
+
 class BlockSpecError(DLBaseException):
     err_code = DLBaseException.err_code + ["BLOCK"]
     default_message = "Block spec error."
