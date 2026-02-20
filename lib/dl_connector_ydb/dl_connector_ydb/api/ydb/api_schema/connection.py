@@ -3,12 +3,10 @@ from __future__ import annotations
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
-from dl_api_connector.api_schema.connection_base_fields import (
-    cache_ttl_field,
-    secret_string_field,
-)
+from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
+    QueryCacheMixin,
     RawSQLLevelMixin,
 )
 from dl_api_connector.api_schema.connection_sql import (
@@ -22,7 +20,7 @@ from dl_connector_ydb.core.ydb.constants import YDBAuthTypeMode
 from dl_connector_ydb.core.ydb.us_connection import YDBConnection
 
 
-class YDBConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, ConnectionSchema):
+class YDBConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, QueryCacheMixin, ConnectionSchema):
     TARGET_CLS = YDBConnection
 
     auth_type = ma_fields.Enum(
@@ -48,8 +46,6 @@ class YDBConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, Connection
     username = ma_fields.String(
         attribute="data.username", required=False, allow_none=True, bi_extra=FieldExtra(editable=True)
     )
-
-    cache_ttl_sec = cache_ttl_field(attribute="data.cache_ttl_sec")
 
     ssl_enable = core_ma_fields.OnOffField(
         attribute="data.ssl_enable",
