@@ -118,8 +118,8 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
                     token_row,
                     C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
-                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     secure_row,
+                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),
                     rc.data_export_forbidden_row(
                         conn_id=form_params.conn_id,
