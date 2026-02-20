@@ -150,6 +150,7 @@ class MySQLConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
                 FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
                 FormFieldApiSchema(name=MySQLFieldName.enforce_collate),
                 FormFieldApiSchema(name=CommonFieldName.ssl_enable),
