@@ -1,11 +1,12 @@
 import io
+from pathlib import Path
 
 from dl_constants.enums import UserDataType
 from dl_file_secure_reader_lib.resources.reader import parse_excel_data
 from dl_file_uploader_worker_lib.utils.converter_parsing_utils import guess_types_and_header_excel
 
 
-def test_excel_type_detection_cast(test_types_excel_file):
+def test_excel_type_detection_cast(test_types_excel_file: Path) -> None:
     with open(test_types_excel_file, "rb") as f:
         excel_data = parse_excel_data(io.BytesIO(f.read()), feature_excel_read_only=True)
 
