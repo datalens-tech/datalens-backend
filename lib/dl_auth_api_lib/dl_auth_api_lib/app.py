@@ -46,6 +46,9 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
     def get_auth_middlewares(self) -> list[Middleware]:
         raise NotImplementedError()
 
+    def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
+        return None
+
     def set_up_sentry(self, secret_sentry_dsn: str, release: str | None) -> None:
         configure_sentry_for_aiohttp(
             SentryConfig(
@@ -82,7 +85,9 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         )
 
         if self._settings.obfuscation_enabled:
-            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators()
+            app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                extra_regex_patterns=self._get_extra_regex_patterns(),
+            )
 
         app.router.add_route("get", "/oauth/ping", PingView)
 
