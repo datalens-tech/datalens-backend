@@ -55,12 +55,18 @@ class ObfuscationEngine:
 
 def create_base_obfuscators(
     global_keeper: SecretKeeper | None = None,
+    extra_regex_patterns: tuple[str, ...] | None = None,
 ) -> tuple[BaseObfuscator, ...]:
     obfuscators: list[BaseObfuscator] = []
     if global_keeper is None:
         global_keeper = SecretKeeper()
     obfuscators.append(SecretObfuscator(keeper=global_keeper))
-    obfuscators.append(RegexObfuscator())
+
+    regex_patterns = RegexObfuscator.DEFAULT_PATTERNS
+    if extra_regex_patterns is not None:
+        regex_patterns = regex_patterns + extra_regex_patterns
+    obfuscators.append(RegexObfuscator.create(patterns=regex_patterns))
+
     return tuple(obfuscators)
 
 
