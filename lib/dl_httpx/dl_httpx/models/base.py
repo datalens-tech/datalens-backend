@@ -5,6 +5,7 @@ from typing import (
 
 import attrs
 
+import dl_auth
 import dl_constants
 import dl_pydantic
 import dl_utils
@@ -24,17 +25,19 @@ class ParentContext:
 @attrs.define(kw_only=True, frozen=True)
 class BaseRequest:
     parent_context: ParentContextProtocol = attrs.field(factory=ParentContext)
+    auth_provider: dl_auth.AuthProviderProtocol | None = None
     request_id: str = attrs.field()
 
     @request_id.default
     def _generate_request_id(self) -> str:
         current = dl_utils.request_id_generator()
-        if self.parent_context.request_id is not None:
-            return dl_utils.make_uuid_from_parts(
-                current=current,
-                parent=self.parent_context.request_id,
-            )
-        return current
+        if self.parent_context.request_id is None:
+            return current
+
+        return dl_utils.make_uuid_from_parts(
+            current=current,
+            parent=self.parent_context.request_id,
+        )
 
     @property
     def path(self) -> str:

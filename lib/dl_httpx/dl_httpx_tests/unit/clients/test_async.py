@@ -413,3 +413,41 @@ async def test_retry_mutates_request_id(
     assert captured_ids[0] == "test-base-id"
     assert captured_ids[1] == "test-base-id/2"
     assert captured_ids[2] == "test-base-id/3"
+
+
+@pytest.mark.asyncio
+async def test_request_with_auth_provider(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_auth_provider: mock.AsyncMock,
+) -> None:
+    mock_auth_provider.get_headers.return_value = {"base-header-key": "base-header-value"}
+    mock_auth_provider.get_cookies.return_value = {"base-cookie-key": "base-cookie-value"}
+
+    request_mock_auth_provider = mock.AsyncMock(spec=dl_auth.AuthProviderProtocol)
+    request_mock_auth_provider.get_headers.return_value = {"request-header-key": "request-header-value"}
+    request_mock_auth_provider.get_cookies.return_value = {"request-cookie-key": "request-cookie-value"}
+
+    mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
+    async with dl_httpx.HttpxAsyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            auth_provider=mock_auth_provider,
+        ),
+    ) as client:
+        request = client.prepare_raw_request(
+            "GET",
+            "/api/data",
+            auth_provider=request_mock_auth_provider,
+        )
+        async with client.send(request) as response:
+            assert response.status_code == 200
+
+    assert mock_route.call_count == 1
+    request = mock_route.calls.last.request
+    assert request.headers == {
+        "host": "example.com",
+        "request-header-key": "request-header-value",
+        "cookie": "request-cookie-key=request-cookie-value",
+    }

@@ -140,18 +140,42 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     def _prepare_url(self, url: str) -> str:
         return urljoin(self._base_url, url)
 
-    def _prepare_headers(self, headers: dict[str, str] | None = None) -> dict[str, str]:
+    def _prepare_auth_provider(
+        self,
+        auth_provider: dl_auth.AuthProviderProtocol | None = None,
+    ) -> dl_auth.AuthProviderProtocol:
+        if auth_provider is not None:
+            LOGGER.debug("Client level auth_provider is ignored, using Request level auth_provider")
+            return auth_provider
+
+        return self._auth_provider
+
+    def _prepare_headers(
+        self,
+        auth_provider: dl_auth.AuthProviderProtocol,
+        headers: dict[str, str] | None = None,
+    ) -> dict[str, str]:
         result = self._base_headers.copy()
-        result.update(self._auth_provider.get_headers())
+
+        result.update(auth_provider.get_headers())
+
         if headers:
             result.update(headers)
+
         return result
 
-    def _prepare_cookies(self, cookies: dict[str, str] | None = None) -> dict[str, str]:
+    def _prepare_cookies(
+        self,
+        auth_provider: dl_auth.AuthProviderProtocol,
+        cookies: dict[str, str] | None = None,
+    ) -> dict[str, str]:
         result = self._base_cookies.copy()
-        result.update(self._auth_provider.get_cookies())
+
+        result.update(auth_provider.get_cookies())
+
         if cookies:
             result.update(cookies)
+
         return result
 
     def prepare_request(self, request: BaseRequest) -> httpx.Request:
@@ -162,6 +186,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             cookies=request.cookies,
             params=request.query_params,
             json=request.body,
+            auth_provider=request.auth_provider,
         )
 
     def prepare_raw_request(
@@ -172,12 +197,15 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
         cookies: dict[str, str] | None = None,
         params: dict[str, str] | None = None,
         json: Any = None,
+        auth_provider: dl_auth.AuthProviderProtocol | None = None,
     ) -> httpx.Request:
+        auth_provider = self._prepare_auth_provider(auth_provider=auth_provider)
+
         request = httpx.Request(
             method=method,
             url=self._prepare_url(url),
-            headers=self._prepare_headers(headers),
-            cookies=self._prepare_cookies(cookies),
+            headers=self._prepare_headers(auth_provider=auth_provider, headers=headers),
+            cookies=self._prepare_cookies(auth_provider=auth_provider, cookies=cookies),
             params=params,
             json=json,
         )
