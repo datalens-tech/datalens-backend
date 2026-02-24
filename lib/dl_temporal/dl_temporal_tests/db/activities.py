@@ -2,6 +2,7 @@ import logging
 
 import dl_pydantic
 import dl_temporal
+import dl_temporal_tests.db.common as common
 
 
 LOGGER = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ class ActivityParams(dl_temporal.BaseActivityParams):
     activity_date_param: dl_pydantic.JsonableDate
     activity_datetime_param: dl_pydantic.JsonableDatetime
     activity_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
+    activity_nested_param: common.NestedModel
     return_error: bool
 
     start_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=30)
@@ -34,6 +36,7 @@ class ActivityResult(dl_temporal.BaseActivityResult):
     activity_date_result: dl_pydantic.JsonableDate
     activity_datetime_result: dl_pydantic.JsonableDatetime
     activity_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
+    activity_nested_result: common.NestedModel
 
 
 class EmptyActivityResult(dl_temporal.BaseActivityResult):
@@ -67,4 +70,5 @@ class Activity(dl_temporal.BaseActivity):
             activity_date_result=params.activity_date_param,
             activity_datetime_result=params.activity_datetime_param,
             activity_datetime_with_timezone_result=params.activity_datetime_with_timezone_param,
+            activity_nested_result=common.NestedModel(test_int=params.activity_nested_param.test_int + 1),
         )
