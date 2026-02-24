@@ -20,10 +20,6 @@ import dl_pydantic
 LOGGER = logging.getLogger(__name__)
 
 
-# Deprecated, use dl_pydantic instead
-BaseSchema = dl_pydantic.BaseSchema
-
-
 class Response(aiohttp_web.Response):
     @classmethod
     def with_bytes(
@@ -62,7 +58,7 @@ class Response(aiohttp_web.Response):
     @classmethod
     def with_model(
         cls,
-        schema: BaseSchema,
+        schema: dl_pydantic.BaseSchema,
         status: int = http.HTTPStatus.OK,
         reason: str | None = None,
         headers: aiohttp_typedefs.LooseHeaders | None = None,
@@ -92,7 +88,7 @@ class ResponseException(Response, Exception):
     ...
 
 
-class BaseResponseSchema(BaseSchema):
+class BaseResponseSchema(dl_pydantic.BaseSchema):
     ...
 
 
@@ -128,10 +124,10 @@ class BadRequestResponseSchema(ErrorResponseSchema):
     status_code: pydantic.json_schema.SkipJsonSchema[http.HTTPStatus] = http.HTTPStatus.BAD_REQUEST
 
 
-class BaseRequestSchema(BaseSchema):
-    path: BaseSchema
-    query: BaseSchema
-    body: BaseSchema
+class BaseRequestSchema(dl_pydantic.BaseSchema):
+    path: dl_pydantic.BaseSchema
+    query: dl_pydantic.BaseSchema
+    body: dl_pydantic.BaseSchema
 
     @classmethod
     async def _get_body(cls, request: aiohttp.web.Request) -> dict[str, Any] | None:
