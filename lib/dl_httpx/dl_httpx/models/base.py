@@ -1,12 +1,10 @@
-from typing import (
-    Any,
-    Protocol,
-)
+from typing import Protocol
 
 import attrs
 
 import dl_auth
 import dl_constants
+import dl_json
 import dl_pydantic
 import dl_utils
 
@@ -52,7 +50,7 @@ class BaseRequest:
         return {}
 
     @property
-    def body(self) -> dict[str, Any] | None:
+    def body(self) -> dl_json.JsonSerializableMapping | None:
         return None
 
     @property
@@ -70,7 +68,7 @@ class BaseRequest:
 BaseSchema = dl_pydantic.BaseSchema
 
 
-class BaseResponseSchema(BaseSchema):
+class BaseResponseSchema(dl_pydantic.BaseSchema):
     ...
 
 
