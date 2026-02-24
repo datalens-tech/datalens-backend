@@ -5,6 +5,7 @@ import pytest
 
 import dl_pydantic
 import dl_temporal
+import dl_temporal_tests.db.common as common
 import dl_temporal_tests.db.workflows as workflows
 
 
@@ -31,6 +32,7 @@ async def test_default(
         workflow_date_param=dl_pydantic.JsonableDate.today(),
         workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.timezone.utc),
         workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.timezone.utc),
+        workflow_nested_param=common.NestedModel(test_int=1),
         parent_context=dl_temporal.ParentContext(request_id="parent_request_id"),
         return_error=False,
     )
@@ -51,6 +53,7 @@ async def test_default(
     assert result.workflow_uuid_result == params.workflow_uuid_param
     assert result.workflow_datetime_result == params.workflow_datetime_param
     assert result.workflow_datetime_with_timezone_result == params.workflow_datetime_with_timezone_param
+    assert result.workflow_nested_result == common.NestedModel(test_int=params.workflow_nested_param.test_int + 3)
 
     workflow_desc = await workflow_handler.describe()
     assert workflow_desc.search_attributes.get(dl_temporal.base.SearchAttribute.RESULT_TYPE) == [
@@ -77,6 +80,7 @@ async def test_error(
         workflow_date_param=dl_pydantic.JsonableDate.today(),
         workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.timezone.utc),
         workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.timezone.utc),
+        workflow_nested_param=common.NestedModel(test_int=1),
         return_error=True,
     )
     workflow_handler = await temporal_client.start_workflow(

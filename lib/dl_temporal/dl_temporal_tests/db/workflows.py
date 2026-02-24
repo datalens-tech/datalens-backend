@@ -6,6 +6,7 @@ import temporalio.workflow
 with temporalio.workflow.unsafe.imports_passed_through():
     import dl_pydantic
     import dl_temporal_tests.db.activities as activities
+    import dl_temporal_tests.db.common as common
 
 import dl_temporal
 
@@ -24,6 +25,7 @@ class WorkflowParams(dl_temporal.BaseWorkflowParams):
     workflow_date_param: dl_pydantic.JsonableDate
     workflow_datetime_param: dl_pydantic.JsonableDatetime
     workflow_datetime_with_timezone_param: dl_pydantic.JsonableDatetimeWithTimeZone
+    workflow_nested_param: common.NestedModel
     return_error: bool
 
     execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(seconds=1)
@@ -40,6 +42,7 @@ class WorkflowResult(dl_temporal.BaseWorkflowResult):
     workflow_date_result: dl_pydantic.JsonableDate
     workflow_datetime_result: dl_pydantic.JsonableDatetime
     workflow_datetime_with_timezone_result: dl_pydantic.JsonableDatetimeWithTimeZone
+    workflow_nested_result: common.NestedModel
 
     @property
     def search_attributes(self) -> list[temporalio.common.SearchAttributeUpdate]:
@@ -81,6 +84,7 @@ class Workflow(dl_temporal.BaseWorkflow):
                 activity_date_param=params.workflow_date_param,
                 activity_datetime_param=params.workflow_datetime_param,
                 activity_datetime_with_timezone_param=params.workflow_datetime_with_timezone_param,
+                activity_nested_param=common.NestedModel(test_int=params.workflow_nested_param.test_int + 1),
                 parent_context=params.parent_context,
                 return_error=params.return_error,
             ),
@@ -101,6 +105,7 @@ class Workflow(dl_temporal.BaseWorkflow):
                 workflow_date_result=result.activity_date_result,
                 workflow_datetime_result=result.activity_datetime_result,
                 workflow_datetime_with_timezone_result=result.activity_datetime_with_timezone_result,
+                workflow_nested_result=common.NestedModel(test_int=result.activity_nested_result.test_int + 1),
             )
 
         raise NotImplementedError(f"Unexpected result type: {type(result)}")

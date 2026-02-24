@@ -11,6 +11,7 @@ import dl_json
 class BaseModel(pydantic.BaseModel):
     model_config = pydantic.ConfigDict(
         populate_by_name=True,
+        # Comment for debugging purposes
         hide_input_in_errors=True,
     )
 

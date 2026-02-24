@@ -7,6 +7,7 @@ import temporalio.service
 
 import dl_pydantic
 import dl_temporal
+import dl_temporal_tests.db.common as common
 import dl_temporal_tests.db.workflows as workflows
 
 
@@ -28,6 +29,7 @@ def fixture_workflow_params() -> workflows.WorkflowParams:
         workflow_date_param=dl_pydantic.JsonableDate.today(),
         workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.timezone.utc),
         workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.timezone.utc),
+        workflow_nested_param=common.NestedModel(test_int=1),
         return_error=False,
     )
 
