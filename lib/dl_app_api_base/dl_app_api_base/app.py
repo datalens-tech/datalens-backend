@@ -2,6 +2,7 @@ import re
 from typing import (
     Generic,
     Iterator,
+    Mapping,
     TypeVar,
 )
 
@@ -149,11 +150,18 @@ class HttpServerAppFactoryMixin(
         ]
 
     @dl_app_base.singleton_class_method_result
+    async def _get_response_error_handler_map(
+        self,
+    ) -> Mapping[type[Exception], handlers.ErrorResponseSchema]:
+        return error_handling.DEFAULT_ERROR_MAP
+
+    @dl_app_base.singleton_class_method_result
     async def _get_response_error_handlers(
         self,
     ) -> list[error_handling.ErrorHandlerProtocol]:
+        error_map = await self._get_response_error_handler_map()
         return [
-            error_handling.MapErrorHandler(map=error_handling.DEFAULT_ERROR_MAP).process,
+            error_handling.MapErrorHandler(map=error_map).process,
         ]
 
     @dl_app_base.singleton_class_method_result
