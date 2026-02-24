@@ -210,11 +210,21 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return cls.model_fields["type"].alias or "type"
 
 
+class TypedBaseSchema(TypedBaseModel, base.BaseSchema):
+    ...
+
+
+TypedBaseSchemaT = TypeVar("TypedBaseSchemaT", bound=TypedBaseSchema)
+
+
 if TYPE_CHECKING:
     TypedAnnotation = Annotated[TypedBaseModelT, ...]
     TypedListAnnotation = Annotated[list[TypedBaseModelT], ...]
     TypedDictAnnotation = Annotated[dict[str, TypedBaseModelT], ...]
     TypedDictWithTypeKeyAnnotation = Annotated[dict[str, TypedBaseModelT], ...]
+    TypedSchemaAnnotation = Annotated[TypedBaseSchemaT, ...]
+    TypedSchemaListAnnotation = Annotated[list[TypedBaseSchemaT], ...]
+    TypedSchemaDictAnnotation = Annotated[dict[str, TypedBaseSchemaT], ...]
 else:
 
     class TypedAnnotation:
@@ -245,11 +255,39 @@ else:
                 pydantic.BeforeValidator(base_class.dict_with_type_key_factory),
             ]
 
+    class TypedSchemaAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSchemaT) -> Any:
+            return Annotated[
+                base_class,
+                pydantic.BeforeValidator(base_class.factory),
+                pydantic.SerializeAsAny(),
+            ]
+
+    class TypedSchemaListAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSchemaT) -> Any:
+            return Annotated[
+                list[base_class],
+                pydantic.BeforeValidator(base_class.list_factory),
+                pydantic.SerializeAsAny(),
+            ]
+
+    class TypedSchemaDictAnnotation:
+        def __class_getitem__(cls, base_class: TypedBaseSchemaT) -> Any:
+            return Annotated[
+                dict[str, base_class],
+                pydantic.BeforeValidator(base_class.dict_factory),
+                pydantic.SerializeAsAny(),
+            ]
+
 
 __all__ = [
     "TypedAnnotation",
     "TypedBaseModel",
+    "TypedBaseSchema",
     "TypedDictAnnotation",
     "TypedDictWithTypeKeyAnnotation",
     "TypedListAnnotation",
+    "TypedSchemaAnnotation",
+    "TypedSchemaDictAnnotation",
+    "TypedSchemaListAnnotation",
 ]

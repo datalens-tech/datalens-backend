@@ -357,7 +357,7 @@ def test_auth_provider(
     }
 
 
-class TestHttpxSyncClient(dl_httpx.HttpxSyncClient):
+class HttpxSyncTestClient(dl_httpx.HttpxSyncClient):
     @property
     def _mutators(self) -> list[dl_httpx.RetryRequestMutator]:
         return [
@@ -379,7 +379,7 @@ def test_retry_mutates_request_id(
 
     respx_mock.get("https://example.com/api/data").mock(side_effect=capture_request_id)
 
-    with TestHttpxSyncClient.from_dependencies(
+    with HttpxSyncTestClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
             base_url="https://example.com",
             ssl_context=ssl_context,

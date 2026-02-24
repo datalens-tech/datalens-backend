@@ -63,21 +63,8 @@ class BaseRequest:
         return {}
 
 
-class BaseSchema(dl_pydantic.BaseSchema):
-    def model_get_body(
-        self,
-        *,
-        exclude_unset: bool = False,
-        exclude_defaults: bool = False,
-        exclude_none: bool = False,
-    ) -> dict[str, Any]:
-        return self.model_dump(
-            mode="json",
-            by_alias=True,
-            exclude_none=exclude_none,
-            exclude_unset=exclude_unset,
-            exclude_defaults=exclude_defaults,
-        )
+# Deprecated, use dl_pydantic instead
+BaseSchema = dl_pydantic.BaseSchema
 
 
 class BaseResponseSchema(BaseSchema):
