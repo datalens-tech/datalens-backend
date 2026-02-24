@@ -3,11 +3,11 @@ import typing
 import pydantic
 import pytest
 
-import dl_httpx
+import dl_pydantic
 
 
 def test_default() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child1(Base):
@@ -30,7 +30,7 @@ def test_default() -> None:
 
 
 def test_type_field_name_alias() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         type: str = pydantic.Field(alias="test_type_field_name")
 
     class Child(Base):
@@ -42,7 +42,7 @@ def test_type_field_name_alias() -> None:
 
 
 def test_already_deserialized() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -55,7 +55,7 @@ def test_already_deserialized() -> None:
 
 
 def test_not_a_dict_data() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -63,7 +63,7 @@ def test_not_a_dict_data() -> None:
 
     Base.register("child", Child)
 
-    class Root(dl_httpx.BaseResponseSchema):
+    class Root(dl_pydantic.BaseSchema):
         child: Child
 
     with pytest.raises(ValueError):
@@ -71,7 +71,7 @@ def test_not_a_dict_data() -> None:
 
 
 def test_already_registered() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -88,10 +88,10 @@ def test_already_registered() -> None:
 
 
 def test_not_subclass() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
-    class Base2(dl_httpx.TypedBaseSchema):
+    class Base2(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base2):
@@ -102,7 +102,7 @@ def test_not_subclass() -> None:
 
 
 def test_unknown_type() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     with pytest.raises(ValueError):
@@ -110,10 +110,10 @@ def test_unknown_type() -> None:
 
 
 def test_multiple_bases() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
-    class Base2(dl_httpx.TypedBaseSchema):
+    class Base2(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -130,7 +130,7 @@ def test_multiple_bases() -> None:
 
 
 def test_list_factory_default() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -144,7 +144,7 @@ def test_list_factory_default() -> None:
 
 
 def test_list_factory_not_sequence() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -157,7 +157,7 @@ def test_list_factory_not_sequence() -> None:
 
 
 def test_dict_factory_default() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -171,7 +171,7 @@ def test_dict_factory_default() -> None:
 
 
 def test_dict_factory_not_dict() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -184,7 +184,7 @@ def test_dict_factory_not_dict() -> None:
 
 
 def test_annotation() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -192,8 +192,8 @@ def test_annotation() -> None:
 
     Base.register("child", Child)
 
-    class Root(dl_httpx.BaseResponseSchema):
-        child: dl_httpx.TypedSchemaAnnotation[Base]
+    class Root(dl_pydantic.BaseSchema):
+        child: dl_pydantic.TypedSchemaAnnotation[Base]
 
     root = Root.model_validate({"child": {"type": "child", "value": "test"}})
 
@@ -203,7 +203,7 @@ def test_annotation() -> None:
 
 
 def test_optional_annotation() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -211,8 +211,8 @@ def test_optional_annotation() -> None:
 
     Base.register("child", Child)
 
-    class Root(dl_httpx.BaseResponseSchema):
-        child: typing.Optional[dl_httpx.TypedSchemaAnnotation[Base]] = None
+    class Root(dl_pydantic.BaseSchema):
+        child: typing.Optional[dl_pydantic.TypedSchemaAnnotation[Base]] = None
 
     root = Root.model_validate({"child": {"type": "child", "value": "test"}})
     assert isinstance(root.child, Child)
@@ -228,7 +228,7 @@ def test_optional_annotation() -> None:
 
 
 def test_list_annotation() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -236,8 +236,8 @@ def test_list_annotation() -> None:
 
     Base.register("child", Child)
 
-    class Root(dl_httpx.BaseResponseSchema):
-        children: dl_httpx.TypedSchemaListAnnotation[Base] = pydantic.Field(default_factory=list)
+    class Root(dl_pydantic.BaseSchema):
+        children: dl_pydantic.TypedSchemaListAnnotation[Base] = pydantic.Field(default_factory=list)
 
     root = Root.model_validate({"children": [{"type": "child", "value": "test"}]})
 
@@ -247,7 +247,7 @@ def test_list_annotation() -> None:
 
 
 def test_dict_annotation() -> None:
-    class Base(dl_httpx.TypedBaseSchema):
+    class Base(dl_pydantic.TypedBaseSchema):
         ...
 
     class Child(Base):
@@ -255,8 +255,8 @@ def test_dict_annotation() -> None:
 
     Base.register("child", Child)
 
-    class Root(dl_httpx.BaseResponseSchema):
-        children: dl_httpx.TypedSchemaDictAnnotation[Base] = pydantic.Field(default_factory=dict)
+    class Root(dl_pydantic.BaseSchema):
+        children: dl_pydantic.TypedSchemaDictAnnotation[Base] = pydantic.Field(default_factory=dict)
 
     root = Root.model_validate({"children": {"child": {"type": "child", "value": "test"}}})
 

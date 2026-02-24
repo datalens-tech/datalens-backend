@@ -20,8 +20,8 @@ import dl_pydantic
 LOGGER = logging.getLogger(__name__)
 
 
-class BaseSchema(dl_pydantic.BaseSchema):
-    ...
+# Deprecated, use dl_pydantic instead
+BaseSchema = dl_pydantic.BaseSchema
 
 
 class Response(aiohttp_web.Response):
