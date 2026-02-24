@@ -81,6 +81,7 @@ class Workflow(dl_temporal.BaseWorkflow):
                 activity_date_param=params.workflow_date_param,
                 activity_datetime_param=params.workflow_datetime_param,
                 activity_datetime_with_timezone_param=params.workflow_datetime_with_timezone_param,
+                parent_context=params.parent_context,
                 return_error=params.return_error,
             ),
         )

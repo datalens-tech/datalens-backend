@@ -31,6 +31,7 @@ async def test_default(
         workflow_date_param=dl_pydantic.JsonableDate.today(),
         workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.timezone.utc),
         workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.timezone.utc),
+        parent_context=dl_temporal.ParentContext(request_id="parent_request_id"),
         return_error=False,
     )
     workflow_handler = await temporal_client.start_workflow(

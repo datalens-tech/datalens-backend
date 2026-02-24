@@ -20,6 +20,7 @@ import temporalio.api.common.v1
 import temporalio.common
 import temporalio.converter
 import temporalio.workflow
+from typing_extensions import Self
 
 import dl_json
 
@@ -56,6 +57,19 @@ class BaseModel(dl_pydantic.BaseModel):
     def model_dump_for_logging(self) -> str:
         data = self.model_dump(mode="json")
         return dl_json.dumps_str(data)
+
+
+class ParentContext(BaseModel):
+    request_id: str | None = pydantic.Field(default=None)
+
+    @pydantic.model_validator(mode="wrap")
+    @classmethod
+    def _coerce_sandbox_instance(cls, v: Any, handler: Any) -> Self:
+        # Temporal's workflow sandbox may produce ParentContext instances from a different
+        # class object, causing Pydantic's isinstance check to fail.
+        if not isinstance(v, (dict, cls)) and hasattr(v, "model_dump"):
+            return handler(v.model_dump())
+        return handler(v)
 
 
 class _UnsetStr(str):
@@ -128,6 +142,7 @@ class BaseActivityParams(BaseModel):
     schedule_to_close_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
     # timeout before activity is started
     schedule_to_start_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
+    parent_context: ParentContext = pydantic.Field(default_factory=ParentContext)
 
 
 class BaseActivityResult(BaseResultModel):
@@ -236,6 +251,7 @@ class BaseActivity(ActivityProtocol, Generic[ActivityParamsT, ActivityResultT]):
 class BaseWorkflowParams(BaseModel):
     execution_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
     parent_close_policy: temporalio.workflow.ParentClosePolicy = temporalio.workflow.ParentClosePolicy.TERMINATE
+    parent_context: ParentContext = pydantic.Field(default_factory=ParentContext)
 
 
 class BaseWorkflowResult(BaseResultModel):
