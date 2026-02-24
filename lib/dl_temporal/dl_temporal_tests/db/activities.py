@@ -59,6 +59,8 @@ class Activity(dl_temporal.BaseActivity):
         if params.return_error:
             return ActivityError()
 
+        assert params.parent_context.request_id is not None
+
         return ActivityResult(
             activity_int_result=params.activity_int_param + 1,
             activity_str_result=params.activity_str_param,

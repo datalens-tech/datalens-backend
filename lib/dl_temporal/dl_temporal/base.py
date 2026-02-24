@@ -201,6 +201,7 @@ def _activity_logging_middleware(
         logging_context = _activity_info_to_logging_context(
             activity_info=temporalio.activity.info(),
         )
+        logging_context["parent_request_id"] = params.parent_context.request_id
 
         with dl_logging.LogContext(**logging_context):
             self.logger.info(
@@ -309,6 +310,7 @@ def _workflow_logging_middleware(
         logging_context = _workflow_info_to_logging_context(
             workflow_info=temporalio.workflow.info(),
         )
+        logging_context["parent_request_id"] = params.parent_context.request_id
 
         with dl_logging.LogContext(**logging_context):
             self.logger.info(
@@ -365,6 +367,21 @@ def _search_attributes_middleware(
     return inner
 
 
+def _parent_context_middleware(
+    func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
+) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
+    @functools.wraps(func)
+    async def inner(
+        self: _WorkflowType,
+        params: WorkflowParamsT,
+    ) -> WorkflowResultT:
+        if params.parent_context.request_id is None:
+            params.parent_context.request_id = temporalio.workflow.info().run_id
+        return await func(self, params)
+
+    return inner
+
+
 class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, WorkflowResultT]):
     name: ClassVar[str]
     logger: ClassVar[logging.Logger]
@@ -381,6 +398,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
     def __init_subclass__(cls, **kwargs: Any) -> None:
         cls.run = _workflow_logging_middleware(cls.run)  # type: ignore
         cls.run = _search_attributes_middleware(cls.run)  # type: ignore
+        cls.run = _parent_context_middleware(cls.run)  # type: ignore
 
     @abc.abstractmethod
     async def run(self, params: WorkflowParamsT) -> WorkflowResultT:
