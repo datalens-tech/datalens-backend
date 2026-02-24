@@ -131,7 +131,6 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             class_ = cls._unknown_class
         else:
             class_ = cls._classes[class_name]
-            data[cls.type_key()] = class_name
 
         data = class_._prepare_data(data)
 
