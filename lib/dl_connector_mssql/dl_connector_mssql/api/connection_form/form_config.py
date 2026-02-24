@@ -41,13 +41,21 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
         ]
 
+        form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
+
         edit_api_schema = FormActionApiSchema(
-            items=[
-                *common_api_schema_items,
-                FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
-                FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
-                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            ]
+            items=self._filter_nulls(
+                [
+                    *common_api_schema_items,
+                    FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
+                    FormFieldApiSchema(name=CommonFieldName.cache_invalidation_throttling_interval_sec, nullable=True)
+                    if is_invalidation_cache_enabled
+                    else None,
+                    FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                    FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+                ]
+            )
         )
 
         create_api_schema = FormActionApiSchema(
@@ -69,24 +77,28 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
             raw_sql_levels.append(RawSQLLevel.template)
 
         form_params = self._get_form_params()
+        is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         return ConnectionForm(
             title=MSSQLConnectionInfoProvider.get_title(self._localizer),
-            rows=[
-                rc.host_row(),
-                rc.port_row(default_value="1433"),
-                rc.db_name_row(),
-                rc.username_row(),
-                rc.password_row(self.mode),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
-                rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
-                rc.collapse_advanced_settings_row(),
-                rc.data_export_forbidden_row(
-                    conn_id=form_params.conn_id,
-                    exports_history_url_path=form_params.exports_history_url_path,
-                    mode=self.mode,
-                ),
-            ],
+            rows=self._filter_nulls(
+                [
+                    rc.host_row(),
+                    rc.port_row(default_value="1433"),
+                    rc.db_name_row(),
+                    rc.username_row(),
+                    rc.password_row(self.mode),
+                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
+                    *(rc.cache_rows() if is_invalidation_cache_enabled else []),
+                    rc.collapse_advanced_settings_row(),
+                    rc.data_export_forbidden_row(
+                        conn_id=form_params.conn_id,
+                        exports_history_url_path=form_params.exports_history_url_path,
+                        mode=self.mode,
+                    ),
+                ]
+            ),
             api_schema=FormApiSchema(
                 create=create_api_schema if self.mode == ConnectionFormMode.create else None,
                 edit=edit_api_schema if self.mode == ConnectionFormMode.edit else None,

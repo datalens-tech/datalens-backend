@@ -116,3 +116,6 @@ msgstr "Вкл"
 
 msgid "label_exports-history"
 msgstr "История экспортов"
+
+msgid "label_cache-settings"
+msgstr "Настройки кэширования"
