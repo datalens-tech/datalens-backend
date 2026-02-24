@@ -12,6 +12,7 @@ attrs = "*"
 dl-auth = {path = "../dl_auth"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
+dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
