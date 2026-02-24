@@ -1,9 +1,10 @@
+from dl_pydantic import BaseSchema
+
 from .base import (
     BadRequestResponseSchema,
     BaseHandler,
     BaseRequestSchema,
     BaseResponseSchema,
-    BaseSchema,
     ErrorResponseSchema,
     Response,
     ResponseException,

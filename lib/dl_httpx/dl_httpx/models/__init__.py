@@ -1,15 +1,16 @@
-from .base import (
-    BaseRequest,
-    BaseResponseSchema,
+from dl_pydantic import (
     BaseSchema,
-    ParentContext,
-    ParentContextProtocol,
-)
-from .typed import (
     TypedBaseSchema,
     TypedSchemaAnnotation,
     TypedSchemaDictAnnotation,
     TypedSchemaListAnnotation,
+)
+
+from .base import (
+    BaseRequest,
+    BaseResponseSchema,
+    ParentContext,
+    ParentContextProtocol,
 )
 
 

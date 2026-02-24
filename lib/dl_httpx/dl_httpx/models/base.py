@@ -64,10 +64,6 @@ class BaseRequest:
         return {}
 
 
-# Deprecated, use dl_pydantic instead
-BaseSchema = dl_pydantic.BaseSchema
-
-
 class BaseResponseSchema(dl_pydantic.BaseSchema):
     ...
 
@@ -75,7 +71,6 @@ class BaseResponseSchema(dl_pydantic.BaseSchema):
 __all__ = [
     "BaseRequest",
     "BaseResponseSchema",
-    "BaseSchema",
     "ParentContext",
     "ParentContextProtocol",
 ]
