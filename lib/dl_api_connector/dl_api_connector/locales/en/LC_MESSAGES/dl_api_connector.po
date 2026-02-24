@@ -117,3 +117,6 @@ msgstr "On"
 
 msgid "label_exports-history"
 msgstr "Exports history"
+
+msgid "label_cache-settings"
+msgstr "Cache settings"
