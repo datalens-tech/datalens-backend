@@ -1,4 +1,3 @@
-#syntax=docker/dockerfile:1.4
 FROM adoptopenjdk/openjdk11:alpine AS antlr_build
 
 ENV ANTLR_VERSION 4.11.1

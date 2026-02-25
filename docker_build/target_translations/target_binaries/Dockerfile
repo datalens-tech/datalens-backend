@@ -1,4 +1,3 @@
-#syntax=docker/dockerfile:1.4
 FROM bake_ctx_base_img as build
 
 ARG PACKAGE_NAME

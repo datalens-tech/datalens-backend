@@ -1,4 +1,3 @@
-#syntax=docker/dockerfile:1.4
 FROM bake_ctx_base_img AS build
 
 ENV APP_DIR="app/dl_data_api"

@@ -1,4 +1,3 @@
-#syntax=docker/dockerfile:1.4
 FROM bake_ctx_base_img
 
 RUN apt-get update \
