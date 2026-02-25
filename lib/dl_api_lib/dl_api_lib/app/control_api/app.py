@@ -12,6 +12,7 @@ import flask
 from flask import Flask
 from flask_marshmallow import Marshmallow
 
+from dl_api_commons.base_models import FeatureFlags
 from dl_api_commons.flask.middlewares.aio_event_loop_middleware import AIOEventLoopMiddleware
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_api_commons.flask.middlewares.context_var_middleware import ContextVarMiddleware
@@ -66,6 +67,11 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     @property
     def _is_async_env(self) -> bool:
         return False
+
+    def _get_feature_flags(self, settings: TControlApiAppSettings) -> FeatureFlags:
+        return FeatureFlags(
+            is_invalidation_cache_enabled=settings.IS_INVALIDATION_CACHE_ENABLED,
+        )
 
     def _get_us_manager_middleware(
         self,
