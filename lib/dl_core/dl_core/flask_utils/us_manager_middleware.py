@@ -44,7 +44,10 @@ class USManagerFlaskMiddleware:
     _usm_factory: USMFactory = attr.ib(init=False, default=None)
 
     def __attrs_post_init__(self) -> None:
-        self._usm_factory = USMFactory(
+        self._usm_factory = self._get_usm_factory()
+
+    def _get_usm_factory(self) -> USMFactory:
+        return USMFactory(
             us_base_url=self.us_base_url,
             crypto_keys_config=self.crypto_keys_config,
             us_master_token=self.us_master_token,
