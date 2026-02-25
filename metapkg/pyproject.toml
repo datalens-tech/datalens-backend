@@ -181,6 +181,7 @@ dl-temporal = {develop = true, path = "../lib/dl_temporal"}
 dl-testing = {develop = true, path = "../lib/dl_testing"}
 dl-type-transformer = {develop = true, path = "../lib/dl_type_transformer"}
 dl-us-client = {develop = true, path = "../lib/dl_us_client"}
+dl-us-entries-client = {develop = true, path = "../lib/dl_us_entries_client"}
 dl-utils = {develop = true, path = "../lib/dl_utils"}
 dl-version = {develop = true, path = "../lib/dl_version"}
 dl-zitadel = {develop = true, path = "../lib/dl_zitadel"}
