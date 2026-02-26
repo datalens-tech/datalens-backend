@@ -7,7 +7,10 @@ import attr
 
 from dl_obfuscator.context import ObfuscationContext
 from dl_obfuscator.obfuscators.base import BaseObfuscator
-from dl_obfuscator.obfuscators.regex import RegexObfuscator
+from dl_obfuscator.obfuscators.regex import (
+    DEFAULT_PATTERNS,
+    RegexObfuscator,
+)
 from dl_obfuscator.obfuscators.secret import SecretObfuscator
 from dl_obfuscator.secret_keeper import SecretKeeper
 
@@ -55,12 +58,18 @@ class ObfuscationEngine:
 
 def create_base_obfuscators(
     global_keeper: SecretKeeper | None = None,
+    extra_regex_patterns: tuple[str, ...] | None = None,
 ) -> tuple[BaseObfuscator, ...]:
     obfuscators: list[BaseObfuscator] = []
     if global_keeper is None:
         global_keeper = SecretKeeper()
     obfuscators.append(SecretObfuscator(keeper=global_keeper))
-    obfuscators.append(RegexObfuscator())
+
+    regex_patterns = DEFAULT_PATTERNS
+    if extra_regex_patterns is not None:
+        regex_patterns = regex_patterns + extra_regex_patterns
+    obfuscators.append(RegexObfuscator(patterns=regex_patterns))
+
     return tuple(obfuscators)
 
 
