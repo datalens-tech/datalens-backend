@@ -1,8 +1,25 @@
 import os
+from typing import ClassVar
+import warnings
 
+import pydantic
 import pydantic_settings
 
 import dl_pydantic
+
+
+def _warn_extra_fields(cls: type[pydantic.BaseModel], data: dict) -> None:
+    extra_field_names = set(data.keys())
+    for field_name, field in cls.model_fields.items():
+        real_field_name = field.alias or field_name
+        extra_field_names.discard(real_field_name)
+
+    for field_name in sorted(extra_field_names):
+        warnings.warn(
+            f"{cls.__name__}: extra field {field_name!r} will be ignored",
+            UserWarning,
+            stacklevel=2,
+        )
 
 
 class BaseSettings(dl_pydantic.BaseModel):
@@ -10,7 +27,15 @@ class BaseSettings(dl_pydantic.BaseModel):
     Base settings class that should be used for sub-models and mixins.
     """
 
-    ...
+    MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = True
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _warn_extra_fields(cls, data: dict) -> dict:
+        if isinstance(data, dict) and cls.MODEL_ENABLE_EXTRA_FIELDS_WARNING:
+            _warn_extra_fields(cls, data)
+
+        return data
 
 
 class BaseRootSettings(pydantic_settings.BaseSettings):
@@ -24,6 +49,15 @@ class BaseRootSettings(pydantic_settings.BaseSettings):
         case_sensitive=True,
         hide_input_in_errors=True,
     )
+    MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = True
+
+    @pydantic.model_validator(mode="before")
+    @classmethod
+    def _warn_extra_fields(cls, data: dict) -> dict:
+        if isinstance(data, dict) and cls.MODEL_ENABLE_EXTRA_FIELDS_WARNING:
+            _warn_extra_fields(cls, data)
+
+        return data
 
     @classmethod
     def _get_yaml_source_paths(cls) -> list[str]:

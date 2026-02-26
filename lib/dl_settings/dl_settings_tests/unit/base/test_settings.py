@@ -1,4 +1,5 @@
-import typing
+from typing import ClassVar
+import warnings
 
 import pydantic
 import pytest
@@ -161,6 +162,7 @@ def test_read_top_level_setting_fields_from_nested(
     tmp_configs: test_utils.TmpConfigs,
 ) -> None:
     class _RootSettings(dl_settings.BaseRootSettings):
+        MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = False
         FIELD3: str = NotImplemented
 
     class NestedSettings(dl_settings.BaseSettings):
@@ -202,12 +204,12 @@ def test_partial_field_aliases_in_child_classes(
         FIELD3: str = "default_value"
 
     class Child1SettingsBase(ChildSettingsBase):
-        DEPRECATED_PREFIX: typing.ClassVar[str] = "someprefix_"
+        DEPRECATED_PREFIX: ClassVar[str] = "someprefix_"
 
         model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator(DEPRECATED_PREFIX))
 
     class Child2SettingsBase(ChildSettingsBase):
-        DEPRECATED_PREFIX: typing.ClassVar[str] = "otherprefix_"
+        DEPRECATED_PREFIX: ClassVar[str] = "otherprefix_"
 
         model_config = pydantic.ConfigDict(alias_generator=dl_settings.prefix_alias_generator(DEPRECATED_PREFIX))
 
@@ -235,6 +237,147 @@ def test_partial_field_aliases_in_child_classes(
     assert settings.CHILD_2.FIELD2 == "value2_2"
     assert settings.CHILD_1.FIELD3 == "default_value"
     assert settings.CHILD_2.FIELD3 == "env_value_2_3"
+
+
+def test_extra_fields_warning_init() -> None:
+    class Settings(dl_settings.BaseRootSettings):
+        field: str = "value"
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        settings = Settings(field="value", extra_field="extra_value")  # type: ignore[call-arg]
+
+    assert settings.field == "value"
+    assert not hasattr(settings, "extra_field")
+
+    extra_warnings = [w for w in caught if "extra_field" in str(w.message)]
+    assert len(extra_warnings) == 1
+    assert "Settings" in str(extra_warnings[0].message)
+
+
+def test_extra_fields_warning_config(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_configs: test_utils.TmpConfigs,
+) -> None:
+    class Settings(dl_settings.BaseRootSettings):
+        field: str = NotImplemented
+
+    config = {"field": "value", "extra_field": "extra_value"}
+    config_path = tmp_configs.add(config)
+
+    monkeypatch.setenv("CONFIG_PATH", str(config_path))
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        settings = Settings()
+
+    assert settings.field == "value"
+    assert not hasattr(settings, "extra_field")
+
+    extra_warnings = [w for w in caught if "extra_field" in str(w.message)]
+    assert len(extra_warnings) == 1
+
+
+def test_extra_fields_warning_nested_config(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_configs: test_utils.TmpConfigs,
+) -> None:
+    class NestedSettings(dl_settings.BaseSettings):
+        FIELD: str = NotImplemented
+
+    class Settings(dl_settings.BaseRootSettings):
+        NESTED: NestedSettings = pydantic.Field(default_factory=NestedSettings)
+
+    config = {
+        "NESTED": {"FIELD": "value", "EXTRA": "extra_value"},
+    }
+    config_path = tmp_configs.add(config)
+
+    monkeypatch.setenv("CONFIG_PATH", str(config_path))
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        settings = Settings()
+
+    assert settings.NESTED.FIELD == "value"
+    assert not hasattr(settings.NESTED, "EXTRA")
+
+    extra_warnings = [w for w in caught if "EXTRA" in str(w.message)]
+    assert len(extra_warnings) == 1
+
+
+def test_extra_fields_warning_nested_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class NestedSettings(dl_settings.BaseSettings):
+        FIELD: str = NotImplemented
+
+    class Settings(dl_settings.BaseRootSettings):
+        NESTED: NestedSettings = pydantic.Field(default_factory=NestedSettings)
+
+    monkeypatch.setenv("NESTED__FIELD", "value")
+    monkeypatch.setenv("NESTED__EXTRA", "extra_value")
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        settings = Settings()
+
+    assert settings.NESTED.FIELD == "value"
+    assert not hasattr(settings.NESTED, "EXTRA")
+
+    extra_warnings = [w for w in caught if "EXTRA" in str(w.message)]
+    assert len(extra_warnings) == 1
+
+
+def test_extra_fields_warning_disabled_root() -> None:
+    class Settings(dl_settings.BaseRootSettings):
+        MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = False
+        field: str = "value"
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        Settings(field="value", extra_field="extra_value")  # type: ignore[call-arg]
+
+    extra_warnings = [w for w in caught if "will be ignored" in str(w.message)]
+    assert len(extra_warnings) == 0
+
+
+def test_extra_fields_warning_disabled_nested(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_configs: test_utils.TmpConfigs,
+) -> None:
+    class NestedSettings(dl_settings.BaseSettings):
+        MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = False
+        FIELD: str = NotImplemented
+
+    class Settings(dl_settings.BaseRootSettings):
+        NESTED: NestedSettings = pydantic.Field(default_factory=NestedSettings)
+
+    config = {
+        "NESTED": {"FIELD": "value", "EXTRA": "extra_value"},
+    }
+    config_path = tmp_configs.add(config)
+
+    monkeypatch.setenv("CONFIG_PATH", str(config_path))
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        Settings()
+
+    extra_warnings = [w for w in caught if "EXTRA" in str(w.message)]
+    assert len(extra_warnings) == 0
+
+
+def test_no_extra_fields_no_warning() -> None:
+    class Settings(dl_settings.BaseRootSettings):
+        field: str = "value"
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        Settings(field="value")
+
+    extra_warnings = [w for w in caught if "will be ignored" in str(w.message)]
+    assert len(extra_warnings) == 0
 
 
 def test_nested_dict_leaves_case_from_env(
