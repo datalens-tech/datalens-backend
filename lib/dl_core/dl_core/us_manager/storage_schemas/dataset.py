@@ -14,18 +14,24 @@ from marshmallow_oneofschema import OneOfSchema
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ConditionPartCalcMode,
     FieldType,
     JoinConditionType,
     JoinType,
     ManagedBy,
+    NotificationLevel,
     ParameterValueConstraintType,
     UserDataType,
     WhereClauseOperation,
 )
 from dl_core import multisource
 from dl_core.base_models import (
+    CacheInvalidationError,
+    CacheInvalidationField,
+    CacheInvalidationLastResultError,
+    CacheInvalidationSource,
     DefaultWhereClause,
     ObligatoryFilter,
 )
@@ -470,6 +476,79 @@ class ObligatoryFilterSchema(DefaultStorageSchema):
     valid = ma_fields.Boolean(allow_none=True)
 
 
+class CacheInvalidationErrorSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationError
+
+    title = ma_fields.String(required=True)
+    message = ma_fields.String(allow_none=True)
+    level = ma_fields.Enum(NotificationLevel)
+    locator = ma_fields.String(allow_none=True)
+
+
+class CacheInvalidationLastResultErrorSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationLastResultError
+
+    code = ma_fields.String(required=True)
+    message = ma_fields.String(allow_none=True)
+    details = ma_fields.Dict(allow_none=True, load_default=dict)
+    debug = ma_fields.Dict(allow_none=True, load_default=dict)
+
+
+class CacheInvalidationFieldSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationField
+
+    guid = ma_fields.String(required=True)
+    title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    hidden = ma_fields.Boolean(load_default=False)
+    description = ma_fields.String(load_default="")
+    valid = ma_fields.Boolean(allow_none=True)
+    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    cast = ma_fields.Enum(UserDataType, allow_none=True)
+    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none)
+    data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    has_auto_aggregation = ma_fields.Boolean(allow_none=True)
+    lock_aggregation = ma_fields.Boolean(allow_none=True)
+    type = ma_fields.Enum(FieldType, allow_none=True)
+    ui_settings = ma_fields.String(dump_default="", load_default="")
+
+    # Calculation spec fields (flattened)
+    calc_mode = ma_fields.Enum(CalcMode, load_default=CalcMode.formula)
+    formula = ma_fields.String(load_default="")
+    guid_formula = ma_fields.String(load_default="")
+    source = ma_fields.String(load_default="")
+    avatar_id = ma_fields.String(allow_none=True, load_default=None)
+
+    # Virtual field flag
+    virtual = ma_fields.Boolean(load_default=False)
+
+
+class CacheInvalidationSourceSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationSource
+
+    mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema), load_default=list)
+    field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
+
+    # For mode: sql
+    sql = ma_fields.String(allow_none=True, load_default=None)
+
+    # Read-only error fields
+    cache_invalidation_error = ma_fields.Nested(
+        CacheInvalidationErrorSchema,
+        allow_none=True,
+        load_default=None,
+    )
+    last_result_timestamp = ma_fields.String(allow_none=True, load_default=None)
+    last_result_error = ma_fields.Nested(
+        CacheInvalidationLastResultErrorSchema,
+        allow_none=True,
+        load_default=None,
+    )
+
+
 class DatasetStorageSchema(DefaultStorageSchema):
     TARGET_CLS = Dataset.DataModel
 
@@ -486,4 +565,5 @@ class DatasetStorageSchema(DefaultStorageSchema):
     rls = ma_fields.Nested(RLSSchema, allow_none=False)
     component_errors = ma_fields.Nested(ComponentErrorListSchema)
     obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema, allow_none=True)
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")

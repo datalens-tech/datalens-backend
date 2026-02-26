@@ -147,6 +147,14 @@ class CalcMode(_Normalizable["CalcMode"], Enum):
     direct = "direct"
     formula = "formula"
     parameter = "parameter"
+    cache_invalidation_formula = "cache_invalidation_formula"
+
+
+@unique
+class CacheInvalidationMode(Enum):
+    sql = "sql"
+    formula = "formula"
+    off = "off"
 
 
 @unique
