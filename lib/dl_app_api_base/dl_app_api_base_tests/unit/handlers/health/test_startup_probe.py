@@ -12,7 +12,7 @@ async def test_default(
 ) -> None:
     readiness_resource.set_readiness(True)
     non_critical_readiness_resource.set_readiness(True)
-    response = await app_client.get("/api/v1/health/readiness")
+    response = await app_client.get("/api/v1/health/startup")
     assert response.status == 200
     assert await response.json() == {
         "status": "healthy",
@@ -32,10 +32,10 @@ async def test_non_critical_unhealthy(
     readiness_resource.set_readiness(True)
     non_critical_readiness_resource.set_readiness(False)
 
-    response = await app_client.get("/api/v1/health/readiness")
-    assert response.status == 200
+    response = await app_client.get("/api/v1/health/startup")
+    assert response.status == 500
     assert await response.json() == {
-        "status": "healthy",
+        "status": "unhealthy",
         "subsystems_status": {
             "readiness_resource.is_ready": {"value": True, "critical": True},
             "non_critical_readiness_resource.is_ready": {"value": False, "critical": False},
@@ -52,7 +52,7 @@ async def test_critical_unhealthy(
     readiness_resource.set_readiness(False)
     non_critical_readiness_resource.set_readiness(True)
 
-    response = await app_client.get("/api/v1/health/readiness")
+    response = await app_client.get("/api/v1/health/startup")
     assert response.status == 500
     assert await response.json() == {
         "status": "unhealthy",
@@ -72,7 +72,7 @@ async def test_all_unhealthy(
     readiness_resource.set_readiness(False)
     non_critical_readiness_resource.set_readiness(False)
 
-    response = await app_client.get("/api/v1/health/readiness")
+    response = await app_client.get("/api/v1/health/startup")
     assert response.status == 500
     assert await response.json() == {
         "status": "unhealthy",

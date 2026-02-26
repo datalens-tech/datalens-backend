@@ -17,8 +17,9 @@ async def test_default(
     assert response.status == 200
     spec = await response.json()
 
-    # with open(SPEC_FILE_PATH, "wb") as f:
-    #     f.write(dl_json.dumps_bytes(spec))
+    # with open(SPEC_FILE_PATH, "w") as f:
+    #     f.write(dl_json.dumps_str_human_readable(spec))
+    #     f.write("\n")
     with open(SPEC_FILE_PATH, "rb") as f:
         raw_expected_spec = f.read()
         expected_spec = dl_json.loads_bytes(raw_expected_spec)

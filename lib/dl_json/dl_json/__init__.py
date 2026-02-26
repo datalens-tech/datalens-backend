@@ -1,6 +1,7 @@
 from .json import (
     dumps_bytes,
     dumps_str,
+    dumps_str_human_readable,
     loads_bytes,
     loads_str,
 )
@@ -19,6 +20,7 @@ __all__ = [
     "JsonSerializableSequence",
     "dumps_bytes",
     "dumps_str",
+    "dumps_str_human_readable",
     "loads_bytes",
     "loads_str",
 ]

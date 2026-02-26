@@ -37,6 +37,11 @@ def fixture_readiness_resource() -> ReadinessResource:
     return ReadinessResource()
 
 
+@pytest.fixture(name="non_critical_readiness_resource")
+def fixture_non_critical_readiness_resource() -> ReadinessResource:
+    return ReadinessResource()
+
+
 @attr.define(kw_only=True, slots=False)
 class Counter:
     value: int = attr.ib(default=0)
@@ -56,6 +61,7 @@ class HttpServerSettings(dl_app_api_base.HttpServerSettings):
 
 class AppSettings(dl_app_api_base.HttpServerAppSettingsMixin):
     readiness_resource: ReadinessResource
+    non_critical_readiness_resource: ReadinessResource
     HTTP_SERVER: HttpServerSettings = NotImplemented
 
 
@@ -189,6 +195,11 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 name="readiness_resource.is_ready",
                 is_ready=self.settings.readiness_resource.is_ready,
             ),
+            dl_app_api_base.SubsystemReadinessSyncCallback(
+                name="non_critical_readiness_resource.is_ready",
+                is_ready=self.settings.non_critical_readiness_resource.is_ready,
+                critical=False,
+            ),
         ]
 
     @override
@@ -309,6 +320,7 @@ def fixture_oauth_user2_token() -> str:
 def fixture_app_settings(
     monkeypatch: pytest.MonkeyPatch,
     readiness_resource: ReadinessResource,
+    non_critical_readiness_resource: ReadinessResource,
     oauth_user1_token: str,
     oauth_user2_token: str,
 ) -> AppSettings:
@@ -317,7 +329,10 @@ def fixture_app_settings(
     monkeypatch.setenv("HTTP_SERVER__OAUTH_CHECKER__USERS__USER1__TOKEN", oauth_user1_token)
     monkeypatch.setenv("HTTP_SERVER__OAUTH_CHECKER__USERS__USER2__TOKEN", oauth_user2_token)
 
-    return AppSettings(readiness_resource=readiness_resource)
+    return AppSettings(
+        readiness_resource=readiness_resource,
+        non_critical_readiness_resource=non_critical_readiness_resource,
+    )
 
 
 @pytest_asyncio.fixture(name="app", autouse=True)

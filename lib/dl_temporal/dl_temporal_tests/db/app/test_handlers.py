@@ -34,7 +34,25 @@ async def test_readiness_probe_handler(
         assert await response.json() == {
             "status": "healthy",
             "subsystems_status": {
-                "temporal_client.check_health": True,
-                "temporal_worker.is_running": True,
+                "temporal_client.check_health": {"value": True, "critical": True},
+                "temporal_worker.is_running": {"value": True, "critical": True},
+            },
+        }
+
+
+@pytest.mark.asyncio
+async def test_startup_probe_handler(
+    app_settings: dl_temporal.app.BaseTemporalWorkerAppSettings,
+) -> None:
+    async with aiohttp.ClientSession() as session:
+        response = await session.get(
+            f"http://{app_settings.HTTP_SERVER.HOST}:{app_settings.HTTP_SERVER.PORT}/api/v1/health/startup"
+        )
+        assert response.status == 200
+        assert await response.json() == {
+            "status": "healthy",
+            "subsystems_status": {
+                "temporal_client.check_health": {"value": True, "critical": True},
+                "temporal_worker.is_running": {"value": True, "critical": True},
             },
         }

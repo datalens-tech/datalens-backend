@@ -1,3 +1,5 @@
+import json
+
 import orjson
 
 import dl_json.types as json_types
@@ -12,3 +14,7 @@ def dumps_str(obj: json_types.JsonSerializable) -> str:
 
 
 loads_str = orjson.loads
+
+
+def dumps_str_human_readable(obj: json_types.JsonSerializable) -> str:
+    return json.dumps(obj, indent=2)

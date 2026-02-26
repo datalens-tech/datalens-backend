@@ -52,3 +52,7 @@ def test_dump_float_inf() -> None:
 def test_dump_float_neg_inf() -> None:
     assert dl_json.dumps_bytes(float("-inf")) == b"null"
     assert dl_json.dumps_str(float("-inf")) == "null"
+
+
+def test_dump_str_human_readable() -> None:
+    assert dl_json.dumps_str_human_readable({"a": 1, "b": 2}) == '{\n  "a": 1,\n  "b": 2\n}'

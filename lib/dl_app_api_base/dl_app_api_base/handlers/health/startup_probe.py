@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 @attr.define(frozen=True, kw_only=True)
-class ReadinessProbeHandler(handlers.BaseHandler):
+class StartupProbeHandler(handlers.BaseHandler):
     OPENAPI_TAGS = ["health"]
-    OPENAPI_DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
+    OPENAPI_DESCRIPTION = "Startup probe, checks if all subsystems are ready"
 
     class ResponseSchema(handlers.BaseResponseSchema):
         status: Literal["healthy", "unhealthy"]
@@ -39,13 +39,13 @@ class ReadinessProbeHandler(handlers.BaseHandler):
             name: SubsystemStatusSchema.from_dataclass(s) for name, s in subsystem_statuses.statuses.items()
         }
 
-        if subsystem_statuses.is_critical_ready():
+        if subsystem_statuses.is_ready():
             return handlers.Response.with_model(
                 schema=self.ResponseSchema(status="healthy", subsystems_status=status_values),
                 status=http.HTTPStatus.OK,
             )
 
-        logger.error("Critical subsystems are unhealthy, status: %s", status_values)
+        logger.error("Subsystems are not ready, status: %s", status_values)
 
         return handlers.Response.with_model(
             schema=self.ResponseSchema(status="unhealthy", subsystems_status=status_values),
@@ -54,5 +54,5 @@ class ReadinessProbeHandler(handlers.BaseHandler):
 
 
 __all__ = [
-    "ReadinessProbeHandler",
+    "StartupProbeHandler",
 ]
