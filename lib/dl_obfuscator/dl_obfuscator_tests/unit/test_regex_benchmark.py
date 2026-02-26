@@ -5,7 +5,7 @@ from typing import Callable
 import flaky
 import pytest
 
-from dl_obfuscator.obfuscators.regex import RegexObfuscator
+from dl_obfuscator.obfuscators.regex import DEFAULT_PATTERNS
 
 
 def _build_clean_text() -> str:
@@ -64,51 +64,50 @@ def _bench_sequential(patterns: tuple[str, ...], text: str, iterations: int) -> 
     return time.perf_counter() - start
 
 
-class TestRegexBenchmark:
-    @flaky.flaky(max_runs=3)
-    @pytest.mark.parametrize(
-        "scenario_name, text_factory",
-        [
-            ("clean_text", _build_clean_text),
-            ("sparse_matches", _build_sparse_text),
-        ],
+@flaky.flaky(max_runs=3)
+@pytest.mark.parametrize(
+    "scenario_name, text_factory",
+    [
+        ("clean_text", _build_clean_text),
+        ("sparse_matches", _build_sparse_text),
+    ],
+)
+def test_sequential_faster_than_combined(
+    scenario_name: str,
+    text_factory: Callable[[], str],
+) -> None:
+    """Sequential is faster for the hot path: clean text and sparse matches."""
+    text = text_factory()
+    patterns = DEFAULT_PATTERNS
+
+    combined_time = _bench_combined(patterns, text, ITERATIONS)
+    sequential_time = _bench_sequential(patterns, text, ITERATIONS)
+
+    speedup = combined_time / sequential_time
+    print(
+        f"\n  {scenario_name}: "
+        f"sequential={sequential_time:.4f}s, "
+        f"combined={combined_time:.4f}s, "
+        f"speedup={speedup:.2f}x"
     )
-    def test_sequential_faster_than_combined(
-        self,
-        scenario_name: str,
-        text_factory: Callable[[], str],
-    ) -> None:
-        """Sequential is faster for the hot path: clean text and sparse matches."""
-        text = text_factory()
-        patterns = RegexObfuscator.DEFAULT_PATTERNS
 
-        combined_time = _bench_combined(patterns, text, ITERATIONS)
-        sequential_time = _bench_sequential(patterns, text, ITERATIONS)
+    assert sequential_time < combined_time, (
+        f"Sequential regex ({sequential_time:.4f}s) was not faster than "
+        f"combined ({combined_time:.4f}s) for {scenario_name}"
+    )
 
-        speedup = combined_time / sequential_time
-        print(
-            f"\n  {scenario_name}: "
-            f"sequential={sequential_time:.4f}s, "
-            f"combined={combined_time:.4f}s, "
-            f"speedup={speedup:.2f}x"
-        )
 
-        assert sequential_time < combined_time, (
-            f"Sequential regex ({sequential_time:.4f}s) was not faster than "
-            f"combined ({combined_time:.4f}s) for {scenario_name}"
-        )
+def test_dense_matches_comparison() -> None:
+    """Dense matches (pathological case) — informational, no assertion on winner."""
+    text = _build_dense_text()
+    patterns = DEFAULT_PATTERNS
 
-    def test_dense_matches_comparison(self) -> None:
-        """Dense matches (pathological case) — informational, no assertion on winner."""
-        text = _build_dense_text()
-        patterns = RegexObfuscator.DEFAULT_PATTERNS
+    combined_time = _bench_combined(patterns, text, ITERATIONS)
+    sequential_time = _bench_sequential(patterns, text, ITERATIONS)
 
-        combined_time = _bench_combined(patterns, text, ITERATIONS)
-        sequential_time = _bench_sequential(patterns, text, ITERATIONS)
-
-        print(
-            f"\n  dense_matches: "
-            f"sequential={sequential_time:.4f}s, "
-            f"combined={combined_time:.4f}s, "
-            f"ratio={sequential_time / combined_time:.2f}"
-        )
+    print(
+        f"\n  dense_matches: "
+        f"sequential={sequential_time:.4f}s, "
+        f"combined={combined_time:.4f}s, "
+        f"ratio={sequential_time / combined_time:.2f}"
+    )

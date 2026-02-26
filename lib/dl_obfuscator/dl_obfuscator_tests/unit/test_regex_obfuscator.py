@@ -5,7 +5,10 @@ from dl_obfuscator import (
     create_request_engine,
 )
 from dl_obfuscator.context import ObfuscationContext
-from dl_obfuscator.obfuscators.regex import RegexObfuscator
+from dl_obfuscator.obfuscators.regex import (
+    DEFAULT_PATTERNS,
+    RegexObfuscator,
+)
 
 
 _EXTRA_PATTERNS_FOR_TEST: tuple[str, ...] = (
@@ -16,17 +19,17 @@ _EXTRA_PATTERNS_FOR_TEST: tuple[str, ...] = (
 
 class TestRegexObfuscatorCreate:
     def test_create_default_patterns(self) -> None:
-        obfuscator = RegexObfuscator.create()
-        assert obfuscator.patterns == RegexObfuscator.DEFAULT_PATTERNS
-        assert len(obfuscator._compiled_patterns) == len(RegexObfuscator.DEFAULT_PATTERNS)
+        obfuscator = RegexObfuscator()
+        assert obfuscator.patterns == DEFAULT_PATTERNS
+        assert len(obfuscator._compiled_patterns) == len(DEFAULT_PATTERNS)
 
     def test_create_custom_patterns(self) -> None:
         custom = (r"secret_\d+",)
-        obfuscator = RegexObfuscator.create(patterns=custom)
+        obfuscator = RegexObfuscator(patterns=custom)
         assert obfuscator.patterns == custom
 
     def test_create_custom_replacement(self) -> None:
-        obfuscator = RegexObfuscator.create(
+        obfuscator = RegexObfuscator(
             patterns=(r"secret_\d+",),
             replacement="[REDACTED]",
         )
@@ -36,19 +39,19 @@ class TestRegexObfuscatorCreate:
 
 class TestRegexObfuscatorNoMatch:
     def test_clean_text_unchanged(self) -> None:
-        obfuscator = RegexObfuscator.create()
+        obfuscator = RegexObfuscator()
         text = "SELECT * FROM table WHERE id = 42 AND name = 'hello world'"
         assert obfuscator.obfuscate(text, ObfuscationContext.LOGS) == text
 
     def test_empty_string(self) -> None:
-        obfuscator = RegexObfuscator.create()
+        obfuscator = RegexObfuscator()
         assert obfuscator.obfuscate("", ObfuscationContext.LOGS) == ""
 
 
 class TestStandardFormatPatterns:
     @pytest.fixture()
     def obfuscator(self) -> RegexObfuscator:
-        return RegexObfuscator.create()
+        return RegexObfuscator()
 
     def test_jwt(self, obfuscator: RegexObfuscator) -> None:
         token = "eyJhbGciOiJSUzI1NiI.eyJpc3MiOiJrdWJlcm.signature_value_here_long"
@@ -100,7 +103,7 @@ class TestStandardFormatPatterns:
 class TestExtraPatternsIntegration:
     def test_extra_patterns_combined_with_defaults(self) -> None:
         extra = _EXTRA_PATTERNS_FOR_TEST
-        obfuscator = RegexObfuscator.create(patterns=RegexObfuscator.DEFAULT_PATTERNS + extra)
+        obfuscator = RegexObfuscator(patterns=DEFAULT_PATTERNS + extra)
 
         token = "XTOKEN_" + "a" * 25
         text = f"key={token}"
@@ -111,13 +114,13 @@ class TestExtraPatternsIntegration:
         obfuscators = create_base_obfuscators()
         regex_obfuscators = [o for o in obfuscators if isinstance(o, RegexObfuscator)]
         assert len(regex_obfuscators) == 1
-        assert regex_obfuscators[0].patterns == RegexObfuscator.DEFAULT_PATTERNS
+        assert regex_obfuscators[0].patterns == DEFAULT_PATTERNS
 
     def test_factory_with_extra_patterns(self) -> None:
         obfuscators = create_base_obfuscators(extra_regex_patterns=_EXTRA_PATTERNS_FOR_TEST)
         regex_obfuscators = [o for o in obfuscators if isinstance(o, RegexObfuscator)]
         assert len(regex_obfuscators) == 1
-        expected_count = len(RegexObfuscator.DEFAULT_PATTERNS) + len(_EXTRA_PATTERNS_FOR_TEST)
+        expected_count = len(DEFAULT_PATTERNS) + len(_EXTRA_PATTERNS_FOR_TEST)
         assert len(regex_obfuscators[0].patterns) == expected_count
 
     def test_factory_extra_patterns_work_in_engine(self) -> None:

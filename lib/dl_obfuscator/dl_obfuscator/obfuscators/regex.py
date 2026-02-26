@@ -1,5 +1,4 @@
 import re
-from typing import ClassVar
 
 import attr
 
@@ -7,31 +6,31 @@ from dl_obfuscator.context import ObfuscationContext
 from dl_obfuscator.obfuscators.base import BaseObfuscator
 
 
+JWT_TOKEN_REGEX = r"ey[JKL][\w-]{13,}\.ey[JKL][\w-]{8,}\.[\w-]{20,}"
+URL_CREDENTIALS_REGEX = r"[a-z0-9]{3,20}://[a-zA-Z0-9_-]{3,20}:[^$][^:@/\s]{6,40}@[a-z0-9.-]{10,}"
+AUTHORIZATION_HEADER_REGEX = r"Authorization:\s*\S+(?:\s+\S+)?"
+BASIC_AUTH_REGEX = r"[Bb][Aa][Ss][Ii][Cc] [A-Za-z0-9+/=]{16,}"
+BEARER_TOKEN_REGEX = r"[Bb][Ee][Aa][Rr][Ee][Rr] \S{20,}"
+OAUTH_TOKEN_REGEX = r"[Oo][Aa][Uu][Tt][Hh] \S{20,}"
+
+DEFAULT_PATTERNS: tuple[str, ...] = (
+    JWT_TOKEN_REGEX,
+    URL_CREDENTIALS_REGEX,
+    AUTHORIZATION_HEADER_REGEX,
+    BASIC_AUTH_REGEX,
+    BEARER_TOKEN_REGEX,
+    OAUTH_TOKEN_REGEX,
+)
+
+
 @attr.s
 class RegexObfuscator(BaseObfuscator):
-    DEFAULT_PATTERNS: ClassVar[tuple[str, ...]] = (
-        r"ey[JKL][\w-]{13,}\.ey[JKL][\w-]{8,}\.[\w-]{20,}",  # JWT
-        r"[a-z0-9]{3,20}://[a-zA-Z0-9_-]{3,20}:[^$][^:@/\s]{6,40}@[a-z0-9.-]{10,}",  # Credentials in URL
-        r"Authorization:\s*\S+(?:\s+\S+)?",
-        r"[Bb][Aa][Ss][Ii][Cc] [A-Za-z0-9+/=]{16,}",
-        r"[Bb][Ee][Aa][Rr][Ee][Rr] \S{20,}",
-        r"[Oo][Aa][Uu][Tt][Hh] \S{20,}",
-    )
-
-    patterns: tuple[str, ...] = attr.ib()
-    _compiled_patterns: tuple[re.Pattern[str], ...] = attr.ib(repr=False)
+    patterns: tuple[str, ...] = attr.ib(default=DEFAULT_PATTERNS)
     _replacement: str = attr.ib(default="***")
+    _compiled_patterns: tuple[re.Pattern[str], ...] = attr.ib(init=False, repr=False)
 
-    @classmethod
-    def create(
-        cls,
-        patterns: tuple[str, ...] | None = None,
-        replacement: str = "***",
-    ) -> "RegexObfuscator":
-        if patterns is None:
-            patterns = cls.DEFAULT_PATTERNS
-        compiled = tuple(re.compile(p) for p in patterns)
-        return cls(patterns=patterns, compiled_patterns=compiled, replacement=replacement)
+    def __attrs_post_init__(self) -> None:
+        self._compiled_patterns = tuple(re.compile(p) for p in self.patterns)
 
     def obfuscate(self, text: str, context: ObfuscationContext) -> str:
         for pattern in self._compiled_patterns:
