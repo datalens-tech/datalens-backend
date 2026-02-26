@@ -51,6 +51,7 @@ from dl_core.exc import (
 )
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection import get_connection_class
+from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import (
     Dataset,
     DataSourceRole,
@@ -228,7 +229,48 @@ class DatasetResource(BIResource):
         # annotation
         data["annotation"] = dataset.annotation
 
+        data["is_cache_invalidation_enabled_in_conn"] = cls._check_cache_invalidation_enabled_in_conn(
+            ds_accessor=ds_accessor,
+            dsrc_coll_factory=dsrc_coll_factory,
+            us_entry_buffer=us_entry_buffer,
+            dataset_parameter_values=dataset_parameter_values,
+            dataset_template_enabled=dataset_template_enabled,
+        )
+
         return {"dataset": data}
+
+    @classmethod
+    def _check_cache_invalidation_enabled_in_conn(
+        cls,
+        ds_accessor: DatasetComponentAccessor,
+        dsrc_coll_factory: Any,
+        us_entry_buffer: USEntryBuffer,
+        dataset_parameter_values: dict,
+        dataset_template_enabled: bool,
+    ) -> bool:
+        """
+        Check if cache invalidation is enabled in any connection.
+        Default is False if we can't get connection info.
+        """
+        for source_id in ds_accessor.get_data_source_id_list():
+            dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec,
+                dataset_parameter_values=dataset_parameter_values,
+                dataset_template_enabled=dataset_template_enabled,
+            )
+            conn_ref = dsrc_coll.get_strict(role=DataSourceRole.origin).connection_ref
+            try:
+                connection = us_entry_buffer.get_entry(conn_ref)
+                assert isinstance(connection, ConnectionBase)
+                if connection.is_cache_invalidation_enabled:
+                    return True
+            except Exception:
+                LOGGER.error(
+                    "Failed to get connection for cache invalidation check, setting is_cache_invalidation_enabled_in_conn to False",
+                    exc_info=True,
+                )
+        return False
 
     @classmethod
     def dump_option_data(
