@@ -249,10 +249,15 @@ class DatasetResource(BIResource):
         dataset_template_enabled: bool,
     ) -> bool:
         """
-        Check if cache invalidation is enabled in any connection.
-        Default is False if we can't get connection info.
+        Check if cache invalidation is enabled in all connections.
+        Returns True only if all connections have cache invalidation enabled.
+        Default is False if we can't get connection info or if there are no sources.
         """
-        for source_id in ds_accessor.get_data_source_id_list():
+        source_ids = ds_accessor.get_data_source_id_list()
+        if not source_ids:
+            return False
+
+        for source_id in source_ids:
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
             dsrc_coll = dsrc_coll_factory.get_data_source_collection(
                 spec=dsrc_coll_spec,
@@ -263,14 +268,15 @@ class DatasetResource(BIResource):
             try:
                 connection = us_entry_buffer.get_entry(conn_ref)
                 assert isinstance(connection, ConnectionBase)
-                if connection.is_cache_invalidation_enabled:
-                    return True
+                if not connection.is_cache_invalidation_enabled:
+                    return False
             except Exception:
                 LOGGER.error(
                     "Failed to get connection for cache invalidation check, setting is_cache_invalidation_enabled_in_conn to False",
                     exc_info=True,
                 )
-        return False
+                return False
+        return True
 
     @classmethod
     def dump_option_data(
