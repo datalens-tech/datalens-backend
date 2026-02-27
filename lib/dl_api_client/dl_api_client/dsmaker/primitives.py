@@ -23,6 +23,7 @@ import attr
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
@@ -34,6 +35,7 @@ from dl_constants.enums import (
     JoinType,
     LegendItemType,
     ManagedBy,
+    NotificationLevel,
     OrderDirection,
     ParameterValueConstraintType,
     PivotHeaderRole,
@@ -939,6 +941,66 @@ class ResultSchemaAux:
 
 
 @attr.s
+class CacheInvalidationError:
+    """Error from cache invalidation validation"""
+
+    title: str = attr.ib()
+    message: str = attr.ib()
+    level: NotificationLevel = attr.ib()
+    locator: str = attr.ib()
+
+
+@attr.s
+class CacheInvalidationLastResultError:
+    """Error from last cache invalidation execution"""
+
+    code: str = attr.ib()
+    message: Optional[str] = attr.ib(default=None)
+    details: dict = attr.ib(factory=dict)
+    debug: dict = attr.ib(factory=dict)
+
+
+@attr.s
+class CacheInvalidationField:
+    """Field for cache invalidation formula mode."""
+
+    guid: str = attr.ib()
+    title: str = attr.ib(default="INVALIDATION CACHE SERVICE FIELD")
+    managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
+    hidden: bool = attr.ib(default=False)
+    description: str = attr.ib(default="")
+    valid: Optional[bool] = attr.ib(default=None)
+    initial_data_type: Optional[UserDataType] = attr.ib(default=None)
+    cast: Optional[UserDataType] = attr.ib(default=None)
+    aggregation: AggregationFunction = attr.ib(default=AggregationFunction.none)
+    data_type: Optional[UserDataType] = attr.ib(default=None)
+    has_auto_aggregation: Optional[bool] = attr.ib(default=None)
+    lock_aggregation: Optional[bool] = attr.ib(default=None)
+    type: Optional[FieldType] = attr.ib(default=None)
+    ui_settings: str = attr.ib(default="")
+    calc_mode: CalcMode = attr.ib(default=CalcMode.formula)
+    formula: str = attr.ib(default="")
+    guid_formula: str = attr.ib(default="")
+    source: str = attr.ib(default="")
+    avatar_id: Optional[str] = attr.ib(default=None)
+    virtual: bool = attr.ib(default=False)
+
+
+@attr.s
+class CacheInvalidationSource:
+    """Cache invalidation source configuration"""
+
+    mode: CacheInvalidationMode = attr.ib(default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters: list[ObligatoryFilter] = attr.ib(factory=list)
+    field: Optional[CacheInvalidationField] = attr.ib(default=None)
+
+    # For mode: sql
+    sql: Optional[str] = attr.ib(default=None)
+
+
+@attr.s
 class Dataset(ApiProxyObject):
     name: str = attr.ib(default=None)
     revision_id: Optional[str] = attr.ib(default=None)
@@ -955,6 +1017,7 @@ class Dataset(ApiProxyObject):
     component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
     obligatory_filters: list[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
     annotation: Optional[dict] = attr.ib(default=None)
+    cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
 
     def prepare(self) -> None:
         super().prepare()

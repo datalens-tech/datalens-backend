@@ -535,19 +535,6 @@ class CacheInvalidationSourceSchema(DefaultStorageSchema):
     # For mode: sql
     sql = ma_fields.String(allow_none=True, load_default=None)
 
-    # Read-only error fields
-    cache_invalidation_error = ma_fields.Nested(
-        CacheInvalidationErrorSchema,
-        allow_none=True,
-        load_default=None,
-    )
-    last_result_timestamp = ma_fields.String(allow_none=True, load_default=None)
-    last_result_error = ma_fields.Nested(
-        CacheInvalidationLastResultErrorSchema,
-        allow_none=True,
-        load_default=None,
-    )
-
 
 class DatasetStorageSchema(DefaultStorageSchema):
     TARGET_CLS = Dataset.DataModel

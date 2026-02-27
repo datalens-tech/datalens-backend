@@ -22,9 +22,9 @@ from dl_api_connector.api_schema.source_base import (
     VirtualFlagField,
 )
 from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
-from dl_api_lib.schemas.data import NotificationSchema
 from dl_api_lib.schemas.fields import ResultSchemaAuxSchema
 from dl_api_lib.schemas.filter import ObligatoryFilterSchema
+from dl_api_lib.schemas.notification import NotificationSchema
 from dl_api_lib.schemas.options import OptionsMixin
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
 from dl_constants.enums import (
@@ -126,7 +126,7 @@ class ResultSchemaBase(BaseSchema):
     value_constraint = ma_fields.Raw(allow_none=True, load_default=None)
 
 
-class ResultSchemaSchema(WithNestedValueSchema, ResultSchemaBase, DefaultSchema[BIField]):
+class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     TYPE_FIELD_NAME = "cast"
     TARGET_CLS = BIField
 
@@ -141,7 +141,16 @@ class ResultSchemaSchema(WithNestedValueSchema, ResultSchemaBase, DefaultSchema[
         def get_obj_type(self, obj: CalculationSpec) -> str:
             return obj.mode.name
 
+    title = ma_fields.String(required=True)
+    guid = ma_fields.String()
+    hidden = ma_fields.Boolean(load_default=False)
+    description = ma_fields.String()
+    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    cast = ma_fields.Enum(UserDataType)
     type = ma_fields.Enum(FieldType, readonly=True)
+    data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    valid = ma_fields.Boolean(allow_none=True)
+    ui_settings = ma_fields.String(dump_default="", load_default="")
 
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
@@ -150,7 +159,10 @@ class ResultSchemaSchema(WithNestedValueSchema, ResultSchemaBase, DefaultSchema[
     aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
     aggregation_locked = ma_fields.Boolean(readonly=True, allow_none=True, load_default=False, dump_only=True)
     autoaggregated = ma_fields.Boolean(readonly=True, allow_none=True, dump_only=True)
+    has_auto_aggregation = ma_fields.Boolean(allow_none=True)
+    lock_aggregation = ma_fields.Boolean(allow_none=True)
 
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
 
     @post_dump(pass_many=False)
@@ -222,7 +234,7 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
 class CacheInvalidationSourceSchema(BaseSchema):
     """Schema for cache_invalidation_source object in dataset"""
 
-    mode = ma_fields.Enum(CacheInvalidationMode, required=True, load_default=CacheInvalidationMode.off)
+    mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
 
     # For mode: formula
     filters = ma_fields.Nested(
@@ -240,18 +252,18 @@ class CacheInvalidationSourceSchema(BaseSchema):
     cache_invalidation_error = ma_fields.Nested(
         CacheInvalidationErrorSchema,
         allow_none=True,
-        load_default=None,
+        dump_default=None,
         dump_only=True,
     )
     last_result_timestamp = ma_fields.String(
         allow_none=True,
-        load_default=None,
+        dump_default=None,
         dump_only=True,
     )
     last_result_error = ma_fields.Nested(
         CacheInvalidationLastResultErrorSchema,
         allow_none=True,
-        load_default=None,
+        dump_default=None,
         dump_only=True,
     )
 
