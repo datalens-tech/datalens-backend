@@ -16,6 +16,7 @@ import dl_app_api_base.auth as auth
 import dl_app_api_base.error_handling as error_handling
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.headers as headers
+import dl_app_api_base.health as health
 import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
 import dl_app_api_base.request_context as request_context
@@ -213,12 +214,23 @@ class HttpServerAppFactoryMixin(
             ),
         )
 
+        readiness_service = await self._get_aiohttp_readiness_service()
+
         result.append(
             handlers.Route(
                 method="GET",
                 path="/api/v1/health/readiness",
                 handler=handlers.ReadinessProbeHandler(
-                    subsystems=await self._get_aiohttp_subsystem_readiness_callbacks(),
+                    readiness_service=readiness_service,
+                ),
+            ),
+        )
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/api/v1/health/startup",
+                handler=handlers.StartupProbeHandler(
+                    readiness_service=readiness_service,
                 ),
             ),
         )
@@ -228,8 +240,16 @@ class HttpServerAppFactoryMixin(
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_subsystem_readiness_callbacks(
         self,
-    ) -> list[handlers.SubsystemReadinessCallback]:
+    ) -> list[health.SubsystemReadinessCallback]:
         return []
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_aiohttp_readiness_service(
+        self,
+    ) -> health.ReadinessService:
+        return health.ReadinessService(
+            subsystems=await self._get_aiohttp_subsystem_readiness_callbacks(),
+        )
 
     async def _setup_openapi(self, app: aiohttp.web.Application) -> None:
         open_api_spec = await self._get_aiohttp_open_api_spec()

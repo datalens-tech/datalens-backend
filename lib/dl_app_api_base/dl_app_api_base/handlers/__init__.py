@@ -13,9 +13,7 @@ from .base import (
 from .health import (
     LivenessProbeHandler,
     ReadinessProbeHandler,
-    SubsystemReadinessAsyncCallback,
-    SubsystemReadinessCallback,
-    SubsystemReadinessSyncCallback,
+    StartupProbeHandler,
 )
 
 
@@ -31,7 +29,5 @@ __all__ = [
     "Response",
     "ResponseException",
     "Route",
-    "SubsystemReadinessAsyncCallback",
-    "SubsystemReadinessCallback",
-    "SubsystemReadinessSyncCallback",
+    "StartupProbeHandler",
 ]
