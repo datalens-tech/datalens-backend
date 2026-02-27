@@ -1,20 +1,34 @@
 import logging
-from typing import Sequence
+from typing import (
+    Protocol,
+    Sequence,
+)
 
 import attr
+import attrs
 
 import dl_app_api_base.auth.checkers as auth_checkers
 import dl_app_api_base.auth.exc as auth_exc
 import dl_app_api_base.request_context as request_context
 import dl_app_base
+import dl_auth
 
 
 LOGGER = logging.getLogger(__name__)
 
 
+class UserAuthProviderFactory(Protocol):
+    def create(self, auth_result: auth_checkers.BaseRequestAuthResult) -> dl_auth.AuthProviderProtocol:
+        """
+        :raises dl_app_api_base.UserAuthProviderFactoryError: if the auth result type is not supported
+        """
+        ...
+
+
 @attr.define(frozen=True, kw_only=True)
 class AuthRequestContextDependenciesMixin(request_context.BaseRequestContextDependencies):
     request_auth_checkers: Sequence[auth_checkers.RequestAuthCheckerProtocol]
+    user_auth_provider_factories: dict[dl_auth.AuthTarget, UserAuthProviderFactory] = attrs.Factory(dict)
 
 
 class AuthRequestContextMixin(request_context.BaseRequestContext):
@@ -29,3 +43,11 @@ class AuthRequestContextMixin(request_context.BaseRequestContext):
             return await auth_checker.check(self._aiohttp_request)
 
         raise auth_exc.NoApplicableAuthCheckersError()
+
+    async def get_user_auth_provider(
+        self,
+        target: dl_auth.AuthTarget,
+    ) -> dl_auth.AuthProviderProtocol:
+        auth_result = await self.get_auth_user()
+        factory = self._dependencies.user_auth_provider_factories[target]
+        return factory.create(auth_result)

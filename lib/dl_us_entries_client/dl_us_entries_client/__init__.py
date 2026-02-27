@@ -1,9 +1,11 @@
-from dl_us_entries_client.client import (
+from .client import (
+    US_ENTRIES_AUTH_TARGET,
     EntryNotFoundError,
     USEntriesAsyncClient,
     UsEntriesClientException,
+    USEntriesClientSettings,
 )
-from dl_us_entries_client.models import (
+from .models import (
     Entry,
     EntryData,
     EntryDeleteRequest,
@@ -32,5 +34,7 @@ __all__ = [
     "PingRequest",
     "PingResponse",
     "USEntriesAsyncClient",
+    "USEntriesClientSettings",
+    "US_ENTRIES_AUTH_TARGET",
     "UsEntriesClientException",
 ]

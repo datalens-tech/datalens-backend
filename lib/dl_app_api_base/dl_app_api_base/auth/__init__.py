@@ -13,12 +13,14 @@ from .exc import (
     AuthError,
     AuthFailureError,
     NoApplicableAuthCheckersError,
+    UserAuthProviderFactoryError,
 )
 from .middleware import AuthMiddleware
 from .models import RouteMatcher
 from .request_context import (
     AuthRequestContextDependenciesMixin,
     AuthRequestContextMixin,
+    UserAuthProviderFactory,
 )
 
 
@@ -39,4 +41,6 @@ __all__ = [
     "OAuthResult",
     "RequestAuthCheckerProtocol",
     "RouteMatcher",
+    "UserAuthProviderFactory",
+    "UserAuthProviderFactoryError",
 ]

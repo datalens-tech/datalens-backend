@@ -1,13 +1,13 @@
 import abc
-import enum
 
 import attr
+import dynamic_enum
 
 import dl_constants
 
 
-class AuthTarget(str, enum.Enum):
-    UNITED_STORAGE = "united_storage"
+class AuthTarget(dynamic_enum.DynamicEnum):
+    UNITED_STORAGE = dynamic_enum.AutoEnumValue()
 
 
 class AuthData(metaclass=abc.ABCMeta):

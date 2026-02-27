@@ -8,3 +8,7 @@ class NoApplicableAuthCheckersError(AuthError):
 
 class AuthFailureError(AuthError):
     ...
+
+
+class UserAuthProviderFactoryError(AuthError):
+    ...

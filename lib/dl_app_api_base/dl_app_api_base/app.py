@@ -21,6 +21,7 @@ import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
 import dl_app_api_base.request_context as request_context
 import dl_app_base
+import dl_auth
 import dl_settings
 
 
@@ -128,6 +129,7 @@ class HttpServerAppFactoryMixin(
             context_factory=HttpServerRequestContext.factory,
             dependencies=HttpServerRequestContextDependencies(
                 request_auth_checkers=await self._get_request_auth_checkers(),
+                user_auth_provider_factories=await self._get_user_auth_provider_factories(),
             ),
         )
 
@@ -149,6 +151,12 @@ class HttpServerAppFactoryMixin(
                 ],
             ),
         ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_user_auth_provider_factories(
+        self,
+    ) -> dict[dl_auth.AuthTarget, auth.UserAuthProviderFactory]:
+        return {}
 
     @dl_app_base.singleton_class_method_result
     async def _get_response_error_handler_map(

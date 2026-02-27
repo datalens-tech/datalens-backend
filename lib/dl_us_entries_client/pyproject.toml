@@ -9,9 +9,11 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+dl-auth = {path = "../dl_auth"}
 dl-httpx = {path = "../dl_httpx"}
 dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
+dl-settings = {path = "../dl_settings"}
 httpx = "*"
 pydantic = "*"
 python = ">=3.10, <3.13"
