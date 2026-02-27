@@ -44,7 +44,7 @@ def test_already_deserialized() -> None:
         ...
 
     Base.register("child", Child)
-    child = Child.model_validate({"type": "child"})
+    child = Child.model_validate({"TYPE": "child"})
 
     assert isinstance(Base.factory(child), Child)
 
