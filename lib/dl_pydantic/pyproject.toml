@@ -10,6 +10,7 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 deepdiff = "*"
 dl-json = {path = "../dl_json"}
+dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 pydantic-core = "*"
 python = ">=3.10, <3.13"

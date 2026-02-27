@@ -10,6 +10,10 @@ from .jsonable import (
     JsonableTimedelta,
     JsonableUUID,
 )
+from .schematized import (
+    SchematizedAnnotation,
+    SchematizedDynamicEnumAnnotation,
+)
 from .typed import (
     TypedAnnotation,
     TypedBaseModel,
@@ -31,6 +35,8 @@ __all__ = [
     "JsonableDatetimeWithTimeZone",
     "JsonableTimedelta",
     "JsonableUUID",
+    "SchematizedAnnotation",
+    "SchematizedDynamicEnumAnnotation",
     "TypedAnnotation",
     "TypedBaseModel",
     "TypedBaseSchema",
