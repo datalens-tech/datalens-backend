@@ -8,9 +8,24 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+attrs = "*"
+dl-httpx = {path = "../dl_httpx"}
+dl-json = {path = "../dl_json"}
+dl-pydantic = {path = "../dl_pydantic"}
+httpx = "*"
+pydantic = "*"
 python = ">=3.10, <3.13"
+typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-core-testing = {path = "../dl_core_testing"}
+dl-retrier = {path = "../dl_retrier"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = ">=0.23"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = ["pytest-asyncio"]
 
 [tool.mypy]
 check_untyped_defs = true
@@ -31,8 +46,6 @@ requires = [
   "poetry-core",
 ]
 
-[datalens.pytest.unit]
-labels = ["no_compose"]
+[datalens.pytest.db]
 root_dir = "dl_us_entries_client_tests/"
-skip_compose = "true"
-target_path = "unit"
+target_path = "db"

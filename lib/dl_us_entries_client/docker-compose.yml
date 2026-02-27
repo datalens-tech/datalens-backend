@@ -1,0 +1,14 @@
+services:
+  pg-us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: pg-us
+    ports:
+     - "59200:5432"
+
+  us:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: us
+    ports:
+     - "59201:8080"
