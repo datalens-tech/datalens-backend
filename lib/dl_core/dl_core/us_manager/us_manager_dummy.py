@@ -25,7 +25,7 @@ class DummyUSManager(USManagerBase):
                 map_id_key={"dummy_usm_key": fernet.Fernet.generate_key().decode("ascii")},
                 actual_key_id="dummy_usm_key",
             ),
-            us_auth_context=USAuthContextMaster("FakeKey"),
+            us_auth_context=USAuthContextMaster(us_master_token="FakeKey"),
             services_registry=services_registry,
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )

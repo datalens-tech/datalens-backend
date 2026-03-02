@@ -133,6 +133,7 @@ class USAuthContextPublic(USAuthContextBase):
         return {}
 
 
+@attr.s(frozen=True, kw_only=True)
 class USAuthContextPrivateBase(USAuthContextBase):
     """
     Common base class for environment-specific US authentication contexts.
@@ -142,6 +143,11 @@ class USAuthContextPrivateBase(USAuthContextBase):
     DEFAULT_US_PREFIX = USApiType.private
     DEFAULT_TENANT = TenantCommon()
     IS_TENANT_ID_MUTABLE = True
+
+    us_master_token: str | None = attr.ib(
+        repr=False,
+        default=None,
+    )  # TODO: Remove after US migration to dynamic authorization DLPROJECTS-500
 
     def get_tenant(self) -> TenantDef:
         return self.DEFAULT_TENANT
@@ -154,7 +160,7 @@ class USAuthContextPrivateBase(USAuthContextBase):
         return {}
 
 
-@attr.s(frozen=True)
+@attr.s(frozen=True, kw_only=True)
 class USAuthContextMaster(USAuthContextPrivateBase):
     us_master_token: str = attr.ib(repr=False)
 

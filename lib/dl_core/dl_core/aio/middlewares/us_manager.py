@@ -93,7 +93,7 @@ def usm_tenant_resolver_middleware(
             sr = DummyServiceRegistry(rci=rci)
         assert sr is not None
 
-        usm = usm_factory.get_async_usm(rci=rci, services_registry=sr, us_api_type=us_api_type)
+        usm = await usm_factory.get_async_usm(rci=rci, services_registry=sr, us_api_type=us_api_type)
         try:
             try:
                 # TODO: context_name not passed due to target type unknown
@@ -147,12 +147,12 @@ def us_manager_middleware(
             return await handler(dl_request.request)
 
         if embed:
-            usm = usm_factory.get_embed_async_usm(
+            usm = await usm_factory.get_embed_async_usm(
                 rci=dl_request.rci,
                 services_registry=dl_request.services_registry,
             )
         else:
-            usm = usm_factory.get_regular_async_usm(
+            usm = await usm_factory.get_regular_async_usm(
                 rci=dl_request.rci,
                 services_registry=dl_request.services_registry,
             )
@@ -192,7 +192,7 @@ def public_us_manager_middleware(
         if aiohttp_wrappers.RequiredResourceCommon.US_MANAGER not in dl_request.required_resources:
             return await handler(dl_request.request)
 
-        usm = usm_factory.get_public_async_usm(
+        usm = await usm_factory.get_public_async_usm(
             rci=dl_request.rci,
             services_registry=dl_request.services_registry,
         )
@@ -237,7 +237,7 @@ def service_us_manager_middleware(
         if target_resource not in dl_request.required_resources:
             return await handler(dl_request.request)
 
-        usm = usm_factory.get_master_async_usm(
+        usm = await usm_factory.get_master_async_usm(
             rci=dl_request.rci,
             services_registry=dl_request.services_registry,
         )
