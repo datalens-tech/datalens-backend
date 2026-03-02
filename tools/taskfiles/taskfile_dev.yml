@@ -74,6 +74,8 @@ tasks:
       POETRY_VERSION:
         sh: cat .poetry-version
     cmds:
+      - git reset -- {{.METAPKG_DIR}}/poetry.lock
+      - git restore -- {{.METAPKG_DIR}}/poetry.lock
       - poetry self update {{.POETRY_VERSION}}
       - poetry lock --no-update --directory={{.METAPKG_DIR}}
     requires:
