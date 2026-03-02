@@ -1,11 +1,19 @@
 import asyncio
 import contextlib
 import logging
-from typing import AsyncGenerator
+from typing import (
+    Any,
+    AsyncGenerator,
+    Callable,
+    Coroutine,
+)
 
 import arq
 
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import (
+    USAuthContextMaster,
+    USAuthContextPrivateBase,
+)
 from dl_file_uploader_worker_lib.app import FileUploaderContextFab
 from dl_file_uploader_worker_lib.settings import FileUploaderWorkerSettings
 from dl_file_uploader_worker_lib.tasks import REGISTRY
@@ -69,6 +77,15 @@ async def task_processor_arq_client(
         yield p
 
 
+def get_us_auth_context_factory(
+    file_uploader_worker_settings: FileUploaderWorkerSettings,
+) -> Callable[[], Coroutine[Any, Any, USAuthContextPrivateBase]]:
+    async def get_us_auth_context() -> USAuthContextPrivateBase:
+        return USAuthContextMaster(us_master_token=file_uploader_worker_settings.US_MASTER_TOKEN)
+
+    return get_us_auth_context
+
+
 @contextlib.asynccontextmanager
 async def task_processor_local_client(
     task_state: TaskState,
@@ -77,8 +94,8 @@ async def task_processor_local_client(
 ) -> AsyncGenerator[TaskProcessor, None]:
     context_fab = FileUploaderContextFab(
         settings=file_uploader_worker_settings,
+        us_auth_context_factory=get_us_auth_context_factory(file_uploader_worker_settings),
         ca_data=ca_data,
-        us_auth_context=USAuthContextMaster(us_master_token=file_uploader_worker_settings.US_MASTER_TOKEN),
     )
     context = await context_fab.make()
     executor = Executor(context=context, state=task_state, registry=REGISTRY)
