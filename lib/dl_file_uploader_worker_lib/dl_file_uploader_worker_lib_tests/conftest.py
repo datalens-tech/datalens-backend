@@ -407,7 +407,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
     rci = RequestContextInfo.create_empty()
     return SyncUSManager(
         us_base_url=us_config.base_url,
-        us_auth_context=USAuthContextMaster(us_config.master_token),
+        us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
         bi_context=bi_context,
         crypto_keys_config=get_dummy_crypto_keys_config(),
         services_registry=DummyServiceRegistry(rci=rci),
@@ -420,7 +420,7 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,
-        us_auth_context=USAuthContextMaster(us_config.master_token),
+        us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
         crypto_keys_config=us_config.crypto_keys_config,
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
