@@ -10,6 +10,7 @@ import aiohttp.web
 import attr
 import pydantic
 
+import dl_app_api_base.auth as auth
 import dl_app_api_base.handlers
 
 
@@ -33,8 +34,15 @@ class ErrorHandlerProtocol(Protocol):
         ...
 
 
+class _UnauthorizedErrorResponseSchema(dl_app_api_base.handlers.ErrorResponseSchema):
+    message: str = "Unauthorized"
+    code: str = "UNAUTHORIZED"
+    status_code: pydantic.json_schema.SkipJsonSchema[http.HTTPStatus] = http.HTTPStatus.UNAUTHORIZED
+
+
 DEFAULT_ERROR_MAP: Mapping[type[Exception], dl_app_api_base.handlers.ErrorResponseSchema] = {
     aiohttp.web.HTTPNotFound: _NotFoundErrorResponseSchema(),
+    auth.UserAuthProviderFactoryError: _UnauthorizedErrorResponseSchema(),
 }
 
 

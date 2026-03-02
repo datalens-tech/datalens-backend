@@ -11,11 +11,15 @@ from .auth import (
     AlwaysAllowAuthChecker,
     AlwaysAllowAuthResult,
     AlwaysDenyAuthChecker,
+    AuthRequestContextMixin,
+    BaseRequestAuthResult,
     OAuthChecker,
     OAuthCheckerSettings,
     OAuthResult,
     RequestAuthCheckerProtocol,
     RouteMatcher,
+    UserAuthProviderFactory,
+    UserAuthProviderFactoryError,
 )
 from .error_handling import (
     ErrorHandlerProtocol,
@@ -70,8 +74,10 @@ __all__ = [
     "AlwaysAllowAuthChecker",
     "AlwaysAllowAuthResult",
     "AlwaysDenyAuthChecker",
+    "AuthRequestContextMixin",
     "BadRequestResponseSchema",
     "BaseHandler",
+    "BaseRequestAuthResult",
     "BaseRequestContext",
     "BaseRequestContextDependencies",
     "BaseRequestContextManager",
@@ -117,4 +123,6 @@ __all__ = [
     "SubsystemReadinessSyncCallback",
     "SubsystemStatusSchema",
     "SubsystemStatuses",
+    "UserAuthProviderFactory",
+    "UserAuthProviderFactoryError",
 ]
