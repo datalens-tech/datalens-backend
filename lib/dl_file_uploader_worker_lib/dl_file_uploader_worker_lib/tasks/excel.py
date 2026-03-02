@@ -56,7 +56,7 @@ class ProcessExcelTask(BaseExecutorTask[task_interface.ProcessExcelTask, FileUpl
     async def run(self) -> TaskResult:
         dfile: Optional[DataFile] = None
         sources_to_update_by_sheet_id: dict[int, list[DataSource]] = defaultdict(list)
-        usm = self._ctx.get_async_usm()
+        usm = await self._ctx.get_async_usm()
         usm.set_tenant_override(self._ctx.tenant_resolver.resolve_tenant_def_by_tenant_id(self.meta.tenant_id))
         task_processor = self._ctx.make_task_processor(self._request_id)
         redis = self._ctx.redis_service.get_redis()

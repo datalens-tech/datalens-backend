@@ -4,6 +4,9 @@ import logging
 import os
 from typing import (
     TYPE_CHECKING,
+    Any,
+    Callable,
+    Coroutine,
     Optional,
 )
 
@@ -57,9 +60,9 @@ def create_sr_factory_from_env_vars(
     )
 
 
-def get_async_service_us_manager(
+async def get_async_service_us_manager(
     us_host: str,
-    us_auth_context: USAuthContextPrivateBase,
+    us_auth_context_factory: Callable[[], Coroutine[Any, Any, USAuthContextPrivateBase]],
     ca_data: bytes,
     crypto_keys_config: CryptoKeysConfig,
     services_registry: ServicesRegistry,
@@ -69,7 +72,7 @@ def get_async_service_us_manager(
     usm = AsyncUSManager(
         us_api_prefix="private",
         us_base_url=us_host,
-        us_auth_context=us_auth_context,
+        us_auth_context=await us_auth_context_factory(),
         crypto_keys_config=crypto_keys_config,
         bi_context=bi_context or RequestContextInfo.create_empty(),
         services_registry=services_registry,

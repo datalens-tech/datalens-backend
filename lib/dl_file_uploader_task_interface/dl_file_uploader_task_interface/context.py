@@ -1,4 +1,9 @@
-from typing import Optional
+from typing import (
+    Any,
+    Callable,
+    Coroutine,
+    Optional,
+)
 
 import arq
 import attr
@@ -36,6 +41,7 @@ class SecureReaderSettings:
 @attr.s
 class FileUploaderTaskContext(BaseContext):
     settings: FileUploaderWorkerSettings = attr.ib()
+    us_auth_context_factory: Callable[[], Coroutine[Any, Any, USAuthContextPrivateBase]] = attr.ib()
     tpe: ContextVarExecutor = attr.ib()
     redis_service: RedisBaseService = attr.ib()
     s3_service: S3Service = attr.ib()
@@ -45,7 +51,6 @@ class FileUploaderTaskContext(BaseContext):
     secure_reader_settings: SecureReaderSettings = attr.ib()
     tenant_resolver: TenantResolver = attr.ib()
     ca_data: bytes = attr.ib()
-    us_auth_context: USAuthContextPrivateBase = attr.ib()
 
     def get_rci(self) -> RequestContextInfo:
         return RequestContextInfo.create_empty()
@@ -60,13 +65,13 @@ class FileUploaderTaskContext(BaseContext):
     def get_retry_policy_factory(self) -> dl_retrier.BaseRetryPolicyFactory:
         return dl_retrier.RetryPolicyFactory.from_settings(self.settings.US_CLIENT.RETRY_POLICY)
 
-    def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
+    async def get_async_usm(self, rci: Optional[RequestContextInfo] = None) -> AsyncUSManager:
         rci = rci or RequestContextInfo.create_empty()
         services_registry = self.get_service_registry(rci=rci)
         retry_policy_factory = self.get_retry_policy_factory()
-        return get_async_service_us_manager(
+        return await get_async_service_us_manager(
             us_host=self.settings.US_BASE_URL,
-            us_auth_context=self.us_auth_context,
+            us_auth_context_factory=self.us_auth_context_factory,
             services_registry=services_registry,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
