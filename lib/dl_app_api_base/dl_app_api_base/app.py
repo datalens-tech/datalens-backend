@@ -138,17 +138,49 @@ class HttpServerAppFactoryMixin(
         self,
     ) -> list[auth.RequestAuthCheckerProtocol]:
         return [
+            *await self._get_request_health_auth_checkers(),
+            *await self._get_request_openapi_auth_checkers(),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_health_auth_checkers(
+        self,
+    ) -> list[auth.RequestAuthCheckerProtocol]:
+        return [
             auth.AlwaysAllowAuthChecker(
-                route_matchers=[
-                    auth.RouteMatcher(
-                        path_regex=re.compile(r"^/api/v1/health/.*$"),
-                        methods=frozenset(["GET"]),
-                    ),
-                    auth.RouteMatcher(
-                        path_regex=re.compile(rf"^{self.settings.OPEN_API.DOCS_PATH}.*$"),
-                        methods=frozenset(["GET"]),
-                    ),
-                ],
+                route_matchers=await self._get_request_auth_checkers_health_route_matchers(),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_auth_checkers_health_route_matchers(
+        self,
+    ) -> list[auth.RouteMatcher]:
+        return [
+            auth.RouteMatcher(
+                path_regex=re.compile(r"^/api/v1/health/.*$"),
+                methods=frozenset(["GET"]),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_openapi_auth_checkers(
+        self,
+    ) -> list[auth.RequestAuthCheckerProtocol]:
+        return [
+            auth.AlwaysAllowAuthChecker(
+                route_matchers=await self._get_request_openapi_auth_checkers_route_matchers(),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_openapi_auth_checkers_route_matchers(
+        self,
+    ) -> list[auth.RouteMatcher]:
+        return [
+            auth.RouteMatcher(
+                path_regex=re.compile(rf"^{self.settings.OPEN_API.DOCS_PATH}.*$"),
+                methods=frozenset(["GET"]),
             ),
         ]
 
