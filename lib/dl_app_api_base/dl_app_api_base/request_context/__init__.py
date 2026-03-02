@@ -3,6 +3,7 @@ from .base import (
     BaseRequestContextDependencies,
     BaseRequestContextManager,
     RequestContextManagerProtocol,
+    RequestContextProvider,
     RequestContextProviderProtocol,
 )
 from .middleware import RequestContextMiddleware
@@ -14,5 +15,6 @@ __all__ = [
     "BaseRequestContextManager",
     "RequestContextManagerProtocol",
     "RequestContextMiddleware",
+    "RequestContextProvider",
     "RequestContextProviderProtocol",
 ]

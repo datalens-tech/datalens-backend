@@ -2,6 +2,7 @@ import contextvars
 import logging
 from typing import (
     Generic,
+    Mapping,
     Protocol,
     TypeVar,
 )
@@ -12,7 +13,6 @@ from typing_extensions import Self
 
 
 LOGGER = logging.getLogger(__name__)
-CONTEXT_VAR_NAME = "dl_app_api_base.request_context"
 
 
 @attr.define(kw_only=True, slots=False)
@@ -31,6 +31,26 @@ _RequestContextDependenciesContravariantType = TypeVar(
 class BaseRequestContext(Generic[_RequestContextDependenciesContravariantType]):
     _aiohttp_request: aiohttp.web.Request
     _dependencies: _RequestContextDependenciesContravariantType
+
+    @property
+    def method(self) -> str:
+        return self._aiohttp_request.method
+
+    @property
+    def path(self) -> str:
+        return self._aiohttp_request.path
+
+    @property
+    def headers(self) -> Mapping[str, str]:
+        return self._aiohttp_request.headers
+
+    @property
+    def cookies(self) -> Mapping[str, str]:
+        return self._aiohttp_request.cookies
+
+    @property
+    def host(self) -> str:
+        return self._aiohttp_request.host
 
     @classmethod
     def factory(
@@ -61,8 +81,26 @@ class RequestContextFactoryProtocol(
         ...
 
 
-def _create_context_var() -> contextvars.ContextVar[_RequestContextCovariantType | None]:
-    return contextvars.ContextVar(CONTEXT_VAR_NAME, default=None)
+def _get_context_var() -> contextvars.ContextVar[_RequestContextCovariantType | None]:
+    return contextvars.ContextVar("dl_app_api_base.request_context", default=None)
+
+
+@attr.define(frozen=True, kw_only=True)
+class RequestContextProvider(Generic[_RequestContextCovariantType]):
+    _context_var: contextvars.ContextVar[_RequestContextCovariantType | None] = attr.ib(
+        factory=_get_context_var,
+        init=False,
+    )
+
+    @property
+    def context_var(self) -> contextvars.ContextVar[_RequestContextCovariantType | None]:
+        return self._context_var
+
+    def get(self) -> _RequestContextCovariantType:
+        context = self._context_var.get()
+        if context is None:
+            raise ValueError("Context is not set")
+        return context
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -72,33 +110,18 @@ class BaseRequestContextManager(Generic[_RequestContextDependenciesContravariant
         _RequestContextCovariantType,
     ]
     _dependencies: _RequestContextDependenciesContravariantType
-    _context_var: contextvars.ContextVar[_RequestContextCovariantType | None] = attr.ib(
-        factory=_create_context_var,
-        init=False,
-    )
-
-    def is_set(self) -> bool:
-        return self._context_var.get() is not None
-
-    def get(self) -> _RequestContextCovariantType:
-        context = self._context_var.get()
-        if context is None:
-            raise ValueError("Context is not set")
-        return context
+    _context_var: contextvars.ContextVar[_RequestContextCovariantType | None]
 
     def create(self, aiohttp_request: aiohttp.web.Request) -> _RequestContextCovariantType:
-        request_context = self._create(aiohttp_request)
-        self._context_var.set(request_context)
-        return request_context
-
-    def _create(self, aiohttp_request: aiohttp.web.Request) -> _RequestContextCovariantType:
-        return self._context_factory(
+        request_context = self._context_factory(
             aiohttp_request=aiohttp_request,
             dependencies=self._dependencies,
         )
+        self._context_var.set(request_context)
+        return request_context
 
     def clear(self) -> None:
-        if not self.is_set():
+        if self._context_var.get() is None:
             raise ValueError("Context is not set")
 
         self._context_var.set(None)

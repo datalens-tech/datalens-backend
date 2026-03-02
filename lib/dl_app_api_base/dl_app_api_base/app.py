@@ -83,6 +83,7 @@ class HttpServerRequestContext(
     _dependencies: HttpServerRequestContextDependencies
 
 
+HttpServerRequestContextProvider = request_context.RequestContextProvider[HttpServerRequestContext]
 HttpServerRequestContextManager = request_context.BaseRequestContextManager[
     HttpServerRequestContextDependencies,
     HttpServerRequestContext,
@@ -122,15 +123,23 @@ class HttpServerAppFactoryMixin(
         return app
 
     @dl_app_base.singleton_class_method_result
+    async def _get_request_context_provider(
+        self,
+    ) -> HttpServerRequestContextProvider:
+        return HttpServerRequestContextProvider()
+
+    @dl_app_base.singleton_class_method_result
     async def _get_request_context_manager(
         self,
     ) -> HttpServerRequestContextManager:
+        request_context_provider = await self._get_request_context_provider()
         return HttpServerRequestContextManager(
             context_factory=HttpServerRequestContext.factory,
             dependencies=HttpServerRequestContextDependencies(
                 request_auth_checkers=await self._get_request_auth_checkers(),
                 user_auth_provider_factories=await self._get_user_auth_provider_factories(),
             ),
+            context_var=request_context_provider.context_var,
         )
 
     @dl_app_base.singleton_class_method_result
@@ -149,6 +158,7 @@ class HttpServerAppFactoryMixin(
         return [
             auth.AlwaysAllowAuthChecker(
                 route_matchers=await self._get_request_auth_checkers_health_route_matchers(),
+                context_provider=await self._get_request_context_provider(),
             ),
         ]
 
@@ -170,6 +180,7 @@ class HttpServerAppFactoryMixin(
         return [
             auth.AlwaysAllowAuthChecker(
                 route_matchers=await self._get_request_openapi_auth_checkers_route_matchers(),
+                context_provider=await self._get_request_context_provider(),
             ),
         ]
 
@@ -209,22 +220,22 @@ class HttpServerAppFactoryMixin(
     async def _get_aiohttp_app_middlewares(
         self,
     ) -> list[aiohttp.typedefs.Middleware]:
-        request_context_manager = await self._get_request_context_manager()
+        request_context_provider = await self._get_request_context_provider()
 
         request_context_middlewares = request_context.RequestContextMiddleware(
-            request_context_manager=request_context_manager,
+            request_context_manager=await self._get_request_context_manager(),
         )
         logging_context_middleware = middlewares.LoggingContextMiddleware(
-            request_context_provider=request_context_manager,
+            request_context_provider=request_context_provider,
         )
         logging_middleware = middlewares.LoggingMiddleware(
-            request_context_provider=request_context_manager,
+            request_context_provider=request_context_provider,
         )
         error_handling_middleware = error_handling.ErrorHandlingMiddleware(
             error_handlers=await self._get_response_error_handlers(),
         )
         auth_middleware = auth.AuthMiddleware(
-            request_context_provider=request_context_manager,
+            request_context_provider=request_context_provider,
         )
 
         return [
