@@ -207,8 +207,6 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
     async def _get_request_auth_checkers(
         self,
     ) -> list[dl_app_api_base.RequestAuthCheckerProtocol]:
-        base_checkers = await super()._get_request_auth_checkers()
-
         return [
             dl_app_api_base.AlwaysAllowAuthChecker(
                 route_matchers=[
@@ -251,7 +249,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                     ),
                 ],
             ),
-            *base_checkers,
+            *await super()._get_request_auth_checkers(),
         ]
 
     @override
