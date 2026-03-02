@@ -177,7 +177,7 @@ class MockedSyncUSManager(SyncUSManager):
             )
             if crypto_keys_config is None
             else crypto_keys_config,
-            us_auth_context=USAuthContextMaster("FakeKey"),
+            us_auth_context=USAuthContextMaster(us_master_token="FakeKey"),
             services_registry=services_registry,
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )

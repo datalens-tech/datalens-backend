@@ -73,7 +73,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         us_env_config = self.core_test_config.get_us_config()
         return USConfig(
             us_base_url=us_env_config.us_host,
-            us_auth_context=USAuthContextMaster(us_env_config.us_master_token),
+            us_auth_context=USAuthContextMaster(us_master_token=us_env_config.us_master_token),
             us_crypto_keys_config=self.core_test_config.get_crypto_keys_config(),
         )
 
