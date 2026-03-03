@@ -44,11 +44,11 @@ def _async_singleton_function_result(func: AsyncFunctionType) -> AsyncFunctionTy
         function_name = func.__qualname__
 
         if not hasattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE):
-            LOGGER.info("Creating %s singleton result", function_name)
+            LOGGER.debug("Creating %s singleton result", function_name)
             setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, _LOCKED_AND_UNSET_VALUE)
             result = await func(*args, **kwargs)
             setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, result)
-            LOGGER.info("%s singleton result created", function_name)
+            LOGGER.debug("%s singleton result created", function_name)
 
         result = getattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE)
         if result is _LOCKED_AND_UNSET_VALUE:
@@ -65,11 +65,11 @@ def _sync_singleton_function_result(func: SyncFunctionType) -> SyncFunctionType:
         function_name = func.__qualname__
 
         if not hasattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE):
-            LOGGER.info("Creating %s singleton result", function_name)
+            LOGGER.debug("Creating %s singleton result", function_name)
             setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, _LOCKED_AND_UNSET_VALUE)
             result = func(*args, **kwargs)
             setattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE, result)
-            LOGGER.info("%s singleton result created", function_name)
+            LOGGER.debug("%s singleton result created", function_name)
 
         result = getattr(func, SINGLETON_FUNCTION_RESULT_ATTRIBUTE)
         if result is _LOCKED_AND_UNSET_VALUE:
@@ -96,11 +96,11 @@ def _async_singleton_class_method_result(func: AsyncFunctionType) -> AsyncFuncti
         instance_key = f"{SINGLETON_FUNCTION_RESULT_ATTRIBUTE}.{function_name}"
 
         if not hasattr(class_instance, instance_key):
-            LOGGER.info("Creating %s singleton result", function_name)
+            LOGGER.debug("Creating %s singleton result", function_name)
             setattr(class_instance, instance_key, _LOCKED_AND_UNSET_VALUE)
             result = await func(*args, **kwargs)
             setattr(class_instance, instance_key, result)
-            LOGGER.info("%s singleton result created", function_name)
+            LOGGER.debug("%s singleton result created", function_name)
 
         result = getattr(class_instance, instance_key)
         if result is _LOCKED_AND_UNSET_VALUE:
@@ -119,11 +119,11 @@ def _sync_singleton_class_method_result(func: SyncFunctionType) -> SyncFunctionT
         instance_key = f"{SINGLETON_FUNCTION_RESULT_ATTRIBUTE}.{function_name}"
 
         if not hasattr(class_instance, instance_key):
-            LOGGER.info("Creating %s singleton result", function_name)
+            LOGGER.debug("Creating %s singleton result", function_name)
             setattr(class_instance, instance_key, _LOCKED_AND_UNSET_VALUE)
             result = func(*args, **kwargs)
             setattr(class_instance, instance_key, result)
-            LOGGER.info("%s singleton result created", function_name)
+            LOGGER.debug("%s singleton result created", function_name)
 
         result = getattr(class_instance, instance_key)
         if result is _LOCKED_AND_UNSET_VALUE:

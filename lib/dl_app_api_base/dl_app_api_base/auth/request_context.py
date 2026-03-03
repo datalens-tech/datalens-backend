@@ -39,7 +39,7 @@ class AuthRequestContextMixin(request_context.BaseRequestContext):
         for auth_checker in self._dependencies.request_auth_checkers:
             if not await auth_checker.is_applicable():
                 continue
-
+            LOGGER.info("Found applicable auth checker: %s", auth_checker.name)
             return await auth_checker.check()
 
         raise auth_exc.NoApplicableAuthCheckersError()
