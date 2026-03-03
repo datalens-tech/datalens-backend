@@ -36,7 +36,7 @@ class CachedCellProcessor:
         else:
             cell_value = cell.value
 
-        if isinstance(cell.value, int):
+        if isinstance(cell.value, int) and not isinstance(cell.value, bool):
             cell_type = "i"
         else:
             cell_type = cell.data_type
