@@ -119,14 +119,14 @@ RequestContextManager = dl_app_api_base.BaseRequestContextManager[
 
 @attr.define(kw_only=True, slots=False)
 class CounterHandler(dl_app_api_base.BaseHandler):
-    request_context_manager: RequestContextManager
+    request_context_provider: dl_app_api_base.RequestContextProviderProtocol[RequestContext]
 
     class ResponseSchema(dl_app_api_base.BaseResponseSchema):
         counter_value: int
         value: int
 
     async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        request_context = self.request_context_manager.get()
+        request_context = self.request_context_provider.get()
 
         return dl_app_api_base.Response.with_model(
             schema=self.ResponseSchema(
@@ -207,6 +207,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
     async def _get_request_auth_checkers(
         self,
     ) -> list[dl_app_api_base.RequestAuthCheckerProtocol]:
+        context_provider = await self._get_request_context_provider()
         return [
             dl_app_api_base.AlwaysAllowAuthChecker(
                 route_matchers=[
@@ -215,6 +216,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                         methods=frozenset(["GET"]),
                     ),
                 ],
+                context_provider=context_provider,
             ),
             dl_app_api_base.AlwaysAllowAuthChecker(
                 route_matchers=[
@@ -223,6 +225,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                         methods=frozenset(["GET"]),
                     ),
                 ],
+                context_provider=context_provider,
             ),
             dl_app_api_base.OAuthChecker.from_settings(
                 settings=self.settings.HTTP_SERVER.OAUTH_CHECKER,
@@ -232,6 +235,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                         methods=frozenset(["GET"]),
                     )
                 ],
+                context_provider=context_provider,
             ),
             dl_app_api_base.AlwaysAllowAuthChecker(
                 route_matchers=[
@@ -240,6 +244,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                         methods=frozenset(["GET"]),
                     ),
                 ],
+                context_provider=context_provider,
             ),
             dl_app_api_base.AlwaysDenyAuthChecker(
                 route_matchers=[
@@ -248,15 +253,24 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                         methods=frozenset(["GET"]),
                     ),
                 ],
+                context_provider=context_provider,
             ),
             *await super()._get_request_auth_checkers(),
         ]
 
     @override
     @dl_app_base.singleton_class_method_result
+    async def _get_request_context_provider(
+        self,
+    ) -> dl_app_api_base.RequestContextProvider[RequestContext]:
+        return dl_app_api_base.RequestContextProvider()
+
+    @override
+    @dl_app_base.singleton_class_method_result
     async def _get_request_context_manager(  # type: ignore[override]
         self,
     ) -> RequestContextManager:
+        request_context_provider = await self._get_request_context_provider()
         return RequestContextManager(
             context_factory=RequestContext.factory,
             dependencies=RequestContextDependencies(
@@ -264,6 +278,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 value=42,
                 request_auth_checkers=await self._get_request_auth_checkers(),
             ),
+            context_var=request_context_provider.context_var,
         )
 
     @override
@@ -277,12 +292,12 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 dl_app_api_base.Route(
                     method="GET",
                     path="/api/v1/counter",
-                    handler=CounterHandler(request_context_manager=await self._get_request_context_manager()),
+                    handler=CounterHandler(request_context_provider=await self._get_request_context_provider()),
                 ),
                 dl_app_api_base.Route(
                     method="GET",
                     path="/api/v1/headers",
-                    handler=HeadersHandler(request_context_provider=await self._get_request_context_manager()),
+                    handler=HeadersHandler(request_context_provider=await self._get_request_context_provider()),
                 ),
                 dl_app_api_base.Route(
                     method="GET",

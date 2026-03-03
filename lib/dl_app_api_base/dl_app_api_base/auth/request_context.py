@@ -37,10 +37,10 @@ class AuthRequestContextMixin(request_context.BaseRequestContext):
     @dl_app_base.singleton_class_method_result
     async def get_auth_user(self) -> auth_checkers.BaseRequestAuthResult:
         for auth_checker in self._dependencies.request_auth_checkers:
-            if not await auth_checker.is_applicable(self._aiohttp_request):
+            if not await auth_checker.is_applicable():
                 continue
 
-            return await auth_checker.check(self._aiohttp_request)
+            return await auth_checker.check()
 
         raise auth_exc.NoApplicableAuthCheckersError()
 

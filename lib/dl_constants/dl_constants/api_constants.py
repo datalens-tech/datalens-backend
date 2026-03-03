@@ -62,5 +62,10 @@ class DLHeadersCommon(DLHeaders):
     ORG_ID = "X-YaCloud-OrgId"
 
 
+class DLAuthorizationHeaderPrefix(DLHeaders):
+    BEARER = "Bearer "
+    OAUTH = "OAuth "
+
+
 class DLCookiesCommon(DLCookies):
     ...
