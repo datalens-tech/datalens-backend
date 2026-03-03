@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Optional
 
 import attr
 
@@ -21,7 +20,7 @@ class RLSSubject:
 @attr.s(slots=True)
 class RLSEntry:
     field_guid: str = attr.ib()
-    allowed_value: Optional[str] = attr.ib()
+    allowed_value: str | None = attr.ib()
     subject: RLSSubject = attr.ib()
     # Note: this is a bit of a hack to avoid very extensive splitting of the
     # RLSEntry into multiple classes.
@@ -43,12 +42,12 @@ RLS_FAILED_USER_NAME_PREFIX = "!FAILED_"
 class RLS2Subject:
     subject_type: RLSSubjectType = attr.ib()
     subject_id: str = attr.ib()
-    subject_name: Optional[str] = attr.ib(default=None)
+    subject_name: str | None = attr.ib(default=None)
 
 
 @attr.s
 class RLS2ConfigEntry:
     subject: RLS2Subject = attr.ib()
-    field_guid: Optional[str] = attr.ib(default=None)
-    allowed_value: Optional[str] = attr.ib(default=None)
+    field_guid: str | None = attr.ib(default=None)
+    allowed_value: str | None = attr.ib(default=None)
     pattern_type: RLSPatternType = attr.ib(default=RLSPatternType.value)
