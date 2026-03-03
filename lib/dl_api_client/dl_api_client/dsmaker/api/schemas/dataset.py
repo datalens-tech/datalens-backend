@@ -26,6 +26,10 @@ from dl_api_client.dsmaker.primitives import (
     AvatarRelation,
     BaseParameterValueConstraint,
     BooleanParameterValue,
+    CacheInvalidationError,
+    CacheInvalidationField,
+    CacheInvalidationLastResultError,
+    CacheInvalidationSource,
     CollectionParameterValueConstraint,
     Column,
     ComponentError,
@@ -67,6 +71,7 @@ from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
@@ -76,6 +81,7 @@ from dl_constants.enums import (
     JoinConditionType,
     JoinType,
     ManagedBy,
+    NotificationLevel,
     ParameterValueConstraintType,
     RLSPatternType,
     RLSSubjectType,
@@ -465,6 +471,94 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
     subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
+class CacheInvalidationErrorSchema(DefaultSchema[CacheInvalidationError]):
+    """Schema for cache invalidation validation error"""
+
+    TARGET_CLS = CacheInvalidationError
+
+    title = ma_fields.String(required=True)
+    message = ma_fields.String(required=True)
+    level = ma_fields.Enum(NotificationLevel)
+    locator = ma_fields.String(required=True)
+
+
+class CacheInvalidationLastResultErrorSchema(DefaultSchema[CacheInvalidationLastResultError]):
+    """Schema for last cache invalidation execution errors"""
+
+    TARGET_CLS = CacheInvalidationLastResultError
+
+    code = ma_fields.String(required=True)
+    message = ma_fields.String(allow_none=True)
+    details = ma_fields.Dict(allow_none=True, load_default=dict)
+    debug = ma_fields.Dict(allow_none=True, load_default=dict)
+
+
+class CacheInvalidationFieldSchema(DefaultSchema[CacheInvalidationField]):
+    """Schema for cache invalidation field (formula mode)"""
+
+    TARGET_CLS = CacheInvalidationField
+
+    guid = ma_fields.String(required=True)
+    title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    hidden = ma_fields.Boolean(load_default=False)
+    description = ma_fields.String(load_default="")
+    valid = ma_fields.Boolean(allow_none=True)
+    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    cast = ma_fields.Enum(UserDataType, allow_none=True)
+    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none)
+    data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    has_auto_aggregation = ma_fields.Boolean(allow_none=True)
+    lock_aggregation = ma_fields.Boolean(allow_none=True)
+    type = ma_fields.Enum(FieldType, allow_none=True)
+    ui_settings = ma_fields.String(load_default="")
+    calc_mode = ma_fields.Enum(CalcMode, load_default=CalcMode.formula)
+    formula = ma_fields.String(load_default="")
+    guid_formula = ma_fields.String(load_default="")
+    source = ma_fields.String(load_default="")
+    avatar_id = ma_fields.String(allow_none=True)
+    virtual = ma_fields.Boolean(load_default=False)
+
+
+class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
+    """Schema for cache_invalidation_source object in dataset"""
+
+    TARGET_CLS = CacheInvalidationSource
+
+    mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters = ma_fields.Nested(
+        ObligatoryFilterSchema,
+        many=True,
+        allow_none=True,
+        load_default=None,
+    )
+    field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
+
+    # For mode: sql
+    sql = ma_fields.String(allow_none=True, load_default=None)
+
+    # Error fields
+    cache_invalidation_error = ma_fields.Nested(
+        CacheInvalidationErrorSchema,
+        allow_none=True,
+        dump_default=None,
+        load_default=None,
+    )
+    last_result_timestamp = ma_fields.String(
+        allow_none=True,
+        dump_default=None,
+        dump_only=True,
+    )
+    last_result_error = ma_fields.Nested(
+        CacheInvalidationLastResultErrorSchema,
+        allow_none=True,
+        dump_default=None,
+        dump_only=True,
+    )
+
+
 class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixin):
     """
     A base class for schemas that need to contain the full dataset description
@@ -491,6 +585,7 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixi
     load_preview_by_default = ma_fields.Boolean(dump_default=True, load_default=True)
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema)
 
     @post_load
     def validate_rls2(self, item: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:

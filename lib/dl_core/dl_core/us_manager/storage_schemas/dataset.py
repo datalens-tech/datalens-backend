@@ -30,7 +30,6 @@ from dl_core import multisource
 from dl_core.base_models import (
     CacheInvalidationError,
     CacheInvalidationField,
-    CacheInvalidationLastResultError,
     CacheInvalidationSource,
     DefaultWhereClause,
     ObligatoryFilter,
@@ -476,25 +475,7 @@ class ObligatoryFilterSchema(DefaultStorageSchema):
     valid = ma_fields.Boolean(allow_none=True)
 
 
-class CacheInvalidationErrorSchema(DefaultStorageSchema):
-    TARGET_CLS = CacheInvalidationError
-
-    title = ma_fields.String(required=True)
-    message = ma_fields.String(allow_none=True)
-    level = ma_fields.Enum(NotificationLevel)
-    locator = ma_fields.String(allow_none=True)
-
-
-class CacheInvalidationLastResultErrorSchema(DefaultStorageSchema):
-    TARGET_CLS = CacheInvalidationLastResultError
-
-    code = ma_fields.String(required=True)
-    message = ma_fields.String(allow_none=True)
-    details = ma_fields.Dict(allow_none=True, load_default=dict)
-    debug = ma_fields.Dict(allow_none=True, load_default=dict)
-
-
-class CacheInvalidationFieldSchema(DefaultStorageSchema):
+class CacheInvalidationFieldStorageSchema(DefaultStorageSchema):
     TARGET_CLS = CacheInvalidationField
 
     guid = ma_fields.String(required=True)
@@ -523,17 +504,29 @@ class CacheInvalidationFieldSchema(DefaultStorageSchema):
     virtual = ma_fields.Boolean(load_default=False)
 
 
-class CacheInvalidationSourceSchema(DefaultStorageSchema):
+class CacheInvalidationErrorStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationError
+
+    title = ma_fields.String()
+    message = ma_fields.String()
+    level = ma_fields.Enum(NotificationLevel)
+    locator = ma_fields.String()
+
+
+class CacheInvalidationSourceStorageSchema(DefaultStorageSchema):
     TARGET_CLS = CacheInvalidationSource
 
     mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
 
     # For mode: formula
     filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema), load_default=list)
-    field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
+    field = ma_fields.Nested(CacheInvalidationFieldStorageSchema, allow_none=True, load_default=None)
 
     # For mode: sql
     sql = ma_fields.String(allow_none=True, load_default=None)
+
+    # Read-only error field
+    cache_invalidation_error = ma_fields.Nested(CacheInvalidationErrorStorageSchema, allow_none=True, load_default=None)
 
 
 class DatasetStorageSchema(DefaultStorageSchema):
@@ -552,5 +545,5 @@ class DatasetStorageSchema(DefaultStorageSchema):
     rls = ma_fields.Nested(RLSSchema, allow_none=False)
     component_errors = ma_fields.Nested(ComponentErrorListSchema)
     obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))
-    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema, allow_none=True)
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceStorageSchema, allow_none=True)
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")

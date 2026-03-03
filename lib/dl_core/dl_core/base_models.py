@@ -160,6 +160,9 @@ class CacheInvalidationSource:
     # For mode: sql
     sql: str | None = attr.ib(default=None)
 
+    # Read-only error field
+    cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
+
 
 @attr.s()
 class SourceFilterSpec:

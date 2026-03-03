@@ -195,6 +195,9 @@ class DatasetResource(BIResource):
         data["result_schema"] = result_schema
         data["result_schema_aux"] = dataset.data.result_schema_aux
 
+        # cache_invalidation_source
+        data["cache_invalidation_source"] = dataset.data.cache_invalidation_source
+
         # rls
         rls = {}
         rls_v2 = {}

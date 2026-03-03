@@ -987,7 +987,7 @@ class CacheInvalidationField:
 
 
 @attr.s
-class CacheInvalidationSource:
+class CacheInvalidationSource(ApiProxyObject):
     """Cache invalidation source configuration"""
 
     mode: CacheInvalidationMode = attr.ib(default=CacheInvalidationMode.off)
@@ -998,6 +998,9 @@ class CacheInvalidationSource:
 
     # For mode: sql
     sql: Optional[str] = attr.ib(default=None)
+
+    # Read-only error field
+    cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
 
 
 @attr.s

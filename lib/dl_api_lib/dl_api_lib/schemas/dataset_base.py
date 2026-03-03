@@ -24,7 +24,6 @@ from dl_api_connector.api_schema.source_base import (
 from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
 from dl_api_lib.schemas.fields import ResultSchemaAuxSchema
 from dl_api_lib.schemas.filter import ObligatoryFilterSchema
-from dl_api_lib.schemas.notification import NotificationSchema
 from dl_api_lib.schemas.options import OptionsMixin
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
 from dl_constants.enums import (
@@ -33,9 +32,14 @@ from dl_constants.enums import (
     CalcMode,
     FieldType,
     ManagedBy,
+    NotificationLevel,
     RLSPatternType,
     RLSSubjectType,
     UserDataType,
+)
+from dl_core.base_models import (
+    CacheInvalidationError,
+    CacheInvalidationSource,
 )
 from dl_core.fields import (
     BIField,
@@ -98,14 +102,14 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
     subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
-class ResultSchemaBase(BaseSchema):
+class ResultSchemaBase(DefaultSchema[BIField]):
     title = ma_fields.String(required=True)
     guid = ma_fields.String()
     hidden = ma_fields.Boolean(load_default=False)
     description = ma_fields.String()
     initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
     cast = ma_fields.Enum(UserDataType)
-    type = ma_fields.Enum(FieldType, allow_none=True)
+    type = ma_fields.Enum(FieldType, readonly=True)
     data_type = ma_fields.Enum(UserDataType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
     ui_settings = ma_fields.String(dump_default="", load_default="")
@@ -116,17 +120,11 @@ class ResultSchemaBase(BaseSchema):
     lock_aggregation = ma_fields.Boolean(allow_none=True)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
 
-    # Calculation spec fields (flattened in API)
-    formula = ma_fields.String(load_default="")
-    guid_formula = ma_fields.String(load_default="")
-    calc_mode = ma_fields.Enum(CalcMode)
-    source = ma_fields.String(load_default="")
-    avatar_id = ma_fields.String(allow_none=True, load_default=None)
-    default_value = ma_fields.Raw(allow_none=True, load_default=None)
-    value_constraint = ma_fields.Raw(allow_none=True, load_default=None)
+    def to_object(self, data: dict) -> BIField:
+        return BIField.make(**data)
 
 
-class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
+class ResultSchemaSchema(WithNestedValueSchema, ResultSchemaBase):
     TYPE_FIELD_NAME = "cast"
     TARGET_CLS = BIField
 
@@ -141,17 +139,6 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
         def get_obj_type(self, obj: CalculationSpec) -> str:
             return obj.mode.name
 
-    title = ma_fields.String(required=True)
-    guid = ma_fields.String()
-    hidden = ma_fields.Boolean(load_default=False)
-    description = ma_fields.String()
-    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
-    cast = ma_fields.Enum(UserDataType)
-    type = ma_fields.Enum(FieldType, readonly=True)
-    data_type = ma_fields.Enum(UserDataType, allow_none=True)
-    valid = ma_fields.Boolean(allow_none=True)
-    ui_settings = ma_fields.String(dump_default="", load_default="")
-
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
     calc_spec = ma_fields.Nested(CalculationSpecSchema)
@@ -159,10 +146,7 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
     aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
     aggregation_locked = ma_fields.Boolean(readonly=True, allow_none=True, load_default=False, dump_only=True)
     autoaggregated = ma_fields.Boolean(readonly=True, allow_none=True, dump_only=True)
-    has_auto_aggregation = ma_fields.Boolean(allow_none=True)
-    lock_aggregation = ma_fields.Boolean(allow_none=True)
 
-    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
     virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
 
     @post_dump(pass_many=False)
@@ -193,14 +177,16 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
             if not data["calc_spec"].source:
                 raise ValidationError("source is required for {}".format(data["title"]))
 
-    def to_object(self, data: dict) -> BIField:
-        return BIField.make(**data)
 
-
-class CacheInvalidationErrorSchema(NotificationSchema):
+class CacheInvalidationErrorSchema(DefaultSchema[CacheInvalidationError]):
     """Schema for cache invalidation execution errors"""
 
-    ...
+    TARGET_CLS = CacheInvalidationError
+
+    title = ma_fields.String()
+    message = ma_fields.String()
+    level = ma_fields.Enum(NotificationLevel)
+    locator = ma_fields.String()
 
 
 class CacheInvalidationLastResultErrorSchema(BaseSchema):
@@ -221,7 +207,11 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
     title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
 
     calc_mode = ma_fields.Enum(CalcMode, load_default=CalcMode.cache_invalidation_formula)
+
+    # this will be flattened on dump and un-flattened before load
+    # TODO: dump/load as is and update usage on front end respectively
     calc_spec = ma_fields.Nested(FormulaCalculationSpecSchema)
+
     virtual = ma_fields.Boolean(load_default=False)
 
     @post_load
@@ -230,9 +220,30 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
         data["calc_mode"] = CalcMode.cache_invalidation_formula
         return data
 
+    @post_dump(pass_many=False)
+    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        calc_spec_data = data.pop("calc_spec")
+        data.update(calc_spec_data)
+        # For backward compatibility use '' for formula and source; avatar_id must be present even if None
+        for key in ("formula", "guid_formula", "source"):
+            data.setdefault(key, "")
+        for key in ("avatar_id", "default_value", "value_constraint"):
+            data.setdefault(key, None)
+        return data
 
-class CacheInvalidationSourceSchema(BaseSchema):
+    @pre_load(pass_many=False)
+    def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        data["calc_mode"] = CalcMode.cache_invalidation_formula
+        data["calc_spec"] = dict(filter_calc_spec_kwargs(data["calc_mode"], data), mode=data["calc_mode"])
+        return del_calc_spec_kwargs_from(data, delete_calc_mode=False)
+
+
+class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
     """Schema for cache_invalidation_source object in dataset"""
+
+    TARGET_CLS = CacheInvalidationSource
 
     mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
 
@@ -248,12 +259,12 @@ class CacheInvalidationSourceSchema(BaseSchema):
     # For mode: sql
     sql = ma_fields.String(allow_none=True, load_default=None)
 
-    # Read-only error fields
+    # Error fields
     cache_invalidation_error = ma_fields.Nested(
         CacheInvalidationErrorSchema,
         allow_none=True,
         dump_default=None,
-        dump_only=True,
+        load_default=None,
     )
     last_result_timestamp = ma_fields.String(
         allow_none=True,

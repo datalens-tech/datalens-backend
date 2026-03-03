@@ -46,6 +46,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnection,
     ReplaceConnectionAction,
     SourceActionBase,
+    UpdateCacheInvalidationSourceAction,
     UpdateDescriptionAction,
     UpdateField,
     UpdateSettingAction,
@@ -54,6 +55,7 @@ from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
@@ -61,11 +63,14 @@ from dl_constants.enums import (
     DataSourceRole,
     DataSourceType,
     ManagedBy,
+    NotificationLevel,
     ParameterValueConstraintType,
     TopLevelComponentId,
     UserDataType,
 )
 from dl_core.base_models import (
+    CacheInvalidationError,
+    CacheInvalidationSource,
     DefaultConnectionRef,
     DefaultWhereClause,
 )
@@ -143,6 +148,32 @@ def comp_err_level_from_formula_err_level(formula_level: MessageLevel) -> Compon
 def field_not_none(field: Optional[BIField]) -> BIField:
     assert field is not None
     return field
+
+
+def validate_cache_invalidation_source_fields_fill_by_mode(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> CacheInvalidationError | None:
+    """Validate mode-specific required fields for cache invalidation source."""
+    mode = cache_invalidation_source.mode
+
+    if mode == CacheInvalidationMode.sql:
+        if not cache_invalidation_source.sql:
+            return CacheInvalidationError(
+                title="Validation Error",
+                message="Field 'sql' is required when mode is 'sql'",
+                level=NotificationLevel.critical,
+                locator="sql",
+            )
+    elif mode == CacheInvalidationMode.formula:
+        if cache_invalidation_source.field is None:
+            return CacheInvalidationError(
+                title="Validation Error",
+                message="Field 'field' is required when mode is 'formula'",
+                level=NotificationLevel.critical,
+                locator="field",
+            )
+
+    return None
 
 
 class DatasetValidator(DatasetBaseWrapper):
@@ -259,6 +290,10 @@ class DatasetValidator(DatasetBaseWrapper):
             self.apply_setting_action(action=action, setting=item_data.setting, by=by)
         elif isinstance(item_data, UpdateDescriptionAction):
             self.apply_description_action(action=action, description=item_data.description, by=by)
+        elif isinstance(item_data, UpdateCacheInvalidationSourceAction):
+            self.apply_cache_invalidation_action(
+                action=action, cache_invalidation_source=item_data.cache_invalidation_source, by=by
+            )
 
         self.update_validity_of_affected_components()
 
@@ -1755,6 +1790,29 @@ class DatasetValidator(DatasetBaseWrapper):
             self._ds_editor.set_description(description=description)
         else:
             raise NotImplementedError(f"Not implemented annotation action: {action}")
+
+    @generic_profiler("validator-apply-cache-invalidation-action")
+    def apply_cache_invalidation_action(
+        self,
+        action: DatasetAction,
+        cache_invalidation_source: CacheInvalidationSource,
+        by: ManagedBy | None = ManagedBy.user,
+    ) -> None:
+        if not action == DatasetAction.update_cache_invalidation_source:
+            raise NotImplementedError(f"Not implemented cache invalidation action: {action}")
+
+        validation_error = validate_cache_invalidation_source_fields_fill_by_mode(cache_invalidation_source)
+
+        # Update cache_invalidation_source with the error (or clear it if no error)
+        if validation_error:
+            cache_invalidation_source.cache_invalidation_error = validation_error
+
+        elif cache_invalidation_source.mode == CacheInvalidationMode.formula:
+            # TODO: validate formula and filters
+            pass
+
+        self._ds_editor.set_cache_invalidation_source(cache_invalidation_source=cache_invalidation_source)
+        return
 
     @generic_profiler("validator-get-single-formula-errors")
     def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> list[ErrorInfo]:

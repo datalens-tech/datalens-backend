@@ -16,6 +16,7 @@ from dl_constants.enums import (
     ManagedBy,
 )
 from dl_core.base_models import (
+    CacheInvalidationSource,
     DefaultConnectionRef,
     DefaultWhereClause,
     ObligatoryFilter,
@@ -439,6 +440,9 @@ class DatasetComponentEditor:
         if self._dataset.annotation is None:
             self._dataset.annotation = {}
         self._dataset.annotation["description"] = description
+
+    def set_cache_invalidation_source(self, cache_invalidation_source: CacheInvalidationSource) -> None:
+        self._dataset.data.cache_invalidation_source = cache_invalidation_source
 
     def replace_connection(self, old_connection: ConnectionBase, new_connection: ConnectionBase) -> None:
         old_migrator = get_data_source_migrator(old_connection.conn_type)
