@@ -1,3 +1,4 @@
+import enum
 import http
 import logging
 import os
@@ -15,6 +16,7 @@ from typing_extensions import override
 
 import dl_app_api_base
 import dl_app_base
+import dl_pydantic
 
 
 DIR_PATH = os.path.dirname(__file__)
@@ -173,6 +175,62 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
         )
 
 
+class SpecTestHandler(dl_app_api_base.BaseHandler):
+    OPENAPI_TAGS = ["spec-test"]
+
+    class RequestSchema(dl_app_api_base.BaseRequestSchema):
+        class Path(dl_pydantic.BaseSchema):
+            class PathEnum(str, enum.Enum):
+                FOO = "foo"
+                BAR = "bar"
+
+            class PathNested(dl_pydantic.BaseSchema):
+                value: int
+
+            path_enum: PathEnum
+            path_nested: PathNested
+
+        class Query(dl_pydantic.BaseSchema):
+            class QueryEnum(str, enum.Enum):
+                FOO = "foo"
+                BAR = "bar"
+
+            class QueryNested(dl_pydantic.BaseSchema):
+                value: int
+
+            enum: QueryEnum
+            query_nested: QueryNested
+
+        class Body(dl_pydantic.BaseSchema):
+            class BodyEnum(str, enum.Enum):
+                FOO = "foo"
+                BAR = "bar"
+
+            class BodyNested(dl_pydantic.BaseSchema):
+                value: int
+
+            body_enum: BodyEnum
+            body_nested: BodyNested
+
+        path: Path
+        query: Query
+        body: Body
+
+    class ResponseSchema(dl_app_api_base.BaseResponseSchema):
+        class ResponseEnum(str, enum.Enum):
+            FOO = "foo"
+            BAR = "bar"
+
+        class ResponseNested(dl_pydantic.BaseSchema):
+            value: int
+
+        response_enum: ResponseEnum
+        response_nested: ResponseNested
+
+    async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
+        raise NotImplementedError
+
+
 @attr.define(kw_only=True, slots=False)
 class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
     settings: AppSettings
@@ -246,6 +304,15 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 ],
                 context_provider=context_provider,
             ),
+            dl_app_api_base.AlwaysAllowAuthChecker(
+                route_matchers=[
+                    dl_app_api_base.RouteMatcher(
+                        path_regex=re.compile(r"^/api/v1/spec-test"),
+                        methods=frozenset(["GET"]),
+                    ),
+                ],
+                context_provider=context_provider,
+            ),
             dl_app_api_base.AlwaysDenyAuthChecker(
                 route_matchers=[
                     dl_app_api_base.RouteMatcher(
@@ -313,6 +380,11 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                     method="GET",
                     path="/api/v1/always_deny/ping",
                     handler=PingHandler(),
+                ),
+                dl_app_api_base.Route(
+                    method="GET",
+                    path="/api/v1/spec-test",
+                    handler=SpecTestHandler(),
                 ),
             ]
         )

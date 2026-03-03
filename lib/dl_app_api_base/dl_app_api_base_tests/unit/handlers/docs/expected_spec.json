@@ -527,6 +527,161 @@
           }
         }
       }
+    },
+    "/api/v1/spec-test": {
+      "get": {
+        "tags": [
+          "spec-test"
+        ],
+        "summary": "",
+        "parameters": [
+          {
+            "name": "path_enum",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/$defs/PathEnum"
+            }
+          },
+          {
+            "name": "path_nested",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/$defs/PathNested"
+            }
+          },
+          {
+            "name": "enum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/$defs/QueryEnum"
+            }
+          },
+          {
+            "name": "query_nested",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/$defs/QueryNested"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$defs": {
+                "BodyEnum": {
+                  "enum": [
+                    "foo",
+                    "bar"
+                  ],
+                  "title": "BodyEnum",
+                  "type": "string"
+                },
+                "BodyNested": {
+                  "properties": {
+                    "value": {
+                      "title": "Value",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "title": "BodyNested",
+                  "type": "object"
+                }
+              },
+              "properties": {
+                "body_enum": {
+                  "$ref": "#/$defs/BodyEnum"
+                },
+                "body_nested": {
+                  "$ref": "#/$defs/BodyNested"
+                }
+              },
+              "required": [
+                "body_enum",
+                "body_nested"
+              ],
+              "title": "Body",
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$defs": {
+                    "ResponseEnum": {
+                      "enum": [
+                        "foo",
+                        "bar"
+                      ],
+                      "title": "ResponseEnum",
+                      "type": "string"
+                    },
+                    "ResponseNested": {
+                      "properties": {
+                        "value": {
+                          "title": "Value",
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ],
+                      "title": "ResponseNested",
+                      "type": "object"
+                    }
+                  },
+                  "properties": {
+                    "response_enum": {
+                      "$ref": "#/$defs/ResponseEnum"
+                    },
+                    "response_nested": {
+                      "$ref": "#/$defs/ResponseNested"
+                    }
+                  },
+                  "required": [
+                    "response_enum",
+                    "response_nested"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {
@@ -546,6 +701,90 @@
         "critical"
       ],
       "title": "SubsystemStatusSchema",
+      "type": "object"
+    },
+    "PathEnum": {
+      "enum": [
+        "foo",
+        "bar"
+      ],
+      "title": "PathEnum",
+      "type": "string"
+    },
+    "PathNested": {
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "PathNested",
+      "type": "object"
+    },
+    "QueryEnum": {
+      "enum": [
+        "foo",
+        "bar"
+      ],
+      "title": "QueryEnum",
+      "type": "string"
+    },
+    "QueryNested": {
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "QueryNested",
+      "type": "object"
+    },
+    "BodyEnum": {
+      "enum": [
+        "foo",
+        "bar"
+      ],
+      "title": "BodyEnum",
+      "type": "string"
+    },
+    "BodyNested": {
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "BodyNested",
+      "type": "object"
+    },
+    "ResponseEnum": {
+      "enum": [
+        "foo",
+        "bar"
+      ],
+      "title": "ResponseEnum",
+      "type": "string"
+    },
+    "ResponseNested": {
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "ResponseNested",
       "type": "object"
     }
   }
