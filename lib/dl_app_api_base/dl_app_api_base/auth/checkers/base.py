@@ -20,6 +20,10 @@ class BaseRequestAuthResult:
 
 
 class RequestAuthCheckerProtocol(Protocol):
+    @property
+    def name(self) -> str:
+        ...
+
     async def is_applicable(self) -> bool:
         ...
 
@@ -34,6 +38,10 @@ class RequestAuthCheckerProtocol(Protocol):
 class BaseRequestAuthChecker(abc.ABC):
     _route_matchers: Sequence[auth_models.RouteMatcher]
     _context_provider: request_context.RequestContextProviderProtocol[request_context.BaseRequestContext]
+
+    @property
+    def name(self) -> str:
+        return self.__class__.__qualname__
 
     async def is_applicable(self) -> bool:
         context = self._context_provider.get()
