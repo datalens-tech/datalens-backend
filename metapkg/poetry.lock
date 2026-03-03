@@ -1852,6 +1852,7 @@ develop = true
 aiohttp = "*"
 attrs = "*"
 dl-app-base = {path = "../dl_app_base"}
+dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
 dl-json = {path = "../dl_json"}
 dl-logging = {path = "../dl_logging"}
@@ -1957,6 +1958,7 @@ develop = true
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-settings = {path = "../dl_settings"}
+dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 typing-extensions = "*"
 
@@ -3258,6 +3260,7 @@ develop = true
 [package.dependencies]
 deepdiff = "*"
 dl-json = {path = "../dl_json"}
+dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 pydantic-core = "*"
 typing-extensions = "*"
@@ -3717,8 +3720,11 @@ develop = true
 
 [package.dependencies]
 attrs = "*"
+dl-auth = {path = "../dl_auth"}
 dl-httpx = {path = "../dl_httpx"}
 dl-json = {path = "../dl_json"}
+dl-pydantic = {path = "../dl_pydantic"}
+dl-settings = {path = "../dl_settings"}
 httpx = "*"
 pydantic = "*"
 typing-extensions = "*"

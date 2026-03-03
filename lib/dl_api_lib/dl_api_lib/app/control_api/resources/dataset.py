@@ -9,6 +9,8 @@ from typing import (
 )
 import uuid
 
+from flask import request
+
 from dl_api_commons.flask.middlewares.logging_context import put_to_request_context
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_connector.api_schema.top_level import resolve_entry_loc_from_api_req_body
@@ -218,11 +220,19 @@ class DatasetVersionItem(DatasetResource):
     )
     def get(self, dataset_id: str, version: str, query: dict) -> dict:
         """Get dataset version"""
-        connection_headers = {
+        audit_mode = request.headers.get(DLHeadersCommon.AUDIT_MODE.value)
+
+        connection_headers: dict[str, str] = {
             DLHeadersCommon.DATASET_ID.value: dataset_id,
         }
+        if audit_mode is not None:
+            connection_headers[DLHeadersCommon.AUDIT_MODE.value] = audit_mode
+
         us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
+
+        if audit_mode is not None:
+            us_manager.set_context("dataset", {DLHeadersCommon.AUDIT_MODE.value: audit_mode})
 
         if "rev_id" in query:
             ds, _ = self.get_dataset(dataset_id=dataset_id, body={}, params={"revId": query["rev_id"]})

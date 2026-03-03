@@ -286,12 +286,14 @@ class ConnectionItem(BIResource):
     def get(self, connection_id: str, query: dict) -> dict:
         us_manager = self.get_regular_us_manager()
         dataset_id = request.headers.get(DLHeadersCommon.DATASET_ID.value)
+        audit_mode = request.headers.get(DLHeadersCommon.AUDIT_MODE.value)
 
-        # Pass dataset_id to US from URL
+        connection_headers: dict[str, str] = {}
         if dataset_id is not None:
-            connection_headers = {
-                DLHeadersCommon.DATASET_ID.value: dataset_id,
-            }
+            connection_headers[DLHeadersCommon.DATASET_ID.value] = dataset_id
+        if audit_mode is not None:
+            connection_headers[DLHeadersCommon.AUDIT_MODE.value] = audit_mode
+        if connection_headers:
             us_manager.set_context("connection", connection_headers)
 
         if "rev_id" in query:

@@ -59,6 +59,7 @@ dl-core-testing = {path = "../dl_core_testing"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
+responses = "*"
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["uwsgidecorators"]
