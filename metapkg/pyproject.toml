@@ -141,6 +141,7 @@ dl-core = {develop = true, path = "../lib/dl_core"}
 dl-core-testing = {develop = true, path = "../lib/dl_core_testing"}
 dl-dashsql = {develop = true, path = "../lib/dl_dashsql"}
 dl-db-testing = {develop = true, path = "../lib/dl_db_testing"}
+dl-dynconfig = {develop = true, path = "../lib/dl_dynconfig"}
 dl-file-secure-reader-lib = {develop = true, path = "../lib/dl_file_secure_reader_lib"}
 dl-file-uploader-api-lib = {develop = true, path = "../lib/dl_file_uploader_api_lib"}
 dl-file-uploader-lib = {develop = true, path = "../lib/dl_file_uploader_lib"}
