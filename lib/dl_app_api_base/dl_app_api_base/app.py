@@ -22,6 +22,7 @@ import dl_app_api_base.openapi as openapi
 import dl_app_api_base.request_context as request_context
 import dl_app_base
 import dl_auth
+import dl_dynconfig
 import dl_settings
 
 
@@ -33,6 +34,13 @@ class HttpServerSettings(dl_settings.BaseSettings):
 class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
     HTTP_SERVER: HttpServerSettings = NotImplemented
     OPEN_API: openapi.OpenApiSettings = pydantic.Field(default_factory=openapi.OpenApiSettings)
+    DYNCONFIG_SOURCE: (
+        dl_dynconfig.NullSourceSettings | dl_dynconfig.CachedS3SourceSettings | dl_dynconfig.S3SourceSettings
+    ) = pydantic.Field(default_factory=dl_dynconfig.NullSourceSettings)
+
+
+class HttpServerAppDynconfigMixin(dl_dynconfig.DynConfig):
+    ...
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -289,10 +297,43 @@ class HttpServerAppFactoryMixin(
         return result
 
     @dl_app_base.singleton_class_method_result
+    async def _get_dynconfig_source(
+        self,
+    ) -> dl_dynconfig.Source:
+        settings = self.settings.DYNCONFIG_SOURCE
+        if isinstance(settings, dl_dynconfig.S3SourceSettings):
+            return dl_dynconfig.S3Source.from_settings(settings)
+        if isinstance(settings, dl_dynconfig.CachedS3SourceSettings):
+            return dl_dynconfig.CachedS3Source.from_settings(settings)
+        if isinstance(settings, dl_dynconfig.NullSourceSettings):
+            return dl_dynconfig.NullSource.from_settings(settings)
+
+        raise ValueError(f"Unknown dynconfig source type: {type(settings)}")
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_dynconfig(
+        self,
+    ) -> HttpServerAppDynconfigMixin:
+        return HttpServerAppDynconfigMixin.model_from_source(
+            source=await self._get_dynconfig_source(),
+        )
+
+    @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_subsystem_readiness_callbacks(
         self,
     ) -> list[health.SubsystemReadinessCallback]:
-        return []
+        result: list[health.SubsystemReadinessCallback] = []
+
+        source = await self._get_dynconfig_source()
+        if not isinstance(source, dl_dynconfig.NullSource):
+            result.append(
+                health.SubsystemReadinessAsyncCallback(
+                    name="dynconfig_source.check_readiness",
+                    is_ready=source.check_readiness,
+                ),
+            )
+
+        return result
 
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_readiness_service(

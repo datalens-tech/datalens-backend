@@ -19,6 +19,10 @@ class BaseTemporalWorkerAppSettings(
     ...
 
 
+class BaseTemporalWorkerAppDynconfigMixin(dl_app_api_base.HttpServerAppDynconfigMixin):
+    ...
+
+
 @attr.define(frozen=True, kw_only=True)
 class BaseTemporalWorkerApp(
     temporal_app.TemporalWorkerAppMixin,
@@ -39,6 +43,13 @@ class BaseTemporalWorkerAppFactory(
     Generic[AppType],
 ):
     settings: BaseTemporalWorkerAppSettings
+
+    @override
+    @dl_app_base.singleton_class_method_result
+    async def _get_dynconfig(self) -> BaseTemporalWorkerAppDynconfigMixin:
+        return BaseTemporalWorkerAppDynconfigMixin.model_from_source(
+            source=await self._get_dynconfig_source(),
+        )
 
     @override
     @dl_app_base.singleton_class_method_result

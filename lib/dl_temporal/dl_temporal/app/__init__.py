@@ -1,5 +1,6 @@
 from .base import (
     BaseTemporalWorkerApp,
+    BaseTemporalWorkerAppDynconfigMixin,
     BaseTemporalWorkerAppFactory,
     BaseTemporalWorkerAppSettings,
 )
@@ -13,6 +14,7 @@ from .temporal import (
 
 __all__ = [
     "BaseTemporalWorkerApp",
+    "BaseTemporalWorkerAppDynconfigMixin",
     "BaseTemporalWorkerAppFactory",
     "BaseTemporalWorkerAppSettings",
     "TemporalWorkerAppFactoryMixin",
