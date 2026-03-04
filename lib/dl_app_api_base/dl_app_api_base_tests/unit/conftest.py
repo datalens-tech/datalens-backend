@@ -157,9 +157,24 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
 
     request_context_provider: dl_app_api_base.RequestContextProviderProtocol[dl_app_api_base.HeadersRequestContextMixin]
 
+    class RequestSchema(dl_app_api_base.BaseRequestSchema):
+        class Path(dl_pydantic.BaseSchema):
+            path_param: str
+
+        class Query(dl_pydantic.BaseSchema):
+            query_param: str
+
+        path: Path
+        query: Query
+
     class ResponseSchema(dl_app_api_base.BaseResponseSchema):
+        method: str
+        path: str
+        path_pattern: str
+        host: str
+
         request_id: str
-        child_request_id: str
+        trace_id: str
         user_ip: str
 
     async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
@@ -167,8 +182,12 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
 
         return dl_app_api_base.Response.with_model(
             schema=self.ResponseSchema(
+                method=request_context.method,
+                path=request_context.path,
+                path_pattern=request_context.path_pattern,
+                host=request_context.host,
                 request_id=request_context.get_request_id(),
-                child_request_id=request_context.generate_child_request_id(),
+                trace_id=request_context.get_trace_id(),
                 user_ip=request_context.get_user_ip(),
             ),
             status=http.HTTPStatus.OK,
@@ -363,7 +382,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 ),
                 dl_app_api_base.Route(
                     method="GET",
-                    path="/api/v1/headers",
+                    path="/api/v1/headers/{path_param}",
                     handler=HeadersHandler(request_context_provider=await self._get_request_context_provider()),
                 ),
                 dl_app_api_base.Route(

@@ -38,7 +38,14 @@ class BaseRequestContext(Generic[_RequestContextDependenciesContravariantType]):
 
     @property
     def path(self) -> str:
-        return self._aiohttp_request.path
+        return self._aiohttp_request.raw_path
+
+    @property
+    def path_pattern(self) -> str:
+        resource = self._aiohttp_request.match_info.route.resource
+        if resource is None:
+            return self._aiohttp_request.path
+        return resource.canonical
 
     @property
     def headers(self) -> Mapping[str, str]:
