@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import (
-    Sequence,
-)
+from typing import Sequence
 
 import attr
 from marshmallow import fields as ma_fields

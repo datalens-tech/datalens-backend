@@ -113,12 +113,26 @@ class ResultSchemaBase(DefaultSchema[BIField]):
     data_type = ma_fields.Enum(UserDataType, allow_none=True)
     valid = ma_fields.Boolean(allow_none=True)
     ui_settings = ma_fields.String(dump_default="", load_default="")
-    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none)
-    aggregation_locked = ma_fields.Boolean(allow_none=True, load_default=False)
-    autoaggregated = ma_fields.Boolean(allow_none=True)
+    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
+    aggregation_locked = ma_fields.Boolean(readonly=True, allow_none=True, load_default=False, dump_only=True)
+    autoaggregated = ma_fields.Boolean(readonly=True, allow_none=True, dump_only=True)
+    virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
     has_auto_aggregation = ma_fields.Boolean(allow_none=True)
     lock_aggregation = ma_fields.Boolean(allow_none=True)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+
+    @post_dump(pass_many=False)
+    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        calc_spec_data = data.pop("calc_spec")
+        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
+        data.update(calc_spec_data)
+        # For backward compatibility use '' for formula and source; avatar_id must be present even if None
+        for key in ("formula", "guid_formula", "source"):
+            data.setdefault(key, "")
+        for key in ("avatar_id", "default_value", "value_constraint"):
+            data.setdefault(key, None)
+        return data
 
     def to_object(self, data: dict) -> BIField:
         return BIField.make(**data)
@@ -142,25 +156,6 @@ class ResultSchemaSchema(WithNestedValueSchema, ResultSchemaBase):
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
     calc_spec = ma_fields.Nested(CalculationSpecSchema)
-
-    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none.name)
-    aggregation_locked = ma_fields.Boolean(readonly=True, allow_none=True, load_default=False, dump_only=True)
-    autoaggregated = ma_fields.Boolean(readonly=True, allow_none=True, dump_only=True)
-
-    virtual = VirtualFlagField(attribute="managed_by", dump_only=True)
-
-    @post_dump(pass_many=False)
-    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
-        data = deepcopy(data)
-        calc_spec_data = data.pop("calc_spec")
-        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
-        data.update(calc_spec_data)
-        # For backward compatibility use '' for formula and source; avatar_id must be present even if None
-        for key in ("formula", "guid_formula", "source"):
-            data.setdefault(key, "")
-        for key in ("avatar_id", "default_value", "value_constraint"):
-            data.setdefault(key, None)
-        return data
 
     @pre_load(pass_many=False)
     def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
@@ -206,24 +201,22 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
 
     title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
 
-    calc_mode = ma_fields.Enum(CalcMode, load_default=CalcMode.cache_invalidation_formula)
-
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
     calc_spec = ma_fields.Nested(FormulaCalculationSpecSchema)
 
-    virtual = ma_fields.Boolean(load_default=False)
-
-    @post_load
-    def force_calc_mode(self, data: dict[str, Any], **kwargs: Any) -> dict[str, Any]:
-        """Force calc_mode to always be cache_invalidation_formula"""
-        data["calc_mode"] = CalcMode.cache_invalidation_formula
-        return data
+    @pre_load(pass_many=False)
+    def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        mode = data.get("calc_mode", CalcMode.cache_invalidation_formula.name)
+        data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
+        return del_calc_spec_kwargs_from(data)
 
     @post_dump(pass_many=False)
     def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
         calc_spec_data = data.pop("calc_spec")
+        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode", CalcMode.cache_invalidation_formula.name)
         data.update(calc_spec_data)
         # For backward compatibility use '' for formula and source; avatar_id must be present even if None
         for key in ("formula", "guid_formula", "source"):
@@ -231,13 +224,6 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
         for key in ("avatar_id", "default_value", "value_constraint"):
             data.setdefault(key, None)
         return data
-
-    @pre_load(pass_many=False)
-    def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
-        data = deepcopy(data)
-        data["calc_mode"] = CalcMode.cache_invalidation_formula
-        data["calc_spec"] = dict(filter_calc_spec_kwargs(data["calc_mode"], data), mode=data["calc_mode"])
-        return del_calc_spec_kwargs_from(data, delete_calc_mode=False)
 
 
 class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):

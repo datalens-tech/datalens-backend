@@ -965,25 +965,31 @@ class CacheInvalidationField:
     """Field for cache invalidation formula mode."""
 
     guid: str = attr.ib()
-    title: str = attr.ib(default="INVALIDATION CACHE SERVICE FIELD")
-    managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
+    guid_formula: str = attr.ib(default="")
+    virtual: bool = attr.ib(default=False)
+
+    title: Optional[str] = attr.ib(default="INVALIDATION CACHE SERVICE FIELD")
+    calc_mode: CalcMode = attr.ib(default=CalcMode.formula, converter=CalcMode.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    aggregation: AggregationFunction = attr.ib(
+        default=AggregationFunction.none, converter=AggregationFunction.normalize  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    )
+    type: FieldType = attr.ib(default=FieldType.DIMENSION, converter=FieldType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    source: Optional[str] = attr.ib(default=None)
     hidden: bool = attr.ib(default=False)
     description: str = attr.ib(default="")
-    valid: Optional[bool] = attr.ib(default=None)
-    initial_data_type: Optional[UserDataType] = attr.ib(default=None)
-    cast: Optional[UserDataType] = attr.ib(default=None)
-    aggregation: AggregationFunction = attr.ib(default=AggregationFunction.none)
-    data_type: Optional[UserDataType] = attr.ib(default=None)
-    has_auto_aggregation: Optional[bool] = attr.ib(default=None)
-    lock_aggregation: Optional[bool] = attr.ib(default=None)
-    type: Optional[FieldType] = attr.ib(default=None)
-    ui_settings: str = attr.ib(default="")
-    calc_mode: CalcMode = attr.ib(default=CalcMode.formula)
     formula: str = attr.ib(default="")
-    guid_formula: str = attr.ib(default="")
-    source: str = attr.ib(default="")
+    initial_data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    cast: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    data_type: Optional[UserDataType] = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    valid: bool = attr.ib(default=True)
+    has_auto_aggregation: bool = attr.ib(default=False)
+    lock_aggregation: bool = attr.ib(default=False)
     avatar_id: Optional[str] = attr.ib(default=None)
-    virtual: bool = attr.ib(default=False)
+    managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    default_value: Optional[ParameterValue] = attr.ib(default=None)
+    value_constraint: Optional[BaseParameterValueConstraint] = attr.ib(default=None)
+    template_enabled: Optional[bool] = attr.ib(default=None)
+    ui_settings: str = attr.ib(default="")
 
 
 @attr.s
