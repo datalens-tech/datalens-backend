@@ -16,8 +16,11 @@ class BaseSubjectResolver(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
+    async def get_groups_by_subject(self, rci: RequestContextInfo, by_id: bool = False) -> list[str]:
         raise NotImplementedError
+
+    def resolve_group_slug(self, group_slug: str, rci: RequestContextInfo) -> str | None:
+        return None
 
 
 @attr.s
@@ -32,5 +35,5 @@ class NotFoundSubjectResolver(BaseSubjectResolver):
             for name in names
         ]
 
-    async def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
+    async def get_groups_by_subject(self, rci: RequestContextInfo, by_id: bool = False) -> list[str]:
         return []

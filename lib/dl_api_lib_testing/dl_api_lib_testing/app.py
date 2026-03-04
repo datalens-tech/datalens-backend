@@ -80,7 +80,7 @@ class TestingSubjectResolver(BaseSubjectResolver):
 
         return subjects
 
-    async def get_groups_by_subject(self, rci: RequestContextInfo) -> list[str]:
+    async def get_groups_by_subject(self, rci: RequestContextInfo, by_id: bool = False) -> list[str]:
         return ["_the_tests_asyncapp_group_"] if rci.user_id == TEST_USER_ID else []
 
 
