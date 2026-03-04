@@ -1852,6 +1852,7 @@ develop = true
 aiohttp = "*"
 attrs = "*"
 dl-app-base = {path = "../dl_app_base"}
+dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
 dl-json = {path = "../dl_json"}
 dl-logging = {path = "../dl_logging"}
@@ -1957,6 +1958,7 @@ develop = true
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-settings = {path = "../dl_settings"}
+dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 typing-extensions = "*"
 
@@ -2838,6 +2840,19 @@ type = "directory"
 url = "../lib/dl_db_testing"
 
 [[package]]
+name = "dl-dynconfig"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_dynconfig"
+
+[[package]]
 name = "dl-file-secure-reader-lib"
 version = "0.1.0"
 description = ""
@@ -3258,6 +3273,7 @@ develop = true
 [package.dependencies]
 deepdiff = "*"
 dl-json = {path = "../dl_json"}
+dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 pydantic-core = "*"
 typing-extensions = "*"
@@ -3717,8 +3733,11 @@ develop = true
 
 [package.dependencies]
 attrs = "*"
+dl-auth = {path = "../dl_auth"}
 dl-httpx = {path = "../dl_httpx"}
 dl-json = {path = "../dl_json"}
+dl-pydantic = {path = "../dl_pydantic"}
+dl-settings = {path = "../dl_settings"}
 httpx = "*"
 pydantic = "*"
 typing-extensions = "*"
@@ -9542,4 +9561,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "9c00b050c024bf6ae7bbde5122813ea319917242e1acd7c63787536072ad69de"
+content-hash = "47578b0b90b796f40cb905eed10b6725886117cfd575482453175a10ebcd91ed"
