@@ -1,0 +1,7 @@
+services:
+  s3-storage:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: s3-storage
+    ports:
+      - "52800:8000"
