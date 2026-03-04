@@ -41,7 +41,10 @@ from dl_constants.api_constants import (
     DLHeadersCommon,
 )
 from dl_core.base_models import EntryLocation
-from dl_core.enums import USApiType
+from dl_core.enums import (
+    USApiType,
+    USEntryMode,
+)
 import dl_core.exc as exc
 import dl_retrier
 
@@ -455,7 +458,7 @@ class UStorageClientBase:
         type_: str | None = None,
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
-        mode: str = "publish",
+        mode: str = USEntryMode.publish.value,
         unversioned_data: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> RequestData:
@@ -530,7 +533,7 @@ class UStorageClientBase:
         unversioned_data: dict[str, Any] | None = None,
         meta: dict[str, str] | None = None,
         annotation: dict[str, Any] | None = None,
-        mode: str = "publish",
+        mode: str = USEntryMode.publish.value,
         lock: str | None = None,
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
@@ -796,6 +799,7 @@ class UStorageClient(UStorageClientBase):
         type_: str | None = None,
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
+        mode: str = USEntryMode.publish.value,
         **kwargs: Any,
     ) -> dict[str, Any]:
         rq_data = self._req_data_create_entry(
@@ -808,6 +812,7 @@ class UStorageClient(UStorageClientBase):
             type_=type_,
             hidden=hidden,
             links=links,
+            mode=mode,
             **kwargs,
         )
         return self._request(
@@ -853,6 +858,7 @@ class UStorageClient(UStorageClientBase):
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
         update_revision: bool | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> dict[str, Any]:
         return self._request(
             self._req_data_update_entry(
@@ -865,6 +871,7 @@ class UStorageClient(UStorageClientBase):
                 hidden=hidden,
                 links=links,
                 update_revision=update_revision,
+                mode=mode,
             ),
             retry_policy_name="update_entry",
         )

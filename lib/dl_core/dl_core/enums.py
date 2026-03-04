@@ -48,3 +48,15 @@ class RoleReason(Enum):
     schema_mismatch = "schema_mismatch"
     # This role is not allowed for feature-managed sources
     forbidden_for_features = "forbidden_for_features"
+
+
+@unique
+class USEntryMode(Enum):
+    publish = "publish"
+    save = "save"
+
+
+@unique
+class USEntryBranch(Enum):
+    published = "published"
+    saved = "saved"
