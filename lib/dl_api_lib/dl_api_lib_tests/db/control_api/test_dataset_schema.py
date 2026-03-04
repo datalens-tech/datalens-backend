@@ -24,5 +24,5 @@ class TestDatasetVersionItemResponseSchema(DefaultApiTestBase):
         assert isinstance(dataset["dataset"], dict)
         assert isinstance(dataset["options"], dict)
 
-        assert "is_cache_invalidation_enabled_in_conn" in dataset["dataset"]
-        assert isinstance(dataset["dataset"]["is_cache_invalidation_enabled_in_conn"], bool)
+        assert "is_cache_invalidation_enabled_in_conn" in dataset["options"]
+        assert isinstance(dataset["options"]["is_cache_invalidation_enabled_in_conn"], bool)

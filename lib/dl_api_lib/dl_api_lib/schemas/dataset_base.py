@@ -192,7 +192,6 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     load_preview_by_default = ma_fields.Boolean(dump_default=True, load_default=True)
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
-    is_cache_invalidation_enabled_in_conn = ma_fields.Boolean(dump_only=True, load_default=False)
 
     @pre_load
     def prepare_guids(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:

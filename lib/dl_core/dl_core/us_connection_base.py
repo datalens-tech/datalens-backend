@@ -400,7 +400,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         Check if cache invalidation is enabled for this connection.
         cache_invalidation_throttling_interval_sec = None means disabled.
         """
-        if hasattr(self.data, "cache_invalidation_throttling_interval_sec"):
+        if isinstance(self.data, ConnCacheableDataModelMixin):
             return self.data.cache_invalidation_throttling_interval_sec is not None
         return False
 

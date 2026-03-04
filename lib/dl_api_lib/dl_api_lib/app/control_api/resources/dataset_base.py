@@ -41,7 +41,11 @@ from dl_constants.exc import (
 )
 from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
-from dl_core.data_source.base import DbInfo
+from dl_core.data_source.base import (
+    DataSource,
+    DbInfo,
+)
+from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
     DatasetConfigurationError,
@@ -51,7 +55,6 @@ from dl_core.exc import (
 )
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection import get_connection_class
-from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import (
     Dataset,
     DataSourceRole,
@@ -229,29 +232,21 @@ class DatasetResource(BIResource):
         # annotation
         data["annotation"] = dataset.annotation
 
-        data["is_cache_invalidation_enabled_in_conn"] = cls._check_cache_invalidation_enabled_in_conn(
-            ds_accessor=ds_accessor,
-            dsrc_coll_factory=dsrc_coll_factory,
-            us_entry_buffer=us_entry_buffer,
-            dataset_parameter_values=dataset_parameter_values,
-            dataset_template_enabled=dataset_template_enabled,
-        )
-
         return {"dataset": data}
 
     @classmethod
     def _check_cache_invalidation_enabled_in_conn(
         cls,
         ds_accessor: DatasetComponentAccessor,
-        dsrc_coll_factory: Any,
-        us_entry_buffer: USEntryBuffer,
+        role: DataSourceRole,
+        dsrc_coll_factory: DataSourceCollectionFactory,
         dataset_parameter_values: dict,
         dataset_template_enabled: bool,
     ) -> bool:
         """
-        Check if cache invalidation is enabled in all connections.
-        Returns True only if all connections have cache invalidation enabled.
-        Default is False if we can't get connection info or if there are no sources.
+        Check if cache invalidation is enabled in all sources.
+        Returns True only if all sources have cache invalidation enabled.
+        Default is False if there are no sources.
         """
         source_ids = ds_accessor.get_data_source_id_list()
         if not source_ids:
@@ -264,18 +259,12 @@ class DatasetResource(BIResource):
                 dataset_parameter_values=dataset_parameter_values,
                 dataset_template_enabled=dataset_template_enabled,
             )
-            conn_ref = dsrc_coll.get_strict(role=DataSourceRole.origin).connection_ref
-            try:
-                connection = us_entry_buffer.get_entry(conn_ref)
-                if not isinstance(connection, ConnectionBase):
-                    raise UnexpectedUSEntryType(f"Expected ConnectionBase for {conn_ref}, got {type(connection)!r}")
-                if not connection.is_cache_invalidation_enabled:
-                    return False
-            except Exception:
-                LOGGER.error(
-                    "Failed to get connection for cache invalidation check, setting is_cache_invalidation_enabled_in_conn to False",
-                    exc_info=True,
-                )
+            dsrc: DataSource
+            if DataSourceRole.origin in dsrc_coll:
+                dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
+            else:
+                dsrc = dsrc_coll.get_strict(role)
+            if not dsrc.is_cache_invalidation_enabled:
                 return False
         return True
 
@@ -472,6 +461,14 @@ class DatasetResource(BIResource):
                 localizer = service_registry.get_localizer()
                 listing_options = conn_cls.get_listing_options(localizer)
                 opt_data["source_listing"] = listing_options
+
+        opt_data["is_cache_invalidation_enabled_in_conn"] = cls._check_cache_invalidation_enabled_in_conn(
+            ds_accessor=ds_accessor,
+            dsrc_coll_factory=dsrc_coll_factory,
+            role=role,
+            dataset_parameter_values=dataset_parameter_values,
+            dataset_template_enabled=dataset_template_enabled,
+        )
 
         return {"options": opt_data}
 
