@@ -30,6 +30,7 @@ class USApiType(Enum):
     private = "private"
     public = "public"
     embeds = "embeds"
+    audit = "audit/v1"
 
 
 @unique

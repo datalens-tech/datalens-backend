@@ -375,8 +375,11 @@ class UStorageClientBase:
     def _auth_ctx_to_cookies(ctx: USAuthContextBase) -> dict[str, str]:
         return stringify_dl_cookies(ctx.get_outbound_cookies())
 
-    def _get_full_url(self, relative_url: str) -> str:
-        return "/".join(map(lambda s: s.strip("/"), (self.host, self.prefix, relative_url)))
+    def _get_full_url(self, relative_url: str, audit_mode: bool = False) -> str:
+        prefix = self.prefix
+        if audit_mode and prefix == USApiType.v1.value:
+            prefix = USApiType.audit.value
+        return "/".join(map(lambda s: s.strip("/"), (self.host, prefix, relative_url)))
 
     @staticmethod
     def _log_request_start(request_data: RequestData) -> None:
@@ -756,14 +759,14 @@ class UStorageClient(UStorageClientBase):
     ) -> dict[str, Any]:
         self._raise_for_disabled_interactions()
 
-        url = self._get_full_url(request_data.relative_url)
+        context_headers = self._named_contexts.get(context_name, {}) if context_name else {}
+        audit_mode = context_headers.get(DLHeadersCommon.AUDIT_MODE.value) == "true"
+        url = self._get_full_url(request_data.relative_url, audit_mode=audit_mode)
 
         self._log_request_start(request_data)
 
         request_kwargs: dict[str, Any] = {"json": request_data.json} if request_data.json is not None else {}
         tracing_headers = get_current_tracing_headers()
-
-        context_headers = self._named_contexts.get(context_name, {}) if context_name else {}
 
         retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
         retrier = RequestsPolicyRetrier(retry_policy=retry_policy)
