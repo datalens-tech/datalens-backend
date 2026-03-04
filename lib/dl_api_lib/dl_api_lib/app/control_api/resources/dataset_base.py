@@ -267,7 +267,8 @@ class DatasetResource(BIResource):
             conn_ref = dsrc_coll.get_strict(role=DataSourceRole.origin).connection_ref
             try:
                 connection = us_entry_buffer.get_entry(conn_ref)
-                assert isinstance(connection, ConnectionBase)
+                if not isinstance(connection, ConnectionBase):
+                    raise UnexpectedUSEntryType(f"Expected ConnectionBase for {conn_ref}, got {type(connection)!r}")
                 if not connection.is_cache_invalidation_enabled:
                     return False
             except Exception:
