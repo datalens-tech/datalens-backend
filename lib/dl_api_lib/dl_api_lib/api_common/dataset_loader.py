@@ -401,7 +401,8 @@ class DatasetApiLoader:
             ds_editor.set_description(annotation.get("description", ""))
 
         # cache_invalidation
-        ds_editor.set_cache_invalidation_source(body["cache_invalidation_source"])
+        if body.get("cache_invalidation_source"):
+            ds_editor.set_cache_invalidation_source(body["cache_invalidation_source"])
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))
