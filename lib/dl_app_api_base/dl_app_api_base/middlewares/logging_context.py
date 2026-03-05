@@ -39,7 +39,7 @@ class LoggingContextMiddleware:
         dl_logging.put_to_context("trace_id", request_context.get_trace_id())
         dl_logging.put_to_context("user_ip", request_context.get_user_ip())
         dl_logging.put_to_context("request.method", request_context.method)
-        dl_logging.put_to_context("request.path", request_context.path)
+        dl_logging.put_to_context("request.raw_path", request_context.raw_path)
         dl_logging.put_to_context("request.path_pattern", request_context.path_pattern)
         dl_logging.put_to_context("request.host", request_context.host)
 

@@ -38,6 +38,10 @@ class BaseRequestContext(Generic[_RequestContextDependenciesContravariantType]):
 
     @property
     def path(self) -> str:
+        return self._aiohttp_request.path
+
+    @property
+    def raw_path(self) -> str:
         return self._aiohttp_request.raw_path
 
     @property

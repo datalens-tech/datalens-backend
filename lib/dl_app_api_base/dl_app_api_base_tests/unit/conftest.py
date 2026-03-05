@@ -170,6 +170,7 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
     class ResponseSchema(dl_app_api_base.BaseResponseSchema):
         method: str
         path: str
+        raw_path: str
         path_pattern: str
         host: str
 
@@ -184,6 +185,7 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
             schema=self.ResponseSchema(
                 method=request_context.method,
                 path=request_context.path,
+                raw_path=request_context.raw_path,
                 path_pattern=request_context.path_pattern,
                 host=request_context.host,
                 request_id=request_context.get_request_id(),

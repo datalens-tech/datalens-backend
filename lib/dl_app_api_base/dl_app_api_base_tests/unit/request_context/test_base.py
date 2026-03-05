@@ -14,6 +14,7 @@ async def test_default(
     response_json = await response.json()
 
     assert response_json["method"] == "GET"
-    assert response_json["path"] == "/api/v1/headers/test1?query_param=test2"
+    assert response_json["path"] == "/api/v1/headers/test1"
+    assert response_json["raw_path"] == "/api/v1/headers/test1?query_param=test2"
     assert response_json["path_pattern"] == "/api/v1/headers/{path_param}"
     assert response_json["host"] == f"{app_settings.HTTP_SERVER.HOST}:{app_settings.HTTP_SERVER.PORT}"
