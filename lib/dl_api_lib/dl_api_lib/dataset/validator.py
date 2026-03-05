@@ -195,7 +195,7 @@ def _validate_cache_invalidation_formula_not_empty(
 
 
 def _validate_cache_invalidation_formula_result_type(
-    result_type: Optional[UserDataType],
+    result_type: UserDataType | None,
 ) -> CacheInvalidationError | None:
     """Validate that formula returns string type."""
     if result_type is None:
