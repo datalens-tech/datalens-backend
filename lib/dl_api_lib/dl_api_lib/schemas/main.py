@@ -22,7 +22,6 @@ from dl_constants.enums import (
     DataSourceCreatedVia,
     NotificationLevel,
 )
-from dl_core.enums import USEntryMode
 from dl_model_tools.schema.base import BaseSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
@@ -133,7 +132,7 @@ class UpdateDatasetSchema(BaseSchema):
 
 
 class DatasetUpdateSchema(DatasetContentSchema):
-    mode = ma_fields.String(load_default=USEntryMode.publish.value)
+    pass
 
 
 class DatasetCopyRequestSchema(BaseSchema):
