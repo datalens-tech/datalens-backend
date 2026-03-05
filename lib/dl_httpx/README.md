@@ -445,6 +445,125 @@ result = await testing_client.get_items(request)
 
 Use [respx](https://github.com/lundberg/respx) for HTTP mocking in tests (httpx-compatible).
 
+### Testing with respx
+
+respx intercepts httpx requests at the transport level. Use the `respx_mock` pytest fixture (auto-provided by the respx plugin) to mock routes.
+
+#### Conftest: client fixture
+
+```python
+# my_client_tests/unit/conftest.py
+import ssl
+
+import pytest
+import pytest_asyncio
+
+import my_client
+import dl_auth
+
+
+BASE_URL = "http://my-service.test"
+
+
+@pytest.fixture(name="ssl_context")
+def fixture_ssl_context() -> ssl.SSLContext:
+    return ssl.create_default_context()
+
+
+@pytest_asyncio.fixture(name="my_async_client")
+async def fixture_my_async_client(ssl_context: ssl.SSLContext) -> my_client.MyAsyncClient:
+    return my_client.MyAsyncClient.from_dependencies(
+        my_client.MyClientDependencies(
+            base_url=BASE_URL,
+            auth_provider=dl_auth.NoAuthProvider(),
+            ssl_context=ssl_context,
+        )
+    )
+```
+
+#### Test: mocking a GET request
+
+```python
+# my_client_tests/unit/test_client.py
+import pytest
+import respx
+
+import my_client
+
+from my_client_tests.unit.conftest import BASE_URL
+
+
+@pytest.mark.asyncio
+async def test_get_items_sends_correct_request(
+    my_async_client: my_client.MyAsyncClient,
+    respx_mock: respx.MockRouter,
+) -> None:
+    mock_route = respx_mock.get(f"{BASE_URL}/api/v1/items").respond(
+        status_code=200,
+        json={"items": [{"id": "1", "name": "Item"}]},
+    )
+
+    request = my_client.GetItemsRequest(tenant_id="tenant-123")
+    await my_async_client.get_items(request)
+
+    assert mock_route.call_count == 1
+    sent = mock_route.calls.last.request
+    assert sent.method == "GET"
+    assert dict(sent.url.params) == {"tenant_id": "tenant-123"}
+
+
+@pytest.mark.asyncio
+async def test_get_items_returns_parsed_response(
+    my_async_client: my_client.MyAsyncClient,
+    respx_mock: respx.MockRouter,
+) -> None:
+    respx_mock.get(f"{BASE_URL}/api/v1/items").respond(
+        status_code=200,
+        json={"items": [{"id": "abc", "name": "Widget", "status": "active"}]},
+    )
+
+    request = my_client.GetItemsRequest(tenant_id="tenant-123")
+    response = await my_async_client.get_items(request)
+
+    assert len(response) == 1
+    assert response[0].id == "abc"
+    assert response[0].name == "Widget"
+
+
+@pytest.mark.asyncio
+async def test_get_items_raises_on_http_error(
+    my_async_client: my_client.MyAsyncClient,
+    respx_mock: respx.MockRouter,
+) -> None:
+    respx_mock.get(f"{BASE_URL}/api/v1/items").respond(status_code=500)
+
+    request = my_client.GetItemsRequest(tenant_id="tenant-123")
+    with pytest.raises(Exception):
+        await my_async_client.get_items(request)
+```
+
+#### Key patterns
+
+| Pattern | Code |
+|---|---|
+| Mock GET | `respx_mock.get(url).respond(status_code=200, json={...})` |
+| Mock POST | `respx_mock.post(url).respond(status_code=201, json={...})` |
+| Inspect sent request | `mock_route.calls.last.request` |
+| Check call count | `assert mock_route.call_count == 1` |
+| Check query params | `assert dict(sent.url.params) == {...}` |
+| Check headers | `assert sent.headers["Authorization"] == "Bearer ..."` |
+| Check body | `import json; assert json.loads(sent.content) == {...}` |
+| Simulate error | `respx_mock.get(url).mock(side_effect=httpx.ConnectError(...))` |
+
+#### pyproject.toml test dependencies
+
+```toml
+[tool.poetry.group.tests.dependencies]
+pytest = "*"
+pytest-asyncio = "*"
+respx = "*"
+```
+
 ## Gotchas & Tips
 
 - **Always create the generic base + async, even if you only need async.** The pattern is `BaseMyClient[HttpxClientT]` + `MyAsyncClient(BaseMyClient[HttpxAsyncClient])`. This makes adding sync trivial later and keeps the codebase consistent with other clients.
