@@ -259,13 +259,12 @@ class DatasetResource(BIResource):
                 dataset_parameter_values=dataset_parameter_values,
                 dataset_template_enabled=dataset_template_enabled,
             )
-            dsrc: DataSource
-            if DataSourceRole.origin in dsrc_coll:
-                dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
-            else:
-                dsrc = dsrc_coll.get_strict(role)
-            if not dsrc.is_cache_invalidation_enabled:
-                return False
+            dsrc = dsrc_coll.get_strict(role)
+            try:
+                if not dsrc.is_cache_invalidation_enabled:
+                    return False
+            except ReferencedUSEntryNotFound:
+                continue
         return True
 
     @classmethod
