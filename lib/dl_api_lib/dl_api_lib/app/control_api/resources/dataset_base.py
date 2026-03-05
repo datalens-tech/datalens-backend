@@ -42,7 +42,6 @@ from dl_constants.exc import (
 from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import (
-    DataSource,
     DbInfo,
 )
 from dl_core.data_source.collection import DataSourceCollectionFactory
