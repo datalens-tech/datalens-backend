@@ -21,7 +21,7 @@ async def test_fields_masking(aiohttp_client, caplog, root_certificates):
     mock = await aiohttp_client(app)
 
     us_client = UStorageClientAIO(
-        auth_ctx=USAuthContextMaster("fake_token"),
+        auth_ctx=USAuthContextMaster(us_master_token="fake_token"),
         host=f"http://{mock.host}:{mock.port}",
         prefix="/api/private",
         ca_data=root_certificates,

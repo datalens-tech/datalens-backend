@@ -53,9 +53,12 @@ class USMFactory:
             tenant=tenant,
         )
 
-    def get_master_auth_context(self) -> USAuthContextPrivateBase:
+    def get_master_auth_context_sync(self) -> USAuthContextPrivateBase:
         assert self.us_master_token is not None, "US master token must be set in factory to create USAuthContextMaster"
         return USAuthContextMaster(us_master_token=self.us_master_token)
+
+    async def get_master_auth_context_async(self) -> USAuthContextPrivateBase:
+        return self.get_master_auth_context_sync()
 
     def get_master_auth_context_from_headers(self) -> USAuthContextPrivateBase:
         us_master_token = flask.request.headers.get(DLHeadersCommon.US_MASTER_TOKEN.value)
@@ -70,7 +73,7 @@ class USMFactory:
         return self.ca_data
 
     # Async
-    def get_regular_async_usm(
+    async def get_regular_async_usm(
         self,
         rci: RequestContextInfo,
         services_registry: ServicesRegistry,
@@ -85,13 +88,13 @@ class USMFactory:
             retry_policy_factory=self.retry_policy_factory,
         )
 
-    def get_master_async_usm(
+    async def get_master_async_usm(
         self,
         rci: RequestContextInfo,
         services_registry: ServicesRegistry,
     ) -> AsyncUSManager:
         return AsyncUSManager(
-            us_auth_context=self.get_master_auth_context(),
+            us_auth_context=await self.get_master_auth_context_async(),
             us_base_url=self.us_base_url,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,
@@ -100,7 +103,7 @@ class USMFactory:
             retry_policy_factory=self.retry_policy_factory,
         )
 
-    def get_public_async_usm(
+    async def get_public_async_usm(
         self,
         rci: RequestContextInfo,
         services_registry: ServicesRegistry,
@@ -138,7 +141,7 @@ class USMFactory:
         self, rci: RequestContextInfo, services_registry: ServicesRegistry, is_token_stored: bool | None = True
     ) -> SyncUSManager:
         return SyncUSManager(
-            us_auth_context=self.get_master_auth_context()
+            us_auth_context=self.get_master_auth_context_sync()
             if is_token_stored
             else self.get_master_auth_context_from_headers(),
             us_base_url=self.us_base_url,
@@ -148,7 +151,7 @@ class USMFactory:
             retry_policy_factory=self.retry_policy_factory,
         )
 
-    def get_embed_async_usm(
+    async def get_embed_async_usm(
         self,
         rci: RequestContextInfo,
         services_registry: ServicesRegistry,
@@ -163,7 +166,7 @@ class USMFactory:
             retry_policy_factory=self.retry_policy_factory,
         )
 
-    def get_async_usm(
+    async def get_async_usm(
         self,
         rci: RequestContextInfo,
         services_registry: ServicesRegistry,
@@ -176,4 +179,4 @@ class USMFactory:
             USApiType.embeds: self.get_embed_async_usm,
         }
         get_usm = usm_getters.get(us_api_type, self.get_regular_async_usm)
-        return get_usm(rci=rci, services_registry=services_registry)
+        return await get_usm(rci=rci, services_registry=services_registry)

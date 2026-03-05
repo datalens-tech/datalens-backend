@@ -29,7 +29,10 @@ from dl_core.loader import (
     load_core_lib,
 )
 from dl_core.services_registry.top_level import DummyServiceRegistry
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import (
+    USAuthContextMaster,
+    USAuthContextPrivateBase,
+)
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.environment import (
@@ -277,16 +280,25 @@ def task_processor_arq_client(loop, task_processor_arq_worker, redis_pool, task_
     return p
 
 
+@pytest.fixture(scope="session")
+def us_auth_context_factory(file_uploader_worker_settings):
+    async def get_us_auth_context() -> USAuthContextPrivateBase:
+        return USAuthContextMaster(us_master_token=file_uploader_worker_settings.US_MASTER_TOKEN)
+
+    return get_us_auth_context
+
+
 @pytest_asyncio.fixture(scope="function")
 async def task_processor_local_client(
     loop,
     task_state,
     file_uploader_worker_settings,
+    us_auth_context_factory,
     root_certificates,
 ):
     context_fab = FileUploaderContextFab(
         file_uploader_worker_settings,
-        us_auth_context=USAuthContextMaster(us_master_token=file_uploader_worker_settings.US_MASTER_TOKEN),
+        us_auth_context_factory=us_auth_context_factory,
         ca_data=root_certificates,
     )
     context = await context_fab.make()
@@ -407,7 +419,7 @@ def default_sync_usm(bi_context, prepare_us, us_config):
     rci = RequestContextInfo.create_empty()
     return SyncUSManager(
         us_base_url=us_config.base_url,
-        us_auth_context=USAuthContextMaster(us_config.master_token),
+        us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
         bi_context=bi_context,
         crypto_keys_config=get_dummy_crypto_keys_config(),
         services_registry=DummyServiceRegistry(rci=rci),
@@ -420,7 +432,7 @@ async def default_async_usm_per_test(bi_context, prepare_us, us_config, root_cer
     rci = RequestContextInfo.create_empty()
     return AsyncUSManager(
         us_base_url=us_config.base_url,
-        us_auth_context=USAuthContextMaster(us_config.master_token),
+        us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
         crypto_keys_config=us_config.crypto_keys_config,
         bi_context=bi_context,
         services_registry=DummyServiceRegistry(rci=rci),
