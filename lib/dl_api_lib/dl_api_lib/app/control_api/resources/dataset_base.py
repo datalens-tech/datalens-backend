@@ -42,6 +42,7 @@ from dl_constants.exc import (
 from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DbInfo
+from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
     DatasetConfigurationError,
@@ -229,6 +230,39 @@ class DatasetResource(BIResource):
         data["annotation"] = dataset.annotation
 
         return {"dataset": data}
+
+    @classmethod
+    def _check_cache_invalidation_enabled_in_conn(
+        cls,
+        ds_accessor: DatasetComponentAccessor,
+        role: DataSourceRole,
+        dsrc_coll_factory: DataSourceCollectionFactory,
+        dataset_parameter_values: dict,
+        dataset_template_enabled: bool,
+    ) -> bool:
+        """
+        Check if cache invalidation is enabled in all sources.
+        Returns True only if all sources have cache invalidation enabled.
+        Default is False if there are no sources.
+        """
+        source_ids = ds_accessor.get_data_source_id_list()
+        if not source_ids:
+            return False
+
+        for source_id in source_ids:
+            dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec,
+                dataset_parameter_values=dataset_parameter_values,
+                dataset_template_enabled=dataset_template_enabled,
+            )
+            dsrc = dsrc_coll.get_strict(role)
+            try:
+                if not dsrc.is_cache_invalidation_enabled:
+                    return False
+            except ReferencedUSEntryNotFound:
+                return False
+        return True
 
     @classmethod
     def dump_option_data(
@@ -423,6 +457,14 @@ class DatasetResource(BIResource):
                 localizer = service_registry.get_localizer()
                 listing_options = conn_cls.get_listing_options(localizer)
                 opt_data["source_listing"] = listing_options
+
+        opt_data["is_cache_invalidation_enabled_in_conn"] = cls._check_cache_invalidation_enabled_in_conn(
+            ds_accessor=ds_accessor,
+            dsrc_coll_factory=dsrc_coll_factory,
+            role=role,
+            dataset_parameter_values=dataset_parameter_values,
+            dataset_template_enabled=dataset_template_enabled,
+        )
 
         return {"options": opt_data}
 

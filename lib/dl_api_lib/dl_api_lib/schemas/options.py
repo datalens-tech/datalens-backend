@@ -105,6 +105,7 @@ class OptionsSchema(BaseSchema):
     supports_offset = ma_fields.Boolean()
     supported_functions = ma_fields.List(ma_fields.String())
     source_listing = ma_fields.Nested(SourceListingSchema)
+    is_cache_invalidation_enabled_in_conn = ma_fields.Boolean(dump_only=True, dump_default=False)
 
 
 class OptionsMixin(BaseSchema):

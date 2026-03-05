@@ -348,6 +348,10 @@ class DataSource(metaclass=abc.ABCMeta):
         return self.connection.data_export_forbidden
 
     @property
+    def is_cache_invalidation_enabled(self) -> bool:
+        return self.connection.is_cache_invalidation_enabled
+
+    @property
     def data_export_allowed_for_conn_type(self) -> bool:
         return self.connection.allow_background_data_export_for_conn_type
 

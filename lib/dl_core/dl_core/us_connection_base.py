@@ -394,6 +394,16 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def experimental_features_enabled(self) -> bool:
         return False
 
+    @property
+    def is_cache_invalidation_enabled(self) -> bool:
+        """
+        Check if cache invalidation is enabled for this connection.
+        cache_invalidation_throttling_interval_sec = None means disabled.
+        """
+        if isinstance(self.data, ConnCacheableDataModelMixin):
+            return self.data.cache_invalidation_throttling_interval_sec is not None
+        return False
+
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)
         if short:
