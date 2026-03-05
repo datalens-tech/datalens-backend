@@ -22,6 +22,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.enums import USEntryMode
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection_base import ConnectionBase
@@ -217,7 +218,12 @@ class AsyncUSManager(USManagerBase):
                 break
         return us_resp
 
-    async def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
+    async def save(
+        self,
+        entry: USEntry,
+        update_revision: Optional[bool] = None,
+        mode: str = USEntryMode.publish.value,
+    ) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)
         lifecycle_manager.pre_save_hook()
 
@@ -234,6 +240,7 @@ class AsyncUSManager(USManagerBase):
                 entry_loc,
                 scope=us_scope,
                 type_=us_type,
+                mode=mode,
                 **save_params,
             )
             entry.uuid = resp["entryId"]
