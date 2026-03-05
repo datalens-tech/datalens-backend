@@ -8,18 +8,18 @@ async def test_default(app_client: aiohttp.ClientSession) -> None:
     assert response.status == 200
     response_json = await response.json()
 
-    assert response_json["request_id"] is not None
+    assert response_json["trace_id"] is not None
 
 
 @pytest.mark.asyncio
-async def test_request_id_passed(app_client: aiohttp.ClientSession) -> None:
-    request_id = "test_request_id"
+async def test_trace_id_passed(app_client: aiohttp.ClientSession) -> None:
+    trace_id = "test_trace_id"
 
     response = await app_client.get(
         "/api/v1/headers/test",
-        headers={"X-Request-ID": request_id},
+        headers={"Uber-Trace-Id": trace_id},
     )
     assert response.status == 200
     response_json = await response.json()
 
-    assert response_json["request_id"] == request_id
+    assert response_json["trace_id"] == trace_id
