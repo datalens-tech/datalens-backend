@@ -26,7 +26,7 @@ class HeadersRequestContextMixin(request_context.BaseRequestContext):
             or dl_utils.request_id_generator()
         )
 
-    @deprecated("Use request_context.generate_child_request_id instead", category=DeprecationWarning)
+    @deprecated("Use ParentContext mechanism instead", category=DeprecationWarning)
     def generate_child_request_id(self) -> str:
         request_id = self.get_request_id()
         return dl_utils.make_uuid_from_parts(
