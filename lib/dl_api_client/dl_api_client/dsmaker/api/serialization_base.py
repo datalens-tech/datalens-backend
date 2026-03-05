@@ -185,7 +185,9 @@ class BaseApiV1SerializationAdapter:
         return dict(
             mode=item.mode.value,
             sql=item.sql,
-            filters=[ObligatoryFilterSchema().dump(filter_item) for filter_item in item.filters],
+            filters=[ObligatoryFilterSchema().dump(filter_item) for filter_item in item.filters]
+            if item.filters
+            else [],
             field=dict(
                 guid=field_item.guid,
                 title=field_item.title,

@@ -999,11 +999,11 @@ class CacheInvalidationSource(ApiProxyObject):
     mode: CacheInvalidationMode = attr.ib(default=CacheInvalidationMode.off)
 
     # For mode: formula
-    filters: list[ObligatoryFilter] = attr.ib(factory=list)
-    field: Optional[CacheInvalidationField] = attr.ib(default=None)
+    filters: list[ObligatoryFilter] | None = attr.ib(factory=list)
+    field: CacheInvalidationField | None = attr.ib(default=None)
 
     # For mode: sql
-    sql: Optional[str] = attr.ib(default=None)
+    sql: str | None = attr.ib(default=None)
 
     # Read-only error field
     cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
