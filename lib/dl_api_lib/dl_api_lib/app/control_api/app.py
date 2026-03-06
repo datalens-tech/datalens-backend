@@ -36,6 +36,7 @@ from dl_core import profiling_middleware
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 import dl_retrier
 
 
@@ -78,6 +79,13 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
         us_auth_mode: USAuthMode,
         ca_data: bytes,
     ) -> USManagerFlaskMiddleware:
+        dynamic_token_factory: DynamicUSMasterTokenFactory | None = None
+        if self._settings.US_CLIENT.DYNAMIC_AUTH_PRIVATE_KEY is not None:
+            dynamic_token_factory = DynamicUSMasterTokenFactory(
+                private_key=self._settings.US_CLIENT.DYNAMIC_AUTH_PRIVATE_KEY,
+                token_lifetime_sec=self._settings.US_CLIENT.DYNAMIC_AUTH_TOKEN_LIFETIME_SEC,
+                min_ttl_sec=self._settings.US_CLIENT.DYNAMIC_AUTH_MIN_TTL_SEC,
+            )
         return USManagerFlaskMiddleware(
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             us_base_url=self._settings.US_BASE_URL,
@@ -85,6 +93,8 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
             us_auth_mode=us_auth_mode,
             ca_data=ca_data,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(self._settings.US_CLIENT.RETRY_POLICY),
+            dynamic_token_factory=dynamic_token_factory,
+            master_token_authorization_enabled=self._settings.US_CLIENT.MASTER_TOKEN_AUTHORIZATION_ENABLED,
         )
 
     def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:

@@ -15,6 +15,7 @@ from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_constants.enums import USAuthMode
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.services_registry import ServicesRegistry
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.us_manager.factory import USMFactory
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 import dl_retrier
@@ -40,6 +41,8 @@ class USManagerFlaskMiddleware:
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attr.ib()
     us_master_token: str | None = attr.ib(default=None, repr=False)
     us_public_token: str | None = attr.ib(default=None, repr=False)
+    dynamic_token_factory: DynamicUSMasterTokenFactory | None = attr.ib(default=None)
+    master_token_authorization_enabled: bool = attr.ib(default=True)
 
     _usm_factory: USMFactory = attr.ib(init=False, default=None)
 
@@ -54,6 +57,8 @@ class USManagerFlaskMiddleware:
             us_public_token=self.us_public_token,
             ca_data=self.ca_data,
             retry_policy_factory=self.retry_policy_factory,
+            dynamic_token_factory=self.dynamic_token_factory,
+            master_token_authorization_enabled=self.master_token_authorization_enabled,
         )
 
     def _create_regular_us_manager(

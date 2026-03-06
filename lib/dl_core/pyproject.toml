@@ -14,6 +14,7 @@ anyascii = "*"
 arq = "*"
 attrs = "*"
 cryptography = "*"
+PyJWT = {version = "*", extras = ["crypto"]}
 dl-api-commons = {path = "../dl_api_commons"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-auth = {path = "../dl_auth"}

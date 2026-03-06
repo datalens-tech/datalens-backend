@@ -27,6 +27,9 @@ services:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
+      BI_MASTER_TOKEN_PUBLIC_KEY_PRIMARY: /keys/dynamic_us_master_token_public_key.pem
+    volumes:
+      - ./keys:/keys:ro
     restart: on-failure
 
   s3-storage:

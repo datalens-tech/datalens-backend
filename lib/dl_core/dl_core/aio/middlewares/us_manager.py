@@ -23,6 +23,7 @@ from dl_core import exc
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from dl_core.enums import USApiType
 from dl_core.services_registry.top_level import DummyServiceRegistry
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.us_manager.factory import USMFactory
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 import dl_retrier
@@ -212,6 +213,8 @@ def service_us_manager_middleware(
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
     as_user_usm: bool = False,
     env_specific_kwargs: dict[str, Any] | None = None,
+    dynamic_token_factory: DynamicUSMasterTokenFactory | None = None,
+    master_token_authorization_enabled: bool = True,
 ) -> Middleware:
     env_specific_kwargs = env_specific_kwargs or {}
     usm_factory = us_manager_factory_class(
@@ -220,6 +223,8 @@ def service_us_manager_middleware(
         us_master_token=us_master_token,
         ca_data=ca_data,
         retry_policy_factory=retry_policy_factory,
+        dynamic_token_factory=dynamic_token_factory,
+        master_token_authorization_enabled=master_token_authorization_enabled,
         **env_specific_kwargs,
     )
 
