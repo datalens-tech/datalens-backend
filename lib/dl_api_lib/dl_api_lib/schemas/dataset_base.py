@@ -208,7 +208,7 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
     @pre_load(pass_many=False)
     def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
-        mode = data.get("calc_mode", CalcMode.cache_invalidation_formula.name)
+        mode = data.get("calc_mode", CalcMode.formula.name)
         data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
         return del_calc_spec_kwargs_from(data)
 
@@ -216,7 +216,7 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
     def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
         calc_spec_data = data.pop("calc_spec")
-        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode", CalcMode.cache_invalidation_formula.name)
+        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode", CalcMode.formula.name)
         data.update(calc_spec_data)
         # For backward compatibility use '' for formula and source; avatar_id must be present even if None
         for key in ("formula", "guid_formula", "source"):

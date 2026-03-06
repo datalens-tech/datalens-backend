@@ -199,7 +199,6 @@ _CALCULATION_SPECS_BY_MODE = {
     CalcMode.direct.name: DirectCalculationSpec,
     CalcMode.formula.name: FormulaCalculationSpec,
     CalcMode.parameter.name: ParameterCalculationSpec,
-    CalcMode.cache_invalidation_formula.name: FormulaCalculationSpec,
 }
 
 
