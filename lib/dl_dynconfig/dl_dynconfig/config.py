@@ -46,9 +46,9 @@ class DynConfig(dl_pydantic.BaseModel):
         instance._initial_data = initial_data or {}
 
         for field_name, field_info in cls.model_fields.items():
-            ann = field_info.annotation
-            if isinstance(ann, type) and issubclass(ann, DynConfig):
-                child = ann.model_from_source(
+            annotation = field_info.annotation
+            if annotation is not None and issubclass(annotation, DynConfig):
+                child = annotation.model_from_source(
                     source=source,
                     path=instance._path + [field_name],
                     initial_data=instance._initial_data.get(field_name, {}),
@@ -103,8 +103,8 @@ class DynConfig(dl_pydantic.BaseModel):
             )
 
         for field_name, field_info in type(self).model_fields.items():
-            ann = field_info.annotation
-            if isinstance(ann, type) and issubclass(ann, DynConfig):
+            annotation = field_info.annotation
+            if annotation is not None and issubclass(annotation, DynConfig):
                 if field_name in data:
                     getattr(self, field_name).model_populate(data[field_name])
             elif field_name in data:

@@ -285,7 +285,7 @@ async def test_model_store_nested() -> None:
     root = RootConfig.model_from_source(source=source)
 
     await root.model_fetch()
-    root.child.child2 = Child2Config(value="updated")
+    root.child.child2.value = "updated"
     await root.child.model_store()
 
     result = await source.fetch()
