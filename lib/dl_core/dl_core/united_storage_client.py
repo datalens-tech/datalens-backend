@@ -170,6 +170,17 @@ class USAuthContextMaster(USAuthContextPrivateBase):
         }
 
 
+@attr.s(frozen=True, kw_only=True)
+class USAuthContextPrivateOSS(USAuthContextPrivateBase):
+    us_dynamic_master_token: str = attr.ib(repr=False)
+
+    def get_outbound_headers(self, include_tenancy: bool = True) -> dict[DLHeaders, str]:
+        outbound_headers: dict[DLHeaders, str] = {DLHeadersCommon.US_DYNAMIC_MASTER_TOKEN: self.us_dynamic_master_token}
+        if self.us_master_token is not None:  # TODO: Remove after US migration to SA authorization DLPROJECTS-500
+            outbound_headers[DLHeadersCommon.US_MASTER_TOKEN] = self.us_master_token
+        return outbound_headers
+
+
 @attr.s(frozen=True)
 class USAuthContextNoAuth(USAuthContextBase):
     DEFAULT_TENANT = TenantCommon()

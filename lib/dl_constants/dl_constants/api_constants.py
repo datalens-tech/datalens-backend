@@ -51,6 +51,7 @@ class DLHeadersCommon(DLHeaders):
     DL_COMPONENT = "X-DL-Component"
     DL_CONTEXT = "X-DL-Context"
     US_MASTER_TOKEN = "X-US-Master-Token"
+    US_DYNAMIC_MASTER_TOKEN = "X-US-Dynamic-Master-Token"
     US_PUBLIC_TOKEN = "X-US-Public-API-Token"
 
     EMBED_TOKEN = "X-DL-Embed-Token"
