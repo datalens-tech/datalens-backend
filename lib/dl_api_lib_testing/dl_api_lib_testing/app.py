@@ -91,7 +91,7 @@ class TestingSubjectResolver(BaseSubjectResolver):
         slug = group_slug.removeprefix("@group:")
         if slug == "_the_tests_asyncapp_group_":
             return "_the_tests_group_real_id_"
-        return None
+        return slug
 
 
 @attr.s
