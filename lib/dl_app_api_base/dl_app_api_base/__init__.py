@@ -1,4 +1,5 @@
 from .app import (
+    HttpServerAppDynconfigMixin,
     HttpServerAppFactoryMixin,
     HttpServerAppMixin,
     HttpServerAppSettingsMixin,
@@ -95,6 +96,7 @@ __all__ = [
     "ErrorResponseSchema",
     "GunicornWorker",
     "HeadersRequestContextMixin",
+    "HttpServerAppDynconfigMixin",
     "HttpServerAppFactoryMixin",
     "HttpServerAppMixin",
     "HttpServerAppSettingsMixin",
