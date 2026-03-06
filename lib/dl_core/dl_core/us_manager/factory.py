@@ -58,11 +58,15 @@ class USMFactory:
 
     def get_master_auth_context_sync(self) -> USAuthContextPrivateBase:
         if self.dynamic_token_factory is None:
-            assert self.us_master_token is not None, "US master token must be set in factory to create USAuthContextMaster"
+            assert (
+                self.us_master_token is not None
+            ), "US master token must be set in factory to create USAuthContextMaster"
             return USAuthContextMaster(us_master_token=self.us_master_token)
 
         if self.master_token_authorization_enabled:
-            assert self.us_master_token is not None, "US master token must be set in factory to create USAuthContextMaster"
+            assert (
+                self.us_master_token is not None
+            ), "US master token must be set in factory to create USAuthContextMaster"
             return self.dynamic_token_factory.get_auth_context(
                 us_master_token=self.us_master_token,
             )

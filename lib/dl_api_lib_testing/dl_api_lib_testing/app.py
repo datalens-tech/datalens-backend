@@ -28,7 +28,6 @@ from dl_constants.enums import (
 from dl_core.aio.middlewares.services_registry import services_registry_middleware
 from dl_core.aio.middlewares.us_manager import service_us_manager_middleware
 from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.services_registry import ServicesRegistry
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
@@ -37,6 +36,7 @@ from dl_core.services_registry.inst_specific_sr import (
     InstallationSpecificServiceRegistryFactory,
 )
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.utils import FutureRef
 from dl_core_testing.app_test_workarounds import TestEnvManagerFactory
 import dl_retrier

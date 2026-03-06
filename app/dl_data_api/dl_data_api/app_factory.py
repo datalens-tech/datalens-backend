@@ -30,12 +30,12 @@ from dl_core.aio.middlewares.us_manager import (
     us_manager_middleware,
 )
 from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_data_api import app_version
 import dl_retrier
 
@@ -135,9 +135,6 @@ class StandaloneDataApiAppFactory(
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(self._settings.US_CLIENT.RETRY_POLICY),
-        )
-
-        dynamic_us_kw = dict(
             dynamic_token_factory=dynamic_token_factory,
             master_token_authorization_enabled=self._settings.US_CLIENT.MASTER_TOKEN_AUTHORIZATION_ENABLED,
         )
@@ -148,14 +145,12 @@ class StandaloneDataApiAppFactory(
                     us_manager_factory_class=self.private_us_manager_factory_class,
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     **common_us_kw,
-                    **dynamic_us_kw,
                 ),
                 service_us_manager_middleware(
                     us_manager_factory_class=self.private_us_manager_factory_class,
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     as_user_usm=True,
                     **common_us_kw,
-                    **dynamic_us_kw,
                 ),
             ]
         else:
@@ -165,7 +160,6 @@ class StandaloneDataApiAppFactory(
                     us_manager_factory_class=self.private_us_manager_factory_class,
                     us_master_token=self._settings.US_MASTER_TOKEN,
                     **common_us_kw,
-                    **dynamic_us_kw,
                 ),
             ]
 

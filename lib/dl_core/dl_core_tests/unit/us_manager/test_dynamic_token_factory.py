@@ -1,12 +1,13 @@
 import threading
 import time
 
-import jwt
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+import jwt
 
 import dl_core.united_storage_client as united_storage_client
 import dl_core.us_manager.dynamic_token_factory as dynamic_token_factory
+
 
 _private_key_obj = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 TEST_PRIVATE_KEY = _private_key_obj.private_bytes(
@@ -110,9 +111,9 @@ def test_thread_safety():
     assert len(set(results)) == 1
 
 
-import dl_retrier
-from dl_core.us_manager.factory import USMFactory
 from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.factory import USMFactory
+import dl_retrier
 
 
 def test_usm_factory_uses_dynamic_token_when_key_set():
