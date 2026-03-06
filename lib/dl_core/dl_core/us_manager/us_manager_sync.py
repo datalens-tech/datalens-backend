@@ -45,6 +45,8 @@ if TYPE_CHECKING:
     from dl_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase
     from dl_core.services_registry import ServicesRegistry
 
+from dl_core.enums import USEntryMode
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -130,11 +132,13 @@ class SyncUSManager(USManagerBase):
         entry: USEntry,
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         self._save(
             entry=entry,
             update_revision=update_revision,
             original_entry=original_entry,
+            mode=mode,
         )
 
     def _save(
@@ -142,6 +146,7 @@ class SyncUSManager(USManagerBase):
         entry: USEntry,
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         """
         Save USEntry to US.
@@ -170,6 +175,7 @@ class SyncUSManager(USManagerBase):
                 key=entry_loc,
                 scope=us_scope,
                 type_=us_type,
+                mode=mode,
                 **save_params,
             )
             entry.uuid = resp["entryId"]
@@ -191,6 +197,7 @@ class SyncUSManager(USManagerBase):
         self,
         entry: USEntry,
         update_revision: bool | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         """
         Create entry - alias for save without previous entry.
@@ -200,6 +207,7 @@ class SyncUSManager(USManagerBase):
             entry=entry,
             original_entry=None,
             update_revision=update_revision,
+            mode=mode,
         )
 
     def update(
@@ -207,6 +215,7 @@ class SyncUSManager(USManagerBase):
         entry: USEntry,
         original_entry: USEntry | None = None,
         update_revision: bool | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         """
         Update entry - alias for save with a previous/original entry.
@@ -216,6 +225,7 @@ class SyncUSManager(USManagerBase):
             entry=entry,
             original_entry=original_entry,
             update_revision=update_revision,
+            mode=mode,
         )
 
     def delete(self, entry: USEntry) -> None:

@@ -24,6 +24,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.enums import USEntryMode
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection_base import ConnectionBase
@@ -225,11 +226,13 @@ class AsyncUSManager(USManagerBase):
         entry: USEntry,
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         await self._save(
             entry=entry,
             update_revision=update_revision,
             original_entry=original_entry,
+            mode=mode,
         )
 
     async def _save(
@@ -237,6 +240,7 @@ class AsyncUSManager(USManagerBase):
         entry: USEntry,
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         """
         Save USEntry to US.
@@ -265,6 +269,7 @@ class AsyncUSManager(USManagerBase):
                 entry_loc,
                 scope=us_scope,
                 type_=us_type,
+                mode=mode,
                 **save_params,
             )
             entry.uuid = resp["entryId"]
@@ -280,6 +285,7 @@ class AsyncUSManager(USManagerBase):
         self,
         entry: USEntry,
         update_revision: bool | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         """
         Create entry - alias for save without previous entry.
@@ -289,6 +295,7 @@ class AsyncUSManager(USManagerBase):
             entry=entry,
             original_entry=None,
             update_revision=update_revision,
+            mode=mode,
         )
 
     async def update(
@@ -296,6 +303,7 @@ class AsyncUSManager(USManagerBase):
         entry: USEntry,
         original_entry: USEntry | None = None,
         update_revision: bool | None = None,
+        mode: str = USEntryMode.publish.value,
     ) -> None:
         """
         Update entry - alias for save with a previous/original entry.
@@ -305,6 +313,7 @@ class AsyncUSManager(USManagerBase):
             entry=entry,
             original_entry=original_entry,
             update_revision=update_revision,
+            mode=mode,
         )
 
     async def delete(self, entry: USEntry) -> None:

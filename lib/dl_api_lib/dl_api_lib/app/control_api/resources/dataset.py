@@ -51,6 +51,10 @@ from dl_core.base_models import (
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.constants import DatasetConstraints
+from dl_core.enums import (
+    USEntryBranch,
+    USEntryMode,
+)
 from dl_core.us_dataset import Dataset
 from dl_core.utils import generate_revision_id
 import dl_query_processing.exc
@@ -106,7 +110,10 @@ class DatasetCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=body["dataset"], us_manager=us_manager)
 
-        us_manager.create(dataset)
+        us_manager.create(
+            dataset,
+            mode=USEntryMode.publish.value,
+        )
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 
@@ -130,7 +137,14 @@ class DatasetItem(BIResource):
         us_manager = self.get_us_manager_based_on_required_resources()
         us_manager.set_context("connection", connection_headers)
 
-        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
+        ds, _ = DatasetResource.get_dataset(
+            dataset_id=dataset_id,
+            body={},
+            load_dependencies=False,
+            params={
+                "branch": USEntryBranch.published.value,
+            },
+        )
         utils.need_permission_on_entry(ds, USPermissionKind.admin)
 
         us_manager.delete(ds)
@@ -153,7 +167,14 @@ class DatasetItemFields(BIResource):
         us_manager = self.get_us_manager_based_on_required_resources()
         us_manager.set_context("connection", connection_headers)
 
-        ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
+        ds, _ = DatasetResource.get_dataset(
+            dataset_id=dataset_id,
+            body={},
+            load_dependencies=False,
+            params={
+                "branch": USEntryBranch.published.value,
+            },
+        )
         fields = [
             {
                 "title": f.title,
@@ -188,7 +209,13 @@ class DatasetCopy(DatasetResource):
         us_manager = self.get_regular_us_manager()
         us_manager.set_context("connection", connection_headers)
 
-        ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
+        ds, _ = self.get_dataset(
+            dataset_id=dataset_id,
+            body={},
+            params={
+                "branch": USEntryBranch.published.value,
+            },
+        )
         orig_ds_loc = ds.entry_key
         copy_ds_loc: PathEntryLocation
 
@@ -201,9 +228,10 @@ class DatasetCopy(DatasetResource):
 
         LOGGER.info("Going to copy dataset %s with new key %r", dataset_id, copy_us_key)
         ds_copy = us_manager.copy_entry(ds, key=copy_ds_loc)
-
-        us_manager.create(ds_copy)
-
+        us_manager.create(
+            ds_copy,
+            mode=USEntryMode.publish.value,
+        )
         LOGGER.info("Dataset copy was saved with ID %s", ds_copy.uuid)
 
         return self.make_dataset_response_data(dataset=ds_copy, us_entry_buffer=us_manager.get_entry_buffer())
@@ -237,14 +265,26 @@ class DatasetVersionItem(DatasetResource):
             us_manager.set_context("dataset", {DLHeadersCommon.AUDIT_MODE.value: audit_mode})
 
         if "rev_id" in query:
-            ds, _ = self.get_dataset(dataset_id=dataset_id, body={}, params={"revId": query["rev_id"]})
+            ds, _ = self.get_dataset(
+                dataset_id=dataset_id,
+                body={},
+                params={
+                    "revId": query["rev_id"],
+                },
+            )
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
             # raw entry to avoid double deserialization
             ds_raw = us_manager.get_migrated_entry(dataset_id)
             # latest data revision_id for concurrent edit checks
             revision_id = ds_raw["data"].get("revision_id")
         else:
-            ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
+            ds, _ = self.get_dataset(
+                dataset_id=dataset_id,
+                body={},
+                params={
+                    "branch": USEntryBranch.published.value,
+                },
+            )
             utils.need_permission_on_entry(ds, USPermissionKind.read)
             revision_id = ds.revision_id
 
@@ -315,10 +355,10 @@ class DatasetVersionItem(DatasetResource):
 
             ds_editor = DatasetComponentEditor(dataset=ds)
             ds_editor.set_revision_id(revision_id=generate_revision_id())
-
             us_manager.update(
                 entry=ds,
-                original_entry=original_ds,
+                # Default in US Client is mode = "publish"
+                mode=body.get("mode", USEntryMode.publish.value),
             )
 
             return self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer())
@@ -361,7 +401,13 @@ class DatasetExportItem(DatasetResource):
         assert tenant is not None
         us_manager.set_tenant_override(tenant)
 
-        ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
+        ds, _ = self.get_dataset(
+            dataset_id=dataset_id,
+            body={},
+            params={
+                "branch": USEntryBranch.published.value,
+            },
+        )
         ds_dict = ds.as_dict()
         ds_dict.update(
             self.make_dataset_response_data(
@@ -481,7 +527,10 @@ class DatasetImportCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=data["dataset"], us_manager=us_manager)
 
-        us_manager.create(dataset)
+        us_manager.create(
+            dataset,
+            mode=USEntryMode.publish.value,
+        )
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 
@@ -522,7 +571,13 @@ class DatasetVersionValidator(DatasetResource):
             us_manager.set_context("connection", connection_headers)
 
         assert body is not None
-        dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
+        dataset, _ = self.get_dataset(
+            dataset_id=dataset_id,
+            body=body,
+            params={
+                "branch": USEntryBranch.published.value,
+            },
+        )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
         data = {}
@@ -589,7 +644,13 @@ class DatasetVersionFieldValidator(DatasetResource):
             us_manager.set_context("connection", connection_headers)
 
         assert body is not None
-        dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
+        dataset, _ = self.get_dataset(
+            dataset_id=dataset_id,
+            body=body,
+            params={
+                "branch": USEntryBranch.published.value,
+            },
+        )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
         formula = body["field"]["formula"]

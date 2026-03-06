@@ -67,6 +67,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
+from dl_core.enums import USEntryBranch
 from dl_core.exc import USObjectNotFoundException
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.mutation_cache.engine_factory import CacheInitializationError
@@ -191,7 +192,14 @@ class DatasetDataBaseView(BaseView):
 
         params: dict[str, str] | None = None
         if self.rev_id is not None:
-            params = {"revId": self.rev_id}
+            params = {
+                "revId": self.rev_id,
+            }
+        else:
+            params = {
+                # NOTE: by default getEntry endpoint uses "saved" if no branch nor revId given
+                "branch": USEntryBranch.published.value,
+            }
 
         if self.dataset_id is None:
             if self.STORED_DATASET_REQUIRED:
@@ -312,7 +320,14 @@ class DatasetDataBaseView(BaseView):
 
         params: dict[str, str] | None = None
         if self.rev_id is not None:
-            params = {"revId": self.rev_id}
+            params = {
+                "revId": self.rev_id,
+            }
+        else:
+            params = {
+                # NOTE: by default getEntry endpoint uses "saved" if no branch nor revId given
+                "branch": USEntryBranch.published.value,
+            }
 
         try:
             assert self.dataset_id is not None
