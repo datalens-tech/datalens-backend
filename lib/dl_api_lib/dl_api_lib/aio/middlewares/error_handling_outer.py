@@ -40,6 +40,7 @@ class DatasetAPIErrorHandler(AIOHTTPErrorHandler):
             bi_error = BIError(
                 http_code=err.status,
                 application_code_stack=(),
+                forward_for_anonymous=False,
                 message=err.reason,
                 details={},
                 debug={},

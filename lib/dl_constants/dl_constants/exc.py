@@ -19,6 +19,7 @@ CODE_OK = "OK"
 class DLBaseException(Exception):
     # code parts joining by dots on api response preparing.
     err_code: ClassVar[list[str]] = []  # TODO: Implement automatic hierarchial code inheritance
+    forward_for_anonymous: ClassVar[bool] = False
     _message: str
 
     default_message = "Internal Server Error"

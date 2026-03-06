@@ -317,6 +317,7 @@ class USAlreadyExistsException(USBadRequestException):
 
 class USIncorrectEntryIdForEmbed(USBadRequestException):
     err_code = USBadRequestException.err_code + ["INCORRECT_ENTRY_ID_FOR_EMBED"]
+    forward_for_anonymous = True
 
 
 class USIncorrectTenantIdException(USReqException):
@@ -506,6 +507,7 @@ class DatabaseOperationalError(DatabaseQueryError):
 class MaterializationNotFinished(DatabaseQueryError):
     err_code = DatabaseQueryError.err_code + ["MATERIALIZATION_NOT_FINISHED"]
     default_message = "Data is not available because materialization is not yet complete."
+    forward_for_anonymous = True
 
 
 class DbMemoryLimitExceeded(DatabaseQueryError):

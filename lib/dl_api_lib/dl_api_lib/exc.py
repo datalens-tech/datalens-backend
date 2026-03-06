@@ -14,6 +14,7 @@ class DatasetActionNotAllowedError(DLBaseException):
 class UnsupportedForEntityType(DLBaseException):
     err_code = DLBaseException.err_code + ["UNSUPPORTED"]
     default_message = "This entity type does not support this operation"
+    forward_for_anonymous = True
 
 
 class BadConnectionType(DLBaseException):
