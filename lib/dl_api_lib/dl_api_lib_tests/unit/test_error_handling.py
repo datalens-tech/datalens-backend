@@ -37,6 +37,7 @@ def test_bi_error_default_message():
             message="Some default message",
             http_code=None,
             application_code_stack=(),
+            forward_for_anonymous=False,
             debug={},
             details={},
         )
@@ -65,6 +66,7 @@ def test_regular_bi_error_building():
     assert BIError(
         http_code=400,
         application_code_stack=tuple(ExcA.err_code),
+        forward_for_anonymous=False,
         message=exc_a.message,
         details=exc_a.details,
         debug=exc_a.debug_info,
@@ -74,6 +76,7 @@ def test_regular_bi_error_building():
         assert BIError(
             http_code=None,
             application_code_stack=(),
+            forward_for_anonymous=False,
             message=BIError.DEFAULT_ERROR_MESSAGE,
             details={},
             debug={},
@@ -85,6 +88,7 @@ def test_regular_schema():
         message="Some message",
         http_code=None,
         application_code_stack=("A", "B"),
+        forward_for_anonymous=False,
         debug=dict(a="b"),
         details=dict(a="b"),
     )
@@ -98,11 +102,12 @@ def test_regular_schema():
     }
 
 
-def test_public_schema():
+def test_public_schema_for_non_forwarded():
     bi_error = BIError(
         message="Very user-private message",
         http_code=None,
         application_code_stack=("A", "B"),
+        forward_for_anonymous=False,
         debug=dict(stackrace=["1", "2"]),
         details=dict(private_code="Some private value"),
     )
@@ -114,22 +119,21 @@ def test_public_schema():
         "message": PublicAPIErrorSchema.PUBLIC_DEFAULT_MESSAGE,
     }
 
-    assert (
-        len(PublicAPIErrorSchema.PUBLIC_FORWARDED_ERROR_CODES) == 2
-    ), "Can not perform full public schema test without public whitelisted error codes"
 
-    for err_code_stack in PublicAPIErrorSchema.PUBLIC_FORWARDED_ERROR_CODES:
-        public_whitelisted_bi_error = BIError(
-            message="Non user-private message",
-            http_code=None,
-            application_code_stack=err_code_stack,
-            debug=dict(stackrace=["1", "2"]),
-            details=dict(private_code="Some private value"),
-        )
-        # Ensure that message and error code are passed to output for whitelisted errors
-        assert PublicAPIErrorSchema().dump(public_whitelisted_bi_error) == {
-            "code": ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + list(err_code_stack)),
-            "debug": {},
-            "details": {},
-            "message": public_whitelisted_bi_error.message,
-        }
+def test_public_schema_for_forwarded():
+    bi_error = BIError(
+        message="Not a user-private message",
+        http_code=None,
+        application_code_stack=("A", "B"),
+        forward_for_anonymous=True,
+        debug=dict(stackrace=["1", "2"]),
+        details=dict(private_code="Some public value"),
+    )
+
+    # Ensure that message and error code are passed to output for whitelisted errors
+    assert PublicAPIErrorSchema().dump(bi_error) == {
+        "code": ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + list(bi_error.application_code_stack)),
+        "debug": {},
+        "details": {},
+        "message": bi_error.message,
+    }

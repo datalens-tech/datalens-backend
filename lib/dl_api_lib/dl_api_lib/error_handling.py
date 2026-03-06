@@ -6,7 +6,6 @@ import itertools
 import logging
 from typing import (
     Any,
-    ClassVar,
     Optional,
 )
 
@@ -112,6 +111,7 @@ class BIError:
 
     http_code: Optional[int]
     application_code_stack: tuple[str, ...]
+    forward_for_anonymous: bool
 
     message: str  # treated as safe to display to final user
     details: dict
@@ -159,12 +159,14 @@ class BIError:
         details: dict[str, Any] = {}
         debug: dict[str, Any] = {}
         application_code_stack: tuple[str, ...] = ()
+        forward_for_anonymous = False
         http_code: Optional[int] = cls.get_default_error_code(ex, exc_code_mapping)
 
         if isinstance(ex, common_exc.DLBaseException):
             message = ex.message
             details = ex.details
             debug = ex.debug_info
+            forward_for_anonymous = ex.forward_for_anonymous
             application_code_stack = tuple(ex.err_code)
 
         elif isinstance(ex, formula_exc.FormulaError):
@@ -190,6 +192,7 @@ class BIError:
         return BIError(
             http_code=http_code,
             application_code_stack=application_code_stack,
+            forward_for_anonymous=forward_for_anonymous,
             message=message,
             details=details,
             debug=debug,
@@ -213,12 +216,6 @@ class RegularAPIErrorSchema(Schema):
 
 
 class PublicAPIErrorSchema(RegularAPIErrorSchema):
-    PUBLIC_FORWARDED_ERROR_CODES: ClassVar[frozenset[tuple[str, ...]]] = frozenset(
-        (
-            tuple(common_exc.MaterializationNotFinished.err_code),
-            tuple(common_exc.USIncorrectEntryIdForEmbed.err_code),
-        )
-    )
     PUBLIC_DEFAULT_MESSAGE = "Something went wrong"
     PUBLIC_DEFAULT_ERR_CODE = "ERR.UNKNOWN"
 
@@ -228,13 +225,13 @@ class PublicAPIErrorSchema(RegularAPIErrorSchema):
     details = fields.Constant({})  # type: ignore  # TODO: fix
 
     def serialize_error_code(self, data: BIError) -> str:
-        if data.application_code_stack in self.PUBLIC_FORWARDED_ERROR_CODES:
+        if data.forward_for_anonymous:
             return super().serialize_error_code(data)
 
         return self.PUBLIC_DEFAULT_ERR_CODE
 
     def serialize_message(self, data: BIError) -> str:
-        if data.application_code_stack in self.PUBLIC_FORWARDED_ERROR_CODES:
+        if data.forward_for_anonymous:
             return data.message
 
         return self.PUBLIC_DEFAULT_MESSAGE
