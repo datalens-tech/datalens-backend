@@ -517,7 +517,7 @@ class DatasetDataBaseView(BaseView):
         subject_groups = []
         try:
             # A situation where you'll have to call a method twice with different flag values
-            # ​​is highly unlikely, so in this case, it seems like less overhead than modifying
+            # is highly unlikely, so in this case, it seems like less overhead than modifying
             # the resolver method and its return value structure. However, we can't completely
             # rule it out, so this is the logic for the transition period from group slugs to IDs.
             if use_real_ids or use_real_ids is None:
