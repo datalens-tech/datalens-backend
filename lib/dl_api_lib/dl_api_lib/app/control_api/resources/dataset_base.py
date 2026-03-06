@@ -261,7 +261,7 @@ class DatasetResource(BIResource):
             try:
                 if not dsrc.is_cache_invalidation_enabled:
                     return False
-            except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied, ValueError):
+            except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied):
                 return False
         return True
 
