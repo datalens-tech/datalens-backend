@@ -46,6 +46,7 @@ from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
     DatasetConfigurationError,
+    ReferencedUSEntryAccessDenied,
     ReferencedUSEntryNotFound,
     UnexpectedUSEntryType,
     USObjectNotFoundException,
@@ -260,7 +261,7 @@ class DatasetResource(BIResource):
             try:
                 if not dsrc.is_cache_invalidation_enabled:
                     return False
-            except ReferencedUSEntryNotFound:
+            except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied):
                 return False
         return True
 
