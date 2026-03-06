@@ -15,7 +15,6 @@ dump_entry_data(entry)
 
 import json
 
-from dl_core.enums import USEntryBranch
 from dl_core.us_dataset import Dataset
 from dl_core.us_entry import (
     USEntry,
@@ -48,9 +47,6 @@ def get_dataset(m_manager: MaintenanceEnvironmentManager, entry_id: str, is_asyn
         entry_id=entry_id,
         expected_type=Dataset,
         context_name="connection",
-        params={
-            "branch": USEntryBranch.published.value,
-        },
     )
 
 

@@ -44,8 +44,6 @@ if TYPE_CHECKING:
     from dl_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase
     from dl_core.services_registry import ServicesRegistry
 
-from dl_core.enums import USEntryMode
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -125,12 +123,7 @@ class SyncUSManager(USManagerBase):
 
     # CRUD
     #
-    def save(
-        self,
-        entry: USEntry,
-        update_revision: Optional[bool] = None,
-        mode: str = USEntryMode.publish.value,
-    ) -> None:
+    def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry, service_registry=self._services_registry)
         lifecycle_manager.pre_save_hook()
 
@@ -146,7 +139,6 @@ class SyncUSManager(USManagerBase):
                 key=entry_loc,
                 scope=us_scope,
                 type_=us_type,
-                mode=mode,
                 **save_params,
             )
             entry.uuid = resp["entryId"]
