@@ -91,6 +91,7 @@ from dl_query_processing.postprocessing.primitives import (
     PostprocessedQueryUnion,
     PostprocessedRow,
 )
+import dl_rls
 from dl_utils.task_runner import ConcurrentTaskRunner
 
 
@@ -506,12 +507,31 @@ class DatasetDataBaseView(BaseView):
         req_model: DataRequestModel,
         services_registry: ApiServiceRegistry,
     ) -> None:
-        if not any(item.subject.subject_type == RLSSubjectType.group for item in self.dataset.rls.items):
+        group_entries = [item for item in self.dataset.rls.items if item.subject.subject_type == RLSSubjectType.group]
+        if not group_entries:
             return  # no groups in the RLS config, no need to resolve
 
+        use_real_ids = dl_rls.rls_uses_real_group_ids(group_entries)
+
         subject_resolver = await services_registry.get_subject_resolver()
+        subject_groups = []
         try:
-            subject_groups = await subject_resolver.get_groups_by_subject(services_registry.rci)
+            # A situation where you'll have to call a method twice with different flag values
+            # ​​is highly unlikely, so in this case, it seems like less overhead than modifying
+            # the resolver method and its return value structure. However, we can't completely
+            # rule it out, so this is the logic for the transition period from group slugs to IDs.
+            if use_real_ids or use_real_ids is None:
+                groups = await subject_resolver.get_groups_by_subject(
+                    services_registry.rci,
+                    by_id=True,
+                )
+                subject_groups.extend(groups)
+            if not use_real_ids:
+                groups = await subject_resolver.get_groups_by_subject(
+                    services_registry.rci,
+                    by_id=False,
+                )
+                subject_groups.extend(groups)
         except HTTPError as exc:
             if exc.response.status_code == 404:
                 raise web.HTTPNotFound(reason="Cannot find RLS groups for subject")

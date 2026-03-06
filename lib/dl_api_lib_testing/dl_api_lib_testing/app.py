@@ -81,7 +81,17 @@ class TestingSubjectResolver(BaseSubjectResolver):
         return subjects
 
     async def get_groups_by_subject(self, rci: RequestContextInfo, by_id: bool = False) -> list[str]:
-        return ["_the_tests_asyncapp_group_"] if rci.user_id == TEST_USER_ID else []
+        if rci.user_id != TEST_USER_ID:
+            return []
+        if by_id:
+            return ["_the_tests_group_real_id_"]
+        return ["_the_tests_asyncapp_group_"]
+
+    def resolve_group_slug(self, group_slug: str, rci: RequestContextInfo) -> str | None:
+        slug = group_slug.removeprefix("@group:")
+        if slug == "_the_tests_asyncapp_group_":
+            return "_the_tests_group_real_id_"
+        return None
 
 
 @attr.s
