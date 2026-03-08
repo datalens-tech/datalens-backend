@@ -6,7 +6,10 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 import jwt
 
 import dl_core.united_storage_client as united_storage_client
+from dl_core.united_storage_client import USAuthContextMaster
 import dl_core.us_manager.dynamic_token_factory as dynamic_token_factory
+from dl_core.us_manager.factory import USMFactory
+import dl_retrier
 
 
 _private_key_obj = rsa.generate_private_key(public_exponent=65537, key_size=2048)
@@ -24,6 +27,8 @@ TEST_PUBLIC_KEY = (
     .decode()
 )
 
+# Tests for DynamicUSMasterTokenFactory
+
 
 def test_generates_valid_jwt():
     factory = dynamic_token_factory.DynamicUSMasterTokenFactory(
@@ -31,7 +36,7 @@ def test_generates_valid_jwt():
         token_lifetime_sec=3600,
         min_ttl_sec=900.0,
     )
-    ctx = factory.get_auth_context(us_master_token=None)
+    ctx = factory.get_auth_context()
     assert isinstance(ctx, united_storage_client.USAuthContextPrivateOSS)
     payload = jwt.decode(ctx.us_dynamic_master_token, TEST_PUBLIC_KEY, algorithms=["RS256"])
     assert payload["serviceId"] == "bi"
@@ -46,8 +51,8 @@ def test_caches_token():
         token_lifetime_sec=3600,
         min_ttl_sec=900.0,
     )
-    ctx1 = factory.get_auth_context(us_master_token=None)
-    ctx2 = factory.get_auth_context(us_master_token=None)
+    ctx1 = factory.get_auth_context()
+    ctx2 = factory.get_auth_context()
     assert ctx1.us_dynamic_master_token == ctx2.us_dynamic_master_token
 
 
@@ -57,9 +62,9 @@ def test_refreshes_when_close_to_expiry():
         token_lifetime_sec=2,
         min_ttl_sec=1.5,
     )
-    ctx1 = factory.get_auth_context(us_master_token=None)
+    ctx1 = factory.get_auth_context()
     time.sleep(1)
-    ctx2 = factory.get_auth_context(us_master_token=None)
+    ctx2 = factory.get_auth_context()
     assert ctx1.us_dynamic_master_token != ctx2.us_dynamic_master_token
 
 
@@ -80,7 +85,7 @@ def test_no_master_token_when_none():
         token_lifetime_sec=3600,
         min_ttl_sec=900.0,
     )
-    ctx = factory.get_auth_context(us_master_token=None)
+    ctx = factory.get_auth_context()
     assert ctx.us_master_token is None
 
 
@@ -95,7 +100,7 @@ def test_thread_safety():
 
     def get_token():
         try:
-            ctx = factory.get_auth_context(us_master_token=None)
+            ctx = factory.get_auth_context()
             results.append(ctx.us_dynamic_master_token)
         except Exception as e:
             errors.append(e)
@@ -111,9 +116,7 @@ def test_thread_safety():
     assert len(set(results)) == 1
 
 
-from dl_core.united_storage_client import USAuthContextMaster
-from dl_core.us_manager.factory import USMFactory
-import dl_retrier
+# Tests for USMFactory
 
 
 def test_usm_factory_uses_dynamic_token_when_key_set():
