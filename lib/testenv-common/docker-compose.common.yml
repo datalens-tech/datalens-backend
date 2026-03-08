@@ -27,7 +27,16 @@ services:
       POSTGRES_DSN_LIST: "postgres://us:us@pg-us:5432/us-db-ci_purgeable"
       AUTH_POLICY: "required"
       MASTER_TOKEN: *c-us-master-token
-      BI_MASTER_TOKEN_PUBLIC_KEY_PRIMARY: /keys/dynamic_us_master_token_public_key.pem
+      BI_MASTER_TOKEN_PUBLIC_KEY_PRIMARY: | # Keep in sync with keys/dynamic_us_master_token_public_key.pem
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlMuef3I3c8KhZ0im78Qu
+        NL1bu2BEaKMDQy0hkIEJ3GRQ++Y/OqWNkYFX6RXUfXGPcyleWXRbzldXdlc6U4At
+        SKO8mYD2Dkx2U/F82V86PAoPRt52mPPjU/emI01jQo8t6yhudWEVxzrdddBLrAb9
+        Ffc4ahU1ln28coYkDpIVBrKJWQq065UR3MHVdr/KBtHT7nKN1ULAh/H2Fd/fME1G
+        P26Q3H4/T9YlSOEuDRwFIW9e0Fy/0JDOxmyzLPd7LnWtrpgwtMICBG12pJVZjdmH
+        jZ3H7ZaPKEa9/tfR/miKdwMEdyesVK9KKLqXQ19ILipuj3HBQmxeeeXAoD2Ihv4m
+        8QIDAQAB
+        -----END PUBLIC KEY-----
     volumes:
       - ./keys:/keys:ro
     restart: on-failure
