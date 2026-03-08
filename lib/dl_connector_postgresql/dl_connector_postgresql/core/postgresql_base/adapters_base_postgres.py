@@ -484,13 +484,13 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
         701: sa_pg.DOUBLE_PRECISION,
         1005: sa_pg.ARRAY(sa_pg.SMALLINT),
         1007: sa_pg.ARRAY(sa_pg.INTEGER),
-        1014: sa_pg.ARRAY(sa_pg.CHAR),
-        1015: sa_pg.ARRAY(sa_pg.VARCHAR),
         1016: sa_pg.ARRAY(sa_pg.BIGINT),
         1021: sa_pg.ARRAY(sa_pg.REAL),
         1022: sa_pg.ARRAY(sa_pg.DOUBLE_PRECISION),
-        1025: sa_pg.ARRAY(sa_pg.TEXT),
-        1031: sa_pg.ARRAY(sa_pg.NUMERIC),
+        1231: sa_pg.ARRAY(sa_pg.NUMERIC),
+        1014: sa_pg.ARRAY(sa_pg.CHAR),
+        1015: sa_pg.ARRAY(sa_pg.VARCHAR),
+        1009: sa_pg.ARRAY(sa_pg.TEXT),
         1042: sa_pg.CHAR,
         1043: sa_pg.VARCHAR,
         1082: sa_pg.DATE,
@@ -500,7 +500,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
         1186: sa_pg.INTERVAL,  # unsupported
         1700: sa_pg.NUMERIC,  # untested
         2950: sa_pg.UUID,  # untested
-        11020: sa_pg.ENUM,  # untested
+        3500: sa_pg.ENUM,  # TODO: BI-7051  # unsupported: "CREATE TYPE XXX AS ENUM" creates new type with new OID
     }
 
     @staticmethod
