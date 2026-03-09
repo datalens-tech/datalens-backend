@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import attr
 
 from dl_core.connection_models.dto_defs import DefaultSQLDTO

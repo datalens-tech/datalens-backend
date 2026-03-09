@@ -1,7 +1,6 @@
 """SQLAlchemy dialect registration for StarRocks (bi_starrocks scheme)."""
 
 from sqlalchemy.dialects.mysql.base import MySQLTypeCompiler
-from sqlalchemy.types import DATETIME
 
 from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 

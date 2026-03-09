@@ -2,10 +2,7 @@ import sqlalchemy as sa
 
 from dl_formula.definitions.base import TranslationVariant
 from dl_formula.definitions.common import raw_sql
-from dl_formula.definitions.common_datetime import (
-    DAY_SEC,
-    DAY_USEC,
-)
+from dl_formula.definitions.common_datetime import DAY_SEC
 import dl_formula.definitions.operators_binary as base
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D

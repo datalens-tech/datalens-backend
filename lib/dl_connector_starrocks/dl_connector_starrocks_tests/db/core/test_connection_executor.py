@@ -1,18 +1,18 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 import pytest
 from sqlalchemy.dialects import mysql as mysql_types
 
 from dl_constants.enums import UserDataType
+from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
     DefaultSyncConnectionExecutorTestSuite,
 )
-from dl_core.connection_models.common_models import DBIdent
 from dl_testing.regulated_test import RegulatedTestParams
 
-from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
 import dl_connector_starrocks_tests.db.config as test_config
+from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
 
 
 class TestStarRocksSyncConnectionExecutor(

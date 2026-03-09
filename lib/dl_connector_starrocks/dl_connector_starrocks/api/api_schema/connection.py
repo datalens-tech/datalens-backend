@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
+from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
@@ -18,3 +17,9 @@ class StarRocksConnectionSchema(
 ):
     TARGET_CLS = ConnectionStarRocks
     ALLOW_MULTI_HOST = True
+
+    password = secret_string_field(
+        attribute="data.password",
+        required=False,
+        allow_none=True,
+    )

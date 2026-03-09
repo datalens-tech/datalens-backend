@@ -4,6 +4,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.data_api_base import StandardizedDataApiTestBase
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_constants.enums import RawSQLLevel
 
 from dl_connector_starrocks.core.constants import (
     CONNECTION_TYPE_STARROCKS,
@@ -33,6 +34,10 @@ class StarRocksConnectionTestBase(BaseStarRocksTestClass, ConnectionTestBase):  
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
         )
+
+
+class StarRocksDashSQLConnectionTest(StarRocksConnectionTestBase):
+    raw_sql_level = RawSQLLevel.dashsql
 
 
 class StarRocksDatasetTestBase(StarRocksConnectionTestBase, DatasetTestBase):  # type: ignore  # 2024-01-30 # TODO: fix

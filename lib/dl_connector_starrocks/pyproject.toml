@@ -13,6 +13,7 @@ attrs = ">=22.2.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-configs = {path = "../dl_configs"}
+dl-connector-mysql = {path = "../dl_connector_mysql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
@@ -20,7 +21,6 @@ dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
-dl-connector-mysql = {path = "../dl_connector_mysql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = ">=3.19.0"
 pymysql = ">=1.0.2"

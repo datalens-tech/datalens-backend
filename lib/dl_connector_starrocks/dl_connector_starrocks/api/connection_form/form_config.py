@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
@@ -16,11 +16,11 @@ from dl_api_connector.form_config.models.common import CommonFieldName
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_configs.connectors_settings import DeprecatedConnectorSettingsBase
 from dl_constants.enums import RawSQLLevel
+from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_starrocks.api.connection_info import StarRocksConnectionInfoProvider
-from dl_connector_starrocks.core.settings import DeprecatedStarRocksConnectorSettings
+from dl_connector_starrocks.core.settings import StarRocksConnectorSettings
 
 
 class StarRocksConnectionFormFactory(ConnectionFormFactory):
@@ -32,44 +32,44 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
     def _get_host_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.host_row()]
 
     def _get_port_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.port_row(default_value=self.DEFAULT_PORT)]
 
     def _get_db_name_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.db_name_row()]
 
     def _get_username_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.username_row()]
 
     def _get_password_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.password_row(mode=self.mode)]
 
     def _get_common_section(
         self,
         rc: RowConstructor,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
-        assert connector_settings is not None and isinstance(connector_settings, DeprecatedStarRocksConnectorSettings)
+        assert connector_settings is not None and isinstance(connector_settings, StarRocksConnectorSettings)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
@@ -90,7 +90,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
 
     def _get_edit_api_schema(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -107,7 +107,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
 
     def _get_create_api_schema(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
         edit_api_schema: FormActionApiSchema,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
@@ -117,7 +117,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
 
     def _get_check_api_schema(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
     ) -> FormActionApiSchema:
         return FormActionApiSchema(
             items=[
@@ -132,7 +132,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: DeprecatedConnectorSettingsBase | None,
+        connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)

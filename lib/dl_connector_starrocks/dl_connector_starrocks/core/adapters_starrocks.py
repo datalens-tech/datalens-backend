@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import attr
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
@@ -22,6 +20,6 @@ class StarRocksAdapter(BaseStarRocksAdapter, BaseClassicAdapter[StarRocksConnTar
     def get_connect_args(self) -> dict:
         return dict(
             super().get_connect_args(),
-            charset="utf8",
+            charset="utf8mb4",
             local_infile=0,
         )

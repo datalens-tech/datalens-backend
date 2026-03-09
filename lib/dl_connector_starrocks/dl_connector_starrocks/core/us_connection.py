@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import ClassVar
 
 import attr
@@ -18,11 +16,11 @@ from dl_connector_starrocks.core.constants import (
     SOURCE_TYPE_STARROCKS_TABLE,
 )
 from dl_connector_starrocks.core.dto import StarRocksConnDTO
-from dl_connector_starrocks.core.settings import DeprecatedStarRocksConnectorSettings
+from dl_connector_starrocks.core.settings import StarRocksConnectorSettings
 
 
 class ConnectionStarRocks(
-    ConnectionSettingsMixin[DeprecatedStarRocksConnectorSettings],
+    ConnectionSettingsMixin[StarRocksConnectorSettings],
     ClassicConnectionSQL,
 ):
     source_type = SOURCE_TYPE_STARROCKS_TABLE
@@ -30,7 +28,7 @@ class ConnectionStarRocks(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
-    settings_type = DeprecatedStarRocksConnectorSettings
+    settings_type = StarRocksConnectorSettings
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):

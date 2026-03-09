@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from sqlalchemy.dialects import mysql as mysql_types
 
 from dl_type_transformer.sa_types_base import simple_instantiator

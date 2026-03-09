@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
+
+from dl_connector_starrocks_tests.db.formula.base import StarRocksTestBase
+
+
+class TestMathFunctionStarRocks(StarRocksTestBase, DefaultMathFunctionFormulaConnectorTestSuite):
+    pass

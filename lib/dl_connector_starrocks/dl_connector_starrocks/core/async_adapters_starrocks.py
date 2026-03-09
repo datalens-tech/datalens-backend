@@ -1,13 +1,9 @@
-from __future__ import annotations
-
 import asyncio
+from collections.abc import AsyncIterator
 import contextlib
-from functools import partial
 import logging
 from typing import (
     Any,
-    AsyncIterator,
-    Optional,
     TypeVar,
 )
 
@@ -56,12 +52,12 @@ from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
 from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 from dl_type_transformer.native_type import CommonNativeType
 
-from dl_connector_starrocks.core.adapters_base_starrocks import BaseStarRocksAdapter
-from dl_connector_starrocks.core.error_transformer import async_starrocks_db_error_transformer
-from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
-
 # StarRocks is MySQL-compatible, so we can use MySQL query compilation
 from dl_connector_mysql.core.utils import compile_mysql_query
+from dl_connector_starrocks.core.adapters_base_starrocks import BaseStarRocksAdapter
+from dl_connector_starrocks.core.error_transformer import async_starrocks_db_error_transformer
+from dl_connector_starrocks.core.exc import StarRocksSourceDoesNotExistError
+from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
 
 LOGGER = logging.getLogger(__name__)
@@ -99,7 +95,7 @@ class AsyncStarRocksAdapter(
         dialect = DLMYSQLDialect(paramstyle="pyformat")
         return dialect
 
-    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> Optional[bool]:
+    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> bool | None:
         # See https://aiomysql.readthedocs.io/en/latest/cursors.html#Cursor.description
         # StarRocks uses MySQL protocol, so cursor description is the same
         return cursor_col[6]
@@ -113,13 +109,13 @@ class AsyncStarRocksAdapter(
     ) -> _DBA_ASYNC_STARROCKS_TV:
         return cls(target_dto=target_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size)
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return self._target_dto.db_name
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return self._target_dto.host
 
-    def _get_ssl_ctx(self, force_ssl: bool = False) -> Optional[dict]:
+    def _get_ssl_ctx(self, force_ssl: bool = False) -> dict | None:
         # TODO: Add SSL support for StarRocks if needed
         # For MVP, we don't support SSL
         return None
@@ -137,6 +133,7 @@ class AsyncStarRocksAdapter(
             db=db_name,
             dialect=self._dialect,
             ssl=self._get_ssl_ctx(force_ssl),
+            charset="utf8mb4",
             local_infile=0,
         )
 
@@ -144,7 +141,7 @@ class AsyncStarRocksAdapter(
         return await self._engines.get(db_name, generator=self._create_engine)
 
     @contextlib.asynccontextmanager
-    async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:
+    async def _get_connection(self, db_name_from_query: str | None) -> AsyncIterator[aiomysql.sa.SAConnection]:
         db_name = self.get_db_name_for_query(db_name_from_query)
         engine = await self._get_engine(db_name)
 
@@ -170,10 +167,18 @@ class AsyncStarRocksAdapter(
         with self.handle_execution_error(debug_query=debug_query, inspector_query=inspector_query):
             async with self._get_connection(db_adapter_query.db_name) as conn:
                 result = await conn.execute(compiled_query, compiled_query_parameters)
-                cursor_info = ExecutionStepCursorInfo(
-                    cursor_info=self._make_cursor_info(result.cursor),
-                    raw_cursor_description=list(result.cursor.description),
-                )
+                # cursor.description is None for non-SELECT statements (e.g. INSERT, UPDATE, DDL).
+                # Build an empty cursor info in that case to avoid a TypeError on list(None).
+                if result.cursor.description is None:
+                    cursor_info = ExecutionStepCursorInfo(
+                        cursor_info={"names": [], "driver_types": [], "db_types": [], "columns": []},
+                        raw_cursor_description=[],
+                    )
+                else:
+                    cursor_info = ExecutionStepCursorInfo(
+                        cursor_info=self._make_cursor_info(result.cursor),
+                        raw_cursor_description=list(result.cursor.description),
+                    )
                 yield cursor_info
 
                 row_converters = self._get_row_converters(cursor_info=cursor_info)
@@ -233,38 +238,22 @@ class AsyncStarRocksAdapter(
         if not db_name:
             raise ValueError("Database name is required")
 
-        # Use MySQL information_schema to get tables
-        query = sa.text(
-            "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES "
-            "WHERE TABLE_SCHEMA = :db_name AND TABLE_TYPE = 'BASE TABLE' "
-            "ORDER BY TABLE_NAME"
-        ).bindparams(db_name=db_name)
+        # Build the INFORMATION_SCHEMA query dynamically based on pagination/search params
+        where_clauses = "WHERE TABLE_SCHEMA = :db_name AND TABLE_TYPE = 'BASE TABLE'"
+        bind_params: dict[str, Any] = {"db_name": db_name}
 
-        if page_ident:
-            if page_ident.search_text:
-                query = sa.text(
-                    "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES "
-                    "WHERE TABLE_SCHEMA = :db_name AND TABLE_TYPE = 'BASE TABLE' "
-                    "AND TABLE_NAME LIKE :search_text "
-                    "ORDER BY TABLE_NAME "
-                    "LIMIT :limit OFFSET :offset"
-                ).bindparams(
-                    db_name=db_name,
-                    search_text=f"%{page_ident.search_text}%",
-                    limit=page_ident.limit or 1000,
-                    offset=page_ident.offset or 0,
-                )
-            elif page_ident.limit or page_ident.offset:
-                query = sa.text(
-                    "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES "
-                    "WHERE TABLE_SCHEMA = :db_name AND TABLE_TYPE = 'BASE TABLE' "
-                    "ORDER BY TABLE_NAME "
-                    "LIMIT :limit OFFSET :offset"
-                ).bindparams(
-                    db_name=db_name,
-                    limit=page_ident.limit or 1000,
-                    offset=page_ident.offset or 0,
-                )
+        if page_ident and page_ident.search_text:
+            where_clauses += " AND TABLE_NAME LIKE :search_text"
+            bind_params["search_text"] = f"%{page_ident.search_text}%"
+
+        sql = f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES {where_clauses} ORDER BY TABLE_NAME"
+
+        if page_ident and (page_ident.search_text or page_ident.limit or page_ident.offset):
+            sql += " LIMIT :limit OFFSET :offset"
+            bind_params["limit"] = page_ident.limit or 1000
+            bind_params["offset"] = page_ident.offset or 0
+
+        query = sa.text(sql).bindparams(**bind_params)
 
         result = await self.execute(DBAdapterQuery(query))
         return [
@@ -308,6 +297,11 @@ class AsyncStarRocksAdapter(
                         nullable=is_nullable == "YES",
                     ),
                 )
+            )
+
+        if not columns:
+            raise StarRocksSourceDoesNotExistError(
+                db_message=f"Table '{db_name}.{table_ident.table_name}' doesn't exist",
             )
 
         return RawSchemaInfo(
