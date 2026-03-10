@@ -1704,6 +1704,7 @@ attrs = "*"
 dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
 dl-logging = {path = "../dl_logging"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
@@ -1771,6 +1772,7 @@ dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-pivot = {path = "../dl_pivot"}
 dl-pivot-pandas = {path = "../dl_pivot_pandas"}
 dl-query-processing = {path = "../dl_query_processing"}
@@ -1982,6 +1984,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-settings = {path = "../dl_settings"}
 marshmallow = "*"
 pydantic = "*"
@@ -2525,6 +2528,38 @@ type = "directory"
 url = "../lib/dl_connector_snowflake"
 
 [[package]]
+name = "dl-connector-starrocks"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+aiomysql = ">=0.1.1"
+attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
+dl-configs = {path = "../dl_configs"}
+dl-connector-mysql = {path = "../dl_connector_mysql"}
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+dl-type-transformer = {path = "../dl_type_transformer"}
+marshmallow = ">=3.19.0"
+pymysql = ">=1.0.2"
+sqlalchemy = ">=1.4.46, <2.0"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_starrocks"
+
+[[package]]
 name = "dl-connector-trino"
 version = "0.0.1"
 description = ""
@@ -2637,6 +2672,7 @@ dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-promql = {path = "../../lib/dl_connector_promql"}
+dl-connector-starrocks = {path = "../../lib/dl_connector_starrocks"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-constants = {path = "../../lib/dl_constants"}
@@ -2682,6 +2718,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-json = {path = "../dl_json"}
 dl-logging = {path = "../dl_logging"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-retrier = {path = "../dl_retrier"}
 dl-rls = {path = "../dl_rls"}
@@ -2802,6 +2839,7 @@ dl-connector-mysql = {path = "../../lib/dl_connector_mysql"}
 dl-connector-oracle = {path = "../../lib/dl_connector_oracle"}
 dl-connector-postgresql = {path = "../../lib/dl_connector_postgresql"}
 dl-connector-promql = {path = "../../lib/dl_connector_promql"}
+dl-connector-starrocks = {path = "../../lib/dl_connector_starrocks"}
 dl-connector-trino = {path = "../../lib/dl_connector_trino"}
 dl-connector-ydb = {path = "../../lib/dl_connector_ydb"}
 dl-core = {path = "../../lib/dl_core"}
@@ -2905,6 +2943,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
@@ -3153,6 +3192,7 @@ files = []
 develop = true
 
 [package.dependencies]
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-settings = {path = "../dl_settings"}
 jaeger-client = "*"
 opentracing = "*"
@@ -9573,4 +9613,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "47578b0b90b796f40cb905eed10b6725886117cfd575482453175a10ebcd91ed"
+content-hash = "a976f4285296bf66f4bc5315f7051224e16b9e98426e474c4f78286e8d4705e0"

@@ -98,7 +98,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
                 FormFieldApiSchema(name=CommonFieldName.username, required=True),
                 FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
-                FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+                FormFieldApiSchema(name=CommonFieldName.password),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
@@ -125,7 +125,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
                 FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
                 FormFieldApiSchema(name=CommonFieldName.username, required=True),
-                FormFieldApiSchema(name=CommonFieldName.password, required=self.mode == ConnectionFormMode.create),
+                FormFieldApiSchema(name=CommonFieldName.password),
                 *self._get_top_level_check_api_schema_items(),
             ]
         )
