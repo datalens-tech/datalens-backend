@@ -20,6 +20,7 @@ TEST_DYNAMIC_AUTH_PRIVATE_KEY = (TESTENV_COMMON_DIR / "keys" / "dynamic_us_maste
 def _default_test_us_client_settings() -> USClientSettings:
     return USClientSettings(
         DYNAMIC_AUTH_PRIVATE_KEY=TEST_DYNAMIC_AUTH_PRIVATE_KEY,
+        MASTER_TOKEN_AUTHORIZATION_ENABLED=False,
     )
 
 
