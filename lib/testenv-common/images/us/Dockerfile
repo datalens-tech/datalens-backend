@@ -1,12 +1,12 @@
 # United Storage with predefined env
-FROM ghcr.io/datalens-tech/datalens-us:0.393.0
+FROM ghcr.io/datalens-tech/datalens-us:release
 
 ENV DEV_MODE="true"
 ENV SQL_DEBUG="true"
 ENV MULTITENANT="false"
 ENV DEBUG="knex:*"
 ENV APP_INSTALLATION="opensource"
-ENV APP_ENV="preprod"
+ENV APP_ENV="development"
 ENV APP_PORT=8080
 
 EXPOSE 8080
