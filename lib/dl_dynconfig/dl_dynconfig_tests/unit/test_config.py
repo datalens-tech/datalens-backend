@@ -95,7 +95,7 @@ async def test_source_not_set_error() -> None:
 
 @pytest.mark.asyncio
 async def test_fetch_error_force() -> None:
-    source = AsyncMock(spec=dl_dynconfig.Source)
+    source = AsyncMock(spec=dl_dynconfig.BaseSource)
     source.fetch.side_effect = RuntimeError("connection failed")
     config = FlatConfig.model_from_source(source=source)
 
@@ -105,7 +105,7 @@ async def test_fetch_error_force() -> None:
 
 @pytest.mark.asyncio
 async def test_fetch_error_no_force() -> None:
-    source = AsyncMock(spec=dl_dynconfig.Source)
+    source = AsyncMock(spec=dl_dynconfig.BaseSource)
     source.fetch.side_effect = RuntimeError("connection failed")
     config = FlatConfig.model_from_source(source=source)
 

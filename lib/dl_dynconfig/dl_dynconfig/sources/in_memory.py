@@ -7,7 +7,7 @@ import dl_dynconfig.sources.base as base
 
 
 @attrs.define(kw_only=True)
-class InMemorySource(base.Source):
+class InMemorySource(base.BaseSource):
     _data: Any
 
     async def fetch(self) -> Any:
