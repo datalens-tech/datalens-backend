@@ -8,13 +8,10 @@ import attr
 
 from dl_obfuscator.context import ObfuscationContext
 from dl_obfuscator.obfuscators.base import BaseObfuscator
-<<<<<<< HEAD
 from dl_obfuscator.obfuscators.regex import (
     DEFAULT_PATTERNS,
     RegexObfuscator,
 )
-=======
->>>>>>> eb33de0ec (add param for extra regexes)
 from dl_obfuscator.obfuscators.secret import SecretObfuscator
 from dl_obfuscator.secret_keeper import SecretKeeper
 
