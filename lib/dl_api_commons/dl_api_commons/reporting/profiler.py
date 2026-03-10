@@ -26,7 +26,10 @@ from dl_api_commons.reporting.models import (
 )
 from dl_api_commons.reporting.records import ReportingRecord
 from dl_constants.api_constants import DLContextKey
-from dl_obfuscator import ObfuscationContext
+from dl_obfuscator import (
+    ObfuscationContext,
+    OnObfuscationError,
+)
 
 
 if TYPE_CHECKING:
@@ -66,7 +69,7 @@ class DefaultReportingProfiler(ReportingProfiler):
         engine = self.rci.obfuscation_engine
         if engine is None:
             return query
-        return engine.obfuscate(query, ObfuscationContext.USAGE_TRACKING)
+        return engine.obfuscate(query, ObfuscationContext.USAGE_TRACKING, on_error=OnObfuscationError.SKIP)
 
     def _find_record_of_type(
         self,

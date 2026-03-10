@@ -325,7 +325,6 @@ def create_async_qe_app(
             req_id_service=req_id_service,
             error_handler=error_handler,
         ).middleware,
-        # TODO FIX: Add profiling middleware.
         body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
     ]
 

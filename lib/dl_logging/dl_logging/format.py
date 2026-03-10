@@ -8,6 +8,7 @@ import statcommons.logs
 import dl_logging.context as context
 from dl_obfuscator import (
     ObfuscationContext,
+    OnObfuscationError,
     get_request_obfuscation_engine,
 )
 
@@ -134,6 +135,6 @@ class StdoutFormatter(logging.Formatter):
 
         engine = get_request_obfuscation_engine()
         if engine is not None:
-            result = engine.obfuscate(result, ObfuscationContext.LOGS)
+            result = engine.obfuscate(result, ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)
 
         return result

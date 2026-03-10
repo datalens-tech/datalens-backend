@@ -2,6 +2,7 @@ from dl_obfuscator.context import ObfuscationContext
 from dl_obfuscator.engine import (
     ObfuscatableData,
     ObfuscationEngine,
+    OnObfuscationError,
     create_base_obfuscators,
     create_request_engine,
 )
@@ -26,6 +27,7 @@ __all__ = [
     "ObfuscatableData",
     "ObfuscationContext",
     "ObfuscationEngine",
+    "OnObfuscationError",
     "RegexObfuscator",
     "SecretKeeper",
     "SecretObfuscator",

@@ -13,6 +13,7 @@ from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_models import DBIdent
 from dl_obfuscator import (
     ObfuscationContext,
+    OnObfuscationError,
     get_request_obfuscation_engine,
 )
 from dl_obfuscator.engine import ObfuscationEngine
@@ -134,7 +135,9 @@ class CursorLogger:
 
         obfuscation_engine = get_request_obfuscation_engine()
         if obfuscation_engine is not None:
-            statement = obfuscation_engine.obfuscate(statement, ObfuscationContext.TRACING)
+            statement = obfuscation_engine.obfuscate(
+                statement, ObfuscationContext.TRACING, on_error=OnObfuscationError.SKIP
+            )
 
         extra = dict(
             event_code="db_exec",

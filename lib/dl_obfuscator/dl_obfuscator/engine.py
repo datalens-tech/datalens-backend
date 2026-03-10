@@ -1,3 +1,4 @@
+import enum
 from typing import (
     TypeVar,
     cast,
@@ -23,12 +24,20 @@ ObfuscatableData = str | None | dict[str, "ObfuscatableData"] | list["Obfuscatab
 _ObfuscatableT = TypeVar("_ObfuscatableT", bound=ObfuscatableData)
 
 
+@enum.unique
+class OnObfuscationError(enum.Enum):
+    FAIL = "FAIL"
+    SKIP = "SKIP"
+    RETURN_ORIGINAL = "RETURN_ORIGINAL"
+
+
 @attr.s
 class ObfuscationEngine:
     """Core engine responsible for applying obfuscation rules"""
 
     _base_obfuscators: list[BaseObfuscator] = attr.ib(factory=list)
     _request_obfuscators: list[BaseObfuscator] = attr.ib(factory=list)
+    _obfuscation_error_message: str = attr.ib(default="!OBFUSCATION ERROR!")
 
     def add_base_obfuscator(self, obfuscator: BaseObfuscator) -> None:
         self._base_obfuscators.append(obfuscator)
@@ -45,15 +54,32 @@ class ObfuscationEngine:
 
         return text
 
-    def obfuscate(self, data: _ObfuscatableT, context: ObfuscationContext) -> _ObfuscatableT:
+    def obfuscate(
+        self,
+        data: _ObfuscatableT,
+        context: ObfuscationContext,
+        on_error: OnObfuscationError = OnObfuscationError.FAIL,
+    ) -> _ObfuscatableT:
         if data is None:
             return None
         if isinstance(data, str):
-            return cast(_ObfuscatableT, self._obfuscate_text(data, context))
+            try:
+                return cast(_ObfuscatableT, self._obfuscate_text(data, context))
+            except Exception:
+                if on_error is OnObfuscationError.SKIP:
+                    return cast(_ObfuscatableT, self._obfuscation_error_message)
+                if on_error is OnObfuscationError.RETURN_ORIGINAL:
+                    return cast(_ObfuscatableT, data)
+                raise
         if isinstance(data, dict):
-            return cast(_ObfuscatableT, {key: self.obfuscate(value, context) for key, value in data.items()})
+            return cast(_ObfuscatableT, {key: self.obfuscate(value, context, on_error) for key, value in data.items()})
         if isinstance(data, list):
-            return cast(_ObfuscatableT, [self.obfuscate(item, context) for item in data])
+            return cast(_ObfuscatableT, [self.obfuscate(item, context, on_error) for item in data])
+
+        if on_error is OnObfuscationError.SKIP:
+            return cast(_ObfuscatableT, self._obfuscation_error_message)
+        if on_error is OnObfuscationError.RETURN_ORIGINAL:
+            return data
         raise TypeError(
             f"Cannot obfuscate type {type(data).__name__}. Only str, None, dict[str, ...], list are supported."
         )

@@ -4,7 +4,10 @@ from aiohttp.typedefs import (
     Middleware,
 )
 
-from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+from dl_api_commons.aiohttp.aiohttp_wrappers import (
+    DLRequestBase,
+    RCINotSet,
+)
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
     create_request_engine,
@@ -25,7 +28,11 @@ def obfuscation_context_middleware() -> Middleware:
         base_obfuscators = dl_request.request.app.get(OBFUSCATION_BASE_OBFUSCATORS_KEY)
 
         if base_obfuscators is not None:
-            rci = dl_request.last_resort_rci
+            try:
+                rci = dl_request.temp_rci
+            except RCINotSet:
+                rci = None
+
             secret_keeper = rci.secret_keeper if rci is not None else None
 
             engine = create_request_engine(

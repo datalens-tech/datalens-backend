@@ -1,5 +1,6 @@
 import flask
 
+from dl_api_commons.exc import FlaskRCINotSet
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
@@ -20,7 +21,11 @@ class ObfuscationContextMiddleware:
         if base_obfuscators is None:
             return
 
-        rci = ReqCtxInfoMiddleware.get_last_resort_rci()
+        try:
+            rci = ReqCtxInfoMiddleware.get_temp_rci()
+        except FlaskRCINotSet:
+            rci = None
+
         secret_keeper = rci.secret_keeper if rci is not None else None
 
         engine = create_request_engine(
