@@ -239,7 +239,7 @@ jobs:
           ${{
             (
               github.event.inputs.run_for_all_packages == 'true'
-              || contains(github.event.pull_request.labels.*.name, 'run_ci_for_all_packages')
+              || contains(github.event.pull_request.labels.*.name, 'run-ci-for-all-packages')
             ) && 'poetry-all' || 'poetry-path'
           }}
         poetry-path-dependencies-groups: |
