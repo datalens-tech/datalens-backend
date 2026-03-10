@@ -5,6 +5,7 @@ from dl_connector_starrocks.formula.definitions.functions_logical import DEFINIT
 from dl_connector_starrocks.formula.definitions.functions_math import DEFINITIONS_MATH
 from dl_connector_starrocks.formula.definitions.functions_string import DEFINITIONS_STRING
 from dl_connector_starrocks.formula.definitions.functions_type import DEFINITIONS_TYPE
+from dl_connector_starrocks.formula.definitions.functions_window import DEFINITIONS_WINDOW
 from dl_connector_starrocks.formula.definitions.operators_binary import DEFINITIONS_BINARY
 from dl_connector_starrocks.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_starrocks.formula.definitions.operators_unary import DEFINITIONS_UNARY
@@ -21,4 +22,5 @@ DEFINITIONS = [
     *DEFINITIONS_STRING,
     *DEFINITIONS_COND_BLOCKS,
     *DEFINITIONS_DATETIME,
+    *DEFINITIONS_WINDOW,
 ]

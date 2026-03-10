@@ -21,7 +21,7 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.STARROCKS,
-                lambda date, what, num: sa.type_coerce(
+                lambda date, what, num: sa.cast(
                     date + datetime_interval(un_literal(what), un_literal(num)), sa.Date
                 ),
             ),
@@ -70,8 +70,10 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.STARROCKS,
-                lambda date, firstday: base.dow_firstday_shift(sa.func.WEEKDAY(date) + 1, firstday),
-            ),  # StarRocks WEEKDAY is 0 for monday, 1 for tuesday, ..., 6 for sunday (MySQL-compatible).
+                lambda date, firstday: base.dow_firstday_shift(
+                    (sa.func.DAYOFWEEK(date) + 5) % 7 + 1, firstday
+                ),
+            ),  # StarRocks DAYOFWEEK: 1=Sun..7=Sat. Convert to 1=Mon..7=Sun: (DAYOFWEEK(x)+5)%7+1
         ]
     ),
     # genericnow

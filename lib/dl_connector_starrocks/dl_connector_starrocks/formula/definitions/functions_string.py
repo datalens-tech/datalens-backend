@@ -25,7 +25,12 @@ DEFINITIONS_STRING = [
     base.ConcatMultiStr.for_dialect(D.STARROCKS),
     base.ConcatMultiAny.for_dialect(D.STARROCKS),
     # contains
-    base.FuncContainsConst.for_dialect(D.STARROCKS),
+    # StarRocks does not support ESCAPE clause in LIKE, so use LOCATE for all contains
+    base.FuncContainsConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.literal(y.value), x) > 0),
+        ]
+    ),
     base.FuncContainsNonConst(
         variants=[
             V(D.STARROCKS, lambda x, y: sa.func.LOCATE(y, x) > 0),
@@ -33,11 +38,25 @@ DEFINITIONS_STRING = [
     ),
     base.FuncContainsNonString.for_dialect(D.STARROCKS),
     # notcontains
-    base.FuncNotContainsConst.for_dialect(D.STARROCKS),
+    base.FuncNotContainsConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.literal(y.value), x) == 0),
+        ]
+    ),
     base.FuncNotContainsNonConst.for_dialect(D.STARROCKS),
     base.FuncNotContainsNonString.for_dialect(D.STARROCKS),
     # endswith
-    base.FuncEndswithConst.for_dialect(D.STARROCKS),
+    base.FuncEndswithConst(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda x, y: (
+                    sa.func.SUBSTRING(x, sa.func.char_length(x) - sa.func.char_length(sa.literal(y.value)) + 1)
+                    == sa.literal(y.value)
+                ),
+            ),
+        ]
+    ),
     base.FuncEndswithNonConst(
         variants=[
             V(
@@ -64,12 +83,37 @@ DEFINITIONS_STRING = [
         ]
     ),
     # icontains
+    # StarRocks does not support ESCAPE clause in ILIKE, so use LOWER+LOCATE
+    base.FuncIContainsConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.func.LOWER(sa.literal(y.value)), sa.func.LOWER(x)) > 0),
+        ]
+    ),
     base.FuncIContainsNonConst.for_dialect(D.STARROCKS),
     base.FuncIContainsNonString.for_dialect(D.STARROCKS),
     # iendswith
+    base.FuncIEndswithConst(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda x, y: (
+                    sa.func.SUBSTRING(
+                        sa.func.LOWER(x),
+                        sa.func.char_length(x) - sa.func.char_length(sa.literal(y.value)) + 1,
+                    )
+                    == sa.func.LOWER(sa.literal(y.value))
+                ),
+            ),
+        ]
+    ),
     base.FuncIEndswithNonConst.for_dialect(D.STARROCKS),
     base.FuncIEndswithNonString.for_dialect(D.STARROCKS),
     # istartswith
+    base.FuncIStartswithConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.func.LOWER(sa.literal(y.value)), sa.func.LOWER(x)) == 1),
+        ]
+    ),
     base.FuncIStartswithNonConst.for_dialect(D.STARROCKS),
     base.FuncIStartswithNonString.for_dialect(D.STARROCKS),
     # left
@@ -88,13 +132,13 @@ DEFINITIONS_STRING = [
     # regexp_extract
     base.FuncRegexpExtract(
         variants=[
-            V(D.STARROCKS, sa.func.REGEXP_SUBSTR),
+            V(D.STARROCKS, lambda text, pattern: sa.func.regexp_extract(text, pattern, 0)),
         ]
     ),
     # regexp_extract_nth
     base.FuncRegexpExtractNth(
         variants=[
-            V(D.STARROCKS, lambda text, pattern, ind: sa.func.REGEXP_SUBSTR(text, pattern, 1, ind)),
+            V(D.STARROCKS, lambda text, pattern, ind: sa.func.element_at(sa.func.regexp_extract_all(text, pattern), ind)),
         ]
     ),
     # regexp_match
@@ -123,14 +167,16 @@ DEFINITIONS_STRING = [
         variants=[
             V(
                 D.STARROCKS,
-                lambda text, delim, ind: (
-                    sa.func.SUBSTRING_INDEX(sa.func.SUBSTRING_INDEX(text, delim, ind), delim, -sa.func.SIGN(ind))
-                ),
+                lambda text, delim, ind: sa.func.split_part(text, delim, ind),
             ),
         ]
     ),
     # startswith
-    base.FuncStartswithConst.for_dialect(D.STARROCKS),
+    base.FuncStartswithConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.literal(y.value), x) == 1),
+        ]
+    ),
     base.FuncStartswithNonConst(
         variants=[
             V(D.STARROCKS, lambda x, y: sa.func.LOCATE(y, x) == 1),

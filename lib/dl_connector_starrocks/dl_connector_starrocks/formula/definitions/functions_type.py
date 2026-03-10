@@ -59,17 +59,17 @@ DEFINITIONS_TYPE = [
     ),
     base.FuncFloatFromDate(
         variants=[
-            V(D.STARROCKS, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.DOUBLE)),
+            V(D.STARROCKS, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.Float())),
         ]
     ),
     base.FuncFloatFromDatetime(
         variants=[
-            V(D.STARROCKS, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.DOUBLE)),
+            V(D.STARROCKS, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.Float())),
         ]
     ),
     base.FuncFloatFromGenericDatetime(
         variants=[
-            V(D.STARROCKS, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.DOUBLE)),
+            V(D.STARROCKS, lambda value: sa.cast(sa.func.UNIX_TIMESTAMP(value), sa.Float())),
         ]
     ),
     # genericdatetime
