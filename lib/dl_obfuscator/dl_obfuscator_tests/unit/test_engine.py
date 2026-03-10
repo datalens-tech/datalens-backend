@@ -7,12 +7,14 @@ import pytest
 from dl_obfuscator import (
     ObfuscationContext,
     ObfuscationEngine,
+    OnObfuscationError,
     SecretKeeper,
     SecretObfuscator,
     create_base_obfuscators,
     create_request_engine,
 )
 from dl_obfuscator.engine import ObfuscatableData
+from dl_obfuscator.obfuscators.base import BaseObfuscator
 
 
 class TestObfuscationEngine:
@@ -223,3 +225,69 @@ class TestContextIsolation:
 
         await asyncio.gather(early_request(), late_request())
         assert results["late"] == "***late*** and EARLY_SECRET here"
+
+
+class BrokenObfuscator(BaseObfuscator):
+    def obfuscate(self, text: str, context: ObfuscationContext) -> str:
+        raise RuntimeError("obfuscator bug")
+
+
+class TestOnObfuscationError:
+    def _make_broken_engine(self) -> ObfuscationEngine:
+        engine = ObfuscationEngine()
+        engine.add_base_obfuscator(BrokenObfuscator())
+        return engine
+
+    def test_fail_raises(self) -> None:
+        engine = self._make_broken_engine()
+        with pytest.raises(RuntimeError, match="obfuscator bug"):
+            engine.obfuscate("text", ObfuscationContext.LOGS, on_error=OnObfuscationError.FAIL)
+
+    def test_fail_is_default(self) -> None:
+        engine = self._make_broken_engine()
+        with pytest.raises(RuntimeError, match="obfuscator bug"):
+            engine.obfuscate("text", ObfuscationContext.LOGS)
+
+    def test_skip_returns_error_message(self) -> None:
+        engine = self._make_broken_engine()
+        result = engine.obfuscate("secret text", ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)
+        assert result == "!OBFUSCATION ERROR!"
+
+    def test_skip_custom_error_message(self) -> None:
+        engine = ObfuscationEngine(obfuscation_error_message="[REDACTED]")
+        engine.add_base_obfuscator(BrokenObfuscator())
+        result = engine.obfuscate("secret text", ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)
+        assert result == "[REDACTED]"
+
+    def test_return_original(self) -> None:
+        engine = self._make_broken_engine()
+        result = engine.obfuscate("original text", ObfuscationContext.LOGS, on_error=OnObfuscationError.RETURN_ORIGINAL)
+        assert result == "original text"
+
+    def test_skip_preserves_dict_structure(self) -> None:
+        engine = self._make_broken_engine()
+        data: dict[str, ObfuscatableData] = {"key": "secret", "safe": None}
+        result = engine.obfuscate(data, ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)
+        assert result == {"key": "!OBFUSCATION ERROR!", "safe": None}
+
+    def test_skip_preserves_list_structure(self) -> None:
+        engine = self._make_broken_engine()
+        data: list[ObfuscatableData] = ["secret", None, "another"]
+        result = engine.obfuscate(data, ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)
+        assert result == ["!OBFUSCATION ERROR!", None, "!OBFUSCATION ERROR!"]
+
+    def test_skip_on_unsupported_type(self) -> None:
+        engine = ObfuscationEngine()
+        result = engine.obfuscate(42, ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)  # type: ignore
+        assert result == "!OBFUSCATION ERROR!"
+
+    def test_return_original_on_unsupported_type(self) -> None:
+        engine = ObfuscationEngine()
+        result = engine.obfuscate(42, ObfuscationContext.LOGS, on_error=OnObfuscationError.RETURN_ORIGINAL)  # type: ignore
+        assert result == 42
+
+    def test_skip_unsupported_type_nested_in_dict(self) -> None:
+        engine = ObfuscationEngine()
+        data = {"good": "text", "bad": 42}
+        result = engine.obfuscate(data, ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)  # type: ignore
+        assert result == {"good": "text", "bad": "!OBFUSCATION ERROR!"}
