@@ -96,16 +96,6 @@ class USManagerFlaskMiddleware:
         required_resources: frozenset[RequiredResourceCommon],
     ) -> SyncUSManager | None:
         if (
-            RequiredResourceCommon.US_HEADERS_TOKEN in required_resources
-        ):  # DEPRECATED, to be removed after DLPROJECTS-500
-            LOGGER.info("Creating service US manager with master token from request headers")
-            return self._usm_factory.get_master_sync_usm(
-                rci=rci,
-                services_registry=services_registry,
-                is_token_stored=False,
-            )
-
-        if (
             RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources
             or RequiredResourceCommon.PRIVATE_US_MANAGER in required_resources
         ):
@@ -113,6 +103,16 @@ class USManagerFlaskMiddleware:
             return self._usm_factory.get_master_sync_usm(
                 rci=rci,
                 services_registry=services_registry,
+            )
+
+        if (
+            RequiredResourceCommon.US_HEADERS_TOKEN in required_resources
+        ):  # DEPRECATED, to be removed after DLPROJECTS-500
+            LOGGER.info("Creating service US manager with master token from request headers")
+            return self._usm_factory.get_master_sync_usm(
+                rci=rci,
+                services_registry=services_registry,
+                is_token_stored=False,
             )
 
         LOGGER.info("Service US manager will not be created")
