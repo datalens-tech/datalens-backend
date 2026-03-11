@@ -10,7 +10,6 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     port_us_http=get_test_container_hostport("us", fallback_port=50300).port,
     host_us_pg=get_test_container_hostport("pg-us", fallback_port=50309).host,
     port_us_pg_5432=get_test_container_hostport("pg-us", fallback_port=50309).port,
-    us_master_token="AC1ofiek8coB",
     core_connector_ep_names=["clickhouse", "postgresql"],
     compeng_url=(
         f"postgresql://us:us@"

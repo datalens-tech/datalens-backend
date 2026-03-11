@@ -14,6 +14,7 @@ from dl_core.united_storage_client import (
     USAuthContextPublic,
     USAuthContextRegular,
 )
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 import dl_retrier
@@ -27,6 +28,8 @@ class USMFactory:
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attr.ib()
     us_master_token: str | None = attr.ib(default=None, repr=False)
     us_public_token: str | None = attr.ib(default=None, repr=False)
+    dynamic_token_factory: DynamicUSMasterTokenFactory | None = attr.ib(default=None)
+    master_token_authorization_enabled: bool = attr.ib(default=True)
 
     @classmethod
     def get_regular_us_auth_ctx_from_rci(cls, rci: RequestContextInfo) -> USAuthContextRegular:
@@ -54,8 +57,21 @@ class USMFactory:
         )
 
     def get_master_auth_context_sync(self) -> USAuthContextPrivateBase:
-        assert self.us_master_token is not None, "US master token must be set in factory to create USAuthContextMaster"
-        return USAuthContextMaster(us_master_token=self.us_master_token)
+        if self.dynamic_token_factory is None:
+            assert (
+                self.us_master_token is not None
+            ), "US master token must be set in factory to create USAuthContextMaster"
+            return USAuthContextMaster(us_master_token=self.us_master_token)
+
+        if self.master_token_authorization_enabled:
+            assert (
+                self.us_master_token is not None
+            ), "US master token must be set in factory to create USAuthContextMaster"
+            return self.dynamic_token_factory.get_auth_context(
+                us_master_token=self.us_master_token,
+            )
+
+        return self.dynamic_token_factory.get_auth_context()
 
     async def get_master_auth_context_async(self) -> USAuthContextPrivateBase:
         return self.get_master_auth_context_sync()

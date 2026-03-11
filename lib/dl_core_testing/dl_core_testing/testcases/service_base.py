@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import contextlib
+from pathlib import Path
 from typing import (
     Any,
     AsyncGenerator,
@@ -36,7 +37,8 @@ from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,
     ServicesRegistry,
 )
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import USAuthContextPrivateBase
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import DefaultUSEntryMutationCacheFactory
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -56,7 +58,7 @@ from dl_utils.aio import ContextVarExecutor
 
 class USConfig(NamedTuple):
     us_base_url: str
-    us_auth_context: USAuthContextMaster
+    us_auth_context: USAuthContextPrivateBase
     us_crypto_keys_config: CryptoKeysConfig
 
 
@@ -71,9 +73,19 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
     @pytest.fixture(scope="session")
     def conn_us_config(self) -> USConfig:
         us_env_config = self.core_test_config.get_us_config()
+        private_key_path = (
+            Path(__file__).resolve().parents[3] / "testenv-common" / "keys" / "dynamic_us_master_token_private_key.pem"
+        )
+        dynamic_token_factory = DynamicUSMasterTokenFactory(
+            private_key=private_key_path.read_text(),
+            token_lifetime_sec=3600,
+            min_ttl_sec=900.0,
+        )
         return USConfig(
             us_base_url=us_env_config.us_host,
-            us_auth_context=USAuthContextMaster(us_master_token=us_env_config.us_master_token),
+            us_auth_context=dynamic_token_factory.get_auth_context(
+                us_master_token=us_env_config.us_master_token,
+            ),
             us_crypto_keys_config=self.core_test_config.get_crypto_keys_config(),
         )
 

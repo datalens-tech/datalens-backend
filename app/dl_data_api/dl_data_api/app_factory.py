@@ -35,6 +35,7 @@ from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFact
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 from dl_core.services_registry.inst_specific_sr import InstallationSpecificServiceRegistryFactory
 from dl_core.services_registry.rqe_caches import RQECachesSetting
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_data_api import app_version
 import dl_retrier
 
@@ -121,11 +122,21 @@ class StandaloneDataApiAppFactory(
         ]
 
         # US manager middlewares
+        dynamic_token_factory: DynamicUSMasterTokenFactory | None = None
+        if self._settings.US_CLIENT.DYNAMIC_AUTH_PRIVATE_KEY is not None:
+            dynamic_token_factory = DynamicUSMasterTokenFactory(
+                private_key=self._settings.US_CLIENT.DYNAMIC_AUTH_PRIVATE_KEY,
+                token_lifetime_sec=self._settings.US_CLIENT.DYNAMIC_AUTH_TOKEN_LIFETIME_SEC,
+                min_ttl_sec=self._settings.US_CLIENT.DYNAMIC_AUTH_MIN_TTL_SEC,
+            )
+
         common_us_kw = dict(
             us_base_url=self._settings.US_BASE_URL,
             crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG,
             ca_data=ca_data,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(self._settings.US_CLIENT.RETRY_POLICY),
+            dynamic_token_factory=dynamic_token_factory,
+            master_token_authorization_enabled=self._settings.US_CLIENT.MASTER_TOKEN_AUTHORIZATION_ENABLED,
         )
 
         if self._settings.AUTH is not None and self._settings.AUTH == "NONE":
