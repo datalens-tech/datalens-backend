@@ -638,7 +638,7 @@ class ClickHouseTypeCompiler(compiler.GenericTypeCompiler):
 
     def visit_numeric(self, type_, **kw):
         return 'Decimal(%s, %s)' % (type_.precision, type_.scale)
-    
+
     def visit_decimal(self, type_, **kw):
         return 'Decimal(%s, %s)' % (type_.precision, type_.scale)
 

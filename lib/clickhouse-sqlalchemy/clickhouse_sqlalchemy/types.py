@@ -233,7 +233,7 @@ class Enum16(Enum):
 
 
 class Numeric(CHTypeMixin, types.Numeric):
-    __visit_name__ = "numeric"
+    __visit_name__ = 'numeric'
 
     def _chsa_http_postprocess(self, value):
         if value is None:
@@ -241,8 +241,8 @@ class Numeric(CHTypeMixin, types.Numeric):
         return decimal.Decimal(value)
 
 
-class Decimal(CHTypeMixin, types.Numeric):
-    __visit_name__ = "decimal"
+class Decimal(Numeric):
+    __visit_name__ = 'decimal'
 
 
 class Nested(CHTypeMixin, types.TypeEngine):
