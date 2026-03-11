@@ -3,17 +3,20 @@ from typing import (
     Literal,
 )
 
+import pydantic
 from typing_extensions import Self
 
 import dl_dynconfig.sources.base as base
-import dl_settings
 
 
-class NullSourceSettings(dl_settings.BaseSettings):
-    TYPE: Literal["null"] = "null"
+class NullSourceSettings(base.BaseSourceSettings):
+    type: Literal["null"] = pydantic.Field(alias="TYPE", default="null")
 
 
-class NullSource(base.Source):
+base.BaseSourceSettings.register("null", NullSourceSettings)
+
+
+class NullSource(base.BaseSource):
     @classmethod
     def from_settings(cls, settings: NullSourceSettings) -> Self:
         return cls()

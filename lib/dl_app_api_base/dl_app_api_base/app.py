@@ -34,9 +34,9 @@ class HttpServerSettings(dl_settings.BaseSettings):
 class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
     HTTP_SERVER: HttpServerSettings = NotImplemented
     OPEN_API: openapi.OpenApiSettings = pydantic.Field(default_factory=openapi.OpenApiSettings)
-    DYNCONFIG_SOURCE: (
-        dl_dynconfig.NullSourceSettings | dl_dynconfig.CachedS3SourceSettings | dl_dynconfig.S3SourceSettings
-    ) = pydantic.Field(default_factory=dl_dynconfig.NullSourceSettings)
+    DYNCONFIG_SOURCE: dl_settings.TypedAnnotation[dl_dynconfig.BaseSourceSettings] = pydantic.Field(
+        default_factory=dl_dynconfig.NullSourceSettings
+    )
 
 
 class HttpServerAppDynconfigMixin(dl_dynconfig.DynConfig):
@@ -299,7 +299,7 @@ class HttpServerAppFactoryMixin(
     @dl_app_base.singleton_class_method_result
     async def _get_dynconfig_source(
         self,
-    ) -> dl_dynconfig.Source:
+    ) -> dl_dynconfig.BaseSource:
         settings = self.settings.DYNCONFIG_SOURCE
         if isinstance(settings, dl_dynconfig.S3SourceSettings):
             return dl_dynconfig.S3Source.from_settings(settings)

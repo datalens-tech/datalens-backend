@@ -1,8 +1,16 @@
 import abc
 from typing import Any
 
+import pydantic
 
-class Source(abc.ABC):
+import dl_settings
+
+
+class BaseSourceSettings(dl_settings.TypedBaseSettings):
+    type: str = pydantic.Field(alias="TYPE")
+
+
+class BaseSource(abc.ABC):
     @abc.abstractmethod
     async def fetch(self) -> Any:
         pass

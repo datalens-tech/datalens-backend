@@ -29,14 +29,14 @@ class FetchError(DynConfigError):
 class DynConfig(dl_pydantic.BaseModel):
     model_config = pydantic.ConfigDict(validate_assignment=True)
 
-    _source: base.Source | None = pydantic.PrivateAttr(default=None)
+    _source: base.BaseSource | None = pydantic.PrivateAttr(default=None)
     _path: list[str] = pydantic.PrivateAttr(default_factory=list)
     _initial_data: dict[str, Any] = pydantic.PrivateAttr(default_factory=dict)
 
     @classmethod
     def model_from_source(
         cls,
-        source: base.Source,
+        source: base.BaseSource,
         path: list[str] | None = None,
         initial_data: Any = None,
     ) -> Self:

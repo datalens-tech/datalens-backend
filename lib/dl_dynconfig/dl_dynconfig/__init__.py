@@ -5,20 +5,29 @@ from .config import (
     SourceNotSetError,
 )
 from .sources import (
+    BaseS3Source,
+    BaseSource,
+    BaseSourceSettings,
     CachedS3Source,
     CachedS3SourceSettings,
+    CachedSource,
+    DefaultS3AuthProvider,
     InMemorySource,
     NullSource,
     NullSourceSettings,
     S3Source,
     S3SourceSettings,
-    Source,
 )
 
 
 __all__ = [
+    "BaseS3Source",
+    "BaseSource",
+    "BaseSourceSettings",
     "CachedS3Source",
     "CachedS3SourceSettings",
+    "CachedSource",
+    "DefaultS3AuthProvider",
     "DynConfig",
     "DynConfigError",
     "FetchError",
@@ -27,6 +36,5 @@ __all__ = [
     "NullSourceSettings",
     "S3Source",
     "S3SourceSettings",
-    "Source",
     "SourceNotSetError",
 ]

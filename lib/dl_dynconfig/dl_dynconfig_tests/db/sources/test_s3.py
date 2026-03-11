@@ -15,15 +15,18 @@ async def test_s3_source_store_and_fetch(
     s3_bucket: str,
 ) -> None:
     s3_key = "test_s3_source_store_and_fetch"
-    source = dl_dynconfig.S3Source.from_settings(
-        settings=dl_dynconfig.S3SourceSettings(
-            ENDPOINT_URL=f"http://{s3_hostport.as_pair()}",
-            ACCESS_KEY_ID=s3_access_key,
-            SECRET_ACCESS_KEY=s3_secret_key,
-            BUCKET=s3_bucket,
-            KEY=s3_key,
-        )
+    settings = dl_dynconfig.BaseSourceSettings.factory(
+        {
+            "TYPE": "s3",
+            "ENDPOINT_URL": f"http://{s3_hostport.as_pair()}",
+            "ACCESS_KEY_ID": s3_access_key,
+            "SECRET_ACCESS_KEY": s3_secret_key,
+            "BUCKET": s3_bucket,
+            "KEY": s3_key,
+        }
     )
+    assert isinstance(settings, dl_dynconfig.S3SourceSettings)
+    source = dl_dynconfig.S3Source.from_settings(settings)
 
     data = {"key": "value", "nested": {"a": 1}}
     await source.store(data)
@@ -93,16 +96,19 @@ async def test_cached_s3_source_caching(
     s3_bucket: str,
 ) -> None:
     s3_key = "test_cached_s3_source_caching"
-    source = dl_dynconfig.CachedS3Source.from_settings(
-        settings=dl_dynconfig.CachedS3SourceSettings(
-            ENDPOINT_URL=f"http://{s3_hostport.as_pair()}",
-            ACCESS_KEY_ID=s3_access_key,
-            SECRET_ACCESS_KEY=s3_secret_key,
-            BUCKET=s3_bucket,
-            KEY=s3_key,
-            TTL=datetime.timedelta(minutes=5),
-        ),
+    settings = dl_dynconfig.BaseSourceSettings.factory(
+        {
+            "TYPE": "cached_s3",
+            "ENDPOINT_URL": f"http://{s3_hostport.as_pair()}",
+            "ACCESS_KEY_ID": s3_access_key,
+            "SECRET_ACCESS_KEY": s3_secret_key,
+            "BUCKET": s3_bucket,
+            "KEY": s3_key,
+            "TTL": datetime.timedelta(minutes=5),
+        }
     )
+    assert isinstance(settings, dl_dynconfig.CachedS3SourceSettings)
+    source = dl_dynconfig.CachedS3Source.from_settings(settings=settings)
 
     await source.store({"version": 1})
     result1 = await source.fetch()
@@ -124,16 +130,19 @@ async def test_cached_s3_source_cache_expired(
     s3_bucket: str,
 ) -> None:
     s3_key = "test_cached_s3_source_cache_expired"
-    source = dl_dynconfig.CachedS3Source.from_settings(
-        settings=dl_dynconfig.CachedS3SourceSettings(
-            ENDPOINT_URL=f"http://{s3_hostport.as_pair()}",
-            ACCESS_KEY_ID=s3_access_key,
-            SECRET_ACCESS_KEY=s3_secret_key,
-            BUCKET=s3_bucket,
-            KEY=s3_key,
-            TTL=datetime.timedelta(seconds=0),
-        ),
+    settings = dl_dynconfig.BaseSourceSettings.factory(
+        {
+            "TYPE": "cached_s3",
+            "ENDPOINT_URL": f"http://{s3_hostport.as_pair()}",
+            "ACCESS_KEY_ID": s3_access_key,
+            "SECRET_ACCESS_KEY": s3_secret_key,
+            "BUCKET": s3_bucket,
+            "KEY": s3_key,
+            "TTL": datetime.timedelta(seconds=0),
+        }
     )
+    assert isinstance(settings, dl_dynconfig.CachedS3SourceSettings)
+    source = dl_dynconfig.CachedS3Source.from_settings(settings)
 
     await source.store({"version": 1})
     result1 = await source.fetch()
@@ -152,16 +161,19 @@ async def test_cached_s3_source_store_updates_cache(
     s3_bucket: str,
 ) -> None:
     s3_key = "test_cached_s3_source_store_updates_cache"
-    source = dl_dynconfig.CachedS3Source.from_settings(
-        settings=dl_dynconfig.CachedS3SourceSettings(
-            ENDPOINT_URL=f"http://{s3_hostport.as_pair()}",
-            ACCESS_KEY_ID=s3_access_key,
-            SECRET_ACCESS_KEY=s3_secret_key,
-            BUCKET=s3_bucket,
-            KEY=s3_key,
-            TTL=datetime.timedelta(minutes=5),
-        ),
+    settings = dl_dynconfig.BaseSourceSettings.factory(
+        {
+            "TYPE": "cached_s3",
+            "ENDPOINT_URL": f"http://{s3_hostport.as_pair()}",
+            "ACCESS_KEY_ID": s3_access_key,
+            "SECRET_ACCESS_KEY": s3_secret_key,
+            "BUCKET": s3_bucket,
+            "KEY": s3_key,
+            "TTL": datetime.timedelta(minutes=5),
+        }
     )
+    assert isinstance(settings, dl_dynconfig.CachedS3SourceSettings)
+    source = dl_dynconfig.CachedS3Source.from_settings(settings)
 
     await source.store({"version": 1})
     result = await source.fetch()
@@ -181,16 +193,19 @@ async def test_cached_s3_source_check_readiness(
     s3_bucket: str,
 ) -> None:
     s3_key = "test_cached_s3_source_check_readiness"
-    source = dl_dynconfig.CachedS3Source.from_settings(
-        settings=dl_dynconfig.CachedS3SourceSettings(
-            ENDPOINT_URL=f"http://{s3_hostport.as_pair()}",
-            ACCESS_KEY_ID=s3_access_key,
-            SECRET_ACCESS_KEY=s3_secret_key,
-            BUCKET=s3_bucket,
-            KEY=s3_key,
-            TTL=datetime.timedelta(minutes=5),
-        ),
+    settings = dl_dynconfig.BaseSourceSettings.factory(
+        {
+            "TYPE": "cached_s3",
+            "ENDPOINT_URL": f"http://{s3_hostport.as_pair()}",
+            "ACCESS_KEY_ID": s3_access_key,
+            "SECRET_ACCESS_KEY": s3_secret_key,
+            "BUCKET": s3_bucket,
+            "KEY": s3_key,
+            "TTL": datetime.timedelta(minutes=5),
+        }
     )
+    assert isinstance(settings, dl_dynconfig.CachedS3SourceSettings)
+    source = dl_dynconfig.CachedS3Source.from_settings(settings)
     assert not await source.check_readiness()
 
     await s3_client.put_object(Bucket=s3_bucket, Key=s3_key, Body=b"test")
