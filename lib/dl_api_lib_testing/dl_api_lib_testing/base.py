@@ -34,7 +34,7 @@ from dl_constants.enums import (
 )
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import USAuthContextPrivateOSS
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.flask_utils import (
     FlaskTestClient,
@@ -251,7 +251,7 @@ class ApiTestBase(abc.ABC):
                 ca_data=ca_data,
             ).make_service_registry(request_context_info=bi_context),
             us_base_url=us_config.us_host,
-            us_auth_context=USAuthContextMaster(us_master_token=us_config.us_master_token),
+            us_auth_context=USAuthContextPrivateOSS(us_master_token=us_config.us_master_token),
             crypto_keys_config=core_test_config.get_crypto_keys_config(),
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
