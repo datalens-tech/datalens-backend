@@ -1,4 +1,5 @@
 from .app import (
+    AppInfoSettings,
     HttpServerAppDynconfigMixin,
     HttpServerAppFactoryMixin,
     HttpServerAppMixin,
@@ -32,16 +33,20 @@ from .error_handling import (
 )
 from .gunicorn import GunicornWorker
 from .handlers import (
+    AppInfoHandler,
     BadRequestResponseSchema,
     BaseHandler,
     BaseRequestSchema,
     BaseResponseSchema,
     BaseSchema,
+    DynConfigHandler,
     ErrorResponseSchema,
     LivenessProbeHandler,
     ReadinessProbeHandler,
     Response,
+    ResponseException,
     Route,
+    SettingsHandler,
     StartupProbeHandler,
 )
 from .headers import HeadersRequestContextMixin
@@ -79,6 +84,8 @@ __all__ = [
     "AlwaysAllowAuthChecker",
     "AlwaysAllowAuthResult",
     "AlwaysDenyAuthChecker",
+    "AppInfoHandler",
+    "AppInfoSettings",
     "AuthFailureError",
     "AuthRequestContextMixin",
     "BadRequestResponseSchema",
@@ -91,6 +98,7 @@ __all__ = [
     "BaseRequestSchema",
     "BaseResponseSchema",
     "BaseSchema",
+    "DynConfigHandler",
     "ErrorHandlerProtocol",
     "ErrorHandlingMiddleware",
     "ErrorResponseSchema",
@@ -125,8 +133,10 @@ __all__ = [
     "RequestContextProvider",
     "RequestContextProviderProtocol",
     "Response",
+    "ResponseException",
     "Route",
     "RouteMatcher",
+    "SettingsHandler",
     "StartupProbeHandler",
     "SubsystemReadinessAsyncCallback",
     "SubsystemReadinessCallback",

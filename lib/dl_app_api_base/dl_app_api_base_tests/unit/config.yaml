@@ -7,3 +7,7 @@ HTTP_SERVER:
         CLIENT_ID: "user1"
       USER2:
         CLIENT_ID: "user2"
+
+APP_INFO:
+  NAME: "test_app"
+  VERSION: "test_app:1.0.0"

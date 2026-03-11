@@ -323,6 +323,165 @@
         }
       }
     },
+    "/system/app-info": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Returns application info",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "app_name": {
+                      "title": "App Name",
+                      "type": "string"
+                    },
+                    "version": {
+                      "title": "Version",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "app_name",
+                    "version"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/settings": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Returns the full application settings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {},
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/dyn_config": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Returns the current dynamic configuration and its source type",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "source_type": {
+                      "title": "Source Type",
+                      "type": "string"
+                    },
+                    "config": {
+                      "additionalProperties": true,
+                      "title": "Config",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "source_type",
+                    "config"
+                  ],
+                  "title": "ResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "default": "Bad request",
+                      "title": "Message",
+                      "type": "string"
+                    },
+                    "code": {
+                      "default": "ERR.API.BAD_REQUEST",
+                      "title": "Code",
+                      "type": "string"
+                    }
+                  },
+                  "title": "BadRequestResponseSchema",
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/counter": {
       "get": {
         "tags": [],
