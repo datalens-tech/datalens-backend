@@ -195,7 +195,7 @@
                 },
                 {
                     "name": "password",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {
@@ -253,7 +253,7 @@
                 },
                 {
                     "name": "password",
-                    "required": true,
+                    "required": false,
                     "defaultAction": "include"
                 },
                 {

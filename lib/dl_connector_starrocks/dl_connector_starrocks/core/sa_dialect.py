@@ -1,6 +1,9 @@
 """SQLAlchemy dialect registration for StarRocks (bi_starrocks scheme)."""
 
-from sqlalchemy.dialects.mysql.base import MySQLTypeCompiler
+from sqlalchemy.dialects.mysql.base import (
+    MySQLDDLCompiler,
+    MySQLTypeCompiler,
+)
 
 from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 
@@ -15,6 +18,18 @@ class StarRocksTypeCompiler(MySQLTypeCompiler):
         """
         return "DATETIME"
 
+    def visit_BOOLEAN(self, type_, **kw):
+        """StarRocks uses BOOLEAN, not BOOL."""
+        return "BOOLEAN"
+
+
+class StarRocksDDLCompiler(MySQLDDLCompiler):
+    """DDL compiler that adds DUPLICATE KEY clause required by StarRocks."""
+
+    def post_create_table(self, table):
+        first_col = list(table.columns.keys())[0]
+        return f"\nDUPLICATE KEY(`{first_col}`)"
+
 
 class BiStarRocksDialect(DLMYSQLDialect):
     """
@@ -25,3 +40,4 @@ class BiStarRocksDialect(DLMYSQLDialect):
 
     name = "bi_starrocks"
     type_compiler = StarRocksTypeCompiler
+    ddl_compiler = StarRocksDDLCompiler

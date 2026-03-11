@@ -4,6 +4,6 @@ from dl_connector_starrocks_tests.db.formula.base import StarRocksTestBase
 
 
 class TestLiteralFunctionStarRocks(StarRocksTestBase, DefaultLiteralFormulaConnectorTestSuite):
-    supports_microseconds = False
+    supports_microseconds = True
     supports_utc = False
     supports_custom_tz = False

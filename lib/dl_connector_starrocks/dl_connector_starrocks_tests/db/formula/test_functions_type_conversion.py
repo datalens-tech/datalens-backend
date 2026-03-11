@@ -15,6 +15,7 @@ from dl_connector_starrocks_tests.db.formula.base import StarRocksTestBase
 
 class TestStrTypeFunctionStarRocks(StarRocksTestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     skip_custom_tz = True
+    zero_float_to_str_value = "0.0"
 
 
 class TestFloatTypeFunctionStarRocks(StarRocksTestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):

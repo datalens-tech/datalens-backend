@@ -9,7 +9,6 @@ from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
     DefaultSyncConnectionExecutorTestSuite,
 )
-from dl_testing.regulated_test import RegulatedTestParams
 
 import dl_connector_starrocks_tests.db.config as test_config
 from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
@@ -19,14 +18,6 @@ class TestStarRocksSyncConnectionExecutor(
     BaseStarRocksTestClass,
     DefaultSyncConnectionExecutorTestSuite,
 ):
-    test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultSyncConnectionExecutorTestSuite.test_type_recognition: (
-                "StarRocks requires DUPLICATE KEY clause in CREATE TABLE which is not "
-                "supported by the generic test framework DDL generation"
-            ),
-        },
-    )
 
     @pytest.fixture(scope="function")
     def db_ident(self) -> DBIdent:

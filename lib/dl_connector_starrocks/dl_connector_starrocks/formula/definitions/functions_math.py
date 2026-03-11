@@ -1,9 +1,11 @@
 import sqlalchemy as sa
 
+from dl_formula.definitions.args import ArgTypeSequence
 from dl_formula.definitions.base import (
     TranslationVariant,
     TranslationVariantWrapped,
 )
+from dl_formula.core.datatype import DataType
 import dl_formula.definitions.functions_math as base
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
@@ -11,6 +13,44 @@ from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
+
+
+class _FuncGreatestMainNonDate(base.FuncGreatestBase):
+    """StarRocks GREATEST for non-date types."""
+
+    argument_types = [
+        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
+        ArgTypeSequence([DataType.DATETIME, DataType.DATETIME]),
+        ArgTypeSequence([DataType.DATETIMETZ, DataType.DATETIMETZ]),
+        ArgTypeSequence([DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
+        ArgTypeSequence([DataType.STRING, DataType.STRING]),
+        ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
+    ]
+
+
+class _FuncGreatestDate(base.FuncGreatestBase):
+    """StarRocks GREATEST(DATE, DATE) returns integer, so cast back to DATE."""
+
+    argument_types = [ArgTypeSequence([DataType.DATE, DataType.DATE])]
+
+
+class _FuncLeastMainNonDate(base.FuncLeastBase):
+    """StarRocks LEAST for non-date types."""
+
+    argument_types = [
+        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
+        ArgTypeSequence([DataType.DATETIME, DataType.DATETIME]),
+        ArgTypeSequence([DataType.DATETIMETZ, DataType.DATETIMETZ]),
+        ArgTypeSequence([DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
+        ArgTypeSequence([DataType.STRING, DataType.STRING]),
+        ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
+    ]
+
+
+class _FuncLeastDate(base.FuncLeastBase):
+    """StarRocks LEAST(DATE, DATE) returns integer, so cast back to DATE."""
+
+    argument_types = [ArgTypeSequence([DataType.DATE, DataType.DATE])]
 
 
 DEFINITIONS_MATH = [
@@ -65,11 +105,25 @@ DEFINITIONS_MATH = [
     base.FuncFloor.for_dialect(D.STARROCKS),
     # greatest
     base.FuncGreatest1.for_dialect(D.STARROCKS),
-    base.FuncGreatestMain.for_dialect(D.STARROCKS),
+    _FuncGreatestMainNonDate(
+        variants=[V(D.STARROCKS, sa.func.GREATEST)]
+    ),
+    _FuncGreatestDate(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.cast(sa.func.GREATEST(x, y), sa.Date())),
+        ]
+    ),
     base.GreatestMulti.for_dialect(D.STARROCKS),
     # least
     base.FuncLeast1.for_dialect(D.STARROCKS),
-    base.FuncLeastMain.for_dialect(D.STARROCKS),
+    _FuncLeastMainNonDate(
+        variants=[V(D.STARROCKS, sa.func.LEAST)]
+    ),
+    _FuncLeastDate(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.cast(sa.func.LEAST(x, y), sa.Date())),
+        ]
+    ),
     base.LeastMulti.for_dialect(D.STARROCKS),
     # ln
     base.FuncLn.for_dialect(D.STARROCKS),
