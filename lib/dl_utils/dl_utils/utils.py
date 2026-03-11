@@ -56,7 +56,24 @@ class AddressableData:
     def get(self, key: DataKey) -> Any:
         return functools.reduce(operator.getitem, key.parts, self.data)
 
+    def _ensure_objects(self, key: DataKey) -> None:
+        """
+        Create all objects for the given key if they do not exist.
+
+        For example, `self._ensure_objects(DataKey(("a", "b", "c")))` equals to:
+        ```python
+        self.data["a"] = self.data.get("a", {})
+        self.data["a"]["b"] = self.data["a"].get("b", {})
+        ```
+        """
+
+        data = self.data
+        for part in key.parts[:-1]:
+            data[part] = data.get(part, {})
+            data = data[part]
+
     def set(self, key: DataKey, value: Any) -> None:
+        self._ensure_objects(key)
         key_head = DataKey(parts=key.parts[:-1])
         self.get(key_head)[key.parts[-1]] = value
 
