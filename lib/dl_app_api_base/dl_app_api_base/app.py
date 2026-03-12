@@ -31,12 +31,18 @@ class HttpServerSettings(dl_settings.BaseSettings):
     PORT: int
 
 
+class AppInfoSettings(dl_settings.BaseSettings):
+    NAME: str = "unknown"
+    VERSION: str = "unknown"
+
+
 class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
     HTTP_SERVER: HttpServerSettings = NotImplemented
     OPEN_API: openapi.OpenApiSettings = pydantic.Field(default_factory=openapi.OpenApiSettings)
     DYNCONFIG_SOURCE: dl_settings.TypedAnnotation[dl_dynconfig.BaseSourceSettings] = pydantic.Field(
         default_factory=dl_dynconfig.NullSourceSettings
     )
+    APP_INFO: AppInfoSettings = pydantic.Field(default_factory=AppInfoSettings)
 
 
 class HttpServerAppDynconfigMixin(dl_dynconfig.DynConfig):
@@ -157,6 +163,8 @@ class HttpServerAppFactoryMixin(
         return [
             *await self._get_request_health_auth_checkers(),
             *await self._get_request_openapi_auth_checkers(),
+            *await self._get_request_system_auth_checkers(),
+            *await self._get_request_admin_auth_checkers(),
         ]
 
     @dl_app_base.singleton_class_method_result
@@ -186,7 +194,7 @@ class HttpServerAppFactoryMixin(
         self,
     ) -> list[auth.RequestAuthCheckerProtocol]:
         return [
-            auth.AlwaysAllowAuthChecker(
+            auth.AlwaysDenyAuthChecker(
                 route_matchers=await self._get_request_openapi_auth_checkers_route_matchers(),
                 context_provider=await self._get_request_context_provider(),
             ),
@@ -199,6 +207,50 @@ class HttpServerAppFactoryMixin(
         return [
             auth.RouteMatcher(
                 path_regex=re.compile(rf"^{self.settings.OPEN_API.DOCS_PATH}.*$"),
+                methods=frozenset(["GET"]),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_system_auth_checkers(
+        self,
+    ) -> list[auth.RequestAuthCheckerProtocol]:
+        return [
+            auth.AlwaysAllowAuthChecker(
+                route_matchers=await self._get_request_system_auth_checkers_route_matchers(),
+                context_provider=await self._get_request_context_provider(),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_system_auth_checkers_route_matchers(
+        self,
+    ) -> list[auth.RouteMatcher]:
+        return [
+            auth.RouteMatcher(
+                path_regex=re.compile(r"^/system/.*$"),
+                methods=frozenset(["GET"]),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_admin_auth_checkers(
+        self,
+    ) -> list[auth.RequestAuthCheckerProtocol]:
+        return [
+            auth.AlwaysDenyAuthChecker(
+                route_matchers=await self._get_request_admin_auth_checkers_route_matchers(),
+                context_provider=await self._get_request_context_provider(),
+            ),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_admin_auth_checkers_route_matchers(
+        self,
+    ) -> list[auth.RouteMatcher]:
+        return [
+            auth.RouteMatcher(
+                path_regex=re.compile(r"^/admin/.*$"),
                 methods=frozenset(["GET"]),
             ),
         ]
@@ -290,6 +342,36 @@ class HttpServerAppFactoryMixin(
                 path="/api/v1/health/startup",
                 handler=handlers.StartupProbeHandler(
                     readiness_service=readiness_service,
+                ),
+            ),
+        )
+
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/system/app-info",
+                handler=handlers.AppInfoHandler(
+                    app_name=self.settings.APP_INFO.NAME,
+                    version=self.settings.APP_INFO.VERSION,
+                ),
+            ),
+        )
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/admin/settings",
+                handler=handlers.SettingsHandler(
+                    settings_repr=repr(self.settings),
+                ),
+            ),
+        )
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/admin/dyn_config",
+                handler=handlers.DynConfigHandler(
+                    dynconfig=await self._get_dynconfig(),
+                    source_type=self.settings.DYNCONFIG_SOURCE.type,
                 ),
             ),
         )

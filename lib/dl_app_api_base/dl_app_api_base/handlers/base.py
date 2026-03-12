@@ -71,6 +71,21 @@ class Response(aiohttp_web.Response):
         )
 
     @classmethod
+    def with_plain_text(
+        cls,
+        text: str,
+        status: int = http.HTTPStatus.OK,
+        reason: str | None = None,
+        headers: aiohttp_typedefs.LooseHeaders | None = None,
+    ) -> Self:
+        return cls(
+            text=text,
+            status=status,
+            reason=reason,
+            headers=headers,
+        )
+
+    @classmethod
     def with_status(
         cls,
         status: int = http.HTTPStatus.OK,

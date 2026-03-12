@@ -15,6 +15,7 @@ import pytest_asyncio
 from typing_extensions import override
 
 import dl_app_api_base
+import dl_app_api_base_tests.settings as test_settings
 import dl_app_base
 import dl_pydantic
 
@@ -410,6 +411,35 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
             ]
         )
         return routes
+
+    @override
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_openapi_auth_checkers(
+        self,
+    ) -> list[dl_app_api_base.RequestAuthCheckerProtocol]:
+        return [
+            dl_app_api_base.AlwaysAllowAuthChecker(
+                route_matchers=await self._get_request_openapi_auth_checkers_route_matchers(),
+                context_provider=await self._get_request_context_provider(),
+            ),
+        ]
+
+    @override
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_admin_auth_checkers(
+        self,
+    ) -> list[dl_app_api_base.RequestAuthCheckerProtocol]:
+        return [
+            dl_app_api_base.AlwaysAllowAuthChecker(
+                route_matchers=await self._get_request_admin_auth_checkers_route_matchers(),
+                context_provider=await self._get_request_context_provider(),
+            ),
+        ]
+
+
+@pytest.fixture(name="test_settings")
+def fixture_test_settings() -> test_settings.Settings:
+    return test_settings.Settings()
 
 
 @pytest.fixture(name="oauth_user1_token")

@@ -25,4 +25,6 @@ class LoggingSettings(dl_settings.BaseSettings):
 
 
 class Settings(dl_settings.BaseRootSettings):
+    MODEL_ENABLE_EXTRA_FIELDS_WARNING = False
+
     LOGGING: LoggingSettings = NotImplemented
