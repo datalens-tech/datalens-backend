@@ -6,6 +6,11 @@ from typing import Any
 import statcommons.logs
 
 import dl_logging.context as context
+from dl_obfuscator import (
+    ObfuscationContext,
+    OnObfuscationError,
+    get_request_obfuscation_engine,
+)
 
 
 def is_deploy() -> bool:
@@ -124,6 +129,12 @@ class StdoutFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         if is_deploy():
-            return self.deploy_json_formatter.format(record)
+            result = self.deploy_json_formatter.format(record)
+        else:
+            result = self.json_formatter.format(record)
 
-        return self.json_formatter.format(record)
+        engine = get_request_obfuscation_engine()
+        if engine is not None:
+            result = engine.obfuscate(result, ObfuscationContext.LOGS, on_error=OnObfuscationError.SKIP)
+
+        return result

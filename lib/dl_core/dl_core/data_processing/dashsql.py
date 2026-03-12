@@ -157,7 +157,10 @@ class DashSQLSelector:
         conn = self.conn
         dialect = conn.get_dialect()
         debug_text = compile_query_for_debug(self.sql_query, dialect=dialect)
-        inspector_text = compile_query_for_inspector(self.sql_query, dialect=dialect)
+        obfuscation_engine = self._service_registry.rci.obfuscation_engine
+        inspector_text = compile_query_for_inspector(
+            self.sql_query, dialect=dialect, obfuscation_engine=obfuscation_engine
+        )
         return sa_query, debug_text, inspector_text
 
     def make_ce_query(self) -> ConnExecutorQuery:

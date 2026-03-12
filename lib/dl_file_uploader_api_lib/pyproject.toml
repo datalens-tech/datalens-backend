@@ -18,6 +18,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-file-uploader-lib = {path = "../dl_file_uploader_lib"}
 dl-file-uploader-task-interface = {path = "../dl_file_uploader_task_interface"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-s3 = {path = "../dl_s3"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}

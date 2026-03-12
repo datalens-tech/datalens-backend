@@ -167,7 +167,9 @@ class BaseSAAdapter(
         )
 
         debug_query = compile_query_for_debug(query, engine.dialect)
-        inspector_query = compile_query_for_inspector(query, engine.dialect)
+        inspector_query = compile_query_for_inspector(
+            query, engine.dialect, obfuscation_engine=self._req_ctx_info.obfuscation_engine
+        )
 
         # Use literal binds for all queries or for dashsql queries only
         if self.use_literal_binds or self.use_literal_binds_for_dashsql and db_adapter_query.is_dashsql_query:

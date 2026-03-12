@@ -5,6 +5,11 @@ import re
 from typing import Any
 
 from dl_api_commons.logging import RequestObfuscator
+from dl_obfuscator import (
+    ObfuscationContext,
+    OnObfuscationError,
+    get_request_obfuscation_engine,
+)
 
 
 log = logging.getLogger()
@@ -128,4 +133,50 @@ def cleanup_common_secret_data(
     else:
         log.error(f"Unexpected type of request section in outgoing Sentry event: {type(secret_original_req_section)}")
 
+    _obfuscate_sentry_event(event)
+
     return event
+
+
+def _obfuscate_sentry_event(event: dict) -> None:
+    """Apply obfuscation engine to Sentry event message and exception values."""
+    engine = get_request_obfuscation_engine()
+    if engine is None:
+        return
+
+    if "message" in event and isinstance(event["message"], str):
+        event["message"] = engine.obfuscate(
+            event["message"], ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP
+        )
+
+    if "exception" in event and "values" in event["exception"]:
+        for exc in event["exception"]["values"]:
+            if "value" in exc and isinstance(exc["value"], str):
+                exc["value"] = engine.obfuscate(
+                    exc["value"], ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP
+                )
+            for frame in exc.get("stacktrace", {}).get("frames", ()):
+                for name, val in frame.get("vars", {}).items():
+                    if isinstance(val, str):
+                        frame["vars"][name] = engine.obfuscate(
+                            val, ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP
+                        )
+
+    for breadcrumb in event.get("breadcrumbs", {}).get("values", []):
+        if "message" in breadcrumb and isinstance(breadcrumb["message"], str):
+            breadcrumb["message"] = engine.obfuscate(
+                breadcrumb["message"], ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP
+            )
+        if "data" in breadcrumb and isinstance(breadcrumb["data"], dict):
+            breadcrumb["data"] = engine.obfuscate(
+                breadcrumb["data"], ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP
+            )
+
+    req = event.get("request")
+    if req is not None and isinstance(req, dict):
+        if "url" in req and isinstance(req["url"], str):
+            req["url"] = engine.obfuscate(req["url"], ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP)
+        if "query_string" in req and isinstance(req["query_string"], str):
+            req["query_string"] = engine.obfuscate(
+                req["query_string"], ObfuscationContext.SENTRY, on_error=OnObfuscationError.SKIP
+            )

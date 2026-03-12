@@ -13,6 +13,7 @@ attrs = "*"
 dl-auth = {path = "../dl_auth"}
 dl-constants = {path = "../dl_constants"}
 dl-logging = {path = "../dl_logging"}
+dl-obfuscator = {path = "../dl_obfuscator"}
 dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
