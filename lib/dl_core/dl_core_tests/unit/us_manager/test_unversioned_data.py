@@ -944,3 +944,276 @@ class TestSerializationDeserialization:
         assert deserialized_entry.data.cat_properties.shape.is_spherical is None
         assert deserialized_entry.data.cat_properties.shape.fluidity_coefficient is None
         assert deserialized_entry.data.cat_properties.shape.signature == "blue paws"
+
+
+class TestCheckKeyCollisions:
+    """
+    Test the _check_key_collisions method that detects conflicts between versioned and unversioned data keys.
+    """
+
+    def test_no_collisions_empty_dicts(self) -> None:
+        USManagerBase._check_key_collisions(
+            parent_key=(),
+            versioned_data={},
+            unversioned_data={},
+        )
+
+    def test_no_collisions_different_keys(self) -> None:
+        versioned_data = {
+            "key_1": "value 1",
+            "key_2": 123,
+        }
+        unversioned_data = {
+            "key_3": "value 2",
+            "key_4": 456,
+        }
+
+        USManagerBase._check_key_collisions(
+            parent_key=(),
+            versioned_data=versioned_data,
+            unversioned_data=unversioned_data,
+        )
+
+    def test_collision_simple_keys(self) -> None:
+        versioned_data = {
+            "key": "value 1",
+        }
+        unversioned_data = {
+            "key": "value 2",
+        }
+
+        with pytest.raises(ValueError, match=r"Key key exists in both versioned and unversioned data"):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_collision_mixed_types(self) -> None:
+        versioned_data = {
+            "key": {"nested": "value"},
+        }
+        unversioned_data = {
+            "key": "simple_value",
+        }
+
+        with pytest.raises(ValueError, match=r"Key key exists in both versioned and unversioned data"):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_collision_reverse_mixed_types(self) -> None:
+        versioned_data = {
+            "key": "simple_value",
+        }
+        unversioned_data = {
+            "key": {"nested": "value"},
+        }
+
+        with pytest.raises(ValueError, match=r"Key key exists in both versioned and unversioned data"):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_no_collision_both_dicts_different_nested_keys(self) -> None:
+        versioned_data = {
+            "key": {
+                "nested_key_1": "value 1",
+            },
+        }
+        unversioned_data = {
+            "key": {
+                "nested_key_2": "value 2",
+            },
+        }
+
+        USManagerBase._check_key_collisions(
+            parent_key=(),
+            versioned_data=versioned_data,
+            unversioned_data=unversioned_data,
+        )
+
+    def test_no_collision_both_dicts_different_double_nested_keys(self) -> None:
+        versioned_data = {
+            "key": {
+                "nested_key_1": "value 1",
+            },
+        }
+        unversioned_data = {
+            "key": {
+                "nested_key_2": "value 2",
+            },
+        }
+
+        USManagerBase._check_key_collisions(
+            parent_key=(),
+            versioned_data=versioned_data,
+            unversioned_data=unversioned_data,
+        )
+
+    def test_collision_both_dicts_double_nested_keys(self) -> None:
+        versioned_data = {
+            "key": {
+                "nested_key": "value 1",
+            },
+        }
+        unversioned_data = {
+            "key": {
+                "nested_key": "value 2",
+            },
+        }
+
+        with pytest.raises(ValueError, match=r"Key key\.nested_key exists in both versioned and unversioned data"):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_collision_deeply_nested_keys(self) -> None:
+        versioned_data = {
+            "level1": {
+                "level2": {
+                    "level3": {
+                        "collision_key": "value 1",
+                    },
+                },
+            },
+        }
+        unversioned_data = {
+            "level1": {
+                "level2": {
+                    "level3": {
+                        "collision_key": "value 2",
+                    },
+                },
+            },
+        }
+
+        with pytest.raises(
+            ValueError, match=r"Key level1\.level2\.level3\.collision_key exists in both versioned and unversioned data"
+        ):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_no_collision_different_deeply_nested_keys(self) -> None:
+        versioned_data = {
+            "level1": {
+                "level2": {
+                    "level3": {
+                        "key_1": "value 1",
+                    },
+                },
+            },
+        }
+        unversioned_data = {
+            "level1": {
+                "level2": {
+                    "level3": {
+                        "key_2": "value 2",
+                    },
+                },
+            },
+        }
+
+        USManagerBase._check_key_collisions(
+            parent_key=(),
+            versioned_data=versioned_data,
+            unversioned_data=unversioned_data,
+        )
+
+    def test_collision_with_parent_key(self) -> None:
+        versioned_data = {
+            "collision_key": "value 1",
+        }
+        unversioned_data = {
+            "collision_key": "value 2",
+        }
+
+        with pytest.raises(
+            ValueError, match=r"Key parent\.collision_key exists in both versioned and unversioned data"
+        ):
+            USManagerBase._check_key_collisions(
+                parent_key=("parent",),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_collision_with_multiple_parent_keys(self) -> None:
+        versioned_data = {
+            "collision_key": "value 1",
+        }
+        unversioned_data = {
+            "collision_key": "value 2",
+        }
+
+        with pytest.raises(
+            ValueError, match=r"Key root\.parent\.collision_key exists in both versioned and unversioned data"
+        ):
+            USManagerBase._check_key_collisions(
+                parent_key=("root", "parent"),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_complex_mixed_scenario(self) -> None:
+        versioned_data = {
+            "safe_key": "versioned_only",
+            "mixed_structure": {
+                "safe_nested": "versioned_nested",
+                "collision_nested": "versioned_collision",
+            },
+        }
+        unversioned_data = {
+            "safe_unversioned": "unversioned_only",
+            "mixed_structure": {
+                "safe_unversioned_nested": "unversioned_nested",
+                "collision_nested": "unversioned_collision",
+            },
+        }
+
+        with pytest.raises(
+            ValueError, match=r"Key mixed_structure\.collision_nested exists in both versioned and unversioned data"
+        ):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_collision_with_none_values(self) -> None:
+        versioned_data = {
+            "collision_key": None,
+        }
+        unversioned_data = {
+            "collision_key": None,
+        }
+
+        with pytest.raises(ValueError, match=r"Key collision_key exists in both versioned and unversioned data"):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
+
+    def test_no_collision_one_dict_one_none(self) -> None:
+        versioned_data = {
+            "collision_key": {"nested": "value"},
+        }
+        unversioned_data = {
+            "collision_key": None,
+        }
+
+        with pytest.raises(ValueError, match=r"Key collision_key exists in both versioned and unversioned data"):
+            USManagerBase._check_key_collisions(
+                parent_key=(),
+                versioned_data=versioned_data,
+                unversioned_data=unversioned_data,
+            )
