@@ -15,12 +15,16 @@ from dl_api_lib import exc
 from dl_api_lib.dataset.utils import allow_rls_for_dataset
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
-from dl_constants.enums import RLSSubjectType
+from dl_constants.enums import (
+    CacheInvalidationMode,
+    RLSSubjectType,
+)
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
 )
 from dl_core.base_models import (
+    CacheInvalidationSource,
     DefaultConnectionRef,
     DefaultWhereClause,
 )
@@ -60,6 +64,22 @@ EMPTY_DS_UPDATE_INFO = DatasetUpdateInfo(
     added_own_source_ids=[],
     updated_own_source_ids=[],
 )
+
+
+def clear_cache_invalidation_source_irrelevant_data(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> CacheInvalidationSource:
+    if cache_invalidation_source.mode == CacheInvalidationMode.off:
+        cache_invalidation_source.sql = None
+        cache_invalidation_source.field = None
+        cache_invalidation_source.filters = []
+        cache_invalidation_source.cache_invalidation_error = None
+    elif cache_invalidation_source.mode == CacheInvalidationMode.formula:
+        cache_invalidation_source.sql = None
+    elif cache_invalidation_source.mode == CacheInvalidationMode.sql:
+        cache_invalidation_source.field = None
+        cache_invalidation_source.filters = []
+    return cache_invalidation_source
 
 
 @attr.s
@@ -399,6 +419,13 @@ class DatasetApiLoader:
         if "annotation" in body:
             annotation: dict[str, Any] = body["annotation"]
             ds_editor.set_description(annotation.get("description", ""))
+
+        # cache_invalidation
+        if body.get("cache_invalidation_source"):
+            cache_invalidation_source = clear_cache_invalidation_source_irrelevant_data(
+                body["cache_invalidation_source"]
+            )
+            ds_editor.set_cache_invalidation_source(cache_invalidation_source)
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))

@@ -23,6 +23,7 @@ import attr
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
@@ -34,6 +35,7 @@ from dl_constants.enums import (
     JoinType,
     LegendItemType,
     ManagedBy,
+    NotificationLevel,
     OrderDirection,
     ParameterValueConstraintType,
     PivotHeaderRole,
@@ -939,6 +941,75 @@ class ResultSchemaAux:
 
 
 @attr.s
+class CacheInvalidationError:
+    """Error from cache invalidation validation"""
+
+    title: str = attr.ib()
+    message: str = attr.ib()
+    level: NotificationLevel = attr.ib()
+    locator: str = attr.ib()
+
+
+@attr.s
+class CacheInvalidationLastResultError:
+    """Error from last cache invalidation execution"""
+
+    code: str = attr.ib()
+    message: str | None = attr.ib(default=None)
+    details: dict = attr.ib(factory=dict)
+    debug: dict = attr.ib(factory=dict)
+
+
+@attr.s
+class CacheInvalidationField:
+    """Field for cache invalidation formula mode."""
+
+    guid: str = attr.ib()
+    guid_formula: str = attr.ib(default="")
+    virtual: bool = attr.ib(default=False)
+
+    title: str | None = attr.ib(default="INVALIDATION CACHE SERVICE FIELD")
+    calc_mode: CalcMode = attr.ib(default=CalcMode.formula, converter=CalcMode.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    aggregation: AggregationFunction = attr.ib(
+        default=AggregationFunction.none, converter=AggregationFunction.normalize  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    )
+    type: FieldType = attr.ib(default=FieldType.DIMENSION, converter=FieldType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    source: str | None = attr.ib(default=None)
+    hidden: bool = attr.ib(default=False)
+    description: str = attr.ib(default="")
+    formula: str = attr.ib(default="")
+    initial_data_type: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    cast: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    data_type: UserDataType | None = attr.ib(default=None, converter=UserDataType.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    valid: bool = attr.ib(default=True)
+    has_auto_aggregation: bool = attr.ib(default=False)
+    lock_aggregation: bool = attr.ib(default=False)
+    avatar_id: str | None = attr.ib(default=None)
+    managed_by: ManagedBy = attr.ib(default=ManagedBy.user, converter=ManagedBy.normalize)  # type: ignore  # 2024-01-24 # TODO: Unsupported converter, only named functions, types and lambdas are currently supported  [misc]
+    default_value: ParameterValue | None = attr.ib(default=None)
+    value_constraint: BaseParameterValueConstraint | None = attr.ib(default=None)
+    template_enabled: bool | None = attr.ib(default=None)
+    ui_settings: str = attr.ib(default="")
+
+
+@attr.s
+class CacheInvalidationSource(ApiProxyObject):
+    """Cache invalidation source configuration"""
+
+    mode: CacheInvalidationMode = attr.ib(default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters: list[ObligatoryFilter] | None = attr.ib(factory=list)
+    field: CacheInvalidationField | None = attr.ib(default=None)
+
+    # For mode: sql
+    sql: str | None = attr.ib(default=None)
+
+    # Read-only error field
+    cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
+
+
+@attr.s
 class Dataset(ApiProxyObject):
     name: str = attr.ib(default=None)
     revision_id: Optional[str] = attr.ib(default=None)
@@ -955,6 +1026,7 @@ class Dataset(ApiProxyObject):
     component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
     obligatory_filters: list[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
     annotation: Optional[dict] = attr.ib(default=None)
+    cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
 
     def prepare(self) -> None:
         super().prepare()

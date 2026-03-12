@@ -17,6 +17,7 @@ from dl_api_client.dsmaker.primitives import (
     Action,
     ApiProxyObject,
     AvatarRelation,
+    CacheInvalidationSource,
     Container,
     Dataset,
     DataSource,
@@ -178,6 +179,40 @@ class BaseApiV1SerializationAdapter:
         else:
             return ObligatoryFilterUpdateSchema().dump(item)
 
+    @_dump_item.register(CacheInvalidationSource)
+    def dump_cache_invalidation(self, item: CacheInvalidationSource, action: Action) -> dict:
+        field_item = item.field
+        return dict(
+            mode=item.mode.value,
+            sql=item.sql,
+            filters=[ObligatoryFilterSchema().dump(filter_item) for filter_item in item.filters]
+            if item.filters
+            else [],
+            field=dict(
+                guid=field_item.guid,
+                title=field_item.title,
+                calc_mode=field_item.calc_mode.name if field_item.calc_mode is not None else None,
+                aggregation=field_item.aggregation.name if field_item.aggregation is not None else None,
+                type=field_item.type.name if field_item.type is not None else None,
+                source=field_item.source,
+                hidden=field_item.hidden,
+                description=field_item.description,
+                formula=field_item.formula,
+                initial_data_type=field_item.initial_data_type.name
+                if field_item.initial_data_type is not None
+                else None,
+                cast=field_item.cast.name if field_item.cast is not None else None,
+                data_type=field_item.data_type.name if field_item.data_type is not None else None,
+                valid=field_item.valid,
+                has_auto_aggregation=field_item.has_auto_aggregation,
+                lock_aggregation=field_item.lock_aggregation,
+                avatar_id=field_item.avatar_id,
+                managed_by=field_item.managed_by.name,
+            )
+            if field_item
+            else None,
+        )
+
     def _strip_implicit_updates_from_dataset(self, dataset: Dataset) -> Dataset:
         return dataset.clone(
             sources=Container({name: item for name, item in dataset.sources.items() if item.created_}),
@@ -186,6 +221,7 @@ class BaseApiV1SerializationAdapter:
                 {name: item for name, item in dataset.avatar_relations.items() if item.created_}
             ),
             result_schema=Container({name: item for name, item in dataset.result_schema.items() if item.created_}),
+            cache_invalidation_source=dataset.cache_invalidation_source,
         )
 
     def dump_dataset(self, item: Dataset) -> dict:
@@ -221,6 +257,7 @@ class BaseApiV1SerializationAdapter:
             AvatarRelation: "avatar_relation",
             ResultField: "field",
             ObligatoryFilter: "obligatory_filter",
+            CacheInvalidationSource: "cache_invalidation_source",
         }[type(item)]
 
     def dump_updates(

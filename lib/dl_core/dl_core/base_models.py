@@ -10,8 +10,14 @@ from typing import (
 import attr
 
 from dl_constants.enums import (
+    AggregationFunction,
+    CacheInvalidationMode,
+    CalcMode,
+    FieldType,
     ManagedBy,
+    NotificationLevel,
     RawSQLLevel,
+    UserDataType,
     WhereClauseOperation,
 )
 from dl_utils.utils import DataKey
@@ -59,6 +65,103 @@ class ObligatoryFilter:
     default_filters: list[DefaultWhereClause] = attr.ib()
     managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
     valid: bool = attr.ib(default=True)
+
+
+@attr.s()
+class CacheInvalidationError:
+    """Error from cache invalidation validation"""
+
+    title: str = attr.ib()
+    message: str = attr.ib()
+    level: NotificationLevel = attr.ib()
+    locator: str = attr.ib()
+
+
+@attr.s()
+class CacheInvalidationLastResultError:
+    """Error from last cache invalidation execution"""
+
+    code: str = attr.ib()
+    message: str | None = attr.ib(default=None)
+    details: dict = attr.ib(factory=dict)
+    debug: dict = attr.ib(factory=dict)
+
+
+@attr.s()
+class CacheInvalidationField:
+    """Field for cache invalidation formula mode.
+
+    Similar to BIField but specific for cache invalidation.
+    """
+
+    # The ID of the field
+    guid: str = attr.ib()
+
+    # A human-readable name of the field
+    title: str = attr.ib(default="INVALIDATION CACHE SERVICE FIELD")
+
+    # Describes how the field was created
+    managed_by: ManagedBy = attr.ib(default=ManagedBy.user)
+
+    # Flag indicates whether this field is always shown in UI or not
+    hidden: bool = attr.ib(default=False)
+
+    # A plain-text human-readable description of the field
+    description: str = attr.ib(default="")
+
+    # Flag indicates whether the field contains any errors
+    valid: bool | None = attr.ib(default=None)
+
+    # The earliest identifiable data type of the field
+    initial_data_type: UserDataType | None = attr.ib(default=None)
+
+    # Redefines the data type in initial_data_type, is set by the user
+    cast: UserDataType | None = attr.ib(default=None)
+
+    # An explicitly set aggregation
+    aggregation: AggregationFunction = attr.ib(default=AggregationFunction.none)
+
+    # The data type automatically determined after the aggregation is applied
+    data_type: UserDataType | None = attr.ib(default=None)
+
+    # Flag indicates that the field is automatically aggregated
+    has_auto_aggregation: bool | None = attr.ib(default=None)
+
+    # Flag that enables or disables the explicit aggregation in UI
+    lock_aggregation: bool | None = attr.ib(default=None)
+
+    # Type of field in terms of measure/dimension
+    type: FieldType | None = attr.ib(default=None)
+
+    # A string field to store settings from the frontend
+    ui_settings: str = attr.ib(default="")
+
+    # Calculation spec fields (flattened)
+    calc_mode: CalcMode = attr.ib(default=CalcMode.formula)
+    formula: str = attr.ib(default="")
+    guid_formula: str = attr.ib(default="")
+    source: str = attr.ib(default="")
+    avatar_id: str | None = attr.ib(default=None)
+
+    # Virtual field flag
+    virtual: bool = attr.ib(default=False)
+
+
+@attr.s()
+class CacheInvalidationSource:
+    """Cache invalidation source configuration"""
+
+    mode: CacheInvalidationMode = attr.ib(default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters: list[ObligatoryFilter] = attr.ib(factory=list)
+    field: CacheInvalidationField | None = attr.ib(default=None)
+
+    # For mode: sql
+    sql: str | None = attr.ib(default=None)
+
+    # Read-only error field
+    cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
 
 
 @attr.s()

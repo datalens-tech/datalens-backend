@@ -21,6 +21,7 @@ from dl_constants.enums import (
 )
 from dl_core import multisource
 from dl_core.base_models import (
+    CacheInvalidationSource,
     ObligatoryFilter,
     connection_ref_from_id,
 )
@@ -75,6 +76,7 @@ class Dataset(USEntry):
 
         component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
         obligatory_filters: list[ObligatoryFilter] = attr.ib(factory=list)
+        cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
 
         @attr.s
         class ResultSchemaAux:
