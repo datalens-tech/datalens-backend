@@ -383,6 +383,45 @@ class USManagerBase:
 
         return result_addressable.data
 
+    @classmethod
+    def _check_key_collisions(
+        cls,
+        parent_key: tuple[str, ...],
+        versioned_data: dict[str, Any],
+        unversioned_data: dict[str, Any],
+    ) -> None:
+        """
+        Check for collisions between two dicts' keys.
+
+        Accepts two dicts of the same level and their parent keys.
+
+        Raise ValueError in case of collision.
+        """
+
+        # Check only keys that exist in both objects
+        keys_to_check = set(versioned_data.keys()) & set(unversioned_data.keys())
+
+        for key in keys_to_check:
+            current_key = (
+                *parent_key,
+                key,
+            )
+
+            # Both are dicts = check them
+            if isinstance(versioned_data[key], dict) and isinstance(unversioned_data[key], dict):
+                cls._check_key_collisions(
+                    parent_key=current_key,
+                    versioned_data=versioned_data[key],
+                    unversioned_data=unversioned_data[key],
+                )
+
+                continue
+
+            # one of these objects is not dict = collision
+            current_key_str = ".".join(current_key)
+
+            raise ValueError(f"Key { current_key_str } exists in both versioned and unversioned data")
+
     @generic_profiler("us-deserialize-dict-to-object")
     def _entry_dict_to_obj(self, us_resp: dict, expected_type: Optional[type[USEntry]] = None) -> USEntry:
         """
@@ -458,6 +497,13 @@ class USManagerBase:
 
             assert isinstance(data, dict)
             assert isinstance(unversioned_data, dict)
+
+            # Check for collisions
+            self._check_key_collisions(
+                parent_key=(),
+                versioned_data=data,
+                unversioned_data=unversioned_data,
+            )
 
             serializer = self.get_us_entry_serializer(entry_cls)
 
