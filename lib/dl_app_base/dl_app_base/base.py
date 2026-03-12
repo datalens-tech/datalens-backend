@@ -220,7 +220,11 @@ class BaseAppFactory(Generic[AppType]):
         self,
     ) -> AppType:
         logger = await self._get_logger()
-        logger.info("Creating Application(%s) with settings: %s", self.app_class.__name__, self.settings)
+        logger.info(
+            "Creating Application(%s) with settings: %s",
+            self.app_class.__name__,
+            self.settings.model_formatted_repr(),
+        )
 
         try:
             app = await self._get_application()

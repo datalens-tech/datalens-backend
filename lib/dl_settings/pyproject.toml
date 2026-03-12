@@ -15,6 +15,7 @@ python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 attrs = "*"
+frozendict = "*"
 pytest = "*"
 pyyaml = "*"
 typing-extensions = "*"

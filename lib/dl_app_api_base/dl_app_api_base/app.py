@@ -361,7 +361,7 @@ class HttpServerAppFactoryMixin(
                 method="GET",
                 path="/admin/settings",
                 handler=handlers.SettingsHandler(
-                    settings_repr=repr(self.settings),
+                    settings_repr=self.settings.model_formatted_repr(),
                 ),
             ),
         )
