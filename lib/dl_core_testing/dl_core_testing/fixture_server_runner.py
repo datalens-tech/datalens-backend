@@ -157,7 +157,7 @@ class WSGIRunner:
             self._module,
             "--callable",
             self._callable,
-            "--http",
+            "--http-socket",
             f"{self._bind_addr}:{self._bind_port}",
             "--http-timeout",
             "600",

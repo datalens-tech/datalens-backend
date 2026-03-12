@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
+
+from dl_connector_starrocks_tests.db.formula.base import StarRocksTestBase
+
+
+class TestConditionalBlockStarRocks(StarRocksTestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
+    pass
