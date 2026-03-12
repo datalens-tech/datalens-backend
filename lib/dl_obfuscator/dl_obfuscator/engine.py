@@ -1,4 +1,5 @@
 import enum
+import logging
 from typing import (
     TypeVar,
     cast,
@@ -16,6 +17,7 @@ from dl_obfuscator.obfuscators.secret import SecretObfuscator
 from dl_obfuscator.secret_keeper import SecretKeeper
 
 
+LOGGER = logging.getLogger(__name__)
 ObfuscatableData = str | None | dict[str, "ObfuscatableData"] | list["ObfuscatableData"]
 
 _ObfuscatableT = TypeVar("_ObfuscatableT", bound=ObfuscatableData)
@@ -62,7 +64,13 @@ class ObfuscationEngine:
         if isinstance(data, str):
             try:
                 return cast(_ObfuscatableT, self._obfuscate_text(data, context))
-            except Exception:
+            except Exception as exc:
+                LOGGER.warning(
+                    "Obfuscation failed for string data (length=%d). Exception type: %s. On error: %s",
+                    len(data),
+                    type(exc).__name__,
+                    on_error.value,
+                )
                 if on_error is OnObfuscationError.SKIP:
                     return cast(_ObfuscatableT, self._obfuscation_error_message)
                 if on_error is OnObfuscationError.RETURN_ORIGINAL:
@@ -73,6 +81,7 @@ class ObfuscationEngine:
         if isinstance(data, list):
             return cast(_ObfuscatableT, [self.obfuscate(item, context, on_error) for item in data])
 
+        LOGGER.warning("Unsupported type for obfuscation: %s. On error: %s", type(data).__name__, on_error.value)
         if on_error is OnObfuscationError.SKIP:
             return cast(_ObfuscatableT, self._obfuscation_error_message)
         if on_error is OnObfuscationError.RETURN_ORIGINAL:
