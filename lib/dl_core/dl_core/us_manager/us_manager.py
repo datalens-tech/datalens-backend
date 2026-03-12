@@ -54,7 +54,6 @@ from dl_core.us_entry import (
     USEntry,
     USMigrationEntry,
 )
-from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
 from dl_core.us_manager.schema_migration.factory import DefaultEntrySchemaMigrationFactory
@@ -68,6 +67,7 @@ from dl_core.us_manager.us_entry_serializer import (
     USUnversionedDataPack,
 )
 from dl_core.us_manager.utils.fake_us_client import FakeUSClient
+import dl_crypto
 import dl_retrier
 from dl_utils.utils import AddressableData
 
@@ -144,7 +144,7 @@ class USManagerBase:
         self._us_base_url = us_base_url
         self._us_api_prefix = us_api_prefix
 
-        self._crypto_controller = CryptoController(self._crypto_keys_config)
+        self._crypto_controller = dl_crypto.CryptoController(self._crypto_keys_config)
         self._loaded_entries = USEntryBuffer()
         # To prevent usage of flask context
         self._fake_us_client = FakeUSClient()

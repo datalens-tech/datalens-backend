@@ -16,6 +16,7 @@ dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-crypto = {path = "../dl_crypto"}
 dl-s3 = {path = "../dl_s3"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}

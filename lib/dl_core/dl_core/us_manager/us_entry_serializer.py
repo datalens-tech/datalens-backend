@@ -5,14 +5,11 @@ from collections import ChainMap
 from functools import reduce
 import logging
 from typing import (
-    ClassVar,
-    Optional,
-)
-from typing import (
     TYPE_CHECKING,
     Any,
 )
 from typing import ChainMap as ChainMapGeneric
+from typing import ClassVar
 
 import attr
 import marshmallow
@@ -24,9 +21,9 @@ from dl_app_tools.profiling_base import (
 from dl_core.base_models import BaseAttrsDataModel
 from dl_core.us_dataset import Dataset
 from dl_core.us_entry import USEntry
-from dl_core.us_manager.crypto.main import EncryptedData
 from dl_core.us_manager.storage_schemas.connection_schema_registry import MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA
 from dl_core.us_manager.storage_schemas.dataset import DatasetStorageSchema
+import dl_crypto
 from dl_utils.utils import (
     AddressableData,
     DataKey,
@@ -43,7 +40,7 @@ LOGGER = logging.getLogger(__name__)
 @attr.s()
 class USUnversionedDataPack:
     unversioned_data: dict[str, Any] = attr.ib(factory=dict)
-    secrets: dict[str, Optional[str | EncryptedData]] = attr.ib(repr=False, factory=dict)
+    secrets: dict[str, str | dl_crypto.EncryptedData | None] = attr.ib(repr=False, factory=dict)
 
 
 @attr.s()
