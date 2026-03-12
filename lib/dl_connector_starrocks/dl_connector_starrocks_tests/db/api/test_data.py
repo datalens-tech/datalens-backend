@@ -31,4 +31,4 @@ class TestStarRocksDataPreview(StarRocksDataApiTestBase, DefaultConnectorDataPre
 
 
 class TestStarRocksDataCache(StarRocksDataApiTestBase, DefaultConnectorDataCacheTestSuite):  # type: ignore  # 2024-01-30 # TODO: fix
-    pass
+    data_caches_enabled = True

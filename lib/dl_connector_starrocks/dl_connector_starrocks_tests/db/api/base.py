@@ -33,6 +33,7 @@ class StarRocksConnectionTestBase(BaseStarRocksTestClass, ConnectionTestBase):  
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
         )
 
 
