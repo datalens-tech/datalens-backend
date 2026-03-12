@@ -249,4 +249,4 @@ def configure_logging_from_settings() -> None:
         custom_logger_levels=logging_settings.logger_levels,
     )
 
-    LOGGER.info("Logging configured with settings: %s", logging_settings)
+    LOGGER.info("Logging configured with settings: %s", settings.model_formatted_repr())
