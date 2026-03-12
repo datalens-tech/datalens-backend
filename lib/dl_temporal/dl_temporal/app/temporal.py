@@ -74,6 +74,7 @@ class TemporalWorkerAppFactoryMixin(
                 port=self.settings.TEMPORAL_CLIENT.PORT,
                 tls=self.settings.TEMPORAL_CLIENT.TLS,
                 lazy=False,  # Can't create worker with lazy client
+                initial_connect_timeout=self.settings.TEMPORAL_CLIENT.initial_connect_timeout,
                 metadata_provider=await self._get_temporal_client_metadata_provider(),
             ),
         )

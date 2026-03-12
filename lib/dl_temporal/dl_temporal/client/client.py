@@ -24,6 +24,11 @@ class TemporalClientSettings(dl_settings.BaseSettings):
     TLS: bool = True
     NAMESPACE: str
     METADATA_PROVIDER: dl_settings.TypedAnnotation[metadata.MetadataProviderSettings]
+    INITIAL_CONNECT_TIMEOUT_SECONDS: int = 10
+
+    @property
+    def initial_connect_timeout(self) -> datetime.timedelta:
+        return datetime.timedelta(seconds=self.INITIAL_CONNECT_TIMEOUT_SECONDS)
 
 
 @attrs.define(kw_only=True, frozen=True)
@@ -33,6 +38,7 @@ class TemporalClientDependencies:
     port: int = 7233
     tls: bool = True
     lazy: bool = True
+    initial_connect_timeout: datetime.timedelta = attrs.field(factory=lambda: datetime.timedelta(seconds=10))
     metadata_provider: metadata.MetadataProvider = attrs.field(factory=metadata.EmptyMetadataProvider)
 
     @property
@@ -53,13 +59,16 @@ class TemporalClient:
         metadata_provider = dependencies.metadata_provider
         rpc_metadata = await metadata_provider.get_metadata()
 
-        temporal_client = await temporalio.client.Client.connect(
-            target_host=dependencies.target_host,
-            namespace=dependencies.namespace,
-            lazy=dependencies.lazy,
-            tls=dependencies.tls,
-            rpc_metadata=rpc_metadata,
-            data_converter=base.DataConverter(),
+        temporal_client = await asyncio.wait_for(
+            temporalio.client.Client.connect(
+                target_host=dependencies.target_host,
+                namespace=dependencies.namespace,
+                lazy=dependencies.lazy,
+                tls=dependencies.tls,
+                rpc_metadata=rpc_metadata,
+                data_converter=base.DataConverter(),
+            ),
+            timeout=dependencies.initial_connect_timeout.total_seconds(),
         )
 
         return cls(
