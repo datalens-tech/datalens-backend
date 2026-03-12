@@ -24,8 +24,13 @@ aiohttp = "*"
 dl-api-client = {path = "../dl_api_client"}
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
+pytz = "*"
+shortuuid = "*"
 
 [tool.poetry.plugins]
 
