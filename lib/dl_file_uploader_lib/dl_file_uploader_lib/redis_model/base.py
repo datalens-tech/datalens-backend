@@ -23,7 +23,7 @@ import redis.asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_core.us_manager.crypto.main import CryptoController
+import dl_crypto
 from dl_utils.utils import (
     AddressableData,
     DataKey,
@@ -186,10 +186,10 @@ class RedisSetManager(metaclass=abc.ABCMeta):
 class RedisModelManager:
     _redis: redis.asyncio.Redis = attr.ib()
     _crypto_keys_config: CryptoKeysConfig = attr.ib()
-    _crypto_controller: CryptoController = attr.ib(
+    _crypto_controller: dl_crypto.CryptoController = attr.ib(
         init=False,
         default=attr.Factory(
-            lambda self: CryptoController(self._crypto_keys_config),
+            lambda self: dl_crypto.CryptoController(self._crypto_keys_config),
             takes_self=True,
         ),
     )

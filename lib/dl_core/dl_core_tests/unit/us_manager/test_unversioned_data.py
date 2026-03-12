@@ -17,7 +17,6 @@ from dl_core.services_registry.top_level import (
     ServicesRegistry,
 )
 from dl_core.us_entry import USEntry
-from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.us_entry_serializer import (
     USEntrySerializer,
     USEntrySerializerMarshmallow,
@@ -25,6 +24,7 @@ from dl_core.us_manager.us_entry_serializer import (
 )
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
+import dl_crypto
 from dl_utils.utils import DataKey
 
 
@@ -62,8 +62,8 @@ def crypto_keys_config() -> CryptoKeysConfig:
 
 
 @pytest.fixture
-def crypto_controller(crypto_keys_config) -> CryptoController:
-    return CryptoController(crypto_keys_config)
+def crypto_controller(crypto_keys_config) -> dl_crypto.CryptoController:
+    return dl_crypto.CryptoController(crypto_keys_config)
 
 
 @pytest.fixture
@@ -116,7 +116,10 @@ class TestUnpackUnversionedData:
         assert result.secrets == {}
 
     def test_unpack_with_secrets(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         unversioned_data = {
             "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
@@ -152,7 +155,10 @@ class TestUnpackUnversionedData:
         assert result.secrets == {}
 
     def test_unpack_with_mixed_data(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         unversioned_data = {
             "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
@@ -190,7 +196,10 @@ class TestPackUnversionedData:
         assert result == {}
 
     def test_pack_with_secrets(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         data_pack = USUnversionedDataPack(
             secrets={
@@ -236,7 +245,10 @@ class TestPackUnversionedData:
         assert result["unversioned_field"] == "unversioned_value"
 
     def test_pack_with_mixed_data(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         data_pack = USUnversionedDataPack(
             secrets={
@@ -270,7 +282,10 @@ class TestPackUnversionedData:
         assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
 
     def test_pack_with_none_secret(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         data_pack = USUnversionedDataPack(
             secrets={
@@ -293,7 +308,10 @@ class TestPackUnversionedData:
 
 class TestRoundTrip:
     def test_round_trip_with_secrets(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         original_unversioned_data = {
             "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
@@ -321,7 +339,10 @@ class TestRoundTrip:
         assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
 
     def test_round_trip_with_mixed_data(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer, crypto_controller: CryptoController
+        self,
+        test_us_manager: USManagerBase,
+        test_serializer: TestSerializer,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         original_unversioned_data = {
             "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),

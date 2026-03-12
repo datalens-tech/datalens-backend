@@ -20,6 +20,7 @@ dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
+dl-crypto = {path = "../dl_crypto"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-i18n = {path = "../dl_i18n"}
 dl-json = {path = "../dl_json"}

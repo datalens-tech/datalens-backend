@@ -2680,6 +2680,7 @@ dl-auth = {path = "../dl_auth"}
 dl-cache-engine = {path = "../dl_cache_engine"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
+dl-crypto = {path = "../dl_crypto"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-i18n = {path = "../dl_i18n"}
 dl-json = {path = "../dl_json"}
@@ -2766,6 +2767,12 @@ optional = false
 python-versions = ">=3.10, <3.13"
 files = []
 develop = true
+
+[package.dependencies]
+attrs = "*"
+cryptography = "*"
+dl-configs = {path = "../dl_configs"}
+typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2952,6 +2959,7 @@ dl-configs = {path = "../dl_configs"}
 dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-crypto = {path = "../dl_crypto"}
 dl-s3 = {path = "../dl_s3"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}

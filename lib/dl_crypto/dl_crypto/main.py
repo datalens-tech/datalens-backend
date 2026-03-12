@@ -1,35 +1,34 @@
-from __future__ import annotations
-
-import typing
+from typing import TypedDict
 
 import attr
 from cryptography import fernet
+from typing_extensions import Self
 
 from dl_configs.crypto_keys import CryptoKeysConfig
 
 
-class EncryptedData(typing.TypedDict):
+class EncryptedData(TypedDict):
     key_id: str
     key_kind: str
     cypher_text: str
 
 
-@attr.s
+@attr.define
 class CryptoController:
     key_kind = "local_fernet"
 
-    _key_config: CryptoKeysConfig = attr.ib()
-    _map_key_id_fernet_instance: dict[str, fernet.Fernet] = attr.ib(init=False)
+    _key_config: CryptoKeysConfig = attr.field()
+    _map_key_id_fernet_instance: dict[str, fernet.Fernet] = attr.field(init=False)
 
     def __attrs_post_init__(self) -> None:
         self._map_key_id_fernet_instance = {
             key_id: fernet.Fernet(key_val) for key_id, key_val in self._key_config.map_id_key.items()
         }
 
-    def copy(self) -> "CryptoController":
+    def copy(self) -> Self:
         return attr.evolve(self)
 
-    def encrypt(self, key_id: str, plain_text: typing.Optional[str]) -> typing.Optional[EncryptedData]:
+    def encrypt(self, key_id: str, plain_text: str | None) -> EncryptedData | None:
         if plain_text is None:
             return None
 
@@ -41,7 +40,7 @@ class CryptoController:
             cypher_text=cypher_text,
         )
 
-    def decrypt(self, encrypted_data: typing.Optional[EncryptedData]) -> typing.Optional[str]:
+    def decrypt(self, encrypted_data: EncryptedData | None) -> str | None:
         if encrypted_data is None:
             return None
 
@@ -51,7 +50,7 @@ class CryptoController:
         plain_text = self._map_key_id_fernet_instance[key_id].decrypt(encoded_cypher_text).decode()
         return plain_text
 
-    def encrypt_with_actual_key(self, plain_text: typing.Optional[str]) -> typing.Optional[EncryptedData]:
+    def encrypt_with_actual_key(self, plain_text: str | None) -> EncryptedData | None:
         return self.encrypt(key_id=self._key_config.actual_key_id, plain_text=plain_text)
 
     @property
