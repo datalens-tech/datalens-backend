@@ -139,6 +139,7 @@ dl-connector-ydb = {develop = true, path = "../lib/dl_connector_ydb"}
 dl-constants = {develop = true, path = "../lib/dl_constants"}
 dl-core = {develop = true, path = "../lib/dl_core"}
 dl-core-testing = {develop = true, path = "../lib/dl_core_testing"}
+dl-crypto = {develop = true, path = "../lib/dl_crypto"}
 dl-dashsql = {develop = true, path = "../lib/dl_dashsql"}
 dl-db-testing = {develop = true, path = "../lib/dl_db_testing"}
 dl-dynconfig = {develop = true, path = "../lib/dl_dynconfig"}
