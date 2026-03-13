@@ -56,7 +56,6 @@ warn_unused_ignores = true
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = [
-  "docker.*",
   "pyuwsgi.*",
   "statcommons.*",
 ]
