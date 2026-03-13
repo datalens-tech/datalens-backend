@@ -41,9 +41,6 @@ ignore_errors = true # ignore mypy in entire module
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
-[datalens.meta.mypy]
-targets = [] # ignore mypy for this module
-
 [datalens.pytest.db]
 compose_file_base = "alt_docker-compose"
 root_dir = "bi_core_tests/db"

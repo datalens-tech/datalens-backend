@@ -42,11 +42,6 @@ requires = [
   "poetry-core",
 ]
 
-[datalens.meta]
-implicit_dependencies = [
-  "pytest",
-]
-
 [datalens.pytest.unit]
 labels = ["no_compose"]
 root_dir = "dl_api_client_tests/"

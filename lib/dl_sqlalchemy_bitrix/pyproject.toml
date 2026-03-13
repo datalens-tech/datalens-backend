@@ -37,9 +37,6 @@ requires = [
   "poetry-core",
 ]
 
-[datalens.meta.mypy]
-targets = [] # ignore mypy in entire module
-
 [datalens.pytest.unit]
 labels = ["no_compose"]
 root_dir = "dl_sqlalchemy_bitrix_tests/"

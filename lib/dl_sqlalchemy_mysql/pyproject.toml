@@ -41,6 +41,3 @@ testpaths = ["dl_sqlalchemy_mysql_tests/unit"]
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
-
-[datalens.meta.mypy]
-targets = [] # ignore mypy in entire module

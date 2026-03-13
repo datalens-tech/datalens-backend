@@ -96,13 +96,6 @@ dl_api_lib = [
   {path = "dl_api_lib"},
 ]
 
-[datalens.meta.mypy]
-implicit_dependencies = [
-  "datalens-compeng-pg",
-  "datalens-connector-postgresql",
-]
-targets = ["dl_api_lib"]
-
 [datalens.pytest.db]
 root_dir = "dl_api_lib_tests/"
 target_path = "db"

@@ -49,9 +49,6 @@ testpaths = []
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
-[datalens.meta.mypy]
-targets = [] # ignore mypy in entire module
-
 [datalens.pytest.db]
 root_dir = "clickhouse_sqlalchemy_tests/"
 target_path = "."
