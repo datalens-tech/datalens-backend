@@ -51,11 +51,6 @@ dl_api_connector = [
   {path = "dl_api_connector"},
 ]
 
-[datalens.meta]
-implicit_dependencies = [
-  "pytest",
-]
-
 [datalens.pytest.unit]
 labels = ["no_compose"]
 root_dir = "dl_api_connector_tests/"

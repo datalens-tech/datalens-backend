@@ -64,9 +64,6 @@ requires = [
   "poetry-core",
 ]
 
-[datalens.meta.mypy]
-targets = ["bi_ci"]
-
 [datalens.pytest.unit]
 root_dir = "bi_ci_tests/"
 target_path = "unit"

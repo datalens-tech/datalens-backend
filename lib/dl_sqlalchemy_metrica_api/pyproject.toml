@@ -41,9 +41,6 @@ testpaths = []
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
-[datalens.meta.mypy]
-targets = [] # ignore mypy in entire module
-
 [datalens.pytest.ext]
 labels = ["ext_public"]
 root_dir = "dl_sqlalchemy_metrica_api_tests/"

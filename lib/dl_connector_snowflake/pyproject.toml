@@ -92,11 +92,6 @@ dl_connector_snowflake = [
   {path = "dl_connector_snowflake/core"},
 ]
 
-[datalens.meta]
-implicit_dependencies = [
-  "snowflake-sqlalchemy",
-]
-
 [datalens.pytest.ext]
 labels = ["ext_public"]
 root_dir = "dl_connector_snowflake_tests/ext"

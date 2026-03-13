@@ -56,6 +56,3 @@ timeout = 600
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
-
-[datalens.meta.mypy]
-targets = ["dl_repmanager/"]
