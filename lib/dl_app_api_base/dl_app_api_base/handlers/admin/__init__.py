@@ -1,4 +1,4 @@
-from .dyn_config import DynConfigHandler
+from .dynconfig import DynConfigHandler
 from .settings import SettingsHandler
 
 
