@@ -47,7 +47,7 @@ def _get_retriable_requests_session():
                     backoff_factor=0.5,
                     status_forcelist=[500, 501, 502, 504, 521],
                     redirect=10,
-                    method_whitelist=frozenset(["HEAD", "TRACE", "GET", "PUT", "OPTIONS", "DELETE", "POST"]),
+                    allowed_methods=frozenset(["HEAD", "TRACE", "GET", "PUT", "OPTIONS", "DELETE", "POST"]),
                 ),
             ),
         )

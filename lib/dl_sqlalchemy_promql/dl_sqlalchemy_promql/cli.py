@@ -50,7 +50,7 @@ class SyncPromQLClient:
                         total=5,
                         backoff_factor=0.1,
                         status_forcelist=(500, 501, 502, 503, 504, 521),
-                        method_whitelist=frozenset(["GET", "POST"]),
+                        allowed_methods=frozenset(["GET", "POST"]),
                     )
                 ),
             )

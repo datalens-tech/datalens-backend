@@ -40,7 +40,7 @@ def get_retriable_requests_session() -> requests.Session:
             521,  # Web Server Is Down
         ],
         redirect=10,
-        method_whitelist=frozenset(["HEAD", "TRACE", "GET", "PUT", "OPTIONS", "DELETE", "POST"]),
+        allowed_methods=frozenset(["HEAD", "TRACE", "GET", "PUT", "OPTIONS", "DELETE", "POST"]),
         # # TODO:
         # # (the good: will return a response when it's an error response)
         # # (the bad: need to raise_for_status() manually, same as without retry conf)
