@@ -27,8 +27,8 @@ import dl_settings
 
 
 class HttpServerSettings(dl_settings.BaseSettings):
-    HOST: str
-    PORT: int
+    HOST: str = "localhost"
+    PORT: int = 8080
 
 
 class AppInfoSettings(dl_settings.BaseSettings):
@@ -37,7 +37,8 @@ class AppInfoSettings(dl_settings.BaseSettings):
 
 
 class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
-    HTTP_SERVER: HttpServerSettings = NotImplemented
+    # HTTP_SERVER will be ignored if running in Gunicorn
+    HTTP_SERVER: HttpServerSettings = pydantic.Field(default_factory=HttpServerSettings)
     OPEN_API: openapi.OpenApiSettings = pydantic.Field(default_factory=openapi.OpenApiSettings)
     DYNCONFIG_SOURCE: dl_settings.TypedAnnotation[dl_dynconfig.BaseSourceSettings] = pydantic.Field(
         default_factory=dl_dynconfig.NullSourceSettings
