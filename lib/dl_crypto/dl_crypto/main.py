@@ -1,10 +1,11 @@
-from typing import TypedDict
+from typing import (
+    Protocol,
+    TypedDict,
+)
 
 import attr
 from cryptography import fernet
 from typing_extensions import Self
-
-from dl_configs.crypto_keys import CryptoKeysConfig
 
 
 class EncryptedData(TypedDict):
@@ -13,11 +14,21 @@ class EncryptedData(TypedDict):
     cypher_text: str
 
 
+class CryptoKeysProtocol(Protocol):
+    @property
+    def map_id_key(self) -> dict[str, str]:
+        ...
+
+    @property
+    def actual_key_id(self) -> str:
+        ...
+
+
 @attr.define
 class CryptoController:
     key_kind = "local_fernet"
 
-    _key_config: CryptoKeysConfig = attr.field()
+    _key_config: CryptoKeysProtocol = attr.field()
     _map_key_id_fernet_instance: dict[str, fernet.Fernet] = attr.field(init=False)
 
     def __attrs_post_init__(self) -> None:

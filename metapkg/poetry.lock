@@ -2771,7 +2771,8 @@ develop = true
 [package.dependencies]
 attrs = "*"
 cryptography = "*"
-dl-configs = {path = "../dl_configs"}
+dl-settings = {path = "../dl_settings"}
+pydantic = "*"
 typing-extensions = "*"
 
 [package.source]
