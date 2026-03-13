@@ -10,6 +10,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawSelectFieldSpec,
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_constants.enums import RLSSubjectType
 from dl_rls.testing.testing_data import (
     RLS_CONFIG_CASES,
     config_to_comparable,
@@ -101,6 +102,23 @@ class TestRLS(DefaultApiTestBase):
         assert rls_resp.bi_status_code == "ERR.DS_API.RLS.PARSE"
         assert rls_resp.json["message"] == "RLS: Parsing failed at line 2"
         assert rls_resp.json["details"] == {"description": "Wrong format"}
+
+    def test_create_rls_with_group_slug_resolution(self, control_api, saved_dataset):
+        config = "'Naperville': @group:_the_tests_asyncapp_group_\n'Philadelphia': *"
+        ds = saved_dataset
+        field_guid, rls_resp = self.add_rls_to_dataset(control_api, ds, config)
+        assert rls_resp.status_code == 200, rls_resp.json
+
+        resp = control_api.load_dataset(ds)
+        assert resp.status_code == 200, resp.json
+        # The slug should be resolved to a real ID in the saved config
+        rls_text = resp.dataset.rls[field_guid]
+        assert "@group:_the_tests_asyncapp_group_" in rls_text
+        # Check v2 has real ID
+        rls2_entries = resp.dataset.rls2[field_guid]
+        group_entries = [e for e in rls2_entries if e.subject.subject_type == RLSSubjectType.group]
+        assert len(group_entries) == 1
+        assert group_entries[0].subject.subject_id == "_the_tests_group_real_id_"
 
     def test_rls_filter_expr(self, control_api, saved_dataset, sync_us_manager):
         config = load_rls_config("dl_api_lib_test_config")
