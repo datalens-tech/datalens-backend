@@ -23,7 +23,7 @@ CH_TYPES_INT = frozenset(
         ch_types.UInt64,
     )
 )
-CH_TYPES_FLOAT = frozenset((ch_types.Float, ch_types.Float32, ch_types.Float64, ch_types.Decimal))
+CH_TYPES_FLOAT = frozenset((ch_types.Float, ch_types.Float32, ch_types.Float64, ch_types.Numeric, ch_types.Decimal))
 CH_TYPES_DATE = frozenset((ch_types.Date, ch_types.Date32))
 
 

@@ -29,6 +29,10 @@ class TestDashSQL(DefaultApiTestBase, DefaultDashSQLTestSuite):
     def dashsql_array_query(self) -> str:
         return "select [1, 2, 3]"
 
+    @pytest.fixture(scope="class")
+    def dashsql_decimal_query(self) -> str:
+        return "select toDecimal64('123.45', 2), toDecimal64('0', 2), toDecimal64('-99.99', 2)"
+
     @pytest.mark.asyncio
     async def test_postprocess_datetime(
         self,
@@ -69,3 +73,28 @@ class TestDashSQL(DefaultApiTestBase, DefaultDashSQLTestSuite):
 
         row_data = data[1]["data"]
         assert row_data[0] == [1, 2, 3], "Array should be returned as list"
+
+    @pytest.mark.asyncio
+    async def test_postprocess_decimal(
+        self,
+        data_api_lowlevel_aiohttp_client: TestClient,
+        saved_connection_id: str,
+        dashsql_decimal_query: str,
+        bi_headers: dict[str, str] | None,
+    ) -> None:
+        """Test that decimal columns have bi_type 'float' and values are returned as JSON numbers."""
+        resp = await self.get_dashsql_response(
+            data_api_aio=data_api_lowlevel_aiohttp_client,
+            conn_id=saved_connection_id,
+            query=dashsql_decimal_query,
+            headers=bi_headers,
+        )
+        data = await resp.json()
+
+        metadata = data[0]["data"]
+        assert metadata["bi_types"] == ["float", "float", "float"]
+
+        row_data = data[1]["data"]
+        assert row_data[0] == 123.45
+        assert row_data[1] == 0.0
+        assert row_data[2] == -99.99
