@@ -20,6 +20,7 @@ class DynConfigHandler(base.BaseHandler):
         config: dict[str, Any]
 
     async def process(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
+        await self._dynconfig.model_fetch()
         return base.Response.with_model(
             self.ResponseSchema(
                 source_type=self._source_type,
