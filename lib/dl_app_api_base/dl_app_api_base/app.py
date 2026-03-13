@@ -369,7 +369,7 @@ class HttpServerAppFactoryMixin(
         result.append(
             handlers.Route(
                 method="GET",
-                path="/admin/dyn_config",
+                path="/admin/dynconfig",
                 handler=handlers.DynConfigHandler(
                     dynconfig=await self._get_dynconfig(),
                     source_type=self.settings.DYNCONFIG_SOURCE.type,

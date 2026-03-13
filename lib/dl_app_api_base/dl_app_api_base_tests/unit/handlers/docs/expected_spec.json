@@ -424,7 +424,7 @@
         }
       }
     },
-    "/admin/dyn_config": {
+    "/admin/dynconfig": {
       "get": {
         "tags": [
           "admin"
