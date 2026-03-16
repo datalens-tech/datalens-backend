@@ -17,12 +17,11 @@ from typing import (
 
 import aiodns
 from aiohttp import web
+import attr
 
-from dl_api_commons.aio.middlewares.body_signature import body_signature_validation_middleware
-from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
+import dl_api_commons.aio.middlewares as aio_middlewares
 from dl_api_commons.aio.server_header import ServerHeader
+from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 from dl_app_tools.profiling_base import GenericProfiler
 from dl_configs.env_var_definitions import (
     jaeger_service_name_env_aware,
@@ -84,7 +83,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class BaseView(web.View):
+class BaseView(DLRequestView):
     @property
     def tpe(self) -> ContextVarExecutor:
         return self.request.app["tpe"]
@@ -134,6 +133,12 @@ class ActionHandlingView(BaseView):
     async def get_action(self) -> act.RemoteDBAdapterAction:
         raw_body = await self.request.json()
         action = ActionSerializer().deserialize_action(raw_body, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore  # 2024-01-30 # TODO: Argument "allowed_dba_classes" to "deserialize_action" of "ActionSerializer" has incompatible type "set[type[CommonBaseDirectAdapter[Any]]]"; expected "frozenset[type[CommonBaseDirectAdapter[Any]]]"  [arg-type]
+        rci = self.dl_request.rci
+        if rci.obfuscation_engine is not None:
+            action = attr.evolve(
+                action,
+                req_ctx_info=attr.evolve(action.req_ctx_info, obfuscation_engine=rci.obfuscation_engine),
+            )
         return action
 
     @staticmethod
@@ -312,8 +317,9 @@ def create_async_qe_app(
     hmac_keys: Sequence[bytes],
     forbid_private_addr: bool = False,
     obfuscation_enabled: bool = False,
+    obfuscation_extra_patterns: tuple[str, ...] = (),
 ) -> web.Application:
-    req_id_service = RequestId(
+    req_id_service = aio_middlewares.RequestId(
         header_name=HEADER_REQUEST_ID,
         accept_logging_ctx=True,
     )
@@ -321,20 +327,25 @@ def create_async_qe_app(
         sentry_app_name_tag=None,
     )
     middleware_list = [
-        RequestBootstrap(
+        aio_middlewares.RequestBootstrap(
             req_id_service=req_id_service,
             error_handler=error_handler,
         ).middleware,
-        body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
+        aio_middlewares.body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
+        aio_middlewares.rci_headers_middleware(),
     ]
 
     if obfuscation_enabled:
-        middleware_list.append(obfuscation_context_middleware())
+        middleware_list.append(aio_middlewares.obfuscation_context_middleware())
+
+    middleware_list.append(aio_middlewares.commit_rci_middleware())
 
     app = web.Application(middlewares=middleware_list)
 
     if obfuscation_enabled:
-        app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators()
+        app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+            extra_regex_patterns=obfuscation_extra_patterns,
+        )
 
     app.on_response_prepare.append(req_id_service.on_response_prepare)
     ServerHeader("DataLens QE").add_signal_handlers(app)
@@ -349,7 +360,9 @@ def create_async_qe_app(
     return app
 
 
-def get_configured_qe_app() -> web.Application:
+def get_configured_qe_app(
+    obfuscation_extra_patterns: tuple[str, ...] = (),
+) -> web.Application:
     dl_logging.configure_logging(
         app_name="rqe-async",
         app_prefix=None,  # not useful with `append_local_req_id=False`.
@@ -369,6 +382,7 @@ def get_configured_qe_app() -> web.Application:
         hmac_keys=tuple(hmac_key.encode() for hmac_key in hmac_keys),
         forbid_private_addr=settings.FORBID_PRIVATE_ADDRESSES,
         obfuscation_enabled=settings.OBFUSCATION_ENABLED,
+        obfuscation_extra_patterns=obfuscation_extra_patterns,
     )
 
 
