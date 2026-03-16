@@ -4,7 +4,7 @@ from typing import (
 )
 
 import attr
-import cryptography
+from cryptography import fernet
 from typing_extensions import Self
 
 
@@ -29,11 +29,11 @@ class CryptoController:
     key_kind = "local_fernet"
 
     _key_config: CryptoKeysProtocol = attr.field()
-    _map_key_id_fernet_instance: dict[str, cryptography.fernet.Fernet] = attr.field(init=False)
+    _map_key_id_fernet_instance: dict[str, fernet.Fernet] = attr.field(init=False)
 
     def __attrs_post_init__(self) -> None:
         self._map_key_id_fernet_instance = {
-            key_id: cryptography.fernet.Fernet(key_val) for key_id, key_val in self._key_config.map_id_key.items()
+            key_id: fernet.Fernet(key_val) for key_id, key_val in self._key_config.map_id_key.items()
         }
 
     def copy(self) -> Self:
@@ -70,4 +70,4 @@ class CryptoController:
 
 
 def generate_fernet_key() -> str:
-    return cryptography.fernet.Fernet.generate_key().decode("ascii")
+    return fernet.Fernet.generate_key().decode("ascii")
