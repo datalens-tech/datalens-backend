@@ -14,10 +14,20 @@ class ParentContextProtocol(Protocol):
     def request_id(self) -> str | None:
         ...
 
+    @property
+    def user_ip(self) -> str | None:
+        ...
+
+    @property
+    def trace_id(self) -> str | None:
+        ...
+
 
 @attrs.define(kw_only=True, frozen=True)
 class ParentContext:
     request_id: str | None = None
+    user_ip: str | None = None
+    trace_id: str | None = None
 
 
 @attrs.define(kw_only=True, frozen=True)
@@ -55,9 +65,15 @@ class BaseRequest:
 
     @property
     def headers(self) -> dict[str, str]:
-        return {
+        result = {
             dl_constants.DLHeadersCommon.REQUEST_ID.value: self.request_id,
         }
+        if self.parent_context.user_ip is not None:
+            result[dl_constants.DLHeadersCommon.REAL_IP.value] = self.parent_context.user_ip
+        if self.parent_context.trace_id is not None:
+            result[dl_constants.DLHeadersCommon.UBER_TRACE_ID.value] = self.parent_context.trace_id
+
+        return result
 
     @property
     def cookies(self) -> dict[str, str]:

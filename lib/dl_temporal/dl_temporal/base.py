@@ -70,6 +70,8 @@ class BaseModel(dl_pydantic.BaseModel):
 
 class ParentContext(BaseModel):
     request_id: str | None = pydantic.Field(default=None)
+    user_ip: str | None = pydantic.Field(default=None)
+    trace_id: str | None = pydantic.Field(default=None)
 
 
 class _UnsetStr(str):

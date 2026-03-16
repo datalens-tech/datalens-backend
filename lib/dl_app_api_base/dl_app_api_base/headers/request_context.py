@@ -1,4 +1,5 @@
 import attr
+import attrs
 import opentelemetry.sdk.trace
 from typing_extensions import deprecated
 
@@ -13,6 +14,13 @@ import dl_utils
 class UserIpNotFoundErrorResponseSchema(handlers.BadRequestResponseSchema):
     message: str = "User IP is not found"
     code: str = "ERR.API.BAD_REQUEST.USER_IP_NOT_FOUND"
+
+
+@attrs.define(frozen=True, kw_only=True)
+class ParentContext:
+    request_id: str
+    user_ip: str
+    trace_id: str
 
 
 @attr.define(kw_only=True, slots=False)
@@ -56,3 +64,11 @@ class HeadersRequestContextMixin(request_context.BaseRequestContext):
         trace_id_generator = opentelemetry.sdk.trace.RandomIdGenerator()
         trace_id = trace_id_generator.generate_trace_id()
         return f"{trace_id:032x}"
+
+    @dl_app_base.singleton_class_method_result
+    def get_client_parent_context(self) -> ParentContext:
+        return ParentContext(
+            request_id=self.get_request_id(),
+            user_ip=self.get_user_ip(),
+            trace_id=self.get_trace_id(),
+        )
