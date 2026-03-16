@@ -16,8 +16,8 @@ def _formatted_repr(value: Any, indent: int) -> str:
     child_prefix = "  " * (indent + 1)
 
     if isinstance(value, pydantic.BaseModel):
-        result = f"{type(value).__name__}:"
-        for k, v in value.__repr_args__():
+        result = f"{type(value).__name__}(...)"
+        for k, v in sorted(value.__repr_args__(), key=lambda item: item[0] or ""):
             result += f"\n{child_prefix}{k}: {_formatted_repr(v, indent + 1)}"
         return result
 
