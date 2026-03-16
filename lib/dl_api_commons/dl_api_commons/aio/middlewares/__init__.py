@@ -8,6 +8,7 @@ from .request_id import RequestId
 __all__ = [
     "RequestBootstrap",
     "RequestId",
+    "body_signature_validation_middleware",
     "commit_rci_middleware",
     "obfuscation_context_middleware",
     "rci_headers_middleware",

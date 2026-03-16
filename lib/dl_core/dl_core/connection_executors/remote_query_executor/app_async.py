@@ -19,12 +19,7 @@ import aiodns
 from aiohttp import web
 import attr
 
-from dl_api_commons.aio.middlewares.body_signature import body_signature_validation_middleware
-from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
-from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_context_middleware
-from dl_api_commons.aio.middlewares.rci_headers import rci_headers_middleware
-from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
-from dl_api_commons.aio.middlewares.request_id import RequestId
+import dl_api_commons.aio.middlewares as aio_middlewares
 from dl_api_commons.aio.server_header import ServerHeader
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestView
 from dl_app_tools.profiling_base import GenericProfiler
@@ -324,7 +319,7 @@ def create_async_qe_app(
     obfuscation_enabled: bool = False,
     obfuscation_extra_patterns: tuple[str, ...] = (),
 ) -> web.Application:
-    req_id_service = RequestId(
+    req_id_service = aio_middlewares.RequestId(
         header_name=HEADER_REQUEST_ID,
         accept_logging_ctx=True,
     )
@@ -332,18 +327,18 @@ def create_async_qe_app(
         sentry_app_name_tag=None,
     )
     middleware_list = [
-        RequestBootstrap(
+        aio_middlewares.RequestBootstrap(
             req_id_service=req_id_service,
             error_handler=error_handler,
         ).middleware,
-        body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
-        rci_headers_middleware(),
+        aio_middlewares.body_signature_validation_middleware(hmac_keys=hmac_keys, header=HEADER_BODY_SIGNATURE),
+        aio_middlewares.rci_headers_middleware(),
     ]
 
     if obfuscation_enabled:
-        middleware_list.append(obfuscation_context_middleware())
+        middleware_list.append(aio_middlewares.obfuscation_context_middleware())
 
-    middleware_list.append(commit_rci_middleware())
+    middleware_list.append(aio_middlewares.commit_rci_middleware())
 
     app = web.Application(middlewares=middleware_list)
 
