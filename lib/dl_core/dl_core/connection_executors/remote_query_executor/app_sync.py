@@ -99,13 +99,11 @@ class ActionHandlingView(flask.views.View):
 
     def get_action(self) -> act.RemoteDBAdapterAction:
         action = ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "deserialize_action" of "ActionSerializer" has incompatible type "Any | None"; expected "dict[Any, Any]"  [arg-type]
-        if ReqCtxInfoMiddleware.is_rci_committed():
-            rci = ReqCtxInfoMiddleware.get_request_context_info()
-            if rci.obfuscation_engine is not None:
-                action = attr.evolve(
-                    action,
-                    req_ctx_info=attr.evolve(action.req_ctx_info, obfuscation_engine=rci.obfuscation_engine),
-                )
+        rci = ReqCtxInfoMiddleware.get_request_context_info()
+        if rci.obfuscation_engine is not None:
+            action = attr.evolve(
+                action, req_ctx_info=attr.evolve(action.req_ctx_info, obfuscation_engine=rci.obfuscation_engine)
+            )
         return action
 
     def execute_non_streamed_action(
