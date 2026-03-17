@@ -1,7 +1,7 @@
 from .auth_providers import (
-    BaseAuthProvider,
     AuthProviderProtocol,
     AuthProviderSettings,
+    BaseAuthProvider,
     NoAuthProvider,
     NoAuthProviderSettings,
     OauthAuthProvider,
@@ -18,10 +18,10 @@ from .data import (
 
 __all__ = [
     "AuthData",
-    "BaseAuthProvider",
     "AuthProviderProtocol",
     "AuthProviderSettings",
     "AuthTarget",
+    "BaseAuthProvider",
     "NoAuthData",
     "NoAuthProvider",
     "NoAuthProviderSettings",
