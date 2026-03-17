@@ -1,7 +1,6 @@
 import attr
 import attrs
 import opentelemetry.sdk.trace
-from typing_extensions import deprecated
 
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.request_context as request_context
@@ -32,14 +31,6 @@ class HeadersRequestContextMixin(request_context.BaseRequestContext):
         return (
             self._aiohttp_request.headers.get(dl_constants.DLHeadersCommon.REQUEST_ID.value)
             or dl_utils.request_id_generator()
-        )
-
-    @deprecated("Use ParentContext mechanism instead", category=DeprecationWarning)
-    def generate_child_request_id(self) -> str:
-        request_id = self.get_request_id()
-        return dl_utils.make_uuid_from_parts(
-            current=dl_utils.request_id_generator(),
-            parent=request_id,
         )
 
     @dl_app_base.singleton_class_method_result
