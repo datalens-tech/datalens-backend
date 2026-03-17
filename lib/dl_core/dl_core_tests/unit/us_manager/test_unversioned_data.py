@@ -20,7 +20,6 @@ from dl_core.services_registry.top_level import (
     ServicesRegistry,
 )
 from dl_core.us_entry import USEntry
-from dl_core.us_manager.crypto.main import CryptoController
 from dl_core.us_manager.storage_schemas.base import DefaultStorageSchema
 from dl_core.us_manager.us_entry_serializer import (
     USEntrySerializer,
@@ -270,7 +269,7 @@ class TestUnpackUnversionedData:
         self,
         test_us_manager: USManagerBase,
         test_serializer: TestSerializer,
-        crypto_controller: CryptoController,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         # Include all fields, but only subset of them is really used as defined by get_unversioned_fields
         unversioned_data = {
@@ -468,7 +467,7 @@ class TestPackUnversionedData:
         self,
         test_us_manager: USManagerBase,
         test_serializer: TestSerializer,
-        crypto_controller: CryptoController,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         data_pack = USUnversionedDataPack(
             unversioned_data={
@@ -609,7 +608,7 @@ class TestRoundTrip:
         self,
         test_us_manager: USManagerBase,
         test_serializer: TestSerializer,
-        crypto_controller: CryptoController,
+        crypto_controller: dl_crypto.CryptoController,
     ) -> None:
         original_unversioned_data = {
             "cat_properties": {
