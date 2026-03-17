@@ -4,6 +4,7 @@ import attrs
 import pydantic
 from typing_extensions import TypeAlias
 
+import dl_auth
 import dl_httpx
 import dl_json
 import dl_pydantic
@@ -14,6 +15,7 @@ EntryId: TypeAlias = str
 
 @attrs.define(kw_only=True, frozen=True)
 class PingRequest(dl_httpx.BaseRequest):
+    # auth_provider is not needed for ping request
     @property
     def path(self) -> str:
         return "/ping-db"
@@ -25,6 +27,10 @@ class PingRequest(dl_httpx.BaseRequest):
 
 class PingResponse(dl_httpx.BaseResponseSchema):
     result: str
+
+
+class BaseRequest(dl_httpx.BaseRequest):
+    auth_provider: dl_auth.AuthProviderProtocol
 
 
 class EntryScope(str, enum.Enum):
@@ -42,7 +48,7 @@ class Entry(EntryData):
 
 
 @attrs.define(kw_only=True, frozen=True)
-class EntryGetRequest(dl_httpx.BaseRequest):
+class EntryGetRequest(BaseRequest):
     entry_id: EntryId
 
     @property
@@ -58,7 +64,7 @@ EntryGetResponse = Entry
 
 
 @attrs.define(kw_only=True, frozen=True)
-class EntryPostRequest(dl_httpx.BaseRequest):
+class EntryPostRequest(BaseRequest):
     entry: EntryData
 
     @property
@@ -78,7 +84,7 @@ EntryPostResponse = Entry
 
 
 @attrs.define(kw_only=True, frozen=True)
-class EntryDeleteRequest(dl_httpx.BaseRequest):
+class EntryDeleteRequest(BaseRequest):
     entry_id: EntryId
 
     @property
