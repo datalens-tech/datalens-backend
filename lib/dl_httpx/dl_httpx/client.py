@@ -150,75 +150,6 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
 
         return self._auth_provider
 
-    async def _prepare_headers_async(
-        self,
-        auth_provider: dl_auth.AuthProviderProtocol,
-        headers: dict[str, str] | None = None,
-    ) -> dict[str, str]:
-        result = self._base_headers.copy()
-
-        result.update(await auth_provider.get_headers_async())
-
-        if headers:
-            result.update(headers)
-
-        return result
-
-    async def _prepare_cookies_async(
-        self,
-        auth_provider: dl_auth.AuthProviderProtocol,
-        cookies: dict[str, str] | None = None,
-    ) -> dict[str, str]:
-        result = self._base_cookies.copy()
-
-        result.update(await auth_provider.get_cookies_async())
-
-        if cookies:
-            result.update(cookies)
-
-        return result
-
-    async def prepare_request_async(self, request: BaseRequest) -> httpx.Request:
-        return await self.prepare_raw_request_async(
-            method=request.method,
-            url=request.path,
-            headers=request.headers,
-            cookies=request.cookies,
-            params=request.query_params,
-            json=request.body,
-            auth_provider=request.auth_provider,
-        )
-
-    async def prepare_raw_request_async(
-        self,
-        method: str,
-        url: str,
-        headers: dict[str, str] | None = None,
-        cookies: dict[str, str] | None = None,
-        params: dict[str, str] | None = None,
-        json: Any = None,
-        auth_provider: dl_auth.AuthProviderProtocol | None = None,
-    ) -> httpx.Request:
-        auth_provider = self._prepare_auth_provider(auth_provider=auth_provider)
-
-        request = httpx.Request(
-            method=method,
-            url=self._prepare_url(url),
-            headers=await self._prepare_headers_async(auth_provider=auth_provider, headers=headers),
-            cookies=await self._prepare_cookies_async(auth_provider=auth_provider, cookies=cookies),
-            params=params,
-            json=json,
-        )
-
-        if self._debug_logging:
-            self._logger.debug(
-                "%s prepared request: %s",
-                self._client_name,
-                _request_to_debug_string(request),
-            )
-
-        return request
-
     def _process_response(self, response: httpx.Response) -> httpx.Response:
         if self._debug_logging:
             self._logger.debug(
@@ -507,6 +438,75 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
     @classmethod
     def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncClient:
         return httpx.AsyncClient(verify=ssl_context)
+
+    async def _prepare_headers_async(
+        self,
+        auth_provider: dl_auth.AuthProviderProtocol,
+        headers: dict[str, str] | None = None,
+    ) -> dict[str, str]:
+        result = self._base_headers.copy()
+
+        result.update(await auth_provider.get_headers_async())
+
+        if headers:
+            result.update(headers)
+
+        return result
+
+    async def _prepare_cookies_async(
+        self,
+        auth_provider: dl_auth.AuthProviderProtocol,
+        cookies: dict[str, str] | None = None,
+    ) -> dict[str, str]:
+        result = self._base_cookies.copy()
+
+        result.update(await auth_provider.get_cookies_async())
+
+        if cookies:
+            result.update(cookies)
+
+        return result
+
+    async def prepare_request_async(self, request: BaseRequest) -> httpx.Request:
+        return await self.prepare_raw_request_async(
+            method=request.method,
+            url=request.path,
+            headers=request.headers,
+            cookies=request.cookies,
+            params=request.query_params,
+            json=request.body,
+            auth_provider=request.auth_provider,
+        )
+
+    async def prepare_raw_request_async(
+        self,
+        method: str,
+        url: str,
+        headers: dict[str, str] | None = None,
+        cookies: dict[str, str] | None = None,
+        params: dict[str, str] | None = None,
+        json: Any = None,
+        auth_provider: dl_auth.AuthProviderProtocol | None = None,
+    ) -> httpx.Request:
+        auth_provider = self._prepare_auth_provider(auth_provider=auth_provider)
+
+        request = httpx.Request(
+            method=method,
+            url=self._prepare_url(url),
+            headers=await self._prepare_headers_async(auth_provider=auth_provider, headers=headers),
+            cookies=await self._prepare_cookies_async(auth_provider=auth_provider, cookies=cookies),
+            params=params,
+            json=json,
+        )
+
+        if self._debug_logging:
+            self._logger.debug(
+                "%s prepared request: %s",
+                self._client_name,
+                _request_to_debug_string(request),
+            )
+
+        return request
 
     async def close(self) -> None:
         await self._base_client.aclose()
