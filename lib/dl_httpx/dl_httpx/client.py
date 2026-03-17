@@ -439,7 +439,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
     def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncClient:
         return httpx.AsyncClient(verify=ssl_context)
 
-    async def _prepare_headers_async(
+    async def _prepare_headers(
         self,
         auth_provider: dl_auth.AuthProviderProtocol,
         headers: dict[str, str] | None = None,
@@ -453,7 +453,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
 
         return result
 
-    async def _prepare_cookies_async(
+    async def _prepare_cookies(
         self,
         auth_provider: dl_auth.AuthProviderProtocol,
         cookies: dict[str, str] | None = None,
@@ -467,8 +467,8 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
 
         return result
 
-    async def prepare_request_async(self, request: BaseRequest) -> httpx.Request:
-        return await self.prepare_raw_request_async(
+    async def prepare_request(self, request: BaseRequest) -> httpx.Request:
+        return await self.prepare_raw_request(
             method=request.method,
             url=request.path,
             headers=request.headers,
@@ -478,7 +478,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
             auth_provider=request.auth_provider,
         )
 
-    async def prepare_raw_request_async(
+    async def prepare_raw_request(
         self,
         method: str,
         url: str,
@@ -493,8 +493,8 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
         request = httpx.Request(
             method=method,
             url=self._prepare_url(url),
-            headers=await self._prepare_headers_async(auth_provider=auth_provider, headers=headers),
-            cookies=await self._prepare_cookies_async(auth_provider=auth_provider, cookies=cookies),
+            headers=await self._prepare_headers(auth_provider=auth_provider, headers=headers),
+            cookies=await self._prepare_cookies(auth_provider=auth_provider, cookies=cookies),
             params=params,
             json=json,
         )
