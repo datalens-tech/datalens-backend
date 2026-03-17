@@ -270,7 +270,10 @@ class ConnectionsList(BIResource):
 
         us_manager.save(conn)
 
-        return {"id": conn.uuid}
+        result: dict = {"id": conn.uuid}
+        if conn.operation is not None:
+            result["operation"] = conn.operation
+        return result
 
 
 @ns.route("/<connection_id>")

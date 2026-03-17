@@ -98,6 +98,7 @@ class CreateDatasetSchema(DatasetContentSchema):
 
 class CreateDatasetResponseSchema(DatasetContentSchema):
     id = ma_fields.String()
+    operation = ma_fields.Dict(load_default=None, required=False, allow_none=True)
 
 
 class NormalizedDateTime(ma_fields.DateTime):
