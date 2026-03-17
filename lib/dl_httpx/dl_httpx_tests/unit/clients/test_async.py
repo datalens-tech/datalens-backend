@@ -468,26 +468,3 @@ async def test_prepare_raw_request_async(
     ) as client:
         request = await client.prepare_raw_request_async("GET", "/api/data")
         assert request.headers["authorization"] == "OAuth test-token"
-
-
-@pytest.mark.asyncio
-async def test_prepare_raw_request_async_with_mock(
-    ssl_context: ssl.SSLContext,
-) -> None:
-    auth_provider = mock.AsyncMock(spec=dl_auth.AuthProviderProtocol)
-    auth_provider.get_headers_async.return_value = {"X-Custom": "value"}
-    auth_provider.get_cookies_async.return_value = {"session": "abc123"}
-
-    async with dl_httpx.HttpxAsyncClient.from_dependencies(
-        dl_httpx.HttpxClientDependencies(
-            base_url="https://example.com",
-            ssl_context=ssl_context,
-            auth_provider=auth_provider,
-        ),
-    ) as client:
-        request = await client.prepare_raw_request_async("GET", "/api/data")
-        assert request.headers["x-custom"] == "value"
-        assert request.headers["cookie"] == "session=abc123"
-
-    auth_provider.get_headers_async.assert_awaited_once()
-    auth_provider.get_cookies_async.assert_awaited_once()

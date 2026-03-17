@@ -20,9 +20,6 @@ typing-extensions = "*"
 pytest = "*"
 pytest-asyncio = "*"
 
-[tool.deptry.per_rule_ignores]
-DEP002 = ["pytest-asyncio"]
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true

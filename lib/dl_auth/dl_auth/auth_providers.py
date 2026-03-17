@@ -29,7 +29,7 @@ class AuthProviderProtocol(Protocol):
         ...
 
 
-class AuthProviderBase(abc.ABC):
+class BaseAuthProvider(abc.ABC):
     @abc.abstractmethod
     def get_headers(self) -> dict[str, str]:
         ...
@@ -52,7 +52,7 @@ class NoAuthProviderSettings(AuthProviderSettings):
 AuthProviderSettings.register("NONE", NoAuthProviderSettings)
 
 
-class NoAuthProvider(AuthProviderBase):
+class NoAuthProvider(BaseAuthProvider):
     @classmethod
     def from_settings(cls, settings: NoAuthProviderSettings) -> Self:
         return cls()
@@ -72,7 +72,7 @@ AuthProviderSettings.register("OAUTH", OauthAuthProviderSettings)
 
 
 @attrs.define(kw_only=True)
-class OauthAuthProvider(AuthProviderBase):
+class OauthAuthProvider(BaseAuthProvider):
     token: str
 
     @classmethod
@@ -94,7 +94,7 @@ AuthProviderSettings.register("US_MASTER_TOKEN", USMasterTokenAuthProviderSettin
 
 
 @attrs.define(kw_only=True)
-class USMasterTokenAuthProvider(AuthProviderBase):
+class USMasterTokenAuthProvider(BaseAuthProvider):
     token: str
 
     @classmethod
