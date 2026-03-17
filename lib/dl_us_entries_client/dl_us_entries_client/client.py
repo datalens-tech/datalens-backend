@@ -69,12 +69,12 @@ class USEntriesAsyncClient:
             return False
 
     async def ping(self, request: models.PingRequest) -> models.PingResponse:
-        prepared = self._base_client.prepare_request(request=request)
+        prepared = await self._base_client.prepare_request_async(request=request)
         response = await self._send(prepared)
         return models.PingResponse.model_validate(response.json())
 
     async def get_entry(self, request: models.EntryGetRequest) -> models.EntryGetResponse:
-        prepared = self._base_client.prepare_request(request=request)
+        prepared = await self._base_client.prepare_request_async(request=request)
         try:
             response = await self._send(prepared)
         except dl_httpx.HttpStatusHttpxClientException as e:
@@ -84,10 +84,10 @@ class USEntriesAsyncClient:
         return models.EntryGetResponse.model_validate(response.json())
 
     async def post_entry(self, request: models.EntryPostRequest) -> models.EntryPostResponse:
-        prepared = self._base_client.prepare_request(request=request)
+        prepared = await self._base_client.prepare_request_async(request=request)
         response = await self._send(prepared)
         return models.EntryPostResponse.model_validate(response.json())
 
     async def delete_entry(self, request: models.EntryDeleteRequest) -> None:
-        prepared = self._base_client.prepare_request(request=request)
+        prepared = await self._base_client.prepare_request_async(request=request)
         await self._send(prepared)
