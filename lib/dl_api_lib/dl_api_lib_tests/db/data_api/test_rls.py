@@ -17,6 +17,7 @@ class TestRLS(DefaultApiTestBase):
             ("dl_api_lib_group_config", True, "1"),
             ("dl_api_lib_test_config", False, "2"),
             ("dl_api_lib_group_config", True, "2"),
+            ("dl_api_lib_group_config_resolved", True, "2"),
         ],
     )
     def dataset_with_rls(self, request, monkeypatch, control_api, saved_dataset):
