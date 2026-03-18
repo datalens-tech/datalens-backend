@@ -85,6 +85,7 @@ class ConnectionClickhouse(
             password=base_dto.password or "",
             secure=self.data.secure,
             ssl_ca=self.data.ssl_ca,
+            ssl_ca_verify=self.data.ssl_ca_verify if self._connector_settings.ALLOW_SSL_CA_VERIFY_OPTION else True,
             readonly=self.data.readonly,
         )
 

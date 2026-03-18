@@ -36,6 +36,7 @@ from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnector
 class ClickHouseFieldName(FormFieldName):
     readonly = "readonly"
     experimental_features = "experimental_features"
+    ssl_ca_verify = "ssl_ca_verify"
 
 
 @attr.s
@@ -90,6 +91,37 @@ class ClickHouseRowConstructor:
             ]
         )
 
+    def ssl_ca_verify_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("label_clickhouse-ssl-ca-verify")),
+                    display_conditions={
+                        CommonFieldName.advanced_settings: "opened",
+                        CommonFieldName.secure: BooleanField.on.value,
+                    },
+                ),
+                C.RadioButtonRowItem(
+                    name=ClickHouseFieldName.ssl_ca_verify,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_ssl-ca-verify-off")),
+                            value=BooleanField.off.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_ssl-ca-verify-on")),
+                            value=BooleanField.on.value,
+                        ),
+                    ],
+                    default_value=BooleanField.on.value,
+                    display_conditions={
+                        CommonFieldName.advanced_settings: "opened",
+                        CommonFieldName.secure: BooleanField.on.value,
+                    },
+                ),
+            ]
+        )
+
 
 class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     DEFAULT_PORT = "8443"
@@ -97,6 +129,10 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
     def _experimental_features_allowed(self, connector_settings: ConnectorSettings | None) -> bool:
         assert isinstance(connector_settings, ClickHouseConnectorSettings)
         return connector_settings.ALLOW_EXPERIMENTAL_FEATURES
+
+    def _ssl_ca_verify_field_allowed(self, connector_settings: ConnectorSettings | None) -> bool:
+        assert isinstance(connector_settings, ClickHouseConnectorSettings)
+        return connector_settings.ALLOW_SSL_CA_VERIFY_OPTION
 
     def _get_implicit_form_fields(self) -> set[TFieldName]:
         return set()
@@ -117,6 +153,8 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         ]
         if self._experimental_features_allowed(connector_settings=connector_settings):
             items.append(FormFieldApiSchema(name=ClickHouseFieldName.experimental_features))
+        if self._ssl_ca_verify_field_allowed(connector_settings=connector_settings):
+            items.append(FormFieldApiSchema(name=ClickHouseFieldName.ssl_ca_verify))
         return items
 
     def _get_edit_api_schema(
@@ -224,6 +262,8 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         ]
         if self._experimental_features_allowed(connector_settings=connector_settings):
             rows.append(clickhouse_rc.experimental_features_row())
+        if self._ssl_ca_verify_field_allowed(connector_settings=connector_settings):
+            rows.append(clickhouse_rc.ssl_ca_verify_row())
         return self._filter_nulls(rows)
 
     def get_form_config(

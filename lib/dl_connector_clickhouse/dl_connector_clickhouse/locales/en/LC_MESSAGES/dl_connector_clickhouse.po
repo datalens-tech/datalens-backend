@@ -31,3 +31,12 @@ msgid "label_clickhouse-ssl-enabled-tooltip"
 msgstr ""
 "When the option is enabled, the HTTPS protocol is used when interacting with "
 "the database, and when disabled — HTTP"
+
+msgid "label_clickhouse-ssl-ca-verify"
+msgstr "SSL CA verify"
+
+msgid "value_ssl-ca-verify-off"
+msgstr "Off"
+
+msgid "value_ssl-ca-verify-on"
+msgstr "On"

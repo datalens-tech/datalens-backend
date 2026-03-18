@@ -19,6 +19,7 @@ class ConnectionClickHouseBaseDataStorageSchema(
 ):
     secure = ma_fields.Boolean(allow_none=False, required=False, load_default=False, dump_default=False)
     ssl_ca = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
+    ssl_ca_verify = ma_fields.Boolean(allow_none=False, required=False, load_default=True, dump_default=True)
     endpoint = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
     cluster_name = ma_fields.String(required=False, allow_none=True, load_default=None, dump_default=None)
     max_execution_time = ma_fields.Integer(required=False, allow_none=True, load_default=None, dump_default=None)
