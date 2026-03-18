@@ -138,7 +138,7 @@ class ResultSchemaBase(WithNestedValueSchema, DefaultSchema[BIField]):
         return data
 
     def to_object(self, data: dict) -> BIField:
-        return BIField.make(**data)
+        return self.get_target_cls().make(**data)
 
 
 class ResultSchemaSchema(ResultSchemaBase):
@@ -238,8 +238,7 @@ class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
     filters = ma_fields.Nested(
         ObligatoryFilterSchema,
         many=True,
-        allow_none=True,
-        oad_default=None,
+        load_default=list,
     )
     field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
 

@@ -517,8 +517,7 @@ class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
     filters = ma_fields.Nested(
         ObligatoryFilterSchema,
         many=True,
-        allow_none=True,
-        load_default=None,
+        load_default=list,
     )
     field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
 

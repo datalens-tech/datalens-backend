@@ -1909,36 +1909,24 @@ class DatasetValidator(DatasetBaseWrapper):
             return result_type_error
 
         # SQL Translation validation: verify formula can be translated to SQL
-        try:
-            assert self._column_reg is not None
-            formula_comp_query = single_formula_comp_query_for_validation(
-                formula=formula_info,
-                ds_accessor=self._ds_accessor,
-                column_reg=self._column_reg,
-            )
-            formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
-            multi_translator = self.make_multi_query_translator()
-            translation_errors = multi_translator.collect_errors(
-                compiled_multi_query=formula_comp_multi_query,
-                feature_errors=False,  # Don't check feature-specific errors
-            )
-            if translation_errors:
-                first_error = translation_errors[0]
-                return CacheInvalidationError(
-                    title="Formula Translation Error",
-                    message=first_error.message,
-                    level=NotificationLevel.critical,
-                    locator="field.formula",
-                )
-        except Exception as e:
-            LOGGER.warning(
-                "Failed to validate SQL translation for cache invalidation formula",
-                exc_info=True,
-            )
+        assert self._column_reg is not None
+        formula_comp_query = single_formula_comp_query_for_validation(
+            formula=formula_info,
+            ds_accessor=self._ds_accessor,
+            column_reg=self._column_reg,
+        )
+        formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
+        multi_translator = self.make_multi_query_translator()
+        translation_errors = multi_translator.collect_errors(
+            compiled_multi_query=formula_comp_multi_query,
+            feature_errors=False,  # Don't check feature-specific errors
+        )
+        if translation_errors:
+            first_error = translation_errors[0]
             return CacheInvalidationError(
-                title="Formula Validation Error",
-                message=str(e),
-                level=NotificationLevel.warning,
+                title="Formula Translation Error",
+                message=first_error.message,
+                level=NotificationLevel.critical,
                 locator="field.formula",
             )
 

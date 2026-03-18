@@ -367,7 +367,7 @@ class BIFieldSchemaBase(DefaultStorageSchema):
     ui_settings = ma_fields.String(dump_default="", load_default="")
 
     def to_object(self, data: dict) -> BIField:
-        return BIField.make(**data)
+        return self.get_target_cls().make(**data)
 
 
 class ResultSchemaStorageSchema(DefaultStorageSchema):
