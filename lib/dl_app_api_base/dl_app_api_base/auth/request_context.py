@@ -32,7 +32,7 @@ class DirectUserAuthProviderFactory:
     Don't use for private(service2service authorization) clients as they should get AuthProvider directly.
     """
 
-    auth_provider: dl_auth.BaseAuthProvider
+    auth_provider: dl_auth.AuthProviderProtocol
 
     def create(self, auth_result: auth_checkers.BaseRequestAuthResult) -> dl_auth.AuthProviderProtocol:
         return self.auth_provider
