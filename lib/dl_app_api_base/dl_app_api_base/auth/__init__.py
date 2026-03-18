@@ -20,6 +20,7 @@ from .models import RouteMatcher
 from .request_context import (
     AuthRequestContextDependenciesMixin,
     AuthRequestContextMixin,
+    DirectUserAuthProviderFactory,
     UserAuthProviderFactory,
 )
 
@@ -35,6 +36,7 @@ __all__ = [
     "AuthRequestContextMixin",
     "BaseRequestAuthChecker",
     "BaseRequestAuthResult",
+    "DirectUserAuthProviderFactory",
     "NoApplicableAuthCheckersError",
     "OAuthChecker",
     "OAuthCheckerSettings",
