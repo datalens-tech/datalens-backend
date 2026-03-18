@@ -26,13 +26,21 @@ from dl_i18n.localizer_base import (
     LocalizerLoader,
     TranslationConfig,
 )
+import dl_settings
+
+
+class Settings(dl_settings.BaseRootSettings):
+    OVERWRITE_EXPECTED_FORMS: bool = False
 
 
 class ConnectionFormTestBase:
     CONN_FORM_FACTORY_CLS: ClassVar[type[ConnectionFormFactory]]
     TRANSLATION_CONFIGS: ClassVar[list[TranslationConfig]]
-    OVERWRITE_EXPECTED_FORMS: ClassVar[bool] = False
     EXPECTED_FORMS_DIR: ClassVar[str] = "expected_forms"
+
+    @pytest.fixture(name="settings")
+    def fixture_settings(self) -> Settings:
+        return Settings()
 
     @pytest.fixture
     def connectors_settings(self) -> Optional[ConnectorSettings]:
@@ -109,8 +117,9 @@ class ConnectionFormTestBase:
         self,
         expected_form_config_file: str,
         form_config: ConnectionForm,
+        settings: Settings,
     ) -> dict[str, typing.Any]:
-        if self.OVERWRITE_EXPECTED_FORMS:
+        if settings.OVERWRITE_EXPECTED_FORMS:
             with open(expected_form_config_file, mode="w") as f:
                 f.write(json.dumps(form_config.as_dict(), indent=4))
 
@@ -134,10 +143,13 @@ class ConnectionFormTestBase:
         self,
         expected_form_config: dict[str, typing.Any],
         form_config: ConnectionForm,
+        settings: Settings,
     ) -> None:
-        if self.OVERWRITE_EXPECTED_FORMS:
+        if settings.OVERWRITE_EXPECTED_FORMS:
             pytest.skip("Overwriting expected forms")
-        assert form_config.as_dict() == expected_form_config
+        assert (
+            form_config.as_dict() == expected_form_config
+        ), "Form config does not match expected form config, to overwrite expected forms, set the OVERWRITE_EXPECTED_FORMS environment variable to true"
 
 
 class DatasourceTemplateConnectionFormTestMixin:
