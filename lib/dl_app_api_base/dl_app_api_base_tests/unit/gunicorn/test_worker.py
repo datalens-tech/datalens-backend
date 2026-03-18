@@ -260,7 +260,7 @@ async def test_default(
         assert main_callback_counter.get() == 1
         assert shutdown_callback_counter.get() == 0
 
-        response = await app_client.get("/api/v1/health/liveness")
+        response = await app_client.get("/system/health/liveness")
         assert response.status == 200
 
     assert startup_callback_counter.get() == 1
