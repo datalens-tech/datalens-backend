@@ -491,5 +491,7 @@ class DatasetResource(BIResource):
             ds_dict["permissions"] = dataset.permissions
         if dataset.full_permissions is not None:
             ds_dict["full_permissions"] = dataset.full_permissions
+        if dataset.operation is not None:
+            ds_dict["operation"] = dataset.operation
 
         return ds_dict

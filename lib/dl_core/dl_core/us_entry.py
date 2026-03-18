@@ -281,6 +281,10 @@ class USEntry:
         return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
 
     @property
+    def operation(self) -> dict | None:
+        return self._us_resp.get("operation") if isinstance(self._us_resp, dict) else None
+
+    @property
     def raw_tenant_id(self) -> Optional[str]:
         if not isinstance(self._us_resp, dict):
             raise ValueError("Can not get tenantId from US entry without ._us_resp.")
