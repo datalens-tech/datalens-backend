@@ -18,7 +18,10 @@ from marshmallow import (
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_api_client.dsmaker.api.schemas.base import DefaultSchema
+from dl_api_client.dsmaker.api.schemas.base import (
+    BaseSchema,
+    DefaultSchema,
+)
 from dl_api_client.dsmaker.primitives import (
     ArrayFloatParameterValue,
     ArrayIntParameterValue,
@@ -274,9 +277,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         return getattr(obj, self.type_field).name
 
 
-class ResultFieldSchema(DefaultSchema[ResultField]):
-    TARGET_CLS = ResultField
-
+class ResultSchemaBase(BaseSchema):
     title = ma_fields.String(required=True)
     source = ma_fields.String()
     guid = ma_fields.String(attribute="id")
@@ -307,6 +308,10 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
         if "cast" in data:
             self.context[ValueSchema.CONTEXT_KEY] = data["cast"]
         return data
+
+
+class ResultFieldSchema(ResultSchemaBase, DefaultSchema[ResultField]):
+    TARGET_CLS = ResultField
 
 
 class ResultSchemaAuxSchema(DefaultSchema[ResultSchemaAux]):
@@ -493,31 +498,12 @@ class CacheInvalidationLastResultErrorSchema(DefaultSchema[CacheInvalidationLast
     debug = ma_fields.Dict(allow_none=True, load_default=dict)
 
 
-class CacheInvalidationFieldSchema(DefaultSchema[CacheInvalidationField]):
+class CacheInvalidationFieldSchema(ResultSchemaBase, DefaultSchema[CacheInvalidationField]):
     """Schema for cache invalidation field (formula mode)"""
 
     TARGET_CLS = CacheInvalidationField
 
-    guid = ma_fields.String(required=True)
-    title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
-    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
-    hidden = ma_fields.Boolean(load_default=False)
-    description = ma_fields.String(load_default="")
-    valid = ma_fields.Boolean(allow_none=True)
-    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
-    cast = ma_fields.Enum(UserDataType, allow_none=True)
-    aggregation = ma_fields.Enum(AggregationFunction, load_default=AggregationFunction.none)
-    data_type = ma_fields.Enum(UserDataType, allow_none=True)
-    has_auto_aggregation = ma_fields.Boolean(allow_none=True)
-    lock_aggregation = ma_fields.Boolean(allow_none=True)
-    type = ma_fields.Enum(FieldType, allow_none=True)
-    ui_settings = ma_fields.String(load_default="")
-    calc_mode = ma_fields.Enum(CalcMode, load_default=CalcMode.formula)
-    formula = ma_fields.String(load_default="")
-    guid_formula = ma_fields.String(load_default="")
-    source = ma_fields.String(load_default="")
-    avatar_id = ma_fields.String(allow_none=True)
-    virtual = ma_fields.Boolean(load_default=False)
+    ...
 
 
 class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):

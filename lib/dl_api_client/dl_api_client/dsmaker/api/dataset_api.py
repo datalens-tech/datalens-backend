@@ -26,7 +26,6 @@ from dl_api_client.dsmaker.api.schemas.dataset import (
 )
 from dl_api_client.dsmaker.api.serialization_base import BaseApiV1SerializationAdapter
 from dl_api_client.dsmaker.primitives import (
-    CacheInvalidationSource,
     Dataset,
     ResultField,
     UpdateAction,
@@ -413,9 +412,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
             ],
         )
 
-    def update_cache_invalidation(
-        self, dataset: Dataset, cache_invalidation_source: CacheInvalidationSource, data: dict
-    ) -> HttpDatasetApiResponse:
+    def update_cache_invalidation(self, dataset: Dataset, data: dict) -> HttpDatasetApiResponse:
         return self.apply_updates(
             dataset=dataset,
             updates=[dataset.cache_invalidation_source.update(**data)],

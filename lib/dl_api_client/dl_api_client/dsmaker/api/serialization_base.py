@@ -189,7 +189,7 @@ class BaseApiV1SerializationAdapter:
             if item.filters
             else [],
             field=dict(
-                guid=field_item.guid,
+                guid=field_item.id,
                 title=field_item.title,
                 calc_mode=field_item.calc_mode.name if field_item.calc_mode is not None else None,
                 aggregation=field_item.aggregation.name if field_item.aggregation is not None else None,
@@ -208,6 +208,11 @@ class BaseApiV1SerializationAdapter:
                 lock_aggregation=field_item.lock_aggregation,
                 avatar_id=field_item.avatar_id,
                 managed_by=field_item.managed_by.name,
+                default_value=field_item.default_value.value if field_item.default_value is not None else None,
+                value_constraint=ParameterValueConstraintSchema().dump(field_item.value_constraint)
+                if field_item.value_constraint is not None
+                else None,
+                template_enabled=field_item.template_enabled,
             )
             if field_item
             else None,

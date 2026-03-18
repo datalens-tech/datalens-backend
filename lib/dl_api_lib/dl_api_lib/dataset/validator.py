@@ -69,10 +69,12 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.base_models import (
-    CacheInvalidationError,
-    CacheInvalidationSource,
     DefaultConnectionRef,
     DefaultWhereClause,
+)
+from dl_core.cache_invalidation import (
+    CacheInvalidationError,
+    CacheInvalidationSource,
 )
 from dl_core.connectors.base.data_source_migration import get_data_source_migrator
 from dl_core.constants import DatasetConstraints
@@ -184,7 +186,7 @@ def _validate_cache_invalidation_formula_not_empty(
     """Validate formula mode: formula must not be empty."""
     assert cache_invalidation_source.field is not None
     formula = cache_invalidation_source.field.formula
-    if not formula or not formula.strip():
+    if not formula.strip():
         return CacheInvalidationError(
             title="Validation Error",
             message="Formula cannot be empty",
@@ -1988,7 +1990,7 @@ class DatasetValidator(DatasetBaseWrapper):
         cache_invalidation_source: CacheInvalidationSource,
         by: ManagedBy | None = ManagedBy.user,
     ) -> None:
-        if not action == DatasetAction.update_cache_invalidation_source:
+        if action != DatasetAction.update_cache_invalidation_source:
             raise NotImplementedError(f"Not implemented cache invalidation action: {action}")
 
         validation_error = validate_cache_invalidation_source_fields_fill_by_mode(cache_invalidation_source)
@@ -2007,6 +2009,12 @@ class DatasetValidator(DatasetBaseWrapper):
                 validation_error = self._validate_cache_invalidation_filters(cache_invalidation_source)
                 if validation_error:
                     cache_invalidation_source.cache_invalidation_error = validation_error
+                else:
+                    # All validations in formula mode passed; clear any previous error
+                    cache_invalidation_source.cache_invalidation_error = None
+        else:
+            # Non-formula modes with no basic validation error; clear any previous error
+            cache_invalidation_source.cache_invalidation_error = None
 
         self._ds_editor.set_cache_invalidation_source(cache_invalidation_source=cache_invalidation_source)
         return

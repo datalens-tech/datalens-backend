@@ -37,7 +37,7 @@ from dl_constants.enums import (
     RLSSubjectType,
     UserDataType,
 )
-from dl_core.base_models import (
+from dl_core.cache_invalidation import (
     CacheInvalidationError,
     CacheInvalidationSource,
 )
@@ -102,7 +102,10 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
     subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
-class ResultSchemaBase(DefaultSchema[BIField]):
+class ResultSchemaBase(WithNestedValueSchema, DefaultSchema[BIField]):
+    TYPE_FIELD_NAME = "cast"
+    TARGET_CLS = BIField
+
     title = ma_fields.String(required=True)
     guid = ma_fields.String()
     hidden = ma_fields.Boolean(load_default=False)
@@ -138,10 +141,7 @@ class ResultSchemaBase(DefaultSchema[BIField]):
         return BIField.make(**data)
 
 
-class ResultSchemaSchema(WithNestedValueSchema, ResultSchemaBase):
-    TYPE_FIELD_NAME = "cast"
-    TARGET_CLS = BIField
-
+class ResultSchemaSchema(ResultSchemaBase):
     class CalculationSpecSchema(OneOfSchema):
         type_field = "mode"
         type_schemas = {
@@ -200,6 +200,7 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
     """
 
     title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
+    cast = ma_fields.Enum(UserDataType, load_default=UserDataType.string)
 
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively
@@ -238,7 +239,7 @@ class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
         ObligatoryFilterSchema,
         many=True,
         allow_none=True,
-        load_default=None,
+        oad_default=None,
     )
     field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
 

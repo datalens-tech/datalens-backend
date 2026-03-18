@@ -23,9 +23,7 @@ class TestCacheInvalidation(DefaultApiTestBase):
         sql = "SELECT 1" if mode == CacheInvalidationMode.sql else None
         update_data = dict(mode=mode.value, sql=sql)
 
-        saved_dataset = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        ).dataset
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
         assert saved_dataset.cache_invalidation_source.mode == mode, "Cache invalidation mode should be updated"
@@ -44,9 +42,7 @@ class TestCacheInvalidation(DefaultApiTestBase):
             sql=sql_query,
         )
 
-        saved_dataset = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, data=update_data
-        ).dataset
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, data=update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
         assert (
@@ -68,10 +64,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             # sql field is missing (None by default)
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
 
@@ -86,10 +80,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             sql="",  # empty sql
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
 
@@ -104,10 +96,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             # field is missing (None by default)
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
 
@@ -125,10 +115,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
@@ -147,10 +135,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
@@ -169,10 +155,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
@@ -192,10 +176,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
@@ -220,10 +202,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is None
         assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula
@@ -243,10 +223,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
@@ -268,10 +246,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
@@ -292,10 +268,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is None
         assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula
@@ -314,10 +288,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ),
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is None
         assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula
@@ -343,10 +315,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ],
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "filters"
@@ -383,10 +353,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ],
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
         assert ds.cache_invalidation_source.cache_invalidation_error.locator == "filters"
@@ -422,10 +390,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ],
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is None
         assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula
@@ -471,10 +437,8 @@ class TestCacheInvalidation(DefaultApiTestBase):
             ],
         )
 
-        resp = control_api.update_cache_invalidation(
-            saved_dataset, saved_dataset.cache_invalidation_source, update_data
-        )
-        ds = resp.dataset
+        resp = control_api.update_cache_invalidation(saved_dataset, update_data)
+        ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is None
         assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula

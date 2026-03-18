@@ -16,12 +16,12 @@ from dl_constants.enums import (
     ManagedBy,
 )
 from dl_core.base_models import (
-    CacheInvalidationSource,
     DefaultConnectionRef,
     DefaultWhereClause,
     ObligatoryFilter,
     connection_ref_from_id,
 )
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.connectors.base.data_source_migration import get_data_source_migrator
 from dl_core.data_source.type_mapping import get_data_source_class

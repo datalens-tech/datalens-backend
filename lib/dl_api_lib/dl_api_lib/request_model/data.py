@@ -25,10 +25,7 @@ from dl_constants.enums import (
     ManagedBy,
     UserDataType,
 )
-from dl_core.base_models import (
-    CacheInvalidationError,
-    CacheInvalidationSource,
-)
+from dl_core.cache_invalidation import CacheInvalidationError
 from dl_core.fields import CalculationSpec
 from dl_model_tools.typed_values import BIValue
 
@@ -213,7 +210,7 @@ class UpdateCacheInvalidationSource:
 
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
 class UpdateCacheInvalidationSourceAction(Action):
-    cache_invalidation_source: CacheInvalidationSource
+    cache_invalidation_source: UpdateCacheInvalidationSource
 
 
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")

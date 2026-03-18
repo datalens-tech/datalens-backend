@@ -24,10 +24,10 @@ from dl_constants.exc import (
     GLOBAL_ERR_PREFIX,
 )
 from dl_core.base_models import (
-    CacheInvalidationSource,
     DefaultConnectionRef,
     DefaultWhereClause,
 )
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_source import get_parameters_hash

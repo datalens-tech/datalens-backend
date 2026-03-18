@@ -21,10 +21,10 @@ from dl_constants.enums import (
 )
 from dl_core import multisource
 from dl_core.base_models import (
-    CacheInvalidationSource,
     ObligatoryFilter,
     connection_ref_from_id,
 )
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.component_errors import ComponentErrorRegistry
 from dl_core.components.dependencies.primitives import FieldInterDependencyInfo
 from dl_core.components.ids import (
