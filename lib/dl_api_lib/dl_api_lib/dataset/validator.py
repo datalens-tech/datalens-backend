@@ -1874,8 +1874,11 @@ class DatasetValidator(DatasetBaseWrapper):
                 locator="cache_invalidation_source.field.formula",
             )
 
-        # Use get_formula_errors() which creates a field, compiles it, and collects errors
-        formula_errors = self.formula_compiler.get_formula_errors(formula=formula)
+        # Create a single temporary formula field for validation and compilation
+        formula_field = self.formula_compiler.make_formula_field(formula=formula)
+
+        # Validate formula syntax/semantics using the created field
+        formula_errors = self.formula_compiler.get_field_errors(field=formula_field)
         if formula_errors:
             first_error = formula_errors[0]
             # Determine error title based on error code
@@ -1891,7 +1894,6 @@ class DatasetValidator(DatasetBaseWrapper):
             )
 
         # Compile formula to get CompiledFormulaInfo for SQL translation and type checking
-        formula_field = self.formula_compiler.make_formula_field(formula=formula)
         try:
             formula_info = self.formula_compiler.compile_field_formula(field=formula_field, collect_errors=True)
         except formula_exc.FormulaError as err:
