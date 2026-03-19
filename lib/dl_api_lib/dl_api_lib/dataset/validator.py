@@ -156,7 +156,8 @@ def _validate_cache_invalidation_sql_mode(
     cache_invalidation_source: CacheInvalidationSource,
 ) -> CacheInvalidationError | None:
     """Validate SQL mode: sql field must be filled."""
-    if not cache_invalidation_source.sql:
+    sql = cache_invalidation_source.sql
+    if not sql or not sql.strip():
         return CacheInvalidationError(
             title="Validation Error",
             message="Field 'sql' is required when mode is 'sql'",
