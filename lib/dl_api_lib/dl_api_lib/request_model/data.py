@@ -192,7 +192,7 @@ class UpdateDescriptionAction(Action):
     description: str
 
 
-@attr.s(kw_only=True, auto_attribs=True)
+@attr.s(frozen=True, kw_only=True, auto_attribs=True)
 class UpdateCacheInvalidationSourceAction(Action):
     cache_invalidation_source: CacheInvalidationSource
 

@@ -1982,30 +1982,36 @@ class DatasetValidator(DatasetBaseWrapper):
         if action != DatasetAction.update_cache_invalidation_source:
             raise NotImplementedError(f"Not implemented cache invalidation action: {action}")
 
-        validation_error = validate_cache_invalidation_source_fields_fill_by_mode(cache_invalidation_source)
+        # Update the dataset's cache_invalidation_source with the incoming data
+        ds_cache_inv_src = self._ds.data.cache_invalidation_source
+        ds_cache_inv_src.mode = cache_invalidation_source.mode
+        ds_cache_inv_src.sql = cache_invalidation_source.sql
+        ds_cache_inv_src.field = cache_invalidation_source.field
+        ds_cache_inv_src.filters = cache_invalidation_source.filters
+
+        validation_error = validate_cache_invalidation_source_fields_fill_by_mode(ds_cache_inv_src)
 
         # Update cache_invalidation_source with the error (or clear it if no error)
         if validation_error:
-            cache_invalidation_source.cache_invalidation_error = validation_error
+            ds_cache_inv_src.cache_invalidation_error = validation_error
 
-        elif cache_invalidation_source.mode == CacheInvalidationMode.formula:
+        elif ds_cache_inv_src.mode == CacheInvalidationMode.formula:
             # Validate formula syntax and data sources
-            validation_error = self._validate_cache_invalidation_formula(cache_invalidation_source)
+            validation_error = self._validate_cache_invalidation_formula(ds_cache_inv_src)
             if validation_error:
-                cache_invalidation_source.cache_invalidation_error = validation_error
+                ds_cache_inv_src.cache_invalidation_error = validation_error
             else:
                 # Validate filters if formula is valid
-                validation_error = self._validate_cache_invalidation_filters(cache_invalidation_source)
+                validation_error = self._validate_cache_invalidation_filters(ds_cache_inv_src)
                 if validation_error:
-                    cache_invalidation_source.cache_invalidation_error = validation_error
+                    ds_cache_inv_src.cache_invalidation_error = validation_error
                 else:
                     # All validations in formula mode passed; clear any previous error
-                    cache_invalidation_source.cache_invalidation_error = None
+                    ds_cache_inv_src.cache_invalidation_error = None
         else:
             # Non-formula modes with no basic validation error; clear any previous error
-            cache_invalidation_source.cache_invalidation_error = None
+            ds_cache_inv_src.cache_invalidation_error = None
 
-        self._ds_editor.set_cache_invalidation_source(cache_invalidation_source=cache_invalidation_source)
         return
 
     @generic_profiler("validator-get-single-formula-errors")
