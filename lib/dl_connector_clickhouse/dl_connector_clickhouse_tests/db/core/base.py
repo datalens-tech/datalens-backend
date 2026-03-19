@@ -47,6 +47,23 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
         )
 
 
+class BaseClickHouseCH26TestClass(BaseClickHouseTestClass):
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        return test_config.DB_CORE_URL_CH26
+
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self) -> dict:
+        return dict(
+            db_name=test_config.CoreConnectionSettingsCH26.DB_NAME,
+            host=test_config.CoreConnectionSettingsCH26.HOST,
+            port=test_config.CoreConnectionSettingsCH26.PORT,
+            username=test_config.CoreConnectionSettingsCH26.USERNAME,
+            password=test_config.CoreConnectionSettingsCH26.PASSWORD,
+            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+        )
+
+
 class BaseClickHouseDefaultUserTestClass(BaseClickHouseTestClass):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:

@@ -20,7 +20,10 @@ from dl_connector_clickhouse.core.clickhouse.data_source import (
     ClickHouseSubselectDataSource,
 )
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
-from dl_connector_clickhouse_tests.db.core.base import BaseClickHouseTestClass
+from dl_connector_clickhouse_tests.db.core.base import (
+    BaseClickHouseCH26TestClass,
+    BaseClickHouseTestClass,
+)
 
 
 class TestClickHouseTableDataSource(
@@ -68,3 +71,25 @@ class TestClickHouseSubselectDataSource(
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
+
+
+class TestClickHouseSubselectDataSourceCH26(
+    BaseClickHouseCH26TestClass,
+    DefaultDataSourceTestClass[
+        ConnectionClickhouse,
+        SubselectDataSourceSpec,
+        ClickHouseSubselectDataSource,
+    ],
+):
+    DSRC_CLS = ClickHouseSubselectDataSource
+    raw_sql_level = RawSQLLevel.subselect
+
+    @pytest.fixture(scope="class")
+    def initial_data_source_spec(self) -> SubselectDataSourceSpec:
+        return SubselectDataSourceSpec(
+            source_type=SOURCE_TYPE_CH_SUBSELECT,
+            subsql="SELECT 1 AS num",
+        )
+
+    def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
+        return [("num", UserDataType.integer)]

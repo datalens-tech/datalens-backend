@@ -186,7 +186,8 @@ class SubselectDataSource(BaseSQLDataSource):
         )
 
     _subquery_alias_joiner = " AS "
-    _subquery_auto_alias = "source"
+    _subquery_auto_alias: ClassVar[str | None] = "source"
+    _subquery_table_definition_alias: ClassVar[str | None] = "source"
 
     def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         if not self.connection.is_subselect_allowed:
@@ -216,7 +217,7 @@ class SubselectDataSource(BaseSQLDataSource):
         return "(select ...)"
 
     def get_table_definition(self) -> TableDefinition:
-        subselect = self.get_sql_source(alias="source")
+        subselect = self.get_sql_source(alias=self._subquery_table_definition_alias)
         return SATextTableDefinition(text=subselect)  # type: ignore  # 2024-01-24 # TODO: Argument "text" to "SATextTableDefinition" has incompatible type "ClauseElement"; expected "TextClause"  [arg-type]
 
 
