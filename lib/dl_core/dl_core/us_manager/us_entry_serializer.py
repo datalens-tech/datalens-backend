@@ -176,6 +176,11 @@ class USEntrySerializer(abc.ABC):
         for unversioned_key in declared_unversioned_keys:
             if unversioned_addressable.contains(unversioned_key):
                 unversioned_val = unversioned_addressable.pop(unversioned_key)
+
+                if raw_addressable.contains(unversioned_key):
+                    current_key_str = ".".join(unversioned_key.parts)
+                    LOGGER.warning(f"Key {current_key_str} exists in both versioned and unversioned data")
+
                 raw_addressable.set(unversioned_key, unversioned_val)
 
         if unversioned_addressable.data:

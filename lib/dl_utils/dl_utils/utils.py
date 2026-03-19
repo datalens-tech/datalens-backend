@@ -69,6 +69,11 @@ class AddressableData:
 
         data = self.data
         for part in key.parts[:-1]:
+            if not isinstance(data, dict):
+                raise ValueError(
+                    f"Cannot create nested objects for key {key.parts!r}: intermediate value at {part!r} is not a dict (got {type(data[part]).__name__})"
+                )
+
             data[part] = data.get(part, {})
             data = data[part]
 
@@ -77,9 +82,48 @@ class AddressableData:
         key_head = DataKey(parts=key.parts[:-1])
         self.get(key_head)[key.parts[-1]] = value
 
-    def pop(self, key: DataKey) -> Any:
+    @classmethod
+    def _pop_empty(
+        cls: Any,
+        data: Any,
+        key: DataKey,
+    ) -> None:
+        """
+        Pop empty keys from data
+        """
+
+        # Nothing
+        if len(key.parts) == 0:
+            return
+
+        key_part = key.parts[0]
+        current = data.get(key_part, None)
+
+        if isinstance(current, dict):
+            cls._pop_empty(
+                data=current,
+                key=DataKey(parts=key.parts[1:]),
+            )
+
+            if len(current) == 0:
+                data.pop(key_part)
+
+    def pop(
+        self,
+        key: DataKey,
+        *,
+        remove_empty: bool = False,
+    ) -> Any:
         key_head = DataKey(parts=key.parts[:-1])
-        return self.get(key_head).pop(key.parts[-1])
+        result = self.get(key_head).pop(key.parts[-1])
+
+        if remove_empty:
+            self._pop_empty(
+                data=self.data,
+                key=key,
+            )
+
+        return result
 
 
 T = TypeVar("T")
