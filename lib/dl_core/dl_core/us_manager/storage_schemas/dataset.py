@@ -16,10 +16,13 @@ from dl_constants.enums import (
     BinaryJoinOperator,
     CalcMode,
     ConditionPartCalcMode,
+    ExtractMode,
+    ExtractStatus,
     FieldType,
     JoinConditionType,
     JoinType,
     ManagedBy,
+    OrderDirection,
     ParameterValueConstraintType,
     UserDataType,
     WhereClauseOperation,
@@ -41,9 +44,11 @@ from dl_core.fields import (
     DefaultParameterValueConstraint,
     DirectCalculationSpec,
     EqualsParameterValueConstraint,
+    FilterField,
     FormulaCalculationSpec,
     NotEqualsParameterValueConstraint,
     NullParameterValueConstraint,
+    OrderField,
     ParameterCalculationSpec,
     RangeParameterValueConstraint,
     RegexParameterValueConstraint,
@@ -53,6 +58,7 @@ from dl_core.fields import (
     filter_calc_spec_kwargs,
 )
 from dl_core.us_dataset import Dataset
+from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.storage_schemas.base import DefaultStorageSchema
 from dl_core.us_manager.storage_schemas.data_source_collection import DataSourceCollectionSpecStorageSchema
 from dl_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema
@@ -470,6 +476,37 @@ class ObligatoryFilterSchema(DefaultStorageSchema):
     valid = ma_fields.Boolean(allow_none=True)
 
 
+class FilterFieldStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = FilterField
+
+    id = ma_fields.String(required=True)
+    guid = ma_fields.String()
+    default_filters = ma_fields.List(ma_fields.Nested(DefaultWhereClauseSchema))
+    valid = ma_fields.Boolean(load_default=True)
+
+
+class OrderedFieldStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = OrderField
+
+    id = ma_fields.String(required=True)
+    guid = ma_fields.String()
+    order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
+    valid = ma_fields.Boolean(load_default=True)
+
+
+class ExtractPropertiesStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = ExtractProperties
+
+    mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled, dump_default=ExtractMode.disabled)
+    status = ma_fields.Enum(ExtractStatus, load_default=ExtractStatus.disabled, dump_default=ExtractStatus.disabled)
+
+    filters = ma_fields.Nested(FilterFieldStorageSchema, many=True, load_default=list, dump_default=list)
+    sorting = ma_fields.Nested(OrderedFieldStorageSchema, many=True, load_default=list, dump_default=list)
+
+    errors = ma_fields.List(ma_fields.String, load_default=list, dump_default=list)
+    last_update = ma_fields.Integer(load_default=0, dump_default=0)
+
+
 class DatasetStorageSchema(DefaultStorageSchema):
     TARGET_CLS = Dataset.DataModel
 
@@ -487,3 +524,9 @@ class DatasetStorageSchema(DefaultStorageSchema):
     component_errors = ma_fields.Nested(ComponentErrorListSchema)
     obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")
+
+    extract = ma_fields.Nested(
+        ExtractPropertiesStorageSchema,
+        load_default=ExtractProperties,
+        dump_default=ExtractProperties,
+    )

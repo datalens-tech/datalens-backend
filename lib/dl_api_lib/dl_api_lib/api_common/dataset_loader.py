@@ -34,6 +34,7 @@ from dl_core.us_dataset import (
     Dataset,
     DataSourceRole,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -369,6 +370,16 @@ class DatasetApiLoader:
             if oblig_filter.id not in handled_oblig_filter_ids:
                 ds_editor.remove_obligatory_filter(obfilter_id=oblig_filter.id)
 
+    @classmethod
+    def _update_dataset_extract_properties_from_body(cls, dataset: Dataset, body: dict) -> None:
+        ds_editor = DatasetComponentEditor(dataset=dataset)
+
+        extract: ExtractProperties = body["extract"]
+
+        ds_editor.set_extract_mode(extract.mode)
+        ds_editor.set_extract_filters(extract.filters)
+        ds_editor.set_extract_sorting(extract.sorting)
+
     @generic_profiler("populate-dataset-from-body")
     def populate_dataset_from_body(
         self,
@@ -440,6 +451,9 @@ class DatasetApiLoader:
                         error.code = error.code[2:]
 
         self._update_dataset_obligatory_filters_from_body(dataset=dataset, body=body)
+
+        # extract
+        self._update_dataset_extract_properties_from_body(dataset=dataset, body=body)
 
         return DatasetUpdateInfo(
             added_own_source_ids=added_own_source_ids,

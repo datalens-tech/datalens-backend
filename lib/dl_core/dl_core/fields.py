@@ -21,10 +21,12 @@ from dl_constants.enums import (
     CalcMode,
     FieldType,
     ManagedBy,
+    OrderDirection,
     ParameterValueConstraintType,
     TopLevelComponentId,
     UserDataType,
 )
+from dl_core.base_models import DefaultWhereClause
 from dl_core.components.ids import FieldId
 from dl_core.exc import FieldNotFound
 from dl_model_tools.typed_values import BIValue
@@ -542,3 +544,19 @@ class ResultSchema:
             for field in self.fields
             if isinstance(field.calc_spec, DirectCalculationSpec) and field.avatar_id in avatar_ids
         ]
+
+
+@attr.s
+class OrderField:
+    id: str = attr.ib()
+    guid: str = attr.ib()
+    order: OrderDirection = attr.ib()
+    valid: bool = attr.ib(default=True)
+
+
+@attr.s()
+class FilterField:
+    id: str = attr.ib()
+    guid: str = attr.ib()
+    default_filters: list[DefaultWhereClause] = attr.ib()
+    valid: bool = attr.ib(default=True)

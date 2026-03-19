@@ -38,6 +38,8 @@ class ComponentErrorPackSchema(OneOfSchema):
             ComponentType.avatar_relation: GenericComponentErrorPackSchema,
             ComponentType.field: GenericComponentErrorPackSchema,
             ComponentType.obligatory_filter: GenericComponentErrorPackSchema,
+            ComponentType.extract_filter: GenericComponentErrorPackSchema,
+            ComponentType.extract_sorting: GenericComponentErrorPackSchema,
         }.items()
     }
 

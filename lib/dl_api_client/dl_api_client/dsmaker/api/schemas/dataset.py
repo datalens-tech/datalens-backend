@@ -64,6 +64,8 @@ from dl_api_client.dsmaker.primitives import (
     WhereClause,
 )
 from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
+from dl_api_lib.schemas.filter import FilterFieldSchema
+from dl_api_lib.schemas.order import OrderFieldSchema
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
@@ -72,6 +74,8 @@ from dl_constants.enums import (
     ComponentType,
     ConditionPartCalcMode,
     DataSourceType,
+    ExtractMode,
+    ExtractStatus,
     FieldType,
     JoinConditionType,
     JoinType,
@@ -82,6 +86,7 @@ from dl_constants.enums import (
     UserDataType,
     WhereClauseOperation,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 from dl_model_tools.schema.oneofschema import OneOfSchemaWithDumpLoadHooks
 from dl_rls.models import (
@@ -465,6 +470,19 @@ class RLS2ConfigEntrySchema(DefaultSchema[RLSEntry]):
     subject = ma_fields.Nested(RLSSubjectSchema, required=True)
 
 
+class ExtractPropertiesSchema(DefaultSchema[ExtractProperties]):
+    TARGET_CLS = ExtractProperties
+
+    mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled, dump_default=ExtractMode.disabled)
+    status = ma_fields.Enum(ExtractStatus, load_default=ExtractStatus.disabled, dump_default=ExtractStatus.disabled)
+
+    filters = ma_fields.Nested(FilterFieldSchema, many=True, load_default=list, dump_default=list)
+    sorting = ma_fields.Nested(OrderFieldSchema, many=True, load_default=list, dump_default=list)
+
+    errors = ma_fields.List(ma_fields.String, load_default=list, dump_default=list)
+    last_update = ma_fields.Integer(load_default=0, dump_default=0)
+
+
 class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixin):
     """
     A base class for schemas that need to contain the full dataset description
@@ -491,6 +509,8 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixi
     load_preview_by_default = ma_fields.Boolean(dump_default=True, load_default=True)
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
+
+    extract = ma_fields.Nested(ExtractPropertiesSchema, load_default=ExtractProperties, dump_default=ExtractProperties)
 
     @post_load
     def validate_rls2(self, item: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:

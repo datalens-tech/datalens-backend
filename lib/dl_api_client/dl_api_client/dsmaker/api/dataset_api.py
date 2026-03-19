@@ -17,6 +17,7 @@ from dl_api_client.dsmaker.api.schemas.dataset import (
     AvatarRelationSchema,
     ComponentErrorListSchema,
     DataSourceSchema,
+    ExtractPropertiesSchema,
     ObligatoryFilterSchema,
     ResultFieldSchema,
     ResultSchemaAuxSchema,
@@ -78,6 +79,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
                 ObligatoryFilterSchema().load(filter_info) for filter_info in body["obligatory_filters"]
             ],
             annotation=dict(description=body["description"]),
+            extract=ExtractPropertiesSchema().load(body["extract"]),
         )
 
         for dsrc_data in body["sources"]:

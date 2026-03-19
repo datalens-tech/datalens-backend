@@ -294,6 +294,8 @@ class ComponentType(Enum):
     field = "field"
     obligatory_filter = "obligatory_filter"
     result_schema = "result_schema"
+    extract_filter = "extract_filter"
+    extract_sorting = "extract_sorting"
 
 
 @unique
@@ -470,3 +472,17 @@ class EditMode(OperationsMode):
 
 class ExportMode(OperationsMode):
     export = auto()
+
+
+class ExtractMode(Enum):
+    disabled = "disabled"
+    manual = "manual"
+    automatic = "automatic"
+
+
+class ExtractStatus(Enum):
+    disabled = "disabled"
+    empty = "empty"
+    error = "error"
+    running = "running"
+    completed = "completed"

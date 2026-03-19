@@ -79,3 +79,19 @@ class DLValidationFatal(_DLValidationResult):
 class ConnectorIconNotFoundException(DLBaseException):
     default_message = "Connector icon not found"
     err_code = ["ICON_NOT_FOUND"]
+
+
+class ExtractValidationError(DLValidationFatal):
+    err_code = DLValidationError.err_code + ["EXTRACT"]
+
+
+class ExtractFilterFieldMissing(ExtractValidationError):
+    err_code = DLValidationError.err_code + ["FILTER_FIELD_MISSING"]
+
+
+class ExtractSortingFieldMissing(ExtractValidationError):
+    err_code = DLValidationError.err_code + ["SORTING_FIELD_MISSING"]
+
+
+class ExtractSortingEmpty(ExtractValidationError):
+    err_code = DLValidationError.err_code + ["SORTING_EMPTY"]

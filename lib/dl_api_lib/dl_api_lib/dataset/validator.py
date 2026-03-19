@@ -47,6 +47,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnectionAction,
     SourceActionBase,
     UpdateDescriptionAction,
+    UpdateExtractAction,
     UpdateField,
     UpdateSettingAction,
 )
@@ -60,6 +61,7 @@ from dl_constants.enums import (
     ConnectionType,
     DataSourceRole,
     DataSourceType,
+    ExtractMode,
     ManagedBy,
     ParameterValueConstraintType,
     TopLevelComponentId,
@@ -83,7 +85,9 @@ import dl_core.exc as common_exc
 from dl_core.fields import (
     BIField,
     DirectCalculationSpec,
+    FilterField,
     FormulaCalculationSpec,
+    OrderField,
     create_calc_spec_from,
     del_calc_spec_kwargs_from,
 )
@@ -196,6 +200,10 @@ class DatasetValidator(DatasetBaseWrapper):
         ):
             return 0
 
+        # Extract validation should be performed after adding fields
+        if isinstance(action, UpdateExtractAction) and action.action == DatasetAction.update_extract:
+            return 200
+
         return 100
 
     def _sort_action_batch(self, action_batch: Sequence[Action]) -> Sequence[Action]:
@@ -259,6 +267,8 @@ class DatasetValidator(DatasetBaseWrapper):
             self.apply_setting_action(action=action, setting=item_data.setting, by=by)
         elif isinstance(item_data, UpdateDescriptionAction):
             self.apply_description_action(action=action, description=item_data.description, by=by)
+        elif isinstance(item_data, UpdateExtractAction):
+            self.apply_extract_action(action=action, extract=item_data.extract)
 
         self.update_validity_of_affected_components()
 
@@ -1755,6 +1765,78 @@ class DatasetValidator(DatasetBaseWrapper):
             self._ds_editor.set_description(description=description)
         else:
             raise NotImplementedError(f"Not implemented annotation action: {action}")
+
+    @generic_profiler("validator-apply-extract-action")
+    def apply_extract_action(
+        self,
+        action: DatasetAction,
+        extract: UpdateExtractAction.ExtractProperties,
+    ) -> None:
+        if action == DatasetAction.update_extract:
+            self._ds_editor.set_extract_mode(extract.mode)
+            self._ds_editor.set_extract_sorting(extract.sorting)
+            self._ds_editor.set_extract_filters(extract.filters)
+
+            self._validate_extract_properties()
+        else:
+            raise NotImplementedError(f"Not implemented extract action: {action}")
+
+    @generic_profiler("validator-validate-extract")
+    def _validate_extract_properties(
+        self,
+    ) -> None:
+        current_mode = self._ds_accessor.get_extract_mode()
+
+        schema_guids = set((field.guid for field in self._ds.result_schema.fields))
+
+        # Validate filter fields
+        filters: list[FilterField] = self._ds_accessor.get_extract_filters()
+
+        for filter in filters:
+            # Register component as affected for validity update
+            filter_component_ref = DatasetComponentRef(
+                component_type=ComponentType.extract_filter,
+                component_id=filter.id,
+            )
+            self.add_affected_component(filter_component_ref)
+
+            if filter.guid not in schema_guids:
+                self._ds.error_registry.add_error(
+                    id=filter.id,
+                    type=ComponentType.extract_filter,
+                    message="Missing filter field in dataset",
+                    code=exc.ExtractFilterFieldMissing.err_code,
+                    details={
+                        "field_guid": filter.guid,
+                    },
+                )
+
+        # Validate sorting fields
+        sorting: list[OrderField] = self._ds_accessor.get_extract_sorting()
+
+        for sort in sorting:
+            # Register component as affected for validity update
+            sort_component_ref = DatasetComponentRef(
+                component_type=ComponentType.extract_sorting,
+                component_id=sort.id,
+            )
+            self.add_affected_component(sort_component_ref)
+
+            if sort.guid not in schema_guids:
+                self._ds.error_registry.add_error(
+                    id=sort.id,
+                    type=ComponentType.extract_sorting,
+                    message="Missing sorting field in dataset",
+                    code=exc.ExtractSortingFieldMissing.err_code,
+                    details={
+                        "field_guid": sort.guid,
+                    },
+                )
+
+        # Sorting can not be empty when extract is enabled
+        if current_mode != ExtractMode.disabled:
+            if len(sorting) == 0:
+                raise exc.ExtractSortingEmpty()
 
     @generic_profiler("validator-get-single-formula-errors")
     def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> list[ErrorInfo]:

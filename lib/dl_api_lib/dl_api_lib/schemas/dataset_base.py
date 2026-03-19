@@ -23,12 +23,18 @@ from dl_api_connector.api_schema.source_base import (
 )
 from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
 from dl_api_lib.schemas.fields import ResultSchemaAuxSchema
-from dl_api_lib.schemas.filter import ObligatoryFilterSchema
+from dl_api_lib.schemas.filter import (
+    FilterFieldSchema,
+    ObligatoryFilterSchema,
+)
 from dl_api_lib.schemas.options import OptionsMixin
+from dl_api_lib.schemas.order import OrderFieldSchema
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
 from dl_constants.enums import (
     AggregationFunction,
     CalcMode,
+    ExtractMode,
+    ExtractStatus,
     FieldType,
     ManagedBy,
     RLSPatternType,
@@ -44,6 +50,7 @@ from dl_core.fields import (
     del_calc_spec_kwargs_from,
     filter_calc_spec_kwargs,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_model_tools.schema.base import (
     BaseSchema,
     DefaultSchema,
@@ -167,6 +174,19 @@ class ResultSchemaSchema(WithNestedValueSchema, DefaultSchema[BIField]):
         return BIField.make(**data)
 
 
+class ExtractPropertiesSchema(DefaultSchema[ExtractProperties]):
+    TARGET_CLS = ExtractProperties
+
+    mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled, dump_default=ExtractMode.disabled)
+    status = ma_fields.Enum(ExtractStatus, load_default=ExtractStatus.disabled, dump_default=ExtractStatus.disabled)
+
+    filters = ma_fields.Nested(FilterFieldSchema, many=True, load_default=list, dump_default=list)
+    sorting = ma_fields.Nested(OrderFieldSchema, many=True, load_default=list, dump_default=list)
+
+    errors = ma_fields.List(ma_fields.String, load_default=list, dump_default=list)
+    last_update = ma_fields.Integer(load_default=0, dump_default=0)
+
+
 class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     """
     A base class for schemas that need to contain the full dataset description
@@ -192,6 +212,8 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     load_preview_by_default = ma_fields.Boolean(dump_default=True, load_default=True)
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
+
+    extract = ma_fields.Nested(ExtractPropertiesSchema, load_default=ExtractProperties, dump_default=ExtractProperties)
 
     @pre_load
     def prepare_guids(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:

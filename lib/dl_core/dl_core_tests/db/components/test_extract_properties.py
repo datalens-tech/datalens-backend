@@ -1,0 +1,162 @@
+import pytest
+
+from dl_constants.enums import (
+    ExtractMode,
+    ExtractStatus,
+    OrderDirection,
+    WhereClauseOperation,
+)
+from dl_core.base_models import DefaultWhereClause
+from dl_core.components.editor import DatasetComponentEditor
+from dl_core.fields import (
+    FilterField,
+    OrderField,
+)
+from dl_core.us_dataset import Dataset as Dataset
+from dl_core.us_manager.us_manager_sync import SyncUSManager
+from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
+from dl_core_tests.db.base import DefaultCoreTestClass
+
+
+class TestExtractValidationMocked(DefaultCoreTestClass):
+    @pytest.fixture(scope="function")
+    def sync_us_manager(self) -> MockedSyncUSManager:
+        return MockedSyncUSManager()
+
+    def test_load_of_old_dataset_without_extract_settings(
+        self,
+        empty_saved_dataset: Dataset,
+        sync_us_manager: MockedSyncUSManager,
+    ):
+        sync_us_manager.save(empty_saved_dataset)
+
+        # Simulate dataset without extract properties
+        del sync_us_manager._us_client._saved_entries[empty_saved_dataset.uuid]["data"]["extract"]
+        del sync_us_manager._us_client._saved_entries[empty_saved_dataset.uuid]["unversionedData"]["extract"]
+
+        loaded_dataset = sync_us_manager.get_by_id(empty_saved_dataset.uuid, Dataset)
+
+        assert loaded_dataset.data.extract.mode == ExtractMode.disabled
+        assert loaded_dataset.data.extract.status == ExtractStatus.disabled
+        assert loaded_dataset.data.extract.filters == []
+        assert loaded_dataset.data.extract.sorting == []
+
+
+class TestExtractValidation(DefaultCoreTestClass):
+    def test_extract_settings_persistence_in_us(
+        self,
+        saved_dataset: Dataset,
+        sync_us_manager: SyncUSManager,
+    ):
+        ds_editor = DatasetComponentEditor(dataset=saved_dataset)
+
+        # Fill dataset with extract config
+        ds_editor.set_extract_filters(
+            extract_filters=[
+                FilterField(
+                    id="id_1",
+                    default_filters=[
+                        DefaultWhereClause(
+                            operation=WhereClauseOperation.ENDSWITH,
+                            values=[
+                                "hehe",
+                            ],
+                        ),
+                    ],
+                    valid=True,
+                    guid="guid_1",
+                ),
+                FilterField(
+                    id="id_2",
+                    default_filters=[
+                        DefaultWhereClause(
+                            operation=WhereClauseOperation.EQ,
+                            values=[
+                                "not hehe",
+                            ],
+                        ),
+                    ],
+                    valid=False,
+                    guid="guid_2",
+                ),
+            ],
+        )
+        ds_editor.set_extract_sorting(
+            extract_sorting=[
+                OrderField(
+                    id="id_3",
+                    valid=True,
+                    guid="guid_3",
+                    order=OrderDirection.desc,
+                ),
+                OrderField(
+                    id="id_4",
+                    valid=False,
+                    guid="guid_4",
+                    order=OrderDirection.asc,
+                ),
+            ],
+        )
+        ds_editor.set_extract_mode(
+            extract_mode=ExtractMode.automatic,
+        )
+        ds_editor.set_extract_errors(
+            extract_errors=["potato"],
+        )
+        ds_editor.set_extract_last_update(
+            extract_last_update=1234567,
+        )
+        ds_editor.set_extract_status(
+            extract_status=ExtractStatus.empty,
+        )
+
+        sync_us_manager.save(saved_dataset)
+
+        # Check that config persisted
+        loaded_dataset = sync_us_manager.get_by_id(saved_dataset.uuid, Dataset)
+
+        # Check extract mode
+        assert loaded_dataset.data.extract.mode == ExtractMode.automatic
+
+        # Check extract status
+        assert loaded_dataset.data.extract.status == ExtractStatus.empty
+
+        # Check extract errors
+        assert loaded_dataset.data.extract.errors == ["potato"]
+
+        # Check extract last_update
+        assert loaded_dataset.data.extract.last_update == 1234567
+
+        # Check extract filters
+        assert len(loaded_dataset.data.extract.filters) == 2
+
+        # First filter
+        assert loaded_dataset.data.extract.filters[0].id == "id_1"
+        assert loaded_dataset.data.extract.filters[0].guid == "guid_1"
+        assert loaded_dataset.data.extract.filters[0].valid == True
+        assert len(loaded_dataset.data.extract.filters[0].default_filters) == 1
+        assert loaded_dataset.data.extract.filters[0].default_filters[0].operation == WhereClauseOperation.ENDSWITH
+        assert loaded_dataset.data.extract.filters[0].default_filters[0].values == ["hehe"]
+
+        # Second filter
+        assert loaded_dataset.data.extract.filters[1].id == "id_2"
+        assert loaded_dataset.data.extract.filters[1].guid == "guid_2"
+        assert loaded_dataset.data.extract.filters[1].valid == False
+        assert len(loaded_dataset.data.extract.filters[1].default_filters) == 1
+        assert loaded_dataset.data.extract.filters[1].default_filters[0].operation == WhereClauseOperation.EQ
+        assert loaded_dataset.data.extract.filters[1].default_filters[0].values == ["not hehe"]
+
+        # Check extract sorting
+        assert len(loaded_dataset.data.extract.sorting) == 2
+
+        # First sorting field
+        assert loaded_dataset.data.extract.sorting[0].id == "id_3"
+        assert loaded_dataset.data.extract.sorting[0].guid == "guid_3"
+        assert loaded_dataset.data.extract.sorting[0].valid == True
+        assert loaded_dataset.data.extract.sorting[0].order == OrderDirection.desc
+
+        # Second sorting field
+        assert loaded_dataset.data.extract.sorting[1].id == "id_4"
+        assert loaded_dataset.data.extract.sorting[1].guid == "guid_4"
+        assert loaded_dataset.data.extract.sorting[1].valid == False
+        assert loaded_dataset.data.extract.sorting[1].order == OrderDirection.asc

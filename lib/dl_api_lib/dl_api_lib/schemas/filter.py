@@ -12,6 +12,8 @@ from dl_api_lib.query.formalization.raw_specs import (
 )
 from dl_api_lib.request_model.data import AddUpdateObligatoryFilter
 from dl_constants.enums import ManagedBy
+from dl_core.base_models import DefaultWhereClause
+from dl_core.fields import FilterField
 from dl_model_tools.schema.base import (
     DefaultSchema,
     DefaultValidateSchema,
@@ -49,3 +51,19 @@ class ObligatoryFilterSchema(DefaultValidateSchema[AddUpdateObligatoryFilter]):
                 if not filter.get("column"):
                     filter["column"] = data["field_guid"]
         return data
+
+
+class DefaultWhereClauseSchema(DefaultSchema[DefaultWhereClause]):
+    TARGET_CLS = DefaultWhereClause
+
+    operation = ma_fields.Enum(WhereClauseOperation, required=True)
+    values = ma_fields.List(ma_fields.Raw(allow_none=True), required=True, allow_none=True)
+
+
+class FilterFieldSchema(DefaultSchema[FilterField]):
+    TARGET_CLS = FilterField
+
+    id = ma_fields.String(required=True)
+    guid = ma_fields.String()
+    default_filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, load_default=[])
+    valid = ma_fields.Boolean(load_default=True)

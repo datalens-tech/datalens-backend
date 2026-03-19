@@ -44,8 +44,10 @@ from dl_core.us_entry import (
     BaseAttrsDataModel,
     USEntry,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_i18n.localizer_base import Localizer
 from dl_rls.rls import RLS
+from dl_utils.utils import DataKey
 
 
 if TYPE_CHECKING:
@@ -76,11 +78,23 @@ class Dataset(USEntry):
         component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
         obligatory_filters: list[ObligatoryFilter] = attr.ib(factory=list)
 
+        extract: ExtractProperties = attr.ib(factory=ExtractProperties)
+
         @attr.s
         class ResultSchemaAux:
             inter_dependencies: FieldInterDependencyInfo = attr.ib(factory=FieldInterDependencyInfo)
 
         result_schema_aux: ResultSchemaAux = attr.ib(factory=ResultSchemaAux)
+
+        @classmethod
+        def get_unversioned_keys(cls) -> set[DataKey]:
+            return set(
+                [
+                    DataKey(parts=("extract", "state")),
+                    DataKey(parts=("extract", "errors")),
+                    DataKey(parts=("extract", "last_update")),
+                ]
+            )
 
     @property
     def rls(self) -> RLS:

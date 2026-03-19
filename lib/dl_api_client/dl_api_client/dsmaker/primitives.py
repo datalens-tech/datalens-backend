@@ -44,6 +44,7 @@ from dl_constants.enums import (
     UserDataType,
     WhereClauseOperation,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_rls.models import RLSEntry
 
 
@@ -955,6 +956,8 @@ class Dataset(ApiProxyObject):
     component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
     obligatory_filters: list[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
     annotation: Optional[dict] = attr.ib(default=None)
+
+    extract: ExtractProperties = attr.ib(factory=ExtractProperties)
 
     def prepare(self) -> None:
         super().prepare()

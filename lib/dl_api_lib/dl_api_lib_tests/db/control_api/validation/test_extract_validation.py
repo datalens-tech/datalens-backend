@@ -1,0 +1,435 @@
+import http
+
+import pytest
+
+from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
+from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_constants.enums import (
+    ExtractMode,
+    ExtractStatus,
+    OrderDirection,
+)
+
+from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
+
+
+class TestExtractValidation(DefaultApiTestBase):
+    @pytest.fixture(scope="class")
+    def dataset_params(self, sample_table) -> dict:
+        return dict(
+            source_type=SOURCE_TYPE_CH_TABLE.name,
+            parameters=dict(
+                db_name=sample_table.db.name,
+                table_name=sample_table.name,
+            ),
+        )
+
+    def test_save_dataset_without_extract_uses_defaults(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        dataset_params: dict,
+        annotation: dict,
+    ):
+        dataset = self.make_basic_dataset(
+            control_api=control_api,
+            connection_id=saved_connection_id,
+            dataset_params=dataset_params,
+            annotation=annotation,
+        )
+
+        saved_dataset = control_api.save_dataset(dataset).dataset
+
+        try:
+            assert saved_dataset.extract.mode == ExtractMode.disabled
+            assert saved_dataset.extract.status == ExtractStatus.disabled
+            assert saved_dataset.extract.filters == []
+            assert saved_dataset.extract.sorting == []
+            assert saved_dataset.extract.errors == []
+            assert saved_dataset.extract.last_update == 0
+        finally:
+            control_api.delete_dataset(dataset_id=saved_dataset.id, fail_ok=False)
+
+    def test_save_dataset_with_valid_extract_settings(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [{"id": "filter_1", "guid": field_guids[0], "default_filters": []}],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.OK
+
+        saved_dataset = control_api.save_dataset(ds_resp.dataset).dataset
+
+        assert saved_dataset.extract.mode == ExtractMode.manual
+        assert len(saved_dataset.extract.filters) == 1
+        assert saved_dataset.extract.filters[0].guid == field_guids[0]
+        assert len(saved_dataset.extract.sorting) == 1
+        assert saved_dataset.extract.sorting[0].guid == field_guids[0]
+
+    def test_save_dataset_with_invalid_sorting_fields_fails(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [],
+                "sorting": [{"id": "invalid_sort", "guid": "non-existent-guid", "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+        assert ds_resp.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+
+        dataset = ds_resp.dataset
+        invalid_sort_field = next((field for field in dataset.extract.sorting if field.id == "invalid_sort"), None)
+        assert invalid_sort_field is not None
+        assert invalid_sort_field.valid is False
+
+        errors = [error for error in dataset.component_errors.items if error.id == "invalid_sort"]
+        assert len(errors) == 1
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.SORTING_FIELD_MISSING"
+
+    def test_save_dataset_with_invalid_filter_fields_fails(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [{"id": "invalid_filter", "guid": "non-existent-guid", "default_filters": []}],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+        assert ds_resp.bi_status_code == "ERR.DS_API.VALIDATION.ERROR"
+
+        dataset = ds_resp.dataset
+        invalid_sort_field = next((field for field in dataset.extract.filters if field.id == "invalid_filter"), None)
+        assert invalid_sort_field is not None
+        assert invalid_sort_field.valid is False
+
+        errors = [error for error in dataset.component_errors.items if error.id == "invalid_filter"]
+        assert len(errors) == 1
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.FILTER_FIELD_MISSING"
+
+    def test_control_api_returns_extract_settings(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [{"id": "filter_1", "guid": field_guids[0], "default_filters": []}],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+        assert ds_resp.status_code == http.HTTPStatus.OK
+
+        saved_dataset = control_api.save_dataset(ds_resp.dataset).dataset
+
+        retrieved_dataset = control_api.get_dataset(saved_dataset.id).dataset
+
+        assert retrieved_dataset.extract.mode == ExtractMode.manual
+        assert len(retrieved_dataset.extract.filters) == 1
+        assert retrieved_dataset.extract.filters[0].guid == field_guids[0]
+        assert len(retrieved_dataset.extract.sorting) == 1
+        assert retrieved_dataset.extract.sorting[0].guid == field_guids[0]
+
+    def test_update_extract_with_existing_fields_succeeds(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+        assert ds_resp.status_code == http.HTTPStatus.OK
+
+        updated_extract = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "automatic",
+                "filters": [{"id": "filter_1", "guid": field_guids[0], "default_filters": []}],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "desc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=ds_resp.dataset,
+            updates=[updated_extract],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.OK
+        assert ds_resp.dataset.extract.mode == ExtractMode.automatic
+        assert len(ds_resp.dataset.extract.filters) == 1
+        assert ds_resp.dataset.extract.sorting[0].order == OrderDirection.desc
+
+    def test_update_extract_with_invalid_sorting_fields_fails(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [],
+                "sorting": [{"id": "valid_sort", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+        assert ds_resp.status_code == http.HTTPStatus.OK
+
+        invalid_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [],
+                "sorting": [{"id": "invalid_sort", "guid": "non-existent-guid", "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=ds_resp.dataset,
+            updates=[invalid_update],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+
+        dataset = ds_resp.dataset
+        invalid_sort_field = next((field for field in dataset.extract.sorting if field.id == "invalid_sort"), None)
+        assert invalid_sort_field is not None
+        assert invalid_sort_field.valid is False
+
+        errors = [error for error in dataset.component_errors.items if error.id == "invalid_sort"]
+        assert len(errors) == 1
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.SORTING_FIELD_MISSING"
+
+    def test_update_extract_with_invalid_filter_fields_fails(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [{"id": "valid_filter", "guid": field_guids[0], "default_filters": []}],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+        assert ds_resp.status_code == http.HTTPStatus.OK
+
+        invalid_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [{"id": "invalid_filter", "guid": "non-existent-guid", "default_filters": []}],
+                "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=ds_resp.dataset,
+            updates=[invalid_update],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+
+        dataset = ds_resp.dataset
+        invalid_filter_field = next((field for field in dataset.extract.filters if field.id == "invalid_filter"), None)
+        assert invalid_filter_field is not None
+        assert invalid_filter_field.valid is False
+
+        errors = [error for error in dataset.component_errors.items if error.id == "invalid_filter"]
+        assert len(errors) == 1
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.FILTER_FIELD_MISSING"
+
+    def test_extract_enabled_requires_non_empty_sorting(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ):
+        extract_update = {
+            "action": "update_extract",
+            "extract": {
+                "mode": "manual",
+                "filters": [],
+                "sorting": [],
+            },
+        }
+
+        ds_resp = control_api.apply_updates(
+            dataset=saved_dataset,
+            updates=[extract_update],
+            fail_ok=True,
+        )
+
+        assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
+        assert ds_resp.bi_status_code == "ERR.DS_API.VALIDATION.FATAL"
+
+    def test_get_dataset_by_revision_returns_all_extract_fields(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        dataset_params: dict,
+        annotation: dict,
+    ):
+        # Create a basic dataset
+        dataset = self.make_basic_dataset(
+            control_api=control_api,
+            connection_id=saved_connection_id,
+            dataset_params=dataset_params,
+            annotation=annotation,
+        )
+
+        # Save the dataset to get an initial revision
+        saved_dataset = control_api.save_dataset(dataset).dataset
+        field_guids = [field.id for field in saved_dataset.result_schema]
+
+        try:
+            # Configure extract settings
+            extract_update = {
+                "action": "update_extract",
+                "extract": {
+                    "mode": "manual",
+                    "filters": [
+                        {
+                            "id": "filter_1",
+                            "guid": field_guids[0],
+                            "default_filters": [
+                                {
+                                    "operation": "EQ",
+                                    "values": ["test_value"],
+                                },
+                            ],
+                        },
+                    ],
+                    "sorting": [
+                        {
+                            "id": "sort_1",
+                            "guid": field_guids[0],
+                            "order": "asc",
+                        },
+                    ],
+                },
+            }
+
+            # Apply extract settings
+            ds_resp = control_api.apply_updates(
+                dataset=saved_dataset,
+                updates=[extract_update],
+                fail_ok=False,
+            )
+            assert ds_resp.status_code == http.HTTPStatus.OK
+
+            final_saved_dataset = control_api.save_dataset(ds_resp.dataset).dataset
+
+            # Check that API returns all fields as expected
+            retrieved_dataset = control_api.get_dataset(final_saved_dataset.id).dataset
+            extract = retrieved_dataset.extract
+
+            # Validate extract mode and status
+            assert extract.mode == ExtractMode.manual
+            assert extract.status == ExtractStatus.disabled  # Default status
+            assert isinstance(extract.errors, list)
+            assert isinstance(extract.last_update, int)
+
+            # Validate filters
+            assert len(extract.filters) == 1
+            filter_item = extract.filters[0]
+            assert filter_item.id == "filter_1"
+            assert filter_item.guid == field_guids[0]
+            assert len(filter_item.default_filters) == 1
+            assert filter_item.default_filters[0].operation.name == "EQ"
+            assert filter_item.default_filters[0].values == ["test_value"]
+            assert filter_item.valid is True
+
+            # Validate sorting
+            assert len(extract.sorting) == 1
+            sorting_item = extract.sorting[0]
+            assert sorting_item.id == "sort_1"
+            assert sorting_item.guid == field_guids[0]
+            assert sorting_item.order == OrderDirection.asc
+            assert sorting_item.valid is True
+
+        finally:
+            control_api.delete_dataset(dataset_id=saved_dataset.id, fail_ok=True)

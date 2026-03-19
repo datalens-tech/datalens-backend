@@ -64,6 +64,8 @@ ERROR_CLS_BY_COMP_TYPE: dict[ComponentType, type[ComponentError]] = {
     ComponentType.field: ComponentError,
     ComponentType.obligatory_filter: ComponentError,
     ComponentType.result_schema: ComponentError,
+    ComponentType.extract_filter: ComponentError,
+    ComponentType.extract_sorting: ComponentError,
 }
 
 

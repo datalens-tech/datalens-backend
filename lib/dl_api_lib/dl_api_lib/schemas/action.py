@@ -31,14 +31,20 @@ from dl_api_lib.request_model.data import (
     ReplaceConnectionAction,
     SourceActionBase,
     UpdateDescriptionAction,
+    UpdateExtractAction,
     UpdateField,
     UpdateSettingAction,
 )
-from dl_api_lib.schemas.filter import ObligatoryFilterSchema
+from dl_api_lib.schemas.filter import (
+    FilterFieldSchema,
+    ObligatoryFilterSchema,
+)
+from dl_api_lib.schemas.order import OrderFieldSchema
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
 from dl_constants.enums import (
     AggregationFunction,
     CalcMode,
+    ExtractMode,
     UserDataType,
 )
 from dl_model_tools.schema.base import (
@@ -247,6 +253,20 @@ class UpdateDescriptionActionSchema(ActionBaseSchema, DefaultValidateSchema[Upda
     description = ma_fields.String(allow_none=False, required=True)
 
 
+class UpdateExtractActionSchema(ActionBaseSchema, DefaultValidateSchema[UpdateExtractAction]):
+    TARGET_CLS = UpdateExtractAction
+
+    class ExtractPropertiesSchema(DefaultValidateSchema[UpdateExtractAction.ExtractProperties]):
+        TARGET_CLS = UpdateExtractAction.ExtractProperties
+
+        mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled, dump_default=ExtractMode.disabled)
+
+        filters = ma_fields.Nested(FilterFieldSchema, many=True, load_default=list, dump_default=list)
+        sorting = ma_fields.Nested(OrderFieldSchema, many=True, load_default=list, dump_default=list)
+
+    extract = ma_fields.Nested(ExtractPropertiesSchema, required=True)
+
+
 class ActionSchema(OneOfSchema):
     class Meta:
         unknown = EXCLUDE
@@ -286,6 +306,8 @@ class ActionSchema(OneOfSchema):
         DatasetAction.update_setting.name: UpdateSettingActionSchema,
         # description
         DatasetAction.update_description.name: UpdateDescriptionActionSchema,
+        # extract
+        DatasetAction.update_extract.name: UpdateExtractActionSchema,
     }
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:

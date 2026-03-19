@@ -212,6 +212,9 @@ class DatasetAction(Enum):
     add = "add"
     delete = "delete"
 
+    # extract
+    update_extract = "update_extract"
+
     @staticmethod
     def remap_legacy(action: "DatasetAction") -> "DatasetAction":
         return _LEGACY_ACTIONS.get(action, action)

@@ -12,6 +12,8 @@ from dl_constants.enums import (
     DataSourceCreatedVia,
     DataSourceRole,
     DataSourceType,
+    ExtractMode,
+    ExtractStatus,
     JoinType,
     ManagedBy,
 )
@@ -37,6 +39,8 @@ from dl_core.db.elements import (
 import dl_core.exc as exc
 from dl_core.fields import (
     BIField,
+    FilterField,
+    OrderField,
     ResultSchema,
 )
 from dl_core.multisource import (
@@ -457,3 +461,47 @@ class DatasetComponentEditor:
                 migration_dtos=migration_dtos, connection_ref=new_connection_ref
             )
             old_source_coll_spec.set_for_role(role=role, value=new_source_spec)
+
+    def update_extract_filter(
+        self,
+        filter_id: str,
+        valid: bool | None = None,
+    ) -> None:
+        filter = self._ds_accessor.get_extract_filter(filter_id=filter_id)
+        if filter is not None:
+            if valid is not None:
+                filter.valid = valid
+
+    def update_extract_sort(
+        self,
+        sort_id: str,
+        valid: bool | None = None,
+    ) -> None:
+        sort = self._ds_accessor.get_extract_sort(sort_id=sort_id)
+        if sort is not None:
+            if valid is not None:
+                sort.valid = valid
+
+    def set_extract_mode(self, extract_mode: ExtractMode) -> None:
+        self._dataset.data.extract.mode = extract_mode
+
+        # TODO(extracts): Change type when mode != disabled
+        # if extract_mode != ExtractMode.disabled:
+        #     self._dataset.type_ = "extract"
+        # else:
+        #     self._dataset.type_ = ""
+
+    def set_extract_status(self, extract_status: ExtractStatus) -> None:
+        self._dataset.data.extract.status = extract_status
+
+    def set_extract_errors(self, extract_errors: list[str]) -> None:
+        self._dataset.data.extract.errors = extract_errors
+
+    def set_extract_last_update(self, extract_last_update: int) -> None:
+        self._dataset.data.extract.last_update = extract_last_update
+
+    def set_extract_filters(self, extract_filters: list[FilterField]) -> None:
+        self._dataset.data.extract.filters = extract_filters
+
+    def set_extract_sorting(self, extract_sorting: list[OrderField]) -> None:
+        self._dataset.data.extract.sorting = extract_sorting

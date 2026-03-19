@@ -20,11 +20,16 @@ from dl_api_lib.query.formalization.raw_specs import (
 from dl_constants.enums import (
     AggregationFunction,
     CalcMode,
+    ExtractMode,
     FieldType,
     ManagedBy,
     UserDataType,
 )
-from dl_core.fields import CalculationSpec
+from dl_core.fields import (
+    CalculationSpec,
+    FilterField,
+    OrderField,
+)
 from dl_model_tools.typed_values import BIValue
 
 
@@ -189,6 +194,17 @@ class UpdateSettingAction(Action):
 @attr.s(frozen=True, kw_only=True, auto_attribs=True)
 class UpdateDescriptionAction(Action):
     description: str
+
+
+@attr.s(frozen=True, kw_only=True, auto_attribs=True)
+class UpdateExtractAction(Action):
+    @attr.s(frozen=True, kw_only=True, auto_attribs=True)
+    class ExtractProperties:
+        mode: ExtractMode = attr.ib(default=ExtractMode.disabled)
+        filters: list[FilterField] = attr.ib(factory=list)
+        sorting: list[OrderField] = attr.ib(default=attr.Factory(list))
+
+    extract: ExtractProperties
 
 
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")

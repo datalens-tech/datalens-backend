@@ -10,7 +10,9 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-api-connector = {path = "../dl_api_connector"}
+dl-api-lib = {path = "../dl_api_lib"}
 dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-rls = {path = "../dl_rls"}
 marshmallow = "*"
