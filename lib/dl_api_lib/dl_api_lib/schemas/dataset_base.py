@@ -303,9 +303,11 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
             if not item.get("guid"):
                 item["guid"] = str(uuid.uuid4())
 
-        cache_invalidation_source_field = in_data.get("cache_invalidation_source", {}).get("field")
-        if cache_invalidation_source_field and not cache_invalidation_source_field.get("guid"):
-            cache_invalidation_source_field["guid"] = str(uuid.uuid4())
+        cache_invalidation_source = in_data.get("cache_invalidation_source", {})
+        if isinstance(cache_invalidation_source, dict):
+            cache_invalidation_source_field = cache_invalidation_source.get("field")
+            if cache_invalidation_source_field and not cache_invalidation_source_field.get("guid"):
+                cache_invalidation_source_field["guid"] = str(uuid.uuid4())
 
         return in_data
 
