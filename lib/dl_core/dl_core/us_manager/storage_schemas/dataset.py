@@ -490,7 +490,8 @@ class CacheInvalidationFieldStorageSchema(BIFieldSchemaBase):
     def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
         calc_spec_data = data.pop("calc_spec")
-        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode", CalcMode.formula.name)
+        calc_spec_data.pop("mode", None)
+        calc_spec_data["calc_mode"] = CalcMode.formula.name
         data.update(calc_spec_data)
         # For backward compatibility use '' for formula and source; avatar_id must be present even if None
         for key in ("formula", "guid_formula", "source"):
@@ -502,10 +503,8 @@ class CacheInvalidationFieldStorageSchema(BIFieldSchemaBase):
     @pre_load(pass_many=False)
     def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
-        mode = data.pop("calc_mode", None)
-        if not mode:
-            # Coerce None/empty calc_mode to default formula mode for backward compatibility
-            mode = CalcMode.formula.name
+        data.pop("calc_mode", None)
+        mode = CalcMode.formula.name
         data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
         return del_calc_spec_kwargs_from(data)
 

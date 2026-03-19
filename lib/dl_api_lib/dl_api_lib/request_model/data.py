@@ -19,13 +19,12 @@ from dl_api_lib.query.formalization.raw_specs import (
 )
 from dl_constants.enums import (
     AggregationFunction,
-    CacheInvalidationMode,
     CalcMode,
     FieldType,
     ManagedBy,
     UserDataType,
 )
-from dl_core.cache_invalidation import CacheInvalidationError
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.fields import CalculationSpec
 from dl_model_tools.typed_values import BIValue
 
@@ -193,24 +192,9 @@ class UpdateDescriptionAction(Action):
     description: str
 
 
-@attr.s(frozen=True, kw_only=True, auto_attribs=True)
-class UpdateCacheInvalidationSource:
-    mode: CacheInvalidationMode = attr.ib(default=CacheInvalidationMode.off)
-
-    # For mode: formula
-    filters: list[AddUpdateObligatoryFilter] = attr.ib(factory=list)
-    field: UpdateField | None = attr.ib(default=None)
-
-    # For mode: sql
-    sql: str | None = attr.ib(default=None)
-
-    # Read-only error field
-    cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
-
-
-@attr.s(frozen=True, kw_only=True, auto_attribs=True)
+@attr.s(kw_only=True, auto_attribs=True)
 class UpdateCacheInvalidationSourceAction(Action):
-    cache_invalidation_source: UpdateCacheInvalidationSource
+    cache_invalidation_source: CacheInvalidationSource
 
 
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
