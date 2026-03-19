@@ -161,8 +161,8 @@ def _validate_cache_invalidation_sql_mode(
         return CacheInvalidationError(
             title="Validation Error",
             message="Field 'sql' is required when mode is 'sql'",
-            level=NotificationLevel.critical,
-            locator="sql",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.sql",
         )
     return None
 
@@ -175,8 +175,8 @@ def _validate_cache_invalidation_formula_field_required(
         return CacheInvalidationError(
             title="Validation Error",
             message="Field 'field' is required when mode is 'formula'",
-            level=NotificationLevel.critical,
-            locator="field",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field",
         )
     return None
 
@@ -191,8 +191,8 @@ def _validate_cache_invalidation_formula_not_empty(
         return CacheInvalidationError(
             title="Validation Error",
             message="Formula cannot be empty",
-            level=NotificationLevel.critical,
-            locator="field.formula",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field.formula",
         )
     return None
 
@@ -205,15 +205,15 @@ def _validate_cache_invalidation_formula_result_type(
         return CacheInvalidationError(
             title="Validation Error",
             message="Cannot determine formula result type",
-            level=NotificationLevel.critical,
-            locator="field.formula",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field.formula",
         )
     if result_type != UserDataType.string:
         return CacheInvalidationError(
             title="Invalid Result Type",
             message=f"Formula must return string, got {result_type.name}",
-            level=NotificationLevel.critical,
-            locator="field.formula",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field.formula",
         )
     return None
 
@@ -1870,8 +1870,8 @@ class DatasetValidator(DatasetBaseWrapper):
             return CacheInvalidationError(
                 title="Validation Error",
                 message="Data source is not set for the dataset",
-                level=NotificationLevel.critical,
-                locator="field.formula",
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
             )
 
         # Use get_formula_errors() which creates a field, compiles it, and collects errors
@@ -1886,8 +1886,8 @@ class DatasetValidator(DatasetBaseWrapper):
             return CacheInvalidationError(
                 title=error_title,
                 message=first_error.message,
-                level=NotificationLevel.critical,
-                locator="field.formula",
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
             )
 
         # Compile formula to get CompiledFormulaInfo for SQL translation and type checking
@@ -1899,8 +1899,8 @@ class DatasetValidator(DatasetBaseWrapper):
             return CacheInvalidationError(
                 title="Formula Compilation Error",
                 message=error_message,
-                level=NotificationLevel.critical,
-                locator="field.formula",
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
             )
 
         # Check that formula returns string type
@@ -1927,8 +1927,8 @@ class DatasetValidator(DatasetBaseWrapper):
             return CacheInvalidationError(
                 title="Formula Translation Error",
                 message=first_error.message,
-                level=NotificationLevel.critical,
-                locator="field.formula",
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
             )
 
         return None
@@ -1951,8 +1951,8 @@ class DatasetValidator(DatasetBaseWrapper):
                 return CacheInvalidationError(
                     title="Invalid Filter",
                     message=f"Filter references unknown field: {filter_obj.field_guid}",
-                    level=NotificationLevel.critical,
-                    locator="filters",
+                    level=NotificationLevel.warning,
+                    locator="cache_invalidation_source.filters",
                 )
 
             # Check that filter operations are compatible with the field type
@@ -1966,8 +1966,8 @@ class DatasetValidator(DatasetBaseWrapper):
                                 f"Operation {default_filter.operation.name} "
                                 f"is not allowed for field type {field.cast.name}"
                             ),
-                            level=NotificationLevel.critical,
-                            locator="filters",
+                            level=NotificationLevel.warning,
+                            locator="cache_invalidation_source.filters",
                         )
 
         return None
