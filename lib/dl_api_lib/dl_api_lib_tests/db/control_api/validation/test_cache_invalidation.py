@@ -119,7 +119,9 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
+        assert (
+            ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.field.formula"
+        )
 
     def test_validation_formula_mode_with_whitespace_formula(
         self,
@@ -139,7 +141,9 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
+        assert (
+            ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.field.formula"
+        )
 
     def test_validation_formula_mode_with_invalid_syntax(
         self,
@@ -159,7 +163,9 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
+        assert (
+            ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.field.formula"
+        )
         assert "Syntax" in ds.cache_invalidation_source.cache_invalidation_error.title
 
     def test_validation_formula_mode_with_unknown_field(
@@ -180,7 +186,9 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
+        assert (
+            ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.field.formula"
+        )
         assert (
             "Unknown field found in formula: nonexistent_field_12345"
             in ds.cache_invalidation_source.cache_invalidation_error.message
@@ -227,7 +235,9 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
+        assert (
+            ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.field.formula"
+        )
         assert "Result Type" in ds.cache_invalidation_source.cache_invalidation_error.title
         assert "string" in ds.cache_invalidation_source.cache_invalidation_error.message.lower()
 
@@ -250,7 +260,9 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "field.formula"
+        assert (
+            ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.field.formula"
+        )
         assert "Result Type" in ds.cache_invalidation_source.cache_invalidation_error.title
 
     def test_validation_formula_mode_with_str_cast(
@@ -319,7 +331,7 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "filters"
+        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.filters"
         assert "Invalid Filter" in ds.cache_invalidation_source.cache_invalidation_error.title
         assert "nonexistent_field_guid_12345" in ds.cache_invalidation_source.cache_invalidation_error.message
 
@@ -357,7 +369,7 @@ class TestCacheInvalidation(DefaultApiTestBase):
         ds = control_api.save_dataset(resp.dataset).dataset
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is not None
-        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "filters"
+        assert ds.cache_invalidation_source.cache_invalidation_error.locator == "cache_invalidation_source.filters"
         assert "Invalid Filter Operation" in ds.cache_invalidation_source.cache_invalidation_error.title
 
     def test_validation_formula_mode_with_valid_filter(
