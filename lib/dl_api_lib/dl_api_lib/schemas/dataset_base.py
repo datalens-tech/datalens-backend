@@ -209,7 +209,7 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
     @pre_load(pass_many=False)
     def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
-        mode = data.get("calc_mode", CalcMode.formula.name)
+        mode = data.get("calc_mode") or CalcMode.formula.name
         data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
         return del_calc_spec_kwargs_from(data)
 
