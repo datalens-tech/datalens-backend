@@ -454,3 +454,113 @@ class TestCacheInvalidation(DefaultApiTestBase):
         assert resp.status_code == 200
         assert ds.cache_invalidation_source.cache_invalidation_error is None
         assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula
+
+    def test_change_mode_without_save_preserves_old_fields(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ) -> None:
+        """Test that changing mode without saving the dataset preserves fields from the old mode
+        and adds fields for the new mode.
+
+        Scenario: set sql mode with a query, save, then switch to formula mode
+        without saving. The response should contain both the old sql field
+        and the new formula-related fields.
+        """
+        sql_query = "SELECT MAX(updated_at) FROM my_table"
+
+        # Step 1: Set sql mode and save
+        update_data_sql = dict(
+            mode=CacheInvalidationMode.sql.value,
+            sql=sql_query,
+        )
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, data=update_data_sql).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        assert saved_dataset.cache_invalidation_source.mode == CacheInvalidationMode.sql
+        assert saved_dataset.cache_invalidation_source.sql == sql_query
+
+        # Step 2: Switch to formula mode WITHOUT saving
+        update_data_formula = dict(
+            mode=CacheInvalidationMode.formula.value,
+            field=dict(
+                guid="cache_field_1",
+                formula="MAX([category])",
+            ),
+        )
+        resp = control_api.update_cache_invalidation(saved_dataset, data=update_data_formula)
+        ds = resp.dataset
+        assert resp.status_code == 200
+
+        # Step 3: Verify new mode is set
+        assert ds.cache_invalidation_source.mode == CacheInvalidationMode.formula
+
+        # The sql field from the old mode should be preserved (not cleared)
+        assert ds.cache_invalidation_source.sql == sql_query
+
+        # The formula field for the new mode should be present
+        assert ds.cache_invalidation_source.field is not None
+        assert ds.cache_invalidation_source.field.formula == "MAX([category])"
+
+    def test_change_mode_without_save_preserves_formula_fields_when_switching_to_sql(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+    ) -> None:
+        """Test that switching from formula to sql mode without saving preserves
+        formula-related fields and adds sql field.
+
+        Scenario: set formula mode with a formula and filters, save, then switch
+        to sql mode without saving. The response should contain both the old
+        formula/filter fields and the new sql field.
+        """
+        category_field = saved_dataset.find_field(title="category")
+
+        # Step 1: Set formula mode with field and filter, then save
+        update_data_formula = dict(
+            mode=CacheInvalidationMode.formula.value,
+            field=dict(
+                guid="cache_field_1",
+                formula="MAX([category])",
+            ),
+            filters=[
+                dict(
+                    id="filter_1",
+                    field_guid=category_field.id,
+                    default_filters=[
+                        dict(
+                            column=category_field.id,
+                            operation=WhereClauseOperation.EQ.name,
+                            values=["Furniture"],
+                        ),
+                    ],
+                ),
+            ],
+        )
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, data=update_data_formula).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        assert saved_dataset.cache_invalidation_source.mode == CacheInvalidationMode.formula
+        assert saved_dataset.cache_invalidation_source.field is not None
+        assert len(saved_dataset.cache_invalidation_source.filters) == 1
+
+        # Step 2: Switch to sql mode WITHOUT saving
+        sql_query = "SELECT MAX(updated_at) FROM my_table"
+        update_data_sql = dict(
+            mode=CacheInvalidationMode.sql.value,
+            sql=sql_query,
+        )
+        resp = control_api.update_cache_invalidation(saved_dataset, data=update_data_sql)
+        ds = resp.dataset
+        assert resp.status_code == 200
+
+        # Step 3: Verify new mode is set
+        assert ds.cache_invalidation_source.mode == CacheInvalidationMode.sql
+
+        # The sql field for the new mode should be present
+        assert ds.cache_invalidation_source.sql == sql_query
+
+        # The formula-related fields from the old mode should be preserved
+        assert ds.cache_invalidation_source.field is not None
+        assert ds.cache_invalidation_source.field.formula == "MAX([category])"
+        assert len(ds.cache_invalidation_source.filters) == 1

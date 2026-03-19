@@ -68,7 +68,7 @@ EMPTY_DS_UPDATE_INFO = DatasetUpdateInfo(
 
 def clear_cache_invalidation_source_irrelevant_data(
     cache_invalidation_source: CacheInvalidationSource,
-) -> CacheInvalidationSource:
+) -> None:
     if cache_invalidation_source.mode == CacheInvalidationMode.off:
         cache_invalidation_source.sql = None
         cache_invalidation_source.field = None
@@ -79,7 +79,6 @@ def clear_cache_invalidation_source_irrelevant_data(
     elif cache_invalidation_source.mode == CacheInvalidationMode.sql:
         cache_invalidation_source.field = None
         cache_invalidation_source.filters = []
-    return cache_invalidation_source
 
 
 @attr.s
@@ -422,10 +421,8 @@ class DatasetApiLoader:
 
         # cache_invalidation
         if body.get("cache_invalidation_source"):
-            cache_invalidation_source = clear_cache_invalidation_source_irrelevant_data(
-                body["cache_invalidation_source"]
-            )
-            ds_editor.set_cache_invalidation_source(cache_invalidation_source)
+            clear_cache_invalidation_source_irrelevant_data(body["cache_invalidation_source"])
+            ds_editor.set_cache_invalidation_source(body["cache_invalidation_source"])
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))
