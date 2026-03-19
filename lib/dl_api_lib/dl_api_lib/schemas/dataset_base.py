@@ -38,7 +38,9 @@ from dl_constants.enums import (
     UserDataType,
 )
 from dl_core.cache_invalidation import (
+    INVALIDATION_CACHE_SERVICE_FIELD_TITLE,
     CacheInvalidationError,
+    CacheInvalidationField,
     CacheInvalidationSource,
 )
 from dl_core.fields import (
@@ -199,7 +201,9 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
     Inherits all fields from ResultSchemaBase with overridden ones
     """
 
-    title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
+    TARGET_CLS = CacheInvalidationField
+
+    title = ma_fields.String(load_default=INVALIDATION_CACHE_SERVICE_FIELD_TITLE)
     cast = ma_fields.Enum(UserDataType, load_default=UserDataType.string)
 
     # this will be flattened on dump and un-flattened before load

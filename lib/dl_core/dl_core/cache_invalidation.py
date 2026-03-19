@@ -10,6 +10,9 @@ from dl_core.base_models import ObligatoryFilter
 from dl_core.fields import BIField
 
 
+INVALIDATION_CACHE_SERVICE_FIELD_TITLE = "INVALIDATION CACHE SERVICE FIELD"
+
+
 @attr.s()
 class CacheInvalidationError:
     """Error from cache invalidation validation"""

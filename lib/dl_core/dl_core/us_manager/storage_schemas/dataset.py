@@ -32,6 +32,7 @@ from dl_core.base_models import (
     ObligatoryFilter,
 )
 from dl_core.cache_invalidation import (
+    INVALIDATION_CACHE_SERVICE_FIELD_TITLE,
     CacheInvalidationError,
     CacheInvalidationField,
     CacheInvalidationSource,
@@ -482,7 +483,7 @@ class ObligatoryFilterSchema(DefaultStorageSchema):
 class CacheInvalidationFieldStorageSchema(BIFieldSchemaBase):
     TARGET_CLS = CacheInvalidationField
 
-    title = ma_fields.String(load_default="INVALIDATION CACHE SERVICE FIELD")
+    title = ma_fields.String(load_default=INVALIDATION_CACHE_SERVICE_FIELD_TITLE)
     calc_spec = ma_fields.Nested(FormulaCalculationSpecSchema)
 
     @post_dump(pass_many=False)
@@ -550,5 +551,5 @@ class DatasetStorageSchema(DefaultStorageSchema):
     rls = ma_fields.Nested(RLSSchema, allow_none=False)
     component_errors = ma_fields.Nested(ComponentErrorListSchema)
     obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))
-    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceStorageSchema, allow_none=True)
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceStorageSchema)
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")
