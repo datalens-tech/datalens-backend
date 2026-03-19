@@ -501,7 +501,10 @@ class CacheInvalidationFieldStorageSchema(BIFieldSchemaBase):
     @pre_load(pass_many=False)
     def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         data = deepcopy(data)
-        mode = data.pop("calc_mode", CalcMode.formula.name)
+        mode = data.pop("calc_mode", None)
+        if not mode:
+            # Coerce None/empty calc_mode to default formula mode for backward compatibility
+            mode = CalcMode.formula.name
         data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
         return del_calc_spec_kwargs_from(data)
 
