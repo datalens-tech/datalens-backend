@@ -126,19 +126,6 @@ class ResultSchemaBase(WithNestedValueSchema, DefaultSchema[BIField]):
     lock_aggregation = ma_fields.Boolean(allow_none=True)
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
 
-    @post_dump(pass_many=False)
-    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
-        data = deepcopy(data)
-        calc_spec_data = data.pop("calc_spec")
-        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
-        data.update(calc_spec_data)
-        # For backward compatibility use '' for formula and source; avatar_id must be present even if None
-        for key in ("formula", "guid_formula", "source"):
-            data.setdefault(key, "")
-        for key in ("avatar_id", "default_value", "value_constraint"):
-            data.setdefault(key, None)
-        return data
-
     def to_object(self, data: dict) -> BIField:
         return self.get_target_cls().make(**data)
 
@@ -165,6 +152,19 @@ class ResultSchemaSchema(ResultSchemaBase):
         mode = data["calc_mode"]
         data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
         return del_calc_spec_kwargs_from(data)
+
+    @post_dump(pass_many=False)
+    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        calc_spec_data = data.pop("calc_spec")
+        calc_spec_data["calc_mode"] = calc_spec_data.pop("mode")
+        data.update(calc_spec_data)
+        # For backward compatibility use '' for formula and source; avatar_id must be present even if None
+        for key in ("formula", "guid_formula", "source"):
+            data.setdefault(key, "")
+        for key in ("avatar_id", "default_value", "value_constraint"):
+            data.setdefault(key, None)
+        return data
 
     @validates_schema
     def check_source_is_set_for_direct_and_aggregation_types(

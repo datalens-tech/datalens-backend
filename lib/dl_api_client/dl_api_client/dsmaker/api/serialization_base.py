@@ -8,6 +8,7 @@ from marshmallow import fields as ma_fields
 
 from dl_api_client.dsmaker.api.schemas.base import DefaultSchema
 from dl_api_client.dsmaker.api.schemas.dataset import (
+    CacheInvalidationSourceSchema,
     DatasetContentInternalSchema,
     ObligatoryFilterSchema,
     ParameterValueConstraintSchema,
@@ -181,42 +182,7 @@ class BaseApiV1SerializationAdapter:
 
     @_dump_item.register(CacheInvalidationSource)
     def dump_cache_invalidation(self, item: CacheInvalidationSource, action: Action) -> dict:
-        field_item = item.field
-        return dict(
-            mode=item.mode.value,
-            sql=item.sql,
-            filters=[ObligatoryFilterSchema().dump(filter_item) for filter_item in item.filters]
-            if item.filters
-            else [],
-            field=dict(
-                guid=field_item.id,
-                title=field_item.title,
-                calc_mode=field_item.calc_mode.name if field_item.calc_mode is not None else None,
-                aggregation=field_item.aggregation.name if field_item.aggregation is not None else None,
-                type=field_item.type.name if field_item.type is not None else None,
-                source=field_item.source,
-                hidden=field_item.hidden,
-                description=field_item.description,
-                formula=field_item.formula,
-                initial_data_type=field_item.initial_data_type.name
-                if field_item.initial_data_type is not None
-                else None,
-                cast=field_item.cast.name if field_item.cast is not None else None,
-                data_type=field_item.data_type.name if field_item.data_type is not None else None,
-                valid=field_item.valid,
-                has_auto_aggregation=field_item.has_auto_aggregation,
-                lock_aggregation=field_item.lock_aggregation,
-                avatar_id=field_item.avatar_id,
-                managed_by=field_item.managed_by.name,
-                default_value=field_item.default_value.value if field_item.default_value is not None else None,
-                value_constraint=ParameterValueConstraintSchema().dump(field_item.value_constraint)
-                if field_item.value_constraint is not None
-                else None,
-                template_enabled=field_item.template_enabled,
-            )
-            if field_item
-            else None,
-        )
+        return CacheInvalidationSourceSchema().dump(item)
 
     def _strip_implicit_updates_from_dataset(self, dataset: Dataset) -> Dataset:
         return dataset.clone(
