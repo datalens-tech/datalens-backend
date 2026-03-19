@@ -146,6 +146,23 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
         return None
 
+    def _populate_global_keeper(self, keeper: SecretKeeper) -> None:
+        keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+        for key_id, key_val in self._settings.CRYPTO_KEYS_CONFIG.map_id_key.items():
+            keeper.add_secret(key_val, f"crypto_key_{key_id}")
+        keeper.add_secret(self._settings.SENTRY_DSN, "sentry_dsn")
+        keeper.add_secret(self._settings.BI_COMPENG_PG_URL, "compeng_pg_url")
+        if self._settings.CACHES_REDIS:
+            keeper.add_secret(self._settings.CACHES_REDIS.PASSWORD, "redis_caches_redis_password")
+        if self._settings.MUTATIONS_REDIS:
+            keeper.add_secret(self._settings.MUTATIONS_REDIS.PASSWORD, "redis_mutations_redis_password")
+        if self._settings.RQE_CACHES_REDIS:
+            keeper.add_secret(self._settings.RQE_CACHES_REDIS.PASSWORD, "redis_rqe_caches_redis_password")
+        auth_settings = getattr(self._settings, "AUTH", None)
+        if auth_settings is not None:
+            keeper.add_secret(getattr(auth_settings, "CLIENT_SECRET", None), "zitadel_client_secret")
+            keeper.add_secret(getattr(auth_settings, "APP_CLIENT_SECRET", None), "zitadel_app_client_secret")
+
     def set_up_routes(self, app: web.Application) -> None:
         app.router.add_route("get", "/ping", PingView)
         app.router.add_route("get", "/ping_ready", PingReadyView)
@@ -251,8 +268,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
 
         if self._settings.OBFUSCATION_ENABLED:
             global_keeper = SecretKeeper()
-            if self._settings.US_MASTER_TOKEN:
-                global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+            self._populate_global_keeper(global_keeper)
             app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
                 global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),
