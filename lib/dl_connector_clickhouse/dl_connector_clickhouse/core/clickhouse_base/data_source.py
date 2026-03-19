@@ -20,7 +20,8 @@ LOGGER = logging.getLogger(__name__)
 class CommonClickHouseSubselectDataSource(SubselectDataSource):
     """Common subselect base for ClickHouse-based databases"""
 
-    pass
+    _subquery_auto_alias = None
+    _subquery_table_definition_alias = None
 
 
 class ClickHouseBaseMixin(BaseSQLDataSource):

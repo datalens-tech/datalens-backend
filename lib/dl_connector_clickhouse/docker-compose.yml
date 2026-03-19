@@ -26,6 +26,14 @@ services:
       context: docker-compose
       dockerfile: Dockerfile.db-clickhouse-22-10.ssl
 
+  db-clickhouse-26:
+    ports:
+      - "52208:8123"
+      - "52209:9000"
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-clickhouse-26
+
   # INFRA
   pg-us:
     extends:
