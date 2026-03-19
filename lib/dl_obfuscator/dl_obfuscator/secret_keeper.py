@@ -15,13 +15,19 @@ class SecretKeeper:
     _min_secret_length: int = attr.ib(default=3)
     _min_param_length: int = attr.ib(default=3)
 
-    def add_secret(self, secret: str, name: str) -> None:
+    def add_secret(self, secret: str | None, name: str) -> None:
+        if secret is None:
+            LOGGER.info("Secret %r is None, skipping", name)
+            return
         if len(secret) >= self._min_secret_length:
             self._secrets[secret] = name
         else:
             LOGGER.warning("Secret %r is too short (len=%d), skipping", name, len(secret))
 
-    def add_param(self, param: str, name: str) -> None:
+    def add_param(self, param: str | None, name: str) -> None:
+        if param is None:
+            LOGGER.info("Param %r is None, skipping", name)
+            return
         if len(param) >= self._min_param_length:
             self._params[param] = name
         else:
