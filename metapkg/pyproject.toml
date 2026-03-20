@@ -190,6 +190,7 @@ dl-zitadel = {develop = true, path = "../lib/dl_zitadel"}
 dynamic-enum = {develop = true, path = "../lib/dynamic_enum"}
 redis_cache_lock = {develop = true, path = "../lib/redis-cache-lock"}
 statcommons = {develop = true, path = "../lib/statcommons"}
+dl-connector-starrocks = {develop = true, path = "../lib/dl_connector_starrocks"}
 
 [tool.poetry.group.dev.dependencies]
 babel = "==2.12.1"
