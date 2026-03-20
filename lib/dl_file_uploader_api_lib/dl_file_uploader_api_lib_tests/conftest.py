@@ -84,7 +84,6 @@ from dl_testing.utils import (
     get_default_aiohttp_session,
     get_root_certificates,
 )
-import dl_us_entries_client
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import (
     FileS3ConnectorSettingsBase,
@@ -169,6 +168,11 @@ def crypto_keys_config() -> CryptoKeysConfig:
 @pytest.fixture(scope="function")
 def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config, us_config):
     monkeypatch.setenv("EXT_QUERY_EXECUTER_SECRET_KEY", "dummy")
+    monkeypatch.setenv("US_ENTRIES_CLIENT__USER_AUTH_PROVIDER__TYPE", "NONE")
+    monkeypatch.setenv("US_ENTRIES_CLIENT__BASE_URL", us_config.base_url)
+    monkeypatch.setenv("S3__ENDPOINT_URL", s3_settings.ENDPOINT_URL)
+    monkeypatch.setenv("S3__ACCESS_KEY_ID", s3_settings.ACCESS_KEY_ID)
+    monkeypatch.setenv("S3__SECRET_ACCESS_KEY", s3_settings.SECRET_ACCESS_KEY)
 
     deprecated_settings = DeprecatedFileUploaderAPISettings(
         REDIS_APP=redis_app_settings,
@@ -190,32 +194,16 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         ALLOW_XLSX=True,
     )
-    settings = FileUploaderAPISettings(
-        S3=S3ClientSettings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
-        US_ENTRIES_CLIENT=dl_us_entries_client.USEntriesClientSettings(
-            BASE_URL=us_config.base_url,
-            USER_AUTH_PROVIDER=dl_auth.NoAuthProviderSettings(),
-        ),
-        fallback=deprecated_settings,
-    )
+    settings = FileUploaderAPISettings(fallback=deprecated_settings)
     yield settings
 
 
 class _TestUSAuthProviderFactory:
-    def __init__(self, us_master_token: str) -> None:
-        self._us_master_token = us_master_token
-
     def create(self, auth_data: dl_auth.AuthData) -> dl_auth.AuthProviderProtocol:
-        return dl_auth.USMasterTokenAuthProvider(token=self._us_master_token)
+        return dl_auth.NoAuthProvider()
 
 
 class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPISettings]):
-    _us_master_token: str = attr.ib(default="")
-
     def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
@@ -225,15 +213,12 @@ class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPI
         ]
 
     def get_us_auth_provider_factory(self) -> USAuthProviderFactory:
-        return _TestUSAuthProviderFactory(us_master_token=self._us_master_token)
+        return _TestUSAuthProviderFactory()
 
 
 @pytest.fixture(scope="function")
-def bi_file_uploader_app(loop, aiohttp_client, app_settings, us_config):
-    app_factory = TestingFileUploaderApiAppFactory(
-        settings=app_settings,
-        us_master_token=us_config.master_token,
-    )
+def bi_file_uploader_app(loop, aiohttp_client, app_settings):
+    app_factory = TestingFileUploaderApiAppFactory(settings=app_settings)
     app = app_factory.create_app("tests")
     return loop.run_until_complete(aiohttp_client(app))
 
@@ -343,7 +328,12 @@ def file_uploader_worker_settings(
     us_config,
     crypto_keys_config,
     secure_reader,
+    monkeypatch,
 ):
+    monkeypatch.setenv("S3__ENDPOINT_URL", s3_settings.ENDPOINT_URL)
+    monkeypatch.setenv("S3__ACCESS_KEY_ID", s3_settings.ACCESS_KEY_ID)
+    monkeypatch.setenv("S3__SECRET_ACCESS_KEY", s3_settings.SECRET_ACCESS_KEY)
+
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
@@ -363,11 +353,6 @@ def file_uploader_worker_settings(
     settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=connectors_settings,
-        S3=S3ClientSettings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
     )
     yield settings
 

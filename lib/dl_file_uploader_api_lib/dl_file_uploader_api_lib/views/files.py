@@ -338,8 +338,10 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                 auth_provider=self.dl_request.get_us_auth_provider(),
                 request_id=request_id,
                 entry_id=connection_id,
+                include_permissions_info=True,
             )
         )
+        assert connection.permissions is not None
         if not connection.permissions.edit:
             raise exc.PermissionDenied("User does not have edit permission for the connection")
 
