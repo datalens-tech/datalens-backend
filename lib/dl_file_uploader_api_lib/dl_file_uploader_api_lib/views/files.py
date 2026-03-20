@@ -337,15 +337,18 @@ class UpdateConnectionDataView(FileUploaderBaseView):
         tenant = self.dl_request.rci.tenant
         assert tenant is not None
         tenant_headers = dl_api_commons.stringify_dl_headers(tenant.get_outbound_tenancy_headers())
-        connection = await us_entries_client.get_entry(
-            request=dl_us_entries_client.EntryGetRequest(
-                auth_provider=self.dl_request.get_us_auth_provider(),
-                request_id=request_id,
-                extra_headers=tenant_headers,
-                entry_id=connection_id,
-                include_permissions_info=True,
+        try:
+            connection = await us_entries_client.get_entry(
+                request=dl_us_entries_client.EntryGetRequest(
+                    auth_provider=self.dl_request.get_us_auth_provider(),
+                    request_id=request_id,
+                    extra_headers=tenant_headers,
+                    entry_id=connection_id,
+                    include_permissions_info=True,
+                )
             )
-        )
+        except dl_us_entries_client.EntryNotFoundError:
+            raise exc.ObjectNotFound("Connection not found")
         assert connection.permissions is not None
         if not connection.permissions.edit:
             raise exc.PermissionDenied("User does not have edit permission for the connection")

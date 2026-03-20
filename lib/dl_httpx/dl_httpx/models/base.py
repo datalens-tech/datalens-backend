@@ -66,15 +66,12 @@ class BaseRequest:
 
     @property
     def headers(self) -> dict[str, str]:
-        result = {
-            dl_constants.DLHeadersCommon.REQUEST_ID.value: self.request_id,
-        }
+        result = self.extra_headers.copy()
+        result[dl_constants.DLHeadersCommon.REQUEST_ID.value] = self.request_id
         if self.parent_context.user_ip is not None:
             result[dl_constants.DLHeadersCommon.REAL_IP.value] = self.parent_context.user_ip
         if self.parent_context.trace_id is not None:
             result[dl_constants.DLHeadersCommon.UBER_TRACE_ID.value] = self.parent_context.trace_id
-
-        result |= self.extra_headers
 
         return result
 

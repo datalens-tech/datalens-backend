@@ -7,13 +7,13 @@ import dl_auth
 class AuthDataUSAuthProvider:
     """Adapts AuthData to AuthProviderProtocol targeting UNITED_STORAGE."""
 
-    _auth_data: dl_auth.AuthData
+    auth_data: dl_auth.AuthData
 
     def get_headers(self) -> dict[str, str]:
-        return {k.value: v for k, v in self._auth_data.get_headers(dl_auth.AuthTarget.UNITED_STORAGE).items()}
+        return {k.value: v for k, v in self.auth_data.get_headers(dl_auth.AuthTarget.UNITED_STORAGE).items()}
 
     def get_cookies(self) -> dict[str, str]:
-        return {k.value: v for k, v in self._auth_data.get_cookies(dl_auth.AuthTarget.UNITED_STORAGE).items()}
+        return {k.value: v for k, v in self.auth_data.get_cookies(dl_auth.AuthTarget.UNITED_STORAGE).items()}
 
     async def get_headers_async(self) -> dict[str, str]:
         return self.get_headers()
