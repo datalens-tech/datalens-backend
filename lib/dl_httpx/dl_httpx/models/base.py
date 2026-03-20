@@ -35,6 +35,7 @@ class BaseRequest:
     parent_context: ParentContextProtocol = attrs.field(factory=ParentContext)
     auth_provider: dl_auth.AuthProviderProtocol | None = None
     request_id: str = attrs.field()
+    extra_headers: dict[str, str] = attrs.field(factory=dict)
 
     @request_id.default
     def _generate_request_id(self) -> str:
@@ -72,6 +73,8 @@ class BaseRequest:
             result[dl_constants.DLHeadersCommon.REAL_IP.value] = self.parent_context.user_ip
         if self.parent_context.trace_id is not None:
             result[dl_constants.DLHeadersCommon.UBER_TRACE_ID.value] = self.parent_context.trace_id
+
+        result |= self.extra_headers
 
         return result
 

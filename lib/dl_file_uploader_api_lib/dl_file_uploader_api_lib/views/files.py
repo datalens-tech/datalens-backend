@@ -16,6 +16,7 @@ from aiohttp import web
 from aiohttp.multipart import BodyPartReader
 from redis.asyncio.lock import Lock as RedisLock
 
+import dl_api_commons
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
     RequiredResource,
     RequiredResourceCommon,
@@ -333,10 +334,14 @@ class UpdateConnectionDataView(FileUploaderBaseView):
         if request_id is None:
             LOGGER.warning("Empty request id, generating one")
             request_id = str(uuid.uuid4())
+        tenant = self.dl_request.rci.tenant
+        assert tenant is not None
+        tenant_headers = dl_api_commons.stringify_dl_headers(tenant.get_outbound_tenancy_headers())
         connection = await us_entries_client.get_entry(
             request=dl_us_entries_client.EntryGetRequest(
                 auth_provider=self.dl_request.get_us_auth_provider(),
                 request_id=request_id,
+                extra_headers=tenant_headers,
                 entry_id=connection_id,
                 include_permissions_info=True,
             )

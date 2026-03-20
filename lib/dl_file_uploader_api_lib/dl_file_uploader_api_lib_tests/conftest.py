@@ -45,7 +45,6 @@ from dl_core_testing.environment import (
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
-from dl_file_uploader_api_lib.aiohttp_services.us_auth_provider_factory import USAuthProviderFactory
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import (
@@ -198,11 +197,6 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
     yield settings
 
 
-class _TestUSAuthProviderFactory:
-    def create(self, auth_data: dl_auth.AuthData) -> dl_auth.AuthProviderProtocol:
-        return dl_auth.NoAuthProvider()
-
-
 class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPISettings]):
     def get_auth_middlewares(self) -> list[Middleware]:
         return [
@@ -211,9 +205,6 @@ class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPI
                 fake_user_name=TEST_USER_NAME,
             )
         ]
-
-    def get_us_auth_provider_factory(self) -> USAuthProviderFactory:
-        return _TestUSAuthProviderFactory()
 
 
 @pytest.fixture(scope="function")
