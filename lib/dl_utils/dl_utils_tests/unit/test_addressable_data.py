@@ -1,228 +1,236 @@
-from __future__ import annotations
-
-
 from dl_utils.utils import (
     AddressableData,
     DataKey,
 )
 
 
-class TestAddressableDataPopEmpty:
-    def test_pop_empty_with_empty_key(self):
-        data = {
-            "a": {
-                "b": {
-                    "c": "value",
-                },
+def test_pop_empty_with_empty_key() -> None:
+    data = {
+        "a": {
+            "b": {
+                "c": "value",
             },
-        }
-        original_data = data.copy()
+        },
+    }
+    original_data = data.copy()
 
-        AddressableData._pop_empty(data, DataKey(parts=()))
+    AddressableData._pop_empty(data, DataKey(parts=()))
 
-        assert data == original_data
+    assert data == original_data
 
-    def test_pop_empty_single_level_empty_dict(self):
-        data = {
-            "a": {},
-            "b": "value",
-        }
 
-        AddressableData._pop_empty(data, DataKey(parts=("a",)))
+def test_pop_empty_single_level_empty_dict() -> None:
+    data = {
+        "a": {},
+        "b": "value",
+    }
 
-        assert data == {
-            "b": "value",
-        }
+    AddressableData._pop_empty(data, DataKey(parts=("a",)))
 
-    def test_pop_empty_single_level_non_empty_dict(self):
-        data = {
-            "a": {
-                "nested": "value",
-            },
-            "b": "value",
-        }
-        original_data = data.copy()
+    assert data == {
+        "b": "value",
+    }
 
-        AddressableData._pop_empty(data, DataKey(parts=("a",)))
 
-        assert data == original_data
+def test_pop_empty_single_level_non_empty_dict() -> None:
+    data = {
+        "a": {
+            "nested": "value",
+        },
+        "b": "value",
+    }
+    original_data = data.copy()
 
-    def test_pop_empty_single_level_non_dict_value(self):
-        data = {
-            "a": "string_value",
-            "b": 123,
-            "c": [1, 2, 3],
-        }
-        original_data = data.copy()
+    AddressableData._pop_empty(data, DataKey(parts=("a",)))
 
-        AddressableData._pop_empty(data, DataKey(parts=("a",)))
-        AddressableData._pop_empty(data, DataKey(parts=("b",)))
-        AddressableData._pop_empty(data, DataKey(parts=("c",)))
+    assert data == original_data
 
-        assert data == original_data
 
-    def test_pop_empty_nested_empty_dicts(self):
-        data = {
-            "a": {
-                "b": {
-                    "c": {},
-                },
-            },
-            "d": "value",
-        }
+def test_pop_empty_single_level_non_dict_value() -> None:
+    data = {
+        "a": "string_value",
+        "b": 123,
+        "c": [1, 2, 3],
+    }
+    original_data = data.copy()
 
-        AddressableData._pop_empty(data, DataKey(parts=("a", "b", "c")))
+    AddressableData._pop_empty(data, DataKey(parts=("a",)))
+    AddressableData._pop_empty(data, DataKey(parts=("b",)))
+    AddressableData._pop_empty(data, DataKey(parts=("c",)))
 
-        assert data == {"d": "value"}
+    assert data == original_data
 
-    def test_pop_empty_partial_nested_cleanup(self):
-        data = {
-            "a": {
-                "b": {
-                    "c": {},
-                    "d": "value",
-                },
-            },
-            "e": "value",
-        }
 
-        AddressableData._pop_empty(data, DataKey(parts=("a", "b", "c")))
-
-        expected = {
-            "a": {
-                "b": {
-                    "d": "value",
-                },
-            },
-            "e": "value",
-        }
-        assert data == expected
-
-    def test_pop_empty_deep_nested_structure(self):
-        data = {
-            "level1": {
-                "level2": {
-                    "level3": {
-                        "level4": {
-                            "level5": {},
-                        },
-                    },
-                },
-            },
-            "other": "value",
-        }
-
-        AddressableData._pop_empty(data, DataKey(parts=("level1", "level2", "level3", "level4", "level5")))
-
-        assert data == {
-            "other": "value",
-        }
-
-    def test_pop_empty_multiple_branches(self):
-        data = {
-            "branch1": {
-                "empty": {},
-            },
-            "branch2": {
-                "also_empty": {},
-            },
-            "branch3": {"not_empty": "value"},
-        }
-
-        AddressableData._pop_empty(data, DataKey(parts=("branch1", "empty")))
-
-        expected = {
-            "branch2": {
-                "also_empty": {},
-            },
-            "branch3": {"not_empty": "value"},
-        }
-        assert data == expected
-
-    def test_pop_empty_nonexistent_key(self):
-        data = {
-            "a": {
-                "b": "value",
-            },
-        }
-        original_data = data.copy()
-
-        AddressableData._pop_empty(data, DataKey(parts=("nonexistent",)))
-
-        assert data == original_data
-
-    def test_pop_empty_nonexistent_nested_key(self):
-        data = {
-            "a": {
-                "b": "value",
-            },
-        }
-        original_data = data.copy()
-
-        AddressableData._pop_empty(data, DataKey(parts=("a", "nonexistent")))
-
-        assert data == original_data
-
-    def test_pop_empty_stops_at_non_empty_parent(self):
-        data = {
-            "root": {
-                "parent": {
-                    "child": {
-                        "target": {},
-                    },
-                    "sibling": "value",
-                },
-            },
-        }
-
-        AddressableData._pop_empty(data, DataKey(parts=("root", "parent", "child", "target")))
-
-        expected = {
-            "root": {
-                "parent": {
-                    "sibling": "value",
-                },
-            },
-        }
-        assert data == expected
-
-    def test_pop_empty_with_none_values(self):
-        data = {
-            "a": None,
+def test_pop_empty_nested_empty_dicts() -> None:
+    data = {
+        "a": {
             "b": {
                 "c": {},
             },
-        }
+        },
+        "d": "value",
+    }
 
-        # Should not crash when encountering None
-        AddressableData._pop_empty(data, DataKey(parts=("a", "nonexistent")))
+    AddressableData._pop_empty(data, DataKey(parts=("a", "b", "c")))
 
-        # Should not pop None
-        AddressableData._pop_empty(data, DataKey(parts=("a")))
+    assert data == {"d": "value"}
 
-        # Should still work for valid paths
-        AddressableData._pop_empty(data, DataKey(parts=("b", "c")))
 
-        expected = {
-            "a": None,
-        }
-        assert data == expected
+def test_pop_empty_partial_nested_cleanup() -> None:
+    data = {
+        "a": {
+            "b": {
+                "c": {},
+                "d": "value",
+            },
+        },
+        "e": "value",
+    }
 
-    def test_pop_empty_integration_with_addressable_data(self):
-        addressable_data = AddressableData(
-            data={
-                "section1": {
-                    "subsection": {
-                        "item": "to_be_removed",
+    AddressableData._pop_empty(data, DataKey(parts=("a", "b", "c")))
+
+    expected = {
+        "a": {
+            "b": {
+                "d": "value",
+            },
+        },
+        "e": "value",
+    }
+    assert data == expected
+
+
+def test_pop_empty_deep_nested_structure() -> None:
+    data = {
+        "level1": {
+            "level2": {
+                "level3": {
+                    "level4": {
+                        "level5": {},
                     },
                 },
-                "section2": "value",
-            }
-        )
+            },
+        },
+        "other": "value",
+    }
 
-        result = addressable_data.pop(DataKey(parts=("section1", "subsection", "item")), remove_empty=True)
+    AddressableData._pop_empty(data, DataKey(parts=("level1", "level2", "level3", "level4", "level5")))
 
-        assert result == "to_be_removed"
-        assert addressable_data.data == {
+    assert data == {
+        "other": "value",
+    }
+
+
+def test_pop_empty_multiple_branches() -> None:
+    data = {
+        "branch1": {
+            "empty": {},
+        },
+        "branch2": {
+            "also_empty": {},
+        },
+        "branch3": {"not_empty": "value"},
+    }
+
+    AddressableData._pop_empty(data, DataKey(parts=("branch1", "empty")))
+
+    expected = {
+        "branch2": {
+            "also_empty": {},
+        },
+        "branch3": {"not_empty": "value"},
+    }
+    assert data == expected
+
+
+def test_pop_empty_nonexistent_key() -> None:
+    data = {
+        "a": {
+            "b": "value",
+        },
+    }
+    original_data = data.copy()
+
+    AddressableData._pop_empty(data, DataKey(parts=("nonexistent",)))
+
+    assert data == original_data
+
+
+def test_pop_empty_nonexistent_nested_key() -> None:
+    data = {
+        "a": {
+            "b": "value",
+        },
+    }
+    original_data = data.copy()
+
+    AddressableData._pop_empty(data, DataKey(parts=("a", "nonexistent")))
+
+    assert data == original_data
+
+
+def test_pop_empty_stops_at_non_empty_parent() -> None:
+    data = {
+        "root": {
+            "parent": {
+                "child": {
+                    "target": {},
+                },
+                "sibling": "value",
+            },
+        },
+    }
+
+    AddressableData._pop_empty(data, DataKey(parts=("root", "parent", "child", "target")))
+
+    expected = {
+        "root": {
+            "parent": {
+                "sibling": "value",
+            },
+        },
+    }
+    assert data == expected
+
+
+def test_pop_empty_with_none_values() -> None:
+    data = {
+        "a": None,
+        "b": {
+            "c": {},
+        },
+    }
+
+    # Should not crash when encountering None
+    AddressableData._pop_empty(data, DataKey(parts=("a", "nonexistent")))
+
+    # Should not pop None
+    AddressableData._pop_empty(data, DataKey(parts=("a")))
+
+    # Should still work for valid paths
+    AddressableData._pop_empty(data, DataKey(parts=("b", "c")))
+
+    expected = {
+        "a": None,
+    }
+    assert data == expected
+
+
+def test_pop_empty_integration_with_addressable_data() -> None:
+    addressable_data = AddressableData(
+        data={
+            "section1": {
+                "subsection": {
+                    "item": "to_be_removed",
+                },
+            },
             "section2": "value",
         }
+    )
+
+    result = addressable_data.pop(DataKey(parts=("section1", "subsection", "item")), remove_empty=True)
+
+    assert result == "to_be_removed"
+    assert addressable_data.data == {
+        "section2": "value",
+    }
