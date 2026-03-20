@@ -1,6 +1,6 @@
 import dl_auth
 from dl_constants.api_constants import DLHeadersCommon
-from dl_file_uploader_api_lib.aiohttp_services.us_auth_provider_factory import AuthDataUSAuthProvider
+from dl_file_uploader_api_lib.auth_provider import AuthDataUSAuthProvider
 
 
 class _FakeAuthData(dl_auth.AuthData):
