@@ -2517,6 +2517,19 @@ type = "directory"
 url = "../lib/dl_connector_snowflake"
 
 [[package]]
+name = "dl-connector-starrocks"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_connector_starrocks"
+
+[[package]]
 name = "dl-connector-trino"
 version = "0.0.1"
 description = ""
@@ -9595,4 +9608,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "18fb3f415826d1ad86ec96cbf0b48230c985272f1d903a02cf1630a12a5e92ad"
+content-hash = "18d760c42b277f261eebd82ea69745400833ba52ba0f44b29c3bb661d6a8b4b9"
