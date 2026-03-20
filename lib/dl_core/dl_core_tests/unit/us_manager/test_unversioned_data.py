@@ -274,7 +274,7 @@ def test_unpack_with_complete_cat_properties(
     test_serializer: TestSerializer,
     crypto_controller: dl_crypto.CryptoController,
 ) -> None:
-    # Include all fields, but only subset of them is really used as defined by get_unversioned_fields
+    # Include all fields, but only a subset is really used as defined by get_unversioned_keys
     unversioned_data = {
         "cat_properties": {
             "last_fed": 1234567890,

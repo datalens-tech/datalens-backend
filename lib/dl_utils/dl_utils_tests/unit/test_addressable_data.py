@@ -1,3 +1,5 @@
+import copy
+
 from dl_utils.utils import (
     AddressableData,
     DataKey,
@@ -12,7 +14,7 @@ def test_pop_empty_with_empty_key() -> None:
             },
         },
     }
-    original_data = data.copy()
+    original_data = copy.deepcopy(data)
 
     AddressableData._pop_empty(data, DataKey(parts=()))
 
@@ -39,7 +41,7 @@ def test_pop_empty_single_level_non_empty_dict() -> None:
         },
         "b": "value",
     }
-    original_data = data.copy()
+    original_data = copy.deepcopy(data)
 
     AddressableData._pop_empty(data, DataKey(parts=("a",)))
 
@@ -52,7 +54,7 @@ def test_pop_empty_single_level_non_dict_value() -> None:
         "b": 123,
         "c": [1, 2, 3],
     }
-    original_data = data.copy()
+    original_data = copy.deepcopy(data)
 
     AddressableData._pop_empty(data, DataKey(parts=("a",)))
     AddressableData._pop_empty(data, DataKey(parts=("b",)))
@@ -149,7 +151,7 @@ def test_pop_empty_nonexistent_key() -> None:
             "b": "value",
         },
     }
-    original_data = data.copy()
+    original_data = copy.deepcopy(data)
 
     AddressableData._pop_empty(data, DataKey(parts=("nonexistent",)))
 
@@ -162,7 +164,7 @@ def test_pop_empty_nonexistent_nested_key() -> None:
             "b": "value",
         },
     }
-    original_data = data.copy()
+    original_data = copy.deepcopy(data)
 
     AddressableData._pop_empty(data, DataKey(parts=("a", "nonexistent")))
 

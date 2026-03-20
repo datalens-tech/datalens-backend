@@ -50,7 +50,7 @@ class AddressableData:
         try:
             self.get(key)
             return True
-        except KeyError:
+        except (KeyError, TypeError):
             return False
 
     def get(self, key: DataKey) -> Any:
@@ -60,7 +60,7 @@ class AddressableData:
         """
         Create all objects for the given key if they do not exist.
 
-        For example, `self._ensure_objects(DataKey(("a", "b", "c")))` equals to:
+        For example, `self._ensure_objects(DataKey(("a", "b", "c")))` is equivalent to:
         ```python
         self.data["a"] = self.data.get("a", {})
         self.data["a"]["b"] = self.data["a"].get("b", {})
@@ -68,14 +68,21 @@ class AddressableData:
         """
 
         data = self.data
+        prev_part = None
         for part in key.parts[:-1]:
             if not isinstance(data, dict):
-                raise ValueError(
-                    f"Cannot create nested objects for key {key.parts!r}: intermediate value at {part!r} is not a dict (got {type(data[part]).__name__})"
-                )
+                if prev_part is None:
+                    raise ValueError(
+                        f"Cannot create nested objects for key {key.parts!r}: value is not a dict (got {type(data).__name__})"
+                    )
+                else:
+                    raise ValueError(
+                        f"Cannot create nested objects for key {key.parts!r}: intermediate value at {prev_part!r} is not a dict (got {type(data).__name__})"
+                    )
 
             data[part] = data.get(part, {})
             data = data[part]
+            prev_part = part
 
     def set(self, key: DataKey, value: Any) -> None:
         self._ensure_objects(key)
