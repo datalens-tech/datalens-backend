@@ -96,7 +96,7 @@ class AddressableData:
         key: DataKey,
     ) -> None:
         """
-        Pop empty keys from data
+        Pop empty keys from data. Pops only empty dict objects.
         """
 
         # Nothing
@@ -121,6 +121,29 @@ class AddressableData:
         *,
         remove_empty: bool = False,
     ) -> Any:
+        """
+        Pop key from data.
+
+        `remove_empty` clears empty nested dicts if any left:
+
+        ```python
+        sample = {
+            "a": {
+                "b": {
+                    "c": "value",
+                },
+            },
+            "d": "example",
+        }
+
+        pop(a, remove_empty=True) == {
+            "d": "example",
+        }
+        ```
+
+        :param remove_empty: Automatically remove empty dicts after value pop.
+        """
+
         key_head = DataKey(parts=key.parts[:-1])
         result = self.get(key_head).pop(key.parts[-1])
 

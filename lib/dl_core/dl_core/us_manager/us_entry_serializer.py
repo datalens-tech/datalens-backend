@@ -124,11 +124,11 @@ class USEntrySerializer(abc.ABC):
         unversioned_addressable = AddressableData({})
 
         for sec_key in secret_keys:
-            sec_val = raw_addressable.pop(sec_key)
+            sec_val = raw_addressable.pop(key=sec_key, remove_empty=True)
             secrets_addressable.set(sec_key, sec_val)
 
         for unversioned_key in unversioned_keys:
-            unversioned_val = raw_addressable.pop(unversioned_key)
+            unversioned_val = raw_addressable.pop(key=unversioned_key, remove_empty=True)
             unversioned_addressable.set(unversioned_key, unversioned_val)
 
         return USDataPack(
@@ -167,7 +167,7 @@ class USEntrySerializer(abc.ABC):
 
         for secret_key in declared_secret_keys:
             if secret_source_addressable.contains(secret_key):
-                sec_val = secret_source_addressable.pop(secret_key)
+                sec_val = secret_source_addressable.pop(key=secret_key, remove_empty=True)
                 raw_addressable.set(secret_key, sec_val)
 
         if secret_source_addressable.data:
@@ -175,7 +175,7 @@ class USEntrySerializer(abc.ABC):
 
         for unversioned_key in declared_unversioned_keys:
             if unversioned_addressable.contains(unversioned_key):
-                unversioned_val = unversioned_addressable.pop(unversioned_key)
+                unversioned_val = unversioned_addressable.pop(key=unversioned_key, remove_empty=True)
 
                 if raw_addressable.contains(unversioned_key):
                     current_key_str = ".".join(unversioned_key.parts)
