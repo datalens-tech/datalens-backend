@@ -15,6 +15,7 @@ from dl_api_client.dsmaker.api.base import HttpApiResponse
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpApiV1Base
 from dl_api_client.dsmaker.api.schemas.dataset import (
     AvatarRelationSchema,
+    CacheInvalidationSourceSchema,
     ComponentErrorListSchema,
     DataSourceSchema,
     ObligatoryFilterSchema,
@@ -78,6 +79,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
                 ObligatoryFilterSchema().load(filter_info) for filter_info in body["obligatory_filters"]
             ],
             annotation=dict(description=body["description"]),
+            cache_invalidation_source=CacheInvalidationSourceSchema().load(body["cache_invalidation_source"]),
         )
 
         for dsrc_data in body["sources"]:
@@ -408,4 +410,10 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
                     "description": description,
                 },
             ],
+        )
+
+    def update_cache_invalidation(self, dataset: Dataset, data: dict) -> HttpDatasetApiResponse:
+        return self.apply_updates(
+            dataset=dataset,
+            updates=[dataset.cache_invalidation_source.update(**data)],
         )

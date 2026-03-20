@@ -24,6 +24,7 @@ from dl_core.base_models import (
     ObligatoryFilter,
     connection_ref_from_id,
 )
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.component_errors import ComponentErrorRegistry
 from dl_core.components.dependencies.primitives import FieldInterDependencyInfo
 from dl_core.components.ids import (
@@ -75,6 +76,7 @@ class Dataset(USEntry):
 
         component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
         obligatory_filters: list[ObligatoryFilter] = attr.ib(factory=list)
+        cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
 
         @attr.s
         class ResultSchemaAux:
