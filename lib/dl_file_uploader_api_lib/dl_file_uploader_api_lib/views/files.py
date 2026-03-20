@@ -51,6 +51,7 @@ from dl_file_uploader_task_interface.tasks import (
 from dl_s3.data_sink import S3RawFileAsyncDataSink
 from dl_s3.stream import RawBytesAsyncDataStream
 from dl_s3.utils import s3_file_exists
+import dl_us_entries_client
 
 
 LOGGER = logging.getLogger(__name__)
@@ -326,10 +327,31 @@ class FileSourcesView(FileUploaderBaseView):
 
 
 class UpdateConnectionDataView(FileUploaderBaseView):
-    _is_internal: ClassVar[bool] = False
+    async def _check_connection_permissions(self, connection_id: str) -> None:
+        us_entries_client = self.dl_request.get_us_entries_client()
+        request_id = self.dl_request.rci.request_id
+        if request_id is None:
+            LOGGER.warning("Empty request id, generating one")
+            request_id = str(uuid.uuid4())
+        connection = await us_entries_client.get_entry(
+            request=dl_us_entries_client.EntryGetRequest(
+                auth_provider=self.dl_request.get_us_auth_provider(),
+                request_id=request_id,
+                entry_id=connection_id,
+            )
+        )
+        if not connection.permissions.edit:
+            raise exc.PermissionDenied("User does not have edit permission for the connection")
+
+    def _get_dfile_user_id(self) -> str | None:
+        """filled from RCI later when None"""
+        return None
 
     async def post(self) -> web.StreamResponse:
         req_data = await self._load_post_request_schema_data(files_schemas.UpdateConnectionDataRequestSchema)
+        connection_id = req_data["connection_id"]
+        if connection_id is not None:
+            await self._check_connection_permissions(connection_id)
         sources = req_data["sources"]
 
         rmm = self.dl_request.get_redis_model_manager()
@@ -349,7 +371,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
             if req_data["type"] == FileType.gsheets:
                 if src["spreadsheet_id"] not in dfile_by_source_properties:
                     dfile_by_source_properties[src["spreadsheet_id"]] = DataFile(
-                        user_id=DataFile.system_user_id if self._is_internal else None,  # filled from rci when None
+                        user_id=self._get_dfile_user_id(),
                         manager=rmm,
                         filename="TITLE",
                         status=FileProcessingStatus.in_progress,
@@ -387,7 +409,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                     src["private_path"] is None or src["private_path"] not in dfile_by_source_properties
                 ):
                     dfile_by_source_properties[src[filled_source_property]] = DataFile(
-                        user_id=DataFile.system_user_id if self._is_internal else None,  # filled from rci when None
+                        user_id=self._get_dfile_user_id(),
                         manager=rmm,
                         filename="TITLE",
                         status=FileProcessingStatus.in_progress,
@@ -421,12 +443,8 @@ class UpdateConnectionDataView(FileUploaderBaseView):
 
         task_processor = self.dl_request.get_task_processor()
         exec_mode = TaskExecutionMode.UPDATE_AND_SAVE if req_data["save"] else TaskExecutionMode.UPDATE_NO_SAVE
-        if req_data.get("tenant_id") is not None:
-            tenant_id = req_data["tenant_id"]
-            assert tenant_id is not None
-        else:
-            assert self.dl_request.rci.tenant is not None
-            tenant_id = self.dl_request.rci.tenant.get_tenant_id()
+        assert self.dl_request.rci.tenant is not None
+        tenant_id = self.dl_request.rci.tenant.get_tenant_id()
         for dfile in dfile_by_source_properties.values():
             await dfile.save()
 
@@ -435,7 +453,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                     file_id=dfile.id,
                     authorized=req_data["authorized"],
                     tenant_id=tenant_id,
-                    connection_id=req_data["connection_id"],
+                    connection_id=connection_id,
                     exec_mode=exec_mode,
                 )
                 await task_processor.schedule(download_gsheet_task)
@@ -445,7 +463,7 @@ class UpdateConnectionDataView(FileUploaderBaseView):
                     file_id=dfile.id,
                     authorized=req_data["authorized"],
                     tenant_id=tenant_id,
-                    connection_id=req_data["connection_id"],
+                    connection_id=connection_id,
                     exec_mode=exec_mode,
                 )
                 await task_processor.schedule(download_yadocs_task)
@@ -465,4 +483,10 @@ class InternalUpdateConnectionDataView(UpdateConnectionDataView):
         }
     )
 
-    _is_internal: ClassVar[bool] = True
+    def _get_dfile_user_id(self) -> str | None:
+        return DataFile.system_user_id
+
+    async def _check_connection_permissions(self, connection_id: str) -> None:
+        """No user authorization here, the only consumer is our own data-api"""
+        # TODO CONSIDER check permissions via private API?
+        return

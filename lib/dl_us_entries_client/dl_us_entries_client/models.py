@@ -37,10 +37,18 @@ class EntryScope(str, enum.Enum):
     dashboard = "dash"
 
 
+class EntryPermissions(dl_httpx.BaseResponseSchema):
+    execute: bool
+    read: bool
+    edit: bool
+    admin: bool
+
+
 class EntryData(dl_pydantic.BaseSchema):
     scope: EntryScope
     type: str = ""
     key: str
+    permissions: EntryPermissions
 
 
 class Entry(EntryData):

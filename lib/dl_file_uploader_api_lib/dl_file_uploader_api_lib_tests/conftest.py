@@ -45,6 +45,7 @@ from dl_core_testing.environment import (
 )
 from dl_file_secure_reader_lib.app import create_app as create_reader_app
 from dl_file_secure_reader_lib.settings import FileSecureReaderSettings
+from dl_file_uploader_api_lib.aiohttp_services.us_auth_provider_factory import USAuthProviderFactory
 from dl_file_uploader_api_lib.app import FileUploaderApiAppFactory
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import (
@@ -83,6 +84,7 @@ from dl_testing.utils import (
     get_default_aiohttp_session,
     get_root_certificates,
 )
+import dl_us_entries_client
 
 from dl_connector_bundle_chs3.chs3_base.core.settings import (
     FileS3ConnectorSettingsBase,
@@ -165,7 +167,7 @@ def crypto_keys_config() -> CryptoKeysConfig:
 
 
 @pytest.fixture(scope="function")
-def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config):
+def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config, us_config):
     monkeypatch.setenv("EXT_QUERY_EXECUTER_SECRET_KEY", "dummy")
 
     deprecated_settings = DeprecatedFileUploaderAPISettings(
@@ -194,12 +196,26 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
             ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
             SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
         ),
+        US_ENTRIES_CLIENT=dl_us_entries_client.USEntriesClientSettings(
+            BASE_URL=us_config.base_url,
+            USER_AUTH_PROVIDER=dl_auth.NoAuthProviderSettings(),
+        ),
         fallback=deprecated_settings,
     )
     yield settings
 
 
+class _TestUSAuthProviderFactory:
+    def __init__(self, us_master_token: str) -> None:
+        self._us_master_token = us_master_token
+
+    def create(self, auth_data: dl_auth.AuthData) -> dl_auth.AuthProviderProtocol:
+        return dl_auth.USMasterTokenAuthProvider(token=self._us_master_token)
+
+
 class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPISettings]):
+    _us_master_token: str = attr.ib(default="")
+
     def get_auth_middlewares(self) -> list[Middleware]:
         return [
             auth_trust_middleware(
@@ -208,10 +224,16 @@ class TestingFileUploaderApiAppFactory(FileUploaderApiAppFactory[FileUploaderAPI
             )
         ]
 
+    def get_us_auth_provider_factory(self) -> USAuthProviderFactory:
+        return _TestUSAuthProviderFactory(us_master_token=self._us_master_token)
+
 
 @pytest.fixture(scope="function")
-def bi_file_uploader_app(loop, aiohttp_client, app_settings):
-    app_factory = TestingFileUploaderApiAppFactory(settings=app_settings)
+def bi_file_uploader_app(loop, aiohttp_client, app_settings, us_config):
+    app_factory = TestingFileUploaderApiAppFactory(
+        settings=app_settings,
+        us_master_token=us_config.master_token,
+    )
     app = app_factory.create_app("tests")
     return loop.run_until_complete(aiohttp_client(app))
 
