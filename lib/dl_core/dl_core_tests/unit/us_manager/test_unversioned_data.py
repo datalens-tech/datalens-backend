@@ -126,10 +126,10 @@ class TestSerializer(USEntrySerializerMarshmallow):
         },
     )
 
-    def get_secret_keys(cls: type[USEntry]) -> set[DataKey]:
+    def get_secret_keys(self, cls: type[USEntry]) -> set[DataKey]:
         return TestUSEntry.DataModel.get_secret_keys()
 
-    def get_unversioned_keys(cls: type[USEntry]) -> set[DataKey]:
+    def get_unversioned_keys(self, cls: type[USEntry]) -> set[DataKey]:
         return TestUSEntry.DataModel.get_unversioned_keys()
 
 
