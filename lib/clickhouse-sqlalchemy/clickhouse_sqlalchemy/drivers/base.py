@@ -998,7 +998,7 @@ class ClickHouseDialect(default.DefaultDialect):
             version = self._query_server_version_string(connection)
             assert version
 
-        return tuple(int(part) for part in version.split('.'))
+        return tuple(int(part) for part in version.split('-')[0].split('.'))
 
     def _query_server_version_string(self, connection):
         raise NotImplementedError
