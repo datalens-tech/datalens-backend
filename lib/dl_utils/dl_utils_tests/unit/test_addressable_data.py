@@ -174,7 +174,7 @@ def test_addressable_data_ensure_objects_single() -> None:
     addressable_data = AddressableData({})
 
     addressable_data._ensure_objects(
-        DataKey(parts=["test"]),
+        DataKey(parts=("test",)),
     )
 
     assert addressable_data.data == {}
@@ -184,7 +184,7 @@ def test_addressable_data_ensure_objects_nested() -> None:
     addressable_data = AddressableData({})
 
     addressable_data._ensure_objects(
-        DataKey(parts=["a", "b", "c"]),
+        DataKey(parts=("a", "b", "c")),
     )
 
     assert addressable_data.data == {
@@ -202,7 +202,7 @@ def test_addressable_data_ensure_objects_invalid_type_ignored() -> None:
     )
 
     addressable_data._ensure_objects(
-        DataKey(parts=["test", "invalid"]),
+        DataKey(parts=("test", "invalid")),
     )
 
     assert addressable_data.data == {
