@@ -48,7 +48,7 @@ class PermissionDenied(DLFileUploaderBaseError):
 
 class ObjectNotFound(DLFileUploaderBaseError):
     err_code = DLFileUploaderBaseError.err_code + ["ENTRY_NOT_FOUND"]
-    default_message = "Request object was not found"
+    default_message = "Requested object was not found"
 
 
 class DocumentNotFound(DLFileUploaderBaseError):
