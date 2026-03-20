@@ -183,6 +183,9 @@ def test_serializer() -> USEntrySerializer:
     return TestSerializer()
 
 
+# Unpack tests
+
+
 def test_unpack_empty_data(
     test_us_manager: USManagerBase,
     test_serializer: TestSerializer,
@@ -296,9 +299,7 @@ def test_unpack_with_complete_cat_properties(
         serializer=test_serializer,
     )
 
-    assert isinstance(result, USUnversionedDataPack)
-    # Only unversioned fields should be extracted
-    expected_unversioned_data = {
+    assert result.unversioned_data == {
         "cat_properties": {
             "last_fed": 1234567890,
             "shape": {
@@ -307,15 +308,13 @@ def test_unpack_with_complete_cat_properties(
             },
         }
     }
-    expected_secrets = {
+    assert result.secrets == {
         "cat_properties": {
             "shape": {
                 "signature": "red paws",
             }
         }
     }
-    assert result.unversioned_data == expected_unversioned_data
-    assert result.secrets == expected_secrets
 
 
 def test_unpack_with_cat_properties_none_values(
@@ -339,8 +338,7 @@ def test_unpack_with_cat_properties_none_values(
         serializer=test_serializer,
     )
 
-    assert isinstance(result, USUnversionedDataPack)
-    expected_unversioned_data = {
+    assert result.unversioned_data == {
         "cat_properties": {
             "last_fed": None,
             "shape": {
@@ -349,15 +347,16 @@ def test_unpack_with_cat_properties_none_values(
             },
         }
     }
-    expected_secrets = {
+    assert result.secrets == {
         "cat_properties": {
             "shape": {
                 "signature": None,
             }
         }
     }
-    assert result.unversioned_data == expected_unversioned_data
-    assert result.secrets == expected_secrets
+
+
+# Pack tests
 
 
 def test_pack_empty_data(
@@ -561,6 +560,9 @@ def test_pack_with_cat_properties_none_values(
     }
 
 
+# Test round trip
+
+
 def test_round_trip_with_secrets(
     test_us_manager: USManagerBase,
     test_serializer: TestSerializer,
@@ -617,7 +619,7 @@ def test_round_trip_with_mixed_data(
 
     assert isinstance(result, dict)
 
-    # Check uvnersioned values
+    # Check unversioned values
     assert "unversioned_field" in result
     assert result["unversioned_field"] == "unversioned_value"
 
@@ -707,6 +709,9 @@ def test_round_trip_with_cat_properties_none_values(
 
     # Check secrets
     assert result["cat_properties"]["shape"]["signature"] is None
+
+
+# Full serialize-deserialize
 
 
 def test_serialize_deserialize_complete(

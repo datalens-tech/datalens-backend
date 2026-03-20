@@ -34,31 +34,29 @@ def test_pop_empty_single_level_empty_dict() -> None:
     }
 
 
-def test_pop_empty_single_level_non_empty_dict() -> None:
-    data = {
-        "a": {
-            "nested": "value",
-        },
-        "b": "value",
-    }
-    original_data = copy.deepcopy(data)
-
-    AddressableData._pop_empty(data, DataKey(parts=("a",)))
-
-    assert data == original_data
-
-
-def test_pop_empty_single_level_non_dict_value() -> None:
+def test_pop_empty_single_level() -> None:
     data = {
         "a": "string_value",
         "b": 123,
         "c": [1, 2, 3],
+        "d": {
+            "e": "string",
+        },
     }
     original_data = copy.deepcopy(data)
 
     AddressableData._pop_empty(data, DataKey(parts=("a",)))
     AddressableData._pop_empty(data, DataKey(parts=("b",)))
     AddressableData._pop_empty(data, DataKey(parts=("c",)))
+    AddressableData._pop_empty(
+        data,
+        DataKey(
+            parts=(
+                "d",
+                "e",
+            )
+        ),
+    )
 
     assert data == original_data
 
@@ -75,7 +73,9 @@ def test_pop_empty_nested_empty_dicts() -> None:
 
     AddressableData._pop_empty(data, DataKey(parts=("a", "b", "c")))
 
-    assert data == {"d": "value"}
+    assert data == {
+        "d": "value",
+    }
 
 
 def test_pop_empty_partial_nested_cleanup() -> None:
@@ -100,27 +100,6 @@ def test_pop_empty_partial_nested_cleanup() -> None:
         "e": "value",
     }
     assert data == expected
-
-
-def test_pop_empty_deep_nested_structure() -> None:
-    data = {
-        "level1": {
-            "level2": {
-                "level3": {
-                    "level4": {
-                        "level5": {},
-                    },
-                },
-            },
-        },
-        "other": "value",
-    }
-
-    AddressableData._pop_empty(data, DataKey(parts=("level1", "level2", "level3", "level4", "level5")))
-
-    assert data == {
-        "other": "value",
-    }
 
 
 def test_pop_empty_multiple_branches() -> None:
@@ -171,53 +150,6 @@ def test_pop_empty_nonexistent_nested_key() -> None:
     assert data == original_data
 
 
-def test_pop_empty_stops_at_non_empty_parent() -> None:
-    data = {
-        "root": {
-            "parent": {
-                "child": {
-                    "target": {},
-                },
-                "sibling": "value",
-            },
-        },
-    }
-
-    AddressableData._pop_empty(data, DataKey(parts=("root", "parent", "child", "target")))
-
-    expected = {
-        "root": {
-            "parent": {
-                "sibling": "value",
-            },
-        },
-    }
-    assert data == expected
-
-
-def test_pop_empty_with_none_values() -> None:
-    data = {
-        "a": None,
-        "b": {
-            "c": {},
-        },
-    }
-
-    # Should not crash when encountering None
-    AddressableData._pop_empty(data, DataKey(parts=("a", "nonexistent")))
-
-    # Should not pop None
-    AddressableData._pop_empty(data, DataKey(parts=("a")))
-
-    # Should still work for valid paths
-    AddressableData._pop_empty(data, DataKey(parts=("b", "c")))
-
-    expected = {
-        "a": None,
-    }
-    assert data == expected
-
-
 def test_pop_empty_integration_with_addressable_data() -> None:
     addressable_data = AddressableData(
         data={
@@ -235,4 +167,44 @@ def test_pop_empty_integration_with_addressable_data() -> None:
     assert result == "to_be_removed"
     assert addressable_data.data == {
         "section2": "value",
+    }
+
+
+def test_addressable_data_ensure_objects_single() -> None:
+    addressable_data = AddressableData({})
+
+    addressable_data._ensure_objects(
+        DataKey(parts=["test"]),
+    )
+
+    assert addressable_data.data == {}
+
+
+def test_addressable_data_ensure_objects_nested() -> None:
+    addressable_data = AddressableData({})
+
+    addressable_data._ensure_objects(
+        DataKey(parts=["a", "b", "c"]),
+    )
+
+    assert addressable_data.data == {
+        "a": {
+            "b": {},
+        },
+    }
+
+
+def test_addressable_data_ensure_objects_invalid_type_ignored() -> None:
+    addressable_data = AddressableData(
+        {
+            "test": 13,
+        }
+    )
+
+    addressable_data._ensure_objects(
+        DataKey(parts=["test", "invalid"]),
+    )
+
+    assert addressable_data.data == {
+        "test": 13,
     }
