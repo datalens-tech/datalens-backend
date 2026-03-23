@@ -37,10 +37,13 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
+SECRET_TYPE = dict[str, "SECRET_TYPE" | str | dl_crypto.EncryptedData | None]
+
+
 @attr.s()
 class USUnversionedDataPack:
     unversioned_data: dict[str, Any] = attr.ib(factory=dict)
-    secrets: dict[str, str | dl_crypto.EncryptedData | None] = attr.ib(repr=False, factory=dict)
+    secrets: SECRET_TYPE = attr.ib(repr=False, factory=dict)
 
 
 @attr.s()
