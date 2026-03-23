@@ -283,3 +283,10 @@ class Dataset(USEntry):
                 )
             )
         return warnings_list
+
+    def reset_extract_properties(self) -> None:
+        """
+        Reset extract properties ans settings to default values.
+        """
+
+        self.data.extract = ExtractProperties()

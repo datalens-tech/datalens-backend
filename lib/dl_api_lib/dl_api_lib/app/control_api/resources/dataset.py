@@ -39,8 +39,6 @@ import dl_api_lib.schemas.validation
 from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     DataSourceCreatedVia,
-    ExtractMode,
-    ExtractStatus,
     ManagedBy,
 )
 from dl_constants.exc import CODE_OK
@@ -204,14 +202,8 @@ class DatasetCopy(DatasetResource):
         LOGGER.info("Going to copy dataset %s with new key %r", dataset_id, copy_us_key)
         ds_copy = us_manager.copy_entry(ds, key=copy_ds_loc)
 
-        # Remove extract fields
-        ds_editor = DatasetComponentEditor(dataset=ds_copy)
-        ds_editor.set_extract_mode(ExtractMode.disabled)
-        ds_editor.set_extract_status(ExtractStatus.disabled)
-        ds_editor.set_extract_errors([])
-        ds_editor.set_extract_last_update(0)
-        ds_editor.set_extract_filters([])
-        ds_editor.set_extract_sorting([])
+        # Reset extract properties
+        ds_copy.reset_extract_properties()
 
         us_manager.save(ds_copy)
         LOGGER.info("Dataset copy was saved with ID %s", ds_copy.uuid)
@@ -483,10 +475,11 @@ class DatasetImportCollection(DatasetResource):
         if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
             raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
 
-        del data["dataset"]["extract"]
-
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=data["dataset"], us_manager=us_manager)
+
+        # Reset extract properties
+        dataset.reset_extract_properties()
 
         us_manager.save(dataset)
 
