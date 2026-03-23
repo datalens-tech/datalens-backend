@@ -5,11 +5,14 @@ from collections import ChainMap
 from functools import reduce
 import logging
 from typing import (
+    ClassVar,
+    Union,
+)
+from typing import (
     TYPE_CHECKING,
     Any,
 )
 from typing import ChainMap as ChainMapGeneric
-from typing import ClassVar
 
 import attr
 import marshmallow
@@ -37,7 +40,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-SECRET_TYPE = dict[str, "SECRET_TYPE" | str | dl_crypto.EncryptedData | None]
+SECRET_TYPE = dict[str, Union["SECRET_TYPE", str, dl_crypto.EncryptedData, None]]
 
 
 @attr.s()
