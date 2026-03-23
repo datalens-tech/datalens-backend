@@ -1,6 +1,10 @@
+import dl_auth
 from dl_core.aio.aiohttp_wrappers_data_core import DLRequestDataCore
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.s3_service import InternalS3Service
+from dl_file_uploader_api_lib.aiohttp_services.us_client import USEntriesClientService
+from dl_file_uploader_api_lib.auth_provider import AuthDataUSAuthProvider
+from dl_file_uploader_lib import exc
 from dl_file_uploader_lib.redis_model.base import RedisModelManager
 from dl_file_uploader_lib.s3_model.base import S3ModelManager
 from dl_s3.s3_service import S3Service
@@ -9,9 +13,19 @@ from dl_task_processor.processor import (
     TaskProcessor,
     make_task_processor,
 )
+import dl_us_entries_client
 
 
 class FileUploaderDLRequest(DLRequestDataCore):
+    def get_us_entries_client(self) -> dl_us_entries_client.USEntriesAsyncClient:
+        return USEntriesClientService.get_app_instance(self.request.app).client
+
+    def get_us_auth_provider(self) -> dl_auth.AuthProviderProtocol:
+        auth_data = self.rci.auth_data
+        if auth_data is None:
+            raise exc.PermissionDenied("No auth data available on request context")
+        return AuthDataUSAuthProvider(auth_data=auth_data)
+
     def get_s3_service_for_uploads(self) -> S3Service:
         return S3Service.get_app_instance(self.request.app)
 
