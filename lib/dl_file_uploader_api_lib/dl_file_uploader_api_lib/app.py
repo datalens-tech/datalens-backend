@@ -1,5 +1,6 @@
 import abc
 import logging
+import ssl
 from typing import (
     Generic,
     TypeVar,
@@ -33,20 +34,24 @@ from dl_core.loader import (
 from dl_file_uploader_api_lib.aiohttp_services.crypto import CryptoService
 from dl_file_uploader_api_lib.aiohttp_services.error_handler import FileUploaderErrorHandler
 from dl_file_uploader_api_lib.aiohttp_services.s3_service import InternalS3Service
+from dl_file_uploader_api_lib.aiohttp_services.us_client import USEntriesClientService
 from dl_file_uploader_api_lib.dl_request import FileUploaderDLRequest
 from dl_file_uploader_api_lib.settings import FileUploaderAPISettings
 from dl_file_uploader_api_lib.views import files as files_views
 from dl_file_uploader_api_lib.views import misc as misc_views
 from dl_file_uploader_api_lib.views import sources as sources_views
 from dl_file_uploader_lib.settings_utils import init_redis_service
+import dl_httpx
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
     SecretKeeper,
     create_base_obfuscators,
 )
+import dl_retrier
 from dl_s3.s3_service import S3Service
 from dl_task_processor.arq_redis import ArqRedisService
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
+import dl_us_entries_client
 
 
 LOGGER = logging.getLogger(__name__)
@@ -182,6 +187,24 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
         app.on_shutdown.append(arq_redis_service.tear_down_hook)
 
         CryptoService(crypto_keys_config=self._settings.CRYPTO_KEYS_CONFIG).bind_to_app(app)
+
+        ssl_context = ssl.create_default_context(cadata=ca_data.decode("ascii"))
+        us_entries_client = dl_us_entries_client.USEntriesAsyncClient.from_dependencies(
+            dependencies=dl_httpx.HttpxClientDependencies(
+                base_url=self._settings.US_ENTRIES_CLIENT.BASE_URL,
+                ssl_context=ssl_context,
+                retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
+                    settings=dl_retrier.RetryPolicyFactorySettings(
+                        DEFAULT_POLICY=dl_retrier.RetryPolicySettings(
+                            TOTAL_TIMEOUT=5,
+                        ),
+                    ),
+                ),
+            )
+        )
+        us_entries_client_service = USEntriesClientService(us_entries_client=us_entries_client)
+        app.on_startup.append(us_entries_client_service.init_hook)
+        app.on_shutdown.append(us_entries_client_service.tear_down_hook)
 
         app.router.add_route("get", "/api/v2/ping", PingView)
         app.router.add_route("get", "/api/v2/metrics", MetricsView)

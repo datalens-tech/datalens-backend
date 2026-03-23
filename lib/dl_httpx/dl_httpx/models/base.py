@@ -25,6 +25,7 @@ class BaseRequest:
     parent_context: ParentContextProtocol = attrs.field(factory=ParentContext)
     auth_provider: dl_auth.AuthProviderProtocol | None = None
     request_id: str = attrs.field()
+    extra_headers: dict[str, str] = attrs.field(factory=dict)
 
     @request_id.default
     def _generate_request_id(self) -> str:
@@ -55,9 +56,10 @@ class BaseRequest:
 
     @property
     def headers(self) -> dict[str, str]:
-        return {
-            dl_constants.DLHeadersCommon.REQUEST_ID.value: self.request_id,
-        }
+        result = self.extra_headers.copy()
+        result[dl_constants.DLHeadersCommon.REQUEST_ID.value] = self.request_id
+
+        return result
 
     @property
     def cookies(self) -> dict[str, str]:

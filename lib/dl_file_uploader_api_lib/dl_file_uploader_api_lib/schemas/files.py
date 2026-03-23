@@ -166,6 +166,8 @@ class UpdateConnectionDataRequestSchemaBase(BaseRequestSchema):
     connection_id = ma.fields.String(allow_none=True, load_default=None)
     authorized = ma.fields.Boolean(required=True)
     save = ma.fields.Boolean(load_default=False)
+
+    # TODO BI-7153 remove, clients do not provide it, tenant_id is only passed in headers
     tenant_id = ma.fields.String(allow_none=True, load_default=None)
 
 
