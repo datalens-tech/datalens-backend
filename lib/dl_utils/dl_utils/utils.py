@@ -136,9 +136,7 @@ class AddressableData:
             "d": "example",
         }
 
-        pop(a, remove_empty=True) == {
-            "d": "example",
-        }
+        pop(DataKey((a", "b", "c")), remove_empty=True) == { "d": "example" }
         ```
 
         :param remove_empty: Automatically remove empty dicts after value pop.
