@@ -22,6 +22,7 @@ from dl_file_uploader_lib.redis_model.models import models
 STATUS_CODES = {
     exc.CannotUpdateDataError: HTTPStatus.BAD_REQUEST,
     exc.DocumentNotFound: HTTPStatus.BAD_REQUEST,
+    exc.ObjectNotFound: HTTPStatus.NOT_FOUND,
     exc.DownloadFailed: HTTPStatus.INTERNAL_SERVER_ERROR,
     exc.EmptyDocument: HTTPStatus.BAD_REQUEST,
     exc.FileLimitError: HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
