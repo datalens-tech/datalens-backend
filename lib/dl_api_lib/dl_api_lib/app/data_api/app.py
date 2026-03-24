@@ -31,6 +31,7 @@ from dl_api_lib.aio.aiohttp_wrappers import (
 from dl_api_lib.aio.middlewares.error_handling_outer import DatasetAPIErrorHandler
 from dl_api_lib.aio.middlewares.json_body_middleware import json_body_middleware
 from dl_api_lib.app.data_api.resources.dashsql import DashSQLView
+from dl_api_lib.app.data_api.resources.dataset.cache_invalidation_test import DatasetCacheInvalidationTestView
 from dl_api_lib.app.data_api.resources.dataset.distinct import (
     DatasetDistinctViewV1,
     DatasetDistinctViewV1_5,
@@ -196,6 +197,10 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/preview", DatasetPreviewViewV1_5)
             app.router.add_route("post", "/api/data/v2/datasets/data/preview", DatasetPreviewViewV2)
             app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/preview", DatasetPreviewViewV2)
+
+            app.router.add_route(
+                "post", "/api/v1/datasets/{ds_id}/cache_invalidation_test", DatasetCacheInvalidationTestView
+            )
 
     def set_up_sentry(self) -> None:
         configure_sentry_for_aiohttp(
