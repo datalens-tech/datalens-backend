@@ -1,9 +1,10 @@
-from __future__ import annotations
-
+from collections import ChainMap
 from typing import Any
+from typing import ChainMap as ChainMapGeneric
 
 import attr
 from cryptography import fernet
+import marshmallow
 import pytest
 
 from dl_api_commons.base_models import (
@@ -17,6 +18,7 @@ from dl_core.services_registry.top_level import (
     ServicesRegistry,
 )
 from dl_core.us_entry import USEntry
+from dl_core.us_manager.storage_schemas.base import DefaultStorageSchema
 from dl_core.us_manager.us_entry_serializer import (
     USEntrySerializer,
     USEntrySerializerMarshmallow,
@@ -28,22 +30,102 @@ import dl_crypto
 from dl_utils.utils import DataKey
 
 
+@attr.s
+class CatShapeProperties(BaseAttrsDataModel):
+    radius: int | None = attr.ib(default=None)
+    mass: float | None = attr.ib(default=None)
+    is_spherical: bool | None = attr.ib(default=False)
+    fluidity_coefficient: float | None = attr.ib(default=0.77)
+    signature: str | None = attr.ib(default=None)
+
+
+@attr.s
+class CatProperties(BaseAttrsDataModel):
+    shape: CatShapeProperties | None = attr.ib(default=None)
+    color: str | None = attr.ib(default=None)
+    name: str | None = attr.ib(default=None)
+    last_fed: int | None = attr.ib(default=None)
+
+
 class TestUSEntry(USEntry):
     @attr.s
     class DataModel(BaseAttrsDataModel):
         secret_field: str | None = attr.ib(default=None)
         unversioned_field: str | None = attr.ib(default=None)
 
+        cat_properties: CatProperties | None = attr.ib(default=None)
+
         @classmethod
         def get_secret_keys(cls) -> set[DataKey]:
-            return {DataKey(parts=("secret_field",))}
+            return {
+                DataKey(parts=("secret_field",)),
+                DataKey(parts=("cat_properties", "shape", "signature")),
+            }
 
         @classmethod
         def get_unversioned_keys(cls) -> set[DataKey]:
-            return {DataKey(parts=("unversioned_field",))}
+            return {
+                DataKey(parts=("unversioned_field",)),
+                DataKey(
+                    parts=(
+                        "cat_properties",
+                        "last_fed",
+                    )
+                ),
+                DataKey(
+                    parts=(
+                        "cat_properties",
+                        "shape",
+                        "mass",
+                    )
+                ),
+                DataKey(
+                    parts=(
+                        "cat_properties",
+                        "shape",
+                        "radius",
+                    )
+                ),
+            }
+
+
+class CatShapePropertiesStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = CatShapeProperties
+
+    radius = marshmallow.fields.Integer(allow_none=True)
+    mass = marshmallow.fields.Float(allow_none=True)
+    is_spherical = marshmallow.fields.Boolean(allow_none=True)
+    fluidity_coefficient = marshmallow.fields.Float(allow_none=True)
+    signature = marshmallow.fields.String(allow_none=True)
+
+
+class CatPropertiesStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = CatProperties
+
+    shape = marshmallow.fields.Nested(CatShapePropertiesStorageSchema, allow_none=True)
+    color = marshmallow.fields.String(allow_none=True)
+    name = marshmallow.fields.String(allow_none=True)
+    last_fed = marshmallow.fields.Integer(allow_none=True)
+
+
+class TestUSEntryDataModelStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = TestUSEntry.DataModel
+
+    secret_field = marshmallow.fields.String(allow_none=True)
+    unversioned_field = marshmallow.fields.String(allow_none=True)
+    cat_properties = marshmallow.fields.Nested(CatPropertiesStorageSchema, allow_none=True)
 
 
 class TestSerializer(USEntrySerializerMarshmallow):
+    _MAP_TYPE_TO_SCHEMA: ChainMapGeneric[type[BaseAttrsDataModel], type[marshmallow.Schema]] = ChainMap(
+        USEntrySerializerMarshmallow._MAP_TYPE_TO_SCHEMA,
+        {
+            TestUSEntry.DataModel: TestUSEntryDataModelStorageSchema,
+            CatProperties: CatPropertiesStorageSchema,
+            CatShapeProperties: CatShapePropertiesStorageSchema,
+        },
+    )
+
     def get_secret_keys(self, cls: type[USEntry]) -> set[DataKey]:
         return TestUSEntry.DataModel.get_secret_keys()
 
@@ -101,272 +183,872 @@ def test_serializer() -> USEntrySerializer:
     return TestSerializer()
 
 
-class TestUnpackUnversionedData:
-    def test_unpack_empty_data(self, test_us_manager: USManagerBase, test_serializer: TestSerializer) -> None:
-        unversioned_data: dict[str, Any] = {}
-
-        result = test_us_manager.unpack_unversioned_data_from_us(
-            cls=TestUSEntry,
-            unversioned_data=unversioned_data,
-            serializer=test_serializer,
-        )
-
-        assert isinstance(result, USUnversionedDataPack)
-        assert result.unversioned_data == {}
-        assert result.secrets == {}
-
-    def test_unpack_with_secrets(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        unversioned_data = {
-            "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
-        }
-
-        result = test_us_manager.unpack_unversioned_data_from_us(
-            cls=TestUSEntry,
-            unversioned_data=unversioned_data,
-            serializer=test_serializer,
-        )
-
-        assert isinstance(result, USUnversionedDataPack)
-        assert "secret_field" in result.secrets
-        assert result.secrets["secret_field"] == "secret_value"
-        assert result.unversioned_data == {}
-
-    def test_unpack_with_unversioned_fields(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer
-    ) -> None:
-        unversioned_data = {
-            "unversioned_field": "unversioned_value",
-        }
-
-        result = test_us_manager.unpack_unversioned_data_from_us(
-            cls=TestUSEntry,
-            unversioned_data=unversioned_data,
-            serializer=test_serializer,
-        )
-
-        assert isinstance(result, USUnversionedDataPack)
-        assert "unversioned_field" in result.unversioned_data
-        assert result.unversioned_data["unversioned_field"] == "unversioned_value"
-        assert result.secrets == {}
-
-    def test_unpack_with_mixed_data(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        unversioned_data = {
-            "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
-            "unversioned_field": "unversioned_value",
-            "undeclared_field": "undeclared_value",
-        }
-
-        result = test_us_manager.unpack_unversioned_data_from_us(
-            cls=TestUSEntry,
-            unversioned_data=unversioned_data,
-            serializer=test_serializer,
-        )
-
-        assert isinstance(result, USUnversionedDataPack)
-        assert "secret_field" in result.secrets
-        assert result.secrets["secret_field"] == "secret_value"
-        assert "unversioned_field" in result.unversioned_data
-        assert result.unversioned_data["unversioned_field"] == "unversioned_value"
-        # Undeclared fields should be ignored
-        assert "undeclared_field" not in result.unversioned_data
-        assert "undeclared_field" not in result.secrets
+# Unpack tests
 
 
-class TestPackUnversionedData:
-    def test_pack_empty_data(self, test_us_manager: USManagerBase, test_serializer: TestSerializer) -> None:
-        data_pack = USUnversionedDataPack()
+def test_unpack_empty_data(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    unversioned_data: dict[str, Any] = {}
 
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
+    result = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=unversioned_data,
+        serializer=test_serializer,
+    )
 
-        assert isinstance(result, dict)
-        assert result == {}
+    assert isinstance(result, USUnversionedDataPack)
+    assert result.unversioned_data == {}
+    assert result.secrets == {}
 
-    def test_pack_with_secrets(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        data_pack = USUnversionedDataPack(
-            secrets={
-                "secret_field": "secret_value",
-            }
-        )
 
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
+def test_unpack_with_secrets(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    unversioned_data = {
+        "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
+    }
 
-        assert isinstance(result, dict)
-        assert "secret_field" in result
+    result = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=unversioned_data,
+        serializer=test_serializer,
+    )
 
-        # Verify that values are encrypted
-        assert isinstance(result["secret_field"], dict)
-        assert "key_id" in result["secret_field"]
-        assert "key_kind" in result["secret_field"]
-        assert "cypher_text" in result["secret_field"]
+    assert isinstance(result, USUnversionedDataPack)
+    assert result.secrets == {
+        "secret_field": "secret_value",
+    }
+    assert result.unversioned_data == {}
 
-        # Verify that decrypting gives original values
-        assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
 
-    def test_pack_with_unversioned_fields(
-        self, test_us_manager: USManagerBase, test_serializer: TestSerializer
-    ) -> None:
-        data_pack = USUnversionedDataPack(
-            unversioned_data={
-                "unversioned_field": "unversioned_value",
-            }
-        )
+def test_unpack_with_unversioned_fields(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    unversioned_data = {
+        "unversioned_field": "unversioned_value",
+    }
 
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
+    result = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=unversioned_data,
+        serializer=test_serializer,
+    )
 
-        assert isinstance(result, dict)
-        assert "unversioned_field" in result
-        assert result["unversioned_field"] == "unversioned_value"
+    assert isinstance(result, USUnversionedDataPack)
+    assert result.unversioned_data == {
+        "unversioned_field": "unversioned_value",
+    }
+    assert result.secrets == {}
 
-    def test_pack_with_mixed_data(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        data_pack = USUnversionedDataPack(
-            secrets={
-                "secret_field": "secret_value",
+
+def test_unpack_with_mixed_data(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    unversioned_data = {
+        "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
+        "unversioned_field": "unversioned_value",
+        "undeclared_field": "undeclared_value",
+    }
+
+    result = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=unversioned_data,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, USUnversionedDataPack)
+    assert result.secrets == {
+        "secret_field": "secret_value",
+    }
+    assert result.unversioned_data == {
+        "unversioned_field": "unversioned_value",
+    }
+
+
+def test_unpack_with_complete_cat_properties(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    # Include all fields, but only a subset is really used as defined by get_unversioned_keys
+    unversioned_data = {
+        "cat_properties": {
+            "last_fed": 1234567890,
+            "color": "orange",
+            "name": "Fluffy",
+            "shape": {
+                "mass": 5.5,
+                "radius": 10,
+                "is_spherical": True,
+                "fluidity_coefficient": 0.8,
+                "signature": crypto_controller.encrypt_with_actual_key("red paws"),
             },
-            unversioned_data={
-                "unversioned_field": "unversioned_value",
-            },
-        )
-
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
-
-        assert isinstance(result, dict)
-        assert "secret_field" in result
-        assert "unversioned_field" in result
-
-        # Verify that password is encrypted
-        assert isinstance(result["secret_field"], dict)
-        assert "key_id" in result["secret_field"]
-        assert "key_kind" in result["secret_field"]
-        assert "cypher_text" in result["secret_field"]
-
-        # Verify that unversioned field is not encrypted
-        assert result["unversioned_field"] == "unversioned_value"
-
-        # Verify that decrypting gives original values
-        assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
-
-    def test_pack_with_none_secret(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        data_pack = USUnversionedDataPack(
-            secrets={
-                "secret_field": None,
-            }
-        )
-
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
-
-        assert isinstance(result, dict)
-        assert "secret_field" in result
-
-        # Verify that None is encrypted as None
-        assert crypto_controller.decrypt(result["secret_field"]) is None
-
-
-class TestRoundTrip:
-    def test_round_trip_with_secrets(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        original_unversioned_data = {
-            "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
         }
+    }
 
-        # Unpack
-        data_pack = test_us_manager.unpack_unversioned_data_from_us(
-            cls=TestUSEntry,
-            unversioned_data=original_unversioned_data,
-            serializer=test_serializer,
-        )
+    result = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=unversioned_data,
+        serializer=test_serializer,
+    )
 
-        # Pack
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
+    assert result.unversioned_data == {
+        "cat_properties": {
+            "last_fed": 1234567890,
+            "shape": {
+                "mass": 5.5,
+                "radius": 10,
+            },
+        }
+    }
+    assert result.secrets == {
+        "cat_properties": {
+            "shape": {
+                "signature": "red paws",
+            }
+        }
+    }
 
-        assert isinstance(result, dict)
-        assert "secret_field" in result
 
-        # Values should be re-encrypted, so they won't be identical to the original
-        # But decrypting should give the same values
-        assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
+def test_unpack_with_cat_properties_none_values(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    unversioned_data = {
+        "cat_properties": {
+            "last_fed": None,
+            "shape": {
+                "mass": None,
+                "radius": 15,
+                "signature": None,
+            },
+        }
+    }
 
-    def test_round_trip_with_mixed_data(
-        self,
-        test_us_manager: USManagerBase,
-        test_serializer: TestSerializer,
-        crypto_controller: dl_crypto.CryptoController,
-    ) -> None:
-        original_unversioned_data = {
-            "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
+    result = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=unversioned_data,
+        serializer=test_serializer,
+    )
+
+    assert result.unversioned_data == {
+        "cat_properties": {
+            "last_fed": None,
+            "shape": {
+                "mass": None,
+                "radius": 15,
+            },
+        }
+    }
+    assert result.secrets == {
+        "cat_properties": {
+            "shape": {
+                "signature": None,
+            }
+        }
+    }
+
+
+# Pack tests
+
+
+def test_pack_empty_data(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    data_pack = USUnversionedDataPack()
+
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+    assert result == {}
+
+
+def test_pack_with_secrets(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    data_pack = USUnversionedDataPack(
+        secrets={
+            "secret_field": "secret_value",
+        }
+    )
+
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+    assert "secret_field" in result
+
+    # Verify that decrypting gives original values
+    assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
+
+
+def test_pack_with_unversioned_fields(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    data_pack = USUnversionedDataPack(
+        unversioned_data={
             "unversioned_field": "unversioned_value",
         }
+    )
 
-        # Unpack
-        data_pack = test_us_manager.unpack_unversioned_data_from_us(
-            cls=TestUSEntry,
-            unversioned_data=original_unversioned_data,
-            serializer=test_serializer,
-        )
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
 
-        # Pack
-        result = test_us_manager.pack_unversioned_data_for_us(
-            cls=TestUSEntry,
-            data_pack=data_pack,
-            serializer=test_serializer,
-        )
+    assert isinstance(result, dict)
+    expected_result = {
+        "unversioned_field": "unversioned_value",
+    }
+    assert result == expected_result
 
-        assert isinstance(result, dict)
-        assert "secret_field" in result
-        assert "unversioned_field" in result
 
-        # Password should be re-encrypted, unversioned field should be unchanged
-        assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
-        assert result["unversioned_field"] == "unversioned_value"
+def test_pack_with_mixed_data(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    data_pack = USUnversionedDataPack(
+        secrets={
+            "secret_field": "secret_value",
+        },
+        unversioned_data={
+            "unversioned_field": "unversioned_value",
+        },
+    )
+
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+
+    # Verify that unversioned field is not encrypted
+    assert "unversioned_field" in result
+    assert result["unversioned_field"] == "unversioned_value"
+
+    # Verify that decrypting gives original values
+    assert "secret_field" in result
+    assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
+
+
+def test_pack_with_none_secret(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    data_pack = USUnversionedDataPack(
+        secrets={
+            "secret_field": None,
+        }
+    )
+
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+    assert "secret_field" in result
+
+    # Verify that None is encrypted as None
+    assert crypto_controller.decrypt(result["secret_field"]) is None
+
+
+def test_pack_with_cat_properties_unversioned_fields(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    data_pack = USUnversionedDataPack(
+        unversioned_data={
+            "cat_properties": {
+                "last_fed": 1234567890,
+                "shape": {
+                    "mass": 5.5,
+                    "radius": 10,
+                },
+            }
+        },
+        secrets={
+            "cat_properties": {
+                "shape": {
+                    "signature": "red paws",
+                },
+            }
+        },
+    )
+
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+
+    # Check unversioned fields
+    assert "cat_properties" in result
+    assert result["cat_properties"]["last_fed"] == 1234567890
+    assert result["cat_properties"]["shape"]["mass"] == 5.5
+    assert result["cat_properties"]["shape"]["radius"] == 10
+
+    # Check encrypted field
+    assert crypto_controller.decrypt(result["cat_properties"]["shape"]["signature"]) == "red paws"
+
+
+def test_pack_with_cat_properties_none_values(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    data_pack = USUnversionedDataPack(
+        unversioned_data={
+            "cat_properties": {
+                "last_fed": None,
+                "shape": {
+                    "mass": None,
+                    "radius": 15,
+                },
+            }
+        },
+        secrets={
+            "cat_properties": {
+                "shape": {
+                    "signature": None,
+                },
+            }
+        },
+    )
+
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert result == {
+        "cat_properties": {
+            "last_fed": None,
+            "shape": {
+                "mass": None,
+                "radius": 15,
+                "signature": None,
+            },
+        },
+    }
+
+
+# Test round trip
+
+
+def test_round_trip_with_secrets(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    original_unversioned_data = {
+        "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
+    }
+
+    # Unpack
+    data_pack = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=original_unversioned_data,
+        serializer=test_serializer,
+    )
+
+    # Pack
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+    assert "secret_field" in result
+
+    # Check encrypted values
+    assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
+
+
+def test_round_trip_with_mixed_data(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    original_unversioned_data = {
+        "secret_field": crypto_controller.encrypt_with_actual_key("secret_value"),
+        "unversioned_field": "unversioned_value",
+    }
+
+    # Unpack
+    data_pack = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=original_unversioned_data,
+        serializer=test_serializer,
+    )
+
+    # Pack
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+
+    # Check unversioned values
+    assert "unversioned_field" in result
+    assert result["unversioned_field"] == "unversioned_value"
+
+    # Check encrypted values
+    assert "secret_field" in result
+    assert crypto_controller.decrypt(result["secret_field"]) == "secret_value"
+
+
+def test_round_trip_with_cat_properties(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+    crypto_controller: dl_crypto.CryptoController,
+) -> None:
+    original_unversioned_data = {
+        "cat_properties": {
+            "last_fed": 1234567890,
+            "shape": {
+                "mass": 5.5,
+                "radius": 10,
+                "signature": crypto_controller.encrypt_with_actual_key("red paws"),
+            },
+        }
+    }
+
+    # Unpack
+    data_pack = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=original_unversioned_data,
+        serializer=test_serializer,
+    )
+
+    # Pack
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+
+    # Check unversioned data
+    assert "cat_properties" in result
+    assert result["cat_properties"]["last_fed"] == 1234567890
+    assert result["cat_properties"]["shape"]["mass"] == 5.5
+    assert result["cat_properties"]["shape"]["radius"] == 10
+
+    # Check secrets
+    assert crypto_controller.decrypt(result["cat_properties"]["shape"]["signature"]) == "red paws"
+
+
+def test_round_trip_with_cat_properties_none_values(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    original_unversioned_data = {
+        "cat_properties": {
+            "last_fed": None,
+            "shape": {
+                "mass": None,
+                "radius": 15,
+                "signature": None,
+            },
+        }
+    }
+
+    # Unpack
+    data_pack = test_us_manager.unpack_unversioned_data_from_us(
+        cls=TestUSEntry,
+        unversioned_data=original_unversioned_data,
+        serializer=test_serializer,
+    )
+
+    # Pack
+    result = test_us_manager.pack_unversioned_data_for_us(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        serializer=test_serializer,
+    )
+
+    assert isinstance(result, dict)
+
+    # Check unversioned data
+    assert "cat_properties" in result
+    assert result["cat_properties"]["last_fed"] is None
+    assert result["cat_properties"]["shape"]["mass"] is None
+    assert result["cat_properties"]["shape"]["radius"] == 15
+
+    # Check secrets
+    assert result["cat_properties"]["shape"]["signature"] is None
+
+
+# Full serialize-deserialize
+
+
+def test_serialize_deserialize_complete(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    # Create a test entry with complete cat_properties data
+    entry = TestUSEntry(
+        uuid="test-id",
+        us_manager=test_us_manager,
+        data=TestUSEntry.DataModel(
+            secret_field="secret_value",
+            unversioned_field="unversioned_value",
+            cat_properties=CatProperties(
+                last_fed=1234567890,  # unversioned
+                color="orange",  # versioned
+                name="Fluffy",  # versioned
+                shape=CatShapeProperties(  # mixed
+                    mass=5.5,  # unversioned
+                    radius=10,  # unversioned
+                    is_spherical=True,  # versioned
+                    fluidity_coefficient=0.8,  # versioned
+                    signature="red paws",  # secret
+                ),
+            ),
+        ),
+        data_strict=False,
+    )
+
+    # Serialize
+    data_pack = test_serializer.serialize(entry)
+
+    # Verify that unversioned fields are separated
+    assert data_pack.unversioned_data.unversioned_data == {
+        "unversioned_field": "unversioned_value",
+        "cat_properties": {
+            "last_fed": 1234567890,
+            "shape": {
+                "mass": 5.5,
+                "radius": 10,
+            },
+        },
+    }
+
+    # Verify that secrets are separated
+    assert data_pack.unversioned_data.secrets == {
+        "secret_field": "secret_value",
+        "cat_properties": {
+            "shape": {
+                "signature": "red paws",
+            },
+        },
+    }
+
+    # Verify that versioned data remains in main data
+    assert data_pack.data == {
+        "cat_properties": {
+            "color": "orange",
+            "name": "Fluffy",
+            "shape": {
+                "is_spherical": True,
+                "fluidity_coefficient": 0.8,
+            },
+        },
+    }
+
+    # Deserialize
+    deserialized_entry = test_serializer.deserialize(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        entry_id="test-id",
+        us_manager=test_us_manager,
+        common_properties={},
+        data_strict=False,
+    )
+
+    # Verify that the deserialized entry has all the original data
+    assert deserialized_entry.data == TestUSEntry.DataModel(
+        secret_field="secret_value",
+        unversioned_field="unversioned_value",
+        cat_properties=CatProperties(
+            last_fed=1234567890,
+            color="orange",
+            name="Fluffy",
+            shape=CatShapeProperties(
+                mass=5.5,
+                radius=10,
+                is_spherical=True,
+                fluidity_coefficient=0.8,
+                signature="red paws",
+            ),
+        ),
+    )
+
+
+def test_serialize_deserialize_none_values(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    # Create a test entry with None values in unversioned fields
+    entry = TestUSEntry(
+        uuid="test-id",
+        us_manager=test_us_manager,
+        data=TestUSEntry.DataModel(
+            secret_field=None,
+            unversioned_field=None,
+            cat_properties=CatProperties(
+                last_fed=None,  # unversioned None
+                color="white",  # versioned
+                name=None,  # versioned None
+                shape=CatShapeProperties(  # mixed
+                    mass=None,  # unversioned None
+                    radius=15,  # unversioned with value
+                    is_spherical=False,  # versioned
+                    fluidity_coefficient=None,  # versioned None
+                    signature=None,  # secret None
+                ),
+            ),
+        ),
+        data_strict=False,
+    )
+
+    # Serialize
+    data_pack = test_serializer.serialize(entry)
+
+    # Verify that None values are handled correctly in unversioned data
+    assert data_pack.unversioned_data.unversioned_data == {
+        "unversioned_field": None,
+        "cat_properties": {
+            "last_fed": None,
+            "shape": {
+                "mass": None,
+                "radius": 15,
+            },
+        },
+    }
+
+    # Verify that None secrets are handled correctly
+    assert data_pack.unversioned_data.secrets == {
+        "secret_field": None,
+        "cat_properties": {
+            "shape": {
+                "signature": None,
+            },
+        },
+    }
+
+    # Deserialize
+    deserialized_entry = test_serializer.deserialize(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        entry_id="test-id",
+        us_manager=test_us_manager,
+        common_properties={},
+        data_strict=False,
+    )
+
+    # Verify that None values are preserved
+    assert deserialized_entry.data == TestUSEntry.DataModel(
+        secret_field=None,
+        unversioned_field=None,
+        cat_properties=CatProperties(
+            last_fed=None,
+            color="white",
+            name=None,
+            shape=CatShapeProperties(
+                mass=None,
+                radius=15,
+                is_spherical=False,
+                fluidity_coefficient=None,
+                signature=None,
+            ),
+        ),
+    )
+
+
+def test_serialize_deserialize_only_versioned(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    # Create a test entry with only versioned cat_properties fields
+    entry = TestUSEntry(
+        uuid="test-id",
+        us_manager=test_us_manager,
+        data=TestUSEntry.DataModel(
+            secret_field="secret_value",
+            unversioned_field="unversioned_value",
+            cat_properties=CatProperties(
+                last_fed=None,  # unversioned but None
+                color="purple",  # versioned
+                name="Violet",  # versioned
+                shape=CatShapeProperties(
+                    mass=None,  # unversioned but None
+                    radius=None,  # unversioned but None
+                    is_spherical=True,  # versioned
+                    fluidity_coefficient=0.9,  # versioned
+                    signature=None,  # secret
+                ),
+            ),
+        ),
+        data_strict=False,
+    )
+
+    # Serialize
+    data_pack = test_serializer.serialize(entry)
+
+    # Verify that None unversioned fields are still included
+    assert data_pack.unversioned_data.unversioned_data == {
+        "unversioned_field": "unversioned_value",
+        "cat_properties": {
+            "last_fed": None,
+            "shape": {
+                "mass": None,
+                "radius": None,
+            },
+        },
+    }
+
+    # Verify that versioned data remains in main data
+    assert data_pack.data == {
+        "cat_properties": {
+            "color": "purple",
+            "name": "Violet",
+            "shape": {
+                "is_spherical": True,
+                "fluidity_coefficient": 0.9,
+            },
+        },
+    }
+
+    # Deserialize
+    deserialized_entry = test_serializer.deserialize(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        entry_id="test-id",
+        us_manager=test_us_manager,
+        common_properties={},
+        data_strict=False,
+    )
+
+    # Verify that all data is correctly reconstructed
+    assert deserialized_entry.data == TestUSEntry.DataModel(
+        secret_field="secret_value",
+        unversioned_field="unversioned_value",
+        cat_properties=CatProperties(
+            last_fed=None,
+            color="purple",
+            name="Violet",
+            shape=CatShapeProperties(
+                mass=None,
+                radius=None,
+                is_spherical=True,
+                fluidity_coefficient=0.9,
+                signature=None,
+            ),
+        ),
+    )
+
+
+def test_serialize_deserialize_only_unversioned(
+    test_us_manager: USManagerBase,
+    test_serializer: TestSerializer,
+) -> None:
+    # Create a test entry with only unversioned cat_properties fields having values
+    entry = TestUSEntry(
+        uuid="test-id",
+        us_manager=test_us_manager,
+        data=TestUSEntry.DataModel(
+            secret_field="secret_value",
+            unversioned_field="unversioned_value",
+            cat_properties=CatProperties(
+                last_fed=1234567890,  # unversioned
+                color=None,  # versioned but None
+                name=None,  # versioned but None
+                shape=CatShapeProperties(
+                    mass=5.5,  # unversioned
+                    radius=10,  # unversioned
+                    is_spherical=None,  # versioned but None
+                    fluidity_coefficient=None,  # versioned but None
+                    signature="blue paws",  # secret
+                ),
+            ),
+        ),
+        data_strict=False,
+    )
+
+    # Serialize
+    data_pack = test_serializer.serialize(entry)
+
+    # Verify that unversioned fields are in unversioned_data
+    assert data_pack.unversioned_data.unversioned_data == {
+        "unversioned_field": "unversioned_value",
+        "cat_properties": {
+            "last_fed": 1234567890,
+            "shape": {
+                "mass": 5.5,
+                "radius": 10,
+            },
+        },
+    }
+
+    # Verify that None versioned fields are still in main data
+    assert data_pack.data == {
+        "cat_properties": {
+            "color": None,
+            "name": None,
+            "shape": {
+                "is_spherical": None,
+                "fluidity_coefficient": None,
+            },
+        },
+    }
+
+    # Deserialize
+    deserialized_entry = test_serializer.deserialize(
+        cls=TestUSEntry,
+        data_pack=data_pack,
+        entry_id="test-id",
+        us_manager=test_us_manager,
+        common_properties={},
+        data_strict=False,
+    )
+
+    # Verify that all data is correctly reconstructed
+    assert deserialized_entry.data == TestUSEntry.DataModel(
+        secret_field="secret_value",
+        unversioned_field="unversioned_value",
+        cat_properties=CatProperties(
+            last_fed=1234567890,
+            color=None,
+            name=None,
+            shape=CatShapeProperties(
+                mass=5.5,
+                radius=10,
+                is_spherical=None,
+                fluidity_coefficient=None,
+                signature="blue paws",
+            ),
+        ),
+    )

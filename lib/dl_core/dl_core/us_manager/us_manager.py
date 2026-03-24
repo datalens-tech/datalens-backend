@@ -326,7 +326,7 @@ class USManagerBase:
         # Decrypt secrets
         for secret_key in declared_secret_keys:
             if source_addressable.contains(secret_key):
-                sec_val = source_addressable.pop(secret_key)
+                sec_val = source_addressable.pop(key=secret_key, remove_empty=True)
                 assert not isinstance(sec_val, str)
                 decrypted_sec_val = self._crypto_controller.decrypt(sec_val)
                 secrets_addressable.set(secret_key, decrypted_sec_val)
@@ -334,7 +334,7 @@ class USManagerBase:
         # Extract unversioned fields
         for unversioned_key in declared_unversioned_keys:
             if source_addressable.contains(unversioned_key):
-                unversioned_val = source_addressable.pop(unversioned_key)
+                unversioned_val = source_addressable.pop(key=unversioned_key, remove_empty=True)
                 unversioned_data_addressable.set(unversioned_key, unversioned_val)
 
         if source_addressable.data:
@@ -371,14 +371,14 @@ class USManagerBase:
         # Encrypt secrets
         for secret_key in declared_secret_keys:
             if secrets_addressable.contains(secret_key):
-                sec_val = secrets_addressable.pop(secret_key)
+                sec_val = secrets_addressable.pop(key=secret_key, remove_empty=True)
                 assert sec_val is None or isinstance(sec_val, str)
                 result_addressable.set(secret_key, self._crypto_controller.encrypt_with_actual_key(sec_val))
 
         # Extract unversioned fields
         for unversioned_key in declared_unversioned_keys:
             if unversioned_data_addressable.contains(unversioned_key):
-                unversioned_val = unversioned_data_addressable.pop(unversioned_key)
+                unversioned_val = unversioned_data_addressable.pop(key=unversioned_key, remove_empty=True)
                 result_addressable.set(unversioned_key, unversioned_val)
 
         return result_addressable.data

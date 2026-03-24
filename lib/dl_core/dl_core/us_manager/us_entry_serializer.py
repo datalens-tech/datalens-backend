@@ -5,11 +5,14 @@ from collections import ChainMap
 from functools import reduce
 import logging
 from typing import (
+    ClassVar,
+    Union,
+)
+from typing import (
     TYPE_CHECKING,
     Any,
 )
 from typing import ChainMap as ChainMapGeneric
-from typing import ClassVar
 
 import attr
 import marshmallow
@@ -37,10 +40,13 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
+SecretType = dict[str, Union["SecretType", str, dl_crypto.EncryptedData, None]]
+
+
 @attr.s()
 class USUnversionedDataPack:
     unversioned_data: dict[str, Any] = attr.ib(factory=dict)
-    secrets: dict[str, str | dl_crypto.EncryptedData | None] = attr.ib(repr=False, factory=dict)
+    secrets: SecretType = attr.ib(repr=False, factory=dict)
 
 
 @attr.s()
@@ -124,12 +130,14 @@ class USEntrySerializer(abc.ABC):
         unversioned_addressable = AddressableData({})
 
         for sec_key in secret_keys:
-            sec_val = raw_addressable.pop(sec_key)
-            secrets_addressable.set(sec_key, sec_val)
+            if raw_addressable.contains(sec_key):
+                sec_val = raw_addressable.pop(sec_key, remove_empty=True)
+                secrets_addressable.set(sec_key, sec_val)
 
         for unversioned_key in unversioned_keys:
-            unversioned_val = raw_addressable.pop(unversioned_key)
-            unversioned_addressable.set(unversioned_key, unversioned_val)
+            if raw_addressable.contains(unversioned_key):
+                unversioned_val = raw_addressable.pop(unversioned_key, remove_empty=True)
+                unversioned_addressable.set(unversioned_key, unversioned_val)
 
         return USDataPack(
             data=raw_addressable.data,
@@ -167,7 +175,7 @@ class USEntrySerializer(abc.ABC):
 
         for secret_key in declared_secret_keys:
             if secret_source_addressable.contains(secret_key):
-                sec_val = secret_source_addressable.pop(secret_key)
+                sec_val = secret_source_addressable.pop(key=secret_key, remove_empty=True)
                 raw_addressable.set(secret_key, sec_val)
 
         if secret_source_addressable.data:
@@ -175,7 +183,12 @@ class USEntrySerializer(abc.ABC):
 
         for unversioned_key in declared_unversioned_keys:
             if unversioned_addressable.contains(unversioned_key):
-                unversioned_val = unversioned_addressable.pop(unversioned_key)
+                unversioned_val = unversioned_addressable.pop(key=unversioned_key, remove_empty=True)
+
+                if raw_addressable.contains(unversioned_key):
+                    current_key_str = ".".join(unversioned_key.parts)
+                    LOGGER.warning("Key %s exists in both versioned and unversioned data", current_key_str)
+
                 raw_addressable.set(unversioned_key, unversioned_val)
 
         if unversioned_addressable.data:

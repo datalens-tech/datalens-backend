@@ -50,19 +50,111 @@ class AddressableData:
         try:
             self.get(key)
             return True
-        except KeyError:
+        except (KeyError, TypeError):
             return False
 
     def get(self, key: DataKey) -> Any:
         return functools.reduce(operator.getitem, key.parts, self.data)
 
+    def _ensure_objects(self, key: DataKey) -> None:
+        """
+        Create all objects for the given key if they do not exist.
+
+        For example, `self._ensure_objects(DataKey(("a", "b", "c")))` is equivalent to:
+        ```python
+        self.data["a"] = self.data.get("a", {})
+        self.data["a"]["b"] = self.data["a"].get("b", {})
+        ```
+        """
+
+        data = self.data
+        prev_part = None
+        for part in key.parts[:-1]:
+            if not isinstance(data, dict):
+                if prev_part is None:
+                    raise ValueError(
+                        f"Cannot create nested objects for key {key.parts!r}: value is not a dict (got {type(data).__name__})"
+                    )
+                else:
+                    raise ValueError(
+                        f"Cannot create nested objects for key {key.parts!r}: intermediate value at {prev_part!r} is not a dict (got {type(data).__name__})"
+                    )
+
+            data[part] = data.get(part, {})
+            data = data[part]
+            prev_part = part
+
     def set(self, key: DataKey, value: Any) -> None:
+        self._ensure_objects(key)
         key_head = DataKey(parts=key.parts[:-1])
         self.get(key_head)[key.parts[-1]] = value
 
-    def pop(self, key: DataKey) -> Any:
+    @classmethod
+    def _pop_empty(
+        cls: Any,
+        data: Any,
+        key: DataKey,
+    ) -> None:
+        """
+        Pop empty keys from data. Pops only empty dict objects.
+        """
+
+        # Nothing
+        if len(key.parts) == 0:
+            return
+
+        key_part = key.parts[0]
+        current = data.get(key_part, None)
+
+        if isinstance(current, dict):
+            cls._pop_empty(
+                data=current,
+                key=DataKey(parts=key.parts[1:]),
+            )
+
+            if len(current) == 0:
+                data.pop(key_part)
+
+    def pop(
+        self,
+        key: DataKey,
+        *,
+        remove_empty: bool = False,
+    ) -> Any:
+        """
+        Pop key from data.
+
+        `remove_empty` clears empty nested dicts if any left:
+
+        ```python
+        sample = {
+            "a": {
+                "b": {
+                    "c": "value",
+                },
+            },
+            "d": "example",
+        }
+
+        addressable = AddressableData(sample)
+        addressable.pop(DataKey(("a", "b", "c")), remove_empty=True)
+
+        assert sample == { "d": "example" }
+        ```
+
+        :param remove_empty: Automatically remove empty dicts after value pop.
+        """
+
         key_head = DataKey(parts=key.parts[:-1])
-        return self.get(key_head).pop(key.parts[-1])
+        result = self.get(key_head).pop(key.parts[-1])
+
+        if remove_empty:
+            self._pop_empty(
+                data=self.data,
+                key=key,
+            )
+
+        return result
 
 
 T = TypeVar("T")
