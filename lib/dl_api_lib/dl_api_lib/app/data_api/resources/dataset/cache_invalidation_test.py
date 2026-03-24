@@ -104,7 +104,10 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             raise CacheInvalidationTestModeOffError()
 
         if cache_invalidation_source.mode == CacheInvalidationMode.sql:
-            return await self._execute_sql_mode(sql_query=cache_invalidation_source.sql or "")
+            sql_query = cache_invalidation_source.sql or ""
+            if not sql_query.strip():
+                raise CacheInvalidationTestQueryError("Empty cache invalidation SQL query is not allowed")
+            return await self._execute_sql_mode(sql_query=sql_query)
 
         if cache_invalidation_source.mode == CacheInvalidationMode.formula:
             return await self._execute_formula_mode(cache_invalidation_source=cache_invalidation_source)
