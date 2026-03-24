@@ -3636,6 +3636,19 @@ type = "directory"
 url = "../lib/dl_sqlalchemy_promql"
 
 [[package]]
+name = "dl-sqlalchemy-starrocks"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_sqlalchemy_starrocks"
+
+[[package]]
 name = "dl-sqlalchemy-ydb"
 version = "0.1"
 description = "BI YDB SQLAlchemy Dialect"
@@ -9613,4 +9626,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "18d760c42b277f261eebd82ea69745400833ba52ba0f44b29c3bb661d6a8b4b9"
+content-hash = "118fe411a8ae6d5e14da409a4c10af19ae2e26597766ec88532a082f26504d69"
