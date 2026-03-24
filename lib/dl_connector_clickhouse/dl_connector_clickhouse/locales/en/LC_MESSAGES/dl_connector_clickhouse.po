@@ -24,14 +24,6 @@ msgstr "Off"
 msgid "value_experimental-features-on"
 msgstr "On"
 
-msgid "field_click-house-port"
-msgstr "HTTP interface port"
-
-msgid "label_clickhouse-ssl-enabled-tooltip"
-msgstr ""
-"When the option is enabled, the HTTPS protocol is used when interacting with "
-"the database, and when disabled — HTTP"
-
 msgid "label_clickhouse-ssl-ca-verify"
 msgstr "SSL CA verify"
 
@@ -40,3 +32,11 @@ msgstr "Off"
 
 msgid "value_ssl-ca-verify-on"
 msgstr "On"
+
+msgid "field_click-house-port"
+msgstr "HTTP interface port"
+
+msgid "label_clickhouse-ssl-enabled-tooltip"
+msgstr ""
+"When the option is enabled, the HTTPS protocol is used when interacting with "
+"the database, and when disabled — HTTP"

@@ -163,6 +163,37 @@
                 {
                     "id": "label",
                     "displayConditions": {
+                        "advanced_settings": "opened",
+                        "secure": "on"
+                    },
+                    "text": "SSL CA verify"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "ssl_ca_verify",
+                    "displayConditions": {
+                        "advanced_settings": "opened",
+                        "secure": "on"
+                    },
+                    "defaultValue": "on",
+                    "options": [
+                        {
+                            "text": "Off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "On",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
+                    "id": "label",
+                    "displayConditions": {
                         "advanced_settings": "opened"
                     },
                     "text": "Disable data export",
@@ -258,37 +289,6 @@
         {
             "items": [
                 {
-                    "id": "label",
-                    "displayConditions": {
-                        "advanced_settings": "opened",
-                        "secure": "on"
-                    },
-                    "text": "label_clickhouse-ssl-ca-verify"
-                },
-                {
-                    "id": "radio_button",
-                    "name": "ssl_ca_verify",
-                    "displayConditions": {
-                        "advanced_settings": "opened",
-                        "secure": "on"
-                    },
-                    "defaultValue": "on",
-                    "options": [
-                        {
-                            "text": "value_ssl-ca-verify-off",
-                            "value": "off"
-                        },
-                        {
-                            "text": "value_ssl-ca-verify-on",
-                            "value": "on"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "items": [
-                {
                     "id": "hidden",
                     "name": "description",
                     "defaultValue": ""
@@ -325,6 +325,11 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "ssl_ca_verify",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
@@ -341,11 +346,6 @@
                 },
                 {
                     "name": "experimental_features",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca_verify",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -398,6 +398,11 @@
                     "defaultAction": "include"
                 },
                 {
+                    "name": "ssl_ca_verify",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
                     "name": "ssl_ca",
                     "required": false,
                     "defaultAction": "include"
@@ -414,11 +419,6 @@
                 },
                 {
                     "name": "experimental_features",
-                    "required": false,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "ssl_ca_verify",
                     "required": false,
                     "defaultAction": "include"
                 }

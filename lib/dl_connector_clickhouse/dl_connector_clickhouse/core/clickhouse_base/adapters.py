@@ -703,10 +703,13 @@ class AsyncClickHouseAdapter(BaseAsyncClickHouseAdapter):
     ch_utils = ClickHouseUtils
 
     def _get_ssl_param(self) -> ssl.SSLContext | bool:
+        if not self._target_dto.secure:
+            return True  # Value doesn't matter, because protocol is http
+
         if not self._target_dto.ssl_ca_verify:
             return False
 
-        if self._target_dto.secure and self._target_dto.ssl_ca:
+        if self._target_dto.ssl_ca:
             return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
 
         return True

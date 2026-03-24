@@ -147,14 +147,20 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
             FormFieldApiSchema(name=CommonFieldName.username),
             FormFieldApiSchema(name=CommonFieldName.password),
             FormFieldApiSchema(name=CommonFieldName.secure),
-            FormFieldApiSchema(name=CommonFieldName.ssl_ca),
-            FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
-            FormFieldApiSchema(name=ClickHouseFieldName.readonly),
         ]
-        if self._experimental_features_allowed(connector_settings=connector_settings):
-            items.append(FormFieldApiSchema(name=ClickHouseFieldName.experimental_features))
+
         if self._ssl_ca_verify_field_allowed(connector_settings=connector_settings):
             items.append(FormFieldApiSchema(name=ClickHouseFieldName.ssl_ca_verify))
+
+        items.extend(
+            [
+                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
+                FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+                FormFieldApiSchema(name=ClickHouseFieldName.readonly),
+            ]
+        )
+        if self._experimental_features_allowed(connector_settings=connector_settings):
+            items.append(FormFieldApiSchema(name=ClickHouseFieldName.experimental_features))
         return items
 
     def _get_edit_api_schema(
@@ -253,17 +259,23 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
                 enabled_help_text=self._localizer.translate(Translatable("label_clickhouse-ssl-enabled-tooltip")),
                 enabled_default_value=True,
             ),
-            rc.data_export_forbidden_row(
-                conn_id=form_params.conn_id,
-                exports_history_url_path=form_params.exports_history_url_path,
-                mode=self.mode,
-            ),
-            clickhouse_rc.readonly_mode_row(),
         ]
-        if self._experimental_features_allowed(connector_settings=connector_settings):
-            rows.append(clickhouse_rc.experimental_features_row())
+
         if self._ssl_ca_verify_field_allowed(connector_settings=connector_settings):
             rows.append(clickhouse_rc.ssl_ca_verify_row())
+
+        rows.extend(
+            [
+                rc.data_export_forbidden_row(
+                    conn_id=form_params.conn_id,
+                    exports_history_url_path=form_params.exports_history_url_path,
+                    mode=self.mode,
+                ),
+                clickhouse_rc.readonly_mode_row(),
+            ]
+        )
+        if self._experimental_features_allowed(connector_settings=connector_settings):
+            rows.append(clickhouse_rc.experimental_features_row())
         return self._filter_nulls(rows)
 
     def get_form_config(

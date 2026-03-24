@@ -24,14 +24,6 @@ msgstr "Выкл"
 msgid "value_experimental-features-on"
 msgstr "Вкл"
 
-msgid "field_click-house-port"
-msgstr "Порт HTTP-интерфейса"
-
-msgid "label_clickhouse-ssl-enabled-tooltip"
-msgstr ""
-"Когда опция включена, при взаимодействии с БД используется протокол HTTPS, "
-"когда выключена — HTTP"
-
 msgid "label_clickhouse-ssl-ca-verify"
 msgstr "Проверка SSL-сертификата"
 
@@ -40,3 +32,11 @@ msgstr "Выкл"
 
 msgid "value_ssl-ca-verify-on"
 msgstr "Вкл"
+
+msgid "field_click-house-port"
+msgstr "Порт HTTP-интерфейса"
+
+msgid "label_clickhouse-ssl-enabled-tooltip"
+msgstr ""
+"Когда опция включена, при взаимодействии с БД используется протокол HTTPS, "
+"когда выключена — HTTP"
