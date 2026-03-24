@@ -123,8 +123,25 @@ class SyncUSManager(USManagerBase):
 
     # CRUD
     #
-    def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
-        lifecycle_manager = self.get_lifecycle_manager(entry=entry, service_registry=self._services_registry)
+    def save(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+        original_entry: USEntry | None = None,
+    ) -> None:
+        """
+        Save USEntry to US.
+
+        :param entry: US entry to save
+        :param update_revision: Update revision on save
+        :param original_entry: Orevious version on entry for lifecycle hook handling
+        """
+
+        lifecycle_manager = self.get_lifecycle_manager(
+            entry=entry,
+            service_registry=self._services_registry,
+            original_entry=original_entry,
+        )
         lifecycle_manager.pre_save_hook()
 
         save_params = self._get_entry_save_params(entry)

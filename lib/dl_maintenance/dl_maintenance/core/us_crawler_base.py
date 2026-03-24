@@ -153,11 +153,20 @@ class USEntryCrawler:
                 else:
                     yield entry
 
-    async def save_entry(self, entry: USEntry, usm: AsyncUSManager) -> None:
+    async def save_entry(
+        self,
+        entry: USEntry,
+        original_entry: USEntry,
+        usm: AsyncUSManager,
+    ) -> None:
         if self._dry_run:
             return
         else:
-            await usm.save(entry)
+            # Probably Entry has beed changed and should have an old version
+            await usm.save(
+                entry=entry,
+                original_entry=original_entry,
+            )
 
     async def run(self) -> None:
         if self._run_fired:
@@ -296,6 +305,8 @@ class USEntryCrawler:
         usm = self.usm
         async with self.locked_entry_cm(entry_id, entry_handling_extra, usm=usm) as target_entry:
             assert target_entry is not None
+            original_target_entry = usm.clone_entry_instance(target_entry)
+
             # For future diff calculation reliability
             # (see `dl_maintenance.diff_utils.get_pre_save_top_level_dict`)
             assert target_entry._us_resp is not None
@@ -343,7 +354,11 @@ class USEntryCrawler:
 
             try:
                 if need_save:
-                    await self.save_entry(target_entry, usm=usm)
+                    await self.save_entry(
+                        target_entry,
+                        original_entry=original_target_entry,
+                        usm=usm,
+                    )
                     return EntryHandlingResult.SUCCESS
                 else:
                     return EntryHandlingResult.SKIPPED

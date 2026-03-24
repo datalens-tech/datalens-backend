@@ -72,6 +72,7 @@ class FileConnectionDataSourceErrorTracker:
             duration_sec=10,
         ) as conn:
             assert isinstance(conn, BaseFileS3Connection)
+            original_conn = self._usm.clone_entry_instance(conn)
             for source_id, error in self._error_registry.items():
                 reason = ".".join(error.code)
                 try:
@@ -127,7 +128,12 @@ class FileConnectionDataSourceErrorTracker:
                     details=error.details,
                 )
 
-            await self._usm.save(conn, update_revision=True)
+            # Connection has previous version
+            await self._usm.save(
+                entry=conn,
+                original_entry=original_conn,
+                update_revision=True,
+            )
 
         for delete_file_task in delete_tasks:
             await self._task_processor.schedule(delete_file_task)

@@ -172,12 +172,18 @@ class USManagerBase:
         return self._crypto_keys_config.actual_key_id
 
     def get_lifecycle_manager(
-        self, entry: USEntry, service_registry: Optional[ServicesRegistry] = None
+        self,
+        entry: USEntry,
+        service_registry: ServicesRegistry | None = None,
+        original_entry: USEntry | None = None,
     ) -> EntryLifecycleManager:
         if service_registry is None:
             service_registry = self.get_services_registry()
         return self._lifecycle_manager_factory.get_lifecycle_manager(
-            entry=entry, us_manager=self, service_registry=service_registry
+            entry=entry,
+            us_manager=self,
+            service_registry=service_registry,
+            original_entry=original_entry,
         )
 
     def get_schema_migration(
@@ -499,7 +505,7 @@ class USManagerBase:
             migration_status=entry.migration_status,
             **entry_loc.to_us_resp_api_params(entry.raw_us_key),
         )
-        return self._entry_dict_to_obj(entry_data)
+        return self._entry_dict_to_obj(entry_data, expected_type=type(entry))
 
     @staticmethod
     def _get_us_type_for_entry(entry: USEntry) -> Optional[str]:

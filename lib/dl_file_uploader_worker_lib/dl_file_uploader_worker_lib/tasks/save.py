@@ -268,6 +268,7 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         duration_sec=10,
                     ) as conn:
                         assert isinstance(conn, BaseFileS3Connection)
+                        original_conn = usm.clone_entry_instance(conn)
                         try:
                             conn.get_file_source_by_id(id=dst_source_id)
                             conn_file_source = conn.get_file_source_by_id(id=dst_source_id)
@@ -308,9 +309,18 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         conn.data.component_errors.remove_errors(id=dst_source_id)
 
                         if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
-                            await usm.save(conn, update_revision=True)
+                            # Connection has previous version
+                            await usm.save(
+                                entry=conn,
+                                original_entry=original_conn,
+                                update_revision=True,
+                            )
                         else:
-                            await usm.save(conn)
+                            # Connection has previous version
+                            await usm.save(
+                                entry=conn,
+                                original_entry=original_conn,
+                            )
 
                     # sync source id with the connection to enable consistent work with dfile (e.g. polling)
                     src_source.id = dst_source_id
