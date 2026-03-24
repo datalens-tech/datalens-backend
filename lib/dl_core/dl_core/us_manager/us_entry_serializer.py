@@ -40,13 +40,13 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-SECRET_TYPE = dict[str, Union["SECRET_TYPE", str, dl_crypto.EncryptedData, None]]
+SecretType = dict[str, Union["SecretType", str, dl_crypto.EncryptedData, None]]
 
 
 @attr.s()
 class USUnversionedDataPack:
     unversioned_data: dict[str, Any] = attr.ib(factory=dict)
-    secrets: SECRET_TYPE = attr.ib(repr=False, factory=dict)
+    secrets: SecretType = attr.ib(repr=False, factory=dict)
 
 
 @attr.s()
@@ -185,7 +185,7 @@ class USEntrySerializer(abc.ABC):
 
                 if raw_addressable.contains(unversioned_key):
                     current_key_str = ".".join(unversioned_key.parts)
-                    LOGGER.warning(f"Key {current_key_str} exists in both versioned and unversioned data")
+                    LOGGER.warning("Key %s exists in both versioned and unversioned data", current_key_str)
 
                 raw_addressable.set(unversioned_key, unversioned_val)
 
