@@ -79,6 +79,11 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
 
     STORED_DATASET_REQUIRED = True
 
+    @property
+    def allow_query_cache_usage(self) -> bool:
+        """Always bypass query cache for cache invalidation test — we need fresh data from the database."""
+        return False
+
     @generic_profiler_async("ds-cache-invalidation-test-full")
     @DatasetDataBaseView.with_dataset_us_context
     @DatasetDataBaseView.with_resolved_entities
@@ -162,8 +167,10 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                     call_post_exec_async_hook=False,
                 )
             except Exception as ex:
+                LOGGER.exception("Cache invalidation formula query execution failed", exc_info=True)
                 raise CacheInvalidationTestQueryError(
-                    message=f"Cache invalidation formula query execution failed: {ex}",
+                    message="Cache invalidation formula query execution failed",
+                    debug_info={"db_message": str(ex)},
                 ) from ex
 
             # 6. Extract the debug query (actual SQL sent to the database)
@@ -278,12 +285,21 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         ce_factory = sr.get_conn_executor_factory()
         conn_executor = ce_factory.get_async_conn_executor(connection)
 
+        # Read at most a few rows to detect >1 row results without fetching the entire result set
+        _MAX_ROWS_TO_FETCH = 3
+
         try:
             exec_result = await conn_executor.execute(ce_query)
-            rows = await exec_result.get_all()
+            rows: list = []
+            async for chunk in exec_result.result:
+                rows.extend(chunk)
+                if len(rows) >= _MAX_ROWS_TO_FETCH:
+                    break
         except Exception as ex:
+            LOGGER.exception("Cache invalidation SQL query execution failed")
             raise CacheInvalidationTestQueryError(
-                message=f"Cache invalidation query execution failed: {ex}",
+                message="Cache invalidation query execution failed",
+                debug_info={"db_message": str(ex)},
             ) from ex
 
         # Validate that the result type is string
@@ -294,7 +310,11 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             )
 
         # Validate result
-        if len(rows) != 1:
+        if len(rows) == 0:
+            raise CacheInvalidationTestInvalidResultError(
+                message="Query returned no rows",
+            )
+        if len(rows) > 1:
             raise CacheInvalidationTestInvalidResultError(
                 message=f"Expected exactly 1 row, got {len(rows)}",
             )
@@ -307,6 +327,13 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         if len(row) > 1:
             raise CacheInvalidationTestInvalidResultError(
                 message=f"Expected exactly 1 column, got {len(row)}",
+            )
+
+        # Additionally validate the actual Python type of the value
+        # (user_types may be empty/None for some adapters)
+        if not isinstance(row[0], str):
+            raise CacheInvalidationTestNonStringResultError(
+                message=f"Expected string result, got {type(row[0]).__name__}",
             )
 
         value = str(row[0])

@@ -56,7 +56,7 @@ class CacheInvalidationTestResponseSchema(BaseSchema):
           }
         }
 
-    Error responses (400) are handled by the standard error handling middleware`.
+    Error responses (400) are handled by the standard error handling middleware.
     """
 
     result = ma_fields.Nested(CacheInvalidationTestResultSchema, required=True)

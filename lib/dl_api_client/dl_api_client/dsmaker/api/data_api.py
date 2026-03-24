@@ -915,6 +915,14 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
 
         return self.make_response_obj(client_response=response, data=resp_data)
 
+    def get_response_for_cache_invalidation_test(
+        self,
+        dataset_id: str,
+        raw_body: dict | None = None,
+    ) -> ClientResponse:
+        url = f"/api/data/{self.api_v}/datasets/{dataset_id}/cache_invalidation_test"
+        return self._request(url, method="post", data=raw_body or {})
+
 
 @attr.s
 class AsyncHttpDataApiV2(AsyncHttpDataApiBase):

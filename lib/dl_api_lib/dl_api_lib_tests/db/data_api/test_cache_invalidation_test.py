@@ -13,10 +13,8 @@ from dl_constants.enums import (
 )
 
 
-class TestCacheInvalidationTestSqlMode(DefaultApiTestBase):
-    """Tests for POST /api/v1/datasets/{ds_id}/cache_invalidation_test (SQL mode)"""
-
-    raw_sql_level = RawSQLLevel.subselect
+class CacheInvalidationTestBase(DefaultApiTestBase):
+    """Base class for cache invalidation test endpoint tests."""
 
     def _call_cache_invalidation_test(
         self,
@@ -25,12 +23,20 @@ class TestCacheInvalidationTestSqlMode(DefaultApiTestBase):
         body: dict | None = None,
     ) -> dict:
         """Helper to call the cache invalidation test endpoint and return raw response."""
-        url = f"/api/v1/datasets/{dataset_id}/cache_invalidation_test"
-        response = data_api._request(url, method="post", data=body or {})
+        response = data_api.get_response_for_cache_invalidation_test(
+            dataset_id=dataset_id,
+            raw_body=body,
+        )
         return {
             "status_code": response.status_code,
             "json": response.json,
         }
+
+
+class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
+    """Tests for POST /api/data/v2/datasets/{ds_id}/cache_invalidation_test (SQL mode)"""
+
+    raw_sql_level = RawSQLLevel.subselect
 
     def test_success_sql_mode(
         self,
@@ -196,7 +202,7 @@ class TestCacheInvalidationTestSqlMode(DefaultApiTestBase):
         assert "CACHE_INVALIDATION_TEST" in resp["json"].get("code", "")
 
 
-class TestCacheInvalidationTestSqlModeSubselectNotAllowed(DefaultApiTestBase):
+class TestCacheInvalidationTestSqlModeSubselectNotAllowed(CacheInvalidationTestBase):
     """Test that SQL mode fails when connection does not support subselect."""
 
     raw_sql_level = RawSQLLevel.off
@@ -215,32 +221,20 @@ class TestCacheInvalidationTestSqlModeSubselectNotAllowed(DefaultApiTestBase):
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
-        url = f"/api/v1/datasets/{saved_dataset.id}/cache_invalidation_test"
-        response = data_api._request(url, method="post", data={})
+        resp = self._call_cache_invalidation_test(
+            data_api=data_api,
+            dataset_id=saved_dataset.id,
+        )
 
-        assert response.status_code == HTTPStatus.BAD_REQUEST, response.json
-        assert "CACHE_INVALIDATION_TEST" in response.json.get("code", "")
-        assert "SUBSELECT_NOT_ALLOWED" in response.json.get("code", "")
+        assert resp["status_code"] == HTTPStatus.BAD_REQUEST, resp["json"]
+        assert "CACHE_INVALIDATION_TEST" in resp["json"].get("code", "")
+        assert "SUBSELECT_NOT_ALLOWED" in resp["json"].get("code", "")
 
 
-class TestCacheInvalidationTestFormulaMode(DefaultApiTestBase):
-    """Tests for POST /api/v1/datasets/{ds_id}/cache_invalidation_test (Formula mode)"""
+class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
+    """Tests for POST /api/data/v2/datasets/{ds_id}/cache_invalidation_test (Formula mode)"""
 
     raw_sql_level = RawSQLLevel.subselect
-
-    def _call_cache_invalidation_test(
-        self,
-        data_api: SyncHttpDataApiV2,
-        dataset_id: str,
-        body: dict | None = None,
-    ) -> dict:
-        """Helper to call the cache invalidation test endpoint and return raw response."""
-        url = f"/api/v1/datasets/{dataset_id}/cache_invalidation_test"
-        response = data_api._request(url, method="post", data=body or {})
-        return {
-            "status_code": response.status_code,
-            "json": response.json,
-        }
 
     def test_success_formula_mode(
         self,
@@ -419,4 +413,4 @@ class TestCacheInvalidationTestFormulaMode(DefaultApiTestBase):
         query = resp["json"]["result"]["query"]
         # The query field should contain actual SQL, not the formula text
         assert "SELECT" in query.upper()
-        assert "max" in query.lower() or "MAX" in query
+        assert "MAX" in query.upper()

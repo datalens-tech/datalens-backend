@@ -199,7 +199,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/preview", DatasetPreviewViewV2)
 
             app.router.add_route(
-                "post", "/api/v1/datasets/{ds_id}/cache_invalidation_test", DatasetCacheInvalidationTestView
+                "post", "/api/data/v2/datasets/{ds_id}/cache_invalidation_test", DatasetCacheInvalidationTestView
             )
 
     def set_up_sentry(self) -> None:
