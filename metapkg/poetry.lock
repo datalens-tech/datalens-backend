@@ -3644,6 +3644,10 @@ python-versions = ">=3.10, <3.13"
 files = []
 develop = true
 
+[package.dependencies]
+dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
+sqlalchemy = ">=1.4.46, <2.0"
+
 [package.source]
 type = "directory"
 url = "../lib/dl_sqlalchemy_starrocks"

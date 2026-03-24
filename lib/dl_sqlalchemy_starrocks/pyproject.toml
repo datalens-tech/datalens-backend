@@ -8,9 +8,15 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
 python = ">=3.10, <3.13"
+sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.group.tests.dependencies]
+pytest = "*"
+
+[tool.poetry.plugins."sqlalchemy.dialects"]
+bi_starrocks = "dl_sqlalchemy_starrocks.base:BiStarRocksDialect"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -23,7 +29,7 @@ warn_unused_ignores = true
 [tool.pytest.ini_options]
 addopts = "-ra"
 minversion = "6.0"
-testpaths = []
+testpaths = ["dl_sqlalchemy_starrocks_tests/unit"]
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
