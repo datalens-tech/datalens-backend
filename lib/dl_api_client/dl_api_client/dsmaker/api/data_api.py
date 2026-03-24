@@ -1160,6 +1160,14 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
 
         return self.make_response_obj(client_response=response, data=resp_data)
 
+    async def get_response_for_cache_invalidation_test(
+        self,
+        dataset_id: str,
+        raw_body: dict | None = None,
+    ) -> ClientResponse:
+        url = f"/api/data/{self.api_v}/datasets/{dataset_id}/cache_invalidation_test"
+        return await self._request(url, method="post", data=raw_body or {})
+
 
 @attr.s
 class SyncHttpDataApiV1_5(SyncHttpDataApiV2):

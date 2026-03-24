@@ -12,6 +12,7 @@ from dl_api_lib.app.data_api.resources.base import (
 from dl_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.exc import (
+    CacheInvalidationTestError,
     CacheInvalidationTestInvalidResultError,
     CacheInvalidationTestModeOffError,
     CacheInvalidationTestNonStringResultError,
@@ -108,7 +109,7 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         if cache_invalidation_source.mode == CacheInvalidationMode.formula:
             return await self._execute_formula_mode(cache_invalidation_source=cache_invalidation_source)
 
-        raise CacheInvalidationTestModeOffError(
+        raise CacheInvalidationTestError(
             message=f"Unsupported cache invalidation mode: {cache_invalidation_source.mode}"
         )
 
