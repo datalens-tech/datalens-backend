@@ -22,6 +22,7 @@ class ClickHouseConnDTO(ClickHouseBaseDTO, DefaultSQLDTO):  # noqa
     conn_type = CONNECTION_TYPE_CLICKHOUSE
     secure: bool = attr.ib(kw_only=True, default=False)
     ssl_ca: Optional[str] = attr.ib(kw_only=True, default=None)
+    ssl_ca_verify: bool = attr.ib(kw_only=True, default=True)
 
     protocol: str = attr.ib(kw_only=True)
     # TODO CONSIDER: Is really optional

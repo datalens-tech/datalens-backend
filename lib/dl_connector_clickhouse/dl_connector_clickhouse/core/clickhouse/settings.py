@@ -20,6 +20,7 @@ class ClickHouseConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixi
     }
 
     ALLOW_EXPERIMENTAL_FEATURES: bool = False
+    ALLOW_SSL_CA_VERIFY_OPTION: bool = False
 
 
 class ClickHouseSettingDefinition(ConnectorSettingsDefinition):

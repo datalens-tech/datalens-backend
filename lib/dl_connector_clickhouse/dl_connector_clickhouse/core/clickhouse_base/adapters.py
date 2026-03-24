@@ -156,7 +156,10 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
         }
 
         if self._target_dto.secure:
-            args["verify"] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
+            if self._target_dto.ssl_ca_verify:
+                args["verify"] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
+            else:
+                args["verify"] = False
 
         return args
 
@@ -421,8 +424,8 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     def _get_current_tracing_headers(self) -> dict[str, str]:
         return {}
 
-    def _get_ssl_context(self) -> Optional[ssl.SSLContext]:
-        return None
+    def _get_ssl_param(self) -> ssl.SSLContext | bool:
+        return True
 
     # TODO FIX: Add logging from dl_core.connection_executors.adapters.sa_utils.CursorLogger
     async def _make_query(self, dba_q: DBAdapterQuery, mirroring_mode: bool = False) -> ClientResponse:
@@ -468,7 +471,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             data=final_query.encode(),
             allow_redirects=False,
             headers={**tracing_headers},
-            ssl_context=self._get_ssl_context(),
+            ssl=self._get_ssl_param(),
         )
 
         # CHYT rewrites incoming query_id so we log returned one instead of constructing own id
@@ -699,8 +702,14 @@ class AsyncClickHouseAdapter(BaseAsyncClickHouseAdapter):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
     ch_utils = ClickHouseUtils
 
-    def _get_ssl_context(self) -> Optional[ssl.SSLContext]:
-        if not self._target_dto.secure or self._target_dto.ssl_ca is None:
-            return None
+    def _get_ssl_param(self) -> ssl.SSLContext | bool:
+        if not self._target_dto.secure:
+            return True  # Value doesn't matter, because protocol is http
 
-        return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
+        if not self._target_dto.ssl_ca_verify:
+            return False
+
+        if self._target_dto.ssl_ca:
+            return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
+
+        return True

@@ -24,6 +24,15 @@ msgstr "Off"
 msgid "value_experimental-features-on"
 msgstr "On"
 
+msgid "label_clickhouse-ssl-ca-verify"
+msgstr "SSL CA verify"
+
+msgid "value_ssl-ca-verify-off"
+msgstr "Off"
+
+msgid "value_ssl-ca-verify-on"
+msgstr "On"
+
 msgid "field_click-house-port"
 msgstr "HTTP interface port"
 

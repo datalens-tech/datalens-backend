@@ -28,11 +28,23 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase):
     def fixture_allow_experimental_features(self, request: pytest.FixtureRequest) -> bool:
         return request.param
 
+    @pytest.fixture(
+        params=(True, False),
+        ids=("with_ssl_ca_verify", "no_ssl_ca_verify"),
+        name="allow_ssl_ca_verify_option",
+    )
+    def fixture_allow_ssl_ca_verify_option(self, request: pytest.FixtureRequest) -> bool:
+        return request.param
+
     @pytest.fixture(name="connectors_settings")
     def fixture_connectors_settings(
-        self, enable_datasource_template: bool, allow_experimental_features: bool
+        self,
+        enable_datasource_template: bool,
+        allow_experimental_features: bool,
+        allow_ssl_ca_verify_option: bool,
     ) -> ClickHouseConnectorSettings | None:
         return ClickHouseConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
             ALLOW_EXPERIMENTAL_FEATURES=allow_experimental_features,
+            ALLOW_SSL_CA_VERIFY_OPTION=allow_ssl_ca_verify_option,
         )

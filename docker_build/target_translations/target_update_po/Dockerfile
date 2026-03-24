@@ -10,7 +10,6 @@ COPY --from=src . .
 COPY --from=src_terrarium . .
 
 # Install repmanager to access metadata in pyproject.toml
-RUN ls -l terrarium
 RUN pip install terrarium/dl_repmanager
 
 # Prepare a config file for babel. It's always the same, no ponit in storing in in packages
