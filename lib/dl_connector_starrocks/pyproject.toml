@@ -8,6 +8,11 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+attrs = ">=22.2.0"
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-i18n = {path = "../dl_i18n"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 python = ">=3.10, <3.13"
 
 [tool.poetry.group.tests.dependencies]
