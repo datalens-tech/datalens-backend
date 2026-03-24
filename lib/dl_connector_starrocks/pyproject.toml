@@ -8,9 +8,14 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+attrs = ">=22.2.0"
+dl-constants = {path = "../dl_constants"}
+dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
+dl-i18n = {path = "../dl_i18n"}
+dl-type-transformer = {path = "../dl_type_transformer"}
 python = ">=3.10, <3.13"
-
-[tool.poetry.group.tests.dependencies]
 
 [tool.mypy]
 check_untyped_defs = true
