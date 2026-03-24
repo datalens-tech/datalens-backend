@@ -436,3 +436,85 @@ def test_request_with_auth_provider(
         "request-header-key": "request-header-value",
         "cookie": "request-cookie-key=request-cookie-value",
     }
+
+
+def test_rate_limit_propagates_from_send_sync(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_retry_policy: unittest.mock.Mock,
+    mock_retry: dl_retrier.Retry,
+    always_rate_limit_limiter: dl_httpx.RateLimiterProtocol,
+) -> None:
+    mock_retry_policy.iter_retries.return_value = iter([mock_retry])
+    factory = unittest.mock.MagicMock(spec=dl_retrier.RetryPolicyFactory)
+    factory.get_policy.return_value = mock_retry_policy
+
+    mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            retry_policy_factory=factory,
+            rate_limiter=always_rate_limit_limiter,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/data")
+        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+            with client.send(request):
+                pass
+
+    assert mock_route.call_count == 0
+
+
+def test_rate_limit_retries_exhausted_not_wrapped_sync(
+    respx_mock: respx.MockRouter,
+    mock_retry_policy_factory: unittest.mock.Mock,
+    mock_retry_policy: unittest.mock.Mock,
+    always_rate_limit_limiter: dl_httpx.RateLimiterProtocol,
+) -> None:
+    mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
+    with dl_httpx.HttpxSyncClient(
+        base_url="https://example.com",
+        base_cookies={},
+        base_headers={},
+        retry_policy_factory=mock_retry_policy_factory,
+        base_client=httpx.Client(base_url="https://example.com"),
+        auth_provider=dl_auth.NoAuthProvider(),
+        logger=LOGGER,
+        debug_logging=True,
+        rate_limiter=always_rate_limit_limiter,
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/data")
+        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+            with client.send(request):
+                pass
+
+    assert mock_route.call_count == 0
+
+
+def test_rate_limit_retries_then_succeeds_sync(
+    respx_mock: respx.MockRouter,
+    mock_retry_policy_factory: unittest.mock.Mock,
+    mock_retry_policy: unittest.mock.Mock,
+    counting_rate_limit_failures_two: dl_httpx.RateLimiterProtocol,
+) -> None:
+    mock_route = respx_mock.get("https://example.com/api/data").respond(
+        status_code=200,
+        json={"ok": True},
+    )
+    with dl_httpx.HttpxSyncClient(
+        base_url="https://example.com",
+        base_cookies={},
+        base_headers={},
+        retry_policy_factory=mock_retry_policy_factory,
+        base_client=httpx.Client(base_url="https://example.com"),
+        auth_provider=dl_auth.NoAuthProvider(),
+        logger=LOGGER,
+        debug_logging=True,
+        rate_limiter=counting_rate_limit_failures_two,
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/data")
+        with client.send(request) as response:
+            assert response.status_code == 200
+
+    assert mock_route.call_count == 1

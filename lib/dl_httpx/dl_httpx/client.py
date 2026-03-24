@@ -22,7 +22,9 @@ import typing_extensions
 import dl_auth
 import dl_configs
 import dl_constants
+import dl_httpx.exceptions as exceptions
 from dl_httpx.models import BaseRequest
+import dl_httpx.rate_limiters as rate_limiters
 from dl_httpx.retry_mutator import RetryRequestMutator
 import dl_retrier
 
@@ -64,23 +66,19 @@ class AsyncRequestFunction(Protocol):
 THttpxClient = TypeVar("THttpxClient", httpx.Client, httpx.AsyncClient)
 
 
-class BaseHttpxClientException(Exception):
-    ...
-
-
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpStatusHttpxClientException(BaseHttpxClientException):
+class HttpStatusHttpxClientException(exceptions.BaseHttpxClientException):
     request: httpx.Request
     response: httpx.Response
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class RequestHttpxClientException(BaseHttpxClientException):
+class RequestHttpxClientException(exceptions.BaseHttpxClientException):
     original_exception: Exception
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class NoRetriesHttpxClientException(BaseHttpxClientException):
+class NoRetriesHttpxClientException(exceptions.BaseHttpxClientException):
     ...
 
 
@@ -93,6 +91,9 @@ class HttpxClientDependencies:
     ssl_context: ssl.SSLContext = attrs.field(factory=dl_configs.get_default_ssl_context)
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attrs.field(factory=dl_retrier.DefaultRetryPolicyFactory)
     auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
+    rate_limiter: rate_limiters.RateLimiterProtocol = attrs.field(
+        factory=rate_limiters.NoRateLimiter,
+    )
     logger: logging.Logger = attrs.field(default=LOGGER)
     debug_logging: bool = attrs.field(default=False)
 
@@ -106,6 +107,9 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _auth_provider: dl_auth.AuthProviderProtocol
     _logger: logging.Logger
     _debug_logging: bool
+    _rate_limiter: rate_limiters.RateLimiterProtocol = attrs.field(
+        factory=rate_limiters.NoRateLimiter,
+    )
 
     _base_client: THttpxClient
 
@@ -119,6 +123,7 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             auth_provider=dependencies.auth_provider,
             logger=dependencies.logger,
             debug_logging=dependencies.debug_logging,
+            rate_limiter=dependencies.rate_limiter,
             base_client=cls._get_client(
                 ssl_context=dependencies.ssl_context,
             ),
@@ -215,6 +220,14 @@ class HttpxSyncRetrier:
 
             try:
                 response = request_func(request)
+            except rate_limiters.RateLimitHttpxClientException as e:
+                self._logger.warning(
+                    "%s rate limited: %s",
+                    self._client_name,
+                    _request_to_string(request),
+                )
+                last_known_result = e
+                continue
             except Exception as e:
                 self._logger.exception(
                     "%s failed: %s",
@@ -238,6 +251,9 @@ class HttpxSyncRetrier:
 
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
+
+        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientException):
+            raise last_known_result
 
         if isinstance(last_known_result, Exception):
             raise RequestHttpxClientException(original_exception=last_known_result) from last_known_result
@@ -282,6 +298,14 @@ class HttpxAsyncRetrier:
 
             try:
                 response = await request_func(request)
+            except rate_limiters.RateLimitHttpxClientException as e:
+                self._logger.warning(
+                    "%s rate limited: %s",
+                    self._client_name,
+                    _request_to_string(request),
+                )
+                last_known_result = e
+                continue
             except Exception as e:
                 self._logger.exception(
                     "%s failed: %s",
@@ -305,6 +329,9 @@ class HttpxAsyncRetrier:
 
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
+
+        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientException):
+            raise last_known_result
 
         if isinstance(last_known_result, Exception):
             raise RequestHttpxClientException(original_exception=last_known_result) from last_known_result
@@ -428,7 +455,8 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
         self,
         request: httpx.Request,
     ) -> httpx.Response:
-        return self._base_client.send(request=request)
+        with self._rate_limiter.context():
+            return self._base_client.send(request=request)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -544,7 +572,8 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
             await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        return await self._base_client.send(request=request)
+        async with self._rate_limiter.context_async():
+            return await self._base_client.send(request=request)
 
 
 __all__ = [
