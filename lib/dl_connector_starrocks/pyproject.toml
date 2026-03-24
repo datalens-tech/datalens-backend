@@ -17,6 +17,8 @@ dl-i18n = {path = "../dl_i18n"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 python = ">=3.10, <3.13"
 
+[tool.poetry.group.tests.dependencies]
+
 [tool.mypy]
 check_untyped_defs = true
 disallow_untyped_defs = true
