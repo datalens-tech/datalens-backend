@@ -178,6 +178,7 @@ dl-sqlalchemy-mysql = {develop = true, path = "../lib/dl_sqlalchemy_mysql"}
 dl-sqlalchemy-oracle = {develop = true, path = "../lib/dl_sqlalchemy_oracle"}
 dl-sqlalchemy-postgres = {develop = true, path = "../lib/dl_sqlalchemy_postgres"}
 dl-sqlalchemy-promql = {develop = true, path = "../lib/dl_sqlalchemy_promql"}
+dl-sqlalchemy-starrocks = {develop = true, path = "../lib/dl_sqlalchemy_starrocks"}
 dl-sqlalchemy-ydb = {develop = true, path = "../lib/dl_sqlalchemy_ydb"}
 dl-task-processor = {develop = true, path = "../lib/dl_task_processor"}
 dl-temporal = {develop = true, path = "../lib/dl_temporal"}
@@ -191,7 +192,6 @@ dl-zitadel = {develop = true, path = "../lib/dl_zitadel"}
 dynamic-enum = {develop = true, path = "../lib/dynamic_enum"}
 redis_cache_lock = {develop = true, path = "../lib/redis-cache-lock"}
 statcommons = {develop = true, path = "../lib/statcommons"}
-dl-sqlalchemy-starrocks = {develop = true, path = "../lib/dl_sqlalchemy_starrocks"}
 
 [tool.poetry.group.dev.dependencies]
 babel = "==2.12.1"
