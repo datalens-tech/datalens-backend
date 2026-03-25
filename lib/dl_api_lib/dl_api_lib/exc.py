@@ -95,3 +95,38 @@ class ExtractSortingFieldMissing(ExtractValidationError):
 
 class ExtractSortingEmpty(ExtractValidationError):
     err_code = DLValidationError.err_code + ["SORTING_EMPTY"]
+
+
+class CacheInvalidationTestError(DLBaseException):
+    err_code = DLBaseException.err_code + ["CACHE_INVALIDATION_TEST"]
+    default_message = "Cache invalidation test error"
+
+
+class CacheInvalidationTestNotEditorError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["NOT_EDITOR"]
+    default_message = "Editor permissions are required to test cache invalidation"
+
+
+class CacheInvalidationTestSubselectNotAllowedError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["SUBSELECT_NOT_ALLOWED"]
+    default_message = "Connection does not support subqueries required for SQL cache invalidation"
+
+
+class CacheInvalidationTestInvalidResultError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["INVALID_RESULT"]
+    default_message = "Cache invalidation query returned an invalid result"
+
+
+class CacheInvalidationTestModeOffError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["MODE_OFF"]
+    default_message = "Cache invalidation is not configured for this dataset"
+
+
+class CacheInvalidationTestQueryError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["QUERY_ERROR"]
+    default_message = "Cache invalidation query execution failed"
+
+
+class CacheInvalidationTestNonStringResultError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["NON_STRING_RESULT"]
+    default_message = "Cache invalidation query must return a string value"

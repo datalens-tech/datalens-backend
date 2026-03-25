@@ -24,6 +24,15 @@ msgstr "Выкл"
 msgid "value_experimental-features-on"
 msgstr "Вкл"
 
+msgid "label_clickhouse-ssl-ca-verify"
+msgstr "Проверка SSL-сертификата"
+
+msgid "value_ssl-ca-verify-off"
+msgstr "Выкл"
+
+msgid "value_ssl-ca-verify-on"
+msgstr "Вкл"
+
 msgid "field_click-house-port"
 msgstr "Порт HTTP-интерфейса"
 
