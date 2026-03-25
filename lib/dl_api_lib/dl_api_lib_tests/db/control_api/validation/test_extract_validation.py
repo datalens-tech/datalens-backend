@@ -9,7 +9,14 @@ from dl_constants.enums import (
     ExtractMode,
     ExtractStatus,
     OrderDirection,
+    WhereClauseOperation,
 )
+from dl_core.base_models import DefaultWhereClause
+from dl_core.fields import (
+    FilterField,
+    OrderField,
+)
+from dl_core.us_extract import ExtractProperties
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
@@ -42,12 +49,14 @@ class TestExtractValidation(DefaultApiTestBase):
         saved_dataset = control_api.save_dataset(dataset).dataset
 
         try:
-            assert saved_dataset.extract.mode == ExtractMode.disabled
-            assert saved_dataset.extract.status == ExtractStatus.disabled
-            assert saved_dataset.extract.filters == []
-            assert saved_dataset.extract.sorting == []
-            assert saved_dataset.extract.errors == []
-            assert saved_dataset.extract.last_update == 0
+            assert saved_dataset.extract == ExtractProperties(
+                mode=ExtractMode.disabled,
+                status=ExtractStatus.disabled,
+                filters=[],
+                errors=[],
+                last_update=0,
+                sorting=[],
+            )
         finally:
             control_api.delete_dataset(dataset_id=saved_dataset.id, fail_ok=False)
 
@@ -77,11 +86,18 @@ class TestExtractValidation(DefaultApiTestBase):
 
         saved_dataset = control_api.save_dataset(ds_resp.dataset).dataset
 
-        assert saved_dataset.extract.mode == ExtractMode.manual
-        assert len(saved_dataset.extract.filters) == 1
-        assert saved_dataset.extract.filters[0].guid == field_guids[0]
-        assert len(saved_dataset.extract.sorting) == 1
-        assert saved_dataset.extract.sorting[0].guid == field_guids[0]
+        assert saved_dataset.extract == ExtractProperties(
+            mode=ExtractMode.manual,
+            status=ExtractStatus.disabled,
+            filters=[
+                FilterField(id="filter_1", guid=field_guids[0], default_filters=[]),
+            ],
+            sorting=[
+                OrderField(id="sort_1", guid=field_guids[0], order=OrderDirection.asc),
+            ],
+            errors=[],
+            last_update=0,
+        )
 
     def test_save_dataset_with_invalid_sorting_fields_fails(
         self,
@@ -176,11 +192,18 @@ class TestExtractValidation(DefaultApiTestBase):
 
         retrieved_dataset = control_api.get_dataset(saved_dataset.id).dataset
 
-        assert retrieved_dataset.extract.mode == ExtractMode.manual
-        assert len(retrieved_dataset.extract.filters) == 1
-        assert retrieved_dataset.extract.filters[0].guid == field_guids[0]
-        assert len(retrieved_dataset.extract.sorting) == 1
-        assert retrieved_dataset.extract.sorting[0].guid == field_guids[0]
+        assert retrieved_dataset.extract == ExtractProperties(
+            mode=ExtractMode.manual,
+            status=ExtractStatus.disabled,
+            filters=[
+                FilterField(id="filter_1", guid=field_guids[0], default_filters=[]),
+            ],
+            sorting=[
+                OrderField(id="sort_1", guid=field_guids[0], order=OrderDirection.asc),
+            ],
+            errors=[],
+            last_update=0,
+        )
 
     def test_update_extract_with_existing_fields_succeeds(
         self,
@@ -221,9 +244,18 @@ class TestExtractValidation(DefaultApiTestBase):
         )
 
         assert ds_resp.status_code == http.HTTPStatus.OK
-        assert ds_resp.dataset.extract.mode == ExtractMode.automatic
-        assert len(ds_resp.dataset.extract.filters) == 1
-        assert ds_resp.dataset.extract.sorting[0].order == OrderDirection.desc
+        assert ds_resp.dataset.extract == ExtractProperties(
+            mode=ExtractMode.automatic,
+            status=ExtractStatus.disabled,
+            filters=[
+                FilterField(id="filter_1", guid=field_guids[0], default_filters=[]),
+            ],
+            sorting=[
+                OrderField(id="sort_1", guid=field_guids[0], order=OrderDirection.desc),
+            ],
+            errors=[],
+            last_update=0,
+        )
 
     def test_update_extract_with_invalid_sorting_fields_fails(
         self,
@@ -407,29 +439,34 @@ class TestExtractValidation(DefaultApiTestBase):
             retrieved_dataset = control_api.get_dataset(final_saved_dataset.id).dataset
             extract = retrieved_dataset.extract
 
-            # Validate extract mode and status
-            assert extract.mode == ExtractMode.manual
-            assert extract.status == ExtractStatus.disabled  # Default status
-            assert isinstance(extract.errors, list)
-            assert isinstance(extract.last_update, int)
-
-            # Validate filters
-            assert len(extract.filters) == 1
-            filter_item = extract.filters[0]
-            assert filter_item.id == "filter_1"
-            assert filter_item.guid == field_guids[0]
-            assert len(filter_item.default_filters) == 1
-            assert filter_item.default_filters[0].operation.name == "EQ"
-            assert filter_item.default_filters[0].values == ["test_value"]
-            assert filter_item.valid is True
-
-            # Validate sorting
-            assert len(extract.sorting) == 1
-            sorting_item = extract.sorting[0]
-            assert sorting_item.id == "sort_1"
-            assert sorting_item.guid == field_guids[0]
-            assert sorting_item.order == OrderDirection.asc
-            assert sorting_item.valid is True
+            # Validate extract settings
+            assert extract == ExtractProperties(
+                mode=ExtractMode.manual,
+                status=ExtractStatus.disabled,
+                filters=[
+                    FilterField(
+                        id="filter_1",
+                        guid=field_guids[0],
+                        default_filters=[
+                            DefaultWhereClause(
+                                operation=WhereClauseOperation.EQ,
+                                values=["test_value"],
+                            ),
+                        ],
+                        valid=True,
+                    ),
+                ],
+                sorting=[
+                    OrderField(
+                        id="sort_1",
+                        guid=field_guids[0],
+                        order=OrderDirection.asc,
+                        valid=True,
+                    ),
+                ],
+                errors=[],
+                last_update=0,
+            )
 
         finally:
             control_api.delete_dataset(dataset_id=saved_dataset.id, fail_ok=True)
