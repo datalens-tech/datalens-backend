@@ -46,6 +46,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnection,
     ReplaceConnectionAction,
     SourceActionBase,
+    UpdateCacheInvalidationSourceAction,
     UpdateDescriptionAction,
     UpdateExtractAction,
     UpdateField,
@@ -55,6 +56,7 @@ from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
@@ -63,6 +65,7 @@ from dl_constants.enums import (
     DataSourceType,
     ExtractMode,
     ManagedBy,
+    NotificationLevel,
     ParameterValueConstraintType,
     TopLevelComponentId,
     UserDataType,
@@ -70,6 +73,10 @@ from dl_constants.enums import (
 from dl_core.base_models import (
     DefaultConnectionRef,
     DefaultWhereClause,
+)
+from dl_core.cache_invalidation import (
+    CacheInvalidationError,
+    CacheInvalidationSource,
 )
 from dl_core.connectors.base.data_source_migration import get_data_source_migrator
 from dl_core.constants import DatasetConstraints
@@ -147,6 +154,89 @@ def comp_err_level_from_formula_err_level(formula_level: MessageLevel) -> Compon
 def field_not_none(field: Optional[BIField]) -> BIField:
     assert field is not None
     return field
+
+
+def _validate_cache_invalidation_sql_mode(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> CacheInvalidationError | None:
+    """Validate SQL mode: sql field must be filled."""
+    sql = cache_invalidation_source.sql
+    if not sql or not sql.strip():
+        return CacheInvalidationError(
+            title="Validation Error",
+            message="Field 'sql' is required when mode is 'sql'",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.sql",
+        )
+    return None
+
+
+def _validate_cache_invalidation_formula_field_required(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> CacheInvalidationError | None:
+    """Validate formula mode: field must be present."""
+    if cache_invalidation_source.field is None:
+        return CacheInvalidationError(
+            title="Validation Error",
+            message="Field 'field' is required when mode is 'formula'",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field",
+        )
+    return None
+
+
+def _validate_cache_invalidation_formula_not_empty(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> CacheInvalidationError | None:
+    """Validate formula mode: formula must not be empty."""
+    assert cache_invalidation_source.field is not None
+    formula = cache_invalidation_source.field.formula
+    if not formula.strip():
+        return CacheInvalidationError(
+            title="Validation Error",
+            message="Formula cannot be empty",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field.formula",
+        )
+    return None
+
+
+def _validate_cache_invalidation_formula_result_type(
+    result_type: UserDataType | None,
+) -> CacheInvalidationError | None:
+    """Validate that formula returns string type."""
+    if result_type is None:
+        return CacheInvalidationError(
+            title="Validation Error",
+            message="Cannot determine formula result type",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field.formula",
+        )
+    if result_type != UserDataType.string:
+        return CacheInvalidationError(
+            title="Invalid Result Type",
+            message=f"Formula must return string, got {result_type.name}",
+            level=NotificationLevel.warning,
+            locator="cache_invalidation_source.field.formula",
+        )
+    return None
+
+
+def validate_cache_invalidation_source_fields_fill_by_mode(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> CacheInvalidationError | None:
+    """Validate mode-specific required fields for cache invalidation source."""
+    mode = cache_invalidation_source.mode
+
+    if mode == CacheInvalidationMode.sql:
+        return _validate_cache_invalidation_sql_mode(cache_invalidation_source)
+    elif mode == CacheInvalidationMode.formula:
+        error = _validate_cache_invalidation_formula_field_required(cache_invalidation_source)
+        if error:
+            return error
+        return _validate_cache_invalidation_formula_not_empty(cache_invalidation_source)
+
+    return None
 
 
 class DatasetValidator(DatasetBaseWrapper):
@@ -269,6 +359,10 @@ class DatasetValidator(DatasetBaseWrapper):
             self.apply_description_action(action=action, description=item_data.description, by=by)
         elif isinstance(item_data, UpdateExtractAction):
             self.apply_extract_action(action=action, extract=item_data.extract)
+        elif isinstance(item_data, UpdateCacheInvalidationSourceAction):
+            self.apply_cache_invalidation_action(
+                action=action, cache_invalidation_source=item_data.cache_invalidation_source, by=by
+            )
 
         self.update_validity_of_affected_components()
 
@@ -1837,6 +1931,172 @@ class DatasetValidator(DatasetBaseWrapper):
         if current_mode != ExtractMode.disabled:
             if len(sorting) == 0:
                 raise exc.ExtractSortingEmpty()
+
+    def _validate_cache_invalidation_formula(
+        self,
+        cache_invalidation_source: CacheInvalidationSource,
+    ) -> CacheInvalidationError | None:
+        """Validate formula for cache invalidation source.
+
+        Performs:
+        1. Check that data sources exist
+        2. Compile the formula and check for syntax/semantic errors
+        3. Check that formula returns string type
+        4. Translate to SQL to verify translatability
+        """
+        assert cache_invalidation_source.field is not None
+        formula = cache_invalidation_source.field.formula
+
+        # Check that data sources exist
+        if not self._has_sources:
+            return CacheInvalidationError(
+                title="Validation Error",
+                message="Data source is not set for the dataset",
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
+            )
+
+        # Create a single temporary formula field for validation and compilation
+        formula_field = self.formula_compiler.make_formula_field(formula=formula)
+
+        # Validate formula syntax/semantics using the created field
+        formula_errors = self.formula_compiler.get_field_errors(field=formula_field)
+        if formula_errors:
+            first_error = formula_errors[0]
+            # Determine error title based on error code
+            # ParseError codes contain "PARSE", other errors are compilation errors
+            error_code_str = str(first_error.code).lower() if first_error.code else ""
+            is_parse_error = "parse" in error_code_str
+            error_title = "Formula Syntax Error" if is_parse_error else "Formula Compilation Error"
+            return CacheInvalidationError(
+                title=error_title,
+                message=first_error.message,
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
+            )
+
+        # Compile formula to get CompiledFormulaInfo for SQL translation and type checking
+        try:
+            formula_info = self.formula_compiler.compile_field_formula(field=formula_field, collect_errors=True)
+        except formula_exc.FormulaError as err:
+            error_message = err.errors[0].message if err.errors else str(err)
+            return CacheInvalidationError(
+                title="Formula Compilation Error",
+                message=error_message,
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
+            )
+
+        # Check that formula returns string type
+        result_type = self.formula_compiler.get_field_final_data_type(formula_field)
+        result_type_error = _validate_cache_invalidation_formula_result_type(result_type)
+        if result_type_error:
+            return result_type_error
+
+        # SQL Translation validation: verify formula can be translated to SQL
+        assert self._column_reg is not None
+        formula_comp_query = single_formula_comp_query_for_validation(
+            formula=formula_info,
+            ds_accessor=self._ds_accessor,
+            column_reg=self._column_reg,
+        )
+        formula_comp_multi_query = self.process_compiled_query(compiled_query=formula_comp_query)
+        multi_translator = self.make_multi_query_translator()
+        translation_errors = multi_translator.collect_errors(
+            compiled_multi_query=formula_comp_multi_query,
+            feature_errors=False,  # Don't check feature-specific errors
+        )
+        if translation_errors:
+            first_error = translation_errors[0]
+            return CacheInvalidationError(
+                title="Formula Translation Error",
+                message=first_error.message,
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.field.formula",
+            )
+
+        return None
+
+    def _validate_cache_invalidation_filters(
+        self,
+        cache_invalidation_source: CacheInvalidationSource,
+    ) -> CacheInvalidationError | None:
+        """Validate filters for cache invalidation source.
+
+        Checks:
+        1. Each filter references an existing field in result_schema
+        2. Each filter operation is compatible with the field's data type
+        """
+        for filter_obj in cache_invalidation_source.filters:
+            # Check that the referenced field exists
+            try:
+                field = self._ds.result_schema.by_guid(filter_obj.field_guid)
+            except common_exc.FieldNotFound:
+                return CacheInvalidationError(
+                    title="Invalid Filter",
+                    message=f"Filter references unknown field: {filter_obj.field_guid}",
+                    level=NotificationLevel.warning,
+                    locator="cache_invalidation_source.filters",
+                )
+
+            # Check that filter operations are compatible with the field type
+            if field.cast is not None:
+                allowed_filters: frozenset = FILTERS_BY_TYPE.get(field.cast, frozenset())
+                for default_filter in filter_obj.default_filters:
+                    if default_filter.operation not in allowed_filters:
+                        return CacheInvalidationError(
+                            title="Invalid Filter Operation",
+                            message=(
+                                f"Operation {default_filter.operation.name} "
+                                f"is not allowed for field type {field.cast.name}"
+                            ),
+                            level=NotificationLevel.warning,
+                            locator="cache_invalidation_source.filters",
+                        )
+
+        return None
+
+    @generic_profiler("validator-apply-cache-invalidation-action")
+    def apply_cache_invalidation_action(
+        self,
+        action: DatasetAction,
+        cache_invalidation_source: CacheInvalidationSource,
+        by: ManagedBy | None = ManagedBy.user,
+    ) -> None:
+        if action != DatasetAction.update_cache_invalidation_source:
+            raise NotImplementedError(f"Not implemented cache invalidation action: {action}")
+
+        # Update the dataset's cache_invalidation_source with the incoming data
+        ds_cache_inv_src = self._ds.data.cache_invalidation_source
+        ds_cache_inv_src.mode = cache_invalidation_source.mode
+        ds_cache_inv_src.sql = cache_invalidation_source.sql
+        ds_cache_inv_src.field = cache_invalidation_source.field
+        ds_cache_inv_src.filters = cache_invalidation_source.filters
+
+        validation_error = validate_cache_invalidation_source_fields_fill_by_mode(ds_cache_inv_src)
+
+        # Update cache_invalidation_source with the error (or clear it if no error)
+        if validation_error:
+            ds_cache_inv_src.cache_invalidation_error = validation_error
+
+        elif ds_cache_inv_src.mode == CacheInvalidationMode.formula:
+            # Validate formula syntax and data sources
+            validation_error = self._validate_cache_invalidation_formula(ds_cache_inv_src)
+            if validation_error:
+                ds_cache_inv_src.cache_invalidation_error = validation_error
+            else:
+                # Validate filters if formula is valid
+                validation_error = self._validate_cache_invalidation_filters(ds_cache_inv_src)
+                if validation_error:
+                    ds_cache_inv_src.cache_invalidation_error = validation_error
+                else:
+                    # All validations in formula mode passed; clear any previous error
+                    ds_cache_inv_src.cache_invalidation_error = None
+        else:
+            # Non-formula modes with no basic validation error; clear any previous error
+            ds_cache_inv_src.cache_invalidation_error = None
+
+        return
 
     @generic_profiler("validator-get-single-formula-errors")
     def get_single_formula_errors(self, formula: str, feature_errors: bool = False) -> list[ErrorInfo]:

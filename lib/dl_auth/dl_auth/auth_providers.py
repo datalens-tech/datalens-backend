@@ -22,6 +22,28 @@ class AuthProviderProtocol(Protocol):
     def get_cookies(self) -> dict[str, str]:
         ...
 
+    async def get_headers_async(self) -> dict[str, str]:
+        ...
+
+    async def get_cookies_async(self) -> dict[str, str]:
+        ...
+
+
+class BaseAuthProvider(abc.ABC):
+    @abc.abstractmethod
+    def get_headers(self) -> dict[str, str]:
+        ...
+
+    @abc.abstractmethod
+    def get_cookies(self) -> dict[str, str]:
+        ...
+
+    async def get_headers_async(self) -> dict[str, str]:
+        return self.get_headers()
+
+    async def get_cookies_async(self) -> dict[str, str]:
+        return self.get_cookies()
+
 
 class NoAuthProviderSettings(AuthProviderSettings):
     ...
@@ -30,7 +52,7 @@ class NoAuthProviderSettings(AuthProviderSettings):
 AuthProviderSettings.register("NONE", NoAuthProviderSettings)
 
 
-class NoAuthProvider(AuthProviderProtocol):
+class NoAuthProvider(BaseAuthProvider):
     @classmethod
     def from_settings(cls, settings: NoAuthProviderSettings) -> Self:
         return cls()
@@ -50,7 +72,7 @@ AuthProviderSettings.register("OAUTH", OauthAuthProviderSettings)
 
 
 @attrs.define(kw_only=True)
-class OauthAuthProvider(AuthProviderProtocol):
+class OauthAuthProvider(BaseAuthProvider):
     token: str
 
     @classmethod
@@ -72,7 +94,7 @@ AuthProviderSettings.register("US_MASTER_TOKEN", USMasterTokenAuthProviderSettin
 
 
 @attrs.define(kw_only=True)
-class USMasterTokenAuthProvider(AuthProviderProtocol):
+class USMasterTokenAuthProvider(BaseAuthProvider):
     token: str
 
     @classmethod

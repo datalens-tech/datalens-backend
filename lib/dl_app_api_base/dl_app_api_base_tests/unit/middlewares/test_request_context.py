@@ -12,7 +12,7 @@ async def test_handler_request_id(
     request_id = dl_utils.request_id_generator()
 
     response = await app_client.get(
-        "/api/v1/health/liveness",
+        "/system/health/liveness",
         headers={
             dl_constants.DLHeadersCommon.REQUEST_ID.value: request_id,
         },

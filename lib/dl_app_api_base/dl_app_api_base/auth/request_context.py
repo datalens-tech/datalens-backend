@@ -25,6 +25,19 @@ class UserAuthProviderFactory(Protocol):
         ...
 
 
+@attrs.define(frozen=True, kw_only=True)
+class DirectUserAuthProviderFactory:
+    """
+    Used when we want to use a static AuthProvider as UserAuthProvider
+    Don't use for private(service2service authorization) clients as they should get AuthProvider directly.
+    """
+
+    auth_provider: dl_auth.AuthProviderProtocol
+
+    def create(self, auth_result: auth_checkers.BaseRequestAuthResult) -> dl_auth.AuthProviderProtocol:
+        return self.auth_provider
+
+
 @attr.define(frozen=True, kw_only=True)
 class AuthRequestContextDependenciesMixin(request_context.BaseRequestContextDependencies):
     request_auth_checkers: Sequence[auth_checkers.RequestAuthCheckerProtocol]

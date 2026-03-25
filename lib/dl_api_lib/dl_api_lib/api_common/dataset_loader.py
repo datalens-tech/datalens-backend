@@ -11,11 +11,15 @@ from typing import (
 
 import attr
 
+from dl_api_commons.base_models import RequestContextInfo
 from dl_api_lib import exc
 from dl_api_lib.dataset.utils import allow_rls_for_dataset
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
-from dl_constants.enums import RLSSubjectType
+from dl_constants.enums import (
+    CacheInvalidationMode,
+    RLSSubjectType,
+)
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
     GLOBAL_ERR_PREFIX,
@@ -24,6 +28,7 @@ from dl_core.base_models import (
     DefaultConnectionRef,
     DefaultWhereClause,
 )
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_source import get_parameters_hash
@@ -38,8 +43,7 @@ from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
-import dl_rls.exc as rls_exc
-from dl_rls.serializer import FieldRLSSerializer
+import dl_rls
 from dl_utils.aio import await_sync
 
 
@@ -61,6 +65,21 @@ EMPTY_DS_UPDATE_INFO = DatasetUpdateInfo(
     added_own_source_ids=[],
     updated_own_source_ids=[],
 )
+
+
+def clear_cache_invalidation_source_irrelevant_data(
+    cache_invalidation_source: CacheInvalidationSource,
+) -> None:
+    if cache_invalidation_source.mode == CacheInvalidationMode.off:
+        cache_invalidation_source.sql = None
+        cache_invalidation_source.field = None
+        cache_invalidation_source.filters = []
+        cache_invalidation_source.cache_invalidation_error = None
+    elif cache_invalidation_source.mode == CacheInvalidationMode.formula:
+        cache_invalidation_source.sql = None
+    elif cache_invalidation_source.mode == CacheInvalidationMode.sql:
+        cache_invalidation_source.field = None
+        cache_invalidation_source.filters = []
 
 
 @attr.s
@@ -284,6 +303,35 @@ class DatasetApiLoader:
             for rlse in rls_list
         )
 
+    def _resolve_group_slugs(
+        self,
+        entries: list[RLSEntry],
+        subject_resolver: dl_rls.BaseSubjectResolver | None,
+        rci: RequestContextInfo,
+    ) -> list[RLSEntry]:
+        for entry in entries:
+            if entry.subject.subject_type != RLSSubjectType.group:
+                continue
+            if dl_rls.is_slug(group_id=entry.subject.subject_id, group_name=entry.subject.subject_name):
+                if subject_resolver is None:
+                    subject_resolver = await_sync(self._service_registry.get_subject_resolver())
+                try:
+                    real_id = subject_resolver.resolve_group_slug(entry.subject.subject_name, rci)
+                except dl_rls.RLSError:
+                    raise
+                except NotImplementedError:
+                    LOGGER.warning("Group slug resolution not supported by current resolver")
+                    continue
+                except Exception:
+                    LOGGER.warning("Service error resolving group slug %r, keeping as-is", entry.subject.subject_name)
+                    continue
+                if real_id is not None:
+                    entry.subject.subject_id = real_id
+                else:
+                    entry.subject.subject_type = RLSSubjectType.notfound
+                    entry.subject.subject_name = dl_rls.RLS_FAILED_USER_NAME_PREFIX + entry.subject.subject_name
+        return entries
+
     def _update_dataset_rls_from_body(self, dataset: Dataset, body: dict, allow_rls_change: bool = True) -> None:
         if not allow_rls_for_dataset(dataset):
             return
@@ -292,21 +340,22 @@ class DatasetApiLoader:
         rls_text_config: dict = body.get("rls", {})
         use_rls_v2 = bool(rls_v2 or not rls_text_config)
         for field in dataset.result_schema:
+            subject_resolver = None
             if use_rls_v2:
                 rls_entries = rls_v2.get(field.guid, [])
             else:
-                subject_resolver = None
                 if allow_rls_change:
                     # E.g. dataset editing in sync api
                     subject_resolver = await_sync(self._service_registry.get_subject_resolver())
                 rls_field_text_config = rls_text_config.get(field.guid, "")
-                rls_entries = FieldRLSSerializer.from_text_config(
+                rls_entries = dl_rls.FieldRLSSerializer.from_text_config(
                     rls_field_text_config,
                     field.guid,
                     subject_resolver=subject_resolver,
                 )
 
             if allow_rls_change:
+                rls_entries = self._resolve_group_slugs(rls_entries, subject_resolver, self._service_registry.rci)
                 dataset.rls.items = [rlse for rlse in dataset.rls.items if rlse.field_guid != field.guid]
                 dataset.rls.items.extend(rls_entries)
             else:
@@ -320,7 +369,7 @@ class DatasetApiLoader:
                     ]
                     compare_by_name = False
                 else:
-                    rls_entries_pre = FieldRLSSerializer.from_text_config(
+                    rls_entries_pre = dl_rls.FieldRLSSerializer.from_text_config(
                         rls_field_text_config, field.guid, subject_resolver=None
                     )
                     saved_field_rls = [
@@ -332,7 +381,7 @@ class DatasetApiLoader:
                 if self._rls_list_to_set(saved_field_rls, compare_by_name) != self._rls_list_to_set(
                     rls_entries_pre, compare_by_name
                 ):
-                    raise rls_exc.RLSConfigParsingError(
+                    raise dl_rls.RLSConfigParsingError(
                         "For this feature to work, save dataset after editing the RLS config.", details=dict()
                     )
                 # otherwise no effective config changes (that are worth checking in preview)
@@ -410,6 +459,11 @@ class DatasetApiLoader:
         if "annotation" in body:
             annotation: dict[str, Any] = body["annotation"]
             ds_editor.set_description(annotation.get("description", ""))
+
+        # cache_invalidation
+        if body.get("cache_invalidation_source"):
+            clear_cache_invalidation_source_irrelevant_data(body["cache_invalidation_source"])
+            ds_editor.set_cache_invalidation_source(body["cache_invalidation_source"])
 
         # fields (result_schema)
         ds_editor.set_result_schema(body.get("result_schema", []))

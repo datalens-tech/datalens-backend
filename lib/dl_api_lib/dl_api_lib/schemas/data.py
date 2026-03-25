@@ -51,13 +51,13 @@ from dl_api_lib.schemas.action import ActionSchema
 from dl_api_lib.schemas.dataset_base import DatasetContentInternalSchema
 from dl_api_lib.schemas.filter import WhereSchema
 from dl_api_lib.schemas.legend import LegendItemSchema
+from dl_api_lib.schemas.notification import NotificationSchema
 from dl_api_lib.schemas.pivot import RequestPivotSpecSchema
 from dl_constants.enums import (
     CalcMode,
     FieldRole,
     FieldType,
     FieldVisibility,
-    NotificationLevel,
     OrderDirection,
     QueryBlockPlacementType,
     QueryItemRefType,
@@ -646,13 +646,6 @@ class ResponseBlockInfoSchema(BaseSchema):
 
 class V2DataStreamResponseSchema(BaseSchema):
     rows = ma_fields.Raw(allow_none=False)  # Applying schema to data would be very slow
-
-
-class NotificationSchema(BaseSchema):
-    title = ma_fields.String()
-    message = ma_fields.String()
-    level = ma_fields.Enum(NotificationLevel)
-    locator = ma_fields.String()
 
 
 class DataExportInfoSchema(BaseSchema):

@@ -8,6 +8,7 @@ from marshmallow import fields as ma_fields
 
 from dl_api_client.dsmaker.api.schemas.base import DefaultSchema
 from dl_api_client.dsmaker.api.schemas.dataset import (
+    CacheInvalidationSourceSchema,
     DatasetContentInternalSchema,
     ObligatoryFilterSchema,
     ParameterValueConstraintSchema,
@@ -17,6 +18,7 @@ from dl_api_client.dsmaker.primitives import (
     Action,
     ApiProxyObject,
     AvatarRelation,
+    CacheInvalidationSource,
     Container,
     Dataset,
     DataSource,
@@ -178,6 +180,10 @@ class BaseApiV1SerializationAdapter:
         else:
             return ObligatoryFilterUpdateSchema().dump(item)
 
+    @_dump_item.register(CacheInvalidationSource)
+    def dump_cache_invalidation(self, item: CacheInvalidationSource, action: Action) -> dict:
+        return CacheInvalidationSourceSchema().dump(item)
+
     def _strip_implicit_updates_from_dataset(self, dataset: Dataset) -> Dataset:
         return dataset.clone(
             sources=Container({name: item for name, item in dataset.sources.items() if item.created_}),
@@ -186,6 +192,7 @@ class BaseApiV1SerializationAdapter:
                 {name: item for name, item in dataset.avatar_relations.items() if item.created_}
             ),
             result_schema=Container({name: item for name, item in dataset.result_schema.items() if item.created_}),
+            cache_invalidation_source=dataset.cache_invalidation_source,
         )
 
     def dump_dataset(self, item: Dataset) -> dict:
@@ -221,6 +228,7 @@ class BaseApiV1SerializationAdapter:
             AvatarRelation: "avatar_relation",
             ResultField: "field",
             ObligatoryFilter: "obligatory_filter",
+            CacheInvalidationSource: "cache_invalidation_source",
         }[type(item)]
 
     def dump_updates(

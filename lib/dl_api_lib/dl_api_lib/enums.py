@@ -207,6 +207,9 @@ class DatasetAction(Enum):
     # annotation
     update_description = "update_description"
 
+    # cache invalidation
+    update_cache_invalidation_source = "update_cache_invalidation_source"
+
     # TODO: remove legacy:
     update = "update"
     add = "add"

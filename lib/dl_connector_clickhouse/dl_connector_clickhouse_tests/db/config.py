@@ -52,6 +52,14 @@ class CoreSslConnectionSettings:
     PASSWORD: ClassVar[str] = "qwerty"
 
 
+class CoreConnectionSettingsCH26:
+    DB_NAME: ClassVar[str] = "test_data"
+    HOST: ClassVar[str] = get_test_container_hostport("db-clickhouse-26", fallback_port=52208).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-clickhouse-26", fallback_port=52208).port
+    USERNAME: ClassVar[str] = "datalens"
+    PASSWORD: ClassVar[str] = "qwerty"
+
+
 class CoreReadonlyConnectionSettings:
     DB_NAME: ClassVar[str] = "test_data"
     HOST: ClassVar[str] = get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).host
@@ -106,6 +114,10 @@ DB_URLS = {
     f'{get_test_container_hostport("db-clickhouse-22-10", fallback_port=52204).as_pair()}/test_data',
 }
 DB_CORE_URL = DB_URLS[D.CLICKHOUSE_22_10]
+DB_CORE_URL_CH26 = (
+    f"clickhouse://datalens:qwerty@"
+    f'{get_test_container_hostport("db-clickhouse-26", fallback_port=52208).as_pair()}/test_data'
+)
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["clickhouse"],

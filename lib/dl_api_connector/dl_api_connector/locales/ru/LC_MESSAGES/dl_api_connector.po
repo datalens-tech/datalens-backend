@@ -83,7 +83,7 @@ msgid "field_access-token"
 msgstr "Токен доступа"
 
 msgid "field_auto-create-dashboard"
-msgstr "Автоматически создать дашборд, чарты и датасет над подключением"
+msgstr "Автоматически создать датасет, чарты и дашборд"
 
 msgid "label_advanced-settings"
 msgstr "Продвинутые настройки подключения"
@@ -100,6 +100,9 @@ msgstr "Вкл"
 msgid "label_ssl-ca"
 msgstr "CA Certificate"
 
+msgid "label_exports-history"
+msgstr "История экспортов"
+
 msgid "label_data-export-forbidden"
 msgstr "Запрет на экспорт данных"
 
@@ -113,9 +116,6 @@ msgstr "Выкл"
 
 msgid "value_data-export-forbidden-on"
 msgstr "Вкл"
-
-msgid "label_exports-history"
-msgstr "История экспортов"
 
 msgid "label_cache-settings"
 msgstr "Настройки кэширования"

@@ -25,6 +25,7 @@ from dl_constants.enums import (
     ManagedBy,
     UserDataType,
 )
+from dl_core.cache_invalidation import CacheInvalidationSource
 from dl_core.fields import (
     CalculationSpec,
     FilterField,
@@ -205,6 +206,10 @@ class UpdateExtractAction(Action):
         sorting: list[OrderField] = attr.ib(default=attr.Factory(list))
 
     extract: ExtractProperties
+
+@attr.s(frozen=True, kw_only=True, auto_attribs=True)
+class UpdateCacheInvalidationSourceAction(Action):
+    cache_invalidation_source: CacheInvalidationSource
 
 
 _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")

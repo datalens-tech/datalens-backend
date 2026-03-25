@@ -19,6 +19,7 @@ from dl_file_uploader_lib.settings import (
     DeprecatedFileUploaderBaseSettings,
     FileUploaderBaseSettings,
 )
+import dl_us_entries_client
 
 
 @attr.s(frozen=True)
@@ -72,3 +73,4 @@ class DeprecatedFileUploaderAPISettings(DeprecatedFileUploaderBaseSettings):
 
 class FileUploaderAPISettings(FileUploaderBaseSettings):
     OBFUSCATION_ENABLED: bool = False
+    US_ENTRIES_CLIENT: dl_us_entries_client.USEntriesClientSettings = NotImplemented

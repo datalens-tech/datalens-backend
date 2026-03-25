@@ -30,11 +30,13 @@ from dl_api_lib.request_model.data import (
     ReplaceConnection,
     ReplaceConnectionAction,
     SourceActionBase,
+    UpdateCacheInvalidationSourceAction,
     UpdateDescriptionAction,
     UpdateExtractAction,
     UpdateField,
     UpdateSettingAction,
 )
+from dl_api_lib.schemas.dataset_base import CacheInvalidationSourceSchema
 from dl_api_lib.schemas.filter import (
     FilterFieldSchema,
     ObligatoryFilterSchema,
@@ -267,6 +269,13 @@ class UpdateExtractActionSchema(ActionBaseSchema, DefaultValidateSchema[UpdateEx
     extract = ma_fields.Nested(ExtractPropertiesSchema, required=True)
 
 
+class UpdateCacheInvalidationSourceActionSchema(
+    ActionBaseSchema, DefaultValidateSchema[UpdateCacheInvalidationSourceAction]
+):
+    TARGET_CLS = UpdateCacheInvalidationSourceAction
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema, required=True)
+
+
 class ActionSchema(OneOfSchema):
     class Meta:
         unknown = EXCLUDE
@@ -308,6 +317,8 @@ class ActionSchema(OneOfSchema):
         DatasetAction.update_description.name: UpdateDescriptionActionSchema,
         # extract
         DatasetAction.update_extract.name: UpdateExtractActionSchema,
+        # cache invalidation
+        DatasetAction.update_cache_invalidation_source.name: UpdateCacheInvalidationSourceActionSchema,
     }
 
     def get_obj_type(self, obj: dict[str, Any]) -> str:

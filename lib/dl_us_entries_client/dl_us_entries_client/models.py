@@ -4,6 +4,7 @@ import attrs
 import pydantic
 from typing_extensions import TypeAlias
 
+import dl_auth
 import dl_httpx
 import dl_json
 import dl_pydantic
@@ -14,6 +15,7 @@ EntryId: TypeAlias = str
 
 @attrs.define(kw_only=True, frozen=True)
 class PingRequest(dl_httpx.BaseRequest):
+    # auth_provider is not needed for ping request
     @property
     def path(self) -> str:
         return "/ping-db"
@@ -27,14 +29,27 @@ class PingResponse(dl_httpx.BaseResponseSchema):
     result: str
 
 
+class BaseRequest(dl_httpx.BaseRequest):
+    auth_provider: dl_auth.AuthProviderProtocol
+
+
 class EntryScope(str, enum.Enum):
     dashboard = "dash"
+    connection = "connection"
+
+
+class EntryPermissions(dl_httpx.BaseResponseSchema):
+    execute: bool
+    read: bool
+    edit: bool
+    admin: bool
 
 
 class EntryData(dl_pydantic.BaseSchema):
     scope: EntryScope
     type: str = ""
     key: str
+    permissions: EntryPermissions | None = None
 
 
 class Entry(EntryData):
@@ -42,8 +57,9 @@ class Entry(EntryData):
 
 
 @attrs.define(kw_only=True, frozen=True)
-class EntryGetRequest(dl_httpx.BaseRequest):
+class EntryGetRequest(BaseRequest):
     entry_id: EntryId
+    include_permissions_info: bool = False
 
     @property
     def path(self) -> str:
@@ -53,12 +69,19 @@ class EntryGetRequest(dl_httpx.BaseRequest):
     def method(self) -> str:
         return "GET"
 
+    @property
+    def query_params(self) -> dict[str, str]:
+        params = {}
+        if self.include_permissions_info:
+            params["includePermissionsInfo"] = "1"
+        return params
+
 
 EntryGetResponse = Entry
 
 
 @attrs.define(kw_only=True, frozen=True)
-class EntryPostRequest(dl_httpx.BaseRequest):
+class EntryPostRequest(BaseRequest):
     entry: EntryData
 
     @property
@@ -78,7 +101,7 @@ EntryPostResponse = Entry
 
 
 @attrs.define(kw_only=True, frozen=True)
-class EntryDeleteRequest(dl_httpx.BaseRequest):
+class EntryDeleteRequest(BaseRequest):
     entry_id: EntryId
 
     @property

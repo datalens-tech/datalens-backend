@@ -14,6 +14,7 @@ from marshmallow_oneofschema import OneOfSchema
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ConditionPartCalcMode,
     ExtractMode,
@@ -23,6 +24,7 @@ from dl_constants.enums import (
     JoinType,
     ManagedBy,
     OrderDirection,
+    NotificationLevel,
     ParameterValueConstraintType,
     UserDataType,
     WhereClauseOperation,
@@ -31,6 +33,12 @@ from dl_core import multisource
 from dl_core.base_models import (
     DefaultWhereClause,
     ObligatoryFilter,
+)
+from dl_core.cache_invalidation import (
+    INVALIDATION_CACHE_SERVICE_FIELD_TITLE,
+    CacheInvalidationError,
+    CacheInvalidationField,
+    CacheInvalidationSource,
 )
 from dl_core.components.dependencies.primitives import (
     FieldInterDependencyInfo,
@@ -349,10 +357,30 @@ class ParameterCalculationSpecSchema(DefaultStorageSchema):
     template_enabled = ma_fields.Bool(load_default=False)
 
 
+class BIFieldSchemaBase(DefaultStorageSchema):
+    title = ma_fields.String()
+    guid = ma_fields.String()
+    aggregation = ma_fields.Enum(AggregationFunction)
+    type = ma_fields.Enum(FieldType)
+    hidden = ma_fields.Boolean()
+    description = ma_fields.String()
+    cast = ma_fields.Enum(UserDataType, allow_none=True)
+    initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    data_type = ma_fields.Enum(UserDataType, allow_none=True)
+    valid = ma_fields.Boolean(allow_none=True)
+    has_auto_aggregation = ma_fields.Boolean(allow_none=True)
+    lock_aggregation = ma_fields.Boolean(allow_none=True)
+    managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    ui_settings = ma_fields.String(dump_default="", load_default="")
+
+    def to_object(self, data: dict) -> BIField:
+        return self.get_target_cls().make(**data)
+
+
 class ResultSchemaStorageSchema(DefaultStorageSchema):
     TARGET_CLS = ResultSchema
 
-    class BIFieldSchema(DefaultStorageSchema):
+    class BIFieldSchema(BIFieldSchemaBase):
         TARGET_CLS = BIField
 
         class CalculationSpecSchema(OneOfSchema):
@@ -366,21 +394,6 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
 
             def get_obj_type(self, obj: CalculationSpec) -> str:
                 return obj.mode.name
-
-        title = ma_fields.String()
-        guid = ma_fields.String()
-        aggregation = ma_fields.Enum(AggregationFunction)
-        type = ma_fields.Enum(FieldType)
-        hidden = ma_fields.Boolean()
-        description = ma_fields.String()
-        cast = ma_fields.Enum(UserDataType, allow_none=True)
-        initial_data_type = ma_fields.Enum(UserDataType, allow_none=True)
-        data_type = ma_fields.Enum(UserDataType, allow_none=True)
-        valid = ma_fields.Boolean(allow_none=True)
-        has_auto_aggregation = ma_fields.Boolean(allow_none=True)
-        lock_aggregation = ma_fields.Boolean(allow_none=True)
-        managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
-        ui_settings = ma_fields.String(dump_default="", load_default="")
 
         # this will be flattened on dump and un-flattened before load
         # TODO: dump/load as is and migrate data in storage respectively
@@ -405,9 +418,6 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
             mode = data["calc_mode"]
             data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
             return del_calc_spec_kwargs_from(data)
-
-        def to_object(self, data: dict) -> BIField:
-            return BIField.make(**data)
 
     fields = ma_fields.List(ma_fields.Nested(BIFieldSchema))  # type: ignore  # TODO: fix
 
@@ -507,6 +517,60 @@ class ExtractPropertiesStorageSchema(DefaultStorageSchema):
     last_update = ma_fields.Integer(load_default=0, dump_default=0)
 
 
+class CacheInvalidationFieldStorageSchema(BIFieldSchemaBase):
+    TARGET_CLS = CacheInvalidationField
+
+    title = ma_fields.String(load_default=INVALIDATION_CACHE_SERVICE_FIELD_TITLE)
+    calc_spec = ma_fields.Nested(FormulaCalculationSpecSchema)
+
+    @post_dump(pass_many=False)
+    def add_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        calc_spec_data = data.pop("calc_spec")
+        calc_spec_data.pop("mode", None)
+        calc_spec_data["calc_mode"] = CalcMode.formula.name
+        data.update(calc_spec_data)
+        # For backward compatibility use '' for formula and source; avatar_id must be present even if None
+        for key in ("formula", "guid_formula", "source"):
+            data.setdefault(key, "")
+        for key in ("avatar_id", "default_value", "value_constraint"):
+            data.setdefault(key, None)
+        return data
+
+    @pre_load(pass_many=False)
+    def extract_calc_spec(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
+        data = deepcopy(data)
+        data.pop("calc_mode", None)
+        mode = CalcMode.formula.name
+        data["calc_spec"] = dict(filter_calc_spec_kwargs(mode, data), mode=mode)
+        return del_calc_spec_kwargs_from(data)
+
+
+class CacheInvalidationErrorStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationError
+
+    title = ma_fields.String()
+    message = ma_fields.String()
+    level = ma_fields.Enum(NotificationLevel)
+    locator = ma_fields.String()
+
+
+class CacheInvalidationSourceStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = CacheInvalidationSource
+
+    mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema), load_default=list)
+    field = ma_fields.Nested(CacheInvalidationFieldStorageSchema, allow_none=True, load_default=None)
+
+    # For mode: sql
+    sql = ma_fields.String(allow_none=True, load_default=None)
+
+    # Read-only error field
+    cache_invalidation_error = ma_fields.Nested(CacheInvalidationErrorStorageSchema, allow_none=True, load_default=None)
+
+
 class DatasetStorageSchema(DefaultStorageSchema):
     TARGET_CLS = Dataset.DataModel
 
@@ -523,6 +587,7 @@ class DatasetStorageSchema(DefaultStorageSchema):
     rls = ma_fields.Nested(RLSSchema, allow_none=False)
     component_errors = ma_fields.Nested(ComponentErrorListSchema)
     obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceStorageSchema)
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")
 
     extract = ma_fields.Nested(

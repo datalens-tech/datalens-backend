@@ -3,6 +3,9 @@ from typing import (
     TypeVar,
 )
 
+from dl_constants.enums import RLSSubjectType
+from dl_rls.models import RLSEntry
+
 
 _T = TypeVar("_T")
 
@@ -58,3 +61,36 @@ def quote_by_quote(value: str, quote: str = "'") -> str:
     ("a'b'", "and 'stuff'")
     """
     return "{}{}{}".format(quote, value.replace(quote, quote + quote), quote)
+
+
+def is_slug(group_id: str, group_name: str) -> bool:
+    return group_id == group_name.strip().removeprefix("@group:")
+
+
+def rls_uses_real_group_ids(entries: list[RLSEntry]) -> bool | None:
+    """
+    This method is only needed during the transition period from group slugs to their actual IDs.
+    Once the rls_v1 format is removed, it can be deleted - the result will be always True.
+    """
+
+    has_slugs = False
+    has_ids = False
+    for entry in entries:
+        if entry.subject.subject_type != RLSSubjectType.group:
+            continue
+        if is_slug(group_id=entry.subject.subject_id, group_name=entry.subject.subject_name):
+            has_slugs = True
+        else:
+            has_ids = True
+    if has_ids and has_slugs:
+        # This is an unlikely situation that could only arise if one of the groups failed
+        # to resolve to a real ID due to a resolver error unrelated to the group itself.
+        # However, it is hypothetically possible, so to avoid breaking the dataset,
+        # we will handle this case separately.
+        return None
+    if has_slugs:
+        return False
+    if has_ids:
+        return True
+    # No groups case. We'll return True, since that's the intended behavior.
+    return True

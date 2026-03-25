@@ -5,6 +5,7 @@ from typing import (
     ClassVar,
 )
 
+import aiohttp
 import attr
 import pytest
 import pytest_asyncio
@@ -85,3 +86,14 @@ async def fixture_app(
 
     async with app.run_in_task_context() as app:
         yield app
+
+
+@pytest_asyncio.fixture(name="app_client")
+async def fixture_app_client(
+    app_settings: Settings,
+) -> AsyncGenerator[aiohttp.ClientSession, None]:
+    async with aiohttp.ClientSession(
+        base_url=f"http://{app_settings.HTTP_SERVER.HOST}:{app_settings.HTTP_SERVER.PORT}",
+        timeout=aiohttp.ClientTimeout(total=1),
+    ) as session:
+        yield session

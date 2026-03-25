@@ -262,3 +262,86 @@ def test_rls(entrysets: dict, expected_restrictions: dict) -> None:
         for user_id, user_restrictions in restrictions.items()
     }
     assert restrictions == expected_restrictions
+
+
+def test_rls_groups_slug_vs_id() -> None:
+    """Test that allowed_groups works correctly for both slug-based and ID-based entries."""
+    rls = RLS()
+    field_guid = "fld1"
+
+    # Old format entry: subject_id is a slug
+    rls.items.append(
+        RLSEntry(
+            field_guid=field_guid,
+            allowed_value="old_value",
+            pattern_type=RLSPatternType.value,
+            subject=RLSSubject(
+                subject_type=RLSSubjectType.group,
+                subject_id="staff:my-department",
+                subject_name="@group:staff:my-department",
+            ),
+        )
+    )
+    # New format entry: subject_id is a real ID
+    rls.items.append(
+        RLSEntry(
+            field_guid=field_guid,
+            allowed_value="new_value",
+            pattern_type=RLSPatternType.value,
+            subject=RLSSubject(
+                subject_type=RLSSubjectType.group,
+                subject_id="real-group-id-123",
+                subject_name="@group:some-group-name",
+            ),
+        )
+    )
+
+    # Both slug and real ID match
+    rls.allowed_groups = {"staff:my-department", "real-group-id-123"}
+    restrictions = rls.get_user_restrictions(user_id="any-user")
+    assert restrictions == {field_guid: ["old_value", "new_value"]}
+
+    # Only slug match
+    rls.allowed_groups = {"staff:my-department"}
+    restrictions = rls.get_user_restrictions(user_id="any-user")
+    assert restrictions == {field_guid: ["old_value"]}
+
+    # Only ID match
+    rls.allowed_groups = {"real-group-id-123"}
+    restrictions = rls.get_user_restrictions(user_id="any-user")
+    assert restrictions == {field_guid: ["new_value"]}
+
+    # No match
+    rls.allowed_groups = {"other-group"}
+    restrictions = rls.get_user_restrictions(user_id="any-user")
+    assert restrictions == {field_guid: []}
+
+
+def test_rls_groups_with_real_ids() -> None:
+    """Test that RLS matching works correctly when allowed_groups contains real IDs."""
+    rls = RLS()
+    field_guid = "fld1"
+
+    # Entry with real ID (subject_id != slug derived from subject_name)
+    rls.items.append(
+        RLSEntry(
+            field_guid=field_guid,
+            allowed_value="new_value",
+            pattern_type=RLSPatternType.value,
+            subject=RLSSubject(
+                subject_type=RLSSubjectType.group,
+                subject_id="real-group-id-123",
+                subject_name="@group:some-group-name",
+            ),
+        )
+    )
+
+    # allowed_groups populated with real IDs (by_id=True path)
+    rls.allowed_groups = {"real-group-id-123"}
+    restrictions = rls.get_user_restrictions(user_id="any-user")
+    assert restrictions == {field_guid: ["new_value"]}
+
+    # No match when IDs don't match
+    rls.allowed_groups = {"other-id"}
+    restrictions = rls.get_user_restrictions(user_id="any-user")
+    assert restrictions == {field_guid: []}

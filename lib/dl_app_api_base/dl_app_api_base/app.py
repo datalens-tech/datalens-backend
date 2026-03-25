@@ -184,6 +184,7 @@ class HttpServerAppFactoryMixin(
         self,
     ) -> list[auth.RouteMatcher]:
         return [
+            # TODO: drop in BI-7161
             auth.RouteMatcher(
                 path_regex=re.compile(r"^/api/v1/health/.*$"),
                 methods=frozenset(["GET"]),
@@ -318,32 +319,53 @@ class HttpServerAppFactoryMixin(
     ) -> list[handlers.Route]:
         result: list[handlers.Route] = []
 
+        readiness_service = await self._get_aiohttp_readiness_service()
+        liveness_handler = handlers.LivenessProbeHandler()
+        readiness_handler = handlers.ReadinessProbeHandler(readiness_service=readiness_service)
+        startup_handler = handlers.StartupProbeHandler(readiness_service=readiness_service)
+
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/system/health/liveness",
+                handler=liveness_handler,
+            ),
+        )
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/system/health/readiness",
+                handler=readiness_handler,
+            ),
+        )
+        result.append(
+            handlers.Route(
+                method="GET",
+                path="/system/health/startup",
+                handler=startup_handler,
+            ),
+        )
+
+        # TODO: drop in BI-7161
         result.append(
             handlers.Route(
                 method="GET",
                 path="/api/v1/health/liveness",
-                handler=handlers.LivenessProbeHandler(),
+                handler=liveness_handler,
             ),
         )
-
-        readiness_service = await self._get_aiohttp_readiness_service()
-
         result.append(
             handlers.Route(
                 method="GET",
                 path="/api/v1/health/readiness",
-                handler=handlers.ReadinessProbeHandler(
-                    readiness_service=readiness_service,
-                ),
+                handler=readiness_handler,
             ),
         )
         result.append(
             handlers.Route(
                 method="GET",
                 path="/api/v1/health/startup",
-                handler=handlers.StartupProbeHandler(
-                    readiness_service=readiness_service,
-                ),
+                handler=startup_handler,
             ),
         )
 

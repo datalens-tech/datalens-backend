@@ -165,8 +165,13 @@ def crypto_keys_config() -> CryptoKeysConfig:
 
 
 @pytest.fixture(scope="function")
-def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config):
+def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_settings, crypto_keys_config, us_config):
     monkeypatch.setenv("EXT_QUERY_EXECUTER_SECRET_KEY", "dummy")
+    monkeypatch.setenv("US_ENTRIES_CLIENT__USER_AUTH_PROVIDER__TYPE", "NONE")
+    monkeypatch.setenv("US_ENTRIES_CLIENT__BASE_URL", us_config.base_url)
+    monkeypatch.setenv("S3__ENDPOINT_URL", s3_settings.ENDPOINT_URL)
+    monkeypatch.setenv("S3__ACCESS_KEY_ID", s3_settings.ACCESS_KEY_ID)
+    monkeypatch.setenv("S3__SECRET_ACCESS_KEY", s3_settings.SECRET_ACCESS_KEY)
 
     deprecated_settings = DeprecatedFileUploaderAPISettings(
         REDIS_APP=redis_app_settings,
@@ -188,14 +193,7 @@ def app_settings(monkeypatch, redis_app_settings, redis_arq_settings, s3_setting
         CRYPTO_KEYS_CONFIG=crypto_keys_config,
         ALLOW_XLSX=True,
     )
-    settings = FileUploaderAPISettings(
-        S3=S3ClientSettings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
-        fallback=deprecated_settings,
-    )
+    settings = FileUploaderAPISettings(fallback=deprecated_settings)
     yield settings
 
 
@@ -321,7 +319,12 @@ def file_uploader_worker_settings(
     us_config,
     crypto_keys_config,
     secure_reader,
+    monkeypatch,
 ):
+    monkeypatch.setenv("S3__ENDPOINT_URL", s3_settings.ENDPOINT_URL)
+    monkeypatch.setenv("S3__ACCESS_KEY_ID", s3_settings.ACCESS_KEY_ID)
+    monkeypatch.setenv("S3__SECRET_ACCESS_KEY", s3_settings.SECRET_ACCESS_KEY)
+
     deprecated_settings = DeprecatedFileUploaderWorkerSettings(
         REDIS_APP=redis_app_settings,
         REDIS_ARQ=redis_arq_settings,
@@ -341,11 +344,6 @@ def file_uploader_worker_settings(
     settings = FileUploaderWorkerSettings(
         fallback=deprecated_settings,
         CONNECTORS=connectors_settings,
-        S3=S3ClientSettings(
-            ENDPOINT_URL=s3_settings.ENDPOINT_URL,
-            ACCESS_KEY_ID=s3_settings.ACCESS_KEY_ID,
-            SECRET_ACCESS_KEY=s3_settings.SECRET_ACCESS_KEY,
-        ),
     )
     yield settings
 

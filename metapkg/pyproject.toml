@@ -134,6 +134,7 @@ dl-connector-oracle = {develop = true, path = "../lib/dl_connector_oracle"}
 dl-connector-postgresql = {develop = true, path = "../lib/dl_connector_postgresql"}
 dl-connector-promql = {develop = true, path = "../lib/dl_connector_promql"}
 dl-connector-snowflake = {develop = true, path = "../lib/dl_connector_snowflake"}
+dl-connector-starrocks = {develop = true, path = "../lib/dl_connector_starrocks"}
 dl-connector-trino = {develop = true, path = "../lib/dl_connector_trino"}
 dl-connector-ydb = {develop = true, path = "../lib/dl_connector_ydb"}
 dl-constants = {develop = true, path = "../lib/dl_constants"}
@@ -177,6 +178,7 @@ dl-sqlalchemy-mysql = {develop = true, path = "../lib/dl_sqlalchemy_mysql"}
 dl-sqlalchemy-oracle = {develop = true, path = "../lib/dl_sqlalchemy_oracle"}
 dl-sqlalchemy-postgres = {develop = true, path = "../lib/dl_sqlalchemy_postgres"}
 dl-sqlalchemy-promql = {develop = true, path = "../lib/dl_sqlalchemy_promql"}
+dl-sqlalchemy-starrocks = {develop = true, path = "../lib/dl_sqlalchemy_starrocks"}
 dl-sqlalchemy-ydb = {develop = true, path = "../lib/dl_sqlalchemy_ydb"}
 dl-task-processor = {develop = true, path = "../lib/dl_task_processor"}
 dl-temporal = {develop = true, path = "../lib/dl_temporal"}

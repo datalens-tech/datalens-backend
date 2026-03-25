@@ -217,7 +217,8 @@ def create_calc_spec_from(kwargs: dict[str, Any]) -> CalculationSpec:
 
 
 def del_calc_spec_kwargs_from(
-    kwargs: dict[str, Any], spec_cls: Optional[type[CalculationSpec]] = None
+    kwargs: dict[str, Any],
+    spec_cls: type[CalculationSpec] | None = None,
 ) -> dict[str, Any]:
     spec_classes = _CALCULATION_SPECS_BY_MODE.values() if spec_cls is None else [spec_cls]
     keys = [f.name for s in spec_classes for f in attr.fields(s)] + ["calc_mode"]

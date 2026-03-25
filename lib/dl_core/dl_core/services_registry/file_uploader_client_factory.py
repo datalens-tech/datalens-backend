@@ -168,7 +168,6 @@ class UpdateConnectionDataRequestSchemaBase(ma.Schema):
     connection_id = ma.fields.String()
     save = ma.fields.Boolean()
     authorized = ma.fields.Boolean()
-    tenant_id = ma.fields.String(allow_none=True)
 
 
 class UpdateConnectionDataRequestSchemaGSheets(UpdateConnectionDataRequestSchemaBase):
@@ -241,7 +240,6 @@ class FileUploaderClient(BIAioHTTPClient):
         conn_id: str,
         sources: list[GSheetsFileSourceDesc | YaDocsFileSourceDesc],
         authorized: bool,
-        tenant_id: str,
         file_type: FileType,
     ) -> None:
         path = "/api/v2/update_connection_data_internal"
@@ -252,7 +250,6 @@ class FileUploaderClient(BIAioHTTPClient):
                 save=True,
                 sources=sources,
                 authorized=authorized,
-                tenant_id=tenant_id,
             )
         )
         try:

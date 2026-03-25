@@ -18,7 +18,10 @@ from marshmallow import (
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_api_client.dsmaker.api.schemas.base import DefaultSchema
+from dl_api_client.dsmaker.api.schemas.base import (
+    BaseSchema,
+    DefaultSchema,
+)
 from dl_api_client.dsmaker.primitives import (
     ArrayFloatParameterValue,
     ArrayIntParameterValue,
@@ -26,6 +29,10 @@ from dl_api_client.dsmaker.primitives import (
     AvatarRelation,
     BaseParameterValueConstraint,
     BooleanParameterValue,
+    CacheInvalidationError,
+    CacheInvalidationField,
+    CacheInvalidationLastResultError,
+    CacheInvalidationSource,
     CollectionParameterValueConstraint,
     Column,
     ComponentError,
@@ -69,6 +76,7 @@ from dl_api_lib.schemas.order import OrderFieldSchema
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
+    CacheInvalidationMode,
     CalcMode,
     ComponentErrorLevel,
     ComponentType,
@@ -80,6 +88,7 @@ from dl_constants.enums import (
     JoinConditionType,
     JoinType,
     ManagedBy,
+    NotificationLevel,
     ParameterValueConstraintType,
     RLSPatternType,
     RLSSubjectType,
@@ -273,9 +282,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         return getattr(obj, self.type_field).name
 
 
-class ResultFieldSchema(DefaultSchema[ResultField]):
-    TARGET_CLS = ResultField
-
+class ResultSchemaBase(BaseSchema):
     title = ma_fields.String(required=True)
     source = ma_fields.String()
     guid = ma_fields.String(attribute="id")
@@ -306,6 +313,10 @@ class ResultFieldSchema(DefaultSchema[ResultField]):
         if "cast" in data:
             self.context[ValueSchema.CONTEXT_KEY] = data["cast"]
         return data
+
+
+class ResultFieldSchema(ResultSchemaBase, DefaultSchema[ResultField]):
+    TARGET_CLS = ResultField
 
 
 class ResultSchemaAuxSchema(DefaultSchema[ResultSchemaAux]):
@@ -481,6 +492,72 @@ class ExtractPropertiesSchema(DefaultSchema[ExtractProperties]):
 
     errors = ma_fields.List(ma_fields.String, load_default=list, dump_default=list)
     last_update = ma_fields.Integer(load_default=0, dump_default=0)
+class CacheInvalidationErrorSchema(DefaultSchema[CacheInvalidationError]):
+    """Schema for cache invalidation validation error"""
+
+    TARGET_CLS = CacheInvalidationError
+
+    title = ma_fields.String(required=True)
+    message = ma_fields.String(required=True)
+    level = ma_fields.Enum(NotificationLevel)
+    locator = ma_fields.String(required=True)
+
+
+class CacheInvalidationLastResultErrorSchema(DefaultSchema[CacheInvalidationLastResultError]):
+    """Schema for last cache invalidation execution errors"""
+
+    TARGET_CLS = CacheInvalidationLastResultError
+
+    code = ma_fields.String(required=True)
+    message = ma_fields.String(allow_none=True)
+    details = ma_fields.Dict(allow_none=True, load_default=dict)
+    debug = ma_fields.Dict(allow_none=True, load_default=dict)
+
+
+class CacheInvalidationFieldSchema(ResultSchemaBase, DefaultSchema[CacheInvalidationField]):
+    """Schema for cache invalidation field (formula mode)"""
+
+    TARGET_CLS = CacheInvalidationField
+
+    ...
+
+
+class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
+    """Schema for cache_invalidation_source object in dataset"""
+
+    TARGET_CLS = CacheInvalidationSource
+
+    mode = ma_fields.Enum(CacheInvalidationMode, load_default=CacheInvalidationMode.off)
+
+    # For mode: formula
+    filters = ma_fields.Nested(
+        ObligatoryFilterSchema,
+        many=True,
+        load_default=list,
+    )
+    field = ma_fields.Nested(CacheInvalidationFieldSchema, allow_none=True, load_default=None)
+
+    # For mode: sql
+    sql = ma_fields.String(allow_none=True, load_default=None)
+
+    # Error fields
+    cache_invalidation_error = ma_fields.Nested(
+        CacheInvalidationErrorSchema,
+        allow_none=True,
+        dump_default=None,
+        load_default=None,
+    )
+    last_result_timestamp = ma_fields.String(
+        allow_none=True,
+        dump_default=None,
+        dump_only=True,
+    )
+    last_result_error = ma_fields.Nested(
+        CacheInvalidationLastResultErrorSchema,
+        allow_none=True,
+        dump_default=None,
+        dump_only=True,
+    )
 
 
 class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixin):
@@ -509,6 +586,7 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixi
     load_preview_by_default = ma_fields.Boolean(dump_default=True, load_default=True)
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
+    cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema)
 
     extract = ma_fields.Nested(ExtractPropertiesSchema, load_default=ExtractProperties, dump_default=ExtractProperties)
 

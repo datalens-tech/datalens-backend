@@ -20,7 +20,7 @@ class BaseSubjectResolver(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def resolve_group_slug(self, group_slug: str, rci: RequestContextInfo) -> str | None:
-        return None
+        raise NotImplementedError
 
 
 @attr.s

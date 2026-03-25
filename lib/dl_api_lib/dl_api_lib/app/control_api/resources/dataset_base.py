@@ -197,6 +197,9 @@ class DatasetResource(BIResource):
         data["result_schema"] = result_schema
         data["result_schema_aux"] = dataset.data.result_schema_aux
 
+        # cache_invalidation_source
+        data["cache_invalidation_source"] = dataset.data.cache_invalidation_source
+
         # rls
         rls = {}
         rls_v2 = {}
@@ -500,5 +503,7 @@ class DatasetResource(BIResource):
             ds_dict["permissions"] = dataset.permissions
         if dataset.full_permissions is not None:
             ds_dict["full_permissions"] = dataset.full_permissions
+        if dataset.operation is not None:
+            ds_dict["operation"] = dataset.operation
 
         return ds_dict
