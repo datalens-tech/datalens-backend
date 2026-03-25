@@ -116,6 +116,56 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             message=f"Unsupported cache invalidation mode: {cache_invalidation_source.mode}"
         )
 
+    @staticmethod
+    def _validate_single_row(row_count: int) -> None:
+        if row_count == 0:
+            raise CacheInvalidationTestInvalidResultError(
+                message="Query returned no rows",
+            )
+        if row_count > 1:
+            raise CacheInvalidationTestInvalidResultError(
+                message=f"Expected exactly 1 row, got {row_count}",
+            )
+
+    @staticmethod
+    def _validate_single_column(row: list | tuple) -> None:
+        if len(row) == 0:
+            raise CacheInvalidationTestInvalidResultError(
+                message="Result row has no columns",
+            )
+        if len(row) > 1:
+            raise CacheInvalidationTestInvalidResultError(
+                message=f"Expected exactly 1 column, got {len(row)}",
+            )
+
+    @staticmethod
+    def _validate_string_value(value: object) -> str:
+        if not isinstance(value, str):
+            raise CacheInvalidationTestNonStringResultError(
+                message=f"Expected string result, got {type(value).__name__}",
+            )
+
+        value_str = str(value)
+        if len(value_str) > _MAX_VALUE_LENGTH:
+            raise CacheInvalidationTestInvalidResultError(
+                message=f"Result value exceeds {_MAX_VALUE_LENGTH} characters (got {len(value_str)})",
+            )
+
+        return value_str
+
+    @staticmethod
+    def _build_response(value: str, query: str) -> Response:
+        response_schema = cache_invalidation_test_schemas.CacheInvalidationTestResponseSchema()
+        response_data = response_schema.dump(
+            {
+                "result": {
+                    "value": value,
+                    "query": query,
+                },
+            }
+        )
+        return web.json_response(response_data)
+
     async def _execute_formula_mode(self, cache_invalidation_source: CacheInvalidationSource) -> Response:
         """Execute formula-mode cache invalidation query and return the result.
 
@@ -182,62 +232,25 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             if merged_stream.meta.blocks:
                 debug_query = merged_stream.meta.blocks[0].debug_query or ""
 
-            # 7. Collect rows from the stream
+            # 7. Collect and validate rows from the stream
             rows = list(merged_stream.rows)
-
-            if len(rows) == 0:
-                raise CacheInvalidationTestInvalidResultError(
-                    message="Query returned no rows",
-                )
-
-            if len(rows) > 1:
-                raise CacheInvalidationTestInvalidResultError(
-                    message=f"Expected exactly 1 row, got {len(rows)}",
-                )
+            self._validate_single_row(row_count=len(rows))
 
             row_data = rows[0].data
-            if len(row_data) == 0:
-                raise CacheInvalidationTestInvalidResultError(
-                    message="Result row has no columns",
-                )
-            if len(row_data) > 1:
-                raise CacheInvalidationTestInvalidResultError(
-                    message=f"Expected exactly 1 column, got {len(row_data)}",
-                )
+            self._validate_single_column(row_data)
 
-            value = row_data[0]
-
-            # 8. Validate that the result is a string
-            if not isinstance(value, str):
-                raise CacheInvalidationTestNonStringResultError(
-                    message=f"Expected string result, got {type(value).__name__}",
-                )
-
-            value_str = str(value)
-            if len(value_str) > _MAX_VALUE_LENGTH:
-                raise CacheInvalidationTestInvalidResultError(
-                    message=f"Result value exceeds {_MAX_VALUE_LENGTH} characters (got {len(value_str)})",
-                )
+            value_str = self._validate_string_value(row_data[0])
 
         finally:
-            # 9. Clean up: remove the temporary field from result_schema
+            # 8. Clean up: remove the temporary field from result_schema
             try:
                 result_schema.fields.remove(field)
                 result_schema.reload_caches()
             except ValueError:
                 pass  # Field was already removed or not found
 
-        # 10. Build response
-        response_schema = cache_invalidation_test_schemas.CacheInvalidationTestResponseSchema()
-        response_data = response_schema.dump(
-            {
-                "result": {
-                    "value": value_str,
-                    "query": debug_query,
-                },
-            }
-        )
-        return web.json_response(response_data)
+        # 9. Build response
+        return self._build_response(value=value_str, query=debug_query)
 
     async def _execute_sql_mode(self, sql_query: str) -> Response:
         """Execute SQL-mode cache invalidation query and return the result."""
@@ -314,46 +327,12 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             )
 
         # Validate result
-        if len(rows) == 0:
-            raise CacheInvalidationTestInvalidResultError(
-                message="Query returned no rows",
-            )
-        if len(rows) > 1:
-            raise CacheInvalidationTestInvalidResultError(
-                message=f"Expected exactly 1 row, got {len(rows)}",
-            )
+        self._validate_single_row(row_count=len(rows))
 
         row = rows[0]
-        if len(row) == 0:
-            raise CacheInvalidationTestInvalidResultError(
-                message="Result row has no columns",
-            )
-        if len(row) > 1:
-            raise CacheInvalidationTestInvalidResultError(
-                message=f"Expected exactly 1 column, got {len(row)}",
-            )
+        self._validate_single_column(row)
 
-        # Additionally validate the actual Python type of the value
-        # (user_types may be empty/None for some adapters)
-        if not isinstance(row[0], str):
-            raise CacheInvalidationTestNonStringResultError(
-                message=f"Expected string result, got {type(row[0]).__name__}",
-            )
-
-        value = str(row[0])
-        if len(value) > _MAX_VALUE_LENGTH:
-            raise CacheInvalidationTestInvalidResultError(
-                message=f"Result value exceeds {_MAX_VALUE_LENGTH} characters (got {len(value)})",
-            )
+        value = self._validate_string_value(row[0])
 
         # Build response
-        response_schema = cache_invalidation_test_schemas.CacheInvalidationTestResponseSchema()
-        response_data = response_schema.dump(
-            {
-                "result": {
-                    "value": value,
-                    "query": sql_query,
-                },
-            }
-        )
-        return web.json_response(response_data)
+        return self._build_response(value=value, query=sql_query)
