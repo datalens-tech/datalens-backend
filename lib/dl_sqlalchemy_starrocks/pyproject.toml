@@ -16,7 +16,7 @@ sqlalchemy = ">=1.4.46, <2.0"
 pytest = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]
-bi_starrocks = "dl_sqlalchemy_starrocks.base:BiStarRocksDialect"
+bi_starrocks = "dl_sqlalchemy_starrocks.base:BIStarRocksDialect"
 
 [tool.mypy]
 check_untyped_defs = true

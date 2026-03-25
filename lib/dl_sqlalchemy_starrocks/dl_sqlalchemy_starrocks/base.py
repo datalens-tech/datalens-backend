@@ -17,15 +17,22 @@ class StarRocksTypeCompiler(MySQLTypeCompiler):
 
 class StarRocksDDLCompiler(MySQLDDLCompiler):
     def post_create_table(self, table):
-        first_col = list(table.columns.keys())[0]
-        return f"\nDUPLICATE KEY(`{first_col}`)"
+        try:
+            first_col = next(iter(table.columns))
+        except StopIteration:
+            raise sa.exc.CompileError(
+                "StarRocksDDLCompiler.post_create_table() "
+                "cannot generate DUPLICATE KEY clause for a table with no columns"
+            )
+        quoted_col_name = self.preparer.format_column(first_col)
+        return f"\nDUPLICATE KEY({quoted_col_name})"
 
 
-class BiStarRocksDialect(DLMYSQLDialect):
+class BIStarRocksDialect(DLMYSQLDialect):
     name = "bi_starrocks"
     type_compiler = StarRocksTypeCompiler
     ddl_compiler = StarRocksDDLCompiler
 
 
 def register_dialect():
-    sa.dialects.registry.register("bi_starrocks", "dl_sqlalchemy_starrocks.base", "BiStarRocksDialect")
+    sa.dialects.registry.register("bi_starrocks", "dl_sqlalchemy_starrocks.base", "BIStarRocksDialect")
