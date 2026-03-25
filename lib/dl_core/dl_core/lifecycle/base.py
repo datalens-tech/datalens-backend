@@ -47,7 +47,10 @@ class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
         return self._entry
 
     @property
-    def original_entry(self) -> _US_ENTRY_TV:
+    def original_entry(self) -> _US_ENTRY_TV | None:
+        if self._original_entry is None:
+            return None
+
         assert isinstance(self._original_entry, self.ENTRY_CLS)
         return self._original_entry
 
