@@ -46,6 +46,11 @@ class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
         assert isinstance(self._entry, self.ENTRY_CLS)
         return self._entry
 
+    @property
+    def original_entry(self) -> _US_ENTRY_TV:
+        assert isinstance(self._original_entry, self.ENTRY_CLS)
+        return self._original_entry
+
     def pre_save_hook(self) -> None:
         pass
 

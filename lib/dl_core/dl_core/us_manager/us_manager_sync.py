@@ -134,7 +134,7 @@ class SyncUSManager(USManagerBase):
 
         :param entry: US entry to save
         :param update_revision: Update revision on save
-        :param original_entry: Orevious version on entry for lifecycle hook handling
+        :param original_entry: Previous version on entry for lifecycle hook handling
         """
 
         lifecycle_manager = self.get_lifecycle_manager(

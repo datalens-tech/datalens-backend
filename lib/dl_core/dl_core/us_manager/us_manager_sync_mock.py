@@ -6,6 +6,7 @@ from datetime import (
     timezone,
 )
 from typing import (
+    TYPE_CHECKING,
     Any,
     Optional,
 )
@@ -29,6 +30,10 @@ from dl_core.united_storage_client import (
 )
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 import dl_retrier
+
+
+if TYPE_CHECKING:
+    from dl_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase
 
 
 class MockedUStorageClient(UStorageClient):
@@ -159,6 +164,12 @@ class MockedUStorageClient(UStorageClient):
         else:
             return previous_resp
 
+    def delete_entry(self, entry_id: str, lock: str | None = None) -> None:
+        if entry_id in self._saved_entries:
+            del self._saved_entries[entry_id]
+        else:
+            raise USObjectNotFoundException()
+
 
 class MockedSyncUSManager(SyncUSManager):
     def __init__(
@@ -166,6 +177,7 @@ class MockedSyncUSManager(SyncUSManager):
         bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008
         crypto_keys_config: Optional[CryptoKeysConfig] = None,
         services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),  # noqa: B008
+        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
     ):
         super().__init__(
             bi_context=bi_context,
@@ -180,6 +192,7 @@ class MockedSyncUSManager(SyncUSManager):
             us_auth_context=USAuthContextMaster(us_master_token="FakeKey"),
             services_registry=services_registry,
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
+            lifecycle_manager_factory=lifecycle_manager_factory,
         )
 
     def _create_us_client(self) -> UStorageClient:

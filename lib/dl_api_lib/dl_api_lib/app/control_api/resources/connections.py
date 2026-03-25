@@ -237,7 +237,7 @@ class ConnectionsImportList(BIResource):
         if conn_warnings:
             notifications.extend(conn_warnings)
 
-        # Conneciton Import has no previous entry version
+        # Connection Import has no previous entry version
         us_manager.save(conn)
 
         return dict(id=conn.uuid, notifications=notifications)
@@ -269,7 +269,7 @@ class ConnectionsList(BIResource):
 
         conn.validate_new_data_sync(services_registry=self.get_service_registry())
 
-        # Conneciton Create has no previous entry version
+        # Connection Create has no previous entry version
         us_manager.save(conn)
 
         result: dict = {"id": conn.uuid}
@@ -365,7 +365,7 @@ class ConnectionItem(BIResource):
                 original_version=conn_orig,
             )
 
-            # Conneciton Update has previous entry version
+            # Connection Update has previous entry version
             us_manager.save(
                 entry=conn,
                 original_entry=conn_orig,
