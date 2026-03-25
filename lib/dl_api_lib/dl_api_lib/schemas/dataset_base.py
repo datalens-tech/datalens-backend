@@ -205,6 +205,7 @@ class CacheInvalidationFieldSchema(ResultSchemaBase):
 
     title = ma_fields.String(load_default=INVALIDATION_CACHE_SERVICE_FIELD_TITLE)
     cast = ma_fields.Enum(UserDataType, load_default=UserDataType.string)
+    data_type = ma_fields.Enum(UserDataType, load_default=UserDataType.string)
 
     # this will be flattened on dump and un-flattened before load
     # TODO: dump/load as is and update usage on front end respectively

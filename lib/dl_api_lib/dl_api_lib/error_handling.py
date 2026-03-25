@@ -98,6 +98,8 @@ EXCEPTION_CODES = {
     exc.WorkbookImportError: status.BAD_REQUEST,
     exc.WorkbookExportError: status.BAD_REQUEST,
     common_exc.DataSourceNotFound: status.BAD_REQUEST,
+    exc.CacheInvalidationTestNotEditorError: status.FORBIDDEN,
+    exc.CacheInvalidationTestError: status.BAD_REQUEST,
 }
 
 
