@@ -492,6 +492,8 @@ class ExtractPropertiesSchema(DefaultSchema[ExtractProperties]):
 
     errors = ma_fields.List(ma_fields.String, load_default=list, dump_default=list)
     last_update = ma_fields.Integer(load_default=0, dump_default=0)
+
+
 class CacheInvalidationErrorSchema(DefaultSchema[CacheInvalidationError]):
     """Schema for cache invalidation validation error"""
 
