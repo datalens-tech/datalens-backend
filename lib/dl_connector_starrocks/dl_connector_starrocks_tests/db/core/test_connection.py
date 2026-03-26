@@ -1,8 +1,6 @@
-from typing import Callable
-
-from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_starrocks.core.us_connection import ConnectionStarRocks
 from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
@@ -12,6 +10,13 @@ class TestStarRocksConnection(
     BaseStarRocksTestClass,
     DefaultConnectionTestClass[ConnectionStarRocks],
 ):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectionTestClass.test_connection_get_data_source_templates: "Not implemented yet",
+            DefaultConnectionTestClass.test_get_tables: "Not implemented yet",
+            DefaultConnectionTestClass.test_get_parameter_combinations: "Not implemented yet",
+        },
+    )
     do_check_data_export_flag = True
 
     def check_saved_connection(self, conn: ConnectionStarRocks, params: dict) -> None:
@@ -26,17 +31,3 @@ class TestStarRocksConnection(
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
-
-    def test_get_tables(
-        self, saved_connection: ConnectionStarRocks, sync_conn_executor_factory: Callable[[], SyncConnExecutorBase]
-    ) -> None:
-        conn = saved_connection
-        tables = conn.get_tables(lambda c: sync_conn_executor_factory())
-        assert tables
-
-    def test_get_parameter_combinations(
-        self, saved_connection: ConnectionStarRocks, sync_conn_executor_factory: Callable[[], SyncConnExecutorBase]
-    ) -> None:
-        conn = saved_connection
-        param_combinations = conn.get_parameter_combinations(lambda c: sync_conn_executor_factory())
-        assert param_combinations

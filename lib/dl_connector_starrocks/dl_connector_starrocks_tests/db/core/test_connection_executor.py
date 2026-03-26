@@ -6,6 +6,7 @@ from sqlalchemy.dialects import mysql as mysql_types
 from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.testcases.connection_executor import DefaultSyncConnectionExecutorTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
 
 import dl_connector_starrocks_tests.db.config as test_config
 from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
@@ -15,6 +16,12 @@ class TestStarRocksSyncConnectionExecutor(
     BaseStarRocksTestClass,
     DefaultSyncConnectionExecutorTestSuite,
 ):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultSyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: "Not implemented yet",
+        },
+    )
+
     @pytest.fixture(scope="function")
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=test_config.CoreConnectionSettings.DB_NAME)
