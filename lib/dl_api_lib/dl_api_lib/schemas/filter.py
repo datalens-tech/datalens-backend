@@ -65,5 +65,5 @@ class FilterFieldSchema(DefaultSchema[FilterField]):
 
     id = ma_fields.String(required=True)
     guid = ma_fields.String(required=True)
-    default_filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, load_default=[])
+    filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, default=list, load_default=list, dump_default=list)
     valid = ma_fields.Boolean(load_default=True)

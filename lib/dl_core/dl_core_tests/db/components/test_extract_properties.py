@@ -12,7 +12,7 @@ from dl_core.fields import (
     FilterField,
     OrderField,
 )
-from dl_core.us_dataset import Dataset as Dataset
+from dl_core.us_dataset import Dataset
 from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
@@ -60,7 +60,7 @@ class TestExtractValidation(DefaultCoreTestClass):
             extract_filters=[
                 FilterField(
                     id="id_1",
-                    default_filters=[
+                    filters=[
                         DefaultWhereClause(
                             operation=WhereClauseOperation.ENDSWITH,
                             values=[
@@ -73,7 +73,7 @@ class TestExtractValidation(DefaultCoreTestClass):
                 ),
                 FilterField(
                     id="id_2",
-                    default_filters=[
+                    filters=[
                         DefaultWhereClause(
                             operation=WhereClauseOperation.EQ,
                             values=[
@@ -128,7 +128,7 @@ class TestExtractValidation(DefaultCoreTestClass):
                 FilterField(
                     id="id_1",
                     guid="guid_1",
-                    default_filters=[
+                    filters=[
                         DefaultWhereClause(
                             operation=WhereClauseOperation.ENDSWITH,
                             values=["hehe"],
@@ -139,7 +139,7 @@ class TestExtractValidation(DefaultCoreTestClass):
                 FilterField(
                     id="id_2",
                     guid="guid_2",
-                    default_filters=[
+                    filters=[
                         DefaultWhereClause(
                             operation=WhereClauseOperation.EQ,
                             values=["not hehe"],

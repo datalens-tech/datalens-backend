@@ -491,16 +491,16 @@ class FilterFieldStorageSchema(DefaultStorageSchema):
 
     id = ma_fields.String(required=True)
     guid = ma_fields.String(required=True)
-    default_filters = ma_fields.List(ma_fields.Nested(DefaultWhereClauseSchema))
+    filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, default=list, load_default=list, dump_default=list)
     valid = ma_fields.Boolean(load_default=True)
 
 
-class OrderedFieldStorageSchema(DefaultStorageSchema):
+class OrderFieldStorageSchema(DefaultStorageSchema):
     TARGET_CLS = OrderField
 
     id = ma_fields.String(required=True)
     guid = ma_fields.String(required=True)
-    order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
+    order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc, dump_default=OrderDirection.asc)
     valid = ma_fields.Boolean(load_default=True)
 
 
@@ -511,7 +511,7 @@ class ExtractPropertiesStorageSchema(DefaultStorageSchema):
     status = ma_fields.Enum(ExtractStatus, load_default=ExtractStatus.disabled, dump_default=ExtractStatus.disabled)
 
     filters = ma_fields.Nested(FilterFieldStorageSchema, many=True, load_default=list, dump_default=list)
-    sorting = ma_fields.Nested(OrderedFieldStorageSchema, many=True, load_default=list, dump_default=list)
+    sorting = ma_fields.Nested(OrderFieldStorageSchema, many=True, load_default=list, dump_default=list)
 
     errors = ma_fields.List(ma_fields.String, load_default=list, dump_default=list)
     last_update = ma_fields.Integer(load_default=0, dump_default=0)

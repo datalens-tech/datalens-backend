@@ -10,5 +10,5 @@ class OrderFieldSchema(DefaultSchema[OrderField]):
 
     id = ma_fields.String(required=True)
     guid = ma_fields.String(required=True)
-    order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
+    order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc, dump_default=OrderDirection.asc)
     valid = ma_fields.Boolean(load_default=True)

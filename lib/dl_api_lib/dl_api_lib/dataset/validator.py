@@ -1887,6 +1887,9 @@ class DatasetValidator(DatasetBaseWrapper):
         filters: list[FilterField] = self._ds_accessor.get_extract_filters()
 
         for filter in filters:
+            # Clear old errors
+            self._ds.error_registry.remove_errors(id=filter.id, code_prefix=exc.ExtractValidationError.err_code)
+
             # Register component as affected for validity update
             filter_component_ref = DatasetComponentRef(
                 component_type=ComponentType.extract_filter,
@@ -1909,6 +1912,9 @@ class DatasetValidator(DatasetBaseWrapper):
         sorting: list[OrderField] = self._ds_accessor.get_extract_sorting()
 
         for sort in sorting:
+            # Clear old errors
+            self._ds.error_registry.remove_errors(id=sort.id, code_prefix=exc.ExtractValidationError.err_code)
+
             # Register component as affected for validity update
             sort_component_ref = DatasetComponentRef(
                 component_type=ComponentType.extract_sorting,

@@ -551,7 +551,7 @@ class ResultSchema:
 class OrderField:
     id: str = attr.ib()
     guid: str = attr.ib()
-    order: OrderDirection = attr.ib()
+    order: OrderDirection = attr.ib(default=OrderDirection.asc)
     valid: bool = attr.ib(default=True)
 
 
@@ -559,5 +559,5 @@ class OrderField:
 class FilterField:
     id: str = attr.ib()
     guid: str = attr.ib()
-    default_filters: list[DefaultWhereClause] = attr.ib()
+    filters: list[DefaultWhereClause] = attr.ib(factory=list)
     valid: bool = attr.ib(default=True)

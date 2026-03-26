@@ -71,7 +71,7 @@ class TestExtractValidation(DefaultApiTestBase):
             "action": "update_extract",
             "extract": {
                 "mode": "manual",
-                "filters": [{"id": "filter_1", "guid": field_guids[0], "default_filters": []}],
+                "filters": [{"id": "filter_1", "guid": field_guids[0], "filters": []}],
                 "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
             },
         }
@@ -90,7 +90,7 @@ class TestExtractValidation(DefaultApiTestBase):
             mode=ExtractMode.manual,
             status=ExtractStatus.disabled,
             filters=[
-                FilterField(id="filter_1", guid=field_guids[0], default_filters=[]),
+                FilterField(id="filter_1", guid=field_guids[0], filters=[]),
             ],
             sorting=[
                 OrderField(id="sort_1", guid=field_guids[0], order=OrderDirection.asc),
@@ -142,7 +142,7 @@ class TestExtractValidation(DefaultApiTestBase):
             "action": "update_extract",
             "extract": {
                 "mode": "manual",
-                "filters": [{"id": "invalid_filter", "guid": "non-existent-guid", "default_filters": []}],
+                "filters": [{"id": "invalid_filter", "guid": "non-existent-guid", "filters": []}],
                 "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
             },
         }
@@ -176,7 +176,7 @@ class TestExtractValidation(DefaultApiTestBase):
             "action": "update_extract",
             "extract": {
                 "mode": "manual",
-                "filters": [{"id": "filter_1", "guid": field_guids[0], "default_filters": []}],
+                "filters": [{"id": "filter_1", "guid": field_guids[0], "filters": []}],
                 "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
             },
         }
@@ -196,7 +196,7 @@ class TestExtractValidation(DefaultApiTestBase):
             mode=ExtractMode.manual,
             status=ExtractStatus.disabled,
             filters=[
-                FilterField(id="filter_1", guid=field_guids[0], default_filters=[]),
+                FilterField(id="filter_1", guid=field_guids[0], filters=[]),
             ],
             sorting=[
                 OrderField(id="sort_1", guid=field_guids[0], order=OrderDirection.asc),
@@ -232,7 +232,7 @@ class TestExtractValidation(DefaultApiTestBase):
             "action": "update_extract",
             "extract": {
                 "mode": "automatic",
-                "filters": [{"id": "filter_1", "guid": field_guids[0], "default_filters": []}],
+                "filters": [{"id": "filter_1", "guid": field_guids[0], "filters": []}],
                 "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "desc"}],
             },
         }
@@ -248,7 +248,7 @@ class TestExtractValidation(DefaultApiTestBase):
             mode=ExtractMode.automatic,
             status=ExtractStatus.disabled,
             filters=[
-                FilterField(id="filter_1", guid=field_guids[0], default_filters=[]),
+                FilterField(id="filter_1", guid=field_guids[0], filters=[]),
             ],
             sorting=[
                 OrderField(id="sort_1", guid=field_guids[0], order=OrderDirection.desc),
@@ -317,7 +317,7 @@ class TestExtractValidation(DefaultApiTestBase):
             "action": "update_extract",
             "extract": {
                 "mode": "manual",
-                "filters": [{"id": "valid_filter", "guid": field_guids[0], "default_filters": []}],
+                "filters": [{"id": "valid_filter", "guid": field_guids[0], "filters": []}],
                 "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
             },
         }
@@ -333,7 +333,7 @@ class TestExtractValidation(DefaultApiTestBase):
             "action": "update_extract",
             "extract": {
                 "mode": "manual",
-                "filters": [{"id": "invalid_filter", "guid": "non-existent-guid", "default_filters": []}],
+                "filters": [{"id": "invalid_filter", "guid": "non-existent-guid", "filters": []}],
                 "sorting": [{"id": "sort_1", "guid": field_guids[0], "order": "asc"}],
             },
         }
@@ -407,7 +407,7 @@ class TestExtractValidation(DefaultApiTestBase):
                         {
                             "id": "filter_1",
                             "guid": field_guids[0],
-                            "default_filters": [
+                            "filters": [
                                 {
                                     "operation": "EQ",
                                     "values": ["test_value"],
@@ -447,7 +447,7 @@ class TestExtractValidation(DefaultApiTestBase):
                     FilterField(
                         id="filter_1",
                         guid=field_guids[0],
-                        default_filters=[
+                        filters=[
                             DefaultWhereClause(
                                 operation=WhereClauseOperation.EQ,
                                 values=["test_value"],
