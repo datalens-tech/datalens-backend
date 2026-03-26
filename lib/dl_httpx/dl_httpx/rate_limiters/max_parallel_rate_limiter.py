@@ -4,6 +4,7 @@ from collections.abc import (
 )
 import contextlib
 import threading
+from typing import Literal
 
 import attrs
 import pydantic
@@ -14,6 +15,7 @@ import dl_httpx.utils.attrs as attrs_utils
 
 
 class MaxParallelRateLimiterSettings(base.RateLimiterSettings):
+    type: Literal["MAX_PARALLEL"] = pydantic.Field(alias="TYPE", default="MAX_PARALLEL")
     MAX_PARALLEL: int = pydantic.Field(gt=0)
 
 
