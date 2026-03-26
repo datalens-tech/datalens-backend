@@ -193,7 +193,8 @@ def test_original_entry_with_clone_in_save(
     lifecycle_manager = test_lifecycle_factory.created_managers[0]
 
     # Verify original_entry was propagated
-    assert lifecycle_manager._original_entry is original_entry
+    assert lifecycle_manager.entry is entry
+    assert lifecycle_manager.original_entry is original_entry
 
     # Verify hooks were called with proper values
     lifecycle_manager.pre_save_hook_mock.assert_called_once_with(
