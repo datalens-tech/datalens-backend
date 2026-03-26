@@ -3,14 +3,16 @@ from collections.abc import (
     Iterator,
 )
 import contextlib
+from typing import Literal
 
+import pydantic
 from typing_extensions import Self
 
 import dl_httpx.rate_limiters.base as base
 
 
 class NoRateLimiterSettings(base.RateLimiterSettings):
-    ...
+    type: Literal["NONE"] = pydantic.Field(alias="TYPE", default="NONE")
 
 
 base.RateLimiterSettings.register("NONE", NoRateLimiterSettings)

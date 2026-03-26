@@ -6,7 +6,10 @@ from collections.abc import (
 import contextlib
 import threading
 import time
-from typing import Protocol
+from typing import (
+    Literal,
+    Protocol,
+)
 
 import attrs
 import pydantic
@@ -27,6 +30,7 @@ class DefaultDateTimeProvider:
 
 
 class SlidingWindowRateLimiterSettings(base.RateLimiterSettings):
+    type: Literal["SLIDING_WINDOW"] = pydantic.Field(alias="TYPE", default="SLIDING_WINDOW")
     MAX_REQUESTS: int = pydantic.Field(gt=0)
     WINDOW_SECONDS: int = pydantic.Field(gt=0)
 
