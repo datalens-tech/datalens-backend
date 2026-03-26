@@ -92,7 +92,7 @@ class Dataset(USEntry):
         def get_unversioned_keys(cls) -> set[DataKey]:
             return set(
                 [
-                    DataKey(parts=("extract", "state")),
+                    DataKey(parts=("extract", "status")),
                     DataKey(parts=("extract", "errors")),
                     DataKey(parts=("extract", "last_update")),
                 ]
@@ -288,7 +288,7 @@ class Dataset(USEntry):
 
     def reset_extract_properties(self) -> None:
         """
-        Reset extract properties ans settings to default values.
+        Reset extract properties and settings to default values.
         """
 
         self.data.extract = ExtractProperties()

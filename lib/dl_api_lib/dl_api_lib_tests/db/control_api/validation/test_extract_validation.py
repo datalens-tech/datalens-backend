@@ -129,7 +129,7 @@ class TestExtractValidation(DefaultApiTestBase):
 
         errors = [error for error in dataset.component_errors.items if error.id == "invalid_sort"]
         assert len(errors) == 1
-        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.SORTING_FIELD_MISSING"
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.EXTRACT.SORTING_FIELD_MISSING"
 
     def test_save_dataset_with_invalid_filter_fields_fails(
         self,
@@ -163,7 +163,7 @@ class TestExtractValidation(DefaultApiTestBase):
 
         errors = [error for error in dataset.component_errors.items if error.id == "invalid_filter"]
         assert len(errors) == 1
-        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.FILTER_FIELD_MISSING"
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.EXTRACT.FILTER_FIELD_MISSING"
 
     def test_control_api_returns_extract_settings(
         self,
@@ -304,7 +304,7 @@ class TestExtractValidation(DefaultApiTestBase):
 
         errors = [error for error in dataset.component_errors.items if error.id == "invalid_sort"]
         assert len(errors) == 1
-        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.SORTING_FIELD_MISSING"
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.EXTRACT.SORTING_FIELD_MISSING"
 
     def test_update_extract_with_invalid_filter_fields_fails(
         self,
@@ -353,7 +353,7 @@ class TestExtractValidation(DefaultApiTestBase):
 
         errors = [error for error in dataset.component_errors.items if error.id == "invalid_filter"]
         assert len(errors) == 1
-        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.FILTER_FIELD_MISSING"
+        assert errors[0].errors[0].code == "ERR.DS_API.VALIDATION.ERROR.EXTRACT.FILTER_FIELD_MISSING"
 
     def test_extract_enabled_requires_non_empty_sorting(
         self,
@@ -376,7 +376,7 @@ class TestExtractValidation(DefaultApiTestBase):
         )
 
         assert ds_resp.status_code == http.HTTPStatus.BAD_REQUEST
-        assert ds_resp.bi_status_code == "ERR.DS_API.VALIDATION.FATAL"
+        assert ds_resp.bi_status_code == "ERR.DS_API.VALIDATION.FATAL.EXTRACT.SORTING_EMPTY"
 
     def test_get_dataset_by_revision_returns_all_extract_fields(
         self,

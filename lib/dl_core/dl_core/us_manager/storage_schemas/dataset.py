@@ -490,7 +490,7 @@ class FilterFieldStorageSchema(DefaultStorageSchema):
     TARGET_CLS = FilterField
 
     id = ma_fields.String(required=True)
-    guid = ma_fields.String()
+    guid = ma_fields.String(required=True)
     default_filters = ma_fields.List(ma_fields.Nested(DefaultWhereClauseSchema))
     valid = ma_fields.Boolean(load_default=True)
 
@@ -499,7 +499,7 @@ class OrderedFieldStorageSchema(DefaultStorageSchema):
     TARGET_CLS = OrderField
 
     id = ma_fields.String(required=True)
-    guid = ma_fields.String()
+    guid = ma_fields.String(required=True)
     order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
     valid = ma_fields.Boolean(load_default=True)
 

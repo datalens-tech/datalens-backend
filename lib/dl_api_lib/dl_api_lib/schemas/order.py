@@ -9,6 +9,6 @@ class OrderFieldSchema(DefaultSchema[OrderField]):
     TARGET_CLS = OrderField
 
     id = ma_fields.String(required=True)
-    guid = ma_fields.String()
+    guid = ma_fields.String(required=True)
     order = ma_fields.Enum(OrderDirection, load_default=OrderDirection.asc)
     valid = ma_fields.Boolean(load_default=True)

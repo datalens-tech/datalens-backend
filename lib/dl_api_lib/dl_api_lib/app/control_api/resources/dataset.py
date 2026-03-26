@@ -532,7 +532,7 @@ class DatasetVersionValidator(DatasetResource):
             ds_validator.apply_batch(action_batch=body.get("updates", ()))
         except exc.DLValidationFatal as err:
             any_errors = True
-            code = self._make_api_err_code(exc.DLValidationFatal.err_code)
+            code = self._make_api_err_code(err.err_code)
             message = err.message
         else:
             # collect connections not found in us

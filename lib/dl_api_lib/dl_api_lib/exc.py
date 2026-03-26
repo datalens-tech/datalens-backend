@@ -81,20 +81,24 @@ class ConnectorIconNotFoundException(DLBaseException):
     err_code = ["ICON_NOT_FOUND"]
 
 
-class ExtractValidationError(DLValidationFatal):
+class ExtractValidationError(DLValidationError):
     err_code = DLValidationError.err_code + ["EXTRACT"]
 
 
+class ExtractFatalValidationError(ExtractValidationError, DLValidationFatal):
+    err_code = DLValidationFatal.err_code + ["EXTRACT"]
+
+
 class ExtractFilterFieldMissing(ExtractValidationError):
-    err_code = DLValidationError.err_code + ["FILTER_FIELD_MISSING"]
+    err_code = ExtractValidationError.err_code + ["FILTER_FIELD_MISSING"]
 
 
 class ExtractSortingFieldMissing(ExtractValidationError):
-    err_code = DLValidationError.err_code + ["SORTING_FIELD_MISSING"]
+    err_code = ExtractValidationError.err_code + ["SORTING_FIELD_MISSING"]
 
 
-class ExtractSortingEmpty(ExtractValidationError):
-    err_code = DLValidationError.err_code + ["SORTING_EMPTY"]
+class ExtractSortingEmpty(ExtractFatalValidationError):
+    err_code = ExtractFatalValidationError.err_code + ["SORTING_EMPTY"]
 
 
 class CacheInvalidationTestError(DLBaseException):
