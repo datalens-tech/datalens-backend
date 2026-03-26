@@ -1,0 +1,31 @@
+from dl_core.us_connection_base import DataSourceTemplate
+from dl_core_testing.testcases.connection import DefaultConnectionTestClass
+from dl_testing.regulated_test import RegulatedTestParams
+
+from dl_connector_starrocks.core.us_connection import ConnectionStarRocks
+from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
+
+
+class TestStarRocksConnection(
+    BaseStarRocksTestClass,
+    DefaultConnectionTestClass[ConnectionStarRocks],
+):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultConnectionTestClass.test_connection_get_data_source_templates: "Not implemented yet",
+        },
+    )
+    do_check_data_export_flag = True
+
+    def check_saved_connection(self, conn: ConnectionStarRocks, params: dict) -> None:
+        assert conn.uuid is not None
+        assert conn.data.db_name == params["db_name"]
+        assert conn.data.host == params["host"]
+        assert conn.data.port == params["port"]
+        assert conn.data.username == params["username"]
+        assert conn.data.password == params["password"]
+
+    def check_data_source_templates(self, conn: ConnectionStarRocks, dsrc_templates: list[DataSourceTemplate]) -> None:
+        assert dsrc_templates
+        for dsrc_tmpl in dsrc_templates:
+            assert dsrc_tmpl.title

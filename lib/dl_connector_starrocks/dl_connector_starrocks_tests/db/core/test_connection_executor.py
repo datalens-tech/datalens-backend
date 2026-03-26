@@ -1,0 +1,63 @@
+from collections.abc import Sequence
+
+import pytest
+from sqlalchemy.dialects import mysql as mysql_types
+
+from dl_constants.enums import UserDataType
+from dl_core.connection_models.common_models import DBIdent
+from dl_core_testing.testcases.connection_executor import DefaultSyncConnectionExecutorTestSuite
+from dl_testing.regulated_test import RegulatedTestParams
+
+import dl_connector_starrocks_tests.db.config as test_config
+from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
+
+
+class TestStarRocksSyncConnectionExecutor(
+    BaseStarRocksTestClass,
+    DefaultSyncConnectionExecutorTestSuite,
+):
+    test_params = RegulatedTestParams(
+        mark_tests_skipped={
+            DefaultSyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: "Not implemented yet",
+        },
+    )
+
+    @pytest.fixture(scope="function")
+    def db_ident(self) -> DBIdent:
+        return DBIdent(db_name=test_config.CoreConnectionSettings.DB_NAME)
+
+    def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
+        """Override to use MySQL-specific types that match StarRocks native type names"""
+        return {
+            "starrocks_types_number": [
+                self.CD(mysql_types.INTEGER(), UserDataType.integer),
+                self.CD(mysql_types.BIGINT(), UserDataType.integer),
+                self.CD(mysql_types.FLOAT(), UserDataType.float),
+                self.CD(mysql_types.DOUBLE(), UserDataType.float),
+                self.CD(mysql_types.DECIMAL(), UserDataType.float),
+            ],
+            "starrocks_types_string": [
+                self.CD(mysql_types.VARCHAR(100), UserDataType.string),
+                # StarRocks converts TEXT to VARCHAR(65533) internally
+                self.CD(mysql_types.TEXT(), UserDataType.string, nt_name="varchar"),
+            ],
+            "starrocks_types_date": [
+                self.CD(mysql_types.DATE(), UserDataType.date),
+                self.CD(mysql_types.DATETIME(), UserDataType.genericdatetime),
+            ],
+            "starrocks_types_other": [
+                self.CD(mysql_types.BOOLEAN(), UserDataType.boolean),
+                # Add a second column to avoid StarRocks single-column table restriction
+                self.CD(mysql_types.INTEGER(), UserDataType.integer),
+            ],
+        }
+
+
+# TODO: BI-7173
+# class TestStarRocksAsyncConnectionExecutor(
+#     BaseStarRocksTestClass,
+#     DefaultAsyncConnectionExecutorTestSuite,
+# ):
+#     @pytest.fixture(scope="function")
+#     def db_ident(self) -> DBIdent:
+#         return DBIdent(db_name=test_config.CoreConnectionSettings.DB_NAME)
