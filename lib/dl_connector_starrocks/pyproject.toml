@@ -11,11 +11,32 @@ version = "0.0.1"
 attrs = ">=22.2.0"
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-db-testing = {path = "../dl_db_testing"}
+dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+pymysql = ">=1.0.2"
 python = ">=3.10, <3.13"
+sqlalchemy = ">=1.4.46, <2.0"
 
 [tool.poetry.group.tests.dependencies]
+dl-api-lib-testing = {path = "../dl_api_lib_testing"}
+dl-core-testing = {path = "../dl_core_testing"}
+dl-formula-testing = {path = "../dl_formula_testing"}
+dl-testing = {path = "../dl_testing"}
+pytest = ">=7.2.2"
+
+[tool.poetry.plugins."dl_core.connectors"]
+starrocks = "dl_connector_starrocks.core.connector:StarRocksCoreConnector"
+
+[tool.poetry.plugins."dl_db_testing.connectors"]
+starrocks = "dl_connector_starrocks.db_testing.connector:StarRocksDbTestingConnector"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "dl-sqlalchemy-starrocks",
+]
 
 [tool.mypy]
 check_untyped_defs = true
@@ -35,6 +56,11 @@ build-backend = "poetry.core.masonry.api"
 requires = [
   "poetry-core",
 ]
+
+[datalens.pytest.db]
+labels = ["fat"]
+root_dir = "dl_connector_starrocks_tests/"
+target_path = "db"
 
 [datalens.pytest.unit]
 labels = ["no_compose"]
