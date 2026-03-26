@@ -52,8 +52,8 @@ class TestLifecycleManager(EntryLifecycleManager[TestUSEntry]):
 
         # Record call to pre_save_hook
         self.pre_save_hook_mock(
-            entry=self._entry,
-            original_entry=self._original_entry,
+            entry=self.entry,
+            original_entry=self.original_entry,
         )
 
     def post_save_hook(self) -> PostSaveHookResult:
@@ -61,8 +61,8 @@ class TestLifecycleManager(EntryLifecycleManager[TestUSEntry]):
 
         # Record call to post_save_hook
         self.post_save_hook_mock(
-            entry=self._entry,
-            original_entry=self._original_entry,
+            entry=self.entry,
+            original_entry=self.original_entry,
         )
 
         return result
