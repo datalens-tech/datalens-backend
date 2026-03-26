@@ -1,7 +1,7 @@
 from dl_db_testing.connectors.base.connector import DbTestingConnector
 
 from dl_connector_starrocks.db_testing.engine_wrapper import (
-    BiStarRocksEngineWrapper,
+    BIStarRocksEngineWrapper,
     DLStarRocksEngineWrapper,
 )
 
@@ -9,5 +9,5 @@ from dl_connector_starrocks.db_testing.engine_wrapper import (
 class StarRocksDbTestingConnector(DbTestingConnector):
     engine_wrapper_classes = (
         DLStarRocksEngineWrapper,
-        BiStarRocksEngineWrapper,
+        BIStarRocksEngineWrapper,
     )

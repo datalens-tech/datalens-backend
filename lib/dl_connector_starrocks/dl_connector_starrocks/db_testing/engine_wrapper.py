@@ -15,5 +15,5 @@ class DLStarRocksEngineWrapper(StarRocksEngineWrapperBase):
     URL_PREFIX = "dl_mysql"
 
 
-class BiStarRocksEngineWrapper(StarRocksEngineWrapperBase):
+class BIStarRocksEngineWrapper(StarRocksEngineWrapperBase):
     URL_PREFIX = "bi_starrocks"
