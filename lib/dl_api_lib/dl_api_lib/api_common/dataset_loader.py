@@ -421,6 +421,9 @@ class DatasetApiLoader:
 
     @classmethod
     def _update_dataset_extract_properties_from_body(cls, dataset: Dataset, body: dict) -> None:
+        if "extract" not in body:
+            return
+
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
         extract: ExtractProperties = body["extract"]

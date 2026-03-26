@@ -234,13 +234,7 @@ class DatasetResource(BIResource):
         data["annotation"] = dataset.annotation
 
         # extract
-        data["extract"] = {}
-        data["extract"]["mode"] = ds_accessor.get_extract_mode()
-        data["extract"]["status"] = ds_accessor.get_extract_status()
-        data["extract"]["errors"] = ds_accessor.get_extract_errors()
-        data["extract"]["last_update"] = ds_accessor.get_extract_last_update()
-        data["extract"]["filters"] = ds_accessor.get_extract_filters()
-        data["extract"]["sorting"] = ds_accessor.get_extract_sorting()
+        data["extract"] = dataset.data.extract
 
         return {"dataset": data}
 
