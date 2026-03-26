@@ -1,3 +1,4 @@
+
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 from dl_testing.regulated_test import RegulatedTestParams
@@ -13,8 +14,6 @@ class TestStarRocksConnection(
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultConnectionTestClass.test_connection_get_data_source_templates: "Not implemented yet",
-            DefaultConnectionTestClass.test_get_tables: "Not implemented yet",
-            DefaultConnectionTestClass.test_get_parameter_combinations: "Not implemented yet",
         },
     )
     do_check_data_export_flag = True
