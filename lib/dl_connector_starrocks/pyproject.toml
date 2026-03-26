@@ -16,7 +16,6 @@ dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-pymysql = ">=1.0.2"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"
 
