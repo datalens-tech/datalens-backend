@@ -11,3 +11,23 @@ msgstr ""
 
 msgid "label_connector-starrocks"
 msgstr "StarRocks"
+
+msgid "field_listing-sources"
+msgstr "Запрашивать список таблиц"
+
+msgid "label_listing-sources-tooltip"
+msgstr ""
+"Отключите, если загрузка списка таблиц из источника занимает слишком много "
+"времени или вызывает ошибки — в этом случае добавляйте таблицы через SQL-запросы"
+
+msgid "value_listing-sources-off"
+msgstr "Выкл"
+
+msgid "value_listing-sources-on"
+msgstr "Вкл"
+
+msgid "source_templates-label-starrocks_catalog"
+msgstr "Имя каталога"
+
+msgid "db_name-label"
+msgstr "Каталог"

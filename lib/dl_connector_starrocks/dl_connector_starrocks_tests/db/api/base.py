@@ -28,11 +28,11 @@ class StarRocksConnectionTestBase(BaseStarRocksTestClass, ConnectionTestBase):  
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
         return dict(
-            db_name=CoreConnectionSettings.DB_NAME,
             host=CoreConnectionSettings.HOST,
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
+            listing_sources=CoreConnectionSettings.LISTING_SOURCES.name,
             **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
         )
 
@@ -47,6 +47,8 @@ class StarRocksDatasetTestBase(StarRocksConnectionTestBase, DatasetTestBase):  #
         return dict(
             source_type=SOURCE_TYPE_STARROCKS_TABLE.name,
             parameters=dict(
+                db_name=CoreConnectionSettings.CATALOG,
+                schema_name=sample_table.db.name,
                 table_name=sample_table.name,
             ),
         )

@@ -11,3 +11,23 @@ msgstr ""
 
 msgid "label_connector-starrocks"
 msgstr "StarRocks"
+
+msgid "field_listing-sources"
+msgstr "Request table list"
+
+msgid "label_listing-sources-tooltip"
+msgstr ""
+"Disable if loading the table list from the source takes too long or causes "
+"errors — in this case, add tables via SQL queries"
+
+msgid "value_listing-sources-off"
+msgstr "Off"
+
+msgid "value_listing-sources-on"
+msgstr "On"
+
+msgid "source_templates-label-starrocks_catalog"
+msgstr "Catalog name"
+
+msgid "db_name-label"
+msgstr "Catalog"

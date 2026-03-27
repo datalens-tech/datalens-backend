@@ -1,3 +1,8 @@
+from dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
+
 from dl_constants.enums import (
     ConnectionType,
     DataSourceType,
@@ -9,3 +14,8 @@ BACKEND_TYPE_STARROCKS = SourceBackendType.declare("STARROCKS")
 CONNECTION_TYPE_STARROCKS = ConnectionType.declare("starrocks")
 SOURCE_TYPE_STARROCKS_TABLE = DataSourceType.declare("STARROCKS_TABLE")
 SOURCE_TYPE_STARROCKS_SUBSELECT = DataSourceType.declare("STARROCKS_SUBSELECT")
+
+
+class ListingSources(DynamicEnum):
+    on = AutoEnumValue()
+    off = AutoEnumValue()

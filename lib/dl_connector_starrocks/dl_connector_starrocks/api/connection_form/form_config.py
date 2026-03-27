@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from enum import unique
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (
@@ -12,15 +13,58 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormFactory,
     ConnectionFormMode,
 )
-from dl_api_connector.form_config.models.common import CommonFieldName
+from dl_api_connector.form_config.models.common import (
+    CommonFieldName,
+    FormFieldName,
+)
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_constants.enums import RawSQLLevel
 from dl_core.connectors.settings.base import ConnectorSettings
+from dl_i18n.localizer_base import Localizer
 
 from dl_connector_starrocks.api.connection_info import StarRocksConnectionInfoProvider
+from dl_connector_starrocks.api.i18n.localizer import Translatable
+from dl_connector_starrocks.core.constants import ListingSources
 from dl_connector_starrocks.core.settings import StarRocksConnectorSettings
+
+
+@unique
+class StarRocksFormFieldName(FormFieldName):
+    listing_sources = "listing_sources"
+
+
+class StarRocksRowConstructor(RowConstructor):
+    def __init__(self, localizer: Localizer) -> None:
+        super().__init__(localizer=localizer)
+        self._localizer = localizer
+
+    def listing_sources_row(self) -> C.CustomizableRow:
+        return C.CustomizableRow(
+            items=[
+                C.LabelRowItem(
+                    text=self._localizer.translate(Translatable("field_listing-sources")),
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                    help_text=self._localizer.translate(Translatable("label_listing-sources-tooltip")),
+                ),
+                C.RadioButtonRowItem(
+                    name=StarRocksFormFieldName.listing_sources,
+                    options=[
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_listing-sources-off")),
+                            value=ListingSources.off.value,
+                        ),
+                        C.SelectableOption(
+                            text=self._localizer.translate(Translatable("value_listing-sources-on")),
+                            value=ListingSources.on.value,
+                        ),
+                    ],
+                    default_value=ListingSources.on.value,
+                    display_conditions={CommonFieldName.advanced_settings: "opened"},
+                ),
+            ]
+        )
 
 
 class StarRocksConnectionFormFactory(ConnectionFormFactory):
@@ -43,13 +87,6 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
     ) -> Sequence[FormRow]:
         return [rc.port_row(default_value=self.DEFAULT_PORT)]
 
-    def _get_db_name_section(
-        self,
-        rc: RowConstructor,
-        connector_settings: ConnectorSettings | None,
-    ) -> Sequence[FormRow]:
-        return [rc.db_name_row()]
-
     def _get_username_section(
         self,
         rc: RowConstructor,
@@ -59,14 +96,14 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
 
     def _get_password_section(
         self,
-        rc: RowConstructor,
+        rc: StarRocksRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         return [rc.password_row(mode=self.mode)]
 
     def _get_common_section(
         self,
-        rc: RowConstructor,
+        rc: StarRocksRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
         assert connector_settings is not None and isinstance(connector_settings, StarRocksConnectorSettings)
@@ -86,6 +123,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 exports_history_url_path=form_params.exports_history_url_path,
                 mode=self.mode,
             ),
+            rc.listing_sources_row(),
         ]
 
     def _get_edit_api_schema(
@@ -97,11 +135,11 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
                 FormFieldApiSchema(name=CommonFieldName.username, required=True),
-                FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
                 FormFieldApiSchema(name=CommonFieldName.password),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
+                FormFieldApiSchema(name=StarRocksFormFieldName.listing_sources),
             ],
         )
 
@@ -123,7 +161,6 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
             items=[
                 FormFieldApiSchema(name=CommonFieldName.host, required=True),
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
-                FormFieldApiSchema(name=CommonFieldName.db_name, required=True),
                 FormFieldApiSchema(name=CommonFieldName.username, required=True),
                 FormFieldApiSchema(name=CommonFieldName.password),
                 *self._get_top_level_check_api_schema_items(),
@@ -135,7 +172,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        rc = RowConstructor(localizer=self._localizer)
+        rc = StarRocksRowConstructor(localizer=self._localizer)
 
         edit_api_schema = self._get_edit_api_schema(connector_settings)
         create_api_schema = self._get_create_api_schema(connector_settings, edit_api_schema)
@@ -147,7 +184,6 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 [
                     *self._get_host_section(rc, connector_settings),
                     *self._get_port_section(rc, connector_settings),
-                    *self._get_db_name_section(rc, connector_settings),
                     *self._get_username_section(rc, connector_settings),
                     *self._get_password_section(rc, connector_settings),
                     *self._get_common_section(rc, connector_settings),

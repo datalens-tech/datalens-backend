@@ -5,7 +5,10 @@ from dl_api_connector.api_schema.connection_mixins import (
     RawSQLLevelMixin,
 )
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
+from dl_api_connector.api_schema.extras import FieldExtra
+from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
+from dl_connector_starrocks.core.constants import ListingSources
 from dl_connector_starrocks.core.us_connection import ConnectionStarRocks
 
 
@@ -22,4 +25,13 @@ class StarRocksConnectionSchema(
         attribute="data.password",
         required=False,
         allow_none=True,
+    )
+    listing_sources = DynamicEnumField(
+        ListingSources,
+        attribute="data.listing_sources",
+        required=False,
+        allow_none=False,
+        dump_default=ListingSources.on,
+        load_default=ListingSources.on,
+        bi_extra=FieldExtra(editable=True),
     )

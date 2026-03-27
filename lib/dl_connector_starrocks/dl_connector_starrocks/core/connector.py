@@ -2,11 +2,11 @@ from dl_core.connectors.base.connector import (
     CoreBackendDefinition,
     CoreConnectionDefinition,
     CoreConnector,
+    CoreSourceDefinition,
 )
-from dl_core.connectors.sql_base.connector import (
-    SQLSubselectCoreSourceDefinitionBase,
-    SQLTableCoreSourceDefinitionBase,
-)
+from dl_core.connectors.sql_base.connector import SQLSubselectCoreSourceDefinitionBase
+from dl_core.data_source_spec.sql import StandardSchemaSQLDataSourceSpec
+from dl_core.us_manager.storage_schemas.data_source_spec_base import SchemaSQLDataSourceSpecStorageSchema
 
 from dl_connector_starrocks.core.adapters_starrocks import StarRocksAdapter
 from dl_connector_starrocks.core.async_adapters_starrocks import AsyncStarRocksAdapter
@@ -46,9 +46,11 @@ class StarRocksCoreConnectionDefinition(CoreConnectionDefinition):
     allow_export = True
 
 
-class StarRocksTableCoreSourceDefinition(SQLTableCoreSourceDefinitionBase):
+class StarRocksTableCoreSourceDefinition(CoreSourceDefinition):
     source_type = SOURCE_TYPE_STARROCKS_TABLE
     source_cls = StarRocksDataSource
+    source_spec_cls = StandardSchemaSQLDataSourceSpec
+    us_storage_schema_cls = SchemaSQLDataSourceSpecStorageSchema
 
 
 class StarRocksSubselectCoreSourceDefinition(SQLSubselectCoreSourceDefinitionBase):
@@ -68,5 +70,5 @@ class StarRocksCoreConnector(CoreConnector):
         StarRocksTableCoreSourceDefinition,
         StarRocksSubselectCoreSourceDefinition,
     )
-    rqe_adapter_classes = frozenset({StarRocksAdapter, AsyncStarRocksAdapter})  # type: ignore  # 2024-01-24 # TODO: fix abstract adapter issue
+    rqe_adapter_classes = frozenset({StarRocksAdapter, AsyncStarRocksAdapter})  # type: ignore
     sa_types = SQLALCHEMY_STARROCKS_TYPES

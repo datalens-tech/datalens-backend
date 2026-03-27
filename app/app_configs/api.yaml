@@ -42,6 +42,8 @@ CONNECTOR_AVAILABILITY:
       availability: free
     - conn_type: promql
       availability: free
+    - conn_type: starrocks
+      availability: free
   visible_connectors: []
 CORS_ALLOWED_HEADERS:
 - Content-Type

@@ -17,6 +17,7 @@ from dl_connector_starrocks.core.data_source import (
     StarRocksSubselectDataSource,
 )
 from dl_connector_starrocks.core.us_connection import ConnectionStarRocks
+from dl_connector_starrocks_tests.db.config import CoreConnectionSettings
 from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
 
 
@@ -34,7 +35,8 @@ class TestStarRocksTableDataSource(
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:  # type: ignore  # 2024-01-30 # TODO: fix
         dsrc_spec = StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_STARROCKS_TABLE,
-            db_name=sample_table.db.name,
+            db_name=CoreConnectionSettings.CATALOG,
+            schema_name=sample_table.db.name,
             table_name=sample_table.name,
         )
         return dsrc_spec

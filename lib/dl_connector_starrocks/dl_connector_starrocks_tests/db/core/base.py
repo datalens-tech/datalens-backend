@@ -27,9 +27,9 @@ class BaseStarRocksTestClass(BaseConnectionTestClass[ConnectionStarRocks]):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
-            db_name=test_config.CoreConnectionSettings.DB_NAME,
             host=test_config.CoreConnectionSettings.HOST,
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
             password=test_config.CoreConnectionSettings.PASSWORD,
+            listing_sources=test_config.CoreConnectionSettings.LISTING_SOURCES,
         )

@@ -1,6 +1,6 @@
 from dl_api_connector.api_schema.source_base import (
-    SQLDataSourceSchema,
-    SQLDataSourceTemplateSchema,
+    SchematizedSQLDataSourceSchema,
+    SchematizedSQLDataSourceTemplateSchema,
     SubselectDataSourceSchema,
     SubselectDataSourceTemplateSchema,
 )
@@ -26,8 +26,8 @@ from dl_connector_starrocks.formula.constants import DIALECT_NAME_STARROCKS
 
 class StarRocksApiTableSourceDefinition(ApiSourceDefinition):
     core_source_def_cls = StarRocksTableCoreSourceDefinition
-    api_schema_cls = SQLDataSourceSchema
-    template_api_schema_cls = SQLDataSourceTemplateSchema
+    api_schema_cls = SchematizedSQLDataSourceSchema
+    template_api_schema_cls = SchematizedSQLDataSourceTemplateSchema
 
 
 class StarRocksApiSubselectSourceDefinition(ApiSourceDefinition):

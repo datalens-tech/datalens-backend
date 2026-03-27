@@ -38,19 +38,6 @@
             "items": [
                 {
                     "id": "label",
-                    "text": "Path to database"
-                },
-                {
-                    "id": "input",
-                    "name": "db_name",
-                    "width": "l"
-                }
-            ]
-        },
-        {
-            "items": [
-                {
-                    "id": "label",
                     "text": "Username"
                 },
                 {
@@ -163,6 +150,36 @@
         {
             "items": [
                 {
+                    "id": "label",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "text": "field_listing-sources",
+                    "helpText": "label_listing-sources-tooltip"
+                },
+                {
+                    "id": "radio_button",
+                    "name": "listing_sources",
+                    "displayConditions": {
+                        "advanced_settings": "opened"
+                    },
+                    "defaultValue": "on",
+                    "options": [
+                        {
+                            "text": "value_listing-sources-off",
+                            "value": "off"
+                        },
+                        {
+                            "text": "value_listing-sources-on",
+                            "value": "on"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "items": [
+                {
                     "id": "hidden",
                     "name": "description",
                     "defaultValue": ""
@@ -189,11 +206,6 @@
                     "defaultAction": "include"
                 },
                 {
-                    "name": "db_name",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
                     "name": "password",
                     "required": false,
                     "defaultAction": "include"
@@ -211,6 +223,11 @@
                 },
                 {
                     "name": "data_export_forbidden",
+                    "required": false,
+                    "defaultAction": "include"
+                },
+                {
+                    "name": "listing_sources",
                     "required": false,
                     "defaultAction": "include"
                 },
@@ -233,11 +250,6 @@
                 },
                 {
                     "name": "port",
-                    "required": true,
-                    "defaultAction": "include"
-                },
-                {
-                    "name": "db_name",
                     "required": true,
                     "defaultAction": "include"
                 },

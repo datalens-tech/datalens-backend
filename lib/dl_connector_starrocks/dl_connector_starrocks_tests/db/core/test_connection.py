@@ -1,7 +1,12 @@
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
-from dl_connector_starrocks.core.us_connection import ConnectionStarRocks
+from dl_connector_starrocks.core.constants import ListingSources
+from dl_connector_starrocks.core.us_connection import (
+    STARROCKS_SYSTEM_CATALOGS,
+    ConnectionStarRocks,
+)
+from dl_connector_starrocks_tests.db.config import CoreConnectionSettings
 from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
 
 
@@ -13,23 +18,43 @@ class TestStarRocksConnection(
 
     def check_saved_connection(self, conn: ConnectionStarRocks, params: dict) -> None:  # type: ignore  # 2024-01-30 # TODO: fix
         assert conn.uuid is not None
-        assert conn.data.db_name == params["db_name"]
         assert conn.data.host == params["host"]
         assert conn.data.port == params["port"]
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
+        assert conn.data.listing_sources == params["listing_sources"]
 
     def check_data_source_templates(self, conn: ConnectionStarRocks, dsrc_templates: list[DataSourceTemplate]) -> None:  # type: ignore  # 2024-01-30 # TODO: fix
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
 
-    def test_get_tables(self, saved_connection, sync_conn_executor_factory) -> None:  # type: ignore  # 2024-01-30 # TODO: fix
+    def test_get_db_names_and_tables(self, saved_connection, sync_conn_executor_factory) -> None:
         conn = saved_connection
-        tables = conn.get_tables(lambda c: sync_conn_executor_factory())
+
+        def sync_conn_executor_factory_for_conn(connection):
+            return sync_conn_executor_factory()
+
+        db_names = conn.get_db_names(sync_conn_executor_factory_for_conn)
+        assert db_names
+        assert len(set(db_names) & set(STARROCKS_SYSTEM_CATALOGS)) == 0
+
+        tables = conn.get_tables(sync_conn_executor_factory_for_conn, db_name=CoreConnectionSettings.CATALOG)
         assert tables
 
-    def test_get_parameter_combinations(self, saved_connection, sync_conn_executor_factory) -> None:  # type: ignore  # 2024-01-30 # TODO: fix
+    def test_get_parameter_combinations(self, saved_connection, sync_conn_executor_factory) -> None:
         conn = saved_connection
-        param_combinations = conn.get_parameter_combinations(lambda c: sync_conn_executor_factory())
+        catalog = CoreConnectionSettings.CATALOG
+
+        def sync_conn_executor_factory_for_conn(connection):
+            return sync_conn_executor_factory()
+
+        # Test with specific catalog
+        param_combinations = conn.get_parameter_combinations(sync_conn_executor_factory_for_conn, db_name=catalog)
         assert param_combinations
+
+        # All results should be from the specified catalog
+        for combination in param_combinations:
+            assert combination["db_name"] == catalog
+            assert combination["schema_name"]
+            assert combination["table_name"]

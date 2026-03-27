@@ -18,21 +18,21 @@ class _BaseStarRocksConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_STARROCKS_A
     _conn_dto: StarRocksConnDTO = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> list[StarRocksConnTargetDTO]:  # type: ignore  # TODO: fix
-        dto_pool = []
-        for host in self._conn_hosts_pool:
-            dto_pool.append(
-                StarRocksConnTargetDTO(
-                    conn_id=self._conn_dto.conn_id,
-                    pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
-                    pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                    host=host,
-                    port=self._conn_dto.port,
-                    db_name=self._conn_dto.db_name,
-                    username=self._conn_dto.username,
-                    password=self._conn_dto.password,
-                )
+        hosts = self._conn_dto.get_all_hosts()
+        if not hosts:
+            hosts = [self._conn_dto.host]
+        return [
+            StarRocksConnTargetDTO(
+                conn_id=self._conn_dto.conn_id,
+                pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
+                pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
+                host=host,
+                port=self._conn_dto.port,
+                username=self._conn_dto.username,
+                password=self._conn_dto.password,
             )
-        return dto_pool
+            for host in hosts
+        ]
 
 
 @attr.s(cmp=False, hash=False)

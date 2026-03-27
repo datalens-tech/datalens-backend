@@ -55,6 +55,11 @@ from dl_type_transformer.native_type import CommonNativeType
 # StarRocks is MySQL-compatible, so we can use MySQL query compilation
 from dl_connector_mysql.core.utils import compile_mysql_query
 from dl_connector_starrocks.core.adapters_base_starrocks import BaseStarRocksAdapter
+from dl_connector_starrocks.core.adapters_starrocks import (
+    get_starrocks_columns_query,
+    get_starrocks_table_exists_query,
+    get_starrocks_tables_query,
+)
 from dl_connector_starrocks.core.error_transformer import async_starrocks_db_error_transformer
 from dl_connector_starrocks.core.exc import StarRocksSourceDoesNotExistError
 from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
@@ -110,7 +115,7 @@ class AsyncStarRocksAdapter(
         return cls(target_dto=target_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size)
 
     def get_default_db_name(self) -> str | None:
-        return self._target_dto.db_name
+        return ""  # StarRocks doesn't require a catalog to connect
 
     def get_target_host(self) -> str | None:
         return self._target_dto.host
@@ -125,12 +130,13 @@ class AsyncStarRocksAdapter(
         db_name: str,
         force_ssl: bool = False,
     ) -> aiomysql.sa.Engine:
+        # Always connect without a db — queries use fully qualified <catalog>.information_schema.<table>
         return await aiomysql.sa.create_engine(
             host=self._target_dto.host,
             port=self._target_dto.port,
             user=self._target_dto.username,
             password=self._target_dto.password,
-            db=db_name,
+            db="",
             dialect=self._dialect,
             ssl=self._get_ssl_ctx(force_ssl),
             charset="utf8mb4",
@@ -138,7 +144,7 @@ class AsyncStarRocksAdapter(
         )
 
     async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
-        return await self._engines.get(db_name, generator=self._create_engine)
+        return await self._engines.get("", generator=self._create_engine)
 
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: str | None) -> AsyncIterator[aiomysql.sa.SAConnection]:
@@ -234,55 +240,52 @@ class AsyncStarRocksAdapter(
         await self.execute(DBAdapterQuery("SELECT 1"))
 
     async def get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
-        db_name = schema_ident.db_name or self.get_default_db_name()
-        if not db_name:
-            raise ValueError("Database name is required")
+        """
+        List tables from a catalog (schema_ident.db_name).
+        Uses fully qualified `catalog`.information_schema.tables
+        (works for both internal and external catalogs since v3.2).
+        """
+        catalog = schema_ident.db_name or ""
+        if not catalog:
+            return []
 
-        # Build the INFORMATION_SCHEMA query dynamically based on pagination/search params
-        where_clauses = "WHERE TABLE_SCHEMA = :db_name AND TABLE_TYPE = 'BASE TABLE'"
-        bind_params: dict[str, Any] = {"db_name": db_name}
-
-        if page_ident and page_ident.search_text:
-            where_clauses += " AND TABLE_NAME LIKE :search_text"
-            bind_params["search_text"] = f"%{page_ident.search_text}%"
-
-        sql = f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES {where_clauses} ORDER BY TABLE_NAME"
-
-        if page_ident and (page_ident.search_text or page_ident.limit or page_ident.offset):
-            sql += " LIMIT :limit OFFSET :offset"
-            bind_params["limit"] = page_ident.limit or 1000
-            bind_params["offset"] = page_ident.offset or 0
-
-        query = sa.text(sql).bindparams(**bind_params)
+        if page_ident:
+            sql = get_starrocks_tables_query(
+                catalog=catalog,
+                search_text=page_ident.search_text,
+                limit=page_ident.limit,
+                offset=page_ident.offset,
+            )
+            bind_params: dict[str, Any] = {}
+            if page_ident.search_text is not None:
+                bind_params["search_text"] = f"%{page_ident.search_text}%"
+            query = sa.text(sql).bindparams(**bind_params) if bind_params else sa.text(sql)
+        else:
+            query = sa.text(get_starrocks_tables_query(catalog=catalog))
 
         result = await self.execute(DBAdapterQuery(query))
         return [
             TableIdent(
-                db_name=db_name,
-                schema_name=None,  # StarRocks doesn't use schemas
+                db_name=catalog,
+                schema_name=str(schema_name),
                 table_name=str(table_name),
             )
-            async for (table_name,) in result.get_all_rows()
+            async for schema_name, table_name in result.get_all_rows()
         ]
 
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
-        # For MVP, use basic DESCRIBE query approach
-        # table_def can be TableIdent directly or have table_ident attribute
         if isinstance(table_def, TableIdent):
             table_ident = table_def
         else:
             table_ident = table_def.table_ident  # type: ignore
 
-        db_name = table_ident.db_name or self.get_default_db_name()
-        if not db_name:
-            raise ValueError("Database name is required")
+        catalog = table_ident.db_name
+        database = table_ident.schema_name
+        if not catalog or not database:
+            raise ValueError("Both catalog (db_name) and database (schema_name) are required")
 
-        query = sa.text(
-            "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE "
-            "FROM INFORMATION_SCHEMA.COLUMNS "
-            "WHERE TABLE_SCHEMA = :db_name AND TABLE_NAME = :table_name "
-            "ORDER BY ORDINAL_POSITION"
-        ).bindparams(db_name=db_name, table_name=table_ident.table_name)
+        sql = get_starrocks_columns_query(catalog=catalog)
+        query = sa.text(sql).bindparams(database=database, table_name=table_ident.table_name)
 
         result = await self.execute(DBAdapterQuery(query))
         columns = []
@@ -290,10 +293,10 @@ class AsyncStarRocksAdapter(
             columns.append(
                 RawColumnInfo(
                     name=str(column_name),
-                    title=None,  # No separate title for columns
+                    title=None,
                     nullable=is_nullable == "YES",
-                    native_type=CommonNativeType(
-                        name=str(data_type).upper(),
+                    native_type=CommonNativeType.normalize_name_and_create(
+                        name=str(data_type),
                         nullable=is_nullable == "YES",
                     ),
                 )
@@ -301,24 +304,22 @@ class AsyncStarRocksAdapter(
 
         if not columns:
             raise StarRocksSourceDoesNotExistError(
-                db_message=f"Table '{db_name}.{table_ident.table_name}' doesn't exist",
+                db_message=f"Table '{catalog}.{database}.{table_ident.table_name}' doesn't exist",
             )
 
         return RawSchemaInfo(
             columns=tuple(columns),
-            indexes=None,  # StarRocks index info not critical for MVP
+            indexes=None,
         )
 
     async def is_table_exists(self, table_ident: TableIdent) -> bool:
-        db_name = table_ident.db_name or self.get_default_db_name()
-        if not db_name:
-            raise ValueError("Database name is required")
+        catalog = table_ident.db_name
+        database = table_ident.schema_name
+        if not catalog or not database:
+            raise ValueError("Both catalog (db_name) and database (schema_name) are required")
 
-        # Use MySQL information_schema to check table existence
-        query = sa.text(
-            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES "
-            "WHERE TABLE_SCHEMA = :db_name AND TABLE_NAME = :table_name"
-        ).bindparams(db_name=db_name, table_name=table_ident.table_name)
+        sql = get_starrocks_table_exists_query(catalog=catalog)
+        query = sa.text(sql).bindparams(database=database, table_name=table_ident.table_name)
 
         result = await self.execute(DBAdapterQuery(query))
         row = await result.get_all_rows().__anext__()
