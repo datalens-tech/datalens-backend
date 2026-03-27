@@ -37,12 +37,19 @@ from .retry_mutator import (
     RetryRequestMutator,
 )
 from .testing import TestingHttpxClient
+from .transport_adapters import (
+    BaseTransportAdapterSettings,
+    NoTransportAdapter,
+    NoTransportAdapterSettings,
+    TransportAdapterProtocol,
+)
 
 
 __all__ = [
     "BaseRequest",
     "BaseResponseSchema",
     "BaseSchema",
+    "BaseTransportAdapterSettings",
     "DateTimeProvider",
     "DefaultDateTimeProvider",
     "HttpStatusHttpxClientException",
@@ -56,6 +63,8 @@ __all__ = [
     "NoRateLimiter",
     "NoRateLimiterSettings",
     "NoRetriesHttpxClientException",
+    "NoTransportAdapter",
+    "NoTransportAdapterSettings",
     "ParentContext",
     "ParentContextProtocol",
     "RateLimitHttpxClientException",
@@ -67,6 +76,7 @@ __all__ = [
     "SlidingWindowRateLimiter",
     "SlidingWindowRateLimiterSettings",
     "TestingHttpxClient",
+    "TransportAdapterProtocol",
     "TypedBaseSchema",
     "TypedSchemaAnnotation",
     "TypedSchemaDictAnnotation",

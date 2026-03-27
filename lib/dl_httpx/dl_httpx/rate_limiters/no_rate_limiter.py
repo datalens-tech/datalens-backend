@@ -1,9 +1,9 @@
-from collections.abc import (
+import contextlib
+from typing import (
     AsyncIterator,
     Iterator,
+    Literal,
 )
-import contextlib
-from typing import Literal
 
 import pydantic
 from typing_extensions import Self

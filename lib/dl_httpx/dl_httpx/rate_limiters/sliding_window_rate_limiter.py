@@ -1,12 +1,10 @@
 import collections
-from collections.abc import (
-    AsyncIterator,
-    Iterator,
-)
 import contextlib
 import threading
 import time
 from typing import (
+    AsyncIterator,
+    Iterator,
     Literal,
     Protocol,
 )
