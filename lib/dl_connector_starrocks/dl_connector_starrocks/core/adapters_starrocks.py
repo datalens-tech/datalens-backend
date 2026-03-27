@@ -1,4 +1,3 @@
-import re
 from typing import Any
 
 import attr
@@ -15,6 +14,7 @@ from dl_core.connection_models import (
     TableDefinition,
     TableIdent,
 )
+from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 from dl_type_transformer.native_type import CommonNativeType
 
 from dl_connector_starrocks.core.adapters_base_starrocks import BaseStarRocksAdapter
@@ -25,19 +25,17 @@ from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
 STARROCKS_SYSTEM_SCHEMAS = ("information_schema", "_statistics_")
 
-_SAFE_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_\-]*$")
+_IDENTIFIER_PREPARER = DLMYSQLDialect().identifier_preparer
 
 
 def _quote_ident(name: str) -> str:
-    """Backtick-quote a StarRocks identifier, validating it first to prevent injection."""
-    if not _SAFE_IDENTIFIER_RE.match(name):
-        raise ValueError(f"Invalid StarRocks identifier: {name!r}")
-    return f"`{name}`"
+    """Backtick-quote a StarRocks identifier using the MySQL dialect's identifier preparer."""
+    return _IDENTIFIER_PREPARER.quote_identifier(name)
 
 
 def _info_schema_ref(catalog: str, table: str) -> str:
     """Build a fully qualified reference: `catalog`.`information_schema`.`table`."""
-    return f"{_quote_ident(catalog)}.`information_schema`.{_quote_ident(table)}"
+    return f"{_quote_ident(catalog)}.{_quote_ident('information_schema')}.{_quote_ident(table)}"
 
 
 def get_starrocks_tables_query(
