@@ -283,7 +283,7 @@ class AsyncUSManager(USManagerBase):
         update_revision: bool | None = None,
     ) -> None:
         """
-        Create entry - alias for save with previous entry.
+        Update entry - alias for save with a previous/original entry.
         """
 
         await self.save(
