@@ -336,8 +336,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                     )
 
                                 if conn_changed:
-                                    # Connection has previous version
-                                    await usm.save(
+                                    await usm.update(
                                         entry=conn,
                                         original_entry=original_conn,
                                     )
