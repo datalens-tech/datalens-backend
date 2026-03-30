@@ -26,7 +26,6 @@ from dl_connector_starrocks.core.data_source import (
 )
 from dl_connector_starrocks.core.data_source_migration import StarRocksDataSourceMigrator
 from dl_connector_starrocks.core.query_compiler import StarRocksQueryCompiler
-from dl_connector_starrocks.core.sa_types import SQLALCHEMY_STARROCKS_TYPES
 from dl_connector_starrocks.core.settings import StarRocksSettingDefinition
 from dl_connector_starrocks.core.storage_schemas.connection import ConnectionStarRocksDataStorageSchema
 from dl_connector_starrocks.core.type_transformer import StarRocksTypeTransformer
@@ -68,5 +67,4 @@ class StarRocksCoreConnector(CoreConnector):
         StarRocksTableCoreSourceDefinition,
         StarRocksSubselectCoreSourceDefinition,
     )
-    rqe_adapter_classes = frozenset({StarRocksAdapter, AsyncStarRocksAdapter})  # type: ignore  # 2024-01-24 # TODO: fix abstract adapter issue
-    sa_types = SQLALCHEMY_STARROCKS_TYPES
+    rqe_adapter_classes = frozenset({StarRocksAdapter, AsyncStarRocksAdapter})
