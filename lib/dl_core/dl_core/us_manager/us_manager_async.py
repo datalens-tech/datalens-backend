@@ -261,12 +261,6 @@ class AsyncUSManager(USManagerBase):
 
         entry._us_resp = resp
 
-        post_save_result = lifecycle_manager.post_save_hook()
-        if post_save_result.additional_save_needed:
-            save_params = self._prepare_update_entry_params(entry, False)
-            assert entry.uuid is not None
-            entry._us_resp = await self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
-
     async def create(
         self,
         entry: USEntry,
