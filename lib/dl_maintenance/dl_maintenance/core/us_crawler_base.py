@@ -162,8 +162,7 @@ class USEntryCrawler:
         if self._dry_run:
             return
         else:
-            # The Entry has probably been changed and should have an old version
-            await usm.save(
+            await usm.update(
                 entry=entry,
                 original_entry=original_entry,
             )

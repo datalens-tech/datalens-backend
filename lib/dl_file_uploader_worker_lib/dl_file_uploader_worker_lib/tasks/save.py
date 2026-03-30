@@ -309,15 +309,13 @@ class SaveSourceTask(BaseExecutorTask[task_interface.SaveSourceTask, FileUploade
                         conn.data.component_errors.remove_errors(id=dst_source_id)
 
                         if self.meta.exec_mode == TaskExecutionMode.UPDATE_AND_SAVE:
-                            # Connection has previous version
-                            await usm.save(
+                            await usm.update(
                                 entry=conn,
                                 original_entry=original_conn,
                                 update_revision=True,
                             )
                         else:
-                            # Connection has previous version
-                            await usm.save(
+                            await usm.update(
                                 entry=conn,
                                 original_entry=original_conn,
                             )

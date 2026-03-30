@@ -128,8 +128,7 @@ class FileConnectionDataSourceErrorTracker:
                     details=error.details,
                 )
 
-            # Connection has previous version
-            await self._usm.save(
+            await self._usm.update(
                 entry=conn,
                 original_entry=original_conn,
                 update_revision=True,
