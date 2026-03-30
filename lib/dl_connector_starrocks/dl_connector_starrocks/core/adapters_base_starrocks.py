@@ -1,14 +1,106 @@
 import attr
+import sqlalchemy as sa
 import sqlalchemy.dialects.mysql as sa_mysql
 
+from dl_sqlalchemy_starrocks.base import BIStarRocksDialect
 from dl_type_transformer.native_type import SATypeSpec
 
-from dl_connector_starrocks.core.constants import CONNECTION_TYPE_STARROCKS
+from dl_connector_starrocks.core.constants import (
+    CONNECTION_TYPE_STARROCKS,
+    STARROCKS_SYSTEM_CATALOGS,
+)
 from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
 
+_IDENTIFIER_PREPARER = BIStarRocksDialect().identifier_preparer
+
+_SYSTEM_CATALOGS_SQL_LIST = ", ".join(f"'{c}'" for c in STARROCKS_SYSTEM_CATALOGS)
+
+
+def _quote_ident(name: str) -> str:
+    """Backtick-quote a StarRocks identifier using the MySQL dialect's identifier preparer."""
+    return _IDENTIFIER_PREPARER.quote_identifier(name)
+
+
+def _info_schema_ref(catalog: str, table: str) -> str:
+    """Build a fully qualified reference: `catalog`.`information_schema`.`table`.
+
+    Raw SQL with per-segment quoting is required because MySQL dialect backtick-quotes
+    dotted schema names as a single identifier, which StarRocks rejects.
+    """
+    return f"{_quote_ident(catalog)}.{_quote_ident('information_schema')}.{_quote_ident(table)}"
+
+
+class StarRocksQueryConstructorMixin:
+    def _compile_pagination_params(
+        self, search_text: str | None, limit: int | None, offset: int | None
+    ) -> list[sa.sql.expression.BindParameter]:
+        params = []
+        if search_text:
+            params.append(sa.bindparam("search_text", f"%{search_text}%", type_=sa.String))
+        if limit is not None:
+            params.append(sa.bindparam("limit", limit, type_=sa.Integer))
+            if offset:
+                params.append(sa.bindparam("offset", offset, type_=sa.Integer))
+        return params
+
+    def _get_pagination_sql_parts(self, limit: int | None, offset: int | None) -> list[str]:
+        sql_parts = []
+        if limit is not None:
+            # In MySQL/StarRocks OFFSET requires LIMIT to be present.
+            # We have a default for these parameters in the listing endpoint but
+            # it would be correct to take this into account when constructing a query
+            sql_parts.append("LIMIT :limit")
+            if offset:
+                sql_parts.append("OFFSET :offset")
+        return sql_parts
+
+    def get_list_tables_query(
+        self,
+        catalog: str,
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+    ) -> sa.sql.elements.TextClause:
+        ref = _info_schema_ref(catalog, "tables")
+        sql_parts = [
+            f"SELECT TABLE_SCHEMA, TABLE_NAME FROM {ref}" f" WHERE TABLE_SCHEMA NOT IN ({_SYSTEM_CATALOGS_SQL_LIST})"
+        ]
+        if search_text:
+            sql_parts.append("AND TABLE_NAME LIKE :search_text")
+        sql_parts.append("ORDER BY TABLE_SCHEMA, TABLE_NAME")
+        sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
+        sql = " ".join(sql_parts)
+        query = sa.text(sql)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        if params:
+            return query.bindparams(*params)
+        return query
+
+    def get_table_info_query(self, catalog: str, database: str, table_name: str) -> sa.sql.elements.TextClause:
+        ref = _info_schema_ref(catalog, "columns")
+        return sa.text(
+            f"SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE"
+            f" FROM {ref}"
+            f" WHERE TABLE_SCHEMA = :database AND TABLE_NAME = :table_name"
+            f" ORDER BY ORDINAL_POSITION"
+        ).bindparams(
+            sa.bindparam("database", database, type_=sa.String),
+            sa.bindparam("table_name", table_name, type_=sa.String),
+        )
+
+    def get_table_exists_query(self, catalog: str, database: str, table_name: str) -> sa.sql.elements.TextClause:
+        ref = _info_schema_ref(catalog, "tables")
+        return sa.text(
+            f"SELECT COUNT(*) FROM {ref}" f" WHERE TABLE_SCHEMA = :database AND TABLE_NAME = :table_name"
+        ).bindparams(
+            sa.bindparam("database", database, type_=sa.String),
+            sa.bindparam("table_name", table_name, type_=sa.String),
+        )
+
+
 @attr.s(cmp=False)
-class BaseStarRocksAdapter:
+class BaseStarRocksAdapter(StarRocksQueryConstructorMixin):
     _target_dto: StarRocksConnTargetDTO = attr.ib()
 
     conn_type = CONNECTION_TYPE_STARROCKS
