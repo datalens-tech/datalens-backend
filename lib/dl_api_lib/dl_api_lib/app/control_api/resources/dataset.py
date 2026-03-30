@@ -106,8 +106,7 @@ class DatasetCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=body["dataset"], us_manager=us_manager)
 
-        # Dataset Create has no previous entry version
-        us_manager.save(dataset)
+        us_manager.create(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 
@@ -203,8 +202,7 @@ class DatasetCopy(DatasetResource):
         LOGGER.info("Going to copy dataset %s with new key %r", dataset_id, copy_us_key)
         ds_copy = us_manager.copy_entry(ds, key=copy_ds_loc)
 
-        # Dataset Copy has no previous entry version
-        us_manager.save(ds_copy)
+        us_manager.create(ds_copy)
 
         LOGGER.info("Dataset copy was saved with ID %s", ds_copy.uuid)
 
@@ -318,8 +316,7 @@ class DatasetVersionItem(DatasetResource):
             ds_editor = DatasetComponentEditor(dataset=ds)
             ds_editor.set_revision_id(revision_id=generate_revision_id())
 
-            # Dataset Update has previous entry version
-            us_manager.save(
+            us_manager.update(
                 entry=ds,
                 original_entry=original_ds,
             )
@@ -484,8 +481,7 @@ class DatasetImportCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=data["dataset"], us_manager=us_manager)
 
-        # Dataset Import has no previous entry version
-        us_manager.save(dataset)
+        us_manager.create(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 

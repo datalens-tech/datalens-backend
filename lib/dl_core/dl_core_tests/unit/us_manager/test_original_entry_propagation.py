@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-from typing import Optional
 from unittest.mock import Mock
 
 import attr
@@ -97,7 +94,7 @@ class TestMockedSyncUSManager(MockedSyncUSManager):
         *,
         us_scope: str,
         us_type: str,
-        entry_key: Optional[EntryLocation] = None,
+        entry_key: EntryLocation | None = None,
     ) -> type[USEntry]:
         if us_scope == "test" and us_type == "test":
             return TestUSEntry

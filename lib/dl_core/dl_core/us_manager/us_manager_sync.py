@@ -173,6 +173,37 @@ class SyncUSManager(USManagerBase):
             assert entry.uuid is not None
             entry._us_resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
 
+    def create(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Create entry - alias for save without previous entry.
+        """
+
+        self.save(
+            entry=entry,
+            original_entry=None,
+            update_revision=update_revision,
+        )
+
+    def update(
+        self,
+        entry: USEntry,
+        original_entry: USEntry | None = None,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Create entry - alias for save with previous entry.
+        """
+
+        self.save(
+            entry=entry,
+            original_entry=original_entry,
+            update_revision=update_revision,
+        )
+
     def delete(self, entry: USEntry) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)
         lifecycle_manager.pre_delete_hook()

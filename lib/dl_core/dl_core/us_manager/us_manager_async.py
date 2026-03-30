@@ -261,6 +261,37 @@ class AsyncUSManager(USManagerBase):
 
         entry._us_resp = resp
 
+    async def create(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Create entry - alias for save without previous entry.
+        """
+
+        await self.save(
+            entry=entry,
+            original_entry=None,
+            update_revision=update_revision,
+        )
+
+    async def update(
+        self,
+        entry: USEntry,
+        original_entry: USEntry | None = None,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Create entry - alias for save with previous entry.
+        """
+
+        await self.save(
+            entry=entry,
+            original_entry=original_entry,
+            update_revision=update_revision,
+        )
+
     async def delete(self, entry: USEntry) -> None:
         # TODO FIX: Use pre_delete_async_hook!!!
         self.get_lifecycle_manager(entry=entry).pre_delete_hook()

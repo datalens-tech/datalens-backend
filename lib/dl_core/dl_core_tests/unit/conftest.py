@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from cryptography import fernet
 import pytest
 
