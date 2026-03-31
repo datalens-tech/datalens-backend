@@ -607,7 +607,7 @@ async def create_gsheets_v2_connection(us_manager: AsyncUSManager, dfile: DataFi
         meta={"title": conn_name, "state": "saved"},
         us_manager=us_manager,
     )
-    await us_manager.save(conn)
+    await us_manager._save(conn)
     return conn
 
 

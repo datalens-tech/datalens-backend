@@ -170,7 +170,7 @@ class DefaultConnectionTestClass(RegulatedTestCase, BaseConnectionTestClass[_CON
         assert conn.data_export_forbidden is False  # default value
         conn.data.data_export_forbidden = True
         assert conn.data_export_forbidden is True
-        us_manager.save(conn)
+        us_manager._save(conn)
         loaded_conn = us_manager.get_by_id(
             conn.uuid,
             context_name="connection",

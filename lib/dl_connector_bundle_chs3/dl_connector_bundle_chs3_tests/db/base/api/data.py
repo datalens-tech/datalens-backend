@@ -66,7 +66,7 @@ class CHS3DataResultTestSuite(
             status=FileProcessingStatus.in_progress if case == "w_status_in_progress" else FileProcessingStatus.ready,
             remove_raw_schema=True if case == "w_raw_schema_removed" else False,
         )
-        sync_us_manager.save(conn)
+        sync_us_manager._save(conn)
 
         result_resp = data_api.get_result(
             dataset=ds, fields=[ds.find_field(title=data_api_test_params.date_field)], fail_ok=True

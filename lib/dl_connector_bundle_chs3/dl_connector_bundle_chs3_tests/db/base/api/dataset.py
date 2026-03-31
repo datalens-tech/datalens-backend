@@ -56,7 +56,7 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
             role=DataSourceRole.origin,
             status=source_status,
         )
-        sync_us_manager.save(saved_connection)
+        sync_us_manager._save(saved_connection)
 
         ds = Dataset()
         ds.sources["source_1"] = ds.source(
@@ -118,7 +118,7 @@ class CHS3DatasetTestSuite(CHS3DatasetTestBase, DefaultConnectorDatasetTestSuite
             role=DataSourceRole.origin,
             raw_schema=sample_file_data_source.raw_schema + [new_field],
         )
-        sync_us_manager.save(conn)
+        sync_us_manager._save(conn)
         # --- ---------------------------------------- ---
 
         refresh_resp = control_api.refresh_dataset_sources(orig_ds, [orig_ds.sources[0].id])

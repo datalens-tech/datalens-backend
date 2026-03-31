@@ -74,13 +74,13 @@ class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV])
             created_from=self.source_type,
             dsrc_params=dsrc_params,
         )
-        sync_us_manager.save(dataset)
+        sync_us_manager._save(dataset)
         return dataset
 
     @pytest.fixture(scope="function")
     def empty_saved_dataset(self, sync_us_manager: SyncUSManager) -> Dataset:
         dataset = make_dataset(sync_usm=sync_us_manager)
-        sync_us_manager.save(dataset)
+        sync_us_manager._save(dataset)
         return dataset
 
     @pytest.fixture(scope="function")

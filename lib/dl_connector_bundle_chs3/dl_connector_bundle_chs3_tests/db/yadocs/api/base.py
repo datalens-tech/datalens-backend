@@ -43,7 +43,7 @@ class YaDocsFileS3ApiConnectionTestBase(
                 src: YaDocsFileS3Connection.FileDataSource = conn.get_file_source_by_id(src_id)
                 src.data_updated_at = datetime.datetime.now(datetime.timezone.utc)
                 LOGGER.info(f"Successfully updated source id {src_id}")
-            await async_us_manager.save(conn)
+            await async_us_manager._save(conn)
 
             return web.HTTPOk()
 
