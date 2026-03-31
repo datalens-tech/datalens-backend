@@ -50,7 +50,7 @@ class Executor:
             LoggerFields.task_run_id.name: run_id.to_str(),
             LoggerFields.request_id.name: task.request_id,
         }
-        with dl_logging.LogContext(**logger_extra_info):
+        with dl_logging.LogContext(context=logger_extra_info):
             LOGGER.info("Init task %s", task.instance_id.to_str())
             task_cls = self._registry.get_task(TaskName(task.name))
             executor_task = task_cls.from_params(

@@ -49,7 +49,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
         caplog.set_level("INFO")
         outer_logging_ctx = dict(some_str_key="some_val", some_int_key=123)
 
-        with dl_logging.LogContext(**outer_logging_ctx):
+        with dl_logging.LogContext(context=outer_logging_ctx):
             result = await self.execute_request(remote_adapter, query="select 1")
             assert result[0][0] == 1
 

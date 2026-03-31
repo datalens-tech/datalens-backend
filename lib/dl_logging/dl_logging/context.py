@@ -1,7 +1,10 @@
 import collections
 import contextvars
 import types
-from typing import Any
+from typing import (
+    Any,
+    Mapping,
+)
 
 from typing_extensions import Self
 
@@ -50,9 +53,9 @@ def pop_from_context(key: str) -> None:
         del ctx[key]
 
 
-class LogContext(object):
-    def __init__(self, **context: ContextItem) -> None:
-        self.context = context
+class LogContext:
+    def __init__(self, context: Mapping[str, ContextItem] | None = None) -> None:
+        self.context = context or {}
 
     def __enter__(self) -> Self:
         for key, value in self.context.items():

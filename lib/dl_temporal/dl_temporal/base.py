@@ -205,7 +205,7 @@ def _activity_logging_middleware(
         )
         logging_context["parent_request_id"] = params.parent_context.request_id
 
-        with dl_logging.LogContext(**logging_context):
+        with dl_logging.LogContext(context=logging_context):
             self.logger.info(
                 "TemporalActivity(name=%s).run: starting with params: %s",
                 self.name,
@@ -314,7 +314,7 @@ def _workflow_logging_middleware(
         )
         logging_context["parent_request_id"] = params.parent_context.request_id
 
-        with dl_logging.LogContext(**logging_context):
+        with dl_logging.LogContext(context=logging_context):
             self.logger.info(
                 "TemporalWorkflow(name=%s).run: starting with params: %s",
                 self.name,
