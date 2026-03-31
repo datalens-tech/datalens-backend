@@ -13,11 +13,13 @@ import respx
 import dl_auth
 import dl_constants
 import dl_httpx
+import dl_logging
 import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
 REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
+TRACE_ID_HEADER = dl_constants.DLHeadersCommon.UBER_TRACE_ID.value
 
 
 def test_get_request(
@@ -518,3 +520,72 @@ def test_rate_limit_retries_then_succeeds_sync(
             assert response.status_code == 200
 
     assert mock_route.call_count == 1
+
+
+def test_send_sets_level1_logging_context(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+) -> None:
+    captured: dict = {}
+
+    def capture(request: httpx.Request) -> httpx.Response:
+        captured.update(dl_logging.get_log_context())
+        return httpx.Response(200)
+
+    respx_mock.get("https://example.com/api/data").mock(side_effect=capture)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
+    ) as client:
+        request = client.prepare_raw_request(
+            "GET",
+            "/api/data",
+            headers={
+                REQUEST_ID_HEADER: "test-req-id",
+                TRACE_ID_HEADER: "test-trace-id",
+            },
+        )
+        with client.send(request):
+            pass
+
+    assert captured["client_request.url"] == "https://example.com/api/data"
+    assert captured["client_request.original.request_id"] == "test-req-id"
+    assert captured["client_request.original.trace_id"] == "test-trace-id"
+
+
+def test_send_sets_level2_attempt_request_id(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    retry_policy_factory_settings: dl_retrier.RetryPolicyFactorySettings,
+) -> None:
+    captured_ids: list[str | None] = []
+
+    def capture(request: httpx.Request) -> httpx.Response:
+        ctx = dl_logging.get_log_context()
+        captured_ids.append(ctx.get("client_request.attempt.request_id"))
+        return httpx.Response(500)
+
+    respx_mock.get("https://example.com/api/data").mock(side_effect=capture)
+
+    with HttpxSyncTestClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
+                retry_policy_factory_settings,
+            ),
+        ),
+    ) as client:
+        request = client.prepare_raw_request(
+            "GET",
+            "/api/data",
+            headers={REQUEST_ID_HEADER: "base-id"},
+        )
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
+            with client.send(request):
+                pass
+
+    assert captured_ids == ["base-id", "base-id/2", "base-id/3"]

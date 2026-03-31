@@ -3145,6 +3145,7 @@ dl-auth = {path = "../dl_auth"}
 dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-json = {path = "../dl_json"}
+dl-logging = {path = "../dl_logging"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-retrier = {path = "../dl_retrier"}
 dl-settings = {path = "../dl_settings"}

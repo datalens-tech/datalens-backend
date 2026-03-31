@@ -27,12 +27,15 @@ from dl_httpx.models import BaseRequest
 import dl_httpx.rate_limiters as rate_limiters
 from dl_httpx.retry_mutator import RetryRequestMutator
 import dl_httpx.transport_adapters as transport_adapters
+import dl_logging
 import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
 
-_REQUEST_HEADERS_TO_LOG = (dl_constants.DLHeadersCommon.REQUEST_ID.value,)
+_REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
+_TRACE_ID_HEADER = dl_constants.DLHeadersCommon.UBER_TRACE_ID.value
+_REQUEST_HEADERS_TO_LOG = (_REQUEST_ID_HEADER,)
 
 
 def _request_to_string(request: httpx.Request) -> str:
@@ -198,6 +201,42 @@ class HttpxSyncRetrier:
     _logger: logging.Logger
     _mutators: list[RetryRequestMutator] = attrs.field(factory=list)
 
+    def _send(
+        self,
+        request_func: SyncRequestFunction,
+        request: httpx.Request,
+        retry: dl_retrier.Retry,
+    ) -> httpx.Response:
+        self._logger.debug(
+            "%s sending Attempt(%s): %s",
+            self._client_name,
+            retry.attempt_number,
+            _request_to_string(request),
+        )
+        try:
+            response = request_func(request)
+        except rate_limiters.RateLimitHttpxClientException:
+            self._logger.warning(
+                "%s rate limited: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        except Exception:
+            self._logger.exception(
+                "%s failed: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        self._logger.debug(
+            "%s received %s for %s",
+            self._client_name,
+            _response_to_string(response),
+            _request_to_string(request),
+        )
+        return response
+
     def send(
         self,
         request_func: SyncRequestFunction,
@@ -219,43 +258,19 @@ class HttpxSyncRetrier:
             )
             request.extensions["timeout"] = timeout.as_dict()
 
-            self._logger.debug(
-                "%s sending Attempt(%s): %s",
-                self._client_name,
-                retry.attempt_number,
-                _request_to_string(request),
-            )
+            with dl_logging.LogContext(
+                context={"client_request.attempt.request_id": request.headers.get(_REQUEST_ID_HEADER)}
+            ):
+                try:
+                    response = self._send(request_func, request, retry)
+                except Exception as e:
+                    last_known_result = e
+                    continue
 
-            try:
-                response = request_func(request)
-            except rate_limiters.RateLimitHttpxClientException as e:
-                self._logger.warning(
-                    "%s rate limited: %s",
-                    self._client_name,
-                    _request_to_string(request),
-                )
-                last_known_result = e
-                continue
-            except Exception as e:
-                self._logger.exception(
-                    "%s failed: %s",
-                    self._client_name,
-                    _request_to_string(request),
-                )
-                last_known_result = e
-                continue
+                if not self._retry_policy.can_retry_error(response.status_code):
+                    return response
 
-            self._logger.debug(
-                "%s received %s for %s",
-                self._client_name,
-                _response_to_string(response),
-                _request_to_string(request),
-            )
-
-            if not self._retry_policy.can_retry_error(response.status_code):
-                return response
-
-            last_known_result = response
+                last_known_result = response
 
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
@@ -275,6 +290,42 @@ class HttpxAsyncRetrier:
     _client_name: str
     _logger: logging.Logger
     _mutators: list[RetryRequestMutator] = attrs.field(factory=list)
+
+    async def _send(
+        self,
+        request_func: AsyncRequestFunction,
+        request: httpx.Request,
+        retry: dl_retrier.Retry,
+    ) -> httpx.Response:
+        self._logger.debug(
+            "%s sending Attempt(%s): %s",
+            self._client_name,
+            retry.attempt_number,
+            _request_to_string(request),
+        )
+        try:
+            response = await request_func(request)
+        except rate_limiters.RateLimitHttpxClientException:
+            self._logger.warning(
+                "%s rate limited: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        except Exception:
+            self._logger.exception(
+                "%s failed: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        self._logger.debug(
+            "%s received %s for %s",
+            self._client_name,
+            _response_to_string(response),
+            _request_to_string(request),
+        )
+        return response
 
     async def send(
         self,
@@ -297,43 +348,19 @@ class HttpxAsyncRetrier:
             )
             request.extensions["timeout"] = timeout.as_dict()
 
-            self._logger.debug(
-                "%s sending Attempt(%s): %s",
-                self._client_name,
-                retry.attempt_number,
-                _request_to_string(request),
-            )
+            with dl_logging.LogContext(
+                context={"client_request.attempt.request_id": request.headers.get(_REQUEST_ID_HEADER)}
+            ):
+                try:
+                    response = await self._send(request_func, request, retry)
+                except Exception as e:
+                    last_known_result = e
+                    continue
 
-            try:
-                response = await request_func(request)
-            except rate_limiters.RateLimitHttpxClientException as e:
-                self._logger.warning(
-                    "%s rate limited: %s",
-                    self._client_name,
-                    _request_to_string(request),
-                )
-                last_known_result = e
-                continue
-            except Exception as e:
-                self._logger.exception(
-                    "%s failed: %s",
-                    self._client_name,
-                    _request_to_string(request),
-                )
-                last_known_result = e
-                continue
+                if not self._retry_policy.can_retry_error(response.status_code):
+                    return response
 
-            self._logger.debug(
-                "%s received %s for %s",
-                self._client_name,
-                _response_to_string(response),
-                _request_to_string(request),
-            )
-
-            if not self._retry_policy.can_retry_error(response.status_code):
-                return response
-
-            last_known_result = response
+                last_known_result = response
 
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
@@ -451,13 +478,20 @@ class HttpxSyncClient(HttpxBaseClient[httpx.BaseTransport]):
             client_name=self._client_name,
             mutators=self._mutators,
         )
-        response = retrier.send(self._send, request)
-        response = self._process_response(response)
+        with dl_logging.LogContext(
+            context={
+                "client_request.url": str(request.url),
+                "client_request.original.request_id": request.headers.get(_REQUEST_ID_HEADER),
+                "client_request.original.trace_id": request.headers.get(_TRACE_ID_HEADER),
+            }
+        ):
+            response = retrier.send(self._send, request)
+            response = self._process_response(response)
 
-        try:
-            yield response
-        finally:
-            response.close()
+            try:
+                yield response
+            finally:
+                response.close()
 
     def _send(
         self,
@@ -575,13 +609,20 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncBaseTransport]):
             logger=self._logger,
             mutators=self._mutators,
         )
-        response = await retrier.send(self._send, request)
-        response = self._process_response(response)
+        with dl_logging.LogContext(
+            context={
+                "client_request.url": str(request.url),
+                "client_request.original.request_id": request.headers.get(_REQUEST_ID_HEADER),
+                "client_request.original.trace_id": request.headers.get(_TRACE_ID_HEADER),
+            }
+        ):
+            response = await retrier.send(self._send, request)
+            response = self._process_response(response)
 
-        try:
-            yield response
-        finally:
-            await response.aclose()
+            try:
+                yield response
+            finally:
+                await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
         async with self._rate_limiter.context_async():
