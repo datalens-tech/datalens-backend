@@ -226,6 +226,18 @@ class AsyncUSManager(USManagerBase):
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
     ) -> None:
+        await self._save(
+            entry=entry,
+            update_revision=update_revision,
+            original_entry=original_entry,
+        )
+
+    async def _save(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+        original_entry: USEntry | None = None,
+    ) -> None:
         """
         Save USEntry to US.
 
