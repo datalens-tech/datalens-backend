@@ -285,7 +285,7 @@ class AsyncUSManager(USManagerBase):
         Create entry - alias for save without previous entry.
         """
 
-        await self.save(
+        await self._save(
             entry=entry,
             original_entry=None,
             update_revision=update_revision,
@@ -301,7 +301,7 @@ class AsyncUSManager(USManagerBase):
         Update entry - alias for save with a previous/original entry.
         """
 
-        await self.save(
+        await self._save(
             entry=entry,
             original_entry=original_entry,
             update_revision=update_revision,
