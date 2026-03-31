@@ -26,6 +26,7 @@ import dl_httpx.exceptions as exceptions
 from dl_httpx.models import BaseRequest
 import dl_httpx.rate_limiters as rate_limiters
 from dl_httpx.retry_mutator import RetryRequestMutator
+import dl_httpx.transport_adapters as transport_adapters
 import dl_retrier
 
 
@@ -63,7 +64,7 @@ class AsyncRequestFunction(Protocol):
         ...
 
 
-THttpxClient = TypeVar("THttpxClient", httpx.Client, httpx.AsyncClient)
+THttpxTransport = TypeVar("THttpxTransport", httpx.BaseTransport, httpx.AsyncBaseTransport)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -94,12 +95,15 @@ class HttpxClientDependencies:
     rate_limiter: rate_limiters.RateLimiterProtocol = attrs.field(
         factory=rate_limiters.NoRateLimiter,
     )
+    transport_adapter: transport_adapters.TransportAdapterProtocol = attrs.field(
+        factory=transport_adapters.NoTransportAdapter
+    )
     logger: logging.Logger = attrs.field(default=LOGGER)
     debug_logging: bool = attrs.field(default=False)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
+class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
     _base_url: str = attrs.field()
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]
@@ -110,8 +114,11 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _rate_limiter: rate_limiters.RateLimiterProtocol = attrs.field(
         factory=rate_limiters.NoRateLimiter,
     )
+    _transport_adapter: transport_adapters.TransportAdapterProtocol = attrs.field(
+        factory=transport_adapters.NoTransportAdapter,
+    )
 
-    _base_client: THttpxClient
+    _transport: THttpxTransport
 
     @classmethod
     def from_dependencies(cls, dependencies: HttpxClientDependencies) -> typing_extensions.Self:
@@ -124,14 +131,15 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             logger=dependencies.logger,
             debug_logging=dependencies.debug_logging,
             rate_limiter=dependencies.rate_limiter,
-            base_client=cls._get_client(
+            transport_adapter=dependencies.transport_adapter,
+            transport=cls._get_transport(
                 ssl_context=dependencies.ssl_context,
             ),
         )
 
     @classmethod
     @abc.abstractmethod
-    def _get_client(cls, ssl_context: ssl.SSLContext) -> THttpxClient:
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> THttpxTransport:
         ...
 
     @property
@@ -340,12 +348,12 @@ class HttpxAsyncRetrier:
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
-    _base_client: httpx.Client
+class HttpxSyncClient(HttpxBaseClient[httpx.BaseTransport]):
+    _transport: httpx.BaseTransport
 
     @classmethod
-    def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.Client:
-        return httpx.Client(verify=ssl_context)
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> httpx.BaseTransport:
+        return httpx.HTTPTransport(verify=ssl_context)
 
     def _prepare_headers(
         self,
@@ -417,7 +425,7 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
         return request
 
     def close(self) -> None:
-        self._base_client.close()
+        self._transport.close()
 
     def __enter__(self) -> typing_extensions.Self:
         return self
@@ -456,16 +464,20 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
         request: httpx.Request,
     ) -> httpx.Response:
         with self._rate_limiter.context():
-            return self._base_client.send(request=request)
+            with self._transport_adapter.context(self._transport, request) as transport:
+                response = transport.handle_request(request)
+                response.request = request
+                response.read()
+                return response
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
-    _base_client: httpx.AsyncClient
+class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncBaseTransport]):
+    _transport: httpx.AsyncBaseTransport
 
     @classmethod
-    def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncClient:
-        return httpx.AsyncClient(verify=ssl_context)
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncBaseTransport:
+        return httpx.AsyncHTTPTransport(verify=ssl_context)
 
     async def _prepare_headers(
         self,
@@ -537,7 +549,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
         return request
 
     async def close(self) -> None:
-        await self._base_client.aclose()
+        await self._transport.aclose()
 
     async def __aenter__(self) -> typing_extensions.Self:
         return self
@@ -573,15 +585,8 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
         async with self._rate_limiter.context_async():
-            return await self._base_client.send(request=request)
-
-
-__all__ = [
-    "HttpStatusHttpxClientException",
-    "HttpxAsyncClient",
-    "HttpxBaseClient",
-    "HttpxClientDependencies",
-    "HttpxClientT",
-    "HttpxSyncClient",
-    "RequestHttpxClientException",
-]
+            async with self._transport_adapter.context_async(self._transport, request) as transport:
+                response = await transport.handle_async_request(request)
+                response.request = request
+                await response.aread()
+                return response

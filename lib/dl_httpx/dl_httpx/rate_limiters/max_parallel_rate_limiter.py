@@ -1,10 +1,10 @@
-from collections.abc import (
-    AsyncIterator,
-    Iterator,
-)
 import contextlib
 import threading
-from typing import Literal
+from typing import (
+    AsyncIterator,
+    Iterator,
+    Literal,
+)
 
 import attrs
 import pydantic
