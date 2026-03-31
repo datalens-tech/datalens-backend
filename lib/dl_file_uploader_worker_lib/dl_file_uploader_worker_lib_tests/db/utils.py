@@ -35,5 +35,5 @@ async def create_file_connection(us_manager: AsyncUSManager, file_id, source_id,
         role=DataSourceRole.origin,
         raw_schema=raw_schema,
     )
-    await us_manager._save(conn)
+    await us_manager.save(conn)
     return conn

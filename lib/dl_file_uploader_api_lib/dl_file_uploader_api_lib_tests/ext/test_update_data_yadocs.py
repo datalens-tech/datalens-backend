@@ -320,7 +320,7 @@ async def test_update_in_progress_sources(
     # making the source incomplete
     conn.data.sources[0].sheet_id = None
     conn.data.sources[0].status = FileProcessingStatus.in_progress
-    await usm._save(conn)
+    await usm.save(conn)
 
     resp = await fu_client.make_request(
         ReqBuilder.update_conn_data(

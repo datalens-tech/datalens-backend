@@ -84,7 +84,7 @@ def make_saved_connection(
         data_dict=data_dict,
         annotation=annotation,
     )
-    sync_usm._save(conn)
+    sync_usm.save(conn)
     conn_id = conn.uuid
     if conn_id is None:
         raise ValueError("Connection ID is None")
@@ -103,5 +103,5 @@ def make_saved_connection_from_db(
     data_dict: Optional[dict] = None,
 ) -> ConnectionBase:
     conn = make_connection_from_db(us_manager=sync_usm, db=db, conn_name=conn_name, data_dict=data_dict)
-    sync_usm._save(conn)
+    sync_usm.save(conn)
     return conn

@@ -16,7 +16,7 @@ SAMPLE_OPERATION = {"id": "op-test-123", "done": False, "metadata": {}}
 class TestUsOperationForwarding(DefaultApiTestBase):
     @pytest.fixture(autouse=True)
     def patch_us_operation(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        original_save = SyncUSManager._save
+        original_save = SyncUSManager.save
 
         def patched_save(
             us_manager: SyncUSManager,
@@ -33,7 +33,7 @@ class TestUsOperationForwarding(DefaultApiTestBase):
             if entry.operation is None:
                 entry._us_resp = {**entry._us_resp, "operation": SAMPLE_OPERATION}
 
-        monkeypatch.setattr(SyncUSManager, "_save", patched_save)
+        monkeypatch.setattr(SyncUSManager, "save", patched_save)
 
     def test_create_dataset_returns_operation(
         self,

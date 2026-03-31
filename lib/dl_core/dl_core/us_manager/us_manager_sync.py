@@ -13,6 +13,7 @@ from typing import (
     overload,
 )
 
+import typing_extensions
 from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -123,7 +124,8 @@ class SyncUSManager(USManagerBase):
 
     # CRUD
     #
-    def _save(
+    @typing_extensions.deprecated("Use create/update instead", category=DeprecationWarning)
+    def save(
         self,
         entry: USEntry,
         update_revision: bool | None = None,
@@ -182,7 +184,7 @@ class SyncUSManager(USManagerBase):
         Create entry - alias for save without previous entry.
         """
 
-        self._save(
+        self.save(
             entry=entry,
             original_entry=None,
             update_revision=update_revision,
@@ -198,7 +200,7 @@ class SyncUSManager(USManagerBase):
         Update entry - alias for save with a previous/original entry.
         """
 
-        self._save(
+        self.save(
             entry=entry,
             original_entry=original_entry,
             update_revision=update_revision,

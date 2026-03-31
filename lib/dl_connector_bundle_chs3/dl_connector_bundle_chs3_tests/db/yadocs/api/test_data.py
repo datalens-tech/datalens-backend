@@ -55,7 +55,7 @@ class TestYaDocsFileS3DataResult(YaDocsFileS3DataApiTestBase, CHS3DataResultTest
         data_updated_at_orig = dt_now
         for src in conn.data.sources:
             src.data_updated_at = dt_now
-        sync_us_manager._save(conn)
+        sync_us_manager.save(conn)
 
         def get_notifications_from_result_resp() -> list[dict]:
             result_resp = data_api.get_result(
@@ -77,7 +77,7 @@ class TestYaDocsFileS3DataResult(YaDocsFileS3DataApiTestBase, CHS3DataResultTest
         )
         for src in conn.data.sources:
             src.data_updated_at = data_updated_at
-        sync_us_manager._save(conn)
+        sync_us_manager.save(conn)
 
         # now notifications should be there, as well as connection sources should be updated
         notifications = get_notifications_from_result_resp()
@@ -114,7 +114,7 @@ class TestYaDocsFileS3DataResult(YaDocsFileS3DataApiTestBase, CHS3DataResultTest
             preview_id=None,
             data_updated_at=datetime.datetime.now(datetime.timezone.utc),
         )
-        sync_us_manager._save(conn)
+        sync_us_manager.save(conn)
 
         ds = saved_dataset
         result_resp = data_api.get_result(
@@ -162,7 +162,7 @@ class TestYaDocsFileS3DataResult(YaDocsFileS3DataApiTestBase, CHS3DataResultTest
             role=DataSourceRole.origin,
             data_updated_at=long_long_ago,
         )
-        sync_us_manager._save(conn)
+        sync_us_manager.save(conn)
 
         ds = saved_dataset
         result_resp = data_api.get_result(

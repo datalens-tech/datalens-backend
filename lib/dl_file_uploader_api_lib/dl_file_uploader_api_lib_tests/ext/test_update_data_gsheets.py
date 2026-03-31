@@ -317,7 +317,7 @@ async def test_update_in_progress_sources(
     # making the source incomplete
     conn.data.sources[0].sheet_id = None
     conn.data.sources[0].status = FileProcessingStatus.in_progress
-    await usm._save(conn)
+    await usm.save(conn)
 
     resp = await fu_client.make_request(
         ReqBuilder.update_conn_data(
@@ -368,7 +368,7 @@ async def test_component_errors(
 
     # make it valid
     updated_conn.data.sources[2].sheet_id = 1239604412
-    await usm._save(updated_conn)
+    await usm.save(updated_conn)
 
     resp = await fu_client.make_request(ReqBuilder.update_conn_data(updated_conn, save=True))
     assert resp.status == 200

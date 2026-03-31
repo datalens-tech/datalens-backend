@@ -14,6 +14,8 @@ from typing import (
     overload,
 )
 
+import typing_extensions
+
 from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.crypto_keys import CryptoKeysConfig
@@ -217,7 +219,8 @@ class AsyncUSManager(USManagerBase):
                 break
         return us_resp
 
-    async def _save(
+    @typing_extensions.deprecated("Use create/update instead", category=DeprecationWarning)
+    async def save(
         self,
         entry: USEntry,
         update_revision: bool | None = None,
@@ -270,7 +273,7 @@ class AsyncUSManager(USManagerBase):
         Create entry - alias for save without previous entry.
         """
 
-        await self._save(
+        await self.save(
             entry=entry,
             original_entry=None,
             update_revision=update_revision,
@@ -286,7 +289,7 @@ class AsyncUSManager(USManagerBase):
         Update entry - alias for save with a previous/original entry.
         """
 
-        await self._save(
+        await self.save(
             entry=entry,
             original_entry=original_entry,
             update_revision=update_revision,
