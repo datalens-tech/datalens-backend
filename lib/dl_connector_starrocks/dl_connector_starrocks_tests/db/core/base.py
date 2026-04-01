@@ -3,6 +3,8 @@ from collections.abc import Generator
 
 import pytest
 
+from dl_core.connection_models import TableIdent
+from dl_core_testing.database import DbTable
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 
 from dl_connector_starrocks.core.constants import CONNECTION_TYPE_STARROCKS
@@ -27,9 +29,17 @@ class BaseStarRocksTestClass(BaseConnectionTestClass[ConnectionStarRocks]):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
         return dict(
-            db_name=test_config.CoreConnectionSettings.DB_NAME,
             host=test_config.CoreConnectionSettings.HOST,
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
             password=test_config.CoreConnectionSettings.PASSWORD,
+            listing_sources=test_config.CoreConnectionSettings.LISTING_SOURCES,
+        )
+
+    @pytest.fixture(scope="function")
+    def existing_table_ident(self, sample_table: DbTable) -> TableIdent:
+        return TableIdent(
+            db_name=test_config.CoreConnectionSettings.CATALOG,
+            schema_name=sample_table.db.name,
+            table_name=sample_table.name,
         )

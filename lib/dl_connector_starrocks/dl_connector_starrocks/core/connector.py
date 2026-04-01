@@ -68,5 +68,5 @@ class StarRocksCoreConnector(CoreConnector):
         StarRocksTableCoreSourceDefinition,
         StarRocksSubselectCoreSourceDefinition,
     )
-    rqe_adapter_classes = frozenset({StarRocksAdapter, AsyncStarRocksAdapter})  # type: ignore  # 2024-01-24 # TODO: fix abstract adapter issue
+    rqe_adapter_classes = frozenset({StarRocksAdapter, AsyncStarRocksAdapter})
     sa_types = SQLALCHEMY_STARROCKS_TYPES

@@ -4,6 +4,7 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
 
+from dl_connector_starrocks.core.constants import ListingSources
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
 
@@ -21,11 +22,13 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
 
 
 class CoreConnectionSettings:
+    CATALOG: ClassVar[str] = "default_catalog"
     DB_NAME: ClassVar[str] = "test_data"
     HOST: ClassVar[str] = get_test_container_hostport("db-starrocks-3", fallback_port=59030).host
     PORT: ClassVar[int] = get_test_container_hostport("db-starrocks-3", fallback_port=59030).port
     USERNAME: ClassVar[str] = "root"
     PASSWORD: ClassVar[str] = ""
+    LISTING_SOURCES: ClassVar[ListingSources] = ListingSources.on
 
 
 DB_URLS = {

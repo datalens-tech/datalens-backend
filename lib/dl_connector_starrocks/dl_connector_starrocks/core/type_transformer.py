@@ -12,6 +12,11 @@ STARROCKS_TYPES_INT = frozenset((mysql_types.TINYINT, mysql_types.SMALLINT, mysq
 STARROCKS_TYPES_FLOAT = frozenset((mysql_types.FLOAT, mysql_types.DOUBLE, mysql_types.DECIMAL))
 STARROCKS_TYPES_STRING = frozenset((mysql_types.CHAR, mysql_types.VARCHAR, mysql_types.TEXT))
 
+STARROCKS_INFO_SCHEMA_ALIASES = {
+    make_native_type("int"): UserDataType.integer,
+    make_native_type("tinyint"): UserDataType.boolean,
+}
+
 
 class StarRocksTypeTransformer(TypeTransformer):
     native_to_user_map = {
@@ -23,6 +28,7 @@ class StarRocksTypeTransformer(TypeTransformer):
         make_native_type(mysql_types.DATETIME): UserDataType.genericdatetime,
         make_native_type(mysql_types.TIME): UserDataType.string,
         make_native_type(sa.sql.sqltypes.NullType): UserDataType.unsupported,
+        **STARROCKS_INFO_SCHEMA_ALIASES,
     }
 
     user_to_native_map = {
@@ -35,6 +41,10 @@ class StarRocksTypeTransformer(TypeTransformer):
         UserDataType.genericdatetime: make_native_type(mysql_types.DATETIME),
         UserDataType.geopoint: make_native_type(mysql_types.TEXT),
         UserDataType.geopolygon: make_native_type(mysql_types.TEXT),
+        UserDataType.uuid: make_native_type(mysql_types.VARCHAR),
         UserDataType.markup: make_native_type(mysql_types.TEXT),
+        UserDataType.array_int: make_native_type(mysql_types.TEXT),
+        UserDataType.array_str: make_native_type(mysql_types.TEXT),
+        UserDataType.array_float: make_native_type(mysql_types.TEXT),
         UserDataType.unsupported: make_native_type(sa.sql.sqltypes.NullType),
     }
