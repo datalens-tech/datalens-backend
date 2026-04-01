@@ -88,6 +88,7 @@ from dl_formula.mutation.window import (
 )
 from dl_formula.parser.base import FormulaParser
 from dl_formula.validation.aggregation import AggregationChecker
+from dl_formula.validation.bfb import BFBChecker
 from dl_formula.validation.env import ValidationEnvironment
 from dl_formula.validation.validator import (
     Checker,
@@ -884,6 +885,9 @@ class FormulaCompiler:
                 filter_ids=self._filter_ids,
                 unselected_dimension_ids=unselected_dimension_ids,
             )
+        )
+        checkers.append(
+            BFBChecker(field_ids=self._fields.ids),
         )
         validate(node=formula_obj, env=self._valid_env, collect_errors=collect_errors, checkers=checkers)
 
