@@ -1875,6 +1875,19 @@ class DatasetValidator(DatasetBaseWrapper):
         else:
             raise NotImplementedError(f"Not implemented extract action: {action}")
 
+    def _clear_errors_by_component_type(self, component_type: ComponentType) -> None:
+        """
+        Clear all errors for components of the given types
+        """
+
+        items_to_remove = []
+        for item in self._ds.error_registry.items:
+            if item.type == component_type:
+                items_to_remove.append(item)
+
+        for item in items_to_remove:
+            self._ds.error_registry.items.remove(item)
+
     @generic_profiler("validator-validate-extract")
     def _validate_extract_properties(
         self,
@@ -1883,13 +1896,14 @@ class DatasetValidator(DatasetBaseWrapper):
 
         schema_guids = set((field.guid for field in self._ds.result_schema.fields))
 
+        # Clear old errors
+        self._clear_errors_by_component_type(ComponentType.extract_filter)
+        self._clear_errors_by_component_type(ComponentType.extract_sorting)
+
         # Validate filter fields
         filters: list[FilterField] = self._ds_accessor.get_extract_filters()
 
         for filter in filters:
-            # Clear old errors
-            self._ds.error_registry.remove_errors(id=filter.id, code_prefix=exc.ExtractValidationError.err_code)
-
             # Register component as affected for validity update
             filter_component_ref = DatasetComponentRef(
                 component_type=ComponentType.extract_filter,
@@ -1912,9 +1926,6 @@ class DatasetValidator(DatasetBaseWrapper):
         sorting: list[OrderField] = self._ds_accessor.get_extract_sorting()
 
         for sort in sorting:
-            # Clear old errors
-            self._ds.error_registry.remove_errors(id=sort.id, code_prefix=exc.ExtractValidationError.err_code)
-
             # Register component as affected for validity update
             sort_component_ref = DatasetComponentRef(
                 component_type=ComponentType.extract_sorting,
