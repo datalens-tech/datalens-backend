@@ -106,7 +106,7 @@ class DatasetCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=body["dataset"], us_manager=us_manager)
 
-        us_manager.save(dataset)
+        us_manager.create(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 
@@ -201,7 +201,9 @@ class DatasetCopy(DatasetResource):
 
         LOGGER.info("Going to copy dataset %s with new key %r", dataset_id, copy_us_key)
         ds_copy = us_manager.copy_entry(ds, key=copy_ds_loc)
-        us_manager.save(ds_copy)
+
+        us_manager.create(ds_copy)
+
         LOGGER.info("Dataset copy was saved with ID %s", ds_copy.uuid)
 
         return self.make_dataset_response_data(dataset=ds_copy, us_entry_buffer=us_manager.get_entry_buffer())
@@ -292,6 +294,8 @@ class DatasetVersionItem(DatasetResource):
 
             old_sources = ds_accessor.get_data_source_id_list()
             loader = self.create_dataset_api_loader()
+            original_ds = us_manager.clone_entry_instance(ds)
+
             update_info = loader.populate_dataset_from_body(dataset=ds, body=body["dataset"], us_manager=us_manager)
             new_sources = update_info.added_own_source_ids + update_info.updated_own_source_ids
             invalidate_sample_sources(
@@ -311,7 +315,11 @@ class DatasetVersionItem(DatasetResource):
 
             ds_editor = DatasetComponentEditor(dataset=ds)
             ds_editor.set_revision_id(revision_id=generate_revision_id())
-            us_manager.save(ds)
+
+            us_manager.update(
+                entry=ds,
+                original_entry=original_ds,
+            )
 
             return self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer())
 
@@ -473,7 +481,7 @@ class DatasetImportCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=data["dataset"], us_manager=us_manager)
 
-        us_manager.save(dataset)
+        us_manager.create(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 

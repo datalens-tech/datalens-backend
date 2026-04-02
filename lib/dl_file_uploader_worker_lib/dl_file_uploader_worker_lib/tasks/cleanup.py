@@ -273,6 +273,7 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                 force=True,
                             ) as conn:
                                 assert isinstance(conn, BaseFileS3Connection)
+                                original_conn = None
                                 conn_changed = False
                                 for source in conn.data.sources:
                                     if source.s3_filename is None and source.s3_filename_suffix is None:
@@ -324,6 +325,9 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                     LOGGER.info(f"Moved s3 file {old_s3_filename} -> {new_s3_filename}")
 
                                     conn_changed = True
+                                    if original_conn is None:
+                                        original_conn = usm.clone_entry_instance(conn)
+
                                     conn.update_data_source(
                                         source.id,
                                         role=DataSourceRole.origin,
@@ -332,7 +336,10 @@ class RenameTenantFilesTask(BaseExecutorTask[task_interface.RenameTenantFilesTas
                                     )
 
                                 if conn_changed:
-                                    await usm.save(conn)
+                                    await usm.update(
+                                        entry=conn,
+                                        original_entry=original_conn,
+                                    )
                 if old_tenants:
                     LOGGER.info(f"Moving redis old preview set[s]. From {old_tenants} to {tenant_id}")
                     await PreviewSet(redis=redis, id=tenant_id).sunion_by_id(*old_tenants)

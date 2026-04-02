@@ -16,14 +16,24 @@ SAMPLE_OPERATION = {"id": "op-test-123", "done": False, "metadata": {}}
 class TestUsOperationForwarding(DefaultApiTestBase):
     @pytest.fixture(autouse=True)
     def patch_us_operation(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        original_save = SyncUSManager.save
+        original_save = SyncUSManager._save
 
-        def patched_save(us_manager: SyncUSManager, entry: Any, update_revision: bool | None = None) -> None:
-            original_save(us_manager, entry, update_revision)
+        def patched_save(
+            us_manager: SyncUSManager,
+            entry: Any,
+            update_revision: bool | None = None,
+            original_entry: Any = None,
+        ) -> None:
+            original_save(
+                self=us_manager,
+                entry=entry,
+                update_revision=update_revision,
+                original_entry=original_entry,
+            )
             if entry.operation is None:
                 entry._us_resp = {**entry._us_resp, "operation": SAMPLE_OPERATION}
 
-        monkeypatch.setattr(SyncUSManager, "save", patched_save)
+        monkeypatch.setattr(SyncUSManager, "_save", patched_save)
 
     def test_create_dataset_returns_operation(
         self,

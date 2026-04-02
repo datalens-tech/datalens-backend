@@ -24,8 +24,14 @@ class DummyEntryLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
         entry: USEntry,
         us_manager: USManagerBase,
         service_registry: ServicesRegistry,
+        original_entry: USEntry | None = None,
     ) -> EntryLifecycleManager:
-        return EntryLifecycleManager(us_manager=us_manager, entry=entry, service_registry=service_registry)
+        return EntryLifecycleManager(
+            us_manager=us_manager,
+            entry=entry,
+            service_registry=service_registry,
+            original_entry=original_entry,
+        )
 
 
 class DefaultEntryLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
@@ -34,8 +40,14 @@ class DefaultEntryLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
         entry: USEntry,
         us_manager: USManagerBase,
         service_registry: ServicesRegistry,
+        original_entry: USEntry | None = None,
     ) -> EntryLifecycleManager:
-        return self._get_lifecycle_manager(entry, us_manager=us_manager, service_registry=service_registry)
+        return self._get_lifecycle_manager(
+            entry,
+            us_manager=us_manager,
+            service_registry=service_registry,
+            original_entry=original_entry,
+        )
 
     @singledispatchmethod
     def _get_lifecycle_manager(
@@ -43,8 +55,14 @@ class DefaultEntryLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
         entry: USEntry,
         us_manager: USManagerBase,
         service_registry: ServicesRegistry,
+        original_entry: USEntry | None = None,
     ) -> EntryLifecycleManager:
-        return EntryLifecycleManager(us_manager=us_manager, entry=entry, service_registry=service_registry)
+        return EntryLifecycleManager(
+            us_manager=us_manager,
+            entry=entry,
+            service_registry=service_registry,
+            original_entry=original_entry,
+        )
 
     @_get_lifecycle_manager.register(Dataset)
     def _get_dataset_lifecycle_manager(
@@ -52,8 +70,14 @@ class DefaultEntryLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
         entry: Dataset,
         us_manager: USManagerBase,
         service_registry: ServicesRegistry,
+        original_entry: Dataset | None = None,
     ) -> DatasetLifecycleManager:
-        return DatasetLifecycleManager(us_manager=us_manager, entry=entry, service_registry=service_registry)
+        return DatasetLifecycleManager(
+            us_manager=us_manager,
+            entry=entry,
+            service_registry=service_registry,
+            original_entry=original_entry,
+        )
 
     @_get_lifecycle_manager.register(ConnectionBase)
     def _get_connection_lifecycle_manager(
@@ -61,6 +85,12 @@ class DefaultEntryLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
         entry: ConnectionBase,
         us_manager: USManagerBase,
         service_registry: ServicesRegistry,
+        original_entry: ConnectionBase | None = None,
     ) -> ConnectionLifecycleManager:
         lifecycle_manager_cls = get_lifecycle_manager_cls(conn_type=entry.conn_type)
-        return lifecycle_manager_cls(us_manager=us_manager, entry=entry, service_registry=service_registry)
+        return lifecycle_manager_cls(
+            us_manager=us_manager,
+            entry=entry,
+            service_registry=service_registry,
+            original_entry=original_entry,
+        )

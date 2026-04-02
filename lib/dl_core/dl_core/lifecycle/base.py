@@ -35,6 +35,8 @@ class PostSaveHookResult(HookResult):
 class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
     ENTRY_CLS: ClassVar[type[_US_ENTRY_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
 
+    # Old entry value used to handle changes in post_save and pre_save hooks.
+    _original_entry: _US_ENTRY_TV | None = attr.ib(kw_only=True, default=None)
     _entry: _US_ENTRY_TV = attr.ib(kw_only=True)
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _service_registry: ServicesRegistry = attr.ib(kw_only=True)
@@ -43,6 +45,14 @@ class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
     def entry(self) -> _US_ENTRY_TV:
         assert isinstance(self._entry, self.ENTRY_CLS)
         return self._entry
+
+    @property
+    def original_entry(self) -> _US_ENTRY_TV | None:
+        if self._original_entry is None:
+            return None
+
+        assert isinstance(self._original_entry, self.ENTRY_CLS)
+        return self._original_entry
 
     def pre_save_hook(self) -> None:
         pass
