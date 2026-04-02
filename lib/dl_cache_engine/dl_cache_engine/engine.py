@@ -617,7 +617,6 @@ class EntityCacheEngineBase:
             cache_refresh_on_read=new_ttl_sec is not None,
             cache_ttl_sec=new_ttl_sec,
         )
-        print("rediskey:", full_key)
         return full_key, details
 
     def _make_result_cache_entry(
