@@ -1864,11 +1864,18 @@ url = "../lib/dl_app_api_base"
 [[package]]
 name = "dl-app-api-ext-testing"
 version = "0.0.1"
-description = ""
+description = "Base classes for blackbox ext testing of dl_app_api_base apps"
 optional = false
 python-versions = ">=3.10, <3.13"
 files = []
 develop = true
+
+[package.dependencies]
+aiohttp = "*"
+dl-settings = {path = "../dl_settings"}
+dl-testing = {path = "../dl_testing"}
+pytest = "*"
+pytest-asyncio = "*"
 
 [package.source]
 type = "directory"
