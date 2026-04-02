@@ -96,6 +96,8 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
+        skip_invalidation_check: bool = False,
+        allow_cache_usage: bool | None = None,
     ) -> PostprocessedQuery:
         ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
         if not ds_accessor.get_data_source_id_list():

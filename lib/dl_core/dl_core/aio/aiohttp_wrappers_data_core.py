@@ -57,6 +57,12 @@ class DLRequestDataCore(DLRequestBase):
             RedisInstanceKind.caches,
         ).get_redis(allow_slave=allow_slave)
 
+    def get_invalidation_caches_redis(self, allow_slave: bool = False) -> redis.asyncio.Redis:
+        return RedisBaseService.get_app_instance(
+            self.request.app,
+            RedisInstanceKind.invalidation_caches,
+        ).get_redis(allow_slave=allow_slave)
+
     def get_persistent_redis(self, allow_slave: bool = False) -> redis.asyncio.Redis:
         return RedisBaseService.get_app_instance(
             self.request.app,

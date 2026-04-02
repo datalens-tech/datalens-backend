@@ -91,6 +91,7 @@ from dl_core.fields import (
     BIField,
     DirectCalculationSpec,
     FormulaCalculationSpec,
+    ResultSchema,
     create_calc_spec_from,
     del_calc_spec_kwargs_from,
 )
@@ -231,6 +232,48 @@ def validate_cache_invalidation_source_fields_fill_by_mode(
         if error:
             return error
         return _validate_cache_invalidation_formula_not_empty(cache_invalidation_source)
+
+    return None
+
+
+def _validate_cache_invalidation_filters(
+    cache_invalidation_source: CacheInvalidationSource,
+    result_schema: ResultSchema,
+) -> CacheInvalidationError | None:
+    """Validate filters for cache invalidation source.
+
+    Standalone version that can be used outside of DatasetValidator.
+
+    Checks:
+    1. Each filter references an existing field in result_schema
+    2. Each filter operation is compatible with the field's data type
+    """
+    for filter_obj in cache_invalidation_source.filters:
+        # Check that the referenced field exists
+        try:
+            field = result_schema.by_guid(filter_obj.field_guid)
+        except common_exc.FieldNotFound:
+            return CacheInvalidationError(
+                title="Invalid Filter",
+                message=f"Filter references unknown field: {filter_obj.field_guid}",
+                level=NotificationLevel.warning,
+                locator="cache_invalidation_source.filters",
+            )
+
+        # Check that filter operations are compatible with the field type
+        if field.cast is not None:
+            allowed_filters: frozenset = FILTERS_BY_TYPE.get(field.cast, frozenset())
+            for default_filter in filter_obj.default_filters:
+                if default_filter.operation not in allowed_filters:
+                    return CacheInvalidationError(
+                        title="Invalid Filter Operation",
+                        message=(
+                            f"Operation {default_filter.operation.name} "
+                            f"is not allowed for field type {field.cast.name}"
+                        ),
+                        level=NotificationLevel.warning,
+                        locator="cache_invalidation_source.filters",
+                    )
 
     return None
 
@@ -1941,38 +1984,12 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> CacheInvalidationError | None:
         """Validate filters for cache invalidation source.
 
-        Checks:
-        1. Each filter references an existing field in result_schema
-        2. Each filter operation is compatible with the field's data type
+        Delegates to the standalone ``_validate_cache_invalidation_filters`` function.
         """
-        for filter_obj in cache_invalidation_source.filters:
-            # Check that the referenced field exists
-            try:
-                field = self._ds.result_schema.by_guid(filter_obj.field_guid)
-            except common_exc.FieldNotFound:
-                return CacheInvalidationError(
-                    title="Invalid Filter",
-                    message=f"Filter references unknown field: {filter_obj.field_guid}",
-                    level=NotificationLevel.warning,
-                    locator="cache_invalidation_source.filters",
-                )
-
-            # Check that filter operations are compatible with the field type
-            if field.cast is not None:
-                allowed_filters: frozenset = FILTERS_BY_TYPE.get(field.cast, frozenset())
-                for default_filter in filter_obj.default_filters:
-                    if default_filter.operation not in allowed_filters:
-                        return CacheInvalidationError(
-                            title="Invalid Filter Operation",
-                            message=(
-                                f"Operation {default_filter.operation.name} "
-                                f"is not allowed for field type {field.cast.name}"
-                            ),
-                            level=NotificationLevel.warning,
-                            locator="cache_invalidation_source.filters",
-                        )
-
-        return None
+        return _validate_cache_invalidation_filters(
+            cache_invalidation_source=cache_invalidation_source,
+            result_schema=self._ds.result_schema,
+        )
 
     @generic_profiler("validator-apply-cache-invalidation-action")
     def apply_cache_invalidation_action(

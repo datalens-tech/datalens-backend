@@ -24,6 +24,7 @@ from dl_api_lib.app.data_api.app import DataApiAppFactory
 from dl_api_lib.app_settings import (
     DataApiAppSettings,
     DeprecatedDataApiAppSettings,
+    RedisPydanticSettings,
 )
 from dl_api_lib_testing.app import TestingDataApiAppFactory
 from dl_api_lib_testing.app_settings import TestingDataApiAppSettings
@@ -34,6 +35,7 @@ from dl_api_lib_testing.client import (
 )
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_api_lib_testing.dataset_base import DatasetTestBase
+from dl_configs.enums import RedisMode
 from dl_configs.rqe import RQEConfig
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.connectors.settings.base import ConnectorSettings
@@ -53,6 +55,7 @@ class DataApiTestParams(NamedTuple):
 class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     mutation_caches_enabled: ClassVar[bool] = True
     data_caches_enabled: ClassVar[bool] = True
+    invalidation_caches_enabled: ClassVar[bool] = False
 
     @pytest.fixture
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -107,7 +110,21 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
-        settings = TestingDataApiAppSettings(fallback=deprecated_settings)
+
+        extra_kwargs: dict = {}
+        if self.invalidation_caches_enabled:
+            redis_setting_maker = bi_test_config.core_test_config.get_redis_setting_maker()
+            redis_settings = redis_setting_maker.get_redis_settings_cache_invalidation()
+            extra_kwargs["INVALIDATION_CACHES_ON"] = True
+            extra_kwargs["INVALIDATION_CACHES_REDIS"] = RedisPydanticSettings(
+                MODE=RedisMode.single_host,
+                HOSTS=(redis_settings.HOSTS[0],) if redis_settings.HOSTS else (),
+                PORT=redis_settings.PORT,
+                DB=redis_settings.DB,
+                PASSWORD=redis_settings.PASSWORD or "",
+            )
+
+        settings = TestingDataApiAppSettings(fallback=deprecated_settings, **extra_kwargs)
 
         return settings
 

@@ -36,6 +36,10 @@ from dl_api_lib.app.data_api.resources.base import (
     requires,
 )
 import dl_api_lib.common_models.data_export as data_export_models
+from dl_api_lib.dataset.cache_invalidation import (
+    get_invalidation_payload_formula,
+    get_invalidation_payload_sql,
+)
 from dl_api_lib.dataset.view import DatasetView
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
 from dl_api_lib.query.formalization.legend_formalizer import (
@@ -59,10 +63,12 @@ from dl_app_tools.profiling_base import (
 )
 from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
+    CacheInvalidationMode,
     DataSourceRole,
     FieldRole,
     RLSSubjectType,
 )
+from dl_core.cache_invalidation import CacheInvalidationError
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
@@ -664,16 +670,201 @@ class DatasetDataBaseView(BaseView):
             )
             await lifecycle_manager.post_exec_async_hook()
 
+    def _make_invalidation_sql_validate_func(self) -> Callable[[], CacheInvalidationError | None]:
+        """Create a validation callback for SQL mode invalidation."""
+        from dl_api_lib.dataset.validator import (
+            _validate_cache_invalidation_sql_mode,
+            validate_cache_invalidation_source_fields_fill_by_mode,
+        )
+
+        cache_invalidation_source = self.dataset.data.cache_invalidation_source
+
+        def validate_func() -> CacheInvalidationError | None:
+            error = validate_cache_invalidation_source_fields_fill_by_mode(cache_invalidation_source)
+            if error is not None:
+                return error
+            return _validate_cache_invalidation_sql_mode(cache_invalidation_source)
+
+        return validate_func
+
+    def _make_invalidation_formula_validate_func(self) -> Callable[[], CacheInvalidationError | None]:
+        """Create a validation callback for formula mode invalidation.
+
+        Creates a ``DatasetValidator`` to perform full formula compilation,
+        type checking, SQL translation, and filter validation.
+        """
+        from dl_api_lib.dataset.validator import (
+            DatasetValidator,
+            _validate_cache_invalidation_filters,
+            validate_cache_invalidation_source_fields_fill_by_mode,
+        )
+
+        cache_invalidation_source = self.dataset.data.cache_invalidation_source
+
+        def validate_func() -> CacheInvalidationError | None:
+            # Basic field-fill validation (standalone)
+            error = validate_cache_invalidation_source_fields_fill_by_mode(cache_invalidation_source)
+            if error is not None:
+                return error
+
+            # Full formula validation (requires DatasetValidator for formula_compiler)
+            try:
+                ds_validator = DatasetValidator(
+                    ds=self.dataset,
+                    us_manager=self.dl_request.us_manager,
+                    is_data_api=True,
+                )
+            except Exception:
+                LOGGER.exception("Failed to create DatasetValidator for invalidation validation")
+                return None  # Graceful degradation: skip validation
+
+            error = ds_validator._validate_cache_invalidation_formula(cache_invalidation_source)
+            if error is not None:
+                return error
+
+            # Filter validation (standalone, needs result_schema)
+            return _validate_cache_invalidation_filters(
+                cache_invalidation_source=cache_invalidation_source,
+                result_schema=self.dataset.result_schema,
+            )
+
+        return validate_func
+
+    async def _get_invalidation_cache_payload(self) -> str | None:
+        """Get the invalidation cache payload for the current dataset, if configured."""
+        cache_invalidation_source = self.dataset.data.cache_invalidation_source
+        mode = cache_invalidation_source.mode
+
+        if mode == CacheInvalidationMode.off:
+            return None
+
+        us_manager = self.dl_request.us_manager
+        services_registry = self.dl_request.services_registry
+
+        if mode == CacheInvalidationMode.sql:
+            return await get_invalidation_payload_sql(
+                dataset=self.dataset,
+                ds_accessor=self.ds_accessor,
+                us_manager=us_manager,
+                services_registry=services_registry,
+                validate_func=self._make_invalidation_sql_validate_func(),
+            )
+
+        if mode == CacheInvalidationMode.formula:
+            # For formula mode, we need to execute the formula query.
+            # The execute_formula_func will be called only when the cache is stale.
+            async def execute_formula_func() -> str | None:
+                return await self._execute_invalidation_formula_query()
+
+            return await get_invalidation_payload_formula(
+                dataset=self.dataset,
+                ds_accessor=self.ds_accessor,
+                us_manager=us_manager,
+                services_registry=services_registry,
+                execute_formula_func=execute_formula_func,
+                validate_func=self._make_invalidation_formula_validate_func(),
+            )
+
+        return None
+
+    async def _execute_invalidation_formula_query(self) -> str | None:
+        """
+        Execute the formula-mode invalidation query using the standard query pipeline.
+        Similar to how cache_invalidation_test.py handles formula mode.
+        """
+        from dl_api_lib.query.formalization.raw_specs import (
+            IdFieldRef,
+            RawFilterFieldSpec,
+            RawQueryMetaInfo,
+            RawQuerySpecUnion,
+            RawSelectFieldSpec,
+        )
+        from dl_query_processing.enums import GroupByPolicy
+
+        cache_invalidation_source = self.dataset.data.cache_invalidation_source
+        field = cache_invalidation_source.field
+        if field is None or not field.formula.strip():
+            return None
+
+        # Temporarily add the CacheInvalidationField to result_schema
+        result_schema = self.dataset.result_schema
+        result_schema.fields.append(field)
+        result_schema.reload_caches()
+
+        try:
+            # Build select spec referencing the cache invalidation field by guid
+            select_specs = [
+                RawSelectFieldSpec(ref=IdFieldRef(id=field.guid)),
+            ]
+
+            # Build filter specs from cache_invalidation_source.filters
+            filter_specs: list[RawFilterFieldSpec] = []
+            for obligatory_filter in cache_invalidation_source.filters:
+                for default_filter in obligatory_filter.default_filters:
+                    filter_specs.append(
+                        RawFilterFieldSpec(
+                            ref=IdFieldRef(id=obligatory_filter.field_guid),
+                            operation=default_filter.operation,
+                            values=default_filter.values,
+                        )
+                    )
+
+            raw_query_spec_union = RawQuerySpecUnion(
+                select_specs=select_specs,
+                filter_specs=filter_specs,
+                meta=RawQueryMetaInfo(query_type=QueryType.result),
+                limit=2,
+                disable_rls=True,
+                group_by_policy=GroupByPolicy.disable,
+            )
+
+            try:
+                merged_stream = await self.execute_all_queries(
+                    raw_query_spec_union=raw_query_spec_union,
+                    autofill_legend=False,
+                    skip_invalidation_check=True,
+                    allow_cache_usage=False,
+                )
+            except Exception:
+                LOGGER.exception("Failed to execute invalidation formula query")
+                return None
+
+            rows = list(merged_stream.rows)
+            if not rows:
+                return None
+
+            row_data = rows[0].data
+            if not row_data:
+                return None
+
+            return str(row_data[0])
+
+        finally:
+            # Clean up: remove the temporary field from result_schema
+            try:
+                result_schema.fields.remove(field)
+                result_schema.reload_caches()
+            except ValueError:
+                pass
+
     async def execute_query(
         self,
         block_spec: BlockSpec,
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
+        skip_invalidation_check: bool = False,
+        allow_cache_usage: bool | None = None,
     ) -> PostprocessedQuery:
         # TODO: Move to a separate class
 
         us_manager = self.dl_request.us_manager
+
+        # Get invalidation cache payload before building the main query
+        invalidation_cache_payload: str | None = None
+        if not skip_invalidation_check:
+            with GenericProfiler(f"{self.profiler_prefix}-invalidation-cache-check{profiling_postfix}"):
+                invalidation_cache_payload = await self._get_invalidation_cache_payload()
 
         ds_view = DatasetView(
             ds=self.dataset,
@@ -686,10 +877,12 @@ class DatasetDataBaseView(BaseView):
         with GenericProfiler(f"{self.profiler_prefix}-query-build{profiling_postfix}"):
             exec_info = ds_view.build_exec_info()
 
+        effective_allow_cache = allow_cache_usage if allow_cache_usage is not None else self.allow_query_cache_usage
         async with self.default_query_execution_cm_stack(exec_info, body=self.dl_request.json):
             executed_query = await ds_view.get_data_async(
                 exec_info=exec_info,
-                allow_cache_usage=self.allow_query_cache_usage,
+                allow_cache_usage=effective_allow_cache,
+                invalidation_cache_payload=invalidation_cache_payload,
             )
             if possible_data_lengths is not None:
                 assert len(executed_query.rows) in possible_data_lengths
@@ -707,6 +900,8 @@ class DatasetDataBaseView(BaseView):
         raw_query_spec_union: RawQuerySpecUnion,
         autofill_legend: bool,
         call_post_exec_async_hook: bool = False,
+        skip_invalidation_check: bool = False,
+        allow_cache_usage: bool | None = None,
     ) -> MergedQueryDataStream:
         # TODO: Move to a separate class
 
@@ -730,6 +925,8 @@ class DatasetDataBaseView(BaseView):
                 self.execute_query(
                     block_spec=block_spec,
                     parameter_value_specs=self._get_parameter_value_specs(raw_query_spec_union=raw_query_spec_union),
+                    skip_invalidation_check=skip_invalidation_check,
+                    allow_cache_usage=allow_cache_usage,
                 )
             )
         executed_queries = await runner.finalize()

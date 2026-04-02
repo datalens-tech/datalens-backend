@@ -209,7 +209,7 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                 filter_specs=filter_specs,
                 meta=RawQueryMetaInfo(query_type=QueryType.result),
                 limit=2,
-                disable_rls=False,
+                disable_rls=True,
                 group_by_policy=GroupByPolicy.disable,
             )
 
@@ -219,6 +219,8 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                     raw_query_spec_union=raw_query_spec_union,
                     autofill_legend=False,
                     call_post_exec_async_hook=False,
+                    skip_invalidation_check=True,
+                    allow_cache_usage=False,
                 )
             except Exception as ex:
                 LOGGER.exception("Cache invalidation formula query execution failed", exc_info=True)

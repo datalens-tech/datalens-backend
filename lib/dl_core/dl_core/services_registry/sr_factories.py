@@ -65,6 +65,7 @@ class SRFactory(Generic[SERVICE_REGISTRY_TV], metaclass=abc.ABCMeta):
         mutations_cache_factory: Optional[USEntryMutationCacheFactory] = None,
         reporting_registry: Optional[ReportingRegistry] = None,
         caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        invalidation_caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
         data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
     ) -> SERVICE_REGISTRY_TV:
         """
@@ -144,6 +145,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
         # TODO: refactor usage of redis and pg here
         #  (some kind of multi-purpose factory instead of separate getters)
         caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
+        invalidation_caches_redis_client_factory: Optional[Callable[[bool], Optional[Redis]]] = None,
         data_processor_service_factory: Optional[Callable[[ProcessorType], DataProcessorService]] = None,
     ) -> SERVICE_REGISTRY_TV:
         sr_ref: FutureRef[ServicesRegistry] = FutureRef()
@@ -157,6 +159,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
             rci=request_context_info,
             conn_exec_factory=self.make_conn_executor_factory(request_context_info, sr_ref),  # type: ignore  # TODO: fix
             caches_redis_client_factory=caches_redis_client_factory,
+            invalidation_caches_redis_client_factory=invalidation_caches_redis_client_factory,
             mutations_redis_client_factory=mutations_redis_client_factory,
             mutations_cache_factory=mutations_cache_factory,
             data_processor_service_factory=data_processor_service_factory,
