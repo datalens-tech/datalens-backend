@@ -1,8 +1,9 @@
-from typing import Any
+from urllib.parse import quote
 
 import attr
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
+from dl_core.connection_executors.adapters.common_base import get_dialect_string
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     RawColumnInfo,
@@ -41,15 +42,15 @@ class StarRocksAdapter(BaseStarRocksAdapter, BaseClassicAdapter[StarRocksConnTar
     def get_default_db_name(self) -> str:
         return ""  # StarRocks doesn't require a catalog to connect
 
-    def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
-        # StarRocks MySQL protocol doesn't support catalogs in the connection URL.
-        # Metadata is queried via fully qualified `catalog`.information_schema.<table>.
-        params = params or {}
-        return (
-            f"dl_mysql://"
-            f"{self._target_dto.username}:{self._target_dto.password}"
-            f"@{self._target_dto.host}:{self._target_dto.port}/"
-        )
+    def get_conn_line(self, db_name: str | None = None, params: dict | None = None) -> str:
+        # StarRocksConnTargetDTO has no db_name (StarRocks connects without a default database),
+        # so we can't use the base ClassicSQLConnLineConstructor which expects BaseSQLConnTargetDTO.
+        dialect = get_dialect_string(self.conn_type)
+        user = quote(self._target_dto.username, safe="")
+        passwd = quote(self._target_dto.password, safe="")
+        host = quote(self._target_dto.host, safe="")
+        port = self._target_dto.port
+        return f"{dialect}://{user}:{passwd}@{host}:{port}/"
 
     def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         catalog = schema_ident.db_name or ""

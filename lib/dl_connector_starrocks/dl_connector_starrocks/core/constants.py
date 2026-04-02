@@ -26,4 +26,5 @@ STARROCKS_SYSTEM_CATALOGS = (
     "_statistics_",
 )
 
+# StarRocks doesn't provide a way to query the catalog list with a SELECT statement
 GET_STARROCKS_CATALOGS_QUERY = "SHOW CATALOGS"
