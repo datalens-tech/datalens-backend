@@ -319,7 +319,7 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema)
 
     extract = ma_fields.Nested(
-        ExtractPropertiesSchema, required=False, load_default=ExtractProperties, dump_default=ExtractProperties
+        ExtractPropertiesSchema, load_default=ExtractProperties, dump_default=ExtractProperties
     )
 
     @pre_load
