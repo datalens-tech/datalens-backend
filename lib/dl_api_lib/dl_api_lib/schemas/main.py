@@ -188,6 +188,9 @@ class NotificationContentSchema(BaseSchema):
 
 class DatasetExportResponseSchema(BaseSchema):
     class DatasetContentInternalExportSchema(DatasetContentInternalSchema):
+        class Meta(DatasetContentInternalSchema.Meta):
+            exclude = ("extract",)  # not accepting extract
+
         name = ma_fields.String()
 
     dataset = ma_fields.Nested(DatasetContentInternalExportSchema)
@@ -197,7 +200,7 @@ class DatasetExportResponseSchema(BaseSchema):
 class DatasetContentImportSchema(BaseSchema):
     class DatasetContentInternalImportSchema(DatasetContentInternalSchema):
         class Meta(DatasetContentInternalSchema.Meta):
-            exclude = ("rls",)  # not accepting rls at all, only rls2
+            exclude = ("extract", "rls")  # not accepting rls at all, only rls2
 
         name = ma_fields.String()
 

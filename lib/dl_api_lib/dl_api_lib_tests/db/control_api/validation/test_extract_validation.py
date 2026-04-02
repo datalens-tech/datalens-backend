@@ -4,7 +4,9 @@ import pytest
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.enums import (
     ExtractMode,
     ExtractStatus,
@@ -470,3 +472,100 @@ class TestExtractValidation(DefaultApiTestBase):
 
         finally:
             control_api.delete_dataset(dataset_id=saved_dataset.id, fail_ok=True)
+
+
+class TestExtractExportImport(DefaultApiTestBase):
+    @pytest.fixture(scope="class")
+    def dataset_params(self, sample_table) -> dict:
+        return dict(
+            source_type=SOURCE_TYPE_CH_TABLE.name,
+            parameters=dict(
+                db_name=sample_table.db.name,
+                table_name=sample_table.name,
+            ),
+        )
+
+    @pytest.fixture(scope="function")
+    def export_import_headers(self, control_api_app_settings: ControlApiAppSettings) -> dict[str, str]:
+        assert control_api_app_settings.US_MASTER_TOKEN is not None
+        return {
+            DLHeadersCommon.US_MASTER_TOKEN.value: control_api_app_settings.US_MASTER_TOKEN,
+        }
+
+    def test_export_does_not_include_extract(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        saved_dataset: Dataset,
+        export_import_headers: dict[str, str],
+    ) -> None:
+        export_resp = control_api.export_dataset(
+            dataset=saved_dataset,
+            data={
+                "id_mapping": {
+                    saved_connection_id: "conn_id_1",
+                },
+            },
+            headers=export_import_headers,
+        )
+
+        assert export_resp.status_code == http.HTTPStatus.OK
+        assert "extract" not in export_resp.json["dataset"]
+
+    def test_import_ignores_extract_settings(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_connection_id: str,
+        saved_dataset: Dataset,
+        export_import_headers: dict[str, str],
+    ) -> None:
+        export_resp = control_api.export_dataset(
+            dataset=saved_dataset,
+            data={
+                "id_mapping": {
+                    saved_connection_id: "conn_id_1",
+                },
+            },
+            headers=export_import_headers,
+        )
+        assert export_resp.status_code == http.HTTPStatus.OK
+
+        dataset_body = export_resp.json["dataset"]
+        dataset_body["extract"] = {
+            "mode": "manual",
+            "filters": [],
+            "sorting": [
+                {
+                    "id": "sort_1",
+                    "guid": "some-guid",
+                    "order": "asc",
+                },
+            ],
+        }
+
+        import_resp = control_api.import_dataset(
+            data={
+                "id_mapping": {
+                    "conn_id_1": saved_connection_id,
+                },
+                "data": {
+                    "workbook_id": None,
+                    "dataset": dataset_body,
+                },
+            },
+            headers=export_import_headers,
+        )
+        assert import_resp.status_code == http.HTTPStatus.OK
+
+        imported_dataset = control_api.get_dataset(import_resp.json["id"]).dataset
+        try:
+            assert imported_dataset.extract == ExtractProperties(
+                mode=ExtractMode.disabled,
+                status=ExtractStatus.disabled,
+                filters=[],
+                sorting=[],
+                errors=[],
+                last_update=0,
+            )
+        finally:
+            control_api.delete_dataset(dataset_id=imported_dataset.id, fail_ok=True)
