@@ -12,12 +12,15 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import mysql as mysql_types
 
 from dl_constants.enums import UserDataType
+from dl_core.connection_executors.async_base import AsyncConnExecutorBase
+from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models.common_models import (
     DBIdent,
     SchemaIdent,
     TableIdent,
 )
+import dl_core.exc as core_exc
 from dl_core_testing.database import (
     Db,
     DbTable,
@@ -48,18 +51,25 @@ class StarRocksSyncAsyncConnectionExecutorCheckBase(
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=test_config.CoreConnectionSettings.DB_NAME)
 
+    @pytest.fixture(scope="class")
+    def sample_table_schema(self) -> str:
+        return test_config.CoreConnectionSettings.DB_NAME
+
 
 class TestStarRocksSyncConnectionExecutor(
     StarRocksSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionStarRocks],
 ):
-    test_params = RegulatedTestParams(
-        mark_tests_skipped={
-            DefaultSyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: (
-                "StarRocks connects without a default database; bare table name queries fail with 'No database selected'"
-            ),
-        },
-    )
+    def test_error_on_select_from_nonexistent_source(
+        self,
+        db: Db,
+        sync_connection_executor: SyncConnExecutorBase,
+        nonexistent_table_ident: TableIdent,
+    ) -> None:
+        fqn = f"{test_config.CoreConnectionSettings.CATALOG}.{test_config.CoreConnectionSettings.DB_NAME}.nonexistent_table_{shortuuid.uuid().lower()}"
+        query = ConnExecutorQuery(query=f"SELECT * from {fqn}")
+        with pytest.raises(core_exc.SourceDoesNotExist):
+            sync_connection_executor.execute(query)
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
         """Override to use MySQL-specific types that match StarRocks native type names"""
@@ -151,17 +161,20 @@ class TestStarRocksAsyncConnectionExecutor(
             DefaultAsyncConnectionExecutorTestSuite.test_get_table_schema_info_for_nonexistent_table: (
                 "Async listing methods are NotImplementedError — listing is handled by sync adapter"
             ),
-            DefaultAsyncConnectionExecutorTestSuite.test_select_data: (
-                "StarRocks connects without a default database; bare table name queries fail with 'No database selected'"
-            ),
-            DefaultAsyncConnectionExecutorTestSuite.test_cast_row_to_output: (
-                "StarRocks connects without a default database; bare table name queries fail with 'No database selected'"
-            ),
-            DefaultAsyncConnectionExecutorTestSuite.test_error_on_select_from_nonexistent_source: (
-                "StarRocks connects without a default database; bare table name queries fail with 'No database selected'"
-            ),
         },
     )
+
+    @pytest.mark.asyncio
+    async def test_error_on_select_from_nonexistent_source(
+        self,
+        db: Db,
+        async_connection_executor: AsyncConnExecutorBase,
+        nonexistent_table_ident: TableIdent,
+    ) -> None:
+        fqn = f"{test_config.CoreConnectionSettings.CATALOG}.{test_config.CoreConnectionSettings.DB_NAME}.nonexistent_table_{shortuuid.uuid().lower()}"
+        query = ConnExecutorQuery(query=f"SELECT * from {fqn}")
+        with pytest.raises(core_exc.SourceDoesNotExist):
+            await async_connection_executor.execute(query)
 
     @pytest.fixture(autouse=True, scope="function")
     def mock_aiomysql_prepare(self, monkeypatch: pytest.MonkeyPatch) -> None:

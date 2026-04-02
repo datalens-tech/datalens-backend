@@ -67,12 +67,14 @@ class StarRocksQueryConstructorMixin:
             f"SELECT TABLE_SCHEMA, TABLE_NAME FROM {ref}" f" WHERE TABLE_SCHEMA NOT IN ({_SYSTEM_CATALOGS_SQL_LIST})"
         ]
         if search_text:
-            sql_parts.append("AND TABLE_NAME LIKE :search_text")
+            sql_parts.append("AND CONCAT(:catalog, '.', TABLE_SCHEMA, '.', TABLE_NAME) LIKE :search_text")
         sql_parts.append("ORDER BY TABLE_SCHEMA, TABLE_NAME")
         sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
         sql = " ".join(sql_parts)
         query = sa.text(sql)
         params = self._compile_pagination_params(search_text, limit, offset)
+        if search_text:
+            params.append(sa.bindparam("catalog", catalog, type_=sa.String))
         if params:
             return query.bindparams(*params)
         return query

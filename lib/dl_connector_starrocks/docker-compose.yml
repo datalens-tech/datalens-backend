@@ -9,6 +9,12 @@ services:
     environment:
       STARROCKS_ROOT_PASSWORD: "qwerty"
     container_name: starrocks-test
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h 127.0.0.1 -P 9030 -u root -e 'SELECT 1'"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
 
   # INFRA - Required for DataLens tests
   pg-us:
