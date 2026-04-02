@@ -318,9 +318,7 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
     cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema)
 
-    extract = ma_fields.Nested(
-        ExtractPropertiesSchema, load_default=ExtractProperties, dump_default=ExtractProperties
-    )
+    extract = ma_fields.Nested(ExtractPropertiesSchema, load_default=ExtractProperties, dump_default=ExtractProperties)
 
     @pre_load
     def prepare_guids(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
