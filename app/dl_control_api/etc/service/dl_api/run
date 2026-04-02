@@ -10,10 +10,12 @@ if [ -f "/proc/net/if_inet6" ] || [ "${BISYS_USE_IPV6:-0}" = "1" ]; then
 fi
 
 BI_API_UWSGI_WORKERS_COUNT="${BI_API_UWSGI_WORKERS_COUNT:-40}"
+BI_API_UWSGI_LISTEN_COUNT="${BI_API_UWSGI_LISTEN_COUNT:-100}"
+BI_API_UWSGI_MAX_REQUESTS_COUNT="${BI_API_UWSGI_MAX_REQUESTS_COUNT:-200}"
 
 # It is also set in the ini file, but that might not work in some cases.
 UWSGI_STATS=/tmp/uwsgi_stats.sock
 HTTP_BIND="${HTTP_BIND_ADDR}:${HTTP_BIND_PORT}"
 
-export BI_API_UWSGI_WORKERS_COUNT UWSGI_STATS HTTP_BIND
-exec uwsgi --ini=/code/app/uwsgi/uwsgi-dl-api.ini
+export BI_API_UWSGI_WORKERS_COUNT BI_API_UWSGI_MAX_REQUESTS_COUNT UWSGI_STATS HTTP_BIND
+exec uwsgi --ini=/code/app/uwsgi/uwsgi-dl-api.ini --listen="${BI_API_UWSGI_LISTEN_COUNT}"

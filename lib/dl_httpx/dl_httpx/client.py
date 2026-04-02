@@ -22,14 +22,20 @@ import typing_extensions
 import dl_auth
 import dl_configs
 import dl_constants
+import dl_httpx.exceptions as exceptions
 from dl_httpx.models import BaseRequest
+import dl_httpx.rate_limiters as rate_limiters
 from dl_httpx.retry_mutator import RetryRequestMutator
+import dl_httpx.transport_adapters as transport_adapters
+import dl_logging
 import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
 
-_REQUEST_HEADERS_TO_LOG = (dl_constants.DLHeadersCommon.REQUEST_ID.value,)
+_REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
+_TRACE_ID_HEADER = dl_constants.DLHeadersCommon.UBER_TRACE_ID.value
+_REQUEST_HEADERS_TO_LOG = (_REQUEST_ID_HEADER,)
 
 
 def _request_to_string(request: httpx.Request) -> str:
@@ -61,26 +67,22 @@ class AsyncRequestFunction(Protocol):
         ...
 
 
-THttpxClient = TypeVar("THttpxClient", httpx.Client, httpx.AsyncClient)
-
-
-class BaseHttpxClientException(Exception):
-    ...
+THttpxTransport = TypeVar("THttpxTransport", httpx.BaseTransport, httpx.AsyncBaseTransport)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpStatusHttpxClientException(BaseHttpxClientException):
+class HttpStatusHttpxClientException(exceptions.BaseHttpxClientException):
     request: httpx.Request
     response: httpx.Response
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class RequestHttpxClientException(BaseHttpxClientException):
+class RequestHttpxClientException(exceptions.BaseHttpxClientException):
     original_exception: Exception
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class NoRetriesHttpxClientException(BaseHttpxClientException):
+class NoRetriesHttpxClientException(exceptions.BaseHttpxClientException):
     ...
 
 
@@ -93,12 +95,18 @@ class HttpxClientDependencies:
     ssl_context: ssl.SSLContext = attrs.field(factory=dl_configs.get_default_ssl_context)
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attrs.field(factory=dl_retrier.DefaultRetryPolicyFactory)
     auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
+    rate_limiter: rate_limiters.RateLimiterProtocol = attrs.field(
+        factory=rate_limiters.NoRateLimiter,
+    )
+    transport_adapter: transport_adapters.TransportAdapterProtocol = attrs.field(
+        factory=transport_adapters.NoTransportAdapter
+    )
     logger: logging.Logger = attrs.field(default=LOGGER)
     debug_logging: bool = attrs.field(default=False)
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
+class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
     _base_url: str = attrs.field()
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]
@@ -106,8 +114,14 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
     _auth_provider: dl_auth.AuthProviderProtocol
     _logger: logging.Logger
     _debug_logging: bool
+    _rate_limiter: rate_limiters.RateLimiterProtocol = attrs.field(
+        factory=rate_limiters.NoRateLimiter,
+    )
+    _transport_adapter: transport_adapters.TransportAdapterProtocol = attrs.field(
+        factory=transport_adapters.NoTransportAdapter,
+    )
 
-    _base_client: THttpxClient
+    _transport: THttpxTransport
 
     @classmethod
     def from_dependencies(cls, dependencies: HttpxClientDependencies) -> typing_extensions.Self:
@@ -119,14 +133,16 @@ class HttpxBaseClient(Generic[THttpxClient], abc.ABC):
             auth_provider=dependencies.auth_provider,
             logger=dependencies.logger,
             debug_logging=dependencies.debug_logging,
-            base_client=cls._get_client(
+            rate_limiter=dependencies.rate_limiter,
+            transport_adapter=dependencies.transport_adapter,
+            transport=cls._get_transport(
                 ssl_context=dependencies.ssl_context,
             ),
         )
 
     @classmethod
     @abc.abstractmethod
-    def _get_client(cls, ssl_context: ssl.SSLContext) -> THttpxClient:
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> THttpxTransport:
         ...
 
     @property
@@ -185,6 +201,42 @@ class HttpxSyncRetrier:
     _logger: logging.Logger
     _mutators: list[RetryRequestMutator] = attrs.field(factory=list)
 
+    def _send(
+        self,
+        request_func: SyncRequestFunction,
+        request: httpx.Request,
+        retry: dl_retrier.Retry,
+    ) -> httpx.Response:
+        self._logger.debug(
+            "%s sending Attempt(%s): %s",
+            self._client_name,
+            retry.attempt_number,
+            _request_to_string(request),
+        )
+        try:
+            response = request_func(request)
+        except rate_limiters.RateLimitHttpxClientException:
+            self._logger.warning(
+                "%s rate limited: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        except Exception:
+            self._logger.exception(
+                "%s failed: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        self._logger.debug(
+            "%s received %s for %s",
+            self._client_name,
+            _response_to_string(response),
+            _request_to_string(request),
+        )
+        return response
+
     def send(
         self,
         request_func: SyncRequestFunction,
@@ -206,38 +258,25 @@ class HttpxSyncRetrier:
             )
             request.extensions["timeout"] = timeout.as_dict()
 
-            self._logger.debug(
-                "%s sending Attempt(%s): %s",
-                self._client_name,
-                retry.attempt_number,
-                _request_to_string(request),
-            )
+            with dl_logging.LogContext(
+                context={"client_request.attempt.request_id": request.headers.get(_REQUEST_ID_HEADER)}
+            ):
+                try:
+                    response = self._send(request_func, request, retry)
+                except Exception as e:
+                    last_known_result = e
+                    continue
 
-            try:
-                response = request_func(request)
-            except Exception as e:
-                self._logger.exception(
-                    "%s failed: %s",
-                    self._client_name,
-                    _request_to_string(request),
-                )
-                last_known_result = e
-                continue
+                if not self._retry_policy.can_retry_error(response.status_code):
+                    return response
 
-            self._logger.debug(
-                "%s received %s for %s",
-                self._client_name,
-                _response_to_string(response),
-                _request_to_string(request),
-            )
-
-            if not self._retry_policy.can_retry_error(response.status_code):
-                return response
-
-            last_known_result = response
+                last_known_result = response
 
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
+
+        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientException):
+            raise last_known_result
 
         if isinstance(last_known_result, Exception):
             raise RequestHttpxClientException(original_exception=last_known_result) from last_known_result
@@ -251,6 +290,42 @@ class HttpxAsyncRetrier:
     _client_name: str
     _logger: logging.Logger
     _mutators: list[RetryRequestMutator] = attrs.field(factory=list)
+
+    async def _send(
+        self,
+        request_func: AsyncRequestFunction,
+        request: httpx.Request,
+        retry: dl_retrier.Retry,
+    ) -> httpx.Response:
+        self._logger.debug(
+            "%s sending Attempt(%s): %s",
+            self._client_name,
+            retry.attempt_number,
+            _request_to_string(request),
+        )
+        try:
+            response = await request_func(request)
+        except rate_limiters.RateLimitHttpxClientException:
+            self._logger.warning(
+                "%s rate limited: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        except Exception:
+            self._logger.exception(
+                "%s failed: %s",
+                self._client_name,
+                _request_to_string(request),
+            )
+            raise
+        self._logger.debug(
+            "%s received %s for %s",
+            self._client_name,
+            _response_to_string(response),
+            _request_to_string(request),
+        )
+        return response
 
     async def send(
         self,
@@ -273,38 +348,25 @@ class HttpxAsyncRetrier:
             )
             request.extensions["timeout"] = timeout.as_dict()
 
-            self._logger.debug(
-                "%s sending Attempt(%s): %s",
-                self._client_name,
-                retry.attempt_number,
-                _request_to_string(request),
-            )
+            with dl_logging.LogContext(
+                context={"client_request.attempt.request_id": request.headers.get(_REQUEST_ID_HEADER)}
+            ):
+                try:
+                    response = await self._send(request_func, request, retry)
+                except Exception as e:
+                    last_known_result = e
+                    continue
 
-            try:
-                response = await request_func(request)
-            except Exception as e:
-                self._logger.exception(
-                    "%s failed: %s",
-                    self._client_name,
-                    _request_to_string(request),
-                )
-                last_known_result = e
-                continue
+                if not self._retry_policy.can_retry_error(response.status_code):
+                    return response
 
-            self._logger.debug(
-                "%s received %s for %s",
-                self._client_name,
-                _response_to_string(response),
-                _request_to_string(request),
-            )
-
-            if not self._retry_policy.can_retry_error(response.status_code):
-                return response
-
-            last_known_result = response
+                last_known_result = response
 
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
+
+        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientException):
+            raise last_known_result
 
         if isinstance(last_known_result, Exception):
             raise RequestHttpxClientException(original_exception=last_known_result) from last_known_result
@@ -313,12 +375,12 @@ class HttpxAsyncRetrier:
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
-    _base_client: httpx.Client
+class HttpxSyncClient(HttpxBaseClient[httpx.BaseTransport]):
+    _transport: httpx.BaseTransport
 
     @classmethod
-    def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.Client:
-        return httpx.Client(verify=ssl_context)
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> httpx.BaseTransport:
+        return httpx.HTTPTransport(verify=ssl_context)
 
     def _prepare_headers(
         self,
@@ -390,7 +452,7 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
         return request
 
     def close(self) -> None:
-        self._base_client.close()
+        self._transport.close()
 
     def __enter__(self) -> typing_extensions.Self:
         return self
@@ -416,28 +478,40 @@ class HttpxSyncClient(HttpxBaseClient[httpx.Client]):
             client_name=self._client_name,
             mutators=self._mutators,
         )
-        response = retrier.send(self._send, request)
-        response = self._process_response(response)
+        with dl_logging.LogContext(
+            context={
+                "client_request.url": str(request.url),
+                "client_request.original.request_id": request.headers.get(_REQUEST_ID_HEADER),
+                "client_request.original.trace_id": request.headers.get(_TRACE_ID_HEADER),
+            }
+        ):
+            response = retrier.send(self._send, request)
+            response = self._process_response(response)
 
-        try:
-            yield response
-        finally:
-            response.close()
+            try:
+                yield response
+            finally:
+                response.close()
 
     def _send(
         self,
         request: httpx.Request,
     ) -> httpx.Response:
-        return self._base_client.send(request=request)
+        with self._rate_limiter.context():
+            with self._transport_adapter.context(self._transport, request) as transport:
+                response = transport.handle_request(request)
+                response.request = request
+                response.read()
+                return response
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
-    _base_client: httpx.AsyncClient
+class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncBaseTransport]):
+    _transport: httpx.AsyncBaseTransport
 
     @classmethod
-    def _get_client(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncClient:
-        return httpx.AsyncClient(verify=ssl_context)
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> httpx.AsyncBaseTransport:
+        return httpx.AsyncHTTPTransport(verify=ssl_context)
 
     async def _prepare_headers(
         self,
@@ -509,7 +583,7 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
         return request
 
     async def close(self) -> None:
-        await self._base_client.aclose()
+        await self._transport.aclose()
 
     async def __aenter__(self) -> typing_extensions.Self:
         return self
@@ -535,24 +609,25 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncClient]):
             logger=self._logger,
             mutators=self._mutators,
         )
-        response = await retrier.send(self._send, request)
-        response = self._process_response(response)
+        with dl_logging.LogContext(
+            context={
+                "client_request.url": str(request.url),
+                "client_request.original.request_id": request.headers.get(_REQUEST_ID_HEADER),
+                "client_request.original.trace_id": request.headers.get(_TRACE_ID_HEADER),
+            }
+        ):
+            response = await retrier.send(self._send, request)
+            response = self._process_response(response)
 
-        try:
-            yield response
-        finally:
-            await response.aclose()
+            try:
+                yield response
+            finally:
+                await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        return await self._base_client.send(request=request)
-
-
-__all__ = [
-    "HttpStatusHttpxClientException",
-    "HttpxAsyncClient",
-    "HttpxBaseClient",
-    "HttpxClientDependencies",
-    "HttpxClientT",
-    "HttpxSyncClient",
-    "RequestHttpxClientException",
-]
+        async with self._rate_limiter.context_async():
+            async with self._transport_adapter.context_async(self._transport, request) as transport:
+                response = await transport.handle_async_request(request)
+                response.request = request
+                await response.aread()
+                return response

@@ -7,7 +7,7 @@ from dl_constants.enums import (
 )
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
-    StandardSQLDataSource,
+    StandardSchemaSQLDataSource,
     SubselectDataSource,
 )
 
@@ -37,8 +37,8 @@ class StarRocksDataSourceMixin(BaseSQLDataSource):
         return source_type in (SOURCE_TYPE_STARROCKS_TABLE, SOURCE_TYPE_STARROCKS_SUBSELECT)
 
 
-class StarRocksDataSource(StarRocksDataSourceMixin, StandardSQLDataSource):
-    """StarRocks table"""
+class StarRocksDataSource(StarRocksDataSourceMixin, StandardSchemaSQLDataSource):
+    """StarRocks table — addressed as catalog.database.table"""
 
 
 class StarRocksSubselectDataSource(StarRocksDataSourceMixin, SubselectDataSource):

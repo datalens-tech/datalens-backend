@@ -13,6 +13,7 @@ from typing import (
     overload,
 )
 
+import typing_extensions
 from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -123,8 +124,38 @@ class SyncUSManager(USManagerBase):
 
     # CRUD
     #
-    def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
-        lifecycle_manager = self.get_lifecycle_manager(entry=entry, service_registry=self._services_registry)
+    @typing_extensions.deprecated("Use create/update instead", category=DeprecationWarning)
+    def save(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+        original_entry: USEntry | None = None,
+    ) -> None:
+        self._save(
+            entry=entry,
+            update_revision=update_revision,
+            original_entry=original_entry,
+        )
+
+    def _save(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+        original_entry: USEntry | None = None,
+    ) -> None:
+        """
+        Save USEntry to US.
+
+        :param entry: US entry to save
+        :param update_revision: Update revision on save
+        :param original_entry: Previous version of the entry for lifecycle hook handling
+        """
+
+        lifecycle_manager = self.get_lifecycle_manager(
+            entry=entry,
+            service_registry=self._services_registry,
+            original_entry=original_entry,
+        )
         lifecycle_manager.pre_save_hook()
 
         save_params = self._get_entry_save_params(entry)
@@ -155,6 +186,37 @@ class SyncUSManager(USManagerBase):
             save_params = self._prepare_update_entry_params(entry, False)
             assert entry.uuid is not None
             entry._us_resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
+
+    def create(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Create entry - alias for save without previous entry.
+        """
+
+        self._save(
+            entry=entry,
+            original_entry=None,
+            update_revision=update_revision,
+        )
+
+    def update(
+        self,
+        entry: USEntry,
+        original_entry: USEntry | None = None,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Update entry - alias for save with a previous/original entry.
+        """
+
+        self._save(
+            entry=entry,
+            original_entry=original_entry,
+            update_revision=update_revision,
+        )
 
     def delete(self, entry: USEntry) -> None:
         lifecycle_manager = self.get_lifecycle_manager(entry=entry)

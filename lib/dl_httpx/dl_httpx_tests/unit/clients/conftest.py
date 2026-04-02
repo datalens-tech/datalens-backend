@@ -1,11 +1,52 @@
+import contextlib
 import ssl
+import threading
+from typing import (
+    AsyncIterator,
+    Iterator,
+)
 
 import pytest
 import pytest_mock
 
 import dl_auth
+import dl_httpx
 import dl_retrier
 import dl_testing
+
+
+class AlwaysRateLimitLimiter:
+    @contextlib.contextmanager
+    def context(self) -> Iterator[None]:
+        raise dl_httpx.RateLimitHttpxClientException()
+
+    @contextlib.asynccontextmanager
+    async def context_async(self) -> AsyncIterator[None]:
+        raise dl_httpx.RateLimitHttpxClientException()
+        yield  # pragma: no cover
+
+
+class CountingRateLimitLimiter:
+    def __init__(self, failures: int) -> None:
+        self._failures = failures
+        self._n = 0
+        self._lock = threading.Lock()
+
+    @contextlib.contextmanager
+    def context(self) -> Iterator[None]:
+        with self._lock:
+            if self._n < self._failures:
+                self._n += 1
+                raise dl_httpx.RateLimitHttpxClientException()
+        yield
+
+    @contextlib.asynccontextmanager
+    async def context_async(self) -> AsyncIterator[None]:
+        with self._lock:
+            if self._n < self._failures:
+                self._n += 1
+                raise dl_httpx.RateLimitHttpxClientException()
+        yield
 
 
 @pytest.fixture(name="ssl_context")
@@ -60,3 +101,13 @@ def fixture_retry_policy_factory_settings() -> dl_retrier.RetryPolicyFactorySett
             RETRIES_COUNT=2,
         ),
     )
+
+
+@pytest.fixture(name="always_rate_limit_limiter")
+def fixture_always_rate_limit_limiter() -> dl_httpx.RateLimiterProtocol:
+    return AlwaysRateLimitLimiter()
+
+
+@pytest.fixture(name="counting_rate_limit_failures_two")
+def fixture_counting_rate_limit_failures_two() -> dl_httpx.RateLimiterProtocol:
+    return CountingRateLimitLimiter(2)

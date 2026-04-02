@@ -14,6 +14,8 @@ from typing import (
     overload,
 )
 
+import typing_extensions
+
 from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.crypto_keys import CryptoKeysConfig
@@ -217,8 +219,37 @@ class AsyncUSManager(USManagerBase):
                 break
         return us_resp
 
-    async def save(self, entry: USEntry, update_revision: Optional[bool] = None) -> None:
-        lifecycle_manager = self.get_lifecycle_manager(entry=entry)
+    @typing_extensions.deprecated("Use create/update instead", category=DeprecationWarning)
+    async def save(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+        original_entry: USEntry | None = None,
+    ) -> None:
+        await self._save(
+            entry=entry,
+            update_revision=update_revision,
+            original_entry=original_entry,
+        )
+
+    async def _save(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+        original_entry: USEntry | None = None,
+    ) -> None:
+        """
+        Save USEntry to US.
+
+        :param entry: US entry to save
+        :param update_revision: Update revision on save
+        :param original_entry: Previous version of the entry for lifecycle hook handling
+        """
+
+        lifecycle_manager = self.get_lifecycle_manager(
+            entry=entry,
+            original_entry=original_entry,
+        )
         lifecycle_manager.pre_save_hook()
 
         save_params = self._get_entry_save_params(entry)
@@ -244,6 +275,37 @@ class AsyncUSManager(USManagerBase):
             resp = await self._us_client.update_entry(entry.uuid, lock=entry._lock, **save_params)
 
         entry._us_resp = resp
+
+    async def create(
+        self,
+        entry: USEntry,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Create entry - alias for save without previous entry.
+        """
+
+        await self._save(
+            entry=entry,
+            original_entry=None,
+            update_revision=update_revision,
+        )
+
+    async def update(
+        self,
+        entry: USEntry,
+        original_entry: USEntry | None = None,
+        update_revision: bool | None = None,
+    ) -> None:
+        """
+        Update entry - alias for save with a previous/original entry.
+        """
+
+        await self._save(
+            entry=entry,
+            original_entry=original_entry,
+            update_revision=update_revision,
+        )
 
     async def delete(self, entry: USEntry) -> None:
         # TODO FIX: Use pre_delete_async_hook!!!

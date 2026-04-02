@@ -18,5 +18,6 @@ class EntryLifecycleManagerFactoryBase(abc.ABC):
         entry: USEntry,
         us_manager: USManagerBase,
         service_registry: ServicesRegistry,
+        original_entry: USEntry | None = None,
     ) -> EntryLifecycleManager:
         pass

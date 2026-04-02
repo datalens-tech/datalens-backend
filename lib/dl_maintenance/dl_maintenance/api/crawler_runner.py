@@ -35,7 +35,7 @@ async def run_crawler(
             )
             if req_id is not None
         )
-        with dl_logging.LogContext(request_id=req_id):
+        with dl_logging.LogContext(context={"request_id": req_id}):
             await crawler.run()
     finally:
         if configure_logging:

@@ -14,11 +14,13 @@ import respx
 import dl_auth
 import dl_constants
 import dl_httpx
+import dl_logging
 import dl_retrier
 
 
 LOGGER = logging.getLogger(__name__)
 REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
+TRACE_ID_HEADER = dl_constants.DLHeadersCommon.UBER_TRACE_ID.value
 
 
 @pytest.mark.asyncio
@@ -222,7 +224,7 @@ async def fixture_client_with_mocks(
         base_cookies={},
         base_headers={},
         retry_policy_factory=mock_retry_policy_factory,
-        base_client=httpx.AsyncClient(base_url="https://example.com"),
+        transport=httpx.AsyncHTTPTransport(),
         auth_provider=dl_auth.NoAuthProvider(),
         logger=LOGGER,
         debug_logging=True,
@@ -468,3 +470,159 @@ async def test_prepare_raw_request(
     ) as client:
         request = await client.prepare_raw_request("GET", "/api/data")
         assert request.headers["authorization"] == "OAuth test-token"
+
+
+@pytest.mark.asyncio
+async def test_rate_limit_propagates_from_send_async(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_retry_policy: unittest.mock.Mock,
+    mock_retry: dl_retrier.Retry,
+    always_rate_limit_limiter: dl_httpx.RateLimiterProtocol,
+) -> None:
+    mock_retry_policy.iter_retries.return_value = iter([mock_retry])
+    factory = unittest.mock.MagicMock(spec=dl_retrier.RetryPolicyFactory)
+    factory.get_policy.return_value = mock_retry_policy
+
+    mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
+    async with dl_httpx.HttpxAsyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            retry_policy_factory=factory,
+            rate_limiter=always_rate_limit_limiter,
+        ),
+    ) as client:
+        request = await client.prepare_raw_request("GET", "/api/data")
+        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+            async with client.send(request):
+                pass
+
+    assert mock_route.call_count == 0
+
+
+@pytest.mark.asyncio
+async def test_rate_limit_retries_exhausted_not_wrapped_async(
+    respx_mock: respx.MockRouter,
+    mock_retry_policy_factory: unittest.mock.Mock,
+    mock_retry_policy: unittest.mock.Mock,
+    always_rate_limit_limiter: dl_httpx.RateLimiterProtocol,
+) -> None:
+    mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
+    async with dl_httpx.HttpxAsyncClient(
+        base_url="https://example.com",
+        base_cookies={},
+        base_headers={},
+        retry_policy_factory=mock_retry_policy_factory,
+        transport=httpx.AsyncHTTPTransport(),
+        auth_provider=dl_auth.NoAuthProvider(),
+        logger=LOGGER,
+        debug_logging=True,
+        rate_limiter=always_rate_limit_limiter,
+    ) as client:
+        request = await client.prepare_raw_request("GET", "/api/data")
+        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+            async with client.send(request):
+                pass
+
+    assert mock_route.call_count == 0
+
+
+@pytest.mark.asyncio
+async def test_rate_limit_retries_then_succeeds_async(
+    respx_mock: respx.MockRouter,
+    mock_retry_policy_factory: unittest.mock.Mock,
+    mock_retry_policy: unittest.mock.Mock,
+    counting_rate_limit_failures_two: dl_httpx.RateLimiterProtocol,
+) -> None:
+    mock_route = respx_mock.get("https://example.com/api/data").respond(
+        status_code=200,
+        json={"ok": True},
+    )
+    async with dl_httpx.HttpxAsyncClient(
+        base_url="https://example.com",
+        base_cookies={},
+        base_headers={},
+        retry_policy_factory=mock_retry_policy_factory,
+        transport=httpx.AsyncHTTPTransport(),
+        auth_provider=dl_auth.NoAuthProvider(),
+        logger=LOGGER,
+        debug_logging=True,
+        rate_limiter=counting_rate_limit_failures_two,
+    ) as client:
+        request = await client.prepare_raw_request("GET", "/api/data")
+        async with client.send(request) as response:
+            assert response.status_code == 200
+
+    assert mock_route.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_send_sets_level1_logging_context(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+) -> None:
+    captured: dict = {}
+
+    def capture(request: httpx.Request) -> httpx.Response:
+        captured.update(dl_logging.get_log_context())
+        return httpx.Response(200)
+
+    respx_mock.get("https://example.com/api/data").mock(side_effect=capture)
+
+    async with dl_httpx.HttpxAsyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
+    ) as client:
+        request = await client.prepare_raw_request(
+            "GET",
+            "/api/data",
+            headers={
+                REQUEST_ID_HEADER: "test-req-id",
+                TRACE_ID_HEADER: "test-trace-id",
+            },
+        )
+        async with client.send(request):
+            pass
+
+    assert captured["client_request.url"] == "https://example.com/api/data"
+    assert captured["client_request.original.request_id"] == "test-req-id"
+    assert captured["client_request.original.trace_id"] == "test-trace-id"
+
+
+@pytest.mark.asyncio
+async def test_send_sets_level2_attempt_request_id(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    retry_policy_factory_settings: dl_retrier.RetryPolicyFactorySettings,
+) -> None:
+    captured_ids: list[str | None] = []
+
+    def capture(request: httpx.Request) -> httpx.Response:
+        ctx = dl_logging.get_log_context()
+        captured_ids.append(ctx.get("client_request.attempt.request_id"))
+        return httpx.Response(500)
+
+    respx_mock.get("https://example.com/api/data").mock(side_effect=capture)
+
+    async with HttpxAsyncTestClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
+                retry_policy_factory_settings,
+            ),
+        ),
+    ) as client:
+        request = await client.prepare_raw_request(
+            "GET",
+            "/api/data",
+            headers={REQUEST_ID_HEADER: "base-id"},
+        )
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
+            async with client.send(request):
+                pass
+
+    assert captured_ids == ["base-id", "base-id/2", "base-id/3"]
