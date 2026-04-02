@@ -491,7 +491,7 @@ class FilterFieldStorageSchema(DefaultStorageSchema):
 
     id = ma_fields.String(required=True)
     guid = ma_fields.String(required=True)
-    filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, default=list, load_default=list, dump_default=list)
+    filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, load_default=list, dump_default=list)
     valid = ma_fields.Boolean(load_default=True)
 
 
