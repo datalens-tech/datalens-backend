@@ -16,6 +16,15 @@ services:
       retries: 10
       start_period: 60s
 
+  init-starrocks-db:
+    image: mysql:8.0
+    depends_on:
+      db-starrocks-3:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "mysql -h db-starrocks-3 -P 9030 -u root -e 'CREATE DATABASE IF NOT EXISTS test_data'"
+    restart: "no"
+
   # INFRA - Required for DataLens tests
   pg-us:
     extends:
