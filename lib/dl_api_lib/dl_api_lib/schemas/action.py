@@ -261,7 +261,7 @@ class UpdateExtractActionSchema(ActionBaseSchema, DefaultValidateSchema[UpdateEx
     class ExtractPropertiesSchema(DefaultValidateSchema[UpdateExtractAction.ExtractProperties]):
         TARGET_CLS = UpdateExtractAction.ExtractProperties
 
-        mode = ma_fields.Enum(ExtractMode, dump_default=ExtractMode.disabled)
+        mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled, dump_default=ExtractMode.disabled)
 
         filters = ma_fields.Nested(FilterFieldSchema, many=True, load_default=list, dump_default=list)
         sorting = ma_fields.Nested(OrderFieldSchema, many=True, load_default=list, dump_default=list)

@@ -203,7 +203,7 @@ class UpdateExtractAction(Action):
     class ExtractProperties:
         mode: ExtractMode = attr.ib(default=ExtractMode.disabled)
         filters: list[FilterField] = attr.ib(factory=list)
-        sorting: list[OrderField] = attr.ib(default=attr.Factory(list))
+        sorting: list[OrderField] = attr.ib(factory=list)
 
     extract: ExtractProperties
 

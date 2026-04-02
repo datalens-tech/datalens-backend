@@ -206,7 +206,7 @@ class DatasetCopy(DatasetResource):
         ds_copy.reset_extract_properties()
 
         us_manager.create(ds_copy)
-        
+
         LOGGER.info("Dataset copy was saved with ID %s", ds_copy.uuid)
 
         return self.make_dataset_response_data(dataset=ds_copy, us_entry_buffer=us_manager.get_entry_buffer())
