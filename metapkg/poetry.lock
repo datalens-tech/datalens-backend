@@ -1862,6 +1862,19 @@ type = "directory"
 url = "../lib/dl_app_api_base"
 
 [[package]]
+name = "dl-app-api-ext-testing"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_app_api_ext_testing"
+
+[[package]]
 name = "dl-app-base"
 version = "0.0.1"
 description = ""
@@ -9650,4 +9663,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "118fe411a8ae6d5e14da409a4c10af19ae2e26597766ec88532a082f26504d69"
+content-hash = "d5d7db0409f401198c5b02b65fba8f82f9471b0723c607e09a607d64e925e710"
