@@ -89,6 +89,17 @@ class TestPostgreSQLSyncConnectionExecutor(
                 self.CD(pg_types.BOOLEAN(), UserDataType.boolean),
                 self.CD(pg_types.ENUM("var1", "var2", name=str(uuid.uuid4())), UserDataType.string),
             ],
+            "types_postgres_array": [
+                self.CD(pg_types.ARRAY(pg_types.SMALLINT()), UserDataType.array_int),
+                self.CD(pg_types.ARRAY(pg_types.INTEGER()), UserDataType.array_int),
+                self.CD(pg_types.ARRAY(pg_types.BIGINT()), UserDataType.array_int),
+                self.CD(pg_types.ARRAY(pg_types.REAL()), UserDataType.array_float),
+                self.CD(pg_types.ARRAY(pg_types.DOUBLE_PRECISION()), UserDataType.array_float),
+                self.CD(pg_types.ARRAY(pg_types.NUMERIC()), UserDataType.array_float),
+                self.CD(pg_types.ARRAY(pg_types.CHAR()), UserDataType.array_str),
+                self.CD(pg_types.ARRAY(pg_types.VARCHAR(100)), UserDataType.array_str),
+                self.CD(pg_types.ARRAY(pg_types.TEXT()), UserDataType.array_str),
+            ],
         }
 
 
