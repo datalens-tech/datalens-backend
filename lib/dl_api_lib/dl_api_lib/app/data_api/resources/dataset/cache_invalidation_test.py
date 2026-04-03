@@ -209,7 +209,6 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                 filter_specs=filter_specs,
                 meta=RawQueryMetaInfo(query_type=QueryType.result),
                 limit=2,
-                disable_rls=True,
                 group_by_policy=GroupByPolicy.disable,
             )
 

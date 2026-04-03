@@ -108,6 +108,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
             block_spec=block_spec,
             profiling_postfix=profiling_postfix,
             parameter_value_specs=parameter_value_specs,
+            cache_invalidation_payload=cache_invalidation_payload,
         )
 
     def load_req_model(self) -> DataRequestModel:

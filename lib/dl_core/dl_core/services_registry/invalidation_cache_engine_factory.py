@@ -37,7 +37,7 @@ class DefaultInvalidationCacheEngineFactory(InvalidationCacheEngineFactory):
     def get_cache_engine(self) -> Optional[InvalidationCacheEngine]:
         redis_client = self.service_registry.get_cache_invalidations_redis_client()
         if redis_client is None:
-            LOGGER.info("Can not create invalidation cache engine: service registry did not return a Redis client")
+            LOGGER.info("Cannot create invalidation cache engine: service registry did not return a Redis client")
             return None
 
         return InvalidationCacheEngine(

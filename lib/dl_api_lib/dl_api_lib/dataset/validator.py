@@ -153,7 +153,7 @@ def field_not_none(field: Optional[BIField]) -> BIField:
     return field
 
 
-def _validate_cache_invalidation_sql_mode(
+def validate_cache_invalidation_sql_mode(
     cache_invalidation_source: CacheInvalidationSource,
 ) -> CacheInvalidationError | None:
     """Validate SQL mode: sql field must be filled."""
@@ -226,7 +226,7 @@ def validate_cache_invalidation_source_fields_fill_by_mode(
     mode = cache_invalidation_source.mode
 
     if mode == CacheInvalidationMode.sql:
-        return _validate_cache_invalidation_sql_mode(cache_invalidation_source)
+        return validate_cache_invalidation_sql_mode(cache_invalidation_source)
     elif mode == CacheInvalidationMode.formula:
         error = _validate_cache_invalidation_formula_field_required(cache_invalidation_source)
         if error:
@@ -236,7 +236,7 @@ def validate_cache_invalidation_source_fields_fill_by_mode(
     return None
 
 
-def _validate_cache_invalidation_filters(
+def validate_cache_invalidation_filters(
     cache_invalidation_source: CacheInvalidationSource,
     result_schema: ResultSchema,
 ) -> CacheInvalidationError | None:
@@ -1984,9 +1984,9 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> CacheInvalidationError | None:
         """Validate filters for cache invalidation source.
 
-        Delegates to the standalone ``_validate_cache_invalidation_filters`` function.
+        Delegates to the standalone ``validate_cache_invalidation_filters`` function.
         """
-        return _validate_cache_invalidation_filters(
+        return validate_cache_invalidation_filters(
             cache_invalidation_source=cache_invalidation_source,
             result_schema=self._ds.result_schema,
         )

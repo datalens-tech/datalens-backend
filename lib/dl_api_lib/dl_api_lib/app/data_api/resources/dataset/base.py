@@ -40,6 +40,12 @@ from dl_api_lib.dataset.cache_invalidation import (
     get_invalidation_payload_formula,
     get_invalidation_payload_sql,
 )
+from dl_api_lib.dataset.validator import (
+    DatasetValidator,
+    validate_cache_invalidation_filters,
+    validate_cache_invalidation_source_fields_fill_by_mode,
+    validate_cache_invalidation_sql_mode,
+)
 from dl_api_lib.dataset.view import DatasetView
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
 from dl_api_lib.query.formalization.legend_formalizer import (
@@ -49,6 +55,13 @@ from dl_api_lib.query.formalization.legend_formalizer import (
     PreviewLegendFormalizer,
     RangeLegendFormalizer,
     ResultLegendFormalizer,
+)
+from dl_api_lib.query.formalization.raw_specs import (
+    IdFieldRef,
+    RawFilterFieldSpec,
+    RawQueryMetaInfo,
+    RawQuerySpecUnion,
+    RawSelectFieldSpec,
 )
 from dl_api_lib.request_model.data import (
     Action,
@@ -83,7 +96,10 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
 )
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_query_processing.compilation.specs import ParameterValueSpec
-from dl_query_processing.enums import QueryType
+from dl_query_processing.enums import (
+    GroupByPolicy,
+    QueryType,
+)
 from dl_query_processing.execution.exec_info import QueryExecutionInfo
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_query_processing.legend.field_legend import ParameterRoleSpec
@@ -672,10 +688,6 @@ class DatasetDataBaseView(BaseView):
 
     def _make_invalidation_sql_validate_func(self) -> Callable[[], CacheInvalidationError | None]:
         """Create a validation callback for SQL mode invalidation."""
-        from dl_api_lib.dataset.validator import (
-            _validate_cache_invalidation_sql_mode,
-            validate_cache_invalidation_source_fields_fill_by_mode,
-        )
 
         cache_invalidation_source = self.dataset.data.cache_invalidation_source
 
@@ -683,7 +695,7 @@ class DatasetDataBaseView(BaseView):
             error = validate_cache_invalidation_source_fields_fill_by_mode(cache_invalidation_source)
             if error is not None:
                 return error
-            return _validate_cache_invalidation_sql_mode(cache_invalidation_source)
+            return validate_cache_invalidation_sql_mode(cache_invalidation_source)
 
         return validate_func
 
@@ -693,11 +705,6 @@ class DatasetDataBaseView(BaseView):
         Creates a ``DatasetValidator`` to perform full formula compilation,
         type checking, SQL translation, and filter validation.
         """
-        from dl_api_lib.dataset.validator import (
-            DatasetValidator,
-            _validate_cache_invalidation_filters,
-            validate_cache_invalidation_source_fields_fill_by_mode,
-        )
 
         cache_invalidation_source = self.dataset.data.cache_invalidation_source
 
@@ -723,7 +730,7 @@ class DatasetDataBaseView(BaseView):
                 return error
 
             # Filter validation (standalone, needs result_schema)
-            return _validate_cache_invalidation_filters(
+            return validate_cache_invalidation_filters(
                 cache_invalidation_source=cache_invalidation_source,
                 result_schema=self.dataset.result_schema,
             )
@@ -772,15 +779,6 @@ class DatasetDataBaseView(BaseView):
         Execute the formula-mode invalidation query using the standard query pipeline.
         Similar to how cache_invalidation_test.py handles formula mode.
         """
-        from dl_api_lib.query.formalization.raw_specs import (
-            IdFieldRef,
-            RawFilterFieldSpec,
-            RawQueryMetaInfo,
-            RawQuerySpecUnion,
-            RawSelectFieldSpec,
-        )
-        from dl_query_processing.enums import GroupByPolicy
-
         cache_invalidation_source = self.dataset.data.cache_invalidation_source
         field = cache_invalidation_source.field
         if field is None or not field.formula.strip():
@@ -814,7 +812,6 @@ class DatasetDataBaseView(BaseView):
                 filter_specs=filter_specs,
                 meta=RawQueryMetaInfo(query_type=QueryType.result),
                 limit=2,
-                disable_rls=True,
                 group_by_policy=GroupByPolicy.disable,
             )
 
