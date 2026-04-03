@@ -2541,6 +2541,8 @@ develop = true
 [package.dependencies]
 aiomysql = ">=0.1.1"
 attrs = ">=22.2.0"
+dl-api-commons = {path = "../dl_api_commons"}
+dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-connector-mysql = {path = "../dl_connector_mysql"}
 dl-constants = {path = "../dl_constants"}

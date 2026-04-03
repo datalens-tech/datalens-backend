@@ -18,6 +18,7 @@ from dl_core.us_connection_base import (
 )
 from dl_i18n.localizer_base import Localizer
 
+from dl_connector_starrocks.api.i18n.localizer import Translatable
 from dl_connector_starrocks.core.constants import (
     CONNECTION_TYPE_STARROCKS,
     GET_STARROCKS_CATALOGS_QUERY,
@@ -28,10 +29,6 @@ from dl_connector_starrocks.core.constants import (
 )
 from dl_connector_starrocks.core.dto import StarRocksConnDTO
 from dl_connector_starrocks.core.settings import StarRocksConnectorSettings
-
-
-# TODO: BI-7167
-# from dl_connector_starrocks.api.i18n.localizer import Translatable
 
 
 class ConnectionStarRocks(
@@ -97,9 +94,7 @@ class ConnectionStarRocks(
                     disabled=not self.is_subselect_allowed,
                     template_enabled=self.is_datasource_template_allowed,
                     db_name_form_enabled=True,
-                    db_name_form_title="PLACEHOLDER",
-                    # TODO: BI-7167
-                    # db_name_form_title=localizer.translate(Translatable("source_templates-label-starrocks_catalog")),
+                    db_name_form_title=localizer.translate(Translatable("source_templates-label-starrocks_catalog")),
                     schema_name_form_enabled=True,
                 )
             )
@@ -178,6 +173,4 @@ class ConnectionStarRocks(
 
     @classmethod
     def get_db_name_label(cls, localizer: Localizer) -> str | None:
-        # TODO: BI-7167
-        # return localizer.translate(Translatable("db_name-label"))
-        return "DB_NAME_LABEL_PLACEHOLDER"
+        return localizer.translate(Translatable("db_name-label"))
