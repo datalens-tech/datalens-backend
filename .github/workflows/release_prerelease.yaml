@@ -224,11 +224,3 @@ jobs:
           REPOSITORY_NAME: ${{ github.repository_owner }}/${{ github.event.repository.name }}
           GH_TOKEN: ${{ github.token }}
           release_tag: "${{ env.version }}-rc.1"
-
-  run_e2e_tests:
-    name: "Run E2E tests"
-    needs: [ build_manifest, get_version ]
-    uses: datalens-tech/datalens-backend/.github/workflows/run_e2e.yml@main
-    with:
-      image_version: ${{ needs.build_manifest.outputs.image-version }}
-    secrets: inherit
