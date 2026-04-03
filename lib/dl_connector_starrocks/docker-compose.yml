@@ -1,8 +1,6 @@
 services:
   db-starrocks-3:
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.db-starrocks-3
+    image: starrocks/allin1-ubuntu:3.1-latest
     ports:
       - "59030:9030"  # MySQL protocol port
       - "58030:8030"  # HTTP port
