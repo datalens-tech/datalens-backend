@@ -8,23 +8,23 @@ the main cache key changes → cache miss → fresh data is fetched.
 
 Key format (RCL data key)::
 
-    bic_cache_inval/data:cache_inval_{sha256(dataset_id + dataset_rev_id + conn_id + conn_rev_id)}
+    bic_cache_inval/data:cache_inval_{sha256(dataset_id + ":" + dataset_rev_id + ":" + conn_id + ":" + conn_rev_id)}
 
 Value format (JSON)::
 
     {
         "status": "success" | "error",
+        "executed_at": 1642242600,  // unix timestamp
+        // On success:
         "payload": {
-            // On success:
             "data": "<result of invalidation query>"
         },
-        // OR on error:
+        // On error:
         "payload": {
             "error_code": "ERR.DS....",
             "error_message": "Query timeout exceeded: 5s",
             "error_details": { ... }
-        },
-        "executed_at": 1642242600  // unix timestamp
+        }
     }
 
 Uses ``RedisCacheLock`` to prevent multiple workers from executing the invalidation
@@ -43,7 +43,7 @@ Flow overview (inside ``CacheExecAdapter._execute_and_fetch``)::
        a. RCL checks its data key — if data exists (TTL not expired), returns it
        b. If no data — first worker acquires lock, executes invalidation query, saves entry
        c. Other workers wait via Pub/Sub and receive the result
-    4. Add payload as DataKeyPart("invalidation_payload", payload) to main cache key
+    4. Add payload as DataKeyPart("cache_invalidation_payload", payload) to main cache key
     5. Proceed with standard CacheProcessingHelper.run_with_cache()
 """
 
@@ -104,9 +104,7 @@ class InvalidationCacheKey:
     connection_revision_id: str
 
     def to_redis_key(self) -> str:
-        raw = (
-            f"{self.dataset_id}" f"{self.dataset_revision_id}" f"{self.connection_id}" f"{self.connection_revision_id}"
-        )
+        raw = f"{self.dataset_id}:{self.dataset_revision_id}:{self.connection_id}:{self.connection_revision_id}"
         key_hash = hashlib.sha256(raw.encode("utf-8")).hexdigest()
         return f"{KEY_PREFIX}{key_hash}"
 

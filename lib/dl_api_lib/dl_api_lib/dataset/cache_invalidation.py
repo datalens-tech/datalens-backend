@@ -15,6 +15,7 @@ import asyncio
 import logging
 from typing import (
     TYPE_CHECKING,
+    Any,
     Awaitable,
     Callable,
     Optional,
@@ -65,6 +66,22 @@ def _make_entry_result(entry: InvalidationCacheEntry) -> tuple[bytes, Invalidati
     return entry.to_json_bytes(), entry
 
 
+def _validate_payload_value(value: Any) -> InvalidationCacheEntry | None:
+    if not isinstance(value, str):
+        return InvalidationCacheEntry.make_error(
+            error_code="NON_STRING_RESULT",
+            error_message=f"Cache invalidation query returned {type(value).__name__}, expected string",
+        )
+    if len(value) > _MAX_PAYLOAD_VALUE_LENGTH:
+        return InvalidationCacheEntry.make_error(
+            error_code="VALUE_TOO_LONG",
+            error_message=(
+                f"Cache invalidation value exceeds {_MAX_PAYLOAD_VALUE_LENGTH} characters " f"(got {len(value)})"
+            ),
+        )
+    return None
+
+
 async def get_invalidation_payload_sql(
     *,
     dataset: Dataset,
@@ -107,7 +124,7 @@ async def get_invalidation_payload_sql(
         return None
 
     # Get InvalidationCacheEngine from ServicesRegistry
-    inval_factory = services_registry.get_invalidation_cache_engine_factory()
+    inval_factory = services_registry.get_cache_invalidation_engine_factory()
     inval_engine = inval_factory.get_cache_engine()
     if inval_engine is None:
         LOGGER.debug("Invalidation cache engine is not available, skipping invalidation check")
@@ -131,7 +148,7 @@ async def get_invalidation_payload_sql(
     # Create CacheProcessingHelper and check invalidation
     helper = CacheProcessingHelper(
         cache_engine=None,  # We don't need the main cache engine here
-        invalidation_cache_engine=inval_engine,
+        cache_invalidation_engine=inval_engine,
     )
 
     try:
@@ -152,7 +169,7 @@ async def get_invalidation_payload_formula(
     ds_accessor: DatasetComponentAccessor,
     us_manager: AsyncUSManager,
     services_registry: ServicesRegistry,
-    execute_formula_func: Callable[[], Awaitable[Optional[str]]],
+    execute_formula_func: Callable[[], Awaitable[Any]],
     validate_func: TValidateFunc | None = None,
 ) -> Optional[str]:
     """
@@ -183,7 +200,7 @@ async def get_invalidation_payload_formula(
     if throttling_interval_sec is None:
         return None
 
-    inval_factory = services_registry.get_invalidation_cache_engine_factory()
+    inval_factory = services_registry.get_cache_invalidation_engine_factory()
     inval_engine = inval_factory.get_cache_engine()
     if inval_engine is None:
         return None
@@ -222,7 +239,12 @@ async def get_invalidation_payload_formula(
                     error_message="Formula invalidation query returned no result",
                 )
                 return _make_entry_result(entry)
-            entry = InvalidationCacheEntry.make_success(data=str(payload_str))
+
+            validation_entry = _validate_payload_value(payload_str)
+            if validation_entry is not None:
+                return _make_entry_result(validation_entry)
+
+            entry = InvalidationCacheEntry.make_success(data=payload_str)
             return _make_entry_result(entry)
         except asyncio.TimeoutError:
             LOGGER.warning(
@@ -244,7 +266,7 @@ async def get_invalidation_payload_formula(
 
     helper = CacheProcessingHelper(
         cache_engine=None,
-        invalidation_cache_engine=inval_engine,
+        cache_invalidation_engine=inval_engine,
     )
 
     try:
@@ -351,22 +373,9 @@ def _make_sql_generate_func(
                 return _make_entry_result(entry)
 
             value = row[0]
-            if not isinstance(value, str):
-                entry = InvalidationCacheEntry.make_error(
-                    error_code="NON_STRING_RESULT",
-                    error_message=f"Cache invalidation query returned {type(value).__name__}, expected string",
-                )
-                return _make_entry_result(entry)
-
-            if len(value) > _MAX_PAYLOAD_VALUE_LENGTH:
-                entry = InvalidationCacheEntry.make_error(
-                    error_code="VALUE_TOO_LONG",
-                    error_message=(
-                        f"Cache invalidation value exceeds {_MAX_PAYLOAD_VALUE_LENGTH} characters "
-                        f"(got {len(value)})"
-                    ),
-                )
-                return _make_entry_result(entry)
+            validation_entry = _validate_payload_value(value)
+            if validation_entry is not None:
+                return _make_entry_result(validation_entry)
 
             entry = InvalidationCacheEntry.make_success(data=value)
             return _make_entry_result(entry)

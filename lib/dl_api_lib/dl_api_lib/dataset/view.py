@@ -174,7 +174,7 @@ class DatasetView(DatasetBaseWrapper):
     def make_query_executor(
         self,
         allow_cache_usage: bool,
-        invalidation_cache_payload: str | None = None,
+        cache_invalidation_payload: str | None = None,
     ) -> QueryExecutor:
         return QueryExecutor(
             dataset=self._ds,
@@ -185,7 +185,7 @@ class DatasetView(DatasetBaseWrapper):
             us_manager=self._us_manager,
             compeng_semaphore=self._compeng_semaphore,
             parameter_value_specs=self._parameter_value_specs,
-            invalidation_cache_payload=invalidation_cache_payload,
+            cache_invalidation_payload=cache_invalidation_payload,
         )
 
     @property
@@ -250,10 +250,10 @@ class DatasetView(DatasetBaseWrapper):
         self,
         exec_info: QueryExecutionInfo,
         allow_cache_usage: bool = True,
-        invalidation_cache_payload: str | None = None,
+        cache_invalidation_payload: str | None = None,
     ) -> ExecutedQuery:
         executor = self.make_query_executor(
             allow_cache_usage=allow_cache_usage,
-            invalidation_cache_payload=invalidation_cache_payload,
+            cache_invalidation_payload=cache_invalidation_payload,
         )
         return await executor.execute_query(exec_info)

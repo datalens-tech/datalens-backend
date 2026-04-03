@@ -39,7 +39,7 @@ class CacheInvalidationDataFlowBase(DefaultApiTestBase):
     so that the invalidation cache is actually used.
     """
 
-    invalidation_caches_enabled = True
+    cache_invalidations_enabled = True
     data_caches_enabled = True
     raw_sql_level = RawSQLLevel.subselect
 

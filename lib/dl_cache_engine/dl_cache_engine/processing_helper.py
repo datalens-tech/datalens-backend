@@ -54,7 +54,7 @@ class CacheSituation(enum.IntEnum):
 @attr.s
 class CacheProcessingHelper:
     _cache_engine: Optional[EntityCacheEngineAsync] = attr.ib(kw_only=True)
-    _invalidation_cache_engine: Optional[InvalidationCacheEngine] = attr.ib(kw_only=True, default=None)
+    _cache_invalidation_engine: Optional[InvalidationCacheEngine] = attr.ib(kw_only=True, default=None)
 
     error_ttl_sec: ClassVar[float] = 1.5
 
@@ -107,7 +107,7 @@ class CacheProcessingHelper:
            - Other concurrent workers wait via Pub/Sub and receive the result.
         3. On success, return the payload. On error/None, return None (graceful degradation).
         """
-        engine = self._invalidation_cache_engine
+        engine = self._cache_invalidation_engine
         if engine is None:
             return None
 

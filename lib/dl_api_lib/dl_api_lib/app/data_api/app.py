@@ -329,7 +329,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             if self._settings.INVALIDATION_CACHES_REDIS.MODE == RedisMode.single_host:
                 invalidation_redis_server: SingleHostSimpleRedisService | RedisSentinelService = (
                     SingleHostSimpleRedisService(
-                        instance_kind=RedisInstanceKind.invalidation_caches,
+                        instance_kind=RedisInstanceKind.cache_invalidations,
                         url=self._settings.INVALIDATION_CACHES_REDIS.as_single_host_url(),
                         password=self._settings.INVALIDATION_CACHES_REDIS.PASSWORD,
                         ssl=self._settings.INVALIDATION_CACHES_REDIS.SSL,
@@ -337,7 +337,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 )
             elif self._settings.INVALIDATION_CACHES_REDIS.MODE == RedisMode.sentinel:
                 invalidation_redis_server = RedisSentinelService(
-                    instance_kind=RedisInstanceKind.invalidation_caches,
+                    instance_kind=RedisInstanceKind.cache_invalidations,
                     namespace=self._settings.INVALIDATION_CACHES_REDIS.CLUSTER_NAME,
                     sentinel_hosts=self._settings.INVALIDATION_CACHES_REDIS.HOSTS,
                     sentinel_port=self._settings.INVALIDATION_CACHES_REDIS.PORT,

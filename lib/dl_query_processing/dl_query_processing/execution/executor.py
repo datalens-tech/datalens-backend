@@ -72,7 +72,7 @@ class QueryExecutor:
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _compeng_semaphore: asyncio.Semaphore = attr.ib(kw_only=True)
     _parameter_value_specs: list[ParameterValueSpec] | None = attr.ib(kw_only=True, default=None)
-    _invalidation_cache_payload: Optional[str] = attr.ib(kw_only=True, default=None)
+    _cache_invalidation_payload: Optional[str] = attr.ib(kw_only=True, default=None)
 
     @property
     def _service_registry(self) -> ServicesRegistry:
@@ -329,10 +329,10 @@ class QueryExecutor:
             result_id = avatar_id
 
             data_key = prep_src_info.data_key
-            if self._invalidation_cache_payload is not None:
+            if self._cache_invalidation_payload is not None:
                 data_key = data_key.extend(
-                    part_type="invalidation_cache_payload",
-                    part_content=self._invalidation_cache_payload,
+                    part_type="cache_invalidation_payload",
+                    part_content=self._cache_invalidation_payload,
                 )
                 prep_src_info = prep_src_info.clone(data_key=data_key)
 

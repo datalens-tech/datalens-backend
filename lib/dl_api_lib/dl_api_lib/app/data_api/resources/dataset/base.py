@@ -730,7 +730,7 @@ class DatasetDataBaseView(BaseView):
 
         return validate_func
 
-    async def _get_invalidation_cache_payload(self) -> str | None:
+    async def _get_cache_invalidation_payload(self) -> str | None:
         """Get the invalidation cache payload for the current dataset, if configured."""
         cache_invalidation_source = self.dataset.data.cache_invalidation_source
         mode = cache_invalidation_source.mode
@@ -753,7 +753,7 @@ class DatasetDataBaseView(BaseView):
         if mode == CacheInvalidationMode.formula:
             # For formula mode, we need to execute the formula query.
             # The execute_formula_func will be called only when the cache is stale.
-            async def execute_formula_func() -> str | None:
+            async def execute_formula_func() -> Any:
                 return await self._execute_invalidation_formula_query()
 
             return await get_invalidation_payload_formula(
@@ -767,7 +767,7 @@ class DatasetDataBaseView(BaseView):
 
         return None
 
-    async def _execute_invalidation_formula_query(self) -> str | None:
+    async def _execute_invalidation_formula_query(self) -> Any:
         """
         Execute the formula-mode invalidation query using the standard query pipeline.
         Similar to how cache_invalidation_test.py handles formula mode.
@@ -837,7 +837,7 @@ class DatasetDataBaseView(BaseView):
             if not row_data:
                 return None
 
-            return str(row_data[0])
+            return row_data[0]
 
         finally:
             # Clean up: remove the temporary field from result_schema
@@ -853,18 +853,12 @@ class DatasetDataBaseView(BaseView):
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
-        skip_invalidation_check: bool = False,
         allow_cache_usage: bool | None = None,
+        cache_invalidation_payload: str | None = None,
     ) -> PostprocessedQuery:
         # TODO: Move to a separate class
 
         us_manager = self.dl_request.us_manager
-
-        # Get invalidation cache payload before building the main query
-        invalidation_cache_payload: str | None = None
-        if not skip_invalidation_check:
-            with GenericProfiler(f"{self.profiler_prefix}-invalidation-cache-check{profiling_postfix}"):
-                invalidation_cache_payload = await self._get_invalidation_cache_payload()
 
         ds_view = DatasetView(
             ds=self.dataset,
@@ -882,7 +876,7 @@ class DatasetDataBaseView(BaseView):
             executed_query = await ds_view.get_data_async(
                 exec_info=exec_info,
                 allow_cache_usage=effective_allow_cache,
-                invalidation_cache_payload=invalidation_cache_payload,
+                cache_invalidation_payload=cache_invalidation_payload,
             )
             if possible_data_lengths is not None:
                 assert len(executed_query.rows) in possible_data_lengths
@@ -900,10 +894,16 @@ class DatasetDataBaseView(BaseView):
         raw_query_spec_union: RawQuerySpecUnion,
         autofill_legend: bool,
         call_post_exec_async_hook: bool = False,
-        skip_invalidation_check: bool = False,
+        skip_invalidation_check: bool = True,
         allow_cache_usage: bool | None = None,
     ) -> MergedQueryDataStream:
         # TODO: Move to a separate class
+
+        # Compute invalidation payload once for all blocks
+        cache_invalidation_payload: str | None = None
+        if not skip_invalidation_check:
+            with GenericProfiler(f"{self.profiler_prefix}-invalidation-cache-check"):
+                cache_invalidation_payload = await self._get_cache_invalidation_payload()
 
         legend_formalizer = self.make_legend_formalizer(
             query_type=raw_query_spec_union.meta.query_type, autofill_legend=autofill_legend
@@ -925,8 +925,8 @@ class DatasetDataBaseView(BaseView):
                 self.execute_query(
                     block_spec=block_spec,
                     parameter_value_specs=self._get_parameter_value_specs(raw_query_spec_union=raw_query_spec_union),
-                    skip_invalidation_check=skip_invalidation_check,
                     allow_cache_usage=allow_cache_usage,
+                    cache_invalidation_payload=cache_invalidation_payload,
                 )
             )
         executed_queries = await runner.finalize()

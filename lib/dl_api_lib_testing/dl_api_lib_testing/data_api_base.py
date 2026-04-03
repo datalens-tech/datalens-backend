@@ -55,7 +55,7 @@ class DataApiTestParams(NamedTuple):
 class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     mutation_caches_enabled: ClassVar[bool] = True
     data_caches_enabled: ClassVar[bool] = True
-    invalidation_caches_enabled: ClassVar[bool] = False
+    cache_invalidations_enabled: ClassVar[bool] = False
 
     @pytest.fixture
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -112,7 +112,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
         )
 
         extra_kwargs: dict = {}
-        if self.invalidation_caches_enabled:
+        if self.cache_invalidations_enabled:
             redis_setting_maker = bi_test_config.core_test_config.get_redis_setting_maker()
             redis_settings = redis_setting_maker.get_redis_settings_cache_invalidation()
             extra_kwargs["INVALIDATION_CACHES_ON"] = True
