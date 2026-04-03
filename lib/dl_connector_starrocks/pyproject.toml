@@ -74,7 +74,6 @@ requires = [
 [datalens.pytest.db]
 labels = ["fat"]
 root_dir = "dl_connector_starrocks_tests/"
-skip_tests = true # TODO: BI-7193
 target_path = "db"
 
 [datalens.pytest.unit]

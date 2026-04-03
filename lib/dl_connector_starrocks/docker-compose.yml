@@ -1,8 +1,6 @@
 services:
   db-starrocks-3:
-    build:
-      context: docker-compose
-      dockerfile: Dockerfile.db-starrocks-3
+    image: starrocks/allin1-ubuntu:3.1-latest
     ports:
       - "59030:9030"  # MySQL protocol port
       - "58030:8030"  # HTTP port
@@ -15,6 +13,15 @@ services:
       timeout: 10s
       retries: 10
       start_period: 60s
+
+  init-starrocks-db:
+    image: mysql:8.0
+    depends_on:
+      db-starrocks-3:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "mysql -h db-starrocks-3 -P 9030 -u root -e 'CREATE DATABASE IF NOT EXISTS test_data'"
+    restart: "no"
 
   # INFRA - Required for DataLens tests
   pg-us:
