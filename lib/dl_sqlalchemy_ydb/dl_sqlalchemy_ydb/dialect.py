@@ -80,6 +80,8 @@ class YqlTimestamp(sa.types.DateTime):
 
             return f'Timestamp("{ formatted_dt }")'
 
+        return process
+
 
 class YqlTimestamp64(YqlTimestamp):
     __visit_name__ = "Timestamp64"
