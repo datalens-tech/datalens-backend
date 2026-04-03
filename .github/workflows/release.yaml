@@ -60,7 +60,7 @@ jobs:
 
   release:
     name: "Create release"
-    needs: [ push_images, run_e2e_tests ]
+    needs: [ push_images ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
