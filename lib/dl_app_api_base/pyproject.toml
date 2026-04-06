@@ -27,6 +27,7 @@ python = ">=3.10, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
+dl-app-api-ext-testing = {path = "../dl_app_api_ext_testing"}
 pytest = "*"
 pytest-asyncio = "*"
 
