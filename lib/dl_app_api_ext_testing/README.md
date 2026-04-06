@@ -1,3 +1,3 @@
 # dl-app-api-ext-testing
 
-TODO: Add short description about what's package main purpose in life.
+Package for blackbox ext testing of dl_app_api_base apps.

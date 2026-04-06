@@ -1,3 +1,3 @@
 # dl-connector-starrocks
 
-TODO: Add short description about what's package main purpose in life.
+DataLens connector for StarRocks. Provides connection configuration, data sources, query compilation, type transformation, and sync/async adapters for executing queries against StarRocks databases.
