@@ -16,17 +16,10 @@ import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
-
-if sa_version.startswith("2."):
-    from sqlalchemy import (
-        ColumnElement,
-        FunctionElement,
-    )
-else:
-    from sqlalchemy.sql.expression import (
-        ColumnElement,
-        FunctionElement,
-    )
+from sqlalchemy.sql.expression import (
+    ColumnElement,
+    FunctionElement,
+)
 
 
 class YqlListType(ydb_sa.types.ListType):
