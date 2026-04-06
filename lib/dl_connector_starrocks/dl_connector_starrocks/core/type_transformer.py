@@ -41,7 +41,7 @@ class StarRocksTypeTransformer(TypeTransformer):
         UserDataType.genericdatetime: make_native_type(mysql_types.DATETIME),
         UserDataType.geopoint: make_native_type(mysql_types.TEXT),
         UserDataType.geopolygon: make_native_type(mysql_types.TEXT),
-        UserDataType.uuid: make_native_type(mysql_types.VARCHAR),
+        UserDataType.uuid: make_native_type(mysql_types.TEXT),
         UserDataType.markup: make_native_type(mysql_types.TEXT),
         UserDataType.array_int: make_native_type(mysql_types.TEXT),
         UserDataType.array_str: make_native_type(mysql_types.TEXT),

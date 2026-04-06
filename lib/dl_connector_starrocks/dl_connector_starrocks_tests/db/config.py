@@ -32,7 +32,7 @@ class CoreConnectionSettings:
 
 
 DB_URLS = {
-    D.STARROCKS_3_0: f"bi_starrocks://root@{get_test_container_hostport('db-starrocks-3', fallback_port=59030).as_pair()}/test_data"
+    D.STARROCKS_3_0: f"bi_starrocks://root@{get_test_container_hostport('db-starrocks-3', fallback_port=59030).as_pair()}/{CoreConnectionSettings.DB_NAME}"
 }
 DB_CORE_URL = DB_URLS[D.STARROCKS_3_0]
 
