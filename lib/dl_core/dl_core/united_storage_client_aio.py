@@ -119,6 +119,7 @@ class UStorageClientAIO(UStorageClientBase):
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         context_request_id: Optional[str] = None,
         context_forwarded_for: Optional[str] = None,
+        context_real_ip: Optional[str] = None,
         context_workbook_id: Optional[str] = None,
     ):
         super().__init__(
@@ -128,6 +129,7 @@ class UStorageClientAIO(UStorageClientBase):
             retry_policy_factory=retry_policy_factory,
             context_request_id=context_request_id,
             context_forwarded_for=context_forwarded_for,
+            context_real_ip=context_real_ip,
             context_workbook_id=context_workbook_id,
         )
 

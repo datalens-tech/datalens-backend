@@ -290,6 +290,7 @@ class UStorageClientBase:
         prefix: str | None = None,
         context_request_id: str | None = None,
         context_forwarded_for: str | None = None,
+        context_real_ip: str | None = None,
         context_workbook_id: str | None = None,
     ):
         self.host = host
@@ -305,6 +306,8 @@ class UStorageClientBase:
         self._default_headers = self._auth_ctx_to_default_headers(auth_ctx)
         if context_forwarded_for is not None:
             self._default_headers[DLHeadersCommon.FORWARDED_FOR.value] = context_forwarded_for
+        if context_real_ip is not None:
+            self._default_headers[DLHeadersCommon.REAL_IP.value] = context_real_ip
         if context_workbook_id is not None:
             self._default_headers[DLHeadersCommon.WORKBOOK_ID.value] = context_workbook_id
         # Initial cookies for HTTP session
@@ -732,6 +735,7 @@ class UStorageClient(UStorageClientBase):
         prefix: str | None = None,
         context_request_id: str | None = None,
         context_forwarded_for: str | None = None,
+        context_real_ip: str | None = None,
         context_workbook_id: str | None = None,
     ):
         super().__init__(
@@ -741,6 +745,7 @@ class UStorageClient(UStorageClientBase):
             retry_policy_factory=retry_policy_factory,
             context_request_id=context_request_id,
             context_forwarded_for=context_forwarded_for,
+            context_real_ip=context_real_ip,
             context_workbook_id=context_workbook_id,
         )
 
