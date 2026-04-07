@@ -9,5 +9,5 @@ DIALECT_NAME_STARROCKS = DialectName.declare("STARROCKS")
 
 
 class StarRocksDialect(DialectNamespace):
-    STARROCKS_3_0 = simple_combo(name=DIALECT_NAME_STARROCKS, version=(3, 0))
-    STARROCKS = STARROCKS_3_0
+    STARROCKS_3_2 = simple_combo(name=DIALECT_NAME_STARROCKS, version=(3, 2))
+    STARROCKS = STARROCKS_3_2
