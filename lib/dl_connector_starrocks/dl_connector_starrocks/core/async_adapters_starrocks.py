@@ -18,7 +18,6 @@ import sqlalchemy as sa
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.types import TBIChunksGen
 from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncDBVersionAdapterAction
-from dl_core.connection_executors.adapters.adapter_actions.db_version import AsyncDBVersionAdapterActionViaFunctionQuery
 from dl_core.connection_executors.adapters.async_adapters_base import (
     AsyncCache,
     AsyncDirectDBAdapter,
@@ -40,6 +39,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
     ExecutionStepDataChunk,
 )
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
+from dl_core.connection_models.common_models import DBIdent
 from dl_core.connectors.base.error_handling import ETBasedExceptionMaker
 from dl_sqlalchemy_starrocks.base import BIStarRocksDialect
 
@@ -52,6 +52,20 @@ from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+@attr.s(frozen=True)
+class AsyncStarRocksDBVersionAction(AsyncDBVersionAdapterAction):
+    _async_adapter: AsyncDirectDBAdapter = attr.ib(kw_only=True)
+
+    async def run_db_version_action(self, db_ident: DBIdent) -> str | None:
+        query = DBAdapterQuery(sa.select([sa.text("current_version()")]), db_name=db_ident.db_name)
+        result = await self._async_adapter.execute(query)
+        async for chunk in result.raw_chunk_generator:
+            if chunk:
+                return str(chunk[0][0])
+        return None
+
 
 _DBA_ASYNC_STARROCKS_TV = TypeVar("_DBA_ASYNC_STARROCKS_TV", bound="AsyncStarRocksAdapter")
 
@@ -79,7 +93,7 @@ class AsyncStarRocksAdapter(
     )
 
     def _make_async_db_version_action(self) -> AsyncDBVersionAdapterAction:
-        return AsyncDBVersionAdapterActionViaFunctionQuery(async_adapter=self)
+        return AsyncStarRocksDBVersionAction(async_adapter=self)
 
     @property
     def _dialect(self) -> sa.engine.default.DefaultDialect:
