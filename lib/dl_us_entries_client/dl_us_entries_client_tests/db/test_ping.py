@@ -7,8 +7,7 @@ import dl_us_entries_client
 async def test_ping(
     us_entries_client: dl_us_entries_client.USEntriesAsyncClient,
 ) -> None:
-    response = await us_entries_client.ping(dl_us_entries_client.PingRequest())
-    assert response.result == "pong"
+    await us_entries_client.ping(dl_us_entries_client.PingRequest())
 
 
 @pytest.mark.asyncio

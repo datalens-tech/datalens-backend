@@ -25,10 +25,6 @@ class PingRequest(dl_httpx.BaseRequest):
         return "GET"
 
 
-class PingResponse(dl_httpx.BaseResponseSchema):
-    result: str
-
-
 class BaseRequest(dl_httpx.BaseRequest):
     auth_provider: dl_auth.AuthProviderProtocol
 
