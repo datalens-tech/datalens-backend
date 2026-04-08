@@ -11,6 +11,7 @@ version = "0.0.1"
 attrs = "*"
 dl-app-api-base = {path = "../dl_app_api_base"}
 dl-app-base = {path = "../dl_app_base"}
+dl-dynconfig = {path = "../dl_dynconfig"}
 dl-json = {path = "../dl_json"}
 dl-logging = {path = "../dl_logging"}
 dl-pydantic = {path = "../dl_pydantic"}
@@ -50,3 +51,7 @@ requires = [
 [datalens.pytest.db]
 root_dir = "dl_temporal_tests/"
 target_path = "db"
+
+[datalens.pytest.unit]
+root_dir = "dl_temporal_tests/"
+target_path = "unit"
