@@ -68,10 +68,9 @@ class USEntriesAsyncClient:
             LOGGER.exception("USEntriesAsyncClient.check_readiness failed")
             return False
 
-    async def ping(self, request: models.PingRequest) -> models.PingResponse:
+    async def ping(self, request: models.PingRequest) -> None:
         prepared = await self._base_client.prepare_request(request=request)
-        response = await self._send(prepared)
-        return models.PingResponse.model_validate(response.json())
+        await self._send(prepared)
 
     async def get_entry(self, request: models.EntryGetRequest) -> models.EntryGetResponse:
         prepared = await self._base_client.prepare_request(request=request)
