@@ -38,6 +38,7 @@ from dl_core.us_manager.settings import USClientSettings
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 import dl_settings
+from dl_utils.utils import make_url
 
 
 @attr.s(frozen=True)
@@ -377,6 +378,29 @@ def postload_connectors_settings(value: dict[str, ConnectorSettings]) -> dict[st
     return value
 
 
+class RedisPydanticSettings(dl_settings.BaseSettings):
+    MODE: RedisMode
+    CLUSTER_NAME: str = ""
+    HOSTS: Annotated[
+        tuple[str, ...],
+        dl_settings.split_validator(","),
+    ] = ()
+    PORT: int = 6379
+    DB: int = 0
+    PASSWORD: str = pydantic.Field(repr=False)
+    SSL: bool | None = None
+    SOCKET_TIMEOUT: float = 0.0
+    SOCKET_CONNECT_TIMEOUT: float = 0.0
+
+    def as_single_host_url(self) -> str:
+        return make_url(
+            protocol="rediss" if self.SSL else "redis",
+            host=self.HOSTS[0],
+            port=self.PORT,
+            path=str(self.DB),
+        )
+
+
 class ConnectorsSettingsMixin(AppSettings):
     CONNECTORS: Annotated[
         dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings],
@@ -394,6 +418,9 @@ class ControlApiAppSettings(ConnectorsSettingsMixin):
 class DataApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
+
+    INVALIDATION_CACHES_ON: bool = False
+    INVALIDATION_CACHES_REDIS: RedisPydanticSettings | None = None
 
 
 class AppSettingsOS(

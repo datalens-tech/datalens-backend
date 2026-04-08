@@ -414,6 +414,7 @@ class RedisInstanceKind(Enum):
     persistent = auto()
     mutations = auto()
     arq = auto()
+    cache_invalidations = auto()
 
 
 class FileProcessingStatus(Enum):

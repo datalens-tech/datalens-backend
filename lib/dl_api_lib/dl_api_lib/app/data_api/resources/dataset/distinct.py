@@ -59,6 +59,7 @@ class DatasetDistinctView(DatasetDataBaseView, abc.ABC):
             raw_query_spec_union=req_model.raw_query_spec_union,
             autofill_legend=req_model.autofill_legend,
             call_post_exec_async_hook=False,
+            skip_invalidation_check=False,
         )
 
         response_json = self.make_response(req_model=req_model, merged_stream=merged_stream)

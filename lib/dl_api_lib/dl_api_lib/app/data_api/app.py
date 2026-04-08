@@ -325,6 +325,31 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 app.on_startup.append(_log_exc(mutations_redis_server_sentinel.init_hook))
                 app.on_cleanup.append(_log_exc(mutations_redis_server_sentinel.tear_down_hook))
 
+        if self._settings.INVALIDATION_CACHES_ON and self._settings.INVALIDATION_CACHES_REDIS:
+            if self._settings.INVALIDATION_CACHES_REDIS.MODE == RedisMode.single_host:
+                invalidation_redis_server: SingleHostSimpleRedisService | RedisSentinelService = (
+                    SingleHostSimpleRedisService(
+                        instance_kind=RedisInstanceKind.cache_invalidations,
+                        url=self._settings.INVALIDATION_CACHES_REDIS.as_single_host_url(),
+                        password=self._settings.INVALIDATION_CACHES_REDIS.PASSWORD,
+                        ssl=self._settings.INVALIDATION_CACHES_REDIS.SSL,
+                    )
+                )
+            elif self._settings.INVALIDATION_CACHES_REDIS.MODE == RedisMode.sentinel:
+                invalidation_redis_server = RedisSentinelService(
+                    instance_kind=RedisInstanceKind.cache_invalidations,
+                    namespace=self._settings.INVALIDATION_CACHES_REDIS.CLUSTER_NAME,
+                    sentinel_hosts=self._settings.INVALIDATION_CACHES_REDIS.HOSTS,
+                    sentinel_port=self._settings.INVALIDATION_CACHES_REDIS.PORT,
+                    db=self._settings.INVALIDATION_CACHES_REDIS.DB,
+                    password=self._settings.INVALIDATION_CACHES_REDIS.PASSWORD,
+                    ssl=self._settings.INVALIDATION_CACHES_REDIS.SSL,
+                )
+            else:
+                raise ValueError(f"Unknown redis mode {self._settings.INVALIDATION_CACHES_REDIS.MODE}")
+            app.on_startup.append(_log_exc(invalidation_redis_server.init_hook))
+            app.on_cleanup.append(_log_exc(invalidation_redis_server.tear_down_hook))
+
         if self._settings.BI_COMPENG_PG_ON and self._settings.BI_COMPENG_PG_URL is not None:
             compeng_service = make_compeng_service(
                 processor_type=ProcessorType.ASYNCPG,

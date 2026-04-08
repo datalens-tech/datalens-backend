@@ -71,6 +71,7 @@ class DatasetPivotView(DatasetDataBaseView):
             raw_query_spec_union=req_model.raw_query_spec_union,
             autofill_legend=req_model.autofill_legend,
             call_post_exec_async_hook=True,
+            skip_invalidation_check=False,
         )
 
         pivot_legend: PivotLegend

@@ -25,6 +25,11 @@ if TYPE_CHECKING:
         EntityCacheEngineAsync,
         EntityCacheEntryManagerAsyncBase,
     )
+    from dl_cache_engine.invalidation import (
+        InvalidationCacheEngine,
+        InvalidationCacheKey,
+        TInvalidationGenerateFunc,
+    )
     from dl_cache_engine.primitives import BIQueryCacheOptions
 
 
@@ -49,6 +54,7 @@ class CacheSituation(enum.IntEnum):
 @attr.s
 class CacheProcessingHelper:
     _cache_engine: Optional[EntityCacheEngineAsync] = attr.ib(kw_only=True)
+    _cache_invalidation_engine: Optional[InvalidationCacheEngine] = attr.ib(kw_only=True, default=None)
 
     error_ttl_sec: ClassVar[float] = 1.5
 
@@ -82,6 +88,39 @@ class CacheProcessingHelper:
             read_extend_ttl_sec=(cache_options.ttl_sec if cache_options.refresh_ttl_on_read else None),
             allow_cache_read=allow_cache_read,
         )
+
+    async def get_cache_invalidation_result(
+        self,
+        *,
+        key: InvalidationCacheKey,
+        throttling_interval_sec: float,
+        generate_func: TInvalidationGenerateFunc,
+    ) -> Optional[str]:
+        """
+        Check the invalidation cache and return the payload string, or None.
+
+        1. If no invalidation engine is configured, returns None (no-op).
+        2. Call get_or_generate() with TTL = throttling_interval_sec.
+           - RCL checks its data key: if data exists (TTL not expired), returns it immediately.
+           - If TTL has expired (data auto-deleted by Redis), the first worker acquires
+             a lock, calls generate_func, saves the result with TTL = throttling_interval_sec.
+           - Other concurrent workers wait via Pub/Sub and receive the result.
+        3. On success, return the payload. On error/None, return None (graceful degradation).
+        """
+        engine = self._cache_invalidation_engine
+        if engine is None:
+            return None
+
+        entry = await engine.get_or_generate(
+            key=key,
+            ttl_sec=throttling_interval_sec,
+            generate_func=generate_func,
+        )
+        if entry is not None and entry.is_success:
+            return entry.data
+
+        LOGGER.info("Invalidation cache: no valid payload (key=%s)", key.to_redis_key())
+        return None
 
     def _dump_error_for_cache(self, err: BaseException) -> Any:
         return str(err)

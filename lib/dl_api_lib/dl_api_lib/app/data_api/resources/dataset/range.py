@@ -72,6 +72,7 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
             raw_query_spec_union=req_model.raw_query_spec_union,
             autofill_legend=req_model.autofill_legend,
             call_post_exec_async_hook=False,
+            skip_invalidation_check=False,
         )
 
         response_json = self.make_response(req_model=req_model, merged_stream=merged_stream)
@@ -95,6 +96,8 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
+        allow_cache_usage: bool | None = None,
+        cache_invalidation_payload: str | None = None,
     ) -> PostprocessedQuery:
         us_manager = self.dl_request.us_manager
 

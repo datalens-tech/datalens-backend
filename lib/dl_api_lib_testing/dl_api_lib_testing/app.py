@@ -195,6 +195,7 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
             services_registry_middleware(
                 services_registry_factory=sr_factory,
                 use_query_cache=self._settings.CACHES_ON,
+                use_cache_invalidation=self._settings.INVALIDATION_CACHES_ON,
                 use_mutation_cache=self._settings.MUTATIONS_CACHES_ON,
                 mutation_cache_default_ttl=self._settings.MUTATIONS_CACHES_DEFAULT_TTL,
             ),

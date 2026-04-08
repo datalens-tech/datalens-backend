@@ -72,6 +72,7 @@ class QueryExecutor:
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _compeng_semaphore: asyncio.Semaphore = attr.ib(kw_only=True)
     _parameter_value_specs: list[ParameterValueSpec] | None = attr.ib(kw_only=True, default=None)
+    _cache_invalidation_payload: Optional[str] = attr.ib(kw_only=True, default=None)
 
     @property
     def _service_registry(self) -> ServicesRegistry:
@@ -327,6 +328,14 @@ class QueryExecutor:
             )
             result_id = avatar_id
 
+            data_key = prep_src_info.data_key
+            if self._cache_invalidation_payload is not None:
+                data_key = data_key.extend(
+                    part_type="cache_invalidation_payload",
+                    part_content=self._cache_invalidation_payload,
+                )
+                prep_src_info = prep_src_info.clone(data_key=data_key)
+
             stream = DataSourceVS(
                 id=make_id(),
                 alias=alias,
@@ -334,7 +343,7 @@ class QueryExecutor:
                 names=prep_src_info.col_names,
                 user_types=prep_src_info.user_types,
                 prep_src_info=prep_src_info,
-                data_key=prep_src_info.data_key,
+                data_key=data_key,
                 meta=DataRequestMetaInfo(data_source_list=prep_src_info.data_source_list),  # type: ignore  # 2024-01-24 # TODO: Argument "data_source_list" to "DataRequestMetaInfo" has incompatible type "tuple[DataSource, ...] | None"; expected "Collection[DataSource]"  [arg-type]
                 preparation_callback=None,
             )
