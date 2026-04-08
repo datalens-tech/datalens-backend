@@ -90,19 +90,17 @@ class TemporalWorkerAppFactoryMixin(
             activities=await self._get_temporal_activities(),
         )
 
-    @abc.abstractmethod
     @dl_app_base.singleton_class_method_result
     async def _get_temporal_workflows(
         self,
     ) -> list[type[base.WorkflowProtocol]]:
-        ...
+        return []
 
-    @abc.abstractmethod
     @dl_app_base.singleton_class_method_result
     async def _get_temporal_activities(
         self,
     ) -> list[base.ActivityProtocol]:
-        ...
+        return []
 
     @abc.abstractmethod
     @dl_app_base.singleton_class_method_result

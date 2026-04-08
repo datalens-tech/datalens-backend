@@ -39,13 +39,19 @@ class Factory(dl_temporal.app.BaseTemporalWorkerAppFactory[App]):
     async def _get_temporal_workflows(
         self,
     ) -> list[type[dl_temporal.WorkflowProtocol]]:
-        return [workflows.Workflow]
+        return [
+            *await super()._get_temporal_workflows(),
+            workflows.Workflow,
+        ]
 
     @override
     async def _get_temporal_activities(
         self,
     ) -> list[dl_temporal.ActivityProtocol]:
-        return [activities.Activity()]
+        return [
+            *await super()._get_temporal_activities(),
+            activities.Activity(),
+        ]
 
     @override
     async def _get_temporal_client_metadata_provider(

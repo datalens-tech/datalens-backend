@@ -28,6 +28,14 @@ from .client import (
     TemporalClientError,
     TemporalClientSettings,
 )
+from .temporal import (
+    SyncSchedulesFromDynconfigActivity,
+    SyncSchedulesFromDynconfigActivityParams,
+    SyncSchedulesFromDynconfigActivityResult,
+    SyncSchedulesFromDynconfigWorkflow,
+    SyncSchedulesFromDynconfigWorkflowParams,
+    SyncSchedulesFromDynconfigWorkflowResult,
+)
 from .worker import create_worker
 
 
@@ -51,6 +59,12 @@ __all__ = [
     "PermissionDenied",
     "ResultType",
     "SearchAttribute",
+    "SyncSchedulesFromDynconfigActivity",
+    "SyncSchedulesFromDynconfigActivityParams",
+    "SyncSchedulesFromDynconfigActivityResult",
+    "SyncSchedulesFromDynconfigWorkflow",
+    "SyncSchedulesFromDynconfigWorkflowParams",
+    "SyncSchedulesFromDynconfigWorkflowResult",
     "TemporalClient",
     "TemporalClientDependencies",
     "TemporalClientError",
