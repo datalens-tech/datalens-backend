@@ -188,12 +188,12 @@ class RequiredFieldConfig(dl_dynconfig.DynConfig):
 
 
 @pytest.mark.asyncio
-async def test_missing_field_falls_back_to_initial_data() -> None:
+async def test_required_field_missing_from_source_raises() -> None:
     source = dl_dynconfig.InMemorySource(data={})
     config = RequiredFieldConfig.model_from_source(source=source, initial_data={"name": "initial"})
 
-    await config.model_fetch()
-    assert config.name == "initial"
+    with pytest.raises(pydantic.ValidationError):
+        await config.model_fetch()
 
 
 @pytest.mark.asyncio
@@ -203,36 +203,16 @@ async def test_missing_field_falls_back_to_default() -> None:
 
     await config.model_fetch()
     assert config.name == "fetched"
-    assert config.count == 99
+    assert config.count == 0
     assert config.tags == []
 
 
 @pytest.mark.asyncio
-async def test_missing_required_field_without_initial_data_raises() -> None:
-    source = dl_dynconfig.InMemorySource(data={})
-    config = RequiredFieldConfig.model_from_source(source=source, initial_data={"name": "initial"})
-
-    await source.store({"other": "value"})
-    await config.model_fetch()
-    assert config.name == "initial"
-
-    config_no_initial = RequiredFieldConfig.model_from_source(
-        source=dl_dynconfig.InMemorySource(data={}),
-        initial_data={"name": "x"},
-    )
-    # initial_data covers it, so no error
-    await config_no_initial.model_fetch()
-    assert config_no_initial.name == "x"
-
-
-@pytest.mark.asyncio
-async def test_missing_required_field_no_initial_data_no_default_raises() -> None:
+async def test_missing_required_field_no_default_raises() -> None:
     source = dl_dynconfig.InMemorySource(data={})
     config = RequiredFieldConfig.model_from_source(source=source, initial_data={"name": "init"})
 
     await source.store({"unrelated": "value"})
-
-    config._initial_data = {}
     with pytest.raises(pydantic.ValidationError):
         await config.model_fetch()
 
@@ -247,12 +227,37 @@ async def test_path_traversal_non_mapping() -> None:
 
 
 @pytest.mark.asyncio
-async def test_path_traversal_missing_key() -> None:
+async def test_path_traversal_missing_key_required_field_raises() -> None:
+    source = dl_dynconfig.InMemorySource(data={})
+    config = RequiredFieldConfig.model_from_source(
+        source=source,
+        path=["SETTINGS"],
+        initial_data={"name": "default"},
+    )
+    with pytest.raises(pydantic.ValidationError):
+        await config.model_fetch()
+
+
+@pytest.mark.asyncio
+async def test_path_traversal_missing_key_uses_defaults() -> None:
     source = dl_dynconfig.InMemorySource(data={"other": {}})
     root = RootConfig.model_from_source(source=source)
 
-    with pytest.raises(pydantic.ValidationError):
-        await root.child.model_fetch()
+    await root.child.model_fetch()
+    assert root.child.child2.value == "default"
+
+
+@pytest.mark.asyncio
+async def test_path_traversal_key_disappears_resets_to_defaults() -> None:
+    source = dl_dynconfig.InMemorySource(data={"child": {"child2": {"value": "updated"}}})
+    root = RootConfig.model_from_source(source=source)
+
+    await root.child.model_fetch()
+    assert root.child.child2.value == "updated"
+
+    await source.store({})
+    await root.child.model_fetch()
+    assert root.child.child2.value == "default"
 
 
 @pytest.mark.asyncio
