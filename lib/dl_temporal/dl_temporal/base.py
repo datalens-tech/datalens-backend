@@ -11,13 +11,12 @@ from typing import (
     Generic,
     Protocol,
     TypeVar,
-    cast,
 )
 
 import pydantic
 import temporalio.activity
-import temporalio.api.common.v1
 import temporalio.common
+import temporalio.contrib.pydantic
 import temporalio.converter
 import temporalio.workflow
 
@@ -51,8 +50,6 @@ def _generate_workflow_id() -> str:
 
 
 class BaseModel(dl_pydantic.BaseModel):
-    __pydantic_is_temporal_model__: ClassVar[bool] = True
-
     def model_dump_for_logging(self) -> str:
         data = self.model_dump(mode="json")
         return dl_json.dumps_str(data)
@@ -95,46 +92,11 @@ class BaseResultModel(BaseModel):
         return data
 
 
-class JSONPlainPayloadConverter(temporalio.converter.JSONPlainPayloadConverter):
-    def _is_pydantic_model(self, value: Any) -> bool:
-        # can't just use isinstance(value, BaseModel), because it fails for ActivityParams
-        return hasattr(value, "__pydantic_is_temporal_model__") and value.__pydantic_is_temporal_model__
-
-    def _is_pydantic_model_hint(self, type_hint: type[Any] | None) -> bool:
-        # can't just use issubclass(type_hint, BaseModel), because it fails for ActivityParams
-        return (
-            type_hint is not None
-            and hasattr(type_hint, "__pydantic_is_temporal_model__")
-            and type_hint.__pydantic_is_temporal_model__
-        )
-
-    def to_payload(self, value: Any) -> temporalio.api.common.v1.Payload | None:
-        if self._is_pydantic_model(value):
-            value = cast(BaseModel, value).model_dump(mode="json")
-
-        return super().to_payload(value)
-
-    def from_payload(self, payload: temporalio.api.common.v1.Payload, type_hint: type[Any] | None = None) -> Any:
-        if self._is_pydantic_model_hint(type_hint):
-            return cast(BaseModel, type_hint).model_validate_json(payload.data)
-
-        return super().from_payload(payload, type_hint)
-
-
-class PayloadConverter(temporalio.converter.CompositePayloadConverter):
-    default_encoding_payload_converters: tuple[temporalio.converter.EncodingPayloadConverter, ...] = (
-        *temporalio.converter.DefaultPayloadConverter.default_encoding_payload_converters,
-        JSONPlainPayloadConverter(),
-    )
-
-    def __init__(self) -> None:
-        """Create a default payload converter."""
-        super().__init__(*self.default_encoding_payload_converters)
-
-
 @dataclasses.dataclass(frozen=True)
 class DataConverter(temporalio.converter.DataConverter):
-    payload_converter_class: type[temporalio.converter.PayloadConverter] = PayloadConverter
+    payload_converter_class: type[
+        temporalio.converter.PayloadConverter
+    ] = temporalio.contrib.pydantic.PydanticPayloadConverter
 
 
 class BaseActivityParams(BaseModel):
