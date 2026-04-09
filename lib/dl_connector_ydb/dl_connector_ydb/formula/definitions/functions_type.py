@@ -11,6 +11,23 @@ from dl_connector_ydb.formula.constants import YqlDialect as D
 
 V = TranslationVariant.make
 
+
+def _with_optional_list_item(
+    type_name: str,
+    nested_type: type[sa.types.TypeEngine],
+) -> tuple[base.WhitelistTypeSpec, base.WhitelistTypeSpec]:
+    """
+    Generates TypeSpec for both: `List<Type>` and `List<Type?>`
+    """
+
+    return (
+        base.WhitelistTypeSpec(name=f"List<{type_name}>", sa_type=ydb_dialect.YqlListType, nested_sa_type=nested_type),
+        base.WhitelistTypeSpec(
+            name=f"List<{type_name}?>", sa_type=ydb_dialect.YqlOptionalItemListType, nested_sa_type=nested_type
+        ),
+    )
+
+
 TYPES_SPEC = {
     wlts.name: wlts
     for wlts in [
@@ -36,6 +53,19 @@ TYPES_SPEC = {
         base.WhitelistTypeSpec(name="Timestamp64", sa_type=ydb_dialect.YqlTimestamp64),
         base.WhitelistTypeSpec(name="Interval", sa_type=ydb_dialect.YqlInterval),
         base.WhitelistTypeSpec(name="Interval64", sa_type=ydb_dialect.YqlInterval64),
+        # TODO: Support all possible Optional/non-Optional and types as List items
+        *_with_optional_list_item(type_name="Float", nested_type=sa.types.FLOAT),
+        *_with_optional_list_item(type_name="Double", nested_type=ydb_dialect.YqlDouble),
+        *_with_optional_list_item(type_name="Int8", nested_type=ydb_sa.types.Int8),
+        *_with_optional_list_item(type_name="Int16", nested_type=ydb_sa.types.Int16),
+        *_with_optional_list_item(type_name="Int32", nested_type=ydb_sa.types.Int32),
+        *_with_optional_list_item(type_name="Int64", nested_type=ydb_sa.types.Int64),
+        *_with_optional_list_item(type_name="UInt8", nested_type=ydb_sa.types.UInt8),
+        *_with_optional_list_item(type_name="UInt16", nested_type=ydb_sa.types.UInt16),
+        *_with_optional_list_item(type_name="UInt32", nested_type=ydb_sa.types.UInt32),
+        *_with_optional_list_item(type_name="UInt64", nested_type=ydb_sa.types.UInt64),
+        *_with_optional_list_item(type_name="String", nested_type=ydb_dialect.YqlString),
+        *_with_optional_list_item(type_name="Utf8", nested_type=ydb_dialect.YqlUtf8),
     ]
 }
 
@@ -365,9 +395,42 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
                 TYPES_SPEC["Timestamp"],
                 TYPES_SPEC["Timestamp64"],
             ],
-            DataType.ARRAY_STR: [],
-            DataType.ARRAY_INT: [],
-            DataType.ARRAY_FLOAT: [],
+            DataType.UUID: [
+                # > String
+                TYPES_SPEC["String"],
+                # > Utf8
+                TYPES_SPEC["Utf8"],
+            ],
+            DataType.ARRAY_STR: [
+                TYPES_SPEC["List<String>"],
+                TYPES_SPEC["List<String?>"],
+                TYPES_SPEC["List<Utf8>"],
+                TYPES_SPEC["List<Utf8?>"],
+            ],
+            DataType.ARRAY_INT: [
+                TYPES_SPEC["List<Int8>"],
+                TYPES_SPEC["List<Int8?>"],
+                TYPES_SPEC["List<Int16>"],
+                TYPES_SPEC["List<Int16?>"],
+                TYPES_SPEC["List<Int32>"],
+                TYPES_SPEC["List<Int32?>"],
+                TYPES_SPEC["List<Int64>"],
+                TYPES_SPEC["List<Int64?>"],
+                TYPES_SPEC["List<UInt8>"],
+                TYPES_SPEC["List<UInt8?>"],
+                TYPES_SPEC["List<UInt16>"],
+                TYPES_SPEC["List<UInt16?>"],
+                TYPES_SPEC["List<UInt32>"],
+                TYPES_SPEC["List<UInt32?>"],
+                TYPES_SPEC["List<UInt64>"],
+                TYPES_SPEC["List<UInt64?>"],
+            ],
+            DataType.ARRAY_FLOAT: [
+                TYPES_SPEC["List<Float>"],
+                TYPES_SPEC["List<Float?>"],
+                TYPES_SPEC["List<Double>"],
+                TYPES_SPEC["List<Double?>"],
+            ],
         }
         for yql_dialect in (D.YQL, D.YQ, D.YDB)
     }
