@@ -40,7 +40,8 @@ DEFINITIONS_TYPE = [
         ]
     ),
     base.FuncDatetime1FromString.for_dialect(D.STARROCKS),
-    # TODO: BI-7171 FuncDatetimeTZConst
+    # datetimetz
+    base.FuncDatetimeTZConst.for_dialect(D.STARROCKS),
     # float
     base.FuncFloatNumber(
         variants=[
