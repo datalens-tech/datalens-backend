@@ -10,6 +10,18 @@ V = TranslationVariant.make
 
 
 DEFINITIONS_AGG = [
+    # arg_max
+    base.AggArgMax(
+        variants=[
+            V(D.STARROCKS, sa.func.MAX_BY),
+        ]
+    ),
+    # arg_min
+    base.AggArgMin(
+        variants=[
+            V(D.STARROCKS, sa.func.MIN_BY),
+        ]
+    ),
     # any
     base.AggAny(
         variants=[
@@ -18,7 +30,29 @@ DEFINITIONS_AGG = [
     ),
     # avg
     base.AggAvgFromNumber.for_dialect(D.STARROCKS),
-    # TODO: BI-7171 AggAvgFromDate, AggAvgFromDatetime, AggAvgFromDatetimeTZ
+    base.AggAvgFromDate.for_dialect(D.STARROCKS),
+    base.AggAvgFromDatetime(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda dt_val: sa.cast(
+                    sa.func.FROM_UNIXTIME(sa.func.AVG(sa.func.UNIX_TIMESTAMP(dt_val))),
+                    sa.DateTime(),
+                ),
+            ),
+        ]
+    ),
+    base.AggAvgFromDatetimeTZ(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda dt: sa.cast(
+                    sa.func.FROM_UNIXTIME(sa.func.AVG(sa.func.UNIX_TIMESTAMP(dt))),
+                    sa.DateTime(),
+                ),
+            ),
+        ]
+    ),
     # avg_if
     base.AggAvgIf.for_dialect(D.STARROCKS),
     # count
@@ -28,6 +62,12 @@ DEFINITIONS_AGG = [
     base.AggCountIf.for_dialect(D.STARROCKS),
     # countd
     base.AggCountd.for_dialect(D.STARROCKS),
+    # countd_approx
+    base.AggCountdApprox(
+        variants=[
+            V(D.STARROCKS, sa.func.APPROX_COUNT_DISTINCT),
+        ]
+    ),
     # countd_if
     base.AggCountdIf.for_dialect(D.STARROCKS),
     # max
