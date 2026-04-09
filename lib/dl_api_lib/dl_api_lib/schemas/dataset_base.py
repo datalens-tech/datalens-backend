@@ -258,17 +258,6 @@ class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
         dump_default=None,
         load_default=None,
     )
-    last_result_timestamp = ma_fields.String(
-        allow_none=True,
-        dump_default=None,
-        dump_only=True,
-    )
-    last_result_error = ma_fields.Nested(
-        CacheInvalidationLastResultErrorSchema,
-        allow_none=True,
-        dump_default=None,
-        dump_only=True,
-    )
 
 
 class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
