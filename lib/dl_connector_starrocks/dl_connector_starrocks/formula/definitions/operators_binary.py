@@ -1,6 +1,8 @@
 import sqlalchemy as sa
 
 from dl_formula.definitions.base import TranslationVariant
+from dl_formula.definitions.common import raw_sql
+from dl_formula.definitions.common_datetime import DAY_SEC
 import dl_formula.definitions.operators_binary as base
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
@@ -26,37 +28,69 @@ DEFINITIONS_BINARY = [
     # +
     base.BinaryPlusNumbers.for_dialect(D.STARROCKS),
     base.BinaryPlusStrings.for_dialect(D.STARROCKS),
-    # TODO: BI-7171 BinaryPlusDateInt, BinaryPlusDateFloat: DAYS_ADD returns datetime instead of date
     base.BinaryPlusDateInt(
         variants=[
-            V(D.STARROCKS, lambda date, days: sa.func.DAYS_ADD(date, days)),
+            V(D.STARROCKS, lambda date, days: sa.cast(sa.func.DAYS_ADD(date, days), sa.Date())),
         ]
     ),
     base.BinaryPlusDateFloat(
         variants=[
-            V(D.STARROCKS, lambda date, days: sa.func.DAYS_ADD(date, base.as_bigint(days))),
+            V(D.STARROCKS, lambda date, days: sa.cast(sa.func.DAYS_ADD(date, base.as_bigint(days)), sa.Date())),
         ]
     ),
-    # TODO: BI-7171 BinaryPlusDatetimeNumber, BinaryPlusGenericDatetimeNumber
+    base.BinaryPlusDatetimeNumber(
+        variants=[
+            V(D.STARROCKS, lambda dt, days: sa.func.FROM_UNIXTIME(sa.func.UNIX_TIMESTAMP(dt) + days * DAY_SEC)),
+        ]
+    ),
+    base.BinaryPlusGenericDatetimeNumber(
+        variants=[
+            V(D.STARROCKS, lambda dt, days: sa.func.FROM_UNIXTIME(sa.func.UNIX_TIMESTAMP(dt) + days * DAY_SEC)),
+        ]
+    ),
+    # -
     base.BinaryMinusNumbers.for_dialect(D.STARROCKS),
-    # TODO: BI-7171 BinaryMinusDateInt, BinaryMinusDateFloat: DAYS_SUB returns datetime instead of date
     base.BinaryMinusDateInt(
         variants=[
-            V(D.STARROCKS, lambda date, days: sa.func.DAYS_SUB(date, days)),
+            V(D.STARROCKS, lambda date, days: sa.cast(sa.func.DAYS_SUB(date, days), sa.Date())),
         ]
     ),
     base.BinaryMinusDateFloat(
         variants=[
-            V(D.STARROCKS, lambda date, days: sa.func.DAYS_SUB(date, base.as_bigint(sa.func.CEIL(days)))),
+            V(
+                D.STARROCKS,
+                lambda date, days: sa.cast(sa.func.DAYS_SUB(date, base.as_bigint(sa.func.CEIL(days))), sa.Date()),
+            ),
         ]
     ),
-    # TODO: BI-7171 BinaryMinusDatetimeNumber, BinaryMinusGenericDatetimeNumber
+    base.BinaryMinusDatetimeNumber(
+        variants=[
+            V(D.STARROCKS, lambda dt, days: sa.func.FROM_UNIXTIME(sa.func.UNIX_TIMESTAMP(dt) - days * DAY_SEC)),
+        ]
+    ),
+    base.BinaryMinusGenericDatetimeNumber(
+        variants=[
+            V(D.STARROCKS, lambda dt, days: sa.func.FROM_UNIXTIME(sa.func.UNIX_TIMESTAMP(dt) - days * DAY_SEC)),
+        ]
+    ),
     base.BinaryMinusDates(
         variants=[
             V(D.STARROCKS, sa.func.DATEDIFF),
         ]
     ),
-    # TODO: BI-7171 BinaryMinusDatetimes, BinaryMinusGenericDatetimes
+    base.BinaryMinusDatetimes(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda left, right: (sa.func.UNIX_TIMESTAMP(left) - sa.func.UNIX_TIMESTAMP(right)) / DAY_SEC,
+            ),
+        ]
+    ),
+    base.BinaryMinusGenericDatetimes(
+        variants=[
+            V(D.STARROCKS, lambda left, right: sa.func.TIMESTAMPDIFF(raw_sql("second"), right, left) / DAY_SEC),
+        ]
+    ),
     # /
     base.BinaryDivInt.for_dialect(D.STARROCKS),
     base.BinaryDivFloat.for_dialect(D.STARROCKS),
