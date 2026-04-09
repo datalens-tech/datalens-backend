@@ -57,6 +57,6 @@ class TestTreeTypeFunctionStarRocks(
 ):
     test_params = RegulatedTestParams(
         mark_tests_failed={
-            DefaultTreeTypeFunctionFormulaConnectorTestSuite.test_tree_str: "TODO: BI-7171 StarRocks TREE type not supported by type transformer",
+            DefaultTreeTypeFunctionFormulaConnectorTestSuite.test_tree_str: "StarRocks ARRAY type not mapped in connector type system",
         },
     )
