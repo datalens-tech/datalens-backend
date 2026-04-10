@@ -923,6 +923,13 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
         url = f"/api/data/{self.api_v}/datasets/{dataset_id}/cache_invalidation_test"
         return self._request(url, method="post", data=raw_body or {})
 
+    def get_response_for_cache_invalidation_last_result(
+        self,
+        dataset_id: str,
+    ) -> ClientResponse:
+        url = f"/api/data/{self.api_v}/datasets/{dataset_id}/cache_invalidation_last_result"
+        return self._request(url, method="get")
+
 
 @attr.s
 class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
@@ -1167,6 +1174,13 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
     ) -> ClientResponse:
         url = f"/api/data/{self.api_v}/datasets/{dataset_id}/cache_invalidation_test"
         return await self._request(url, method="post", data=raw_body or {})
+
+    async def get_response_for_cache_invalidation_last_result(
+        self,
+        dataset_id: str,
+    ) -> ClientResponse:
+        url = f"/api/data/{self.api_v}/datasets/{dataset_id}/cache_invalidation_last_result"
+        return await self._request(url, method="get")
 
 
 @attr.s
