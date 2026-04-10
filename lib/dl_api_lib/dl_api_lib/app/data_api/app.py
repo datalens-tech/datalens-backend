@@ -31,6 +31,9 @@ from dl_api_lib.aio.aiohttp_wrappers import (
 from dl_api_lib.aio.middlewares.error_handling_outer import DatasetAPIErrorHandler
 from dl_api_lib.aio.middlewares.json_body_middleware import json_body_middleware
 from dl_api_lib.app.data_api.resources.dashsql import DashSQLView
+from dl_api_lib.app.data_api.resources.dataset.cache_invalidation_last_result import (
+    DatasetCacheInvalidationLastResultView,
+)
 from dl_api_lib.app.data_api.resources.dataset.cache_invalidation_test import DatasetCacheInvalidationTestView
 from dl_api_lib.app.data_api.resources.dataset.distinct import (
     DatasetDistinctViewV1,
@@ -200,6 +203,11 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
 
             app.router.add_route(
                 "post", "/api/data/v2/datasets/{ds_id}/cache_invalidation_test", DatasetCacheInvalidationTestView
+            )
+            app.router.add_route(
+                "get",
+                "/api/data/v2/datasets/{ds_id}/cache_invalidation_last_result",
+                DatasetCacheInvalidationLastResultView,
             )
 
     def set_up_sentry(self) -> None:
