@@ -157,6 +157,12 @@ class CacheInvalidationMode(Enum):
 
 
 @unique
+class CacheInvalidationLastResultStatus(Enum):
+    success = "success"
+    error = "error"
+
+
+@unique
 class ConditionPartCalcMode(Enum):
     direct = "direct"
     formula = "formula"
