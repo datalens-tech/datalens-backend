@@ -15,6 +15,11 @@ CONFIGS = [
         domain=DOMAIN,
         locale="en",
     ),
+    TranslationConfig(
+        path=os.path.relpath(os.path.join(os.path.dirname(__file__), "../../locales")),
+        domain=DOMAIN,
+        locale="ru",
+    ),
 ]
 
 
