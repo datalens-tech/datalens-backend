@@ -257,9 +257,10 @@ class TemporalClient:
     async def pause_schedule(
         self,
         schedule_id: str,
+        note: str | None = None,
     ) -> None:
         handle = self.base_client.get_schedule_handle(id=schedule_id)
-        await handle.pause()
+        await handle.pause(note=note)
 
     async def unpause_schedule(
         self,
