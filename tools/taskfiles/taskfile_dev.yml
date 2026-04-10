@@ -534,6 +534,7 @@ tasks:
   ssh-forward-start:
     desc: Forward docker ports to localhost
     cmds:
+      - task: ssh-forward-stop
       - for port in $PORTS; do
           echo "Forwarding port $port";
           ssh -f -N -L $port:localhost:$port {{.VM_HOST}};
@@ -551,8 +552,8 @@ tasks:
     desc: Stop SSH port forwarding for Docker containers
     cmds:
       - echo "Next processes will be killed:"
-      - ps -ef | grep "ssh -f -N -L" | grep --invert-match "grep"
-      - pkill -f "ssh -f -N -L"
+      - ps -ef | grep "ssh -f -N -L" | grep --invert-match "grep" || true
+      - pkill -f "ssh -f -N -L" || true
 
   squash:
     desc: Squash all commits made on CHILD_BRANCH relative to PARENT_BRANCH into single one (using git reset --soft)
