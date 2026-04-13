@@ -21,6 +21,11 @@ from dl_utils.streaming import (
 
 
 if TYPE_CHECKING:
+    from dl_cache_engine.cache_invalidation.engine import (
+        CacheInvalidationEngine,
+        TCacheInvalidationGenerateFunc,
+    )
+    from dl_cache_engine.cache_invalidation.primitives import CacheInvalidationKey
     from dl_cache_engine.engine import (
         EntityCacheEngineAsync,
         EntityCacheEntryManagerAsyncBase,
@@ -49,6 +54,7 @@ class CacheSituation(enum.IntEnum):
 @attr.s
 class CacheProcessingHelper:
     _cache_engine: Optional[EntityCacheEngineAsync] = attr.ib(kw_only=True)
+    _cache_invalidation_engine: CacheInvalidationEngine | None = attr.ib(kw_only=True, default=None)
 
     error_ttl_sec: ClassVar[float] = 1.5
 
@@ -81,6 +87,24 @@ class CacheProcessingHelper:
             write_ttl_sec=cache_options.ttl_sec,
             read_extend_ttl_sec=(cache_options.ttl_sec if cache_options.refresh_ttl_on_read else None),
             allow_cache_read=allow_cache_read,
+        )
+
+    async def get_cache_invalidation_result(
+        self,
+        *,
+        key: CacheInvalidationKey,
+        throttling_interval_sec: float,
+        generate_func: TCacheInvalidationGenerateFunc,
+    ) -> str | None:
+        engine = self._cache_invalidation_engine
+        if engine is None:
+            LOGGER.debug("Invalidation cache engine is not configured, skipping (key=%s)", key.to_redis_key())
+            return None
+
+        return await engine.get_stale_and_generate(
+            key=key,
+            throttling_interval_sec=throttling_interval_sec,
+            generate_func=generate_func,
         )
 
     def _dump_error_for_cache(self, err: BaseException) -> Any:
