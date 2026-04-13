@@ -190,8 +190,10 @@ async def test_list_schedules(
             spec=schedule_spec,
         )
 
-        ids = [entry.id async for entry in await temporal_client.list_schedules()]
-        assert schedule_id in ids
+        async def _schedule_visible() -> None:
+            assert schedule_id in {entry.id async for entry in await temporal_client.list_schedules()}
+
+        await common.await_for_success(f"{schedule_id} visible in schedule list", _schedule_visible)
     finally:
         await temporal_client.delete_schedule(schedule_id)
 
