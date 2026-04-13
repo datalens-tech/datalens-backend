@@ -162,33 +162,9 @@ class HttpServerAppFactoryMixin(
         self,
     ) -> list[auth.RequestAuthCheckerProtocol]:
         return [
-            *await self._get_request_health_auth_checkers(),
             *await self._get_request_openapi_auth_checkers(),
             *await self._get_request_system_auth_checkers(),
             *await self._get_request_admin_auth_checkers(),
-        ]
-
-    @dl_app_base.singleton_class_method_result
-    async def _get_request_health_auth_checkers(
-        self,
-    ) -> list[auth.RequestAuthCheckerProtocol]:
-        return [
-            auth.AlwaysAllowAuthChecker(
-                route_matchers=await self._get_request_auth_checkers_health_route_matchers(),
-                context_provider=await self._get_request_context_provider(),
-            ),
-        ]
-
-    @dl_app_base.singleton_class_method_result
-    async def _get_request_auth_checkers_health_route_matchers(
-        self,
-    ) -> list[auth.RouteMatcher]:
-        return [
-            # TODO: drop in BI-7161
-            auth.RouteMatcher(
-                path_regex=re.compile(r"^/api/v1/health/.*$"),
-                methods=frozenset(["GET"]),
-            ),
         ]
 
     @dl_app_base.singleton_class_method_result
@@ -346,29 +322,6 @@ class HttpServerAppFactoryMixin(
             handlers.Route(
                 method="GET",
                 path="/system/health/startup",
-                handler=startup_handler,
-            ),
-        )
-
-        # TODO: drop in BI-7161
-        result.append(
-            handlers.Route(
-                method="GET",
-                path="/api/v1/health/liveness",
-                handler=liveness_handler,
-            ),
-        )
-        result.append(
-            handlers.Route(
-                method="GET",
-                path="/api/v1/health/readiness",
-                handler=readiness_handler,
-            ),
-        )
-        result.append(
-            handlers.Route(
-                method="GET",
-                path="/api/v1/health/startup",
                 handler=startup_handler,
             ),
         )
