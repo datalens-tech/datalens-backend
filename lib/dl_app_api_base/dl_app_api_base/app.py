@@ -289,6 +289,10 @@ class HttpServerAppFactoryMixin(
         )
         logging_context_middleware = middlewares.LoggingContextMiddleware(
             request_context_provider=request_context_provider,
+            static_logging_context=middlewares.StaticLoggingContext(
+                app_name=self.settings.APP_INFO.NAME,
+                app_version=self.settings.APP_INFO.VERSION,
+            ),
         )
         logging_middleware = middlewares.LoggingMiddleware(
             request_context_provider=request_context_provider,
