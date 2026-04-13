@@ -36,10 +36,7 @@ class ScheduleSyncService:
     async def sync(self) -> None:
         await self.config.model_fetch()
 
-        expected_ids: set[str] = {f"system.{s.NAME}" for s in self.config.SCHEDULES}
         sync_schedules_schedule_id = f"system.{temporal_workflows.SyncSchedulesFromDynconfigWorkflow.name}"
-        expected_ids.add(sync_schedules_schedule_id)
-
         await self._upsert_schedule(
             schedule_id=sync_schedules_schedule_id,
             workflow=temporal_workflows.SyncSchedulesFromDynconfigWorkflow,
@@ -47,6 +44,13 @@ class ScheduleSyncService:
             task_queue=self.task_queue,
             interval=self.config.SYNC_INTERVAL,
         )
+
+        if not self.config.ENABLED:
+            LOGGER.info("Schedules are disabled, skipping sync")
+            return
+
+        expected_ids: set[str] = {f"system.{s.NAME}" for s in self.config.SCHEDULES}
+        expected_ids.add(sync_schedules_schedule_id)
 
         for schedule in self.config.SCHEDULES:
             workflow_cls = self._resolve_workflow(schedule.WORKFLOW_NAME)
@@ -57,6 +61,8 @@ class ScheduleSyncService:
                 params=params,
                 task_queue=schedule.TASK_QUEUE,
                 interval=schedule.INTERVAL,
+                phase=schedule.PHASE,
+                paused=schedule.PAUSED,
             )
 
         async for entry in await self.temporal_client.list_schedules():
@@ -71,8 +77,12 @@ class ScheduleSyncService:
         params: base.BaseWorkflowParams,
         task_queue: str,
         interval: datetime.timedelta,
+        phase: datetime.timedelta | None = None,
+        paused: bool = False,
     ) -> None:
-        spec = temporalio.client.ScheduleSpec(intervals=[temporalio.client.ScheduleIntervalSpec(every=interval)])
+        spec = temporalio.client.ScheduleSpec(
+            intervals=[temporalio.client.ScheduleIntervalSpec(every=interval, offset=phase)]
+        )
         handle = self.temporal_client.base_client.get_schedule_handle(schedule_id)
         try:
             description = await handle.describe()
@@ -94,6 +104,13 @@ class ScheduleSyncService:
                 )
             else:
                 LOGGER.debug("Schedule already up to date: %s", schedule_id)
+
+            if paused and not description.schedule.state.paused:
+                LOGGER.info("Pausing schedule: %s", schedule_id)
+                await handle.pause()
+            elif not paused and description.schedule.state.paused:
+                LOGGER.info("Unpausing schedule: %s", schedule_id)
+                await handle.unpause()
         except temporalio.service.RPCError as e:
             if e.status == temporalio.service.RPCStatusCode.NOT_FOUND:
                 LOGGER.info("Creating schedule: %s", schedule_id)
@@ -104,5 +121,8 @@ class ScheduleSyncService:
                     task_queue=task_queue,
                     spec=spec,
                 )
+                if paused:
+                    LOGGER.info("Pausing schedule: %s", schedule_id)
+                    await handle.pause()
             else:
                 raise

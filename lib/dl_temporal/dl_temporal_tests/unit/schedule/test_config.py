@@ -31,3 +31,5 @@ async def test_temporal_schedules_dynconfig_from_source() -> None:
     assert config.SCHEDULES[0].WORKFLOW_NAME == "vsw_dashboard_slice_full_sync"
     assert config.SCHEDULES[0].TASK_QUEUE == "vsw"
     assert config.SCHEDULES[0].INTERVAL == datetime.timedelta(seconds=300)
+    assert config.SCHEDULES[0].PHASE is None
+    assert config.SCHEDULES[0].PAUSED is False

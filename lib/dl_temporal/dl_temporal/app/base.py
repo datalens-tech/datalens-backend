@@ -70,6 +70,19 @@ class BaseTemporalWorkerAppFactory(
 
     @override
     @dl_app_base.singleton_class_method_result
+    async def _get_startup_callbacks(self) -> list[dl_app_base.Callback]:
+        result = await super()._get_startup_callbacks()
+        schedule_sync_service = await self._get_schedule_sync_service()
+        result.append(
+            dl_app_base.Callback(
+                name="schedule_sync_service.sync",
+                coroutine=schedule_sync_service.sync(),
+            )
+        )
+        return result
+
+    @override
+    @dl_app_base.singleton_class_method_result
     async def _get_temporal_activities(self) -> list[base.ActivityProtocol]:
         return [
             *await super()._get_temporal_activities(),

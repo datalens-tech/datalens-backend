@@ -171,6 +171,12 @@ class TemporalClient:
             execution_timeout=params.execution_timeout,
         )
 
+    async def get_schedule(
+        self,
+        schedule_id: str,
+    ) -> temporalio.client.ScheduleHandle:
+        return self.base_client.get_schedule_handle(id=schedule_id)
+
     async def create_schedule(
         self,
         schedule_id: str,
@@ -202,8 +208,8 @@ class TemporalClient:
         params: base.WorkflowParamsT,
         task_queue: str,
         spec: temporalio.client.ScheduleSpec,
-    ) -> None:
-        handle = self.base_client.get_schedule_handle(id=schedule_id)
+    ) -> temporalio.client.ScheduleHandle:
+        handle = await self.get_schedule(schedule_id)
 
         async def _update(
             input: temporalio.client.ScheduleUpdateInput,
@@ -221,6 +227,7 @@ class TemporalClient:
             return temporalio.client.ScheduleUpdate(schedule=schedule)
 
         await handle.update(_update)
+        return handle
 
     async def list_schedules(self) -> temporalio.client.ScheduleAsyncIterator:
         return await self.base_client.list_schedules()
@@ -230,7 +237,7 @@ class TemporalClient:
         schedule_id: str,
         spec: temporalio.client.ScheduleSpec,
     ) -> None:
-        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        handle = await self.get_schedule(schedule_id)
 
         async def _update_schedule_spec(
             input: temporalio.client.ScheduleUpdateInput,
@@ -241,17 +248,11 @@ class TemporalClient:
 
         await handle.update(_update_schedule_spec)
 
-    async def get_schedule(
-        self,
-        schedule_id: str,
-    ) -> temporalio.client.ScheduleHandle:
-        return self.base_client.get_schedule_handle(id=schedule_id)
-
     async def delete_schedule(
         self,
         schedule_id: str,
     ) -> None:
-        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        handle = await self.get_schedule(schedule_id)
         await handle.delete()
 
     async def pause_schedule(
@@ -259,12 +260,12 @@ class TemporalClient:
         schedule_id: str,
         note: str | None = None,
     ) -> None:
-        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        handle = await self.get_schedule(schedule_id)
         await handle.pause(note=note)
 
     async def unpause_schedule(
         self,
         schedule_id: str,
     ) -> None:
-        handle = self.base_client.get_schedule_handle(id=schedule_id)
+        handle = await self.get_schedule(schedule_id)
         await handle.unpause()
