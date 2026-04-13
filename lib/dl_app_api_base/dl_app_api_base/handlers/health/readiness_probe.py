@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 @attr.define(frozen=True, kw_only=True)
 class ReadinessProbeHandler(handlers.BaseHandler):
-    OPENAPI_TAGS = ["health"]
+    OPENAPI_TAGS = ["system"]
     OPENAPI_DESCRIPTION = "Readiness probe, checks if the system is ready to serve requests"
 
     class ResponseSchema(handlers.BaseResponseSchema):
