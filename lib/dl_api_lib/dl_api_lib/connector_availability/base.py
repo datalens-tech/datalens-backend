@@ -11,10 +11,6 @@ from typing import (
 )
 
 import attr
-from dynamic_enum import (
-    AutoEnumValue,
-    DynamicEnum,
-)
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.connection_info import ConnectionInfoProvider
@@ -38,6 +34,10 @@ from dl_configs.utils import conn_type_set_env_var_converter
 from dl_constants.enums import (
     ConnectionType,
     ConnectorAvailability,
+)
+from dl_dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
 )
 from dl_i18n.localizer_base import Localizer
 

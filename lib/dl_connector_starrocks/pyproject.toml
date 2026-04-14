@@ -17,12 +17,12 @@ dl-connector-mysql = {path = "../dl_connector_mysql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-dynamic-enum = ">=0.0.1"
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dynamic-enum = ">=0.0.1"
 pymysql = ">=1.0.2"
 python = ">=3.10, <3.13"
 sqlalchemy = ">=1.4.46, <2.0"

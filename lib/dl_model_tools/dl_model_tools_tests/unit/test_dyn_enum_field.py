@@ -1,13 +1,13 @@
-from dynamic_enum import (
-    AutoEnumValue,
-    DynamicEnum,
-)
 from marshmallow import (
     Schema,
     ValidationError,
 )
 import pytest
 
+from dl_dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 

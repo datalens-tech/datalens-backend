@@ -15,12 +15,12 @@ dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 python = ">=3.10, <3.13"
 sqlalchemy = "*"

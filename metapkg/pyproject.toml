@@ -144,6 +144,7 @@ dl-core-testing = {develop = true, path = "../lib/dl_core_testing"}
 dl-crypto = {develop = true, path = "../lib/dl_crypto"}
 dl-dashsql = {develop = true, path = "../lib/dl_dashsql"}
 dl-db-testing = {develop = true, path = "../lib/dl_db_testing"}
+dl-dynamic-enum = {develop = true, path = "../lib/dl_dynamic_enum"}
 dl-dynconfig = {develop = true, path = "../lib/dl_dynconfig"}
 dl-file-secure-reader-lib = {develop = true, path = "../lib/dl_file_secure_reader_lib"}
 dl-file-uploader-api-lib = {develop = true, path = "../lib/dl_file_uploader_api_lib"}
@@ -190,7 +191,6 @@ dl-us-entries-client = {develop = true, path = "../lib/dl_us_entries_client"}
 dl-utils = {develop = true, path = "../lib/dl_utils"}
 dl-version = {develop = true, path = "../lib/dl_version"}
 dl-zitadel = {develop = true, path = "../lib/dl_zitadel"}
-dynamic-enum = {develop = true, path = "../lib/dynamic_enum"}
 redis_cache_lock = {develop = true, path = "../lib/redis-cache-lock"}
 statcommons = {develop = true, path = "../lib/statcommons"}
 

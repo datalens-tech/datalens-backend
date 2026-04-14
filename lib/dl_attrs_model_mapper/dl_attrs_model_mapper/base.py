@@ -14,9 +14,9 @@ from typing import (
 )
 
 import attr
-from dynamic_enum import DynamicEnum
 
 from dl_attrs_model_mapper.utils import MText
+from dl_dynamic_enum import DynamicEnum
 
 
 _CLS_T = TypeVar("_CLS_T", bound=type)

@@ -2,8 +2,8 @@
 authors = ["DataLens Team <datalens-opensource@yandex-team.ru>"]
 description = ""
 license = "Apache 2.0"
-name = "dynamic-enum"
-packages = [{include = "dynamic_enum"}]
+name = "dl-dynamic-enum"
+packages = [{include = "dl_dynamic_enum"}]
 readme = "README.md"
 version = "0.0.1"
 
@@ -33,6 +33,6 @@ requires = [
 ]
 
 [datalens.pytest.unit]
-root_dir = "dynamic_enum_tests/"
+root_dir = "dl_dynamic_enum_tests/"
 skip_compose = "true"
 target_path = "unit"
