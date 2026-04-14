@@ -80,7 +80,7 @@ class StaleWhileRevalidateRedis:
 
 @attr.s(auto_attribs=True)
 class CacheInvalidationEngine:
-    _swr_redis: StaleWhileRevalidateRedis = attr.ib()
+    _redis: StaleWhileRevalidateRedis = attr.ib()
 
     @staticmethod
     def _is_stale(entry: CacheInvalidationEntry, throttling_interval_sec: float) -> bool:
@@ -93,7 +93,7 @@ class CacheInvalidationEngine:
         throttling_interval_sec: float,
         generate_func: TCacheInvalidationGenerateFunc,
     ) -> str | None:
-        redis = self._swr_redis
+        redis = self._redis
         redis_key_str = key.to_redis_key()
 
         existing_entry: CacheInvalidationEntry | None = None

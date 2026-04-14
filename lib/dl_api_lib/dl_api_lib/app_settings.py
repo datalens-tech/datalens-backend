@@ -2,16 +2,19 @@ from typing import (
     Annotated,
     Any,
     ClassVar,
+    Literal,
     Optional,
 )
 
 import attr
 import pydantic
 import pydantic_settings
+from typing_extensions import Self
 
 import dl_api_commons
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 import dl_auth
+import dl_configs
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.enums import RedisMode
 from dl_configs.environments import is_setting_applicable
@@ -22,7 +25,6 @@ from dl_configs.settings_loaders.meta_definition import (
     s_attrib,
 )
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_configs.settings_submodels import RedisSettings
 from dl_configs.utils import (
     get_root_certificates_path,
     split_by_comma,
@@ -38,6 +40,7 @@ from dl_core.us_manager.settings import USClientSettings
 from dl_formula.parser.factory import ParserType
 from dl_pivot_pandas.pandas.constants import PIVOT_ENGINE_TYPE_PANDAS
 import dl_settings
+from dl_utils.utils import make_url
 
 
 @attr.s(frozen=True)
@@ -75,10 +78,10 @@ class DeprecatedAppSettings:
     RQE_CONFIG: RQEConfig = s_attrib("RQE", fallback_factory=RQEConfig.get_default)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RQEConfig")  [assignment]
     RQE_CACHES_ON: bool = s_attrib("RQE_CACHES_ON", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
     RQE_CACHES_TTL: int = s_attrib("RQE_CACHES_TTL", missing=60 * 10)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
-    RQE_CACHES_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+    RQE_CACHES_REDIS: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         "RQE_CACHES_REDIS",
         fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
                 MODE=RedisMode.single_host,
                 CLUSTER_NAME=cfg.REDIS_RQE_CACHES_CLUSTER_NAME,
                 HOSTS=_list_to_tuple(cfg.REDIS_RQE_CACHES_HOSTS),
@@ -94,10 +97,10 @@ class DeprecatedAppSettings:
     )
 
     RATE_LIMITER_ENABLED: bool = s_attrib("RATE_LIMITER_ENABLED", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
-    RATE_LIMITER_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+    RATE_LIMITER_REDIS: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         "RATE_LIMITER_REDIS",
         fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
                 MODE=RedisMode.single_host,
                 CLUSTER_NAME=cfg.RATE_LIMITER_REDIS_CLUSTER_NAME,
                 HOSTS=_list_to_tuple(cfg.RATE_LIMITER_REDIS_HOSTS),
@@ -155,7 +158,7 @@ class DeprecatedAppSettings:
         missing=FieldIdGeneratorType.readable,
     )
 
-    REDIS_ARQ: Optional[RedisSettings] = None
+    REDIS_ARQ: dl_configs.RedisSettings | None = None
 
     FILE_UPLOADER_BASE_URL: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "FILE_UPLOADER_BASE_URL",
@@ -209,11 +212,11 @@ class DeprecatedControlApiAppSettings(DeprecatedAppSettings):
         fallback_factory=lambda cfg: ConnectorAvailabilityConfig.from_settings(cfg.CONNECTOR_AVAILABILITY),
     )
 
-    REDIS_ARQ: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+    REDIS_ARQ: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         # TODO: move this values to a separate key
         "REDIS_ARQ",
         fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
                 MODE=RedisMode(cfg.REDIS_PERSISTENT_MODE),
                 CLUSTER_NAME=cfg.REDIS_PERSISTENT_CLUSTER_NAME,
                 HOSTS=_list_to_tuple(cfg.REDIS_PERSISTENT_HOSTS),
@@ -236,11 +239,11 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
     COMMON_TIMEOUT_SEC: int = s_attrib("COMMON_TIMEOUT_SEC", missing=90)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int")  [assignment]
 
     CACHES_ON: bool = s_attrib("CACHES_ON", missing=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
-    CACHES_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+    CACHES_REDIS: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         # TODO: move this values to a separate key
         "CACHES_REDIS",
         fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
                 MODE=RedisMode.sentinel,
                 CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
                 HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
@@ -256,11 +259,11 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
     )
     MUTATIONS_CACHES_ON: bool = s_attrib("MUTATIONS_CACHES_ON", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
     MUTATIONS_CACHES_DEFAULT_TTL: float = s_attrib("MUTATIONS_CACHES_DEFAULT_TTL", missing=3 * 60 * 60)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "float")  [assignment]
-    MUTATIONS_REDIS: Optional[RedisSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
+    MUTATIONS_REDIS: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         # TODO: move this values to a separate key
         "MUTATIONS_REDIS",
         fallback_factory=(
-            lambda cfg: RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
                 MODE=RedisMode.sentinel,
                 CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
                 HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
@@ -377,6 +380,55 @@ def postload_connectors_settings(value: dict[str, ConnectorSettings]) -> dict[st
     return value
 
 
+class RedisSettings(dl_settings.TypedBaseSettings):
+    """Base typed Redis settings. Use RedisSingleHostSettings or RedisSentinelSettings."""
+
+    type: str = pydantic.Field(alias="MODE")
+    DB: int = 0
+    PASSWORD: str = pydantic.Field(repr=False)
+    SSL: bool | None = None
+    SOCKET_TIMEOUT: float = 0.0
+    SOCKET_CONNECT_TIMEOUT: float = 0.0
+
+
+class RedisSingleHostSettings(RedisSettings):
+    type: Literal["single_host"] = pydantic.Field(default=RedisMode.single_host.name, alias="MODE")
+    HOST: str = NotImplemented
+    PORT: int = 6379
+
+    def as_single_host_url(self) -> str:
+        return make_url(
+            protocol="rediss" if self.SSL else "redis",
+            host=self.HOST,
+            port=self.PORT,
+            path=str(self.DB),
+        )
+
+
+RedisSettings.register(RedisMode.single_host.name, RedisSingleHostSettings)
+
+
+class RedisSentinelSettings(RedisSettings):
+    type: Literal["sentinel"] = pydantic.Field(default=RedisMode.sentinel.name, alias="MODE")
+    HOSTS: Annotated[
+        tuple[str, ...],
+        dl_settings.split_validator(","),
+    ]
+    PORT: int = 26379
+    CLUSTER_NAME: str
+
+    @pydantic.model_validator(mode="after")
+    def validate_sentinel_hosts(self) -> Self:
+        if not self.HOSTS:
+            raise ValueError("HOSTS must contain at least one sentinel host")
+        if not self.CLUSTER_NAME:
+            raise ValueError("CLUSTER_NAME must not be empty for sentinel mode")
+        return self
+
+
+RedisSettings.register(RedisMode.sentinel.name, RedisSentinelSettings)
+
+
 class ConnectorsSettingsMixin(AppSettings):
     CONNECTORS: Annotated[
         dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings],
@@ -391,9 +443,22 @@ class ControlApiAppSettings(ConnectorsSettingsMixin):
     IS_INVALIDATION_CACHE_ENABLED: bool = False
 
 
+class CacheInvalidationSettings(dl_settings.BaseSettings):
+    ENABLED: bool = False
+    REDIS: dl_settings.TypedAnnotation[RedisSettings] | None = None
+
+    @pydantic.model_validator(mode="after")
+    def validate_redis_settings(self) -> "CacheInvalidationSettings":
+        if self.ENABLED and self.REDIS is None:
+            raise ValueError("CACHE_INVALIDATION.REDIS must be configured when CACHE_INVALIDATION.ENABLED is True")
+        return self
+
+
 class DataApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
+
+    CACHE_INVALIDATION: CacheInvalidationSettings = pydantic.Field(default_factory=CacheInvalidationSettings)
 
 
 class AppSettingsOS(
