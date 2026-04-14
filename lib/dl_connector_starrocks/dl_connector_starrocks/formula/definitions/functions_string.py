@@ -2,6 +2,7 @@ import sqlalchemy as sa
 
 from dl_formula.definitions.base import TranslationVariant
 import dl_formula.definitions.functions_string as base
+from dl_formula.shortcuts import n
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
@@ -20,7 +21,12 @@ DEFINITIONS_STRING = [
     base.ConcatMultiStr.for_dialect(D.STARROCKS),
     base.ConcatMultiAny.for_dialect(D.STARROCKS),
     # contains
-    # TODO: BI-7171 FuncContainsConst (StarRocks doesn't support LIKE ESCAPE)
+    # StarRocks does not support ESCAPE clause in LIKE, so use LOCATE for all contains
+    base.FuncContainsConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.literal(y.value), x) > 0),
+        ]
+    ),
     base.FuncContainsNonConst(
         variants=[
             V(D.STARROCKS, lambda x, y: sa.func.LOCATE(y, x) > 0),
@@ -28,11 +34,33 @@ DEFINITIONS_STRING = [
     ),
     base.FuncContainsNonString.for_dialect(D.STARROCKS),
     # notcontains
-    # TODO: BI-7171 FuncNotContainsConst (StarRocks doesn't support LIKE ESCAPE)
+    base.FuncNotContainsConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.literal(y.value), x) == 0),
+        ]
+    ),
     base.FuncNotContainsNonConst.for_dialect(D.STARROCKS),
     base.FuncNotContainsNonString.for_dialect(D.STARROCKS),
     # endswith
-    # TODO: BI-7171 FuncEndswithConst, FuncEndswithNonConst (SUBSTRING length arithmetic)
+    base.FuncEndswithConst(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda x, y: (
+                    sa.func.SUBSTRING(x, sa.func.char_length(x) - sa.func.char_length(sa.literal(y.value)) + 1)
+                    == sa.literal(y.value)
+                ),
+            ),
+        ]
+    ),
+    base.FuncEndswithNonConst(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda x, y: (sa.func.SUBSTRING(x, sa.func.char_length(x) - sa.func.char_length(y) + 1) == y),
+            ),
+        ]
+    ),
     base.FuncEndswithNonString.for_dialect(D.STARROCKS),
     # find
     base.FuncFind2(
@@ -40,17 +68,47 @@ DEFINITIONS_STRING = [
             V(D.STARROCKS, lambda x, y: sa.func.LOCATE(y, x)),
         ]
     ),
-    # TODO: BI-7171 FuncFind3
+    base.FuncFind3(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda x, y, z: n.IfPartProxy(sa.func.LOCATE(y, sa.func.SUBSTRING(x, z)) > 0)
+                .then(sa.func.LOCATE(y, sa.func.SUBSTRING(x, z)) + z - 1)
+                .else_(0),
+            ),
+        ]
+    ),
     # icontains
-    # TODO: BI-7171 FuncIContainsConst (StarRocks doesn't support LIKE ESCAPE)
+    base.FuncIContainsConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.func.LOWER(sa.literal(y.value)), sa.func.LOWER(x)) > 0),
+        ]
+    ),
     base.FuncIContainsNonConst.for_dialect(D.STARROCKS),
     base.FuncIContainsNonString.for_dialect(D.STARROCKS),
     # iendswith
-    # TODO: BI-7171 FuncIEndswithConst (StarRocks doesn't support LIKE ESCAPE)
+    base.FuncIEndswithConst(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda x, y: (
+                    sa.func.SUBSTRING(
+                        sa.func.LOWER(x),
+                        sa.func.char_length(x) - sa.func.char_length(sa.literal(y.value)) + 1,
+                    )
+                    == sa.func.LOWER(sa.literal(y.value))
+                ),
+            ),
+        ]
+    ),
     base.FuncIEndswithNonConst.for_dialect(D.STARROCKS),
     base.FuncIEndswithNonString.for_dialect(D.STARROCKS),
     # istartswith
-    # TODO: BI-7171 FuncIStartswithConst (StarRocks doesn't support LIKE ESCAPE)
+    base.FuncIStartswithConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.func.LOWER(sa.literal(y.value)), sa.func.LOWER(x)) == 1),
+        ]
+    ),
     base.FuncIStartswithNonConst.for_dialect(D.STARROCKS),
     base.FuncIStartswithNonString.for_dialect(D.STARROCKS),
     # left
@@ -72,7 +130,17 @@ DEFINITIONS_STRING = [
             V(D.STARROCKS, lambda text, pattern: sa.func.regexp_extract(text, pattern, 0)),
         ]
     ),
-    # TODO: BI-7171 FuncRegexpExtractNth
+    # regexp_extract_nth
+    base.FuncRegexpExtractNth(
+        variants=[
+            V(
+                D.STARROCKS,
+                lambda text, pattern, ind: sa.func.element_at(
+                    sa.func.regexp_extract_all(text, sa.func.CONCAT("(", pattern, ")"), 1), ind
+                ),
+            ),
+        ]
+    ),
     # regexp_match
     base.FuncRegexpMatch(
         variants=[
@@ -101,7 +169,11 @@ DEFINITIONS_STRING = [
         ]
     ),
     # startswith
-    # TODO: BI-7171 FuncStartswithConst (StarRocks doesn't support LIKE ESCAPE)
+    base.FuncStartswithConst(
+        variants=[
+            V(D.STARROCKS, lambda x, y: sa.func.LOCATE(sa.literal(y.value), x) == 1),
+        ]
+    ),
     base.FuncStartswithNonConst(
         variants=[
             V(D.STARROCKS, lambda x, y: sa.func.STARTS_WITH(x, y)),
