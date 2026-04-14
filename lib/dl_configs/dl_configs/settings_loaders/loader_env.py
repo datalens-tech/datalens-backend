@@ -4,6 +4,7 @@ import inspect
 import json
 import logging
 import os
+import types
 from types import MappingProxyType
 import typing
 from typing import (
@@ -374,7 +375,7 @@ class EnvSettingsLoader:
 
     @staticmethod
     def unwrap_union(the_type: type, ignore_none: bool) -> frozenset[type]:
-        if typing.get_origin(the_type) == Union:
+        if typing.get_origin(the_type) in (Union, types.UnionType):
             unwrapped_types = typing.get_args(the_type)
             if ignore_none:
                 # TODO FIX: try to not use noqa: E721

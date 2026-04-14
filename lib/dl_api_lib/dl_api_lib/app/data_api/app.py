@@ -66,7 +66,11 @@ from dl_api_lib.app.data_api.resources.typed_query import DashSQLTypedQueryView
 from dl_api_lib.app.data_api.resources.typed_query_raw import DashSQLTypedQueryRawView
 from dl_api_lib.app.data_api.resources.unistat import UnistatView
 from dl_api_lib.app_common import SRFactoryBuilder
-from dl_api_lib.app_settings import DataApiAppSettings
+from dl_api_lib.app_settings import (
+    DataApiAppSettings,
+    RedisSentinelSettings,
+    RedisSingleHostSettings,
+)
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from dl_configs.enums import RedisMode
 from dl_constants.enums import (
@@ -332,6 +336,31 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 )
                 app.on_startup.append(_log_exc(mutations_redis_server_sentinel.init_hook))
                 app.on_cleanup.append(_log_exc(mutations_redis_server_sentinel.tear_down_hook))
+
+        cache_inval = self._settings.CACHE_INVALIDATION
+        if cache_inval.ENABLED and cache_inval.REDIS:
+            invalidation_redis_server: SingleHostSimpleRedisService | RedisSentinelService
+            if isinstance(cache_inval.REDIS, RedisSingleHostSettings):
+                invalidation_redis_server = SingleHostSimpleRedisService(
+                    instance_kind=RedisInstanceKind.cache_invalidation,
+                    url=cache_inval.REDIS.as_single_host_url(),
+                    password=cache_inval.REDIS.PASSWORD,
+                    ssl=cache_inval.REDIS.SSL,
+                )
+            elif isinstance(cache_inval.REDIS, RedisSentinelSettings):
+                invalidation_redis_server = RedisSentinelService(
+                    instance_kind=RedisInstanceKind.cache_invalidation,
+                    namespace=cache_inval.REDIS.CLUSTER_NAME,
+                    sentinel_hosts=cache_inval.REDIS.HOSTS,
+                    sentinel_port=cache_inval.REDIS.PORT,
+                    db=cache_inval.REDIS.DB,
+                    password=cache_inval.REDIS.PASSWORD,
+                    ssl=cache_inval.REDIS.SSL,
+                )
+            else:
+                raise ValueError(f"Unknown redis settings type {type(cache_inval.REDIS)}")
+            app.on_startup.append(_log_exc(invalidation_redis_server.init_hook))
+            app.on_cleanup.append(_log_exc(invalidation_redis_server.tear_down_hook))
 
         if self._settings.BI_COMPENG_PG_ON and self._settings.BI_COMPENG_PG_URL is not None:
             compeng_service = make_compeng_service(

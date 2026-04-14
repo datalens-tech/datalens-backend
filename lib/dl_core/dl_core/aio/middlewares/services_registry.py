@@ -14,6 +14,7 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import Def
 def services_registry_middleware(
     services_registry_factory: SRFactory,
     use_query_cache: bool = True,
+    use_cache_invalidation: bool = False,
     use_mutation_cache: bool = False,
     mutation_cache_default_ttl: float = 60,
 ) -> Middleware:
@@ -23,6 +24,8 @@ def services_registry_middleware(
     :param use_query_cache: If `True` - Redis client factory will be passed in service registry, Otherwise - `None`.
         Warning: if Redis service is not configured for aiohttp application and this flag is `True` -
         attempt to call `services_registry.get_caches_redis_client()` will cause an exception.
+    :param use_cache_invalidation: If `True` - invalidation caches Redis client factory will be passed
+        in service registry.  Requires ``RedisInstanceKind.cache_invalidation`` to be configured.
     :return: Configured middleware that creates service registry for each request.
     """
 
@@ -39,6 +42,9 @@ def services_registry_middleware(
         sr = services_registry_factory.make_service_registry(
             request_context_info=dl_request.rci,
             caches_redis_client_factory=dl_request.get_caches_redis if use_query_cache else None,
+            cache_invalidations_redis_client_factory=(
+                dl_request.get_cache_invalidations_redis if use_cache_invalidation else None
+            ),
             mutations_cache_factory=mutations_cache_factory,
             mutations_redis_client_factory=mutations_redis_client_factory,
             data_processor_service_factory=dl_request.get_data_processor_service,
