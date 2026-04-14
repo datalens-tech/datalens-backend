@@ -100,10 +100,9 @@ class CacheInvalidationEngine:
         try:
             existing_entry = await redis.get_data(key)
         except Exception:
-            LOGGER.warning(
+            LOGGER.exception(
                 "Error reading invalidation cache key=%s",
                 redis_key_str,
-                exc_info=True,
             )
 
         if existing_entry is not None and not self._is_stale(existing_entry, throttling_interval_sec):
@@ -115,10 +114,9 @@ class CacheInvalidationEngine:
         try:
             lock_acquired = await redis.try_acquire_lock(key)
         except Exception:
-            LOGGER.warning(
+            LOGGER.exception(
                 "Error acquiring invalidation cache lock key=%s",
                 redis_key_str,
-                exc_info=True,
             )
 
         if not lock_acquired:
@@ -135,19 +133,17 @@ class CacheInvalidationEngine:
                     new_entry.payload,
                 )
         except Exception:
-            LOGGER.warning(
+            LOGGER.exception(
                 "Error during invalidation cache revalidation key=%s",
                 redis_key_str,
-                exc_info=True,
             )
         finally:
             try:
                 await redis.release_lock(key)
             except Exception:
-                LOGGER.warning(
+                LOGGER.exception(
                     "Error releasing invalidation cache lock key=%s",
                     redis_key_str,
-                    exc_info=True,
                 )
 
         return stale_data
