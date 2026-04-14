@@ -194,7 +194,7 @@ async def test_engine_fresh_data_returned_immediately() -> None:
     swr_mock = _make_swr_mock()
     swr_mock.get_data.return_value = _make_success_entry(data="fresh", executed_at=time.time())
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     generate_func = AsyncMock()
 
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
@@ -210,7 +210,7 @@ async def test_engine_stale_data_lock_not_acquired() -> None:
     swr_mock.get_data.return_value = _make_success_entry(data="stale", executed_at=time.time() - 120)
     swr_mock.try_acquire_lock.return_value = False
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     generate_func = AsyncMock()
 
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
@@ -228,7 +228,7 @@ async def test_engine_stale_data_lock_acquired_returns_stale() -> None:
     new_entry = _make_success_entry(data="new")
     generate_func = AsyncMock(return_value=new_entry)
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result == "stale"  # NOT "new"
@@ -246,7 +246,7 @@ async def test_engine_empty_cache_returns_none() -> None:
     new_entry = _make_success_entry(data="first")
     generate_func = AsyncMock(return_value=new_entry)
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result is None
@@ -260,7 +260,7 @@ async def test_engine_empty_cache_lock_not_acquired() -> None:
     swr_mock.get_data.return_value = None
     swr_mock.try_acquire_lock.return_value = False
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     generate_func = AsyncMock()
 
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
@@ -277,7 +277,7 @@ async def test_engine_error_entry_stale_data_is_none() -> None:
 
     generate_func = AsyncMock(return_value=_make_success_entry(data="recovered"))
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result is None
@@ -292,7 +292,7 @@ async def test_engine_generate_func_error_releases_lock() -> None:
 
     generate_func = AsyncMock(side_effect=RuntimeError("query failed"))
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result is None
@@ -309,7 +309,7 @@ async def test_engine_error_entry_saved_to_redis() -> None:
     error_entry = _make_error_entry()
     generate_func = AsyncMock(return_value=error_entry)
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result == "old"
@@ -325,7 +325,7 @@ async def test_engine_redis_get_error_graceful() -> None:
 
     generate_func = AsyncMock(return_value=_make_success_entry(data="new"))
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result is None
@@ -340,7 +340,7 @@ async def test_engine_redis_lock_error_graceful() -> None:
 
     generate_func = AsyncMock()
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     result = await engine.get_stale_and_generate(_make_key(), 60.0, generate_func)
 
     assert result == "stale"
@@ -386,7 +386,7 @@ async def test_engine_concurrent_requests_only_one_generates() -> None:
 
     swr_mock.try_acquire_lock.side_effect = mock_try_acquire_lock
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
     key = _make_key()
 
     # Launch 5 concurrent requests
@@ -427,7 +427,7 @@ async def test_engine_concurrent_requests_empty_cache_all_return_none() -> None:
 
     swr_mock.try_acquire_lock.side_effect = mock_try_acquire_lock
 
-    engine = CacheInvalidationEngine(swr_redis=swr_mock)
+    engine = CacheInvalidationEngine(redis=swr_mock)
 
     results = await asyncio.gather(*[engine.get_stale_and_generate(_make_key(), 60.0, generate_func) for _ in range(5)])
 

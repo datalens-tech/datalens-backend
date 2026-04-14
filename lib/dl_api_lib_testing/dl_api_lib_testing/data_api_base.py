@@ -22,8 +22,10 @@ from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib.app.data_api.app import DataApiAppFactory
 from dl_api_lib.app_settings import (
+    CacheInvalidationSettings,
     DataApiAppSettings,
     DeprecatedDataApiAppSettings,
+    RedisSingleHostSettings,
 )
 from dl_api_lib_testing.app import TestingDataApiAppFactory
 from dl_api_lib_testing.app_settings import TestingDataApiAppSettings
@@ -53,6 +55,7 @@ class DataApiTestParams(NamedTuple):
 class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     mutation_caches_enabled: ClassVar[bool] = True
     data_caches_enabled: ClassVar[bool] = True
+    cache_invalidations_enabled: ClassVar[bool] = False
 
     @pytest.fixture
     def loop(self, event_loop: asyncio.AbstractEventLoop) -> Generator[asyncio.AbstractEventLoop, None, None]:
@@ -107,7 +110,22 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
-        settings = TestingDataApiAppSettings(fallback=deprecated_settings)
+
+        extra_kwargs: dict = {}
+        if self.cache_invalidations_enabled:
+            redis_setting_maker = bi_test_config.core_test_config.get_redis_setting_maker()
+            redis_settings = redis_setting_maker.get_redis_settings_cache_invalidation()
+            extra_kwargs["CACHE_INVALIDATION"] = CacheInvalidationSettings(
+                ENABLED=True,
+                REDIS=RedisSingleHostSettings.model_construct(
+                    HOST=redis_settings.HOSTS[0] if redis_settings.HOSTS else "",
+                    PORT=redis_settings.PORT,
+                    DB=redis_settings.DB,
+                    PASSWORD=redis_settings.PASSWORD,
+                ),
+            )
+
+        settings = TestingDataApiAppSettings(fallback=deprecated_settings, **extra_kwargs)
 
         return settings
 
