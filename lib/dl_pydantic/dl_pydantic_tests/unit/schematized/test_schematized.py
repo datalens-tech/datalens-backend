@@ -1,10 +1,10 @@
-from dynamic_enum import (
-    AutoEnumValue,
-    DynamicEnum,
-)
 import pydantic
 import pytest
 
+from dl_dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 import dl_pydantic
 
 

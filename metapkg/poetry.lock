@@ -1723,12 +1723,12 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 
@@ -1758,6 +1758,7 @@ dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
@@ -1771,7 +1772,6 @@ dl-settings = {path = "../dl_settings"}
 dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 flask = "*"
 flask-marshmallow = "*"
 flask-restx = "*"
@@ -1930,8 +1930,8 @@ develop = true
 
 [package.dependencies]
 attrs = "*"
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-model-tools = {path = "../dl_model_tools"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 
@@ -1969,8 +1969,8 @@ develop = true
 [package.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-settings = {path = "../dl_settings"}
-dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 typing-extensions = "*"
 
@@ -2099,8 +2099,8 @@ develop = true
 attrs = "*"
 cryptography = "*"
 dl-constants = {path = "../dl_constants"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 pyyaml = "*"
 typeguard = "*"
 typing-extensions = "*"
@@ -2491,12 +2491,12 @@ dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 sqlalchemy = "*"
 typing_extensions = "*"
@@ -2557,12 +2557,12 @@ dl-connector-mysql = {path = "../dl_connector_mysql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-dynamic-enum = ">=0.0.1"
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dynamic-enum = ">=0.0.1"
 pymysql = ">=1.0.2"
 sqlalchemy = ">=1.4.46, <2.0"
 
@@ -2587,13 +2587,13 @@ dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-db-testing = {path = "../dl_db_testing"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 requests = "*"
 sqlalchemy = "*"
@@ -2651,7 +2651,7 @@ files = []
 develop = true
 
 [package.dependencies]
-dynamic-enum = {path = "../dynamic_enum"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 typing-extensions = "*"
 
 [package.source]
@@ -2913,6 +2913,19 @@ type = "directory"
 url = "../lib/dl_db_testing"
 
 [[package]]
+name = "dl-dynamic-enum"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_dynamic_enum"
+
+[[package]]
 name = "dl-dynconfig"
 version = "0.0.1"
 description = ""
@@ -3102,8 +3115,8 @@ develop = true
 antlr4-python3-runtime = "*"
 attrs = "*"
 ciso8601 = "*"
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 graphviz = "*"
 pytz = "*"
 sqlalchemy = "*"
@@ -3124,11 +3137,11 @@ develop = true
 [package.dependencies]
 attrs = "*"
 dl-db-testing = {path = "../dl_db_testing"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-formula = {path = "../dl_formula"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 jinja2 = "*"
 sqlalchemy = "*"
 tabulate = "*"
@@ -3288,8 +3301,8 @@ develop = true
 [package.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 msgpack = "*"
@@ -3365,8 +3378,8 @@ develop = true
 
 [package.dependencies]
 deepdiff = "*"
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-json = {path = "../dl_json"}
-dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 pydantic-core = "*"
 typing-extensions = "*"
@@ -4021,19 +4034,6 @@ fastimport = ["fastimport"]
 https = ["urllib3 (>=1.24.1)"]
 paramiko = ["paramiko"]
 pgp = ["gpg"]
-
-[[package]]
-name = "dynamic-enum"
-version = "0.0.1"
-description = ""
-optional = false
-python-versions = ">=3.10, <3.13"
-files = []
-develop = true
-
-[package.source]
-type = "directory"
-url = "../lib/dynamic_enum"
 
 [[package]]
 name = "et-xmlfile"
@@ -9676,4 +9676,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.13"
-content-hash = "d5d7db0409f401198c5b02b65fba8f82f9471b0723c607e09a607d64e925e710"
+content-hash = "dbec15b512db31458e7ce7717c467fd43e8e725f92e81a99149d6af33fb63951"

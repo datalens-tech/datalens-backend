@@ -1,12 +1,11 @@
-from dynamic_enum import (
-    AutoEnumValue,
-    DynamicEnum,
-)
-
 from dl_constants.enums import (
     ConnectionType,
     DataSourceType,
     SourceBackendType,
+)
+from dl_dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
 )
 
 

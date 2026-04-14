@@ -9,11 +9,11 @@ from typing import (
 )
 
 import attr
-from dynamic_enum import (
+
+from dl_dynamic_enum import (
     AutoEnumValue,
     DynamicEnum,
 )
-
 from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula.definitions.scope import Scope

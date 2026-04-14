@@ -11,8 +11,8 @@ version = "7.47.0"
 antlr4-python3-runtime = "*"
 attrs = "*"
 ciso8601 = "*"
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 graphviz = "*"
 python = ">=3.10, <3.13"
 pytz = "*"

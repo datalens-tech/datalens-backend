@@ -4,9 +4,10 @@ from typing import (
     Optional,
 )
 
-from dynamic_enum import DynamicEnum
 from marshmallow import ValidationError
 from marshmallow import fields as ma_fields
+
+from dl_dynamic_enum import DynamicEnum
 
 
 class DynamicEnumField(ma_fields.Field):

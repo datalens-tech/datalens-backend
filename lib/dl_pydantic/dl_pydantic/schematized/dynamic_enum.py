@@ -5,10 +5,10 @@ from typing import (
     TypeVar,
 )
 
-from dynamic_enum import DynamicEnum
 import pydantic
 import pydantic_core
 
+from dl_dynamic_enum import DynamicEnum
 import dl_pydantic.schematized.base as base
 
 
