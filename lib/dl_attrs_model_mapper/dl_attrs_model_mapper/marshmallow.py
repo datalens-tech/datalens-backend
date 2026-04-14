@@ -9,7 +9,6 @@ from typing import (
 )
 
 import attr
-from dynamic_enum import DynamicEnum
 import marshmallow
 from marshmallow import fields
 
@@ -46,6 +45,7 @@ from dl_attrs_model_mapper.utils import (
     is_str_mapping,
     unwrap_typing_container_with_single_type,
 )
+from dl_dynamic_enum import DynamicEnum
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 
 

@@ -10,8 +10,8 @@ version = "0.0.1"
 attrs = "*"
 cryptography = "*"
 dl-constants = {path = "../dl_constants"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-utils = {path = "../dl_utils"}
-dynamic-enum = {path = "../dynamic_enum"}
 python = ">=3.10, <3.13"
 pyyaml = "*"
 typeguard = "*"

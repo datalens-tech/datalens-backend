@@ -1,10 +1,11 @@
 import pickle
 
-from dynamic_enum import (
+import pytest
+
+from dl_dynamic_enum import (
     AutoEnumValue,
     DynamicEnum,
 )
-import pytest
 
 
 def test_auto_value() -> None:

@@ -17,7 +17,7 @@ from typing import (
     cast,
 )
 
-from dynamic_enum import (
+from dl_dynamic_enum import (
     AutoEnumValue,
     DynamicEnum,
 )

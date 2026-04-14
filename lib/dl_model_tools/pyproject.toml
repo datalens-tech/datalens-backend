@@ -10,8 +10,8 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-type-transformer = {path = "../dl_type_transformer"}
-dynamic-enum = {path = "../dynamic_enum"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 msgpack = "*"

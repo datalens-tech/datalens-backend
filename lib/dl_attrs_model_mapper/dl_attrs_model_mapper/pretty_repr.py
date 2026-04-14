@@ -10,13 +10,13 @@ from typing import (
 )
 
 import attr
-from dynamic_enum import DynamicEnum
 
 from dl_attrs_model_mapper.structs.mappings import (
     FrozenMappingStrToStrOrStrSeq,
     FrozenStrMapping,
 )
 from dl_attrs_model_mapper.structs.singleormultistring import SingleOrMultiString
+from dl_dynamic_enum import DynamicEnum
 
 
 _INDENT = " " * 4

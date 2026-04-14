@@ -7,7 +7,7 @@ packages = [{include = "dl_constants"}]
 version = "0.0.1"
 
 [tool.poetry.dependencies]
-dynamic-enum = {path = "../dynamic_enum"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 python = ">=3.10, <3.13"
 typing-extensions = "*"
 

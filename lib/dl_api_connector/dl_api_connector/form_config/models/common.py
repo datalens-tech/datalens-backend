@@ -13,7 +13,8 @@ from typing import (
 )
 
 import attr
-from dynamic_enum import DynamicEnum
+
+from dl_dynamic_enum import DynamicEnum
 
 
 Align = Literal["start", "center", "end"]

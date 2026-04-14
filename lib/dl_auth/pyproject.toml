@@ -10,8 +10,8 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-settings = {path = "../dl_settings"}
-dynamic-enum = {path = "../dynamic_enum"}
 pydantic = "*"
 python = ">=3.10, <3.13"
 typing-extensions = "*"

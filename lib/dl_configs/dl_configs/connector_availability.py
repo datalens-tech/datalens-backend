@@ -1,13 +1,13 @@
 from typing import Optional
 
 import attr
-from dynamic_enum import (
-    AutoEnumValue,
-    DynamicEnum,
-)
 
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_constants.enums import ConnectorAvailability
+from dl_dynamic_enum import (
+    AutoEnumValue,
+    DynamicEnum,
+)
 
 
 @attr.s(kw_only=True)
