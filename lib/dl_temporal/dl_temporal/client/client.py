@@ -232,6 +232,23 @@ class TemporalClient:
     async def list_schedules(self) -> temporalio.client.ScheduleAsyncIterator:
         return await self.base_client.list_schedules()
 
+    async def list_schedule_executions(
+        self,
+        schedule_id: str,
+        page_size: int,
+        next_page_token: bytes | None = None,
+    ) -> tuple[list[temporalio.api.workflow.v1.WorkflowExecutionInfo], bytes | None]:
+        query = "TemporalScheduledById = '{}'".format(schedule_id.replace("'", "''"))
+        response = await self.base_client.workflow_service.list_workflow_executions(
+            req=temporalio.api.workflowservice.v1.ListWorkflowExecutionsRequest(
+                namespace=self.base_client.namespace,
+                query=query,
+                page_size=page_size,
+                next_page_token=next_page_token or b"",
+            )
+        )
+        return list(response.executions), response.next_page_token or None
+
     async def update_schedule_spec(
         self,
         schedule_id: str,
