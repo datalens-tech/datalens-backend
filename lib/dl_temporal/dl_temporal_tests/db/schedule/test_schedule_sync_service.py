@@ -6,6 +6,7 @@ import uuid
 import pytest
 import pytest_asyncio
 import temporalio.client
+import temporalio.service
 
 import dl_dynconfig
 import dl_pydantic
@@ -46,7 +47,7 @@ async def fixture_cleanup_schedules(
     async for entry in await temporal_client.list_schedules():
         try:
             await temporal_client.delete_schedule(entry.id)
-        except temporalio.service.RPCError:
+        except dl_temporal.NotFound:
             pass
     yield
 
@@ -183,7 +184,14 @@ async def test_sync_deletes_stale_schedule(
     await service.sync()
 
     async def _stale_removed() -> None:
-        assert stale_id not in await _list_schedule_ids(temporal_client)
+        handle = await temporal_client.get_schedule(stale_id)
+        try:
+            await handle.describe()
+        except temporalio.service.RPCError as e:
+            if e.status == temporalio.service.RPCStatusCode.NOT_FOUND:
+                return
+            raise
+        raise AssertionError(f"Schedule {stale_id} still exists")
 
     await common.await_for_success(f"{stale_id} removed from schedule list", _stale_removed)
 
