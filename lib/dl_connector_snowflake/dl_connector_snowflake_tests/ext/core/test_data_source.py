@@ -21,6 +21,7 @@ from dl_connector_snowflake.core.data_source_spec import (
 from dl_connector_snowflake.core.us_connection import ConnectionSQLSnowFlake
 from dl_connector_snowflake_tests.ext.config import SAMPLE_TABLE_SIMPLIFIED_SCHEMA
 from dl_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
+from dl_connector_snowflake_tests.ext.settings import Settings
 
 
 class TestSnowFlakeTableDataSource(
@@ -34,12 +35,12 @@ class TestSnowFlakeTableDataSource(
     DSRC_CLS = SnowFlakeTableDataSource
 
     @pytest.fixture(scope="class")
-    def initial_data_source_spec(self, sf_secrets) -> SnowFlakeTableDataSourceSpec:
+    def initial_data_source_spec(self, settings: Settings) -> SnowFlakeTableDataSourceSpec:
         dsrc_spec = SnowFlakeTableDataSourceSpec(
             source_type=SOURCE_TYPE_SNOWFLAKE_TABLE,
-            table_name=sf_secrets.get_table_name(),
-            db_name=sf_secrets.get_database(),
-            schema_name=sf_secrets.get_schema(),
+            table_name=settings.SNOWFLAKE_CONFIG["table_name"],
+            db_name=settings.SNOWFLAKE_CONFIG["database"],
+            schema_name=settings.SNOWFLAKE_CONFIG["schema"],
         )
         return dsrc_spec
 
@@ -60,10 +61,10 @@ class TestSnowFlakeSubselectDataSoure(
     raw_sql_level = RawSQLLevel.subselect
 
     @pytest.fixture(scope="class")
-    def initial_data_source_spec(self, sf_secrets) -> SnowFlakeSubselectDataSourceSpec:
+    def initial_data_source_spec(self, settings: Settings) -> SnowFlakeSubselectDataSourceSpec:
         dsrc_spec = SnowFlakeSubselectDataSourceSpec(
             source_type=SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
-            subsql=f"SELECT * FROM {sf_secrets.get_database()}.{sf_secrets.get_schema()}.{sf_secrets.get_table_name()}",
+            subsql=f"SELECT * FROM {settings.SNOWFLAKE_CONFIG['database']}.{settings.SNOWFLAKE_CONFIG['schema']}.{settings.SNOWFLAKE_CONFIG['table_name']}",
         )
         return dsrc_spec
 

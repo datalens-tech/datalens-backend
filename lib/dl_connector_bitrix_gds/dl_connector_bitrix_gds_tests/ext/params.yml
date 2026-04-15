@@ -1,2 +1,0 @@
-params:
-  BITRIX_DATALENS_TOKEN: { getter: $osenv, key: BITRIX_DATALENS_TOKEN }

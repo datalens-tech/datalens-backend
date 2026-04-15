@@ -14,15 +14,11 @@ boto3 = "*"
 botocore = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
+dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 pytest = "*"
 python = ">=3.10, <3.13"
-python-dotenv = "*"
 pyyaml = "*"
-
-[tool.poetry.plugins.env_param_getters]
-direct = "dl_testing.env_params.main:DirectEnvParamGetter"
-osenv = "dl_testing.env_params.main:OsEnvParamGetter"
 
 [tool.mypy]
 check_untyped_defs = true

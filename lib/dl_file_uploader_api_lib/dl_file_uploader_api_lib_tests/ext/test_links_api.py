@@ -212,7 +212,7 @@ async def test_all_types(
     s3_tmp_bucket,
     s3_persistent_bucket,
     redis_model_manager,
-    env_param_getter,
+    settings,
 ):
     """
     Note: the spreadsheet in this test contains test data on it's _TEST_DATA_ sheet,
@@ -241,7 +241,7 @@ async def test_all_types(
     actual_data = {}
 
     gsheets_settings = GSheetsSettings(
-        api_key=env_param_getter.get_str_value("GOOGLE_API_KEY"),
+        api_key=settings.GOOGLE_API_KEY,
         client_id="dummy",
         client_secret="dummy",
     )
