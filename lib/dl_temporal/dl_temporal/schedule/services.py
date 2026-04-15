@@ -10,7 +10,7 @@ import temporalio.client
 import temporalio.service
 
 import dl_temporal.base as base
-import dl_temporal.client.client as temporal_client_module
+import dl_temporal.client as client
 from dl_temporal.schedule.config import TemporalSchedulesDynConfig
 import dl_temporal.temporal.workflows as temporal_workflows
 
@@ -20,7 +20,7 @@ LOGGER = logging.getLogger(__name__)
 
 @attrs.define(frozen=True, kw_only=True)
 class ScheduleSyncService:
-    temporal_client: temporal_client_module.TemporalClient
+    temporal_client: client.TemporalClient
     config: TemporalSchedulesDynConfig
     task_queue: str
     workflows: Sequence[type[base.WorkflowProtocol]]
@@ -68,7 +68,10 @@ class ScheduleSyncService:
         async for entry in await self.temporal_client.list_schedules():
             if entry.id.startswith(self.SCHEDULE_PREFIX) and entry.id not in expected_ids:
                 LOGGER.info("Deleting stale schedule: %s", entry.id)
-                await self.temporal_client.delete_schedule(entry.id)
+                try:
+                    await self.temporal_client.delete_schedule(entry.id)
+                except client.NotFound:
+                    LOGGER.debug("Stale schedule %s was already deleted", entry.id)
 
     async def _upsert_schedule(
         self,
