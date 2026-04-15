@@ -5,6 +5,7 @@ from .client import (
 )
 from .exc import (
     AlreadyExists,
+    NotFound,
     PermissionDenied,
     TemporalClientError,
 )
@@ -22,6 +23,7 @@ __all__ = [
     "EmptyMetadataProviderSettings",
     "MetadataProvider",
     "MetadataProviderSettings",
+    "NotFound",
     "PermissionDenied",
     "TemporalClient",
     "TemporalClientDependencies",

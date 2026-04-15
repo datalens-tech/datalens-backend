@@ -271,7 +271,10 @@ class TemporalClient:
         schedule_id: str,
     ) -> None:
         handle = await self.get_schedule(schedule_id)
-        await handle.delete()
+        try:
+            await handle.delete()
+        except temporalio.service.RPCError as e:
+            exc.wrap_temporal_error(e)
 
     async def pause_schedule(
         self,
