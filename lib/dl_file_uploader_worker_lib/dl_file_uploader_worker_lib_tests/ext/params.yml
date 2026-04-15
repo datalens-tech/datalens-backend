@@ -1,2 +1,0 @@
-params:
-  GOOGLE_API_KEY: {getter: $osenv, key: GOOGLE_API_KEY}
