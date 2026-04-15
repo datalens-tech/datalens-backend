@@ -11,6 +11,7 @@ from dl_connector_bigquery.core.constants import (
 )
 from dl_connector_bigquery_tests.ext.config import API_TEST_CONFIG
 from dl_connector_bigquery_tests.ext.core.base import BaseBigQueryTestClass
+from dl_connector_bigquery_tests.ext.settings import Settings
 
 
 class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
@@ -22,28 +23,28 @@ class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
         return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
-    def connection_params(self, bq_secrets) -> dict:
+    def connection_params(self, settings: Settings) -> dict:
         return dict(
-            project_id=bq_secrets.get_project_id(),
-            credentials=bq_secrets.get_creds(),
+            project_id=settings.BIGQUERY_CONFIG["project_id"],
+            credentials=settings.BIGQUERY_CREDS,
         )
 
 
 class BigQueryConnectionTestMalformedCreds(BigQueryConnectionTestBase):
     @pytest.fixture(scope="class")
-    def connection_params(self, bq_secrets) -> dict:
+    def connection_params(self, settings: Settings) -> dict:
         return dict(
-            project_id=bq_secrets.get_project_id(),
-            credentials=bq_secrets.get_creds() + "asdf",
+            project_id=settings.BIGQUERY_CONFIG["project_id"],
+            credentials=settings.BIGQUERY_CREDS + "asdf",
         )
 
 
 class BigQueryConnectionTestBadProjectId(BigQueryConnectionTestBase):
     @pytest.fixture(scope="class")
-    def connection_params(self, bq_secrets) -> dict:
+    def connection_params(self, settings: Settings) -> dict:
         return dict(
-            project_id=bq_secrets.get_project_id() + "123",
-            credentials=bq_secrets.get_creds(),
+            project_id=settings.BIGQUERY_CONFIG["project_id"] + "123",
+            credentials=settings.BIGQUERY_CREDS,
         )
 
 

@@ -419,8 +419,8 @@ def reader_app(loop, secure_reader: SecureReader, reader_app_settings: FileSecur
 
 
 @pytest.fixture(scope="session")
-def ya_docs_oauth_token(env_param_getter):
-    return env_param_getter.get_str_value("YA_DOCS_API_KEY")
+def ya_docs_oauth_token(settings):
+    return settings.YA_DOCS_API_KEY
 
 
 # Imported fixtures

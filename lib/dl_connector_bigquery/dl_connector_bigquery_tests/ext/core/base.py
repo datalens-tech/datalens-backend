@@ -16,6 +16,7 @@ from dl_connector_bigquery.core.constants import CONNECTION_TYPE_BIGQUERY
 from dl_connector_bigquery.core.us_connection import ConnectionSQLBigQuery
 from dl_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
 import dl_connector_bigquery_tests.ext.config as test_config
+from dl_connector_bigquery_tests.ext.settings import Settings
 
 
 class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):
@@ -32,38 +33,38 @@ class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):
         asyncio.set_event_loop_policy(None)
 
     @pytest.fixture(scope="class")
-    def db_url(self, bq_secrets) -> str:
-        return f"bigquery://{bq_secrets.get_project_id()}"
+    def db_url(self, settings: Settings) -> str:
+        return f"bigquery://{settings.BIGQUERY_CONFIG['project_id']}"
 
     @pytest.fixture(scope="class")
-    def engine_params(self, bq_secrets) -> dict:
+    def engine_params(self, settings: Settings) -> dict:
         return dict(
-            credentials_base64=bq_secrets.get_creds(),
+            credentials_base64=settings.BIGQUERY_CREDS,
         )
 
     @pytest.fixture(scope="class")
-    def engine_config(self, db_url: str, engine_params: dict, bq_secrets) -> BigQueryDbEngineConfig:
+    def engine_config(self, db_url: str, engine_params: dict, settings: Settings) -> BigQueryDbEngineConfig:
         return BigQueryDbEngineConfig(
             url=db_url,
             engine_params=engine_params,
-            default_dataset_name=bq_secrets.get_dataset_name(),
+            default_dataset_name=settings.BIGQUERY_CONFIG["dataset_name"],
         )
 
     @pytest.fixture(scope="function")
-    def connection_creation_params(self, bq_secrets) -> dict:
+    def connection_creation_params(self, settings: Settings) -> dict:
         return dict(
-            project_id=bq_secrets.get_project_id(),
-            credentials=bq_secrets.get_creds(),
+            project_id=settings.BIGQUERY_CONFIG["project_id"],
+            credentials=settings.BIGQUERY_CREDS,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
         )
 
     @pytest.fixture(scope="class")
-    def sample_table(self, db: Db, bq_secrets) -> DbTable:
+    def sample_table(self, db: Db, settings: Settings) -> DbTable:
         # FIXME: Do this via a "smart" dispenser
         return make_table(
             db=db,
-            name=bq_secrets.get_table_name(),
-            schema=bq_secrets.get_dataset_name(),
+            name=settings.BIGQUERY_CONFIG["table_name"],
+            schema=settings.BIGQUERY_CONFIG["dataset_name"],
             columns=[
                 C(name=name, user_type=user_type) for name, user_type in TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema
             ],

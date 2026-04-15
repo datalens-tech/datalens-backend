@@ -16,6 +16,7 @@ from dl_connector_snowflake.core.constants import (
 )
 from dl_connector_snowflake_tests.ext.config import API_TEST_CONFIG
 from dl_connector_snowflake_tests.ext.core.base import BaseSnowFlakeTestClass
+from dl_connector_snowflake_tests.ext.settings import Settings
 
 
 class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
@@ -26,17 +27,17 @@ class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
         return API_TEST_CONFIG
 
     @pytest.fixture(scope="class")
-    def connection_params_native(self, sf_secrets) -> dict:
+    def connection_params_native(self, settings: Settings) -> dict:
         return dict(
-            account_name=sf_secrets.get_account_name(),
-            user_name=sf_secrets.get_user_name(),
-            user_role=sf_secrets.get_user_role(),
-            client_id=sf_secrets.get_client_id(),
-            client_secret=sf_secrets.get_client_secret(),
-            db_name=sf_secrets.get_database(),
-            schema=sf_secrets.get_schema(),
-            warehouse=sf_secrets.get_warehouse(),
-            refresh_token=sf_secrets.get_refresh_token_x(),
+            account_name=settings.SNOWFLAKE_CONFIG["account_name"],
+            user_name=settings.SNOWFLAKE_CONFIG["user_name"],
+            user_role=settings.SNOWFLAKE_CONFIG["user_role"],
+            client_id=settings.SNOWFLAKE_CONFIG["client_id"],
+            client_secret=settings.SNOWFLAKE_CLIENT_SECRET,
+            db_name=settings.SNOWFLAKE_CONFIG["database"],
+            schema=settings.SNOWFLAKE_CONFIG["schema"],
+            warehouse=settings.SNOWFLAKE_CONFIG["warehouse"],
+            refresh_token=settings.SNOWFLAKE_REFRESH_TOKEN_X,
             refresh_token_expire_time=datetime.datetime.now() + datetime.timedelta(days=80),
         )
 
@@ -53,11 +54,11 @@ class SnowFlakeConnectionTestBase(BaseSnowFlakeTestClass, ConnectionTestBase):
 
 class SnowFlakeDatasetTestBase(SnowFlakeConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
-    def dataset_params(self, sf_secrets) -> dict:
+    def dataset_params(self, settings: Settings) -> dict:
         return dict(
             source_type=SOURCE_TYPE_SNOWFLAKE_TABLE.name,
             parameters=dict(
-                table_name=sf_secrets.get_table_name(),
+                table_name=settings.SNOWFLAKE_CONFIG["table_name"],
             ),
         )
 

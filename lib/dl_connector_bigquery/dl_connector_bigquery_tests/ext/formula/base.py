@@ -7,6 +7,7 @@ from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
 from dl_connector_bigquery.db_testing.engine_wrapper import BigQueryDbEngineConfig
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
+from dl_connector_bigquery_tests.ext.settings import Settings
 
 
 class BigQueryTestBase(FormulaConnectorTestBase):
@@ -20,14 +21,14 @@ class BigQueryTestBase(FormulaConnectorTestBase):
     null_casts_to_false = True
 
     @pytest.fixture(scope="class")
-    def engine_params(self, bq_secrets) -> dict:
+    def engine_params(self, settings: Settings) -> dict:
         return dict(
-            credentials_base64=bq_secrets.get_creds(),
+            credentials_base64=settings.BIGQUERY_CREDS,
         )
 
     @pytest.fixture(scope="class")
-    def engine_config(self, db_url: str, engine_params: dict, bq_secrets) -> BigQueryDbEngineConfig:
-        default_dataset_name = bq_secrets.get_dataset_name()
+    def engine_config(self, db_url: str, engine_params: dict, settings: Settings) -> BigQueryDbEngineConfig:
+        default_dataset_name = settings.BIGQUERY_CONFIG["dataset_name"]
         return BigQueryDbEngineConfig(
             url=db_url,
             engine_params=engine_params,
@@ -35,5 +36,5 @@ class BigQueryTestBase(FormulaConnectorTestBase):
         )
 
     @pytest.fixture(scope="class")
-    def db_url(self, bq_secrets) -> str:
-        return f"bigquery://{bq_secrets.get_project_id()}"
+    def db_url(self, settings: Settings) -> str:
+        return f"bigquery://{settings.BIGQUERY_CONFIG['project_id']}"

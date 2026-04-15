@@ -14,13 +14,10 @@ from dl_utils.aio import ContextVarExecutor
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.mark.asyncio  # type: ignore # error: Function is missing a type annotation  [no-untyped-def]
-async def test_number_format_types(env_param_getter, redis_model_manager) -> None:
-    api_key = env_param_getter.get_str_value("GOOGLE_API_KEY")
-    assert api_key
-
+@pytest.mark.asyncio
+async def test_number_format_types(settings, redis_model_manager) -> None:
     gsheets_settings = GSheetsSettings(
-        api_key=api_key,
+        api_key=settings.GOOGLE_API_KEY,
         client_id="dummy",
         client_secret="dummy",
     )
