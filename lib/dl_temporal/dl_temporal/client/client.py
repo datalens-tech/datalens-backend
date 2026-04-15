@@ -107,6 +107,7 @@ class TemporalClient:
         try:
             return await self.base_client.service_client.check_health(
                 timeout=self.check_health_timeout,
+                retry=True,
             )
         except Exception:
             LOGGER.exception("Temporal client health check failed")
