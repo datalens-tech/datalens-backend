@@ -96,6 +96,8 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
+        allow_cache_usage: bool | None = None,
+        cache_invalidation_payload: str | None = None,
     ) -> PostprocessedQuery:
         ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
         if not ds_accessor.get_data_source_id_list():
@@ -105,6 +107,8 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
             block_spec=block_spec,
             profiling_postfix=profiling_postfix,
             parameter_value_specs=parameter_value_specs,
+            cache_invalidation_payload=cache_invalidation_payload,
+            allow_cache_usage=allow_cache_usage,
         )
 
     def load_req_model(self) -> DataRequestModel:

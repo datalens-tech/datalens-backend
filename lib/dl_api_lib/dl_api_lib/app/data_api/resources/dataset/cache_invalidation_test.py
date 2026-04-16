@@ -37,6 +37,7 @@ from dl_constants.enums import (
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.data_source.collection import DataSourceCollectionFactory
+from dl_core.fields import ResultSchema
 from dl_core.us_connection_base import (
     ConnectionBase,
     RawSqlLevelConnectionMixin,
@@ -167,31 +168,19 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         return web.json_response(response_data)
 
     async def _execute_formula_mode(self, cache_invalidation_source: CacheInvalidationSource) -> Response:
-        """Execute formula-mode cache invalidation query and return the result.
-
-        Steps:
-        1. Temporarily add the CacheInvalidationField to the dataset's result_schema
-        2. Build a RawQuerySpecUnion with the field as select and filters from cache_invalidation_source
-        3. Execute via execute_all_queries (standard formula compilation + execution pipeline)
-        4. Extract and validate the result
-        5. Clean up the temporary field
-        """
         field = cache_invalidation_source.field
         if field is None or not field.formula.strip():
             raise CacheInvalidationTestQueryError(message="Formula mode requires a field with a formula")
 
-        # 1. Temporarily add the CacheInvalidationField to result_schema so the pipeline can find it
-        result_schema = self.dataset.result_schema
-        result_schema.fields.append(field)
-        result_schema.reload_caches()
+        original_result_schema = self.dataset.result_schema
+        patched_result_schema = ResultSchema(fields=list(original_result_schema.fields) + [field])
+        self.dataset.data.result_schema = patched_result_schema
 
         try:
-            # 2. Build select spec referencing the cache invalidation field by guid
             select_specs = [
                 RawSelectFieldSpec(ref=IdFieldRef(id=field.guid)),
             ]
 
-            # 3. Build filter specs from cache_invalidation_source.filters
             filter_specs: list[RawFilterFieldSpec] = []
             for obligatory_filter in cache_invalidation_source.filters:
                 for default_filter in obligatory_filter.default_filters:
@@ -203,22 +192,20 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                         )
                     )
 
-            # 4. Build the query spec (limit=2 to detect >1 row results)
             raw_query_spec_union = RawQuerySpecUnion(
                 select_specs=select_specs,
                 filter_specs=filter_specs,
                 meta=RawQueryMetaInfo(query_type=QueryType.result),
                 limit=2,
-                disable_rls=False,
                 group_by_policy=GroupByPolicy.disable,
             )
 
-            # 5. Execute via the standard pipeline
             try:
                 merged_stream = await self.execute_all_queries(
                     raw_query_spec_union=raw_query_spec_union,
                     autofill_legend=False,
                     call_post_exec_async_hook=False,
+                    use_cache=False,
                 )
             except Exception as ex:
                 LOGGER.exception("Cache invalidation formula query execution failed", exc_info=True)
@@ -227,12 +214,10 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                     debug_info={"db_message": str(ex)},
                 ) from ex
 
-            # 6. Extract the debug query (actual SQL sent to the database)
             debug_query = ""
             if merged_stream.meta.blocks:
                 debug_query = merged_stream.meta.blocks[0].debug_query or ""
 
-            # 7. Collect and validate rows from the stream
             rows = list(merged_stream.rows)
             self._validate_single_row(row_count=len(rows))
 
@@ -242,20 +227,12 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             value_str = self._validate_string_value(row_data[0])
 
         finally:
-            # 8. Clean up: remove the temporary field from result_schema
-            try:
-                result_schema.fields.remove(field)
-                result_schema.reload_caches()
-            except ValueError:
-                pass  # Field was already removed or not found
+            self.dataset.data.result_schema = original_result_schema
 
         # 9. Build response
         return self._build_response(value=value_str, query=debug_query)
 
     async def _execute_sql_mode(self, sql_query: str) -> Response:
-        """Execute SQL-mode cache invalidation query and return the result."""
-
-        # Get the first data source's connection
         ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
         source_ids = ds_accessor.get_data_source_id_list()
         if not source_ids:
@@ -280,7 +257,6 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         )
         assert isinstance(connection, ConnectionBase)
 
-        # Check subselect support on the connection
         if isinstance(connection, RawSqlLevelConnectionMixin):
             if not connection.is_subselect_allowed:
                 raise CacheInvalidationTestSubselectNotAllowedError()
@@ -289,7 +265,6 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                 message="Connection type does not support raw SQL queries"
             )
 
-        # Build and execute the query
         sa_query = sa_plain_text(sql_query)
         ce_query = ConnExecutorQuery(
             query=sa_query,
@@ -302,7 +277,6 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         ce_factory = sr.get_conn_executor_factory()
         conn_executor = ce_factory.get_async_conn_executor(connection)
 
-        # Read at most a few rows to detect >1 row results without fetching the entire result set
         _MAX_ROWS_TO_FETCH = 3
 
         try:
@@ -319,14 +293,12 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                 debug_info={"db_message": str(ex)},
             ) from ex
 
-        # Validate that the result type is string
         user_types = exec_result.user_types
         if user_types and len(user_types) > 0 and user_types[0] != UserDataType.string:
             raise CacheInvalidationTestNonStringResultError(
                 message=f"Expected string result type, got {user_types[0].name}",
             )
 
-        # Validate result
         self._validate_single_row(row_count=len(rows))
 
         row = rows[0]
@@ -334,5 +306,4 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
 
         value = self._validate_string_value(row[0])
 
-        # Build response
         return self._build_response(value=value, query=sql_query)
