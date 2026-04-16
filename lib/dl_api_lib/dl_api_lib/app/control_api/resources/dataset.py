@@ -51,6 +51,7 @@ from dl_core.base_models import (
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.constants import DatasetConstraints
+from dl_core.enums import USEntryMode
 from dl_core.us_dataset import Dataset
 from dl_core.utils import generate_revision_id
 import dl_query_processing.exc
@@ -237,7 +238,13 @@ class DatasetVersionItem(DatasetResource):
             us_manager.set_context("dataset", {DLHeadersCommon.AUDIT_MODE.value: audit_mode})
 
         if "rev_id" in query:
-            ds, _ = self.get_dataset(dataset_id=dataset_id, body={}, params={"revId": query["rev_id"]})
+            ds, _ = self.get_dataset(
+                dataset_id=dataset_id,
+                body={},
+                params={
+                    "revId": query["rev_id"],
+                },
+            )
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
             # raw entry to avoid double deserialization
             ds_raw = us_manager.get_migrated_entry(dataset_id)
@@ -319,6 +326,8 @@ class DatasetVersionItem(DatasetResource):
             us_manager.update(
                 entry=ds,
                 original_entry=original_ds,
+                # Default in US Client is mode = "publish"
+                mode=body.get("mode", USEntryMode.publish),
             )
 
             return self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer())
@@ -522,7 +531,10 @@ class DatasetVersionValidator(DatasetResource):
             us_manager.set_context("connection", connection_headers)
 
         assert body is not None
-        dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
+        dataset, _ = self.get_dataset(
+            dataset_id=dataset_id,
+            body=body,
+        )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
         data = {}
@@ -589,7 +601,10 @@ class DatasetVersionFieldValidator(DatasetResource):
             us_manager.set_context("connection", connection_headers)
 
         assert body is not None
-        dataset, _ = self.get_dataset(dataset_id=dataset_id, body=body)
+        dataset, _ = self.get_dataset(
+            dataset_id=dataset_id,
+            body=body,
+        )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
         formula = body["field"]["formula"]

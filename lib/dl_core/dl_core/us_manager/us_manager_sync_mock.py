@@ -17,6 +17,10 @@ import shortuuid
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_core.base_models import EntryLocation
+from dl_core.enums import (
+    USEntryBranch,
+    USEntryMode,
+)
 from dl_core.exc import USObjectNotFoundException
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
@@ -83,6 +87,7 @@ class MockedUStorageClient(UStorageClient):
         type_: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
+        mode: USEntryMode = USEntryMode.publish,
         **kwargs: Any,
     ) -> dict[str, Any]:
         assert not kwargs, "Not supported by dummy"
@@ -127,6 +132,7 @@ class MockedUStorageClient(UStorageClient):
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
         update_revision: Optional[bool] = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> dict[str, Any]:
         previous_resp = self._saved_entries[entry_id]
 
@@ -155,6 +161,7 @@ class MockedUStorageClient(UStorageClient):
         include_links: bool = True,
         include_favorite: bool = True,
         context_name: Optional[str] = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> dict[str, Any]:
         assert params is None
         try:
