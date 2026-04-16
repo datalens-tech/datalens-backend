@@ -82,6 +82,9 @@ class StaleWhileRevalidateRedis:
 class CacheInvalidationEngine:
     _redis: StaleWhileRevalidateRedis = attr.ib()
 
+    async def get_entry(self, key: CacheInvalidationKey) -> CacheInvalidationEntry | None:
+        return await self._redis.get_data(key)
+
     @staticmethod
     def _is_stale(entry: CacheInvalidationEntry, throttling_interval_sec: float) -> bool:
         return time.time() - entry.executed_at >= throttling_interval_sec
