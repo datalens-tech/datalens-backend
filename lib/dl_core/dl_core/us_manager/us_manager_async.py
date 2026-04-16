@@ -24,6 +24,10 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.enums import (
+    USEntryBranch,
+    USEntryMode,
+)
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection_base import ConnectionBase
@@ -128,6 +132,7 @@ class AsyncUSManager(USManagerBase):
         expected_type: None = None,
         params: Optional[dict[str, str]] = None,
         context_name: Optional[str] = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> USEntry:
         pass
 
@@ -138,6 +143,7 @@ class AsyncUSManager(USManagerBase):
         expected_type: Optional[type[_ENTRY_TV]] = None,
         params: Optional[dict[str, str]] = None,
         context_name: Optional[str] = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> _ENTRY_TV:
         pass
 
@@ -148,6 +154,7 @@ class AsyncUSManager(USManagerBase):
         expected_type: Optional[type[USEntry]] = None,
         params: Optional[dict[str, str]] = None,
         context_name: Optional[str] = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> USEntry:
         with self._enrich_us_exception(
             entry_id=entry_id,
@@ -157,6 +164,7 @@ class AsyncUSManager(USManagerBase):
                 entry_id,
                 params=params,
                 context_name=context_name,
+                branch=branch,
             )
 
         obj = self._entry_dict_to_obj(us_resp, expected_type)
@@ -200,11 +208,13 @@ class AsyncUSManager(USManagerBase):
         entry_id: str,
         params: Optional[dict[str, str]] = None,
         context_name: Optional[str] = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> dict[str, Any]:
         us_resp = await self._us_client.get_entry(
             entry_id,
             params=params,
             context_name=context_name,
+            branch=branch,
         )
         return await self._migrate_response(us_resp)
 
@@ -226,11 +236,13 @@ class AsyncUSManager(USManagerBase):
         entry: USEntry,
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> None:
         await self._save(
             entry=entry,
             update_revision=update_revision,
             original_entry=original_entry,
+            mode=mode,
         )
 
     async def _save(
@@ -238,6 +250,7 @@ class AsyncUSManager(USManagerBase):
         entry: USEntry,
         update_revision: bool | None = None,
         original_entry: USEntry | None = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> None:
         """
         Save USEntry to US.
@@ -266,6 +279,7 @@ class AsyncUSManager(USManagerBase):
                 entry_loc,
                 scope=us_scope,
                 type_=us_type,
+                mode=mode,
                 **save_params,
             )
             entry.uuid = resp["entryId"]
@@ -281,6 +295,7 @@ class AsyncUSManager(USManagerBase):
         self,
         entry: USEntry,
         update_revision: bool | None = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> None:
         """
         Create entry - alias for save without previous entry.
@@ -290,6 +305,7 @@ class AsyncUSManager(USManagerBase):
             entry=entry,
             original_entry=None,
             update_revision=update_revision,
+            mode=mode,
         )
 
     async def update(
@@ -297,6 +313,7 @@ class AsyncUSManager(USManagerBase):
         entry: USEntry,
         original_entry: USEntry | None = None,
         update_revision: bool | None = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> None:
         """
         Update entry - alias for save with a previous/original entry.
@@ -306,6 +323,7 @@ class AsyncUSManager(USManagerBase):
             entry=entry,
             original_entry=original_entry,
             update_revision=update_revision,
+            mode=mode,
         )
 
     async def delete(self, entry: USEntry) -> None:
