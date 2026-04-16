@@ -52,6 +52,8 @@ class ConnectionStarRocks(
     @attr.s(kw_only=True)
     class DataModel(ConnectionSQL.DataModel):
         listing_sources: ListingSources = attr.ib(default=ListingSources.on)
+        ssl_enable: bool = attr.ib(default=False)
+        ssl_ca: str | None = attr.ib(default=None)
 
     @property
     def allow_public_usage(self) -> bool:
@@ -80,6 +82,8 @@ class ConnectionStarRocks(
             port=self.data.port,
             username=self.data.username,
             password=self.password or "",
+            ssl_enable=self.data.ssl_enable,
+            ssl_ca=self.data.ssl_ca,
         )
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:

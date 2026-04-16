@@ -1,11 +1,9 @@
 services:
   db-starrocks-3:
-    image: starrocks/allin1-ubuntu:3.1-latest
+    image: starrocks/allin1-ubuntu:3.2-latest
     ports:
       - "59030:9030"  # MySQL protocol port
       - "58030:8030"  # HTTP port
-    environment:
-      STARROCKS_ROOT_PASSWORD: "qwerty"
     container_name: starrocks-test
     healthcheck:
       test: ["CMD-SHELL", "mysql -h 127.0.0.1 -P 9030 -u root -e 'SELECT 1'"]
@@ -22,6 +20,43 @@ services:
     entrypoint: >
       sh -c "mysql -h db-starrocks-3 -P 9030 -u root -e 'CREATE DATABASE IF NOT EXISTS test_data'"
     restart: "no"
+
+  db-starrocks-3-ssl:
+    build:
+      context: docker-compose
+      dockerfile: Dockerfile.db-starrocks-3-ssl
+    depends_on:
+      - ssl-provider
+    environment:
+      CERT_SERVER_URL: "http://ssl-provider"
+    ports:
+      - "59031:9030"
+      - "58031:8030"
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -h 127.0.0.1 -P 9030 -u root -e 'SELECT 1'"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+
+  init-starrocks-ssl-db:
+    image: mysql:8.0
+    depends_on:
+      db-starrocks-3-ssl:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "mysql -h db-starrocks-3-ssl -P 9030 -u root -e 'CREATE DATABASE IF NOT EXISTS test_data'"
+    restart: "no"
+
+  ssl-provider:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: ssl-provider
+    build:
+      args:
+        CERTIFIED_DOMAIN: "db-starrocks-3-ssl"
+    ports:
+      - "8080:80"
 
   # INFRA - Required for DataLens tests
   pg-us:

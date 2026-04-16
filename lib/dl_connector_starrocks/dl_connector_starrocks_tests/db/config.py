@@ -31,10 +31,23 @@ class CoreConnectionSettings:
     LISTING_SOURCES: ClassVar[ListingSources] = ListingSources.on
 
 
+class CoreSslConnectionSettings(CoreConnectionSettings):
+    HOST: ClassVar[str] = get_test_container_hostport("db-starrocks-3-ssl", fallback_port=59031).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-starrocks-3-ssl", fallback_port=59031).port
+    CERT_PROVIDER_URL: ClassVar[
+        str
+    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
+
+
 DB_URLS = {
-    D.STARROCKS_3_2: f"bi_starrocks://root@{get_test_container_hostport('db-starrocks-3', fallback_port=59030).as_pair()}/{CoreConnectionSettings.DB_NAME}"
+    D.STARROCKS_3_2: f"bi_starrocks://root@{get_test_container_hostport('db-starrocks-3', fallback_port=59030).as_pair()}/{CoreConnectionSettings.DB_NAME}",
+    (
+        D.STARROCKS_3_2,
+        "ssl",
+    ): f"bi_starrocks://root@{get_test_container_hostport('db-starrocks-3-ssl', fallback_port=59031).as_pair()}/{CoreConnectionSettings.DB_NAME}",
 }
 DB_CORE_URL = DB_URLS[D.STARROCKS_3_2]
+DB_CORE_SSL_URL = DB_URLS[(D.STARROCKS_3_2, "ssl")]
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["starrocks"],

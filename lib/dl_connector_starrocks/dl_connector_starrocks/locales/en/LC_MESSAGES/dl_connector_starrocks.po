@@ -26,6 +26,10 @@ msgstr "Off"
 msgid "value_listing-sources-on"
 msgstr "On"
 
+msgid "label_starrocks-ssl-enabled-tooltip"
+msgstr ""
+"When the option is enabled, it ensures mandatory use of ssl for connection."
+
 msgid "source_templates-label-starrocks_catalog"
 msgstr "Catalog name"
 
