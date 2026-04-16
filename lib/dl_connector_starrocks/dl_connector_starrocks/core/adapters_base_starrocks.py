@@ -1,7 +1,10 @@
+import ssl
+
 import attr
 import sqlalchemy as sa
 import sqlalchemy.dialects.mysql as sa_mysql
 
+import dl_configs
 from dl_sqlalchemy_starrocks.base import BIStarRocksDialect
 from dl_type_transformer.native_type import SATypeSpec
 
@@ -126,3 +129,12 @@ class BaseStarRocksAdapter(StarRocksQueryConstructorMixin):
         253: sa_mysql.VARCHAR,  # MYSQL_TYPE_VAR_STRING  (VARCHAR, STRING)
         254: sa_mysql.CHAR,  #    MYSQL_TYPE_STRING      (LARGEINT, CHAR, JSON, HLL, BITMAP, ARRAY, MAP, STRUCT)
     }
+
+    def _get_ssl_ctx(self, force_ssl: bool = False) -> ssl.SSLContext | None:
+        if not self._target_dto.ssl_enable and not force_ssl:
+            return None
+
+        if self._target_dto.ssl_ca:
+            return ssl.create_default_context(cadata=self._target_dto.ssl_ca)
+
+        return dl_configs.get_default_ssl_context()

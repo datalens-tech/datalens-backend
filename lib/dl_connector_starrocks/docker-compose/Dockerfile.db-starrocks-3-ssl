@@ -1,0 +1,6 @@
+FROM starrocks/allin1-ubuntu:3.4-latest
+
+COPY starrocks-ssl-entrypoint.sh /usr/local/bin/starrocks-ssl-entrypoint.sh
+RUN chmod +x /usr/local/bin/starrocks-ssl-entrypoint.sh
+
+CMD ["/usr/local/bin/starrocks-ssl-entrypoint.sh"]

@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import AsyncIterator
 import contextlib
+from functools import partial
 import logging
 from typing import (
     Any,
@@ -120,10 +121,6 @@ class AsyncStarRocksAdapter(
     def get_target_host(self) -> str | None:
         return self._target_dto.host
 
-    def _get_ssl_ctx(self, force_ssl: bool = False) -> dict | None:
-        # TODO: Add SSL support for StarRocks: BI-7169
-        return None
-
     async def _create_engine(
         self,
         db_name: str,
@@ -139,10 +136,21 @@ class AsyncStarRocksAdapter(
             ssl=self._get_ssl_ctx(force_ssl),
             charset="utf8mb4",
             local_infile=0,
+            connect_timeout=10,
         )
 
     async def _get_engine(self, db_name: str) -> aiomysql.sa.Engine:
-        return await self._engines.get("", generator=self._create_engine)
+        try:
+            return await self._engines.get("", generator=self._create_engine)
+        except OperationalError as err:
+            # 3159 = Connections using insecure transport are prohibited while --require_secure_transport=ON.
+            # This means we have to use SSL
+            if err.args[0] == 3159:
+                LOGGER.info("Using SSL for async StarRocks connection")
+                create_engine_using_ssl = partial(self._create_engine, force_ssl=True)
+                return await self._engines.get("", generator=create_engine_using_ssl)
+            else:
+                raise
 
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: str | None) -> AsyncIterator[aiomysql.sa.SAConnection]:

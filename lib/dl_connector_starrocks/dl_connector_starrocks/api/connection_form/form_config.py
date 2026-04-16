@@ -118,6 +118,11 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
             C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
+            *rc.ssl_rows(
+                enabled_name=CommonFieldName.ssl_enable,
+                enabled_help_text=self._localizer.translate(Translatable("label_starrocks-ssl-enabled-tooltip")),
+                enabled_default_value=True,
+            ),
             rc.data_export_forbidden_row(
                 conn_id=form_params.conn_id,
                 exports_history_url_path=form_params.exports_history_url_path,
@@ -138,6 +143,8 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.password),
                 FormFieldApiSchema(name=CommonFieldName.cache_ttl_sec, nullable=True),
                 FormFieldApiSchema(name=CommonFieldName.raw_sql_level),
+                FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
                 FormFieldApiSchema(name=CommonFieldName.data_export_forbidden),
                 FormFieldApiSchema(name=StarRocksFormFieldName.listing_sources),
             ],
@@ -163,6 +170,8 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
                 FormFieldApiSchema(name=CommonFieldName.port, required=True),
                 FormFieldApiSchema(name=CommonFieldName.username, required=True),
                 FormFieldApiSchema(name=CommonFieldName.password),
+                FormFieldApiSchema(name=CommonFieldName.ssl_enable),
+                FormFieldApiSchema(name=CommonFieldName.ssl_ca),
                 *self._get_top_level_check_api_schema_items(),
             ]
         )

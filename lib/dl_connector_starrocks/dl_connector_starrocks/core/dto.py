@@ -13,6 +13,8 @@ class StarRocksConnDTO(ConnDTO):
     port: int = attr.ib()
     username: str = attr.ib()
     password: str = attr.ib(repr=False)
+    ssl_enable: bool = attr.ib(default=False)
+    ssl_ca: str | None = attr.ib(default=None)
 
     def get_all_hosts(self) -> list[str]:
         return list(self.multihosts) if self.multihosts else [self.host] if self.host else []

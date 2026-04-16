@@ -33,11 +33,15 @@ class StarRocksAdapter(BaseStarRocksAdapter, BaseClassicAdapter[StarRocksConnTar
     _error_transformer = sync_starrocks_db_error_transformer
 
     def get_connect_args(self) -> dict:
-        return dict(
+        connect_args = dict(
             super().get_connect_args(),
             charset="utf8mb4",
             local_infile=0,
+            connect_timeout=10,
         )
+        ssl_ctx = self._get_ssl_ctx()
+        connect_args["ssl"] = ssl_ctx if ssl_ctx is not None else {}
+        return connect_args
 
     def get_default_db_name(self) -> str:
         return ""  # StarRocks doesn't require a catalog to connect

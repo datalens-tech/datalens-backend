@@ -1,7 +1,10 @@
 import asyncio
 from collections.abc import Generator
+import ssl
 
+from frozendict import frozendict
 import pytest
+import requests
 
 from dl_core.connection_models import TableIdent
 from dl_core_testing.database import DbTable
@@ -42,4 +45,40 @@ class BaseStarRocksTestClass(BaseConnectionTestClass[ConnectionStarRocks]):
             db_name=test_config.CoreConnectionSettings.CATALOG,
             schema_name=sample_table.db.name,
             table_name=sample_table.name,
+        )
+
+
+class BaseSslStarRocksTestClass(BaseStarRocksTestClass):
+    @pytest.fixture(scope="class")
+    def ssl_ca(self) -> str:
+        uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
+        response = requests.get(uri)
+        assert response.status_code == 200, response.text
+        return response.text
+
+    @pytest.fixture(scope="class")
+    def engine_params(self, ssl_ca: str) -> dict:
+        engine_params = {
+            "connect_args": frozendict(
+                {
+                    "ssl": ssl.create_default_context(cadata=ssl_ca),
+                }
+            ),
+        }
+        return engine_params
+
+    @pytest.fixture(scope="class")
+    def db_url(self) -> str:
+        return test_config.DB_CORE_SSL_URL
+
+    @pytest.fixture(scope="function")
+    def connection_creation_params(self, ssl_ca: str) -> dict:
+        return dict(
+            host=test_config.CoreSslConnectionSettings.HOST,
+            port=test_config.CoreSslConnectionSettings.PORT,
+            username=test_config.CoreSslConnectionSettings.USERNAME,
+            password=test_config.CoreSslConnectionSettings.PASSWORD,
+            listing_sources=test_config.CoreSslConnectionSettings.LISTING_SOURCES,
+            ssl_enable=True,
+            ssl_ca=ssl_ca,
         )

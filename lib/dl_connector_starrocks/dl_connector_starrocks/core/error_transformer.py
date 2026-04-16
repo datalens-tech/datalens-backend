@@ -11,14 +11,17 @@ from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Ru
 import dl_core.exc as exc
 
 
-TABLE_DOES_NOT_EXIST_ERROR_CODE = 1051  # StarRocks "Unknown table"
+TABLE_DOES_NOT_EXIST_ERROR_CODES = (
+    1051,  # StarRocks <= 3.2 "Unknown table"
+    5502,  # StarRocks >= 3.4 "Getting analyzing error. Detail message: Unknown table"
+)
 SQL_SYNTAX_ERROR_CODE = 1064
 
 
 def is_table_does_not_exist_async_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         if isinstance(exc, pymysql.OperationalError):
-            if len(exc.args) >= 2 and exc.args[0] == TABLE_DOES_NOT_EXIST_ERROR_CODE:
+            if len(exc.args) >= 2 and exc.args[0] in TABLE_DOES_NOT_EXIST_ERROR_CODES:
                 return True
         return False
 
@@ -29,7 +32,7 @@ def is_table_does_not_exist_sync_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
         if isinstance(exc, sqlalchemy.exc.OperationalError):
             orig = getattr(exc, "orig", None)
-            if orig and len(orig.args) >= 2 and orig.args[0] == TABLE_DOES_NOT_EXIST_ERROR_CODE:
+            if orig and len(orig.args) >= 2 and orig.args[0] in TABLE_DOES_NOT_EXIST_ERROR_CODES:
                 return True
         return False
 
