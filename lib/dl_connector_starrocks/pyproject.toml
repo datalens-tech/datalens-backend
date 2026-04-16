@@ -21,6 +21,7 @@ dl-dynamic-enum = ">=0.0.1"
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
+dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 pymysql = ">=1.0.2"
