@@ -439,6 +439,7 @@ class NotificationLevel(Enum):
 
 class NotificationType(DynamicEnum):
     totals_removed_due_to_measure_filter = AutoEnumValue()
+    cache_invalidation_query_failed = AutoEnumValue()
 
 
 class ConnectorAvailability(DynamicEnum):

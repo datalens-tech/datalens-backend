@@ -80,6 +80,7 @@ from dl_constants.enums import (
     CacheInvalidationMode,
     DataSourceRole,
     FieldRole,
+    NotificationType,
     RLSSubjectType,
 )
 from dl_core.cache_invalidation import CacheInvalidationError
@@ -89,6 +90,7 @@ from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import USObjectNotFoundException
 from dl_core.fields import ResultSchema
+from dl_core.reporting.notifications import get_notification_record
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.mutation_cache.engine_factory import CacheInitializationError
 from dl_core.us_manager.mutation_cache.mutation_key_base import MutationKey
@@ -881,6 +883,11 @@ class DatasetDataBaseView(BaseView):
         if use_cache and await self._is_cache_invalidation_applicable():
             with GenericProfiler(f"{self.profiler_prefix}-invalidation-cache-check"):
                 cache_invalidation_payload = await self._get_cache_invalidation_payload()
+            if cache_invalidation_payload is None:
+                reporting_registry = self.dl_request.services_registry.get_reporting_registry()
+                reporting_registry.save_reporting_record(
+                    get_notification_record(NotificationType.cache_invalidation_query_failed)
+                )
 
         legend_formalizer = self.make_legend_formalizer(
             query_type=raw_query_spec_union.meta.query_type, autofill_legend=autofill_legend
