@@ -27,6 +27,8 @@ class _BaseStarRocksConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_STARROCKS_A
                 port=self._conn_dto.port,
                 username=self._conn_dto.username,
                 password=self._conn_dto.password,
+                ssl_enable=self._conn_dto.ssl_enable,
+                ssl_ca=self._conn_dto.ssl_ca,
             )
             for host in self._conn_dto.get_all_hosts()
         ]

@@ -34,7 +34,10 @@ from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_starrocks.core.us_connection import ConnectionStarRocks
 import dl_connector_starrocks_tests.db.config as test_config
-from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
+from dl_connector_starrocks_tests.db.core.base import (
+    BaseSslStarRocksTestClass,
+    BaseStarRocksTestClass,
+)
 
 
 class StarRocksSyncAsyncConnectionExecutorCheckBase(
@@ -195,3 +198,17 @@ class TestStarRocksAsyncConnectionExecutor(
                 await self.close()
 
         monkeypatch.setattr(ResultProxy, "_prepare", _prepare)
+
+
+class TestSslStarRocksSyncConnectionExecutor(
+    BaseSslStarRocksTestClass,
+    TestStarRocksSyncConnectionExecutor,
+):
+    pass
+
+
+class TestSslStarRocksAsyncConnectionExecutor(
+    BaseSslStarRocksTestClass,
+    TestStarRocksAsyncConnectionExecutor,
+):
+    pass

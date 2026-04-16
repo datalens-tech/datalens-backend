@@ -2553,6 +2553,7 @@ attrs = ">=22.2.0"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-api-connector = {path = "../dl_api_connector"}
 dl-app-tools = {path = "../dl_app_tools"}
+dl-configs = {path = "../dl_configs"}
 dl-connector-mysql = {path = "../dl_connector_mysql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
@@ -2564,6 +2565,7 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+marshmallow = "*"
 pymysql = ">=1.0.2"
 sqlalchemy = ">=1.4.46, <2.0"
 
