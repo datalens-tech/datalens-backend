@@ -171,7 +171,11 @@ class DatasetView(DatasetBaseWrapper):
         filter_cmp_cls = get_filter_formula_compiler_cls(backend_type=backend_type)
         return filter_cmp_cls(formula_compiler=self.formula_compiler)
 
-    def make_query_executor(self, allow_cache_usage: bool) -> QueryExecutor:
+    def make_query_executor(
+        self,
+        allow_cache_usage: bool,
+        cache_invalidation_payload: str | None = None,
+    ) -> QueryExecutor:
         return QueryExecutor(
             dataset=self._ds,
             avatar_alias_mapper=self._avatar_alias_mapper,
@@ -181,6 +185,7 @@ class DatasetView(DatasetBaseWrapper):
             us_manager=self._us_manager,
             compeng_semaphore=self._compeng_semaphore,
             parameter_value_specs=self._parameter_value_specs,
+            cache_invalidation_payload=cache_invalidation_payload,
         )
 
     @property
@@ -245,8 +250,10 @@ class DatasetView(DatasetBaseWrapper):
         self,
         exec_info: QueryExecutionInfo,
         allow_cache_usage: bool = True,
+        cache_invalidation_payload: str | None = None,
     ) -> ExecutedQuery:
         executor = self.make_query_executor(
             allow_cache_usage=allow_cache_usage,
+            cache_invalidation_payload=cache_invalidation_payload,
         )
         return await executor.execute_query(exec_info)
