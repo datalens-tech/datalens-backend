@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Any
 
@@ -10,6 +11,12 @@ from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.schemas.cache_invalidation_last_result import CacheInvalidationLastResultResponseSchema
 from dl_api_lib.utils.base import check_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
+from dl_cache_engine.cache_invalidation.primitives import (
+    CacheInvalidationEntry,
+    CacheInvalidationErrorPayload,
+    CacheInvalidationKey,
+    CacheInvalidationStatus,
+)
 from dl_constants.enums import CacheInvalidationLastResultStatus
 from dl_constants.exc import (
     DEFAULT_ERR_CODE_API_PREFIX,
@@ -36,11 +43,6 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
     Returns the last cached invalidation entry (success or error) without
     executing any queries. This is a read-only operation.
 
-    Currently, the actual Redis lookup is not yet implemented.
-    The endpoint validates that the dataset is properly configured for
-    cache invalidation and returns ``status: "no_data"`` to indicate
-    that no cached result is available yet.
-
     Returns 400 when:
     - The user is not an editor of the dataset (risk of exposing RLS-restricted data).
     """
@@ -50,14 +52,26 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
 
     STORED_DATASET_REQUIRED = True
 
+    @staticmethod
+    def _format_timestamp(executed_at: float) -> str:
+        return datetime.datetime.fromtimestamp(executed_at, tz=datetime.timezone.utc).isoformat()
+
     def _exc_to_last_result_error(self, dl_exc: DLBaseException) -> dict[str, Any]:
-        """Convert a DLBaseException into a ``last_result_error`` dict."""
         error_code = ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + dl_exc.err_code)
         return {
             "code": error_code,
             "message": dl_exc.message,
             "details": dl_exc.details,
             "debug": dl_exc.debug_info,
+        }
+
+    @staticmethod
+    def _entry_error_payload_to_last_result_error(payload: CacheInvalidationErrorPayload) -> dict[str, Any]:
+        return {
+            "code": payload.error_code,
+            "message": payload.error_message,
+            "details": payload.error_details,
+            "debug": {},
         }
 
     def _make_response(
@@ -82,7 +96,6 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
         dl_exc: DLBaseException,
         timestamp: str | None = None,
     ) -> Response:
-        """Build an error response from a DLBaseException."""
         data = _response_schema.dump(
             {
                 "status": CacheInvalidationLastResultStatus.error,
@@ -92,6 +105,24 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
             }
         )
         return web.json_response(data)
+
+    def _make_response_from_entry(self, entry: CacheInvalidationEntry) -> Response:
+        timestamp = self._format_timestamp(entry.executed_at)
+
+        if entry.status == CacheInvalidationStatus.SUCCESS:
+            return self._make_response(
+                status=CacheInvalidationLastResultStatus.success,
+                last_result=entry.data,
+                timestamp=timestamp,
+            )
+
+        assert isinstance(entry.payload, CacheInvalidationErrorPayload)
+        return self._make_response(
+            status=CacheInvalidationLastResultStatus.error,
+            last_result=None,
+            timestamp=timestamp,
+            last_result_error=self._entry_error_payload_to_last_result_error(entry.payload),
+        )
 
     @generic_profiler_async("ds-cache-invalidation-last-result")
     @DatasetDataBaseView.with_dataset_us_context
@@ -127,7 +158,21 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
         if not connection.is_cache_invalidation_enabled:
             return self._make_error_response(exc.CacheInvalidationLastResultNotEnabledError())
 
-        # TODO: BI-7202 Implement actual Redis lookup for the last invalidation result.
-        #  For now, return no_data to indicate that the endpoint is functional
-        #  and the dataset is properly configured, but no cached result exists yet.
-        return self._make_error_response(exc.CacheInvalidationLastResultNoResultError())
+        services_registry = self.dl_request.services_registry
+        inval_factory = services_registry.get_cache_invalidation_engine_factory()
+        inval_engine = inval_factory.get_cache_engine()
+        if inval_engine is None:
+            return self._make_error_response(exc.CacheInvalidationLastResultEngineUnavailableError())
+
+        key = CacheInvalidationKey(
+            dataset_id=self.dataset.uuid or "",
+            dataset_revision_id=self.dataset.revision_id or "",
+            connection_id=connection.uuid or "",
+            connection_revision_id=connection.revision_id or "",
+        )
+
+        entry = await inval_engine.get_entry(key)
+        if entry is None:
+            return self._make_error_response(exc.CacheInvalidationLastResultNoResultError())
+
+        return self._make_response_from_entry(entry)

@@ -168,6 +168,50 @@ async def test_swr_release_lock() -> None:
     mock_redis.delete.assert_called_once()
 
 
+# ===== CacheInvalidationEngine.get_entry tests =====
+
+
+@pytest.mark.asyncio
+async def test_engine_get_entry_returns_none_when_empty() -> None:
+    swr_mock = _make_swr_mock()
+    swr_mock.get_data.return_value = None
+
+    engine = CacheInvalidationEngine(redis=swr_mock)
+    result = await engine.get_entry(_make_key())
+
+    assert result is None
+    swr_mock.get_data.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_engine_get_entry_returns_success_entry() -> None:
+    entry = _make_success_entry(data="cached_value")
+    swr_mock = _make_swr_mock()
+    swr_mock.get_data.return_value = entry
+
+    engine = CacheInvalidationEngine(redis=swr_mock)
+    result = await engine.get_entry(_make_key())
+
+    assert result is not None
+    assert result.is_success
+    assert result.data == "cached_value"
+
+
+@pytest.mark.asyncio
+async def test_engine_get_entry_returns_error_entry() -> None:
+    entry = _make_error_entry()
+    swr_mock = _make_swr_mock()
+    swr_mock.get_data.return_value = entry
+
+    engine = CacheInvalidationEngine(redis=swr_mock)
+    result = await engine.get_entry(_make_key())
+
+    assert result is not None
+    assert not result.is_success
+    assert isinstance(result.payload, CacheInvalidationErrorPayload)
+    assert result.payload.error_code == "ERR.DS.TEST"
+
+
 # ===== CacheInvalidationEngine._is_stale tests =====
 
 
