@@ -41,7 +41,11 @@ from dl_constants.api_constants import (
     DLHeadersCommon,
 )
 from dl_core.base_models import EntryLocation
-from dl_core.enums import USApiType
+from dl_core.enums import (
+    USApiType,
+    USEntryBranch,
+    USEntryMode,
+)
 import dl_core.exc as exc
 import dl_retrier
 
@@ -461,7 +465,7 @@ class UStorageClientBase:
         type_: str | None = None,
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
-        mode: str = "publish",
+        mode: USEntryMode = USEntryMode.publish,
         unversioned_data: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> RequestData:
@@ -481,7 +485,7 @@ class UStorageClientBase:
             "recursion": True,
             "hidden": hidden,
             "links": links,
-            "mode": mode,
+            "mode": mode.value,
             **kwargs,
         }
 
@@ -503,6 +507,7 @@ class UStorageClientBase:
         include_permissions: bool = True,
         include_links: bool = True,
         include_favorite: bool = True,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> RequestData:
         params = params or {}
         if include_permissions:
@@ -511,6 +516,7 @@ class UStorageClientBase:
             params["includeLinks"] = "1"
         if include_favorite:
             params["includeFavorite"] = "1"
+        params["branch"] = branch.value
 
         return cls.RequestData(
             method="get",
@@ -536,7 +542,7 @@ class UStorageClientBase:
         unversioned_data: dict[str, Any] | None = None,
         meta: dict[str, str] | None = None,
         annotation: dict[str, Any] | None = None,
-        mode: str = "publish",
+        mode: USEntryMode = USEntryMode.publish,
         lock: str | None = None,
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
@@ -551,7 +557,7 @@ class UStorageClientBase:
             "data": data,
             "unversionedData": unversioned_data,
             "meta": meta,
-            "mode": mode,
+            "mode": mode.value,
             "links": links,
         }
         if hidden is not None:
@@ -804,6 +810,7 @@ class UStorageClient(UStorageClientBase):
         type_: str | None = None,
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
+        mode: USEntryMode = USEntryMode.publish,
         **kwargs: Any,
     ) -> dict[str, Any]:
         rq_data = self._req_data_create_entry(
@@ -816,6 +823,7 @@ class UStorageClient(UStorageClientBase):
             type_=type_,
             hidden=hidden,
             links=links,
+            mode=mode,
             **kwargs,
         )
         return self._request(
@@ -831,6 +839,7 @@ class UStorageClient(UStorageClientBase):
         include_links: bool = True,
         include_favorite: bool = True,
         context_name: str | None = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> dict[str, Any]:
         return self._request(
             self._req_data_get_entry(
@@ -839,6 +848,7 @@ class UStorageClient(UStorageClientBase):
                 include_permissions=include_permissions,
                 include_links=include_links,
                 include_favorite=include_favorite,
+                branch=branch,
             ),
             retry_policy_name="get_entry",
             context_name=context_name,
@@ -861,6 +871,7 @@ class UStorageClient(UStorageClientBase):
         hidden: bool | None = None,
         links: dict[str, Any] | None = None,
         update_revision: bool | None = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> dict[str, Any]:
         return self._request(
             self._req_data_update_entry(
@@ -873,6 +884,7 @@ class UStorageClient(UStorageClientBase):
                 hidden=hidden,
                 links=links,
                 update_revision=update_revision,
+                mode=mode,
             ),
             retry_policy_name="update_entry",
         )

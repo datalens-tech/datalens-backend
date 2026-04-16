@@ -7,6 +7,7 @@ import pytest
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
+from dl_core.enums import USEntryMode
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
@@ -23,12 +24,14 @@ class TestUsOperationForwarding(DefaultApiTestBase):
             entry: Any,
             update_revision: bool | None = None,
             original_entry: Any = None,
+            mode: str = USEntryMode.publish.value,
         ) -> None:
             original_save(
                 self=us_manager,
                 entry=entry,
                 update_revision=update_revision,
                 original_entry=original_entry,
+                mode=mode,
             )
             if entry.operation is None:
                 entry._us_resp = {**entry._us_resp, "operation": SAMPLE_OPERATION}

@@ -23,6 +23,10 @@ from dl_api_commons.retrier.aiohttp import AiohttpPolicyRetrier
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_app_tools.profiling_base import GenericProfiler
 from dl_core.base_models import EntryLocation
+from dl_core.enums import (
+    USEntryBranch,
+    USEntryMode,
+)
 from dl_core.exc import (
     USLockUnacquiredException,
     USReqException,
@@ -190,6 +194,7 @@ class UStorageClientAIO(UStorageClientBase):
         include_links: bool = True,
         include_favorite: bool = False,
         context_name: Optional[str] = None,
+        branch: USEntryBranch = USEntryBranch.published,
     ) -> dict:
         return await self._request(
             self._req_data_get_entry(
@@ -198,6 +203,7 @@ class UStorageClientAIO(UStorageClientBase):
                 include_permissions=include_permissions,
                 include_links=include_links,
                 include_favorite=include_favorite,
+                branch=branch,
             ),
             retry_policy_name="get_entry",
             context_name=context_name,
@@ -214,6 +220,7 @@ class UStorageClientAIO(UStorageClientBase):
         type_: Optional[str] = None,
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
+        mode: USEntryMode = USEntryMode.publish,
         **kwargs: Any,
     ) -> dict[str, Any]:
         rq_data = self._req_data_create_entry(
@@ -226,6 +233,7 @@ class UStorageClientAIO(UStorageClientBase):
             type_=type_,
             hidden=hidden,
             links=links,
+            mode=mode,
             **kwargs,
         )
         return await self._request(
@@ -244,6 +252,7 @@ class UStorageClientAIO(UStorageClientBase):
         hidden: Optional[bool] = None,
         links: Optional[dict[str, Any]] = None,
         update_revision: Optional[bool] = None,
+        mode: USEntryMode = USEntryMode.publish,
     ) -> dict[str, Any]:
         return await self._request(
             self._req_data_update_entry(
@@ -256,6 +265,7 @@ class UStorageClientAIO(UStorageClientBase):
                 hidden=hidden,
                 links=links,
                 update_revision=update_revision,
+                mode=mode,
             ),
             retry_policy_name="update_entry",
         )
