@@ -1,3 +1,4 @@
+import http
 import uuid
 
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
@@ -114,3 +115,56 @@ class TestMarkup(DefaultApiTestBase):
         e_src = res_e["src"]
         expected_e = {"type": "img", "src": e_src, "width": None, "height": None, "alt": None}
         assert res_e == expected_e
+
+    def test_markup_field_title_collision_does_not_corrupt_cast(self, saved_dataset, data_api):
+        """
+        Regression test for DLHELP-15875 / BI-7022 (export-worker raw-update path).
+
+        The export worker sends two raw-dict updates:
+          1. add_field  — URL formula with a temporary title and explicit cast=markup
+          2. update_field — renames the field to match an existing field's title ("city")
+
+        Step 2 creates a title collision: [city] in the formula now resolves to the field
+        itself, triggering recursion detection.  Before the fix the validator mistook the
+        compiler's DEFAULT=string return (caused by the error) for a genuine type change and
+        silently overwrote cast=markup → cast=string, which later produced an untranslatable
+        STR(MARKUP) expression.
+
+        After the fix cast is left unchanged when the compiler reports errors.  The response
+        may either succeed (200) or fail with a recursion/validation error (400), but must
+        never contain the STR(MARKUP) translation error.
+        """
+        ds = saved_dataset
+        tmp_id = str(uuid.uuid4())
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            updates=[
+                {
+                    "action": "add_field",
+                    "field": {
+                        "guid": tmp_id,
+                        "title": "__tmp_url_field__",
+                        "formula": "URL([city], [city])",
+                        "calc_mode": "formula",
+                        "cast": "markup",
+                        "aggregation": "none",
+                        "hidden": False,
+                        "description": "",
+                    },
+                },
+                {"action": "update_field", "field": {"guid": tmp_id, "title": "city"}},
+            ],
+            fields=[ds.field(id=tmp_id)],
+        )
+
+        assert result_resp.status_code == http.HTTPStatus.OK, result_resp.response_errors
+        data_rows = get_data_rows(result_resp)
+        assert data_rows
+        # The field must be returned as a markup dict, not a plain string.
+        # A plain string would mean cast=markup was corrupted to cast=string, which would have
+        # triggered a STR(MARKUP) translation error before the response could even reach here.
+        assert isinstance(data_rows[0][0], dict), (
+            f"Expected markup dict, got {type(data_rows[0][0])!r}. "
+            "cast=markup was likely corrupted to cast=string by the auto-cast logic."
+        )

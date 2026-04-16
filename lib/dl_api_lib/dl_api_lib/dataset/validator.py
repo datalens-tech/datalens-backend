@@ -595,7 +595,12 @@ class DatasetValidator(DatasetBaseWrapper):
             updated_field = updated_field.clone(cast=updated_field.initial_data_type)
         elif not field_is_new and updated_field.initial_data_type != field.initial_data_type:
             # autofix data type if derived type has changed
-            if updated_field.cast != updated_field.initial_data_type:
+            # Skip if the type change is caused by a compilation error (e.g. self-referential
+            # formula after a title collision): the compiler returns DEFAULT=string on error,
+            # which must not override the user-set cast value.
+            if updated_field.cast != updated_field.initial_data_type and not self.formula_compiler.get_field_errors(
+                updated_field
+            ):
                 LOGGER.info(
                     f"Automatically setting cast in {field.title} "
                     f"to {enum_not_none(updated_field.initial_data_type).name}"
