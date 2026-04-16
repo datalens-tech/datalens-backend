@@ -95,6 +95,8 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
         possible_data_lengths: Optional[Collection] = None,
         profiling_postfix: str = "",
         parameter_value_specs: list[ParameterValueSpec] | None = None,
+        allow_cache_usage: bool | None = None,
+        cache_invalidation_payload: str | None = None,
     ) -> PostprocessedQuery:
         us_manager = self.dl_request.us_manager
 
@@ -135,6 +137,8 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
             postprocessed_query = await super().execute_query(
                 block_spec=block_spec,
                 profiling_postfix=profiling_postfix,
+                allow_cache_usage=allow_cache_usage,
+                cache_invalidation_payload=cache_invalidation_payload,
             )
 
         if self.transpose_data:
