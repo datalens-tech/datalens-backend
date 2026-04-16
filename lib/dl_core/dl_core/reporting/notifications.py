@@ -59,6 +59,14 @@ class TotalsRemovedDueToMeasureFilterNotification(BaseNotification):
     _level = NotificationLevel.info
 
 
+@register_notification()
+class CacheInvalidationQueryFailedNotification(BaseNotification):
+    type = NotificationType.cache_invalidation_query_failed
+    _title = "Cache invalidation query failed"
+    _message = "Failed to get cache invalidation payload, cached data may be outdated"
+    _level = NotificationLevel.warning
+
+
 def get_notification_record(
     notification_type: NotificationType, **kwargs: Any
 ) -> Optional[NotificationReportingRecord]:
