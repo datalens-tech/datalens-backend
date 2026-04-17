@@ -32,7 +32,7 @@ msgstr "OAuth-token"
 
 msgid "label_ydb-ssl-enabled-tooltip"
 msgstr ""
-"Если данная опция включена, использование ssl для подключения становится "
+"Если данная опция включена, использование SSL для подключения становится "
 "обязательным."
 
 msgid "source_templates-label-ydb_table"
