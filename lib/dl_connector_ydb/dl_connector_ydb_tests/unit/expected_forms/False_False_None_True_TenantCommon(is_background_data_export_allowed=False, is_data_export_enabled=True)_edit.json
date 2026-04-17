@@ -107,7 +107,7 @@
                         "advanced_settings": "opened"
                     },
                     "text": "TLS",
-                    "helpText": "When the option is enabled, it ensures mandatory use of ssl for connection."
+                    "helpText": "When the option is enabled, it ensures mandatory use of SSL for connection."
                 },
                 {
                     "id": "radio_button",
