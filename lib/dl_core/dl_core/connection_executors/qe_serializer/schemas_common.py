@@ -188,8 +188,8 @@ class SchemaIdentSchema(BaseQEAPISchema):
 
 class PageIdentSchema(BaseQEAPISchema):
     search_text = fields.String(allow_none=True)
-    limit = fields.String(allow_none=True)
-    offset = fields.String(allow_none=True)
+    limit = fields.Integer(allow_none=True)
+    offset = fields.Integer(allow_none=True)
 
     def to_object(self, data: dict[str, Any]) -> PageIdent:
         return PageIdent(**data)
