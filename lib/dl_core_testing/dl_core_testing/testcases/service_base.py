@@ -184,7 +184,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         sr_future_ref.fulfill(service_registry)
         return service_registry
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_sync_service_registry(
         self,
         root_certificates: bytes,
@@ -197,7 +197,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             root_certificates_data=root_certificates,
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_async_service_registry(
         self,
         root_certificates: bytes,
@@ -210,7 +210,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             root_certificates_data=root_certificates,
         )
 
-    @pytest.fixture(scope="session")
+    @pytest.fixture(scope="class")
     def conn_default_service_registry(
         self,
         conn_exec_factory_async_env: bool,

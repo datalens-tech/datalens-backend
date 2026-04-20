@@ -1,4 +1,3 @@
-import os
 from typing import ClassVar
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
@@ -21,13 +20,6 @@ CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
 )
 
 
-def get_postgres_ssl_ca() -> str:
-    path = os.path.join(os.path.dirname(__file__), "../../docker-compose/db-postgres/ssl", "root.crt")
-
-    with open(path) as f:
-        return f.read()
-
-
 class CoreConnectionSettings:
     DB_NAME: ClassVar[str] = "test_data"
     HOST: ClassVar[str] = get_test_container_hostport("db-postgres-13", fallback_port=52301).host
@@ -36,12 +28,12 @@ class CoreConnectionSettings:
     PASSWORD: ClassVar[str] = "qwerty"
 
 
-class CoreSslConnectionSettings:
-    DB_NAME: ClassVar[str] = "test_data"
-    HOST: ClassVar[str] = "127.0.0.1"
-    PORT: ClassVar[int] = 52303
-    USERNAME: ClassVar[str] = "datalens"
-    PASSWORD: ClassVar[str] = "qwerty"
+class CoreSslConnectionSettings(CoreConnectionSettings):
+    HOST: ClassVar[str] = get_test_container_hostport("db-postgres-9-4-ssl", fallback_port=52303).host
+    PORT: ClassVar[int] = get_test_container_hostport("db-postgres-9-4-ssl", fallback_port=52303).port
+    CERT_PROVIDER_URL: ClassVar[
+        str
+    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=52313).as_pair()}"
 
 
 SUBSELECT_QUERY_FULL = r"""
@@ -117,7 +109,7 @@ DB_URLS = {
     ),
 }
 DB_CORE_URL = DB_URLS[D.POSTGRESQL_9_4]
-DB_CORE_SSL_URL = "bi_postgresql://datalens:qwerty@localhost:52303/test_data"
+DB_CORE_SSL_URL = f'bi_postgresql://datalens:qwerty@{get_test_container_hostport("db-postgres-9-4-ssl", fallback_port=52303).as_pair()}/test_data'
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     api_connector_ep_names=["postgresql"],

@@ -1,5 +1,4 @@
 import asyncio
-import os
 from typing import (
     Optional,
     Sequence,
@@ -106,7 +105,6 @@ class TestPostgreSQLAsyncConnectionExecutor(
     )
 
 
-@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslPostgreSQLSyncConnectionExecutor(
     BaseSslPostgreSQLTestClass,
     TestPostgreSQLSyncConnectionExecutor,
@@ -116,7 +114,6 @@ class TestSslPostgreSQLSyncConnectionExecutor(
         self.check_ssl_directory_is_empty()
 
 
-@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslPostgreSQLAsyncConnectionExecutor(
     BaseSslPostgreSQLTestClass,
     TestPostgreSQLAsyncConnectionExecutor,
