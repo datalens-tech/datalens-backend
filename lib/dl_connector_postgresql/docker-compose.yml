@@ -25,19 +25,27 @@ services:
     build:
       context: docker-compose
       dockerfile: Dockerfile.db-postgres-9.4-ssl
+    depends_on:
+      - ssl-provider
     environment:
       POSTGRES_DB: "test_data"
       POSTGRES_USER: "datalens"
       POSTGRES_PASSWORD: "qwerty"
+      CERT_SERVER_URL: "http://ssl-provider"
     ports:
       - "52303:5432"
-    command: [
-      "postgres",
-      "-c",
-      "config_file=/etc/postgresql/postgresql.conf"
-    ]
 
   # INFRA
+  ssl-provider:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: ssl-provider
+    build:
+      args:
+        CERTIFIED_DOMAIN: "db-postgres-9-4-ssl"
+    ports:
+      - "52313:80"
+
   pg-us:
     extends:
       file: ../testenv-common/docker-compose.common.yml

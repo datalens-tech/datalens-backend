@@ -4,6 +4,7 @@ from typing import Generator
 
 from frozendict import frozendict
 import pytest
+import requests
 
 import dl_configs.utils as bi_configs_utils
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
@@ -101,19 +102,32 @@ class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
         assert not os.listdir(bi_configs_utils.get_temp_root_certificates_folder_path())
 
     @pytest.fixture(scope="class")
+    def ssl_ca(self) -> str:
+        uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
+        response = requests.get(uri)
+        assert response.status_code == 200, response.text
+        return response.text
+
+    @pytest.fixture(scope="class")
+    def ssl_ca_path(self, ssl_ca: str, tmp_path_factory: pytest.TempPathFactory) -> str:
+        path = tmp_path_factory.mktemp("ssl") / "ca.pem"
+        path.write_text(ssl_ca)
+        return str(path)
+
+    @pytest.fixture(scope="class")
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
 
     @pytest.fixture(scope="class")
-    def engine_params(self) -> dict:
+    def engine_params(self, ssl_ca_path: str) -> dict:
         return {
             "connect_args": frozendict(
-                verify=test_config.get_clickhouse_ssl_ca_path(),
+                verify=ssl_ca_path,
             )
         }
 
     @pytest.fixture(scope="function")
-    def connection_creation_params(self) -> dict:
+    def connection_creation_params(self, ssl_ca: str) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
             host=test_config.CoreSslConnectionSettings.HOST,
@@ -122,7 +136,7 @@ class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
             password=test_config.CoreSslConnectionSettings.PASSWORD,
             **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
             secure=True,
-            ssl_ca=test_config.get_clickhouse_ssl_ca(),
+            ssl_ca=ssl_ca,
         )
 
 

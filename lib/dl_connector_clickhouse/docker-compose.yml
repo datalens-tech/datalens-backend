@@ -25,6 +25,10 @@ services:
     build:
       context: docker-compose
       dockerfile: Dockerfile.db-clickhouse-22-10.ssl
+    depends_on:
+      - ssl-provider
+    environment:
+      CERT_SERVER_URL: "http://ssl-provider"
 
   db-clickhouse-26:
     ports:
@@ -35,6 +39,16 @@ services:
       dockerfile: Dockerfile.db-clickhouse-26
 
   # INFRA
+  ssl-provider:
+    extends:
+      file: ../testenv-common/docker-compose.common.yml
+      service: ssl-provider
+    build:
+      args:
+        CERTIFIED_DOMAIN: "db-clickhouse-22-10-ssl"
+    ports:
+      - "52213:80"
+
   pg-us:
     extends:
       file: ../testenv-common/docker-compose.common.yml

@@ -39,6 +39,7 @@ dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytz = "*"
+requests = "*"
 shortuuid = "*"
 
 [tool.poetry.plugins]

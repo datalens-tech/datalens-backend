@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import os
 from typing import TypeVar
-
-import pytest
 
 from dl_core.us_connection_base import (
     ConnectionSQL,
@@ -142,7 +139,6 @@ class TestPostgreSQLConnection(
         assert templates_none == templates_no_search == templates_empty_search
 
 
-@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslPostgreSQLConnection(
     BaseSslPostgreSQLTestClass,
     DefaultConnectionTestClass[ConnectionPostgreSQL],
@@ -155,7 +151,7 @@ class TestSslPostgreSQLConnection(
         assert conn.data.username == params["username"]
         assert conn.data.password == params["password"]
         assert conn.data.ssl_enable is True
-        assert conn.data.ssl_ca is params["ssl_ca"]
+        assert conn.data.ssl_ca == params["ssl_ca"]
 
     def check_data_source_templates(self, conn: ConnectionPostgreSQL, dsrc_templates: list[DataSourceTemplate]) -> None:
         assert dsrc_templates

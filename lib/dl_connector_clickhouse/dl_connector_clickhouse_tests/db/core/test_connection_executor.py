@@ -1,6 +1,5 @@
 import asyncio
 import enum
-import os
 from typing import (
     Optional,
     Sequence,
@@ -211,7 +210,6 @@ class TestClickHouseAsyncConnectionExecutor(
         assert rows == [(None,)]
 
 
-@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslClickHouseSyncConnectionExecutor(
     BaseSslClickHouseTestClass,
     TestClickHouseSyncConnectionExecutor,
@@ -221,7 +219,6 @@ class TestSslClickHouseSyncConnectionExecutor(
         self.check_ssl_directory_is_empty()
 
 
-@pytest.mark.skipif(os.environ.get("WE_ARE_IN_CI"), reason="can't use localhost")
 class TestSslClickHouseAsyncConnectionExecutor(
     BaseSslClickHouseTestClass,
     TestClickHouseAsyncConnectionExecutor,

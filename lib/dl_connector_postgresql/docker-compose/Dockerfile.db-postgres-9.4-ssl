@@ -2,17 +2,18 @@
 # FROM postgres:9.4.26-alpine
 FROM postgres:9.4.26-alpine@sha256:b3ae2dad6f153711444221849919b98c0503e6eef57be18300713cbef7ada4bc
 
+RUN apk add --no-cache bash curl
+
 COPY db-postgres/pg_hba.conf /etc/postgresql/pg_hba.conf
 COPY db-postgres/postgresql.conf /etc/postgresql/postgresql.conf
 
-COPY db-postgres/ssl/server.crt /etc/ssl/private/server.crt
-COPY db-postgres/ssl/server.key /etc/ssl/private/server.key
-
-RUN chown 70:70 /etc/ssl/private/server.key && \
-    chmod 700 /etc/ssl/private/server.key && \
-    chown 70:70 /etc/ssl/private/server.crt && \
-    chmod 700 /etc/ssl/private/server.crt
+COPY db-postgres/fetch-certificates.sh /usr/local/bin/fetch-certificates.sh
+RUN mkdir -p /etc/ssl/private && chmod +x /usr/local/bin/fetch-certificates.sh
 
 COPY db-postgres/data /common-data
 
 COPY db-postgres/initdb.d/01_prepare_db.sql /docker-entrypoint-initdb.d/
+
+ENTRYPOINT ["fetch-certificates.sh"]
+
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
