@@ -57,6 +57,23 @@ tasks:
           echo "Removing $env";
           poetry env remove $env --directory=$(dirname {{.PYPROJECT_TOML_PATH}});
         done;
+      - |
+        # If the venv is missing and we are in a secondary git worktree, prime it from
+        # the main worktree so the subsequent `poetry install --sync` only reconciles drift.
+        VENV_PATH='{{.VENV_PATH}}'
+        if [ ! -d "$VENV_PATH" ]; then
+          MAIN_WORKTREE=$(git worktree list --porcelain 2>/dev/null | awk '$1=="worktree" {print $2; exit}')
+          CURRENT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+          if [ -n "$MAIN_WORKTREE" ] && [ -n "$CURRENT_ROOT" ] && [ "$MAIN_WORKTREE" != "$CURRENT_ROOT" ]; then
+            REL_VENV="${VENV_PATH#$CURRENT_ROOT/}"
+            SOURCE_VENV="$MAIN_WORKTREE/$REL_VENV"
+            if [ -d "$SOURCE_VENV" ]; then
+              echo "Priming venv from main worktree: $SOURCE_VENV -> $VENV_PATH"
+              mkdir -p "$(dirname "$VENV_PATH")"
+              rsync -a "$SOURCE_VENV/" "$VENV_PATH/"
+            fi
+          fi
+        fi
       - echo "Initializing python virtual environment in {{.VENV_PATH}}"
       - poetry install --directory=$(dirname {{.PYPROJECT_TOML_PATH}}) --sync --no-root --with mypy
     requires:
