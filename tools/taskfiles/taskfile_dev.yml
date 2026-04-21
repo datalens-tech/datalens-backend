@@ -71,6 +71,19 @@ tasks:
               echo "Priming venv from main worktree: $SOURCE_VENV -> $VENV_PATH"
               mkdir -p "$(dirname "$VENV_PATH")"
               rsync -a "$SOURCE_VENV/" "$VENV_PATH/"
+              # Rsync preserves shebangs that point at the source worktree's python;
+              # poetry install --sync will not rewrite them, so bin/ scripts would keep
+              # launching the main worktree's interpreter (loading its editable installs).
+              SRC_PY="$SOURCE_VENV/bin/python"
+              DST_PY="$VENV_PATH/bin/python"
+              if [ -d "$VENV_PATH/bin" ] && [ "$SRC_PY" != "$DST_PY" ]; then
+                for f in "$VENV_PATH/bin"/*; do
+                  [ -f "$f" ] || continue
+                  if [ "$(head -n 1 "$f" 2>/dev/null)" = "#!$SRC_PY" ]; then
+                    sed -i.bak "1s|^#!$SRC_PY|#!$DST_PY|" "$f" && rm -f "$f.bak"
+                  fi
+                done
+              fi
             fi
           fi
         fi
