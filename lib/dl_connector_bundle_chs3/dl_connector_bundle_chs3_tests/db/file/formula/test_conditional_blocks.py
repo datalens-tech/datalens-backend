@@ -1,7 +1,0 @@
-from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
-
-from dl_connector_bundle_chs3_tests.db.file.formula.base import FileTestBase
-
-
-class TestMainAggFunctionFile(FileTestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
-    pass

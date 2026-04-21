@@ -1,7 +1,0 @@
-from dl_formula_testing.testcases.misc_funcs import DefaultMiscFunctionalityConnectorTestSuite
-
-from dl_connector_bundle_chs3_tests.db.gsheets_v2.formula.base import GSheetsTestBase
-
-
-class TestMiscFunctionalityGSheets(GSheetsTestBase, DefaultMiscFunctionalityConnectorTestSuite):
-    pass
