@@ -20,11 +20,6 @@ from dl_configs.rqe import RQEConfig
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_core.core_connectors import load_all_connectors
 
-from dl_connector_bundle_chs3.chs3_base.core.settings import (
-    FileS3ConnectorSettingsBase,
-    _RootSettings,
-)
-
 
 TEST_CONFIG_PATH = Path(test_directory.__file__).parent / "config.yaml"
 
@@ -52,20 +47,6 @@ EXPECTED_DATA_API_SETTINGS = DeprecatedDataApiAppSettings(
     RQE_FORCE_OFF=True,
     US_BASE_URL=US_HOST,
     US_MASTER_TOKEN=US_MASTER_TOKEN,
-)
-
-EXPECTED_FILE_SETTINGS = FileS3ConnectorSettingsBase(
-    SECURE=True,
-    HOST="localhost",
-    PORT=8443,
-    USERNAME="datalens",
-    PASSWORD="qwerty",
-    ACCESS_KEY_ID="key_id",
-    SECRET_ACCESS_KEY="access_key",
-    root=_RootSettings(
-        S3_ENDPOINT_URL="http://s3-storage:8000",
-        FILE_UPLOADER_S3_PERSISTENT_BUCKET_NAME="bucket",
-    ),
 )
 
 

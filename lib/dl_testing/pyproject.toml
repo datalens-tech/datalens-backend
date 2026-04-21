@@ -14,6 +14,7 @@ boto3 = "*"
 botocore = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-configs = {path = "../dl_configs"}
+dl-s3 = {path = "../dl_s3"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 pytest = "*"

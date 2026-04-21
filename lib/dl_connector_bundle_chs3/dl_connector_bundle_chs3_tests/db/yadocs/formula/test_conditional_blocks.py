@@ -1,7 +1,0 @@
-from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
-
-from dl_connector_bundle_chs3_tests.db.yadocs.formula.base import YaDocsTestBase
-
-
-class TestMainAggFunctionYaDocs(YaDocsTestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
-    pass

@@ -50,7 +50,6 @@ werkzeug = "*"
 [tool.poetry.group.tests.dependencies]
 dl-api-client = {path = "../dl_api_client"}
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}
-dl-connector-bundle-chs3 = {path = "../dl_connector_bundle_chs3"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
 dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-core-testing = {path = "../dl_core_testing"}

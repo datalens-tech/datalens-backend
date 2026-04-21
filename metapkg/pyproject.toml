@@ -124,7 +124,6 @@ dl-compeng-pg = {develop = true, path = "../lib/dl_compeng_pg"}
 dl-configs = {develop = true, path = "../lib/dl_configs"}
 dl-connector-bigquery = {develop = true, path = "../lib/dl_connector_bigquery"}
 dl-connector-bitrix-gds = {develop = true, path = "../lib/dl_connector_bitrix_gds"}
-dl-connector-bundle-chs3 = {develop = true, path = "../lib/dl_connector_bundle_chs3"}
 dl-connector-chyt = {develop = true, path = "../lib/dl_connector_chyt"}
 dl-connector-clickhouse = {develop = true, path = "../lib/dl_connector_clickhouse"}
 dl-connector-greenplum = {develop = true, path = "../lib/dl_connector_greenplum"}
@@ -146,11 +145,6 @@ dl-dashsql = {develop = true, path = "../lib/dl_dashsql"}
 dl-db-testing = {develop = true, path = "../lib/dl_db_testing"}
 dl-dynamic-enum = {develop = true, path = "../lib/dl_dynamic_enum"}
 dl-dynconfig = {develop = true, path = "../lib/dl_dynconfig"}
-dl-file-secure-reader-lib = {develop = true, path = "../lib/dl_file_secure_reader_lib"}
-dl-file-uploader-api-lib = {develop = true, path = "../lib/dl_file_uploader_api_lib"}
-dl-file-uploader-lib = {develop = true, path = "../lib/dl_file_uploader_lib"}
-dl-file-uploader-task-interface = {develop = true, path = "../lib/dl_file_uploader_task_interface"}
-dl-file-uploader-worker-lib = {develop = true, path = "../lib/dl_file_uploader_worker_lib"}
 dl-formula = {develop = true, path = "../lib/dl_formula"}
 dl-formula-ref = {develop = true, path = "../lib/dl_formula_ref"}
 dl-formula-testing = {develop = true, path = "../lib/dl_formula_testing"}
