@@ -404,6 +404,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             return self.data.cache_invalidation_throttling_interval_sec is not None
         return False
 
+    @property
+    def is_query_settings_enabled(self) -> bool:
+        return False
+
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)
         if short:

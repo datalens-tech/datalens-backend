@@ -560,6 +560,13 @@ class DatasetContentInternalSchema(DefaultSchema[Dataset], USEntryAnnotationMixi
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
     cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema)
+    query_settings = ma_fields.Dict(
+        keys=ma_fields.String(),
+        values=ma_fields.String(),
+        required=False,
+        load_default=dict,
+        dump_default=dict,
+    )
 
     @post_load
     def validate_rls2(self, item: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:

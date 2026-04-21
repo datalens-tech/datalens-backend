@@ -1002,6 +1002,7 @@ class Dataset(ApiProxyObject):
     obligatory_filters: list[ObligatoryFilter] = attr.ib(default=attr.Factory(list))
     annotation: Optional[dict] = attr.ib(default=None)
     cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
+    query_settings: dict[str, str] = attr.ib(factory=dict)
 
     def prepare(self) -> None:
         super().prepare()

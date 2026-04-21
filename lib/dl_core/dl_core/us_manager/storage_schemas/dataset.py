@@ -551,4 +551,11 @@ class DatasetStorageSchema(DefaultStorageSchema):
     component_errors = ma_fields.Nested(ComponentErrorListSchema)
     obligatory_filters = ma_fields.List(ma_fields.Nested(ObligatoryFilterSchema))
     cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceStorageSchema)
+    query_settings = ma_fields.Dict(
+        keys=ma_fields.String(),
+        values=ma_fields.String(),
+        load_default=dict,
+        dump_default=dict,
+        required=False,
+    )
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")

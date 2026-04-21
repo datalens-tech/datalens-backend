@@ -444,6 +444,9 @@ class DatasetComponentEditor:
     def set_cache_invalidation_source(self, cache_invalidation_source: CacheInvalidationSource) -> None:
         self._dataset.data.cache_invalidation_source = cache_invalidation_source
 
+    def set_query_settings(self, query_settings: dict[str, str]) -> None:
+        self._dataset.data.query_settings = query_settings
+
     def replace_connection(self, old_connection: ConnectionBase, new_connection: ConnectionBase) -> None:
         old_migrator = get_data_source_migrator(old_connection.conn_type)
         new_migrator = get_data_source_migrator(new_connection.conn_type)
