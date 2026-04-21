@@ -249,6 +249,7 @@ class DatasetDataBaseView(BaseView):
         us_manager: AsyncUSManager,
         allow_rls_change: bool,
         allow_settings_change: bool,
+        allow_query_settings_change: bool,
         cached_dataset: Optional[Dataset],
     ) -> DatasetUpdateInfo:
         services_registry = self.dl_request.services_registry
@@ -261,6 +262,7 @@ class DatasetDataBaseView(BaseView):
             dataset_data=req_model.dataset,
             allow_rls_change=allow_rls_change,
             allow_settings_change=allow_settings_change,
+            allow_query_settings_change=allow_query_settings_change,
         )
 
         await self.resolve_rls_groups_for_dataset(req_model, services_registry)
@@ -286,6 +288,7 @@ class DatasetDataBaseView(BaseView):
         req_model: DataRequestModel,
         allow_rls_change: bool = False,
         allow_settings_change: bool = False,
+        allow_query_settings_change: bool = False,
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
 
@@ -313,6 +316,7 @@ class DatasetDataBaseView(BaseView):
                 us_manager,
                 allow_rls_change,
                 allow_settings_change,
+                allow_query_settings_change,
                 cached_dataset=None,
             )
 
@@ -333,6 +337,7 @@ class DatasetDataBaseView(BaseView):
         req_model: DataRequestModel,
         allow_rls_change: bool = False,
         allow_settings_change: bool = False,
+        allow_query_settings_change: bool = False,
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
 
@@ -392,6 +397,7 @@ class DatasetDataBaseView(BaseView):
                 us_manager,
                 allow_rls_change,
                 allow_settings_change,
+                allow_query_settings_change,
                 cached_dataset=cached_dataset,
             )
 
@@ -406,6 +412,7 @@ class DatasetDataBaseView(BaseView):
         req_model: DataRequestModel,
         allow_rls_change: bool = False,
         allow_settings_change: bool = False,
+        allow_query_settings_change: bool = False,
     ) -> DatasetUpdateInfo:
         """Try take dataset from mutation cache to avoid double deserialization"""
         if self.dl_request.log_ctx_controller:
@@ -416,11 +423,13 @@ class DatasetDataBaseView(BaseView):
                 req_model=req_model,
                 allow_rls_change=allow_rls_change,
                 allow_settings_change=allow_settings_change,
+                allow_query_settings_change=allow_query_settings_change,
             )
         return await self._prepare_dataset_from_cache_with_dataset_id(
             req_model=req_model,
             allow_rls_change=allow_rls_change,
             allow_settings_change=allow_settings_change,
+            allow_query_settings_change=allow_query_settings_change,
         )
 
     @staticmethod
@@ -571,6 +580,7 @@ class DatasetDataBaseView(BaseView):
         req_model: DataRequestModel,
         allow_rls_change: bool = False,
         allow_settings_change: bool = False,
+        allow_query_settings_change: bool = False,
         enable_mutation_caching: bool = False,
     ) -> DatasetUpdateInfo:
         us_manager = self.dl_request.us_manager
@@ -595,6 +605,7 @@ class DatasetDataBaseView(BaseView):
                 dataset_data=req_model.dataset,
                 allow_rls_change=allow_rls_change,
                 allow_settings_change=allow_settings_change,
+                allow_query_settings_change=allow_query_settings_change,
             )
             await self.resolve_rls_groups_for_dataset(req_model, services_registry)
 

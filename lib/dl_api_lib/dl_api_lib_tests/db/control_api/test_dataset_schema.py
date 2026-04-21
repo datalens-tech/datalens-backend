@@ -26,3 +26,6 @@ class TestDatasetVersionItemResponseSchema(DefaultApiTestBase):
 
         assert "is_cache_invalidation_enabled_in_conn" in dataset["options"]
         assert isinstance(dataset["options"]["is_cache_invalidation_enabled_in_conn"], bool)
+
+        assert "query_settings_enabled" in dataset["options"]
+        assert isinstance(dataset["options"]["query_settings_enabled"], bool)

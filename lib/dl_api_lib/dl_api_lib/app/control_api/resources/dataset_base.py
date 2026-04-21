@@ -119,6 +119,7 @@ class DatasetResource(BIResource):
             us_manager=us_manager,
             dataset_data=body.get("dataset"),
             allow_settings_change=True,  # TODO: BI-6307 disable in the future
+            allow_query_settings_change=True,
         )
         return dataset, update_info
 
@@ -196,9 +197,8 @@ class DatasetResource(BIResource):
             result_schema.append(field_data)
         data["result_schema"] = result_schema
         data["result_schema_aux"] = dataset.data.result_schema_aux
-
-        # cache_invalidation_source
         data["cache_invalidation_source"] = dataset.data.cache_invalidation_source
+        data["query_settings"] = dataset.data.query_settings
 
         # rls
         rls = {}
@@ -265,6 +265,36 @@ class DatasetResource(BIResource):
                 if not dsrc.is_cache_invalidation_enabled:
                     return False
             except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied):
+                return False
+        return True
+
+    @classmethod
+    def _check_query_settings_enabled_in_conn(
+        cls,
+        ds_accessor: DatasetComponentAccessor,
+        role: DataSourceRole,
+        dsrc_coll_factory: DataSourceCollectionFactory,
+        dataset_parameter_values: dict,
+        dataset_template_enabled: bool,
+    ) -> bool:
+        """
+        Check if query settings are enabled in all sources.
+        Returns True only if all sources have query settings enabled.
+        Default is False if there are no sources.
+        """
+        source_ids = ds_accessor.get_data_source_id_list()
+        if not source_ids:
+            return False
+
+        for source_id in source_ids:
+            dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
+            dsrc_coll = dsrc_coll_factory.get_data_source_collection(
+                spec=dsrc_coll_spec,
+                dataset_parameter_values=dataset_parameter_values,
+                dataset_template_enabled=dataset_template_enabled,
+            )
+            dsrc = dsrc_coll.get_strict(role)
+            if not dsrc.is_query_settings_enabled:
                 return False
         return True
 
@@ -463,6 +493,13 @@ class DatasetResource(BIResource):
                 opt_data["source_listing"] = listing_options
 
         opt_data["is_cache_invalidation_enabled_in_conn"] = cls._check_cache_invalidation_enabled_in_conn(
+            ds_accessor=ds_accessor,
+            dsrc_coll_factory=dsrc_coll_factory,
+            role=role,
+            dataset_parameter_values=dataset_parameter_values,
+            dataset_template_enabled=dataset_template_enabled,
+        )
+        opt_data["query_settings_enabled"] = cls._check_query_settings_enabled_in_conn(
             ds_accessor=ds_accessor,
             dsrc_coll_factory=dsrc_coll_factory,
             role=role,

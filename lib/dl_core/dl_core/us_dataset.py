@@ -77,6 +77,7 @@ class Dataset(USEntry):
         component_errors: ComponentErrorRegistry = attr.ib(factory=ComponentErrorRegistry)
         obligatory_filters: list[ObligatoryFilter] = attr.ib(factory=list)
         cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
+        query_settings: dict[str, str] = attr.ib(factory=dict)
 
         @attr.s
         class ResultSchemaAux:

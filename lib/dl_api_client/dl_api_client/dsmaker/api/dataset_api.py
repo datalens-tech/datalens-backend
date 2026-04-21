@@ -80,6 +80,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             ],
             annotation=dict(description=body["description"]),
             cache_invalidation_source=CacheInvalidationSourceSchema().load(body["cache_invalidation_source"]),
+            query_settings=body.get("query_settings", {}),
         )
 
         for dsrc_data in body["sources"]:

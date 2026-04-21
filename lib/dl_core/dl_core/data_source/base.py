@@ -35,6 +35,8 @@ from dl_core.db import (
 )
 from dl_core.exc import (
     ConnectionTemplateDisabledError,
+    ReferencedUSEntryAccessDenied,
+    ReferencedUSEntryNotFound,
     TemplateInvalidError,
 )
 from dl_core.query.bi_query import SqlSourceType
@@ -350,6 +352,13 @@ class DataSource(metaclass=abc.ABCMeta):
     @property
     def is_cache_invalidation_enabled(self) -> bool:
         return self.connection.is_cache_invalidation_enabled
+
+    @property
+    def is_query_settings_enabled(self) -> bool:
+        try:
+            return self.connection.is_query_settings_enabled
+        except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied):
+            return False
 
     @property
     def data_export_allowed_for_conn_type(self) -> bool:

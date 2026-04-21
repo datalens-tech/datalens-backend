@@ -286,6 +286,13 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     template_enabled = ma_fields.Boolean(dump_default=False, load_default=False)
     data_export_forbidden = ma_fields.Boolean(dump_default=False, load_default=False)
     cache_invalidation_source = ma_fields.Nested(CacheInvalidationSourceSchema)
+    query_settings = ma_fields.Dict(
+        keys=ma_fields.String(),
+        values=ma_fields.String(),
+        required=False,
+        load_default=dict,
+        dump_default=dict,
+    )
 
     @pre_load
     def prepare_guids(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:
