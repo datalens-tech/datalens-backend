@@ -2,6 +2,25 @@
 
 This package contains all the basic tooling needed to migrate from dl_configs that uses attr package to pydantic_settings.
 
+## Conventions
+
+### Field naming: `UPPER_SNAKE_CASE`
+
+All subclasses of `dl_settings.BaseSettings` (and its derivatives — `BaseRootSettings`, `TypedBaseSettings`, mixins, etc.) declare their fields in **UPPER_SNAKE_CASE**:
+
+```python
+class NestedSettings(dl_settings.BaseSettings):
+    ENABLED: bool = False
+    ITEMS: list[str] | None = None
+
+
+class AppSettings(dl_settings.BaseRootSettings):
+    NESTED: NestedSettings = pydantic.Field(default_factory=NestedSettings)
+    VAR1: bool = pydantic.Field(default=False, alias="DL_VAR1")
+```
+
+Construct and access them with the same casing — `NestedSettings(ENABLED=True, ITEMS=[...])`, `settings.NESTED.ENABLED`. This matches the rest of the repo (`ConnectorSettings`, mixins, `ClickHouseConnectorSettings`, etc.) and the env-var conventions (env names are upper-case).
+
 ## Usage
 
 Idea is to provide a simple way to migrate from dl_configs to pydantic_settings in gradual way. For this purpose several fallbacks are provided.
@@ -88,14 +107,14 @@ New settings:
 
 ```python
 class NestedSettings(dl_settings.BaseSettings):
-    var1: bool = False
+    VAR1: bool = False
 
 
 class AppSettings(
     dl_settings.WithFallbackEnvSource,
     dl_settings.BaseRootSettings,
 ):
-    nested: NestedSettings = NestedSettings()
+    NESTED: NestedSettings = NestedSettings()
 
     fallback_env_keys = {
         "NESTED__VAR1": "NESTED_VAR1",
@@ -106,11 +125,11 @@ Eventually we should remove old settings names and fallbacks (while using fallba
 
 ```python
 class NestedSettings(dl_settings.BaseSettings):
-    var1: bool = False
+    VAR1: bool = False
 
 
 class AppSettings(
     dl_settings.BaseRootSettings,
 ):
-    nested: NestedSettings = NestedSettings()
+    NESTED: NestedSettings = NestedSettings()
 ```
