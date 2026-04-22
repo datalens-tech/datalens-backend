@@ -21,6 +21,32 @@ class AppSettings(dl_settings.BaseRootSettings):
 
 Construct and access them with the same casing — `NestedSettings(ENABLED=True, ITEMS=[...])`, `settings.NESTED.ENABLED`. This matches the rest of the repo (`ConnectorSettings`, mixins, `ClickHouseConnectorSettings`, etc.) and the env-var conventions (env names are upper-case).
 
+### Overriding defaults: subclass, don't use `lambda`
+
+When a `dl_settings.BaseSettings` descendant needs different defaults than its parent, declare a subclass that overrides the defaults and use the subclass as the field type. Do **not** use `default_factory=lambda: Parent(FIELD=...)` or similar inline factories.
+
+Wrong:
+
+```python
+class AppSettings(dl_settings.BaseRootSettings):
+    NESTED: NestedSettings = pydantic.Field(
+        default_factory=lambda: NestedSettings(ENABLED=True),
+    )
+```
+
+Right:
+
+```python
+class CustomNestedSettings(NestedSettings):
+    ENABLED: bool = True
+
+
+class AppSettings(dl_settings.BaseRootSettings):
+    NESTED: CustomNestedSettings = pydantic.Field(default_factory=CustomNestedSettings)
+```
+
+Subclassing keeps the type accurate (so env-var resolution, validation, and downstream type checks all see the real shape), makes the override discoverable, and composes cleanly with further subclassing. Lambdas hide the shape behind an opaque factory.
+
 ## Usage
 
 Idea is to provide a simple way to migrate from dl_configs to pydantic_settings in gradual way. For this purpose several fallbacks are provided.
