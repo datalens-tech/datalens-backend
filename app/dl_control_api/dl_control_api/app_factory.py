@@ -175,6 +175,7 @@ class StandaloneControlApiAppFactory(
             settings=dl_auth_native.MiddlewareSettings(
                 decoder_key=settings.JWT_KEY,
                 decoder_algorithms=[settings.JWT_ALGORITHM],
+                master_token=self._settings.US_MASTER_TOKEN,
             )
         ).set_up(app=app)
         LOGGER.info("Native auth setup complete")

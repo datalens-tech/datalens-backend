@@ -1,3 +1,5 @@
+import hmac
+
 import attr
 from typing_extensions import Self
 
@@ -37,8 +39,9 @@ class AuthResult:
 
 @attr.s(frozen=True)
 class MiddlewareSettings:
-    decoder_key: str = attr.ib()
+    decoder_key: str = attr.ib(repr=False)
     decoder_algorithms: list[str] = attr.ib()
+    master_token: str | None = attr.ib(default=None, repr=False)
 
 
 @attr.s()
@@ -46,6 +49,8 @@ class BaseMiddleware:
     _token_decoder: token.DecoderProtocol = attr.ib()
     _user_access_header_key: str = attr.ib(default=dl_constants.DLHeadersCommon.AUTHORIZATION_TOKEN)
     _token_type: str = attr.ib(default="Bearer")
+    _master_token: str | None = attr.ib(default=None, repr=False)
+    _service_auth_header_key: str = attr.ib(default=dl_constants.DLHeadersCommon.US_MASTER_TOKEN)
 
     @classmethod
     def from_settings(cls, settings: MiddlewareSettings) -> Self:
@@ -56,10 +61,15 @@ class BaseMiddleware:
 
         return cls(
             token_decoder=token_decoder,
+            master_token=settings.master_token,
         )
 
     @attr.s(frozen=True)
     class Unauthorized(Exception):
+        message: str = attr.ib()
+
+    @attr.s(frozen=True)
+    class Forbidden(Exception):
         message: str = attr.ib()
 
     def _auth(self, user_access_header: str | None) -> AuthResult:
@@ -85,6 +95,16 @@ class BaseMiddleware:
                 roles=payload.roles,
             ),
         )
+
+    def _service_auth(self, service_token_header: str | None) -> None:
+        if self._master_token is None:
+            raise self.Unauthorized("Service auth is not configured")
+
+        if service_token_header is None:
+            raise self.Unauthorized("Service token header is missing")
+
+        if not hmac.compare_digest(service_token_header, self._master_token):
+            raise self.Forbidden("Invalid service token")
 
 
 __all__ = [
