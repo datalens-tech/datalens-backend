@@ -48,7 +48,7 @@ class DecoderProtocol(typing.Protocol):
 
 @attr.s(frozen=True)
 class Decoder:
-    _key: str = attr.ib()
+    _key: str = attr.ib(repr=False)
     _algorithms: list[str] = attr.ib()
 
     def decode(self, token: str) -> Payload:
