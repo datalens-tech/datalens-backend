@@ -183,23 +183,121 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
             cxoracle_types=[self._cursor_type_to_str(column[1]) for column in cursor.description],
         )
 
-    ORACLE_LIST_SOURCES_ALL_SCHEMA_SQL = """
-        SELECT OWNER, TABLE_NAME FROM ALL_TABLES
-        WHERE nvl(tablespace_name, 'no tablespace')
-            NOT IN ('SYSTEM', 'SYSAUX')
-            AND IOT_NAME IS NULL
-            AND DURATION IS NULL
-    """
+    @staticmethod
+    def _get_pagination_sql_parts(limit: int | None, offset: int | None) -> list[str]:
+        sql_parts: list[str] = []
+        if offset is not None:
+            sql_parts.append("OFFSET :offset ROWS")
+        if limit is not None:
+            sql_parts.append("FETCH NEXT :limit ROWS ONLY")
+        return sql_parts
+
+    @staticmethod
+    def _compile_pagination_params(
+        search_text: str | None,
+        limit: int | None,
+        offset: int | None,
+    ) -> list[sa.sql.elements.BindParameter]:
+        params: list[sa.sql.elements.BindParameter] = []
+        if search_text:
+            params.append(sa.bindparam("search_text", f"%{search_text}%", type_=sa.String))
+        if offset is not None:
+            params.append(sa.bindparam("offset", offset, type_=sa.Integer))
+        if limit is not None:
+            params.append(sa.bindparam("limit", limit, type_=sa.Integer))
+        return params
+
+    def get_list_all_tables_query(
+        self,
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+    ) -> sa.sql.elements.TextClause:
+        sql_parts: list[str] = [
+            """
+            SELECT OWNER, TABLE_NAME FROM ALL_TABLES
+            WHERE nvl(tablespace_name, 'no tablespace')
+                NOT IN ('SYSTEM', 'SYSAUX')
+                AND IOT_NAME IS NULL
+                AND DURATION IS NULL
+            """.strip()
+        ]
+        if search_text:
+            sql_parts.append("AND LOWER(OWNER || '.' || TABLE_NAME) LIKE LOWER(:search_text)")
+        sql_parts.append("ORDER BY OWNER, TABLE_NAME")
+        sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
+
+        sql = " ".join(sql_parts)
+        query = sa.text(sql)
+        params = self._compile_pagination_params(search_text, limit, offset)
+        if params:
+            query = query.bindparams(*params)
+        return query
+
+    def get_list_tables_in_schema_query(
+        self,
+        schema_name: str,
+        search_text: str | None = None,
+        limit: int | None = None,
+        offset: int | None = None,
+    ) -> sa.sql.elements.TextClause:
+        sql_parts: list[str] = [
+            """
+            SELECT name FROM (
+                SELECT TABLE_NAME AS name FROM ALL_TABLES
+                WHERE OWNER = :schema_name
+                  AND nvl(tablespace_name, 'no tablespace') NOT IN ('SYSTEM', 'SYSAUX')
+                  AND IOT_NAME IS NULL
+                  AND DURATION IS NULL
+                UNION ALL
+                SELECT VIEW_NAME AS name FROM ALL_VIEWS
+                WHERE OWNER = :schema_name
+            )
+            """.strip()
+        ]
+        if search_text:
+            sql_parts.append("WHERE LOWER(name) LIKE LOWER(:search_text)")
+        sql_parts.append("ORDER BY name")
+        sql_parts.extend(self._get_pagination_sql_parts(limit, offset))
+
+        sql = " ".join(sql_parts)
+        query = sa.text(sql)
+        params = [
+            sa.bindparam("schema_name", schema_name, type_=sa.String),
+            *self._compile_pagination_params(search_text, limit, offset),
+        ]
+        return query.bindparams(*params)
 
     def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
-        if schema_ident.schema_name is not None:
-            return super()._get_tables(schema_ident, page_ident)
+        if page_ident is None:
+            page_ident = PageIdent()
 
         db_name = schema_ident.db_name
         db_engine = self.get_db_engine(db_name)
 
-        query = self.ORACLE_LIST_SOURCES_ALL_SCHEMA_SQL
-        result = db_engine.execute(sa.text(query))
+        if schema_ident.schema_name is not None:
+            query = self.get_list_tables_in_schema_query(
+                schema_name=schema_ident.schema_name,
+                search_text=page_ident.search_text,
+                limit=page_ident.limit,
+                offset=page_ident.offset,
+            )
+            result = db_engine.execute(query)
+            return [
+                TableIdent(
+                    db_name=db_name,
+                    schema_name=schema_ident.schema_name,
+                    table_name=name,
+                )
+                for (name,) in result
+            ]
+
+        query = self.get_list_all_tables_query(
+            search_text=page_ident.search_text,
+            limit=page_ident.limit,
+            offset=page_ident.offset,
+        )
+        result = db_engine.execute(query)
         return [
             TableIdent(
                 db_name=db_name,
