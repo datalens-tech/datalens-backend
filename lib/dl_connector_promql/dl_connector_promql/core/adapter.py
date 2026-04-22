@@ -5,10 +5,9 @@ import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
 )
 from urllib.parse import (
-    quote_plus,
+    quote,
     urljoin,
 )
 
@@ -58,16 +57,16 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
     def _get_dsn_params(
         self,
         safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
+        db_name: str | None = None,
+        standard_auth: bool | None = True,
     ) -> dict:
         return dict(
             dialect=self._dialect_name,
-            user=quote_plus(self._target_dto.username) if self._target_dto.username is not None else None,
-            passwd=quote_plus(self._target_dto.password) if self._target_dto.password is not None else None,
-            host=quote_plus(self._target_dto.host),
-            port=quote_plus(str(self._target_dto.port)),
-            db_name=db_name or quote_plus(self._target_dto.db_name or "", safe="".join(safe_db_symbols)),
+            user=quote(self._target_dto.username, safe="") if self._target_dto.username is not None else None,
+            passwd=quote(self._target_dto.password, safe="") if self._target_dto.password is not None else None,
+            host=quote(self._target_dto.host, safe=""),
+            port=quote(str(self._target_dto.port), safe=""),
+            db_name=quote(db_name if db_name else (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
         )
 
     def _get_dsn_query_params(self) -> dict:
@@ -118,7 +117,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             path=self._target_dto.path,
         )
 
-    def get_session_auth(self) -> Optional[BasicAuth]:
+    def get_session_auth(self) -> BasicAuth | None:
         if (
             self._target_dto.auth_type == PromQLAuthType.password
             and self._target_dto.username

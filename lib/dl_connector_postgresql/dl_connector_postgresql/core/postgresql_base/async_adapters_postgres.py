@@ -12,10 +12,8 @@ from typing import (
     Callable,
     ClassVar,
     Iterable,
-    Optional,
     TypeVar,
 )
-from urllib.parse import quote
 import uuid
 
 import asyncpg
@@ -95,7 +93,7 @@ class AsyncPostgresAdapter(
     _conn_pools: AsyncCache[asyncpg.Pool] = attr.ib(default=attr.Factory(AsyncCache))
 
     _error_transformer = make_async_pg_error_transformer()
-    __dialect: Optional[AsyncBIPGDialect] = None
+    __dialect: AsyncBIPGDialect | None = None
 
     EXTRA_EXC_CLS: ClassVar[tuple[type[Exception], ...]] = (
         exc.DataStreamValidationError,
@@ -123,7 +121,7 @@ class AsyncPostgresAdapter(
             self.__dialect = AsyncBIPGDialect()
         return self.__dialect
 
-    def get_conn_line(self, db_name: Optional[str] = None, params: dict[str, Any] = None) -> str:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "params" (default has type "None", argument has type "dict[str, Any]")  [assignment]
+    def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         params = params or {}
         params["sslrootcert"] = self.get_ssl_cert_path(self._target_dto.ssl_ca)
         return AsyncPGConnLineConstructor(
@@ -132,10 +130,10 @@ class AsyncPostgresAdapter(
             dialect_name="postgres",
         ).make_conn_line(db_name=db_name, params=params)
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return self._target_dto.db_name
 
-    def get_target_host(self) -> Optional[str]:
+    def get_target_host(self) -> str | None:
         return self._target_dto.host
 
     def _convert_date(self, s: str, ignoretz: bool) -> datetime:
@@ -236,9 +234,7 @@ class AsyncPostgresAdapter(
             postgresql_typnames=[OID_KNOWLEDGE.get(a.type.oid) for a in query_attrs],
         )
 
-    def _get_row_converters(
-        self, query_attrs: Iterable[asyncpg.Attribute]
-    ) -> tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, query_attrs: Iterable[asyncpg.Attribute]) -> tuple[Callable[[Any], Any] | None, ...]:
         return tuple(self._convert_bytea if a.type.oid == 17 else None for a in query_attrs)  # `bytea`
 
     @contextlib.contextmanager
@@ -467,18 +463,3 @@ class AsyncPGConnLineConstructor(ClassicSQLConnLineConstructor[PostgresConnTarge
         return {
             "sslmode": "require" if self._target_dto.ssl_enable else "prefer",
         }
-
-    def _get_dsn_params(
-        self,
-        safe_db_symbols: tuple[str, ...] = (),
-        db_name: Optional[str] = None,
-        standard_auth: Optional[bool] = True,
-    ) -> dict:
-        return dict(
-            dialect=self._dialect_name,
-            user=quote(self._target_dto.username, safe="") if standard_auth else None,
-            passwd=quote(self._target_dto.password, safe="") if standard_auth else None,
-            host=quote(self._target_dto.host, safe=""),
-            port=quote(str(self._target_dto.port), safe=""),
-            db_name=db_name or quote(self._target_dto.db_name or "", safe="".join(safe_db_symbols)),
-        )
