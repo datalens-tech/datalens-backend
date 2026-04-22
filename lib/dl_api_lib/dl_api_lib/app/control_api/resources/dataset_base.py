@@ -118,8 +118,6 @@ class DatasetResource(BIResource):
             dataset=dataset,
             us_manager=us_manager,
             dataset_data=body.get("dataset"),
-            allow_settings_change=True,  # TODO: BI-6307 disable in the future
-            allow_query_settings_change=True,
         )
         return dataset, update_info
 
