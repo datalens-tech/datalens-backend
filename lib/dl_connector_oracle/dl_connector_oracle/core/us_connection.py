@@ -41,6 +41,8 @@ class ConnectionSQLOracle(
     allow_dashsql: ClassVar[bool] = True
     allow_cache: ClassVar[bool] = True
     is_always_user_source: ClassVar[bool] = True
+    supports_source_search: ClassVar[bool] = True
+    supports_source_pagination: ClassVar[bool] = True
     settings_type = OracleConnectorSettings
 
     @attr.s(kw_only=True)
@@ -104,7 +106,13 @@ class ConnectionSQLOracle(
         assert self.has_schema
         return [
             dict(schema_name=tid.schema_name, table_name=tid.table_name)
-            for tid in self.get_tables(schema_name=None, conn_executor_factory=conn_executor_factory)
+            for tid in self.get_tables(
+                conn_executor_factory=conn_executor_factory,
+                schema_name=None,
+                search_text=search_text,
+                limit=limit,
+                offset=offset,
+            )
         ]
 
     @property
