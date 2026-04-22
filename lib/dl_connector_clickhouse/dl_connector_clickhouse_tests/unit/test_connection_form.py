@@ -1,5 +1,8 @@
+import os
+
 import pytest
 
+from dl_api_connector.form_config.models.base import ConnectionFormMode
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
 from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
 
@@ -48,3 +51,23 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase):
             ALLOW_EXPERIMENTAL_FEATURES=allow_experimental_features,
             ALLOW_SSL_CA_VERIFY_OPTION=allow_ssl_ca_verify_option,
         )
+
+    @pytest.fixture(name="expected_form_config_file")
+    def fixture_expected_form_config_file(
+        self,
+        config_dir: str,
+        connectors_settings: ClickHouseConnectorSettings,
+        mode: ConnectionFormMode,
+    ) -> str:
+        parts: list[str] = []
+        if connectors_settings.ENABLE_DATASOURCE_TEMPLATE:
+            parts.append("template")
+        if connectors_settings.ALLOW_EXPERIMENTAL_FEATURES:
+            parts.append("exp")
+        if connectors_settings.ALLOW_SSL_CA_VERIFY_OPTION:
+            parts.append("ssl_ca_verify")
+
+        parts.append(mode.value)
+
+        filename = "_".join(parts) + ".json"
+        return os.path.join(config_dir, filename)
