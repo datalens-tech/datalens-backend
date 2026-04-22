@@ -1,12 +1,9 @@
-from __future__ import annotations
-
 from typing import (
     Any,
-    Optional,
     TypeVar,
 )
 from urllib.parse import (
-    quote_plus,
+    quote,
     urlencode,
 )
 
@@ -36,12 +33,10 @@ _M_CONN_T_DTO_TV = TypeVar("_M_CONN_T_DTO_TV", bound=MetricaAPIConnTargetDTO)
 class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
     conn_type = CONNECTION_TYPE_METRICA_API
 
-    def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
-        if disable_streaming:
-            raise Exception("`disable_streaming` is not applicable here")
+    def _build_dsn(self, db_name: str) -> str:
         dsn = "{dialect}://:{token}@/{db_name}".format(
             dialect=self.get_dialect_str(),
-            token=quote_plus(self._target_dto.token),
+            token=quote(self._target_dto.token, safe=""),
             db_name=db_name,
         )
         dsn_params: dict[str, Any] = {}
@@ -51,7 +46,12 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
         if dsn_params:
             dsn += "?" + urlencode(dsn_params)
 
-        return sa.create_engine(dsn).execution_options(compiled_cache=None)
+        return dsn
+
+    def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
+        if disable_streaming:
+            raise Exception("`disable_streaming` is not applicable here")
+        return sa.create_engine(self._build_dsn(db_name)).execution_options(compiled_cache=None)
 
     @classmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
@@ -75,10 +75,10 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
 
         return exc_cls, kw
 
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         return None
 
-    def _get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def _get_db_version(self, db_ident: DBIdent) -> str | None:
         return ""
 
 
