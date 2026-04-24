@@ -13,7 +13,10 @@ import attr
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_lib import exc
-from dl_api_lib.dataset.utils import allow_rls_for_dataset
+from dl_api_lib.dataset.utils import (
+    allow_rls_for_dataset,
+    validate_dataset_query_settings,
+)
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.enums import (
@@ -447,9 +450,6 @@ class DatasetApiLoader:
             ds_editor.set_template_enabled(body["template_enabled"])
             ds_editor.set_data_export_forbidden(body["data_export_forbidden"])
 
-        if allow_query_settings_change and "query_settings" in body:
-            ds_editor.set_query_settings(body["query_settings"])
-
         # annotation
         if "annotation" in body:
             annotation: dict[str, Any] = body["annotation"]
@@ -500,6 +500,16 @@ class DatasetApiLoader:
                         error.code = error.code[2:]
 
         self._update_dataset_obligatory_filters_from_body(dataset=dataset, body=body)
+
+        if allow_query_settings_change:
+            if "query_settings" in body:
+                ds_editor.set_query_settings(body["query_settings"])
+
+            if "query_settings" in body or len(added_own_source_ids) > 0 or len(updated_own_source_ids) > 0:
+                validate_dataset_query_settings(
+                    dataset=dataset,
+                    us_entry_buffer=us_manager.get_entry_buffer(),
+                )
 
         return DatasetUpdateInfo(
             added_own_source_ids=added_own_source_ids,

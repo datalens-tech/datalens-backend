@@ -82,6 +82,26 @@ class DatasetConfigurationError(DLBaseException):
     err_code = DLBaseException.err_code + ["DS_CONFIG"]
 
 
+class QuerySettingsError(DatasetConfigurationError):
+    err_code = DatasetConfigurationError.err_code + ["QUERY_SETTINGS"]
+    default_message = "Query settings are invalid"
+
+
+class QuerySettingsNotSupported(QuerySettingsError):
+    err_code = QuerySettingsError.err_code + ["NOT_SUPPORTED"]
+    default_message = "Query settings are not supported for this connection"
+
+
+class QuerySettingForbidden(QuerySettingsError):
+    err_code = QuerySettingsError.err_code + ["FORBIDDEN"]
+    default_message = "Setting is forbidden and cannot be set"
+
+
+class QuerySettingNotAllowed(QuerySettingsError):
+    err_code = QuerySettingsError.err_code + ["NOT_ALLOWED"]
+    default_message = "Setting is not allowed and cannot be set"
+
+
 class NoCommonRoleError(DLBaseException):
     err_code = DatasetConfigurationError.err_code + ["NO_COMMON_ROLE"]
 

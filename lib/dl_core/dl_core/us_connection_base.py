@@ -56,7 +56,12 @@ from dl_core.connection_models import (
     SchemaIdent,
 )
 from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.exc import InvalidRequestError
+from dl_core.exc import (
+    InvalidRequestError,
+    QuerySettingForbidden,
+    QuerySettingNotAllowed,
+    QuerySettingsNotSupported,
+)
 from dl_core.i18n.localizer import Translatable
 from dl_core.us_entry import (
     BaseAttrsDataModel,
@@ -407,6 +412,32 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     @property
     def is_query_settings_enabled(self) -> bool:
         return False
+
+    @property
+    def query_settings_allowed_names(self) -> frozenset[str] | None:
+        """Whitelist of allowed setting names. None = unrestricted, empty = all forbidden."""
+        return frozenset()
+
+    @property
+    def query_settings_forbidden_names(self) -> frozenset[str]:
+        """Setting names that are always forbidden regardless of whitelist."""
+        return frozenset()
+
+    def validate_query_settings(self, query_settings: dict[str, str]) -> None:
+        if not query_settings:
+            return
+
+        if not self.is_query_settings_enabled:
+            raise QuerySettingsNotSupported()
+
+        forbidden_names = self.query_settings_forbidden_names
+        allowed_names = self.query_settings_allowed_names
+
+        for key in query_settings:
+            if key in forbidden_names:
+                raise QuerySettingForbidden(f"Setting '{key}' is forbidden and cannot be set")
+            if allowed_names is not None and key not in allowed_names:
+                raise QuerySettingNotAllowed(f"Setting '{key}' is not allowed and cannot be set")
 
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)

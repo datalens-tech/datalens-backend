@@ -118,6 +118,8 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         target_connection = self._us_entry_buffer.get_entry(joint_dsrc_info.target_connection_ref)
         assert isinstance(target_connection, ConnectionBase)
 
+        target_connection.validate_query_settings(self._dataset.data.query_settings)
+
         ce = self._ce_factory.get_async_conn_executor(target_connection)
 
         exec_result = await ce.execute(
@@ -128,6 +130,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
                 debug_compiled_query=debug_query,
                 inspector_query=inspector_query,
                 chunk_size=None,
+                query_settings=self._dataset.data.query_settings,
             )
         )
         wrapped_result_iter = AsyncChunked(chunked_data=exec_result.result)

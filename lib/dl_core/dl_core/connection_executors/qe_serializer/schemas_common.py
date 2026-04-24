@@ -63,6 +63,7 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
         allow_none=True, dump_default=None, serialize="dump_conn_params", deserialize="load_conn_params"
     )
     is_dashsql_query = fields.Boolean()
+    query_settings = fields.Dict(keys=fields.String(), values=fields.String(), load_default=dict)
 
     def to_object(self, data: dict) -> DBAdapterQuery:
         return DBAdapterQuery(
@@ -72,6 +73,7 @@ class DBAdapterQueryStrSchema(BaseQEAPISchema):
             disable_streaming=data["disable_streaming"],
             connector_specific_params=data["connector_specific_params"],
             is_dashsql_query=data["is_dashsql_query"],
+            query_settings=data["query_settings"],
         )
 
     def dump_conn_params(self, dba_query: DBAdapterQuery) -> Optional[dict]:

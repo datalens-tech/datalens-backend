@@ -11,6 +11,7 @@ from typing import (
 from dl_api_lib import utils as bi_utils
 from dl_api_lib.enums import USPermissionKind
 from dl_constants.enums import (
+    ComponentType,
     ConnectionType,
     DataSourceRole,
 )
@@ -73,6 +74,40 @@ def check_permissions_for_origin_sources(
                 bi_utils.need_permission_on_entry(data_source.connection, permission_kind)
             except exc.ReferencedUSEntryNotFound:
                 LOGGER.info(f"Connection for source {data_source.id} not found => skipping permission check")
+
+
+def validate_dataset_query_settings(
+    dataset: Dataset,
+    us_entry_buffer: USEntryBuffer,
+) -> None:
+    """Validate `dataset.data.query_settings` against each source's origin connection.
+
+    Records any violations as per-source component errors instead of raising, so a dataset with
+    stale or invalid settings can still be saved (and flagged as invalid); the data API layer
+    still enforces the same rules at query-execution time via `ConnectionBase.validate_query_settings`.
+    """
+    for dsrc_coll in _iter_data_source_collections(dataset=dataset, us_entry_buffer=us_entry_buffer):
+        dataset.error_registry.remove_errors(
+            id=dsrc_coll.id,
+            code_prefix=exc.QuerySettingsError.err_code,
+        )
+        data_source = dsrc_coll.get_opt(role=DataSourceRole.origin)
+        if data_source is None:
+            continue
+        try:
+            connection = data_source.connection
+        except exc.ReferencedUSEntryNotFound:
+            continue
+        try:
+            connection.validate_query_settings(dataset.data.query_settings)
+        except exc.QuerySettingsError as err:
+            dataset.error_registry.add_error(
+                id=dsrc_coll.id,
+                type=ComponentType.data_source,
+                message=err.message,
+                code=err.err_code,
+                details=err.details,
+            )
 
 
 def log_dataset_field_stats(dataset: Dataset) -> None:
