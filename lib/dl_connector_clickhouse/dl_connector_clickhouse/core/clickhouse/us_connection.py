@@ -43,6 +43,20 @@ class ConnectionClickhouse(
     def experimental_features_enabled(self) -> bool:
         return self.data.experimental_features
 
+    @property
+    def is_query_settings_enabled(self) -> bool:
+        if not self._connector_settings.QUERY_SETTINGS.ENABLED:
+            return False
+        return self.is_subselect_allowed
+
+    @property
+    def query_settings_allowed_names(self) -> frozenset[str] | None:
+        return self._connector_settings.QUERY_SETTINGS.ALLOWED
+
+    @property
+    def query_settings_forbidden_names(self) -> frozenset[str]:
+        return self._connector_settings.QUERY_SETTINGS.FORBIDDEN
+
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
         result: list[DataSourceTemplate] = []
 

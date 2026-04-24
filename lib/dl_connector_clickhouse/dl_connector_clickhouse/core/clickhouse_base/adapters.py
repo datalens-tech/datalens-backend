@@ -413,13 +413,25 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
     def get_request_params(self, dba_q: DBAdapterQuery) -> dict[str, str]:
         read_only_level = self._get_readonly_param(dba_q)
-        return dict(
+        params = dict(
             # TODO FIX: Move to utils
             database=dba_q.db_name or self._target_dto.db_name or "system",
             **get_ch_settings(
                 read_only_level=read_only_level,
             ),
         )
+        if dba_q.query_settings:
+            for key, value in dba_q.query_settings.items():
+                if key in params:
+                    LOGGER.warning(
+                        "QuerySetting(key=%s) collision: %s is ignored, using %s instead",
+                        key,
+                        value,
+                        params[key],
+                    )
+                    continue
+                params[key] = value
+        return params
 
     def _get_current_tracing_headers(self) -> dict[str, str]:
         return {}
