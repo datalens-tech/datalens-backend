@@ -1,10 +1,11 @@
 import enum
+from typing import Protocol
 
 import attrs
 import pydantic
 from typing_extensions import TypeAlias
 
-import dl_auth
+import dl_constants
 import dl_httpx
 import dl_json
 import dl_pydantic
@@ -25,8 +26,22 @@ class PingRequest(dl_httpx.BaseRequest):
         return "GET"
 
 
+class TenantProtocol(Protocol):
+    def get_outbound_tenancy_headers(self) -> dict[dl_constants.DLHeaders, str]:
+        ...
+
+
+@attrs.define(kw_only=True, frozen=True)
 class BaseRequest(dl_httpx.BaseRequest):
-    auth_provider: dl_auth.AuthProviderProtocol
+    tenant: TenantProtocol | None = None
+
+    @property
+    def headers(self) -> dict[str, str]:
+        result = super().headers
+        if self.tenant is not None:
+            tenant_headers = self.tenant.get_outbound_tenancy_headers()
+            result.update({k.value.lower(): v for k, v in tenant_headers.items()})
+        return result
 
 
 class EntryScope(str, enum.Enum):
@@ -46,6 +61,12 @@ class EntryData(dl_pydantic.BaseSchema):
     type: str = ""
     key: str
     permissions: EntryPermissions | None = None
+
+    @property
+    def permissions_strict(self) -> EntryPermissions:
+        if self.permissions is None:
+            raise ValueError("permissions_strict called but permissions were not requested")
+        return self.permissions
 
 
 class Entry(EntryData):
@@ -67,7 +88,7 @@ class EntryGetRequest(BaseRequest):
 
     @property
     def query_params(self) -> dict[str, str]:
-        params = {}
+        params = super().query_params
         if self.include_permissions_info:
             params["includePermissionsInfo"] = "1"
         return params

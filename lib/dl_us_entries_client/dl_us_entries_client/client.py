@@ -80,7 +80,10 @@ class USEntriesAsyncClient:
             if e.response.status_code == http.HTTPStatus.NOT_FOUND:
                 raise EntryNotFoundError() from e
             raise
-        return models.EntryGetResponse.model_validate(response.json())
+        result = models.EntryGetResponse.model_validate(response.json())
+        if request.include_permissions_info and result.permissions is None:
+            raise UsEntriesClientException("Permissions requested but not returned by US")
+        return result
 
     async def post_entry(self, request: models.EntryPostRequest) -> models.EntryPostResponse:
         prepared = await self._base_client.prepare_request(request=request)

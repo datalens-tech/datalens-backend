@@ -10,6 +10,7 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-auth = {path = "../dl_auth"}
+dl-constants = {path = "../dl_constants"}
 dl-httpx = {path = "../dl_httpx"}
 dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
@@ -25,6 +26,7 @@ dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = ">=0.23"
+respx = "*"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = ["pytest-asyncio"]
@@ -51,3 +53,7 @@ requires = [
 [datalens.pytest.db]
 root_dir = "dl_us_entries_client_tests/"
 target_path = "db"
+
+[datalens.pytest.unit]
+root_dir = "dl_us_entries_client_tests/"
+target_path = "unit"

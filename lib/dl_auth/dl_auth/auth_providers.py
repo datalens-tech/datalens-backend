@@ -5,6 +5,7 @@ import attrs
 import pydantic
 from typing_extensions import Self
 
+import dl_auth.data as data
 import dl_constants
 import dl_settings
 
@@ -106,3 +107,22 @@ class USMasterTokenAuthProvider(BaseAuthProvider):
 
     def get_cookies(self) -> dict[str, str]:
         return {}
+
+
+class AuthDataProviderSettings(AuthProviderSettings):
+    ...
+
+
+AuthProviderSettings.register("AUTH_DATA", AuthDataProviderSettings)
+
+
+@attrs.define(kw_only=True, frozen=True)
+class AuthDataAuthProvider(BaseAuthProvider):
+    auth_data: data.AuthData
+    target: data.AuthTarget
+
+    def get_headers(self) -> dict[str, str]:
+        return {k.value: v for k, v in self.auth_data.get_headers(self.target).items()}
+
+    def get_cookies(self) -> dict[str, str]:
+        return {k.value: v for k, v in self.auth_data.get_cookies(self.target).items()}

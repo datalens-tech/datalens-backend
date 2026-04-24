@@ -16,6 +16,7 @@ from .models import (
     EntryPostResponse,
     EntryScope,
     PingRequest,
+    TenantProtocol,
 )
 
 
@@ -31,6 +32,7 @@ __all__ = [
     "EntryPostResponse",
     "EntryScope",
     "PingRequest",
+    "TenantProtocol",
     "USEntriesAsyncClient",
     "USEntriesClientSettings",
     "US_ENTRIES_AUTH_TARGET",

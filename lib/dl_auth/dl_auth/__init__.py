@@ -1,4 +1,6 @@
 from .auth_providers import (
+    AuthDataAuthProvider,
+    AuthDataProviderSettings,
     AuthProviderProtocol,
     AuthProviderSettings,
     BaseAuthProvider,
@@ -18,6 +20,8 @@ from .data import (
 
 __all__ = [
     "AuthData",
+    "AuthDataAuthProvider",
+    "AuthDataProviderSettings",
     "AuthProviderProtocol",
     "AuthProviderSettings",
     "AuthTarget",
