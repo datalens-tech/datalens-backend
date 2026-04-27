@@ -22,6 +22,7 @@ import typing_extensions
 import dl_auth
 import dl_configs
 import dl_constants
+import dl_httpx.error_transformers as error_transformers
 import dl_httpx.exceptions as exceptions
 from dl_httpx.models import BaseRequest
 import dl_httpx.rate_limiters as rate_limiters
@@ -71,22 +72,6 @@ THttpxTransport = TypeVar("THttpxTransport", httpx.BaseTransport, httpx.AsyncBas
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpStatusHttpxClientException(exceptions.BaseHttpxClientException):
-    request: httpx.Request
-    response: httpx.Response
-
-
-@attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class RequestHttpxClientException(exceptions.BaseHttpxClientException):
-    original_exception: Exception
-
-
-@attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class NoRetriesHttpxClientException(exceptions.BaseHttpxClientException):
-    ...
-
-
-@attrs.define(kw_only=True, auto_attribs=True, frozen=True)
 class HttpxClientDependencies:
     base_url: str
     base_cookies: dict[str, str] = attrs.field(factory=dict)
@@ -100,6 +85,9 @@ class HttpxClientDependencies:
     )
     transport_adapter: transport_adapters.TransportAdapterProtocol = attrs.field(
         factory=transport_adapters.NoTransportAdapter
+    )
+    error_transformer: error_transformers.ErrorTransformerProtocol = attrs.field(
+        default=error_transformers.NULL_ERROR_TRANSFORMER,
     )
     logger: logging.Logger = attrs.field(default=LOGGER)
     debug_logging: bool = attrs.field(default=False)
@@ -120,6 +108,9 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
     _transport_adapter: transport_adapters.TransportAdapterProtocol = attrs.field(
         factory=transport_adapters.NoTransportAdapter,
     )
+    _error_transformer: error_transformers.ErrorTransformerProtocol = attrs.field(
+        default=error_transformers.NULL_ERROR_TRANSFORMER,
+    )
 
     _transport: THttpxTransport
 
@@ -135,6 +126,7 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
             debug_logging=dependencies.debug_logging,
             rate_limiter=dependencies.rate_limiter,
             transport_adapter=dependencies.transport_adapter,
+            error_transformer=dependencies.error_transformer,
             transport=cls._get_transport(
                 ssl_context=dependencies.ssl_context,
             ),
@@ -183,12 +175,28 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
                 e.response.status_code,
                 e.response.text,
             )
-            raise HttpStatusHttpxClientException(
+            raise exceptions.HttpStatusHttpxClientException(
                 request=e.request,
                 response=e.response,
             ) from e
 
         return response
+
+    @contextlib.contextmanager
+    def error_transform_context(
+        self,
+        error_transformer: error_transformers.ErrorTransformerProtocol,
+    ) -> Iterator[None]:
+        try:
+            yield
+        except exceptions.HttpStatusHttpxClientException as exception:
+            transformed = error_transformer.transform(exception)
+            if transformed is not None:
+                raise transformed from exception
+            transformed = self._error_transformer.transform(exception)
+            if transformed is not None:
+                raise transformed from exception
+            raise
 
 
 HttpxClientT = TypeVar("HttpxClientT", bound=HttpxBaseClient)
@@ -279,9 +287,9 @@ class HttpxSyncRetrier:
             raise last_known_result
 
         if isinstance(last_known_result, Exception):
-            raise RequestHttpxClientException(original_exception=last_known_result) from last_known_result
+            raise exceptions.RequestHttpxClientException(original_exception=last_known_result) from last_known_result
 
-        raise NoRetriesHttpxClientException()
+        raise exceptions.NoRetriesHttpxClientException()
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -369,9 +377,9 @@ class HttpxAsyncRetrier:
             raise last_known_result
 
         if isinstance(last_known_result, Exception):
-            raise RequestHttpxClientException(original_exception=last_known_result) from last_known_result
+            raise exceptions.RequestHttpxClientException(original_exception=last_known_result) from last_known_result
 
-        raise NoRetriesHttpxClientException()
+        raise exceptions.NoRetriesHttpxClientException()
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -469,7 +477,9 @@ class HttpxSyncClient(HttpxBaseClient[httpx.BaseTransport]):
     def send(
         self,
         request: httpx.Request,
+        *,
         retry_policy_name: str | None = None,
+        error_transformer: error_transformers.ErrorTransformerProtocol = error_transformers.NULL_ERROR_TRANSFORMER,
     ) -> Iterator[httpx.Response]:
         retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
         retrier = HttpxSyncRetrier(
@@ -486,7 +496,8 @@ class HttpxSyncClient(HttpxBaseClient[httpx.BaseTransport]):
             }
         ):
             response = retrier.send(self._send, request)
-            response = self._process_response(response)
+            with self.error_transform_context(error_transformer):
+                response = self._process_response(response)
 
             try:
                 yield response
@@ -600,7 +611,9 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncBaseTransport]):
     async def send(
         self,
         request: httpx.Request,
+        *,
         retry_policy_name: str | None = None,
+        error_transformer: error_transformers.ErrorTransformerProtocol = error_transformers.NULL_ERROR_TRANSFORMER,
     ) -> AsyncGenerator[httpx.Response, None]:
         retry_policy = self._retry_policy_factory.get_policy(retry_policy_name)
         retrier = HttpxAsyncRetrier(
@@ -617,7 +630,8 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncBaseTransport]):
             }
         ):
             response = await retrier.send(self._send, request)
-            response = self._process_response(response)
+            with self.error_transform_context(error_transformer):
+                response = self._process_response(response)
 
             try:
                 yield response

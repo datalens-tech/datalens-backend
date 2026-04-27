@@ -1,10 +1,22 @@
 from .client import (
-    HttpStatusHttpxClientException,
     HttpxAsyncClient,
     HttpxBaseClient,
     HttpxClientDependencies,
     HttpxClientT,
     HttpxSyncClient,
+)
+from .error_transformers import (
+    NULL_ERROR_TRANSFORMER,
+    ChainTransformer,
+    CodeMapTransformer,
+    ErrorTransformerProtocol,
+    ExceptionFactoryProtocol,
+    NullErrorTransformer,
+    StatusMapTransformer,
+)
+from .exceptions import (
+    BaseHttpxClientException,
+    HttpStatusHttpxClientException,
     NoRetriesHttpxClientException,
     RequestHttpxClientException,
 )
@@ -46,12 +58,17 @@ from .transport_adapters import (
 
 
 __all__ = [
+    "BaseHttpxClientException",
     "BaseRequest",
     "BaseResponseSchema",
     "BaseSchema",
     "BaseTransportAdapterSettings",
+    "ChainTransformer",
+    "CodeMapTransformer",
     "DateTimeProvider",
     "DefaultDateTimeProvider",
+    "ErrorTransformerProtocol",
+    "ExceptionFactoryProtocol",
     "HttpStatusHttpxClientException",
     "HttpxAsyncClient",
     "HttpxBaseClient",
@@ -60,11 +77,13 @@ __all__ = [
     "HttpxSyncClient",
     "MaxParallelRateLimiter",
     "MaxParallelRateLimiterSettings",
+    "NULL_ERROR_TRANSFORMER",
     "NoRateLimiter",
     "NoRateLimiterSettings",
     "NoRetriesHttpxClientException",
     "NoTransportAdapter",
     "NoTransportAdapterSettings",
+    "NullErrorTransformer",
     "ParentContext",
     "ParentContextProtocol",
     "RateLimitHttpxClientException",
@@ -75,6 +94,7 @@ __all__ = [
     "RetryRequestMutator",
     "SlidingWindowRateLimiter",
     "SlidingWindowRateLimiterSettings",
+    "StatusMapTransformer",
     "TestingHttpxClient",
     "TransportAdapterProtocol",
     "TypedBaseSchema",

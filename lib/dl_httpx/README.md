@@ -75,6 +75,18 @@ All exports are available from `dl_httpx` directly.
 | `RetryRequestMutator` | Protocol: `on_retry(request, retry) -> None`. Hook called on each retry attempt |
 | `RequestIdRetryMutator` | Appends `/N` to request ID on retries (e.g. `abc123` → `abc123/2` → `abc123/3`) |
 
+### Error transformers
+
+| Symbol | Description |
+|---|---|
+| `ErrorTransformerProtocol` | Protocol: `transform(exception: HttpStatusHttpxClientException) -> Exception \| None`. Returns a domain exception or `None` to pass through |
+| `ExceptionFactoryProtocol` | Callable Protocol: `__call__(exception: HttpStatusHttpxClientException) -> Exception`. Used as map values; satisfied by any callable, including bound classmethods like `MyError.from_httpx_exception` |
+| `NullErrorTransformer` | No-op transformer; always returns `None` |
+| `NULL_ERROR_TRANSFORMER` | Module-level singleton instance of `NullErrorTransformer`. Default for both class- and method-level |
+| `CodeMapTransformer` | Maps a code value (extracted from the response body via `status_body_path: tuple[str, ...] = ("code",)`) to a factory; calls the factory on hit |
+| `StatusMapTransformer` | Maps HTTP status code to a factory; calls the factory on hit |
+| `ChainTransformer` | Tries a list of transformers in order; first non-`None` wins |
+
 ### Testing
 
 | Class | Description |
@@ -168,7 +180,7 @@ import httpx
 
 import dl_httpx
 from my_client.clients.base import BaseMyClient, MyClientDependencies
-from my_client.clients.exceptions import handle_http_status_error
+from my_client.clients.exceptions import MY_ERROR_TRANSFORMER
 
 LOGGER = logging.getLogger(__name__)
 
@@ -186,6 +198,7 @@ class MyAsyncClient(BaseMyClient[dl_httpx.HttpxAsyncClient]):
                 ssl_context=dependencies.ssl_context,
                 retry_policy_factory=dependencies.retry_policy_factory,
                 auth_provider=dependencies.auth_provider,
+                error_transformer=MY_ERROR_TRANSFORMER,
                 logger=LOGGER,
                 debug_logging=dependencies.debug_logging,
             ),
@@ -195,11 +208,8 @@ class MyAsyncClient(BaseMyClient[dl_httpx.HttpxAsyncClient]):
         await self._base_client.close()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        try:
-            async with self._base_client.send(request=request) as response:
-                return response
-        except dl_httpx.HttpStatusHttpxClientException as e:
-            raise handle_http_status_error(e) from e
+        async with self._base_client.send(request=request) as response:
+            return response
 
     async def get_items(self, request: GetItemsRequest) -> list[ItemResponse]:
         response = await self._send(self._prepare_request(request))
@@ -217,7 +227,7 @@ import httpx
 
 import dl_httpx
 from my_client.clients.base import BaseMyClient, MyClientDependencies
-from my_client.clients.exceptions import handle_http_status_error
+from my_client.clients.exceptions import MY_ERROR_TRANSFORMER
 
 LOGGER = logging.getLogger(__name__)
 
@@ -235,6 +245,7 @@ class MySyncClient(BaseMyClient[dl_httpx.HttpxSyncClient]):
                 ssl_context=dependencies.ssl_context,
                 retry_policy_factory=dependencies.retry_policy_factory,
                 auth_provider=dependencies.auth_provider,
+                error_transformer=MY_ERROR_TRANSFORMER,
                 logger=LOGGER,
                 debug_logging=dependencies.debug_logging,
             ),
@@ -244,11 +255,8 @@ class MySyncClient(BaseMyClient[dl_httpx.HttpxSyncClient]):
         self._base_client.close()
 
     def _send(self, request: httpx.Request) -> httpx.Response:
-        try:
-            with self._base_client.send(request=request) as response:
-                return response
-        except dl_httpx.HttpStatusHttpxClientException as e:
-            raise handle_http_status_error(e) from e
+        with self._base_client.send(request=request) as response:
+            return response
 
     def get_items(self, request: GetItemsRequest) -> list[ItemResponse]:
         response = self._send(self._prepare_request(request))
@@ -337,6 +345,7 @@ class ItemResponse(dl_httpx.BaseResponseSchema):
 ```python
 # my_client/clients/exceptions.py
 import attrs
+from typing_extensions import Self
 
 import dl_httpx
 
@@ -345,6 +354,11 @@ import dl_httpx
 class MyClientException(Exception):
     code: str | None = None
     message: str | None = None
+
+    @classmethod
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+        body = exception.response.json()
+        return cls(code=body.get("code"), message=body.get("message"))
 
 
 class NotFoundError(MyClientException):
@@ -355,33 +369,15 @@ class AccessDeniedError(MyClientException):
     pass
 
 
-_CODE_TO_EXCEPTION: dict[str, type[MyClientException]] = {
-    "NOT_FOUND": NotFoundError,
-    "ACCESS_DENIED": AccessDeniedError,
-}
-
-
-def handle_http_status_error(
-    exception: dl_httpx.HttpStatusHttpxClientException,
-) -> MyClientException:
-    response = exception.response
-
-    code: str | None = None
-    message: str | None = None
-
-    try:
-        body = response.json()
-        if isinstance(body, dict):
-            code = body.get("code")
-            message = body.get("message")
-    except Exception:
-        message = response.text or "Unknown error"
-
-    exception_class = (
-        _CODE_TO_EXCEPTION.get(code, MyClientException) if code else MyClientException
-    )
-    return exception_class(code=code, message=message)
+MY_ERROR_TRANSFORMER: dl_httpx.ErrorTransformerProtocol = dl_httpx.CodeMapTransformer(
+    code_map={
+        "NOT_FOUND": NotFoundError.from_httpx_exception,
+        "ACCESS_DENIED": AccessDeniedError.from_httpx_exception,
+    },
+)
 ```
+
+Pass `MY_ERROR_TRANSFORMER` via `HttpxClientDependencies.error_transformer` (see the async/sync client examples above) so every endpoint of the client gets it. For per-endpoint specialization, attach an `error_transformer` field to the specific request model and forward `request.error_transformer` to `send()` from that endpoint method (see the [Per-call override](#per-call-override-carried-on-the-request) section below).
 
 ## Configuration
 
@@ -405,20 +401,131 @@ Header/cookie merge order (later overrides earlier):
 
 ## Error Handling
 
-Catch `HttpStatusHttpxClientException` in your `_send` method and translate to domain-specific exceptions:
+Translate `HttpStatusHttpxClientException` into domain-specific exceptions declaratively. Configure the transformer at the **class level** by passing it via `HttpxClientDependencies.error_transformer` (applies to every endpoint of the client), and optionally override it **per call** via the `error_transformer=` keyword on `send()` — typically by carrying it as a field on the request model.
+
+### Defining domain exceptions
+
+Domain exception classes are plain `attrs` classes. To use one as a factory in `CodeMapTransformer` / `StatusMapTransformer`, expose a classmethod (conventionally named `from_httpx_exception`) that takes the framework exception and returns an instance:
 
 ```python
-async def _send(self, request: httpx.Request) -> httpx.Response:
-    try:
-        async with self._base_client.send(request=request) as response:
-            return response
-    except dl_httpx.HttpStatusHttpxClientException as e:
-        raise handle_http_status_error(e) from e
+import attrs
+from typing_extensions import Self
+
+import dl_httpx
+
+
+@attrs.define(kw_only=True)
+class MyClientException(Exception):
+    code: str | None = None
+    message: str | None = None
+
+    @classmethod
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+        body = exception.response.json()
+        return cls(code=body.get("code"), message=body.get("message"))
+
+
+class NotFoundError(MyClientException):
+    pass
+
+
+class AccessDeniedError(MyClientException):
+    pass
 ```
 
-The exception carries both `request` and `response`, so you can inspect status codes and parse error bodies.
+The bound classmethod (`MyClientException.from_httpx_exception`) is a callable that satisfies `ExceptionFactoryProtocol` — that's what the framework's transformers expect as map values. Lambdas and plain functions work too.
 
-`RequestHttpxClientException` wraps network-level errors (DNS, connection refused, timeout after all retries). Its `original_exception` attribute holds the underlying error.
+### Built-in transformers
+
+- `CodeMapTransformer({"NOT_FOUND": NotFoundError.from_httpx_exception, ...}, status_body_path=("code",))` — extracts a code value from the response body by walking `status_body_path` (default `("code",)` reads `body["code"]`; `("error", "code")` reads `body["error"]["code"]`) and calls the mapped factory. Returns `None` if the body isn't JSON, doesn't have a value at the path, or the value isn't in the map.
+- `StatusMapTransformer({404: NotFoundError.from_httpx_exception, 403: AccessDeniedError.from_httpx_exception})` — looks up the HTTP status code; calls the mapped factory on hit. Returns `None` on miss.
+- `ChainTransformer([first, second, ...])` — runs each child in order; first non-`None` wins. Useful for combining a code map with a status fallback, or chaining two `CodeMapTransformer`s with different `status_body_path` settings.
+
+Transformers are stateless and `frozen=True`; share instances freely.
+
+### Class-level configuration
+
+Pass the transformer via `HttpxClientDependencies.error_transformer`:
+
+```python
+MY_ERROR_TRANSFORMER = dl_httpx.ChainTransformer([
+    dl_httpx.CodeMapTransformer({
+        "NOT_FOUND": NotFoundError.from_httpx_exception,
+        "ACCESS_DENIED": AccessDeniedError.from_httpx_exception,
+    }),
+    dl_httpx.StatusMapTransformer({404: NotFoundError.from_httpx_exception}),
+])
+
+
+class MyAsyncClient(BaseMyClient[dl_httpx.HttpxAsyncClient]):
+    @classmethod
+    def _get_base_client(cls, dependencies):
+        return dl_httpx.HttpxAsyncClient.from_dependencies(
+            dependencies=dl_httpx.HttpxClientDependencies(
+                base_url=dependencies.base_url,
+                ssl_context=dependencies.ssl_context,
+                error_transformer=MY_ERROR_TRANSFORMER,
+                ...
+            ),
+        )
+```
+
+Now every call through `send()` runs the transformer when a 4xx/5xx is received. If it returns `None`, the original `HttpStatusHttpxClientException` is raised unchanged.
+
+### Per-call override (carried on the request)
+
+When only one endpoint needs special-cased error handling, attach the transformer as a field on its request model:
+
+```python
+@attrs.define(kw_only=True, frozen=True)
+class GetItemRequest(dl_httpx.BaseRequest):
+    item_id: str
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={404: ItemNotFoundError.from_httpx_exception},
+    )
+
+    @property
+    def path(self) -> str:
+        return f"/items/{self.item_id}"
+
+    @property
+    def method(self) -> str:
+        return "GET"
+```
+
+The client method then forwards the request's transformer to `send()`:
+
+```python
+async def get_item(self, request: GetItemRequest) -> ItemResponse:
+    prepared = await self._base_client.prepare_request(request=request)
+    async with self._base_client.send(
+        prepared,
+        error_transformer=request.error_transformer,
+    ) as response:
+        return ItemResponse.model_validate(response.json())
+```
+
+Callers can override the per-request transformer if they need different error behavior for a specific call.
+
+### Composition rule
+
+When both class- and method-level transformers are configured, the method-level transformer is tried first. If it returns `None`, the class-level transformer is tried. If that also returns `None`, the original `HttpStatusHttpxClientException` is raised.
+
+### `error_transform_context`
+
+`HttpxBaseClient.error_transform_context(error_transformer)` is the seam where transformation actually happens. It wraps `_process_response` in a context manager that catches `HttpStatusHttpxClientException`, runs the method-level transformer, then the class-level transformer, and re-raises the original if both pass. Override on a subclass to wrap the transformation in additional context (e.g. `dl_logging.LogContext`) or hook custom behavior around it:
+
+```python
+@contextlib.contextmanager
+def error_transform_context(self, error_transformer):
+    with dl_logging.LogContext(context={"my.custom.field": ...}):
+        with super().error_transform_context(error_transformer):
+            yield
+```
+
+### Network errors
+
+`RequestHttpxClientException` wraps network-level errors (DNS, connection refused, timeout after all retries). Its `original_exception` attribute holds the underlying error. Network errors are **never** passed through the error transformer mechanism — only `HttpStatusHttpxClientException` (HTTP 4xx/5xx) is.
 
 ## Request Tracing
 

@@ -9,6 +9,7 @@ import dl_constants
 import dl_httpx
 import dl_json
 import dl_pydantic
+import dl_us_entries_client.exceptions as exceptions
 
 
 EntryId: TypeAlias = str
@@ -77,6 +78,9 @@ class Entry(EntryData):
 class EntryGetRequest(BaseRequest):
     entry_id: EntryId
     include_permissions_info: bool = False
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={404: exceptions.EntryNotFoundError.from_httpx_exception},
+    )
 
     @property
     def path(self) -> str:

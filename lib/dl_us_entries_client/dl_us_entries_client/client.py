@@ -1,4 +1,3 @@
-import http
 import logging
 from typing import ClassVar
 
@@ -9,6 +8,7 @@ from typing_extensions import Self
 import dl_auth
 import dl_httpx
 import dl_settings
+import dl_us_entries_client.exceptions as exceptions
 import dl_us_entries_client.models as models
 
 
@@ -21,14 +21,6 @@ US_ENTRIES_AUTH_TARGET = dl_auth.AuthTarget.declare("US_ENTRIES")
 class USEntriesClientSettings(dl_settings.BaseSettings):
     BASE_URL: str
     USER_AUTH_PROVIDER: dl_settings.TypedAnnotation[dl_auth.AuthProviderSettings]
-
-
-class UsEntriesClientException(Exception):
-    pass
-
-
-class EntryNotFoundError(UsEntriesClientException):
-    pass
 
 
 @attrs.define(kw_only=True)
@@ -56,8 +48,13 @@ class USEntriesAsyncClient:
     async def close(self) -> None:
         await self._base_client.close()
 
-    async def _send(self, request: httpx.Request) -> httpx.Response:
-        async with self._base_client.send(request=request) as response:
+    async def _send(
+        self,
+        request: httpx.Request,
+        *,
+        error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.NULL_ERROR_TRANSFORMER,
+    ) -> httpx.Response:
+        async with self._base_client.send(request=request, error_transformer=error_transformer) as response:
             return response
 
     async def check_readiness(self) -> bool:
@@ -74,15 +71,10 @@ class USEntriesAsyncClient:
 
     async def get_entry(self, request: models.EntryGetRequest) -> models.EntryGetResponse:
         prepared = await self._base_client.prepare_request(request=request)
-        try:
-            response = await self._send(prepared)
-        except dl_httpx.HttpStatusHttpxClientException as e:
-            if e.response.status_code == http.HTTPStatus.NOT_FOUND:
-                raise EntryNotFoundError() from e
-            raise
+        response = await self._send(prepared, error_transformer=request.error_transformer)
         result = models.EntryGetResponse.model_validate(response.json())
         if request.include_permissions_info and result.permissions is None:
-            raise UsEntriesClientException("Permissions requested but not returned by US")
+            raise exceptions.UsEntriesClientException("Permissions requested but not returned by US")
         return result
 
     async def post_entry(self, request: models.EntryPostRequest) -> models.EntryPostResponse:

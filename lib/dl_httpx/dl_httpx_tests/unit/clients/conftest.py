@@ -94,6 +94,15 @@ def fixture_mock_auth_provider(
     return auth_provider
 
 
+@pytest.fixture(name="mock_error_transformer")
+def fixture_mock_error_transformer(
+    mocker: pytest_mock.MockerFixture,
+) -> dl_httpx.ErrorTransformerProtocol:
+    error_transformer = mocker.MagicMock(spec=dl_httpx.ErrorTransformerProtocol)
+    error_transformer.transform.return_value = None
+    return error_transformer
+
+
 @pytest.fixture(name="retry_policy_factory_settings")
 def fixture_retry_policy_factory_settings() -> dl_retrier.RetryPolicyFactorySettings:
     return dl_retrier.RetryPolicyFactorySettings(

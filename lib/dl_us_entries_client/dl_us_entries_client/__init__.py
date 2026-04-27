@@ -1,9 +1,11 @@
 from .client import (
     US_ENTRIES_AUTH_TARGET,
-    EntryNotFoundError,
     USEntriesAsyncClient,
-    UsEntriesClientException,
     USEntriesClientSettings,
+)
+from .exceptions import (
+    EntryNotFoundError,
+    UsEntriesClientException,
 )
 from .models import (
     Entry,

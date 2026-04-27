@@ -4,11 +4,13 @@ import ssl
 from typing import Generator
 import unittest.mock
 
+import attrs
 import httpx
 import mock
 import pytest
 import pytest_mock
 import respx
+from typing_extensions import Self
 
 import dl_auth
 import dl_constants
@@ -589,3 +591,180 @@ def test_send_sets_level2_attempt_request_id(
                 pass
 
     assert captured_ids == ["base-id", "base-id/2", "base-id/3"]
+
+
+@attrs.define(kw_only=True)
+class SyncTransformedNotFound(Exception):
+    status_code: int
+
+    @classmethod
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+        return cls(status_code=exception.response.status_code)
+
+
+@attrs.define(kw_only=True)
+class SyncTransformedForbidden(Exception):
+    status_code: int
+
+    @classmethod
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+        return cls(status_code=exception.response.status_code)
+
+
+def test_sync_no_transformer_raises_original_http_status_exception(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+) -> None:
+    respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/not-found")
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
+            with client.send(request):
+                pass
+
+
+def test_sync_class_level_transformer_applied(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_error_transformer: mock.MagicMock,
+) -> None:
+    expected_exception = SyncTransformedNotFound(status_code=404)
+    mock_error_transformer.transform.return_value = expected_exception
+    respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            error_transformer=mock_error_transformer,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/not-found")
+        with pytest.raises(SyncTransformedNotFound) as excinfo:
+            with client.send(request):
+                pass
+
+    assert excinfo.value is expected_exception
+    mock_error_transformer.transform.assert_called_once()
+
+
+def test_sync_method_level_transformer_applied(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_error_transformer: mock.MagicMock,
+) -> None:
+    expected_exception = SyncTransformedNotFound(status_code=404)
+    mock_error_transformer.transform.return_value = expected_exception
+    respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/not-found")
+        with pytest.raises(SyncTransformedNotFound) as excinfo:
+            with client.send(request, error_transformer=mock_error_transformer):
+                pass
+
+    assert excinfo.value is expected_exception
+    mock_error_transformer.transform.assert_called_once()
+
+
+def test_sync_method_level_wins_over_class_level(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_error_transformer: mock.MagicMock,
+    mocker: pytest_mock.MockerFixture,
+) -> None:
+    method_level_transformer = mocker.MagicMock(spec=dl_httpx.ErrorTransformerProtocol)
+    expected_method_exception = SyncTransformedForbidden(status_code=404)
+    method_level_transformer.transform.return_value = expected_method_exception
+
+    class_level_exception = SyncTransformedNotFound(status_code=404)
+    mock_error_transformer.transform.return_value = class_level_exception
+
+    respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            error_transformer=mock_error_transformer,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/not-found")
+        with pytest.raises(SyncTransformedForbidden) as excinfo:
+            with client.send(request, error_transformer=method_level_transformer):
+                pass
+
+    assert excinfo.value is expected_method_exception
+    method_level_transformer.transform.assert_called_once()
+    mock_error_transformer.transform.assert_not_called()
+
+
+def test_sync_class_level_used_when_method_level_returns_none(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_error_transformer: mock.MagicMock,
+    mocker: pytest_mock.MockerFixture,
+) -> None:
+    method_level_transformer = mocker.MagicMock(spec=dl_httpx.ErrorTransformerProtocol)
+    method_level_transformer.transform.return_value = None
+
+    expected_class_exception = SyncTransformedNotFound(status_code=404)
+    mock_error_transformer.transform.return_value = expected_class_exception
+
+    respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            error_transformer=mock_error_transformer,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/not-found")
+        with pytest.raises(SyncTransformedNotFound) as excinfo:
+            with client.send(request, error_transformer=method_level_transformer):
+                pass
+
+    assert excinfo.value is expected_class_exception
+    method_level_transformer.transform.assert_called_once()
+    mock_error_transformer.transform.assert_called_once()
+
+
+def test_sync_both_return_none_raises_original(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    mock_error_transformer: mock.MagicMock,
+    mocker: pytest_mock.MockerFixture,
+) -> None:
+    method_level_transformer = mocker.MagicMock(spec=dl_httpx.ErrorTransformerProtocol)
+    method_level_transformer.transform.return_value = None
+    mock_error_transformer.transform.return_value = None
+
+    respx_mock.get("https://example.com/api/server-error").respond(status_code=500)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            error_transformer=mock_error_transformer,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/server-error")
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
+            with client.send(request, error_transformer=method_level_transformer):
+                pass
+
+    assert excinfo.value.response.status_code == 500
+    method_level_transformer.transform.assert_called_once()
+    mock_error_transformer.transform.assert_called_once()
