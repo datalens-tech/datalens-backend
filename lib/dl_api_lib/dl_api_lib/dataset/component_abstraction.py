@@ -22,6 +22,8 @@ from dl_core.data_source.collection import DataSourceCollectionFactory
 import dl_core.exc as common_exc
 from dl_core.fields import (
     BIField,
+    FilterField,
+    OrderField,
     ResultSchema,
 )
 from dl_core.multisource import (
@@ -29,6 +31,7 @@ from dl_core.multisource import (
     SourceAvatar,
 )
 from dl_core.us_dataset import Dataset
+from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.local_cache import USEntryBuffer
 
 
@@ -39,6 +42,9 @@ DatasetComponent = Union[
     BIField,
     ObligatoryFilter,
     ResultSchema,
+    FilterField,
+    OrderField,
+    ExtractProperties,
 ]
 
 
@@ -62,6 +68,9 @@ class DatasetComponentAbstraction:
             ComponentType.avatar_relation,
             ComponentType.field,
             ComponentType.obligatory_filter,
+            ComponentType.extract_sorting,
+            ComponentType.extract_filter,
+            ComponentType.extract_properties,
         }
     )
 
@@ -120,6 +129,18 @@ class DatasetComponentAbstraction:
             if self._ds.result_schema.id == component_ref.component_id:
                 return self._ds.result_schema
             return None
+        if component_ref.component_type == ComponentType.extract_filter:
+            for filter in self._ds_accessor.get_extract_filters():
+                if filter.id == component_ref.component_id:
+                    return filter
+            return None
+        if component_ref.component_type == ComponentType.extract_sorting:
+            for sort in self._ds_accessor.get_extract_sorting():
+                if sort.id == component_ref.component_id:
+                    return sort
+            return None
+        if component_ref.component_type == ComponentType.extract_properties:
+            return self._ds_accessor.get_extract_properties()
 
         raise ValueError(f"Unsupported component_type {component_ref.component_type.name}")
 
@@ -147,6 +168,12 @@ class DatasetComponentAbstraction:
                 for field_idx, field in enumerate(self._ds.result_schema):
                     if field.guid == component_ref.component_id:
                         self._ds.result_schema.update_field(idx=field_idx, field=field.clone(valid=valid))
+            elif component_ref.component_type == ComponentType.extract_filter:
+                self._ds_editor.update_extract_filter(filter_id=component_ref.component_id, valid=valid)
+            elif component_ref.component_type == ComponentType.extract_sorting:
+                self._ds_editor.update_extract_sort(sort_id=component_ref.component_id, valid=valid)
+            elif component_ref.component_type == ComponentType.extract_properties:
+                self._ds_editor.update_extract_properties(valid=valid)
             else:
                 raise ValueError(f"Unsupported component_type {component_ref.component_type.name}")
 
@@ -165,6 +192,12 @@ class DatasetComponentAbstraction:
             yield from self._ds.result_schema
         elif component_type == ComponentType.result_schema:
             yield self._ds.result_schema
+        elif component_type == ComponentType.extract_filter:
+            yield from self._ds_accessor.get_extract_filters()
+        elif component_type == ComponentType.extract_sorting:
+            yield from self._ds_accessor.get_extract_sorting()
+        elif component_type == ComponentType.extract_properties:
+            yield self._ds_accessor.get_extract_properties()
         else:
             raise ValueError(f"Unsupported component_type {component_type.name}")
 

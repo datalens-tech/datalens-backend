@@ -17,11 +17,14 @@ from dl_constants.enums import (
     CacheInvalidationMode,
     CalcMode,
     ConditionPartCalcMode,
+    ExtractMode,
+    ExtractStatus,
     FieldType,
     JoinConditionType,
     JoinType,
     ManagedBy,
     NotificationLevel,
+    OrderDirection,
     ParameterValueConstraintType,
     UserDataType,
     WhereClauseOperation,
@@ -49,9 +52,11 @@ from dl_core.fields import (
     DefaultParameterValueConstraint,
     DirectCalculationSpec,
     EqualsParameterValueConstraint,
+    FilterField,
     FormulaCalculationSpec,
     NotEqualsParameterValueConstraint,
     NullParameterValueConstraint,
+    OrderField,
     ParameterCalculationSpec,
     RangeParameterValueConstraint,
     RegexParameterValueConstraint,
@@ -61,6 +66,7 @@ from dl_core.fields import (
     filter_calc_spec_kwargs,
 )
 from dl_core.us_dataset import Dataset
+from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.storage_schemas.base import DefaultStorageSchema
 from dl_core.us_manager.storage_schemas.data_source_collection import DataSourceCollectionSpecStorageSchema
 from dl_core.us_manager.storage_schemas.error_registry import ComponentErrorListSchema
@@ -467,7 +473,7 @@ class DefaultWhereClauseSchema(DefaultStorageSchema):
     TARGET_CLS = DefaultWhereClause
 
     operation = ma_fields.Enum(WhereClauseOperation)
-    values = ma_fields.List(ma_fields.String())
+    values = ma_fields.List(ma_fields.String(), required=True)
 
 
 class ObligatoryFilterSchema(DefaultStorageSchema):
@@ -477,6 +483,46 @@ class ObligatoryFilterSchema(DefaultStorageSchema):
     field_guid = ma_fields.String()
     default_filters = ma_fields.List(ma_fields.Nested(DefaultWhereClauseSchema))
     managed_by = ma_fields.Enum(ManagedBy, allow_none=True, dump_default=ManagedBy.user)
+    valid = ma_fields.Boolean(allow_none=True)
+
+
+class FilterFieldStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = FilterField
+
+    id = ma_fields.String(required=True)
+    field_guid = ma_fields.String(required=True)
+    filters = ma_fields.Nested(DefaultWhereClauseSchema, many=True, required=True)
+
+    # Allow optional store in US
+    valid = ma_fields.Boolean(allow_none=True)
+
+
+class OrderFieldStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = OrderField
+
+    id = ma_fields.String(required=True)
+    field_guid = ma_fields.String(required=True)
+    direction = ma_fields.Enum(OrderDirection, required=True)
+
+    # Allow optional store in US
+    valid = ma_fields.Boolean(allow_none=True)
+
+
+class ExtractPropertiesStorageSchema(DefaultStorageSchema):
+    TARGET_CLS = ExtractProperties
+
+    mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled)
+    status = ma_fields.Enum(ExtractStatus, load_default=ExtractStatus.disabled)
+
+    filters = ma_fields.Nested(FilterFieldStorageSchema, many=True, load_default=list)
+    sorting = ma_fields.Nested(OrderFieldStorageSchema, many=True, load_default=list)
+
+    errors = ma_fields.List(ma_fields.String, load_default=list)
+    last_completed = ma_fields.Integer(load_default=0)
+
+    data_dataset_revision = ma_fields.String(allow_none=True, load_default=None)
+
+    # Allow optional store in US
     valid = ma_fields.Boolean(allow_none=True)
 
 
@@ -559,3 +605,8 @@ class DatasetStorageSchema(DefaultStorageSchema):
         required=False,
     )
     schema_version = ma_fields.String(required=False, allow_none=False, load_default="1", dump_default="1")
+
+    extract = ma_fields.Nested(
+        ExtractPropertiesStorageSchema,
+        load_default=ExtractProperties,
+    )

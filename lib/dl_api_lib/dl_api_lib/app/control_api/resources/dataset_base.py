@@ -231,6 +231,9 @@ class DatasetResource(BIResource):
         # annotation
         data["annotation"] = dataset.annotation
 
+        # extract
+        data["extract"] = dataset.data.extract
+
         return {"dataset": data}
 
     @classmethod

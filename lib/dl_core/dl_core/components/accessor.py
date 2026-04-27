@@ -1,14 +1,23 @@
 import attr
 
-from dl_constants.enums import CalcMode
+from dl_constants.enums import (
+    CalcMode,
+    ExtractMode,
+    ExtractStatus,
+)
 from dl_core.base_models import ObligatoryFilter
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 import dl_core.exc as exc
+from dl_core.fields import (
+    FilterField,
+    OrderField,
+)
 from dl_core.multisource import (
     AvatarRelation,
     SourceAvatar,
 )
 from dl_core.us_dataset import Dataset
+from dl_core.us_extract import ExtractProperties
 from dl_model_tools.typed_values import BIValue
 from dl_query_processing.compilation.specs import ParameterValueSpec
 
@@ -211,5 +220,41 @@ class DatasetComponentAccessor:
                 result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)
         return result
 
+    def get_extract_filter(self, filter_id: str) -> FilterField | None:
+        for filter in self._dataset.data.extract.filters:
+            if filter.id == filter_id:
+                return filter
+        return None
+
+    def get_extract_sort(self, sort_id: str) -> OrderField | None:
+        for sort in self._dataset.data.extract.sorting:
+            if sort.id == sort_id:
+                return sort
+        return None
+
     def get_template_enabled(self) -> bool:
         return self._dataset.template_enabled
+
+    def get_extract_properties(self) -> ExtractProperties:
+        return self._dataset.data.extract
+
+    def get_extract_mode(self) -> ExtractMode:
+        return self._dataset.data.extract.mode
+
+    def get_extract_status(self) -> ExtractStatus:
+        return self._dataset.data.extract.status
+
+    def get_extract_errors(self) -> list[str]:
+        return self._dataset.data.extract.errors
+
+    def get_extract_last_completed(self) -> int:
+        return self._dataset.data.extract.last_completed
+
+    def get_extract_filters(self) -> list[FilterField]:
+        return self._dataset.data.extract.filters
+
+    def get_extract_sorting(self) -> list[OrderField]:
+        return self._dataset.data.extract.sorting
+
+    def get_extract_data_dataset_revision(self) -> str | None:
+        return self._dataset.data.extract.data_dataset_revision

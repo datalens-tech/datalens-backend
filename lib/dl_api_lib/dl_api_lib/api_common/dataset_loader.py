@@ -21,6 +21,8 @@ from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
 from dl_constants.enums import (
     CacheInvalidationMode,
+    DataSourceRole,
+    ExtractMode,
     RLSSubjectType,
 )
 from dl_constants.exc import (
@@ -38,10 +40,8 @@ from dl_core.data_source import get_parameters_hash
 from dl_core.data_source.collection import DataSourceCollection
 from dl_core.db import are_raw_schemas_same
 import dl_core.exc as core_exc
-from dl_core.us_dataset import (
-    Dataset,
-    DataSourceRole,
-)
+from dl_core.us_dataset import Dataset
+from dl_core.us_extract import ExtractProperties
 from dl_core.us_manager.local_cache import USEntryBuffer
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_sync import SyncUSManager
@@ -423,6 +423,35 @@ class DatasetApiLoader:
             if oblig_filter.id not in handled_oblig_filter_ids:
                 ds_editor.remove_obligatory_filter(obfilter_id=oblig_filter.id)
 
+    @classmethod
+    def _update_dataset_extract_properties_from_body(cls, dataset: Dataset, body: dict) -> None:
+        if "extract" not in body:
+            return
+
+        ds_editor = DatasetComponentEditor(dataset=dataset)
+
+        extract: ExtractProperties = body["extract"]
+
+        schema_guids = set((field.guid for field in dataset.result_schema.fields))
+
+        # Validate sorting fields
+        if extract.mode != ExtractMode.disabled:
+            if len(extract.sorting) == 0:
+                raise core_exc.ExtractSortingEmpty("Extract sorting is empty")
+
+        for sort in extract.sorting:
+            if sort.field_guid not in schema_guids:
+                raise core_exc.ExtractSortingFieldMissing(f"Extract sorting field {sort.field_guid} does not exist")
+
+        # Validate filter fields
+        for filter in extract.filters:
+            if filter.field_guid not in schema_guids:
+                raise core_exc.ExtractFilterFieldMissing(f"Extract filter field {filter.field_guid} does not exist")
+
+        ds_editor.set_extract_mode(extract.mode)
+        ds_editor.set_extract_filters(extract.filters)
+        ds_editor.set_extract_sorting(extract.sorting)
+
     @generic_profiler("populate-dataset-from-body")
     def populate_dataset_from_body(
         self,
@@ -510,6 +539,9 @@ class DatasetApiLoader:
                     dataset=dataset,
                     us_entry_buffer=us_manager.get_entry_buffer(),
                 )
+
+        # extract
+        self._update_dataset_extract_properties_from_body(dataset=dataset, body=body)
 
         return DatasetUpdateInfo(
             added_own_source_ids=added_own_source_ids,

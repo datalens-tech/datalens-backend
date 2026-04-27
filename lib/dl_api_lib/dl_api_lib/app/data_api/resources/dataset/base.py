@@ -217,7 +217,9 @@ class DatasetDataBaseView(BaseView):
 
         params: dict[str, str] | None = None
         if self.rev_id is not None:
-            params = {"revId": self.rev_id}
+            params = {
+                "revId": self.rev_id,
+            }
 
         if self.dataset_id is None:
             if self.STORED_DATASET_REQUIRED:
@@ -331,7 +333,9 @@ class DatasetDataBaseView(BaseView):
 
         params: dict[str, str] | None = None
         if self.rev_id is not None:
-            params = {"revId": self.rev_id}
+            params = {
+                "revId": self.rev_id,
+            }
 
         try:
             assert self.dataset_id is not None

@@ -203,8 +203,10 @@ class DatasetCopy(DatasetResource):
         LOGGER.info("Going to copy dataset %s with new key %r", dataset_id, copy_us_key)
         ds_copy = us_manager.copy_entry(ds, key=copy_ds_loc)
 
-        us_manager.create(ds_copy)
+        # Reset extract properties
+        ds_copy.reset_extract_properties()
 
+        us_manager.create(ds_copy)
         LOGGER.info("Dataset copy was saved with ID %s", ds_copy.uuid)
 
         return self.make_dataset_response_data(dataset=ds_copy, us_entry_buffer=us_manager.get_entry_buffer())
@@ -386,6 +388,7 @@ class DatasetExportItem(DatasetResource):
 
         ds_dict["dataset"]["revision_id"] = None
         del ds_dict["dataset"]["rls"]
+        del ds_dict["dataset"]["extract"]
 
         notifications = []
         localizer = self.get_service_registry().get_localizer()
@@ -490,6 +493,9 @@ class DatasetImportCollection(DatasetResource):
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=data["dataset"], us_manager=us_manager)
 
+        # Reset extract properties
+        dataset.reset_extract_properties()
+
         us_manager.create(dataset)
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
@@ -544,7 +550,7 @@ class DatasetVersionValidator(DatasetResource):
             ds_validator.apply_batch(action_batch=body.get("updates", ()))
         except exc.DLValidationFatal as err:
             any_errors = True
-            code = self._make_api_err_code(exc.DLValidationFatal.err_code)
+            code = self._make_api_err_code(err.err_code)
             message = err.message
         else:
             # collect connections not found in us

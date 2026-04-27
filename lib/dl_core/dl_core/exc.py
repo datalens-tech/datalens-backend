@@ -726,3 +726,19 @@ class UnknownEntryMigration(DLBaseException):
 class InvalidRequestError(DLBaseException):
     err_code = DLBaseException.err_code + ["INVALID_REQUEST"]
     default_message = "Invalid request"
+
+
+class ExtractError(DatasetConfigurationError):
+    err_code = DatasetConfigurationError.err_code + ["EXTRACT"]
+
+
+class ExtractFilterFieldMissing(ExtractError):
+    err_code = ExtractError.err_code + ["FILTER_FIELD_MISSING"]
+
+
+class ExtractSortingFieldMissing(ExtractError):
+    err_code = ExtractError.err_code + ["SORTING_FIELD_MISSING"]
+
+
+class ExtractSortingEmpty(ExtractError):
+    err_code = ExtractError.err_code + ["SORTING_EMPTY"]

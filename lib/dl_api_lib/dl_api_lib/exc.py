@@ -81,6 +81,22 @@ class ConnectorIconNotFoundException(DLBaseException):
     err_code = ["ICON_NOT_FOUND"]
 
 
+class ExtractValidationError(DLValidationError):
+    err_code = DLValidationError.err_code + ["EXTRACT"]
+
+
+class ExtractValidationFilterFieldMissing(ExtractValidationError):
+    err_code = ExtractValidationError.err_code + ["FILTER_FIELD_MISSING"]
+
+
+class ExtractValidationSortingFieldMissing(ExtractValidationError):
+    err_code = ExtractValidationError.err_code + ["SORTING_FIELD_MISSING"]
+
+
+class ExtractValidationSortingEmpty(ExtractValidationError):
+    err_code = ExtractValidationError.err_code + ["SORTING_EMPTY"]
+
+
 class CacheInvalidationTestError(DLBaseException):
     err_code = DLBaseException.err_code + ["CACHE_INVALIDATION_TEST"]
     default_message = "Cache invalidation test error"

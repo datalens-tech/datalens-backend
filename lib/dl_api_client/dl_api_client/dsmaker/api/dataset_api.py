@@ -18,6 +18,7 @@ from dl_api_client.dsmaker.api.schemas.dataset import (
     CacheInvalidationSourceSchema,
     ComponentErrorListSchema,
     DataSourceSchema,
+    ExtractPropertiesSchema,
     ObligatoryFilterSchema,
     ResultFieldSchema,
     ResultSchemaAuxSchema,
@@ -79,6 +80,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
                 ObligatoryFilterSchema().load(filter_info) for filter_info in body["obligatory_filters"]
             ],
             annotation=dict(description=body["description"]),
+            extract=ExtractPropertiesSchema().load(body.get("extract", {})),
             cache_invalidation_source=CacheInvalidationSourceSchema().load(body["cache_invalidation_source"]),
             query_settings=body.get("query_settings", {}),
         )

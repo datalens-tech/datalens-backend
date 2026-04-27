@@ -29,6 +29,8 @@ from dl_constants.enums import (
     ComponentType,
     ConditionPartCalcMode,
     DataSourceType,
+    ExtractMode,
+    ExtractStatus,
     FieldRole,
     FieldType,
     FieldVisibility,
@@ -984,6 +986,45 @@ class CacheInvalidationSource(ApiProxyObject):
     cache_invalidation_error: CacheInvalidationError | None = attr.ib(default=None)
 
 
+@attr.s()
+class DefaultWhereClause:
+    operation: WhereClauseOperation = attr.ib()
+    values: list = attr.ib(factory=list)
+
+
+@attr.s()
+class FilterField:
+    id: str = attr.ib()
+    field_guid: str = attr.ib()
+    filters: list[DefaultWhereClause] = attr.ib(factory=list)
+    valid: bool = attr.ib(default=True)
+
+
+@attr.s
+class OrderField:
+    id: str = attr.ib()
+    field_guid: str = attr.ib()
+    direction: OrderDirection = attr.ib(default=OrderDirection.asc)
+    valid: bool = attr.ib(default=True)
+
+
+@attr.s
+class ExtractProperties:
+    # versioned
+    mode: ExtractMode = attr.ib(default=ExtractMode.disabled)
+    filters: list[FilterField] = attr.ib(factory=list)
+    sorting: list[OrderField] = attr.ib(factory=list)
+
+    # unversioned
+    status: ExtractStatus = attr.ib(default=ExtractStatus.disabled)
+    errors: list[str] = attr.ib(factory=list)
+    last_completed: int = attr.ib(default=0)
+    data_dataset_revision: str | None = attr.ib(default=None)
+
+    # validation status
+    valid: bool = attr.ib(default=True)
+
+
 @attr.s
 class Dataset(ApiProxyObject):
     name: str = attr.ib(default=None)
@@ -1003,6 +1044,8 @@ class Dataset(ApiProxyObject):
     annotation: Optional[dict] = attr.ib(default=None)
     cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
     query_settings: dict[str, str] = attr.ib(factory=dict)
+
+    extract: ExtractProperties = attr.ib(factory=ExtractProperties)
 
     def prepare(self) -> None:
         super().prepare()

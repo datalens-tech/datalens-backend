@@ -23,13 +23,19 @@ from dl_api_connector.api_schema.source_base import (
 )
 from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
 from dl_api_lib.schemas.fields import ResultSchemaAuxSchema
-from dl_api_lib.schemas.filter import ObligatoryFilterSchema
+from dl_api_lib.schemas.filter import (
+    FilterFieldSchema,
+    ObligatoryFilterSchema,
+)
 from dl_api_lib.schemas.options import OptionsMixin
+from dl_api_lib.schemas.order import OrderFieldSchema
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
 from dl_constants.enums import (
     AggregationFunction,
     CacheInvalidationMode,
     CalcMode,
+    ExtractMode,
+    ExtractStatus,
     FieldType,
     ManagedBy,
     NotificationLevel,
@@ -52,6 +58,7 @@ from dl_core.fields import (
     del_calc_spec_kwargs_from,
     filter_calc_spec_kwargs,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_model_tools.schema.base import (
     BaseSchema,
     DefaultSchema,
@@ -260,6 +267,24 @@ class CacheInvalidationSourceSchema(DefaultSchema[CacheInvalidationSource]):
     )
 
 
+class ExtractPropertiesSchema(DefaultSchema[ExtractProperties]):
+    TARGET_CLS = ExtractProperties
+
+    mode = ma_fields.Enum(ExtractMode, load_default=ExtractMode.disabled)
+    status = ma_fields.Enum(ExtractStatus, dump_only=True)
+
+    filters = ma_fields.Nested(FilterFieldSchema, many=True, load_default=list)
+    sorting = ma_fields.Nested(OrderFieldSchema, many=True, load_default=list)
+
+    errors = ma_fields.List(ma_fields.String, dump_only=True)
+    last_completed = ma_fields.Integer(dump_only=True)
+
+    data_dataset_revision = ma_fields.String(allow_none=True, dump_only=True)
+
+    # Allow send & receive to/from client
+    valid = ma_fields.Boolean(load_default=True)
+
+
 class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
     """
     A base class for schemas that need to contain the full dataset description
@@ -293,6 +318,8 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
         load_default=dict,
         dump_default=dict,
     )
+
+    extract = ma_fields.Nested(ExtractPropertiesSchema, load_default=ExtractProperties)
 
     @pre_load
     def prepare_guids(self, in_data: dict[str, Any], *args: Any, **kwargs: Any) -> dict[str, Any]:

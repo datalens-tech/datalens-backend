@@ -45,8 +45,10 @@ from dl_core.us_entry import (
     BaseAttrsDataModel,
     USEntry,
 )
+from dl_core.us_extract import ExtractProperties
 from dl_i18n.localizer_base import Localizer
 from dl_rls.rls import RLS
+from dl_utils.utils import DataKey
 
 
 if TYPE_CHECKING:
@@ -79,11 +81,24 @@ class Dataset(USEntry):
         cache_invalidation_source: CacheInvalidationSource = attr.ib(factory=CacheInvalidationSource)
         query_settings: dict[str, str] = attr.ib(factory=dict)
 
+        extract: ExtractProperties = attr.ib(factory=ExtractProperties)
+
         @attr.s
         class ResultSchemaAux:
             inter_dependencies: FieldInterDependencyInfo = attr.ib(factory=FieldInterDependencyInfo)
 
         result_schema_aux: ResultSchemaAux = attr.ib(factory=ResultSchemaAux)
+
+        @classmethod
+        def get_unversioned_keys(cls) -> set[DataKey]:
+            return set(
+                [
+                    DataKey(parts=("extract", "status")),
+                    DataKey(parts=("extract", "errors")),
+                    DataKey(parts=("extract", "last_completed")),
+                    DataKey(parts=("extract", "data_dataset_revision")),
+                ]
+            )
 
     @property
     def rls(self) -> RLS:
@@ -272,3 +287,10 @@ class Dataset(USEntry):
                 )
             )
         return warnings_list
+
+    def reset_extract_properties(self) -> None:
+        """
+        Reset extract properties and settings to default values.
+        """
+
+        self.data.extract = ExtractProperties()

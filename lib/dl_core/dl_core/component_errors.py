@@ -64,6 +64,9 @@ ERROR_CLS_BY_COMP_TYPE: dict[ComponentType, type[ComponentError]] = {
     ComponentType.field: ComponentError,
     ComponentType.obligatory_filter: ComponentError,
     ComponentType.result_schema: ComponentError,
+    ComponentType.extract_filter: ComponentError,
+    ComponentType.extract_sorting: ComponentError,
+    ComponentType.extract_properties: ComponentError,
 }
 
 
@@ -93,6 +96,19 @@ class ComponentErrorRegistry:
 
         item.remove_errors(code=code, code_prefix=code_prefix)
         if not item.errors:
+            self.items.remove(item)
+
+    def remove_errors_by_component_type(self, component_type: ComponentType) -> None:
+        """
+        Clear all errors for components of the given type
+        """
+
+        items_to_remove = []
+        for item in self.items:
+            if item.type == component_type:
+                items_to_remove.append(item)
+
+        for item in items_to_remove:
             self.items.remove(item)
 
     def add_error(  # type: ignore  # TODO: fix

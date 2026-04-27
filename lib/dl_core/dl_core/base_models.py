@@ -49,7 +49,7 @@ def connection_ref_from_id(connection_id: Optional[str]) -> ConnectionRef:
 @attr.s()
 class DefaultWhereClause:
     operation: WhereClauseOperation = attr.ib()
-    values: list = attr.ib(default=[])
+    values: list = attr.ib(factory=list)
 
 
 @attr.s()
@@ -65,7 +65,7 @@ class ObligatoryFilter:
 class SourceFilterSpec:
     name: str = attr.ib()
     operation: WhereClauseOperation = attr.ib()
-    values: list = attr.ib(default=[])
+    values: list = attr.ib(factory=list)
 
 
 class EntryLocation(metaclass=abc.ABCMeta):

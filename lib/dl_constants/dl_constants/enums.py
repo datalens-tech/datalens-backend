@@ -307,11 +307,15 @@ class ComponentType(Enum):
     field = "field"
     obligatory_filter = "obligatory_filter"
     result_schema = "result_schema"
+    extract_filter = "extract_filter"
+    extract_sorting = "extract_sorting"
+    extract_properties = "extract_properties"
 
 
 @unique
 class TopLevelComponentId(Enum):
     result_schema = "__result_schema__"
+    extract_properties = "__extract_properties__"
 
 
 @unique
@@ -485,3 +489,20 @@ class EditMode(OperationsMode):
 
 class ExportMode(OperationsMode):
     export = auto()
+
+
+class ExtractMode(Enum):
+    disabled = "disabled"
+    manual = "manual"
+    schedule = "schedule"
+
+
+class ExtractStatus(Enum):
+    disabled = "disabled"
+
+    pending = "pending"
+    """Enabled, but not started yet"""
+
+    error = "error"
+    running = "running"
+    completed = "completed"
