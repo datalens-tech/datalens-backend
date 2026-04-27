@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from enum import Enum
 import json
 from typing import (
@@ -54,6 +52,7 @@ from dl_api_lib.schemas.legend import LegendItemSchema
 from dl_api_lib.schemas.notification import NotificationSchema
 from dl_api_lib.schemas.pivot import RequestPivotSpecSchema
 from dl_constants.enums import (
+    AggregationFunction,
     CalcMode,
     FieldRole,
     FieldType,
@@ -118,6 +117,10 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema):
         )
 
 
+class DatasetFieldsQuerySchema(BaseSchema):
+    include_details = ma_fields.Boolean(load_default=False)
+
+
 class FieldsResponseFieldSchema(BaseSchema):
     title = ma_fields.String()
     guid = ma_fields.String()
@@ -126,6 +129,9 @@ class FieldsResponseFieldSchema(BaseSchema):
     type = ma_fields.Enum(FieldType)
     calc_mode = ma_fields.Enum(CalcMode)
     ui_settings = ma_fields.String()
+    description = ma_fields.String()
+    formula = ma_fields.String()
+    aggregation = ma_fields.Enum(AggregationFunction)
 
 
 class DatasetFieldsResponseSchema(BaseSchema):

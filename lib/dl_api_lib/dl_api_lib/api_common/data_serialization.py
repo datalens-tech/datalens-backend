@@ -1,8 +1,5 @@
-from __future__ import annotations
-
 import logging
 from typing import (
-    TYPE_CHECKING,
     Any,
     Optional,
     Sequence,
@@ -31,17 +28,15 @@ from dl_api_lib.utils.base import (
     get_data_export_base_result,
 )
 from dl_constants.enums import ManagedBy
+from dl_constants.types import TJSONLike
+from dl_core.fields import FormulaCalculationSpec
 from dl_core.us_dataset import Dataset
+from dl_pivot.primitives import DataCellVector
+from dl_pivot.table import PivotTable
 from dl_query_processing.enums import QueryType
 from dl_query_processing.legend.field_legend import LegendItem
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_utils.utils import enum_not_none
-
-
-if TYPE_CHECKING:
-    from dl_constants.types import TJSONLike
-    from dl_pivot.primitives import DataCellVector
-    from dl_pivot.table import PivotTable
 
 
 LOGGER = logging.getLogger(__name__)
@@ -163,7 +158,11 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         return data
 
 
-def get_fields_data_raw(dataset: Dataset, for_result: bool = False) -> list[dict[str, Any]]:
+def get_fields_data_raw(
+    dataset: Dataset,
+    for_result: bool = False,
+    include_details: bool = False,
+) -> list[dict[str, Any]]:
     return [
         {
             "title": fld.title,
@@ -179,14 +178,27 @@ def get_fields_data_raw(dataset: Dataset, for_result: bool = False) -> list[dict
                 if not for_result
                 else {}
             ),
+            **(
+                {
+                    "description": fld.description,
+                    "formula": fld.calc_spec.formula if isinstance(fld.calc_spec, FormulaCalculationSpec) else "",
+                    "aggregation": fld.aggregation,
+                }
+                if include_details
+                else {}
+            ),
         }
         for fld in dataset.result_schema
         if fld.managed_by == ManagedBy.user
     ]
 
 
-def get_fields_data_serializable(dataset: Dataset, for_result: bool = False) -> list[dict[str, TJSONLike]]:
-    fields = get_fields_data_raw(dataset, for_result=for_result)
+def get_fields_data_serializable(
+    dataset: Dataset,
+    for_result: bool = False,
+    include_details: bool = False,
+) -> list[dict[str, TJSONLike]]:
+    fields = get_fields_data_raw(dataset, for_result=for_result, include_details=include_details)
     return DatasetFieldsResponseSchema().dump(dict(fields=fields))["fields"]
 
 
