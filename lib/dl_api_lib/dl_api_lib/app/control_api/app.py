@@ -96,6 +96,23 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
     def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
         return None
 
+    def _populate_global_keeper(self, keeper: SecretKeeper) -> None:
+        keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+        for key_id, key_val in self._settings.CRYPTO_KEYS_CONFIG.map_id_key.items():
+            keeper.add_secret(key_val, f"crypto_key_{key_id}")
+        keeper.add_secret(self._settings.SENTRY_DSN, "sentry_dsn")
+        if self._settings.REDIS_ARQ:
+            keeper.add_secret(self._settings.REDIS_ARQ.PASSWORD, "redis_redis_arq_password")
+        if self._settings.RQE_CACHES_REDIS:
+            keeper.add_secret(self._settings.RQE_CACHES_REDIS.PASSWORD, "redis_rqe_caches_redis_password")
+        if self._settings.RATE_LIMITER_REDIS:
+            keeper.add_secret(self._settings.RATE_LIMITER_REDIS.PASSWORD, "redis_rate_limiter_redis_password")
+        auth_settings = getattr(self._settings, "AUTH", None)
+        if auth_settings is not None:
+            keeper.add_secret(getattr(auth_settings, "CLIENT_SECRET", None), "zitadel_client_secret")
+            keeper.add_secret(getattr(auth_settings, "APP_CLIENT_SECRET", None), "zitadel_app_client_secret")
+            keeper.add_secret(getattr(auth_settings, "JWT_KEY", None), "native_auth_jwt_key")
+
     def _get_conn_opts_mutators_factory(self) -> ConnOptionsMutatorsFactory:
         conn_opts_mutators_factory = ConnOptionsMutatorsFactory()
 
@@ -150,9 +167,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
         if self._settings.OBFUSCATION_ENABLED:
             global_keeper = SecretKeeper()
-            if self._settings.US_MASTER_TOKEN:
-                # just for example for now. More secrets will be added in BI-6492
-                global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+            self._populate_global_keeper(global_keeper)
             app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
                 global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),

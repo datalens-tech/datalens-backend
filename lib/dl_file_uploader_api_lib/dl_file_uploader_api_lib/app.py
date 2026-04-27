@@ -73,6 +73,18 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
     def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
         return None
 
+    def _populate_global_keeper(self, keeper: SecretKeeper) -> None:
+        keeper.add_secret(self._settings.FILE_UPLOADER_MASTER_TOKEN, "file_uploader_master_token")
+        for key_id, key_val in self._settings.CRYPTO_KEYS_CONFIG.map_id_key.items():
+            keeper.add_secret(key_val, f"crypto_key_{key_id}")
+        for i, secret_val in enumerate(self._settings.CSRF.SECRET):
+            keeper.add_secret(secret_val, f"csrf_secret_{i}")
+        keeper.add_secret(self._settings.SENTRY_DSN, "sentry_dsn")
+        keeper.add_secret(self._settings.S3.SECRET_ACCESS_KEY, "s3_secret_access_key")
+        if self._settings.S3_UPLOADS:
+            keeper.add_secret(self._settings.S3_UPLOADS.SECRET_ACCESS_KEY, "s3_uploads_secret_access_key")
+        keeper.add_secret(self._settings.REDIS_ARQ.PASSWORD, "redis_arq_password")
+
     def set_up_sentry(self, secret_sentry_dsn: str, release: str) -> None:
         configure_sentry_for_aiohttp(
             SentryConfig(
@@ -140,8 +152,7 @@ class FileUploaderApiAppFactory(Generic[_TSettings], abc.ABC):
 
         if self._settings.OBFUSCATION_ENABLED:
             global_keeper = SecretKeeper()
-            if self._settings.FILE_UPLOADER_MASTER_TOKEN:
-                global_keeper.add_secret(self._settings.FILE_UPLOADER_MASTER_TOKEN, "file_uploader_master_token")
+            self._populate_global_keeper(global_keeper)
             app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
                 global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),

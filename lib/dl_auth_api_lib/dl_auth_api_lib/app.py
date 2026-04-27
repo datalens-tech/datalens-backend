@@ -31,6 +31,7 @@ from dl_auth_api_lib.views import yandex as yandex_views
 from dl_core.aio.ping_view import PingView
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    SecretKeeper,
     create_base_obfuscators,
 )
 
@@ -48,6 +49,11 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
 
     def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
         return None
+
+    def _populate_global_keeper(self, keeper: SecretKeeper) -> None:
+        keeper.add_secret(self._settings.sentry_dsn, "sentry_dsn")
+        for client_name, client_settings in self._settings.auth_clients.items():
+            keeper.add_secret(getattr(client_settings, "client_secret", None), f"oauth_{client_name}_client_secret")
 
     def set_up_sentry(self, secret_sentry_dsn: str, release: str | None) -> None:
         configure_sentry_for_aiohttp(
@@ -85,7 +91,10 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         )
 
         if self._settings.obfuscation_enabled:
+            global_keeper = SecretKeeper()
+            self._populate_global_keeper(global_keeper)
             app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),
             )
 
