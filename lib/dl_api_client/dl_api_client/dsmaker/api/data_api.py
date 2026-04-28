@@ -704,6 +704,35 @@ class SyncHttpDataApiV2(SyncHttpDataApiBase):
             url += "?" + urllib.parse.urlencode(query_params)
         return self._request(url, method="post", data=raw_body, headers=headers)
 
+    def get_response_for_dataset_result_preflight(
+        self,
+        dataset_id: str,
+        raw_body: dict,
+        headers: dict | None = None,
+    ) -> ClientResponse:
+        url = f"/api/data/{self.api_v}/datasets/{dataset_id}/result-preflight"
+        return self._request(url, method="post", data=raw_body, headers=headers)
+
+    def get_result_preflight(
+        self,
+        *,
+        dataset: Dataset,
+        updates: list[UpdateAction | dict] | None = None,
+        fields: list[ResultField | RequestLegendItem] | None = None,
+        filters: list[WhereClause] | None = None,
+        fail_ok: bool = False,
+    ) -> HttpDataApiResponse:
+        data = self.serial_adapter.make_req_data_get_result(
+            dataset=dataset,
+            fields=fields,
+            filters=filters,
+            updates=updates,
+        )
+        response = self.get_response_for_dataset_result_preflight(dataset_id=dataset.id, raw_body=data)
+        if not fail_ok:
+            assert response.status_code == HTTPStatus.OK, response.json
+        return self.make_response_obj(client_response=response, data=None)
+
     def get_response_for_dataset_value_range(
         self,
         dataset_id: str,

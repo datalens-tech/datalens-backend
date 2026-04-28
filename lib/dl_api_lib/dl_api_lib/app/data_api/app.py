@@ -57,6 +57,7 @@ from dl_api_lib.app.data_api.resources.dataset.result import (
     DatasetResultViewV1_5,
     DatasetResultViewV2,
 )
+from dl_api_lib.app.data_api.resources.dataset.result_preflight import DatasetResultPreflightView
 from dl_api_lib.app.data_api.resources.metrics import DSDataApiMetricsView
 from dl_api_lib.app.data_api.resources.ping import (
     PingReadyView,
@@ -171,6 +172,11 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1)
         app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/result", DatasetResultViewV1_5)
         app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/result", DatasetResultViewV2)
+        app.router.add_route(
+            "post",
+            "/api/data/v2/datasets/{ds_id}/result-preflight",
+            DatasetResultPreflightView,
+        )
         app.router.add_route(
             "post", "/api/v1/datasets/{ds_id}/versions/draft/values/distinct", DatasetDistinctViewV1
         )  # FIXME: Remove

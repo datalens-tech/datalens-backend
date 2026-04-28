@@ -16,10 +16,7 @@ from marshmallow import fields
 
 from dl_api_commons import exc as api_commons_exc
 from dl_api_lib import exc
-from dl_constants.exc import (
-    DEFAULT_ERR_CODE_API_PREFIX,
-    GLOBAL_ERR_PREFIX,
-)
+from dl_constants.exc import DEFAULT_GLOBAL_ERR_CODE_API_PREFIX
 from dl_core import exc as common_exc
 from dl_dashsql import exc as dashsql_exc
 from dl_formula.core import exc as formula_exc
@@ -211,7 +208,7 @@ class RegularAPIErrorSchema(Schema):
     def serialize_error_code(self, data: BIError) -> str:
         return ".".join(
             itertools.chain(
-                (GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX),
+                DEFAULT_GLOBAL_ERR_CODE_API_PREFIX,
                 data.application_code_stack,
             )
         )

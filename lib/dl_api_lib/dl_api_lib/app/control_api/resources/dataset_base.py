@@ -35,10 +35,7 @@ from dl_constants.enums import (
     RLSSubjectType,
     UserDataType,
 )
-from dl_constants.exc import (
-    DEFAULT_ERR_CODE_API_PREFIX,
-    GLOBAL_ERR_PREFIX,
-)
+from dl_constants.exc import DEFAULT_GLOBAL_ERR_CODE_API_PREFIX
 from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DbInfo
@@ -217,8 +214,8 @@ class DatasetResource(BIResource):
         data["component_errors"] = deepcopy(dataset.error_registry)
         for item in data["component_errors"].items:
             for error in item.errors:
-                if error.code[:2] != [GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX]:
-                    error.code = [GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + error.code
+                if tuple(error.code[: len(DEFAULT_GLOBAL_ERR_CODE_API_PREFIX)]) != DEFAULT_GLOBAL_ERR_CODE_API_PREFIX:
+                    error.code = list(DEFAULT_GLOBAL_ERR_CODE_API_PREFIX) + error.code
 
         data["created_via"] = dataset.created_via
 

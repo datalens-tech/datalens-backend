@@ -27,10 +27,7 @@ from dl_constants.enums import (
     NotificationLevel,
     OperationsMode,
 )
-from dl_constants.exc import (
-    DEFAULT_ERR_CODE_API_PREFIX,
-    GLOBAL_ERR_PREFIX,
-)
+from dl_constants.exc import DEFAULT_GLOBAL_ERR_CODE_API_PREFIX
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
@@ -142,13 +139,7 @@ class BIResource(Resource, metaclass=BIResourceMeta):
 
     @classmethod
     def _make_api_err_code(cls, raw_code: Sequence[str]) -> str:
-        return ".".join(
-            (
-                GLOBAL_ERR_PREFIX,
-                DEFAULT_ERR_CODE_API_PREFIX,
-                *raw_code,
-            )
-        )
+        return ".".join((*DEFAULT_GLOBAL_ERR_CODE_API_PREFIX, *raw_code))
 
     @classmethod
     def get_current_rci(cls) -> RequestContextInfo:

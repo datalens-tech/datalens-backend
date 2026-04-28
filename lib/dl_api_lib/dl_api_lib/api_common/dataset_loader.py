@@ -25,10 +25,7 @@ from dl_constants.enums import (
     ExtractMode,
     RLSSubjectType,
 )
-from dl_constants.exc import (
-    DEFAULT_ERR_CODE_API_PREFIX,
-    GLOBAL_ERR_PREFIX,
-)
+from dl_constants.exc import DEFAULT_GLOBAL_ERR_CODE_API_PREFIX
 from dl_core.base_models import (
     DefaultConnectionRef,
     DefaultWhereClause,
@@ -524,8 +521,9 @@ class DatasetApiLoader:
             dataset.error_registry.items = deepcopy(body["component_errors"].items)
             for item in dataset.error_registry.items:
                 for error in item.errors:
-                    if error.code[:2] == [GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX]:
-                        error.code = error.code[2:]
+                    prefix_len = len(DEFAULT_GLOBAL_ERR_CODE_API_PREFIX)
+                    if tuple(error.code[:prefix_len]) == DEFAULT_GLOBAL_ERR_CODE_API_PREFIX:
+                        error.code = error.code[prefix_len:]
 
         self._update_dataset_obligatory_filters_from_body(dataset=dataset, body=body)
 
