@@ -1959,7 +1959,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 self._ds.error_registry.add_error(
                     id=filter.id,
                     type=ComponentType.extract_filter,
-                    message="Missing extract filter field in dataset",
+                    message=f"Extract filter field {filter.field_guid} does not exist",
                     code=exc.ExtractValidationFilterFieldMissing.err_code,
                     details={
                         "field_guid": filter.field_guid,
@@ -1981,7 +1981,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 self._ds.error_registry.add_error(
                     id=sort.id,
                     type=ComponentType.extract_sorting,
-                    message="Missing extract sorting field in dataset",
+                    message=f"Extract sorting field {sort.field_guid} does not exist",
                     code=exc.ExtractValidationSortingFieldMissing.err_code,
                     details={
                         "field_guid": sort.field_guid,

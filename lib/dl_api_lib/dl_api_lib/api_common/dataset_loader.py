@@ -425,12 +425,11 @@ class DatasetApiLoader:
 
     @classmethod
     def _update_dataset_extract_properties_from_body(cls, dataset: Dataset, body: dict) -> None:
-        if "extract" not in body:
+        extract: ExtractProperties | None = body.get("extract")
+        if extract is None:
             return
 
         ds_editor = DatasetComponentEditor(dataset=dataset)
-
-        extract: ExtractProperties = body["extract"]
 
         schema_guids = set((field.guid for field in dataset.result_schema.fields))
 
