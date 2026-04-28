@@ -22,12 +22,12 @@ jobs:
       contents: read
     steps:
     - name: Checkout datalens-backend
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       with:
         path: datalens-backend
 
     - name: Checkout datalens-ui
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       with:
         repository: datalens-tech/datalens-ui
         path: datalens-ui
@@ -51,11 +51,11 @@ jobs:
         INPUT_SHA: ${{ github.event.inputs.sha }}
 
     - name: Install Task
-      uses: arduino/setup-task@v1
+      uses: arduino/setup-task@e26d8975574116b0097a1161e0fe16ba75d84c1c
       with:
         version: 3.33.1
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610
       with:
         node-version: 18
         cache: 'npm'

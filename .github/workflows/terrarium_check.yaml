@@ -25,9 +25,9 @@ jobs:
           - dl_repmanager
     name: "🐊[pytest] ${{ matrix.value }}"
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
+      - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Setup common tools
         run: pip install --no-input poetry
       - name: Install dependencies
@@ -54,9 +54,9 @@ jobs:
           - dl_repmanager
     name: "🐊[mypy] ${{ matrix.value }}"
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
+      - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Setup common tools
         run: pip install --no-input poetry
       - name: Install dependencies

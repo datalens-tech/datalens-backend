@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Commitlint PR title
-        uses: datalens-tech/commitlint-action@v1
+        uses: datalens-tech/commitlint-action@7034d46de9ef5f5115b0a5d79a5bc9076515f853
 
   add_labels:
     runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
@@ -26,4 +26,4 @@ jobs:
 
     steps:
       - name: Add labels to PR
-        uses: datalens-tech/add-labels-action@v1
+        uses: datalens-tech/add-labels-action@4aad9f32de129ffde2d8a14e53b1acfb6d8a3b39

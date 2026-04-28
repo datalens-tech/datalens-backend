@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Check user permissions
         id: check_user_permissions
@@ -99,7 +99,7 @@ jobs:
           exit 1
 
       - name: Checkout branch code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         if: ${{ github.event_name != 'workflow_dispatch' && github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name }}
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -135,19 +135,19 @@ jobs:
 
     steps:
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
           password: ${{ secrets.ROBOT_GITHUB_PACKAGES_WRITE_TOKEN }}
 
-      - uses: datalens-tech/cleanup-folder-action@v1
+      - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-      - uses: datalens-tech/fix-dubious-ownership-action@v1
+      - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
 
       - id: build_image
         run: |
@@ -177,14 +177,14 @@ jobs:
       PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
       PULL_REQUEST_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
-    - uses: datalens-tech/cleanup-folder-action@v1
+    - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         repository: ${{ github.event.pull_request.head.repo.full_name }}
         fetch-depth: 0
-    - uses: datalens-tech/fix-dubious-ownership-action@v1
+    - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
     - run: git fetch origin main
     - name: Extract base commit
       run: |
@@ -228,7 +228,7 @@ jobs:
         base_sha: ${{ steps.extract_base_commit.outputs.result }}
         changed_files_base: ${{ steps.changed-files-base.outputs.all_changed_files }}
     - name: Get changed packages
-      uses: ovsds/get-changed-packages-action@v1
+      uses: ovsds/get-changed-packages-action@5778e0b46458f5645c881586765e771f6507c4c7
       id: changed-packages
       with:
         changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
@@ -263,7 +263,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Check PR skip label
         id: check_skip_label
@@ -296,14 +296,14 @@ jobs:
       split_ext_public: ${{ steps.get_split.outputs.split_ext_public }}
       split_no_compose: ${{ steps.get_split.outputs.split_no_compose }}
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
+      - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - uses: datalens-tech/fix-dubious-ownership-action@v1
+      - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
       - name: Run python script to split job for general and fat runners
         id: get_split
         run: |
@@ -345,7 +345,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -403,7 +403,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -461,7 +461,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -520,7 +520,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -557,7 +557,7 @@ jobs:
     steps:
       - name: Split packages into groups
         id: split
-        uses: ovsds/split-matrix-action@v0
+        uses: ovsds/split-matrix-action@d35accdcb2ee806e4c8e09b15ac42476244aa95d
         with:
           matrix: ${{ needs.router.outputs.changed-packages }}
           target-group-size: 10
@@ -580,14 +580,14 @@ jobs:
     env:
       VENV_PATH: /venv
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
+      - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - uses: datalens-tech/fix-dubious-ownership-action@v1
+      - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
       - name: run mypy
         run: task --silent dev:mypy FAIL_FAST=false
         env:
@@ -600,7 +600,7 @@ jobs:
     if: always() && !cancelled()
     steps:
       - name: Collect Result
-        uses: ovsds/collect-needs-result-action@v1
+        uses: ovsds/collect-needs-result-action@12190e2a1bfe85d9c024f190a3833973e97998f8
         with:
           needs_json: ${{ toJson(needs) }}
 
@@ -620,7 +620,7 @@ jobs:
 
     steps:
       - name: Collect Result
-        uses: ovsds/collect-needs-result-action@v1
+        uses: ovsds/collect-needs-result-action@12190e2a1bfe85d9c024f190a3833973e97998f8
         with:
           needs_json: ${{ toJson(needs) }}
 
@@ -635,14 +635,14 @@ jobs:
     env:
       VENV_PATH: /venv
     steps:
-      - uses: datalens-tech/cleanup-folder-action@v1
+      - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 1
-      - uses: datalens-tech/fix-dubious-ownership-action@v1
+      - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
       - run: task --silent dev:black
       - run: task --silent dev:isort
       - run: task --silent dev:ruff

@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Get Version
         id: get_version
-        uses: datalens-tech/get-next-release-version-action@v1
+        uses: datalens-tech/get-next-release-version-action@54f216c26f8fbc6fb22270ade0612c41c855fc35
         with:
           version_shift: ${{ github.event.inputs.version_shift }}
           version_override: ${{ github.event.inputs.version }}
@@ -61,18 +61,18 @@ jobs:
 
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
       with:
         registry: ${{ env.cr_url }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
     - name: Checkout code
       id: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       with:
         ref: "${{ github.event.inputs.branch }}"
         fetch-depth: 0
@@ -116,18 +116,18 @@ jobs:
 
     steps:
     - name: Log in to the Container registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
       with:
         registry: ${{ env.cr_url }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
     - name: Checkout code
       id: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       with:
         ref: "${{ github.event.inputs.branch }}"
         fetch-depth: 0
@@ -165,14 +165,14 @@ jobs:
 
     steps:
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
         with:
           registry: "ghcr.io/${{ github.repository_owner }}"
           username: ${{ github.actor }}
           password: ${{ secrets.ROBOT_GITHUB_PACKAGES_WRITE_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Merge images into a single multiarch manifest
         id: merge_manifest
@@ -199,7 +199,7 @@ jobs:
     steps:
       - name: Checkout code
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
         with:
           ref: "${{ github.event.inputs.branch }}"
           fetch-depth: 0
