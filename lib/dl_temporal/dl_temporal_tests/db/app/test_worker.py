@@ -136,9 +136,12 @@ async def test_list_schedule_executions(
         ),
     )
 
-    await handle.trigger()
-
     try:
+        await temporal_client.trigger_schedule(
+            schedule_id=schedule_id,
+            overlap=temporalio.client.ScheduleOverlapPolicy.ALLOW_ALL,
+        )
+
         executions: list[temporalio.api.workflow.v1.WorkflowExecutionInfo] = []
         deadline = asyncio.get_running_loop().time() + 10
         while True:

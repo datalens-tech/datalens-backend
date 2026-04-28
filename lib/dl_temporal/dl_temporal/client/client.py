@@ -290,3 +290,11 @@ class TemporalClient:
     ) -> None:
         handle = await self.get_schedule(schedule_id)
         await handle.unpause()
+
+    async def trigger_schedule(
+        self,
+        schedule_id: str,
+        overlap: temporalio.client.ScheduleOverlapPolicy | None = None,
+    ) -> None:
+        handle = await self.get_schedule(schedule_id)
+        await handle.trigger(overlap=overlap)
