@@ -14,7 +14,7 @@ on:
 jobs:
   build-amd:
     name: "Build AMD Docker image"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -86,7 +86,7 @@ jobs:
 
   build-manifest:
     name: "Create and push Docker manifest"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-24.04
     needs: [ build-amd, build-arm ]
     permissions:
       packages: write

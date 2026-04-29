@@ -9,7 +9,7 @@ on:
 jobs:
   check_permission:
     name: "Check for copilot-review label"
-    runs-on: [self-hosted, linux, k8s-runner-no-compose]
+    runs-on: ubuntu-24.04
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.event.action == 'labeled' && github.event.label.name == 'copilot-review') ||
@@ -21,7 +21,7 @@ jobs:
   request-copilot:
     name: Request Copilot to review PR
     needs: check_permission
-    runs-on: [self-hosted, linux, k8s-runner-no-compose]
+    runs-on: ubuntu-24.04
 
     steps:
       - name: review-copilot-action

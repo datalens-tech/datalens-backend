@@ -115,7 +115,7 @@ jobs:
           PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
   gh_build_image:
-    runs-on: [ self-hosted, linux, k8s-runner-build ]
+    runs-on: ubuntu-22.04
 
     needs: [ check-ci-allowed ]
 
@@ -164,7 +164,7 @@ jobs:
           GIT_SHA: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
   router:
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
     needs: gh_build_image
     container:
       image: ${{ needs.gh_build_image.outputs.IMAGE }}
@@ -278,7 +278,7 @@ jobs:
 
   pytest_split:
     name: Split pytest into jobs for each test type
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
 
     needs:
       - router
@@ -314,7 +314,7 @@ jobs:
 
   run_tests_base:
     name: "🐍[pytest]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, k8s-runner-light ]
+    runs-on: ubuntu-22.04
     permissions:
       packages: write
       contents: read
@@ -372,7 +372,7 @@ jobs:
 
   run_tests_no_compose:
     name: "🐍[pytest][no_compose]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
     permissions:
       packages: write
       contents: read
@@ -430,7 +430,7 @@ jobs:
 
   run_tests_fat:
     name: "🐍[pytest][fat]${{ matrix.value }}"
-    runs-on: [ self-hosted, linux, k8s-runner-fat ]
+    runs-on: ubuntu-22.04
     permissions:
       packages: write
       contents: read
@@ -489,7 +489,7 @@ jobs:
   run_tests_ext_public:
     name: "🐍[pytest][ext_public]${{ matrix.value }}"
     # using light runners for now, TBD: change when we have ext_public
-    runs-on: [ self-hosted, linux, k8s-runner-ext-public ]
+    runs-on: ubuntu-22.04
     permissions:
       packages: read
       contents: read
@@ -565,7 +565,7 @@ jobs:
 
   mypy:
     name: "🐲 mypy (group ${{ strategy.job-index }})"
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
     needs: [ mypy_split, gh_build_image ]
     if: ${{ needs.mypy_split.outputs.matrix != '[]' }}
     container:
@@ -625,7 +625,7 @@ jobs:
           needs_json: ${{ toJson(needs) }}
 
   codestyle_all:
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
     needs: gh_build_image
     container:
       image: ${{ needs.gh_build_image.outputs.IMAGE }}

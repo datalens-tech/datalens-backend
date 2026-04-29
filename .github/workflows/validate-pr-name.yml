@@ -12,14 +12,14 @@ concurrency:
 jobs:
   commitlint-pr-title:
     name: Ensure proper PR title
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Commitlint PR title
         uses: datalens-tech/commitlint-action@7034d46de9ef5f5115b0a5d79a5bc9076515f853
 
   add_labels:
-    runs-on: [ self-hosted, linux, k8s-runner-no-compose ]
+    runs-on: ubuntu-22.04
     needs: commitlint-pr-title
     permissions:
       pull-requests: write
