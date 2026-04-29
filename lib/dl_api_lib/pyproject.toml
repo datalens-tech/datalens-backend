@@ -95,9 +95,25 @@ dl_api_lib = [
   {path = "dl_api_lib"},
 ]
 
-[datalens.pytest.db]
+[datalens.pytest.db_control_api]
 root_dir = "dl_api_lib_tests/"
-target_path = "db"
+target_path = "db/control_api"
+
+[datalens.pytest.db_data_api_caches]
+root_dir = "dl_api_lib_tests/"
+target_path = "db/data_api/caches"
+
+[datalens.pytest.db_data_api_general]
+root_dir = "dl_api_lib_tests/"
+target_path = "db/data_api/general"
+
+[datalens.pytest.db_data_api_pivot]
+root_dir = "dl_api_lib_tests/"
+target_path = "db/data_api/pivot"
+
+[datalens.pytest.db_data_api_result]
+root_dir = "dl_api_lib_tests/"
+target_path = "db/data_api/result"
 
 [datalens.pytest.unit]
 labels = ["no_compose"]

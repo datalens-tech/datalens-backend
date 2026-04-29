@@ -99,10 +99,20 @@ dl_formula_ref_dl_connector_clickhouse = [
   {path = "dl_connector_clickhouse/formula_ref"},
 ]
 
-[datalens.pytest.db]
+[datalens.pytest.db_api]
 labels = ["fat"]
 root_dir = "dl_connector_clickhouse_tests/"
-target_path = "db"
+target_path = "db/api"
+
+[datalens.pytest.db_core]
+labels = ["fat"]
+root_dir = "dl_connector_clickhouse_tests/"
+target_path = "db/core"
+
+[datalens.pytest.db_formula]
+labels = ["fat"]
+root_dir = "dl_connector_clickhouse_tests/"
+target_path = "db/formula"
 
 [datalens.pytest.unit]
 labels = ["no_compose"]
