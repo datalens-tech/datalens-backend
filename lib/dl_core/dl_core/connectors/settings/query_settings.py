@@ -18,6 +18,18 @@ class QuerySettingsSettings(dl_settings.BaseSettings):
     FORBIDDEN: frozenset[str] = frozenset()
 
     @pydantic.model_validator(mode="after")
+    def _reject_allowed_forbidden_overlap(self) -> Self:
+        """Forbidden names must not appear in the allow-list — the two lists are contradictory
+        and the overlap is always a configuration mistake."""
+        if self.ALLOWED is None:
+            return self
+
+        overlap = self.ALLOWED & self.FORBIDDEN
+        if overlap:
+            raise ValueError(f"{type(self).__name__}: ALLOWED ∩ FORBIDDEN must be empty, overlap = {sorted(overlap)}")
+        return self
+
+    @pydantic.model_validator(mode="after")
     def _warn_on_dropped_forbidden_defaults(self) -> Self:
         """Warn if a deployment override removed any names from the class's default `FORBIDDEN` set.
 

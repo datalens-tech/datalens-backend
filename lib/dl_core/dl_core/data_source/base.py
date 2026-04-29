@@ -276,7 +276,7 @@ class DataSource(metaclass=abc.ABCMeta):
         """
         raise NotImplementedError()
 
-    def _render_dataset_parameter_values(
+    def render_dataset_parameter_values(
         self,
         value: str,
     ) -> str:
@@ -299,7 +299,7 @@ class DataSource(metaclass=abc.ABCMeta):
             return False
 
         try:
-            return self._render_dataset_parameter_values(value) != value
+            return self.render_dataset_parameter_values(value) != value
         except ConnectionTemplateDisabledError:
             return False
         except TemplateInvalidError:

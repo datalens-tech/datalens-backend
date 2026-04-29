@@ -183,7 +183,7 @@ class BaseCHYTTableListDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
         if not self.spec.table_names:
             raise exc.TableNameNotConfiguredError
 
-        raw_table_names = self._render_dataset_parameter_values(self.spec.table_names)
+        raw_table_names = self.render_dataset_parameter_values(self.spec.table_names)
         table_names = self.normalize_tables_paths(raw_table_names)
         return CHYTTablesConcat(*table_names, alias=alias)
 
@@ -237,16 +237,16 @@ class BaseCHYTTableRangeDataSource(BaseCHYTTableFuncDataSource, abc.ABC):
         if not self.directory_path:
             raise exc.TableNameNotConfiguredError
         directory = self.directory_path
-        directory = self._render_dataset_parameter_values(self.directory_path)
+        directory = self.render_dataset_parameter_values(self.directory_path)
         directory = self.normalize_path(directory)
 
         start = self.range_from
         if start is not None:
-            start = self._render_dataset_parameter_values(start)
+            start = self.render_dataset_parameter_values(start)
 
         end = self.range_to
         if end is not None:
-            end = self._render_dataset_parameter_values(end)
+            end = self.render_dataset_parameter_values(end)
 
         return CHYTTablesRange(
             directory=directory,
@@ -284,7 +284,7 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
         if not subsql:
             raise exc.TableNameNotConfiguredError
 
-        subsql = self._render_dataset_parameter_values(subsql)
+        subsql = self.render_dataset_parameter_values(subsql)
         return CHYTTableSubselect(subsql, alias=alias)
 
     @property

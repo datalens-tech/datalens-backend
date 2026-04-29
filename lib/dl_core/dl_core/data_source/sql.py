@@ -197,7 +197,7 @@ class SubselectDataSource(BaseSQLDataSource):
         if not subsql:
             raise exc.TableNameNotConfiguredError
 
-        subsql = self._render_dataset_parameter_values(subsql)
+        subsql = self.render_dataset_parameter_values(subsql)
 
         from_sql = "(\n{}\n)".format(subsql)
 
@@ -313,7 +313,7 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
         if table_name is None:
             return None
 
-        table_name = self._render_dataset_parameter_values(table_name)
+        table_name = self.render_dataset_parameter_values(table_name)
         return table_name
 
     def is_templated(self) -> bool:

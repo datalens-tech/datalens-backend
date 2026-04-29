@@ -18,7 +18,14 @@ import pytest
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
-from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import (
+    Dataset,
+    IntegerParameterValue,
+)
+from dl_api_client.dsmaker.shortcuts.dataset import (
+    Parameter,
+    add_parameters_to_dataset,
+)
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_constants.enums import (
     ComponentType,
@@ -180,3 +187,92 @@ class TestClickHouseQuerySettingsInvalidWhenNotInWhitelist(_BaseSaveRecordsInval
             ENABLED=True,
             ALLOWED=frozenset({"max_threads"}),
         )
+
+
+class TestClickHouseQuerySettingsTemplating(_BaseClickHouseQuerySettingsApiTest):
+    """End-to-end: `{{ parameter }}` templates inside `query_settings` values are rendered with
+    the request-time parameter value before being sent to CH."""
+
+    # `is_datasource_template_allowed` needs `RawSQLLevel.template` (or `dashsql`) on the
+    # connection; `subselect` allows subselect sources but not templating.
+    raw_sql_level: ClassVar[Optional[RawSQLLevel]] = RawSQLLevel.template
+
+    @pytest.fixture(scope="class")
+    def connectors_settings(
+        self,
+        query_settings_settings: ClickHouseQuerySettingsSettings,
+    ) -> dict[str, ConnectorSettings]:
+        # Templating requires both `QUERY_SETTINGS.ENABLED` and `ENABLE_DATASOURCE_TEMPLATE`.
+        return {
+            CONNECTION_TYPE_CLICKHOUSE.value: ClickHouseConnectorSettings(
+                QUERY_SETTINGS=query_settings_settings,
+                ENABLE_DATASOURCE_TEMPLATE=True,
+            ),
+        }
+
+    @pytest.fixture(scope="class")
+    def dataset_params(self) -> dict:
+        subsql = "SELECT value AS value FROM system.settings WHERE name = 'max_threads'"
+        return dict(source_type=SOURCE_TYPE_CH_SUBSELECT.name, parameters=dict(subsql=subsql))
+
+    def test_data_api_renders_parameter_into_query_setting(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ) -> None:
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            parameters={
+                "ThreadsParam": Parameter(
+                    default_value=IntegerParameterValue(4),
+                    constraint=None,
+                    template_enabled=True,
+                ),
+            },
+        )
+        ds.template_enabled = True
+        ds.query_settings = {"max_threads": "{{ThreadsParam}}"}
+        ds = control_api.save_dataset(ds).dataset
+        assert not ds.component_errors.items, ds.component_errors
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title="value")],
+            parameters=[ds.find_field(title="ThreadsParam").parameter_value(9)],
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        rows = get_data_rows(result_resp)
+        assert rows, "Expected at least one row"
+        assert str(rows[0][0]) == "9", f"max_threads was not rendered from parameter (got {rows[0][0]!r})"
+
+    def test_default_parameter_value_used_when_no_override(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+    ) -> None:
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset=saved_dataset,
+            parameters={
+                "ThreadsParam": Parameter(
+                    default_value=IntegerParameterValue(5),
+                    constraint=None,
+                    template_enabled=True,
+                ),
+            },
+        )
+        ds.template_enabled = True
+        ds.query_settings = {"max_threads": "{{ThreadsParam}}"}
+        ds = control_api.save_dataset(ds).dataset
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title="value")],
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        rows = get_data_rows(result_resp)
+        assert rows, "Expected at least one row"
+        assert str(rows[0][0]) == "5", f"max_threads was not rendered from default (got {rows[0][0]!r})"
