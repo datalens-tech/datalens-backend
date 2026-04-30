@@ -2,6 +2,7 @@ from .containers import (
     HostPort,
     get_test_container_hostport,
 )
+from .flaky import delay_rerun_filter
 from .settings import BaseRootSettings
 from .utils import (
     get_default_ssl_context,
@@ -15,6 +16,7 @@ from .utils import (
 __all__ = [
     "BaseRootSettings",
     "HostPort",
+    "delay_rerun_filter",
     "get_default_ssl_context",
     "get_root_certificates",
     "get_root_certificates_path",
