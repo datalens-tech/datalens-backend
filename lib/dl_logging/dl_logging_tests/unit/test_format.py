@@ -5,6 +5,11 @@ import pytest
 
 import dl_json
 import dl_logging
+from dl_obfuscator.profiling import (
+    clear_log_format_profiling,
+    get_log_format_profiling,
+    init_log_format_profiling,
+)
 
 
 @pytest.fixture(name="record")
@@ -88,3 +93,27 @@ def test_stdout_formatter_is_not_deploy(
         "pid": mock.ANY,
         "exc_type": None,
     }
+
+
+def test_format_accumulates_profiling(record: logging.LogRecord) -> None:
+    try:
+        init_log_format_profiling()
+        formatter = dl_logging.StdoutFormatter(fmt=None, datefmt=None, style="%", validate=True, defaults=None)
+
+        formatter.format(record)
+        formatter.format(record)
+
+        ctx = get_log_format_profiling()
+        assert ctx is not None
+        assert ctx.total_format_time > 0
+        assert ctx.call_count == 2
+        assert ctx.obfuscation_time == 0.0
+    finally:
+        clear_log_format_profiling()
+
+
+def test_format_works_without_profiling(record: logging.LogRecord) -> None:
+    clear_log_format_profiling()
+    formatter = dl_logging.StdoutFormatter(fmt=None, datefmt=None, style="%", validate=True, defaults=None)
+    formatter.format(record)
+    assert get_log_format_profiling() is None

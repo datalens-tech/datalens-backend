@@ -439,6 +439,7 @@ class ConnectorsSettingsMixin(AppSettings):
 class ControlApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
+    LOG_FORMAT_PROFILING_ENABLED: bool = False
 
     IS_INVALIDATION_CACHE_ENABLED: bool = False
 
@@ -457,6 +458,7 @@ class CacheInvalidationSettings(dl_settings.BaseSettings):
 class DataApiAppSettings(ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
+    LOG_FORMAT_PROFILING_ENABLED: bool = False
 
     CACHE_INVALIDATION: CacheInvalidationSettings = pydantic.Field(default_factory=CacheInvalidationSettings)
 

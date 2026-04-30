@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import Any
 
 from aiohttp import web
@@ -9,11 +10,16 @@ from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_conte
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+from dl_logging.format import StdoutFormatter
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
     ObfuscationContext,
     create_base_obfuscators,
     get_request_obfuscation_engine,
+)
+from dl_obfuscator.profiling import (
+    LogFormatProfilingContext,
+    get_log_format_profiling,
 )
 from dl_obfuscator.secret_keeper import SecretKeeper
 
@@ -136,3 +142,102 @@ async def test_committed_rci_has_obfuscation_engine(aiohttp_client: Any) -> None
         assert resp.status == 200
         text = await resp.text()
         assert text == "True", "Committed RCI should have obfuscation_engine set"
+
+
+def _create_test_app_no_obfuscation() -> web.Application:
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(RequestId()).middleware,
+            obfuscation_context_middleware(),
+        ],
+    )
+    app.router.add_get("/echo", _echo_handler)
+    return app
+
+
+@pytest.mark.asyncio
+async def test_profiling_disabled_by_default(aiohttp_client: Any) -> None:
+    profiling_seen: list[LogFormatProfilingContext | None] = []
+
+    async def capture_handler(request: web.Request) -> web.Response:
+        profiling_seen.append(get_log_format_profiling())
+        return web.Response(text="ok")
+
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(RequestId()).middleware,
+            obfuscation_context_middleware(),  # default: profiling off
+        ],
+    )
+    app.router.add_get("/capture", capture_handler)
+
+    client = await aiohttp_client(app)
+    async with client.get("/capture") as resp:
+        assert resp.status == 200
+
+    assert profiling_seen[0] is None
+
+
+@pytest.mark.asyncio
+async def test_profiling_not_emitted_when_count_is_zero(
+    aiohttp_client: Any,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(RequestId()).middleware,
+            obfuscation_context_middleware(log_format_profiling_enabled=True),
+        ],
+    )
+    app.router.add_get("/echo", _echo_handler)
+
+    client = await aiohttp_client(app)
+    with caplog.at_level(logging.INFO, logger="dl_obfuscator.profiling"):
+        async with client.get("/echo", params={"text": "hello"}) as resp:
+            assert resp.status == 200
+
+    profiling_records = [r for r in caplog.records if r.name == "dl_obfuscator.profiling"]
+    assert len(profiling_records) == 0  # call_count stays 0 (no StdoutFormatter in test app)
+
+
+@pytest.mark.asyncio
+async def test_profiling_emitted_when_formatter_active(
+    aiohttp_client: Any,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    class _FormattingHandler(logging.Handler):
+        def __init__(self) -> None:
+            super().__init__()
+            self.setFormatter(StdoutFormatter())
+
+        def emit(self, record: logging.LogRecord) -> None:
+            self.format(record)
+
+    test_logger = logging.getLogger("test_profiling_formatter_aio")
+    handler = _FormattingHandler()
+    test_logger.addHandler(handler)
+    test_logger.setLevel(logging.DEBUG)
+    test_logger.propagate = False
+
+    async def logging_handler(request: web.Request) -> web.Response:
+        test_logger.info("request handled")
+        return web.Response(text="ok")
+
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(RequestId()).middleware,
+            obfuscation_context_middleware(log_format_profiling_enabled=True),
+        ],
+    )
+    app.router.add_get("/log", logging_handler)
+
+    try:
+        client = await aiohttp_client(app)
+        with caplog.at_level(logging.INFO, logger="dl_obfuscator.profiling"):
+            async with client.get("/log") as resp:
+                assert resp.status == 200
+    finally:
+        test_logger.removeHandler(handler)
+
+    profiling_records = [r for r in caplog.records if r.name == "dl_obfuscator.profiling"]
+    assert len(profiling_records) == 1

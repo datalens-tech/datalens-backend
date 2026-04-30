@@ -261,7 +261,9 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
             ).middleware,
             rci_headers_middleware(),
             *env_setup_result.auth_mw_list,
-            obfuscation_context_middleware(),
+            obfuscation_context_middleware(
+                log_format_profiling_enabled=self._settings.LOG_FORMAT_PROFILING_ENABLED,
+            ),
             commit_rci_middleware(),
             *env_setup_result.sr_middleware_list,
             *env_setup_result.usm_middleware_list,

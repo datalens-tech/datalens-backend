@@ -157,7 +157,10 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
                 global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),
             )
-        setup_obfuscation_context_middleware(app)
+        setup_obfuscation_context_middleware(
+            app,
+            log_format_profiling_enabled=self._settings.LOG_FORMAT_PROFILING_ENABLED,
+        )
 
         ReqCtxInfoMiddleware().set_up(app)
 

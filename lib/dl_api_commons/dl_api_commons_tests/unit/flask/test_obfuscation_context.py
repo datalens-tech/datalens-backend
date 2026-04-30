@@ -1,12 +1,20 @@
+import logging
+
 import flask
+import pytest
 
 import dl_api_commons.flask.middlewares as dl_api_commons_flask_middlewares
 from dl_api_commons.flask.middlewares.obfuscation_context import setup_obfuscation_context_middleware
+from dl_logging.format import StdoutFormatter
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
     ObfuscationContext,
     create_base_obfuscators,
     get_request_obfuscation_engine,
+)
+from dl_obfuscator.profiling import (
+    LogFormatProfilingContext,
+    get_log_format_profiling,
 )
 from dl_obfuscator.secret_keeper import SecretKeeper
 
@@ -123,3 +131,76 @@ def test_no_op_when_base_obfuscators_absent() -> None:
 
     assert len(results) == 1
     assert results[0] is True, "Engine should be None when base obfuscators are not configured"
+
+
+def test_profiling_disabled_by_default() -> None:
+    app = _create_test_app_no_obfuscation()
+    profiling_seen: list[LogFormatProfilingContext | None] = []
+
+    @app.route("/capture")
+    def capture() -> flask.Response:
+        profiling_seen.append(get_log_format_profiling())
+        return flask.jsonify({})
+
+    client = app.test_client()
+    resp = client.get("/capture")
+    assert resp.status_code == 200
+    assert profiling_seen[0] is None
+
+
+def test_profiling_not_emitted_when_count_is_zero(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    app = flask.Flask(__name__)
+    dl_api_commons_flask_middlewares.ContextVarMiddleware().wrap_flask_app(app)
+    setup_obfuscation_context_middleware(app, log_format_profiling_enabled=True)
+
+    @app.route("/echo")
+    def echo() -> flask.Response:
+        return flask.jsonify({"status": "ok"})
+
+    client = app.test_client()
+    with caplog.at_level(logging.INFO, logger="dl_obfuscator.profiling"):
+        resp = client.get("/echo")
+    assert resp.status_code == 200
+
+    profiling_records = [r for r in caplog.records if r.name == "dl_obfuscator.profiling"]
+    assert len(profiling_records) == 0  # call_count stays 0 (no StdoutFormatter in test app)
+
+
+def test_profiling_emitted_when_formatter_active(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    class _FormattingHandler(logging.Handler):
+        def __init__(self) -> None:
+            super().__init__()
+            self.setFormatter(StdoutFormatter())
+
+        def emit(self, record: logging.LogRecord) -> None:
+            self.format(record)
+
+    test_logger = logging.getLogger("test_profiling_formatter_flask")
+    handler = _FormattingHandler()
+    test_logger.addHandler(handler)
+    test_logger.setLevel(logging.DEBUG)
+    test_logger.propagate = False
+
+    app = flask.Flask(__name__)
+    dl_api_commons_flask_middlewares.ContextVarMiddleware().wrap_flask_app(app)
+    setup_obfuscation_context_middleware(app, log_format_profiling_enabled=True)
+
+    @app.route("/log")
+    def log_route() -> flask.Response:
+        test_logger.info("request handled")
+        return flask.jsonify({"status": "ok"})
+
+    client = app.test_client()
+    try:
+        with caplog.at_level(logging.INFO, logger="dl_obfuscator.profiling"):
+            resp = client.get("/log")
+        assert resp.status_code == 200
+    finally:
+        test_logger.removeHandler(handler)
+
+    profiling_records = [r for r in caplog.records if r.name == "dl_obfuscator.profiling"]
+    assert len(profiling_records) == 1
