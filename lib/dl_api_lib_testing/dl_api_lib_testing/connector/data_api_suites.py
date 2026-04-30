@@ -356,14 +356,11 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         ds = saved_dataset
         ds.result_schema["Summable Percentage"] = ds.field(formula=f"[{data_api_test_params.summable_field}] * 100")
 
-        result_resp = data_api.get_result(
-            dataset=ds,
-            fields=[
-                ds.find_field(title="Summable Percentage"),
-            ],
-            filters=[
-                ds.find_field(title="Summable Percentage").filter(WhereClauseOperation.GT, [30]),
-            ],
+        result_resp = self.get_result(
+            ds,
+            data_api,
+            field_names=("Summable Percentage",),
+            filters=[ds.find_field(title="Summable Percentage").filter(WhereClauseOperation.GT, [30])],
             fail_ok=True,
         )
         assert result_resp.status_code == 200, result_resp.json
@@ -469,13 +466,13 @@ class DefaultConnectorDataDistinctTestSuite(StandardizedDataApiTestBase, Regulat
     ) -> None:
         ds = saved_dataset
 
-        distinct_resp = data_api.get_distinct(
-            dataset=ds,
-            field=ds.find_field(title=data_api_test_params.distinct_field),
+        distinct_resp = self.get_distinct(
+            ds,
+            data_api,
+            field_name=data_api_test_params.distinct_field,
             filters=[WhereClause(column="idontexist", operation=WhereClauseOperation.EQ, values=[0])],
             ignore_nonexistent_filters=True,
         )
-        assert distinct_resp.status_code == 200, distinct_resp.json
 
         distinct_rows = get_data_rows(distinct_resp)
         min_distinct_row_cnt = 5  # just an arbitrary number

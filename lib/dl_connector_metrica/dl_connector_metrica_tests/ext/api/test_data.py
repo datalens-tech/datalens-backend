@@ -41,9 +41,7 @@ class TestMetricaDataResult(MetricaDataApiTestBase, DefaultConnectorDataResultTe
                 ds.find_field(title="Дата просмотра"),
                 ds.find_field(title="Просмотров в минуту"),
             ],
-            filters=[
-                ds.find_field(title="Дата просмотра").filter("BETWEEN", values=["2023-12-01", "2023-12-07 12:00:00"])
-            ],
+            filters=[self.pinned_date_filter(ds)],
             order_by=[ds.find_field(title="Просмотров в минуту")],
             limit=3,
         )

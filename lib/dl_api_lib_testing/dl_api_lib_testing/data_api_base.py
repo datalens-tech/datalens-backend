@@ -19,7 +19,10 @@ from dl_api_client.dsmaker.api.data_api import (
     SyncHttpDataApiV2,
 )
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from dl_api_client.dsmaker.primitives import Dataset
+from dl_api_client.dsmaker.primitives import (
+    Dataset,
+    WhereClause,
+)
 from dl_api_lib.app.data_api.app import DataApiAppFactory
 from dl_api_lib.app_settings import (
     CacheInvalidationSettings,
@@ -206,14 +209,19 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         ds: Dataset,
         data_api: SyncHttpDataApiV2,
         field_names: Iterable[str],
+        filters: list[WhereClause] | None = None,
         query_params: dict | None = None,
+        fail_ok: bool = False,
     ) -> HttpDataApiResponse:
         data_resp = data_api.get_result(
             dataset=ds,
             fields=[ds.find_field(title=field_name) for field_name in field_names],
+            filters=filters,
             query_params=query_params,
+            fail_ok=fail_ok,
         )
-        assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
+        if not fail_ok:
+            assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp
 
     def get_range(
@@ -234,10 +242,14 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         ds: Dataset,
         data_api: SyncHttpDataApiV2,
         field_name: str,
+        filters: list[WhereClause] | None = None,
+        ignore_nonexistent_filters: bool | None = None,
     ) -> HttpDataApiResponse:
         data_resp = data_api.get_distinct(
             dataset=ds,
             field=ds.find_field(title=field_name),
+            filters=filters,
+            ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
         assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp
@@ -248,11 +260,13 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         data_api: SyncHttpDataApiV2,
         field_names: Iterable[str],
         order_by: Iterable[str],
+        filters: list[WhereClause] | None = None,
     ) -> HttpDataApiResponse:
         data_resp = data_api.get_result(
             dataset=ds,
             fields=[ds.find_field(title=field_name) for field_name in field_names],
             order_by=[ds.find_field(title=field_name) for field_name in order_by],
+            filters=filters,
         )
         assert data_resp.status_code == HTTPStatus.OK, data_resp.response_errors
         return data_resp
