@@ -84,6 +84,19 @@ tasks:
                   fi
                 done
               fi
+              # Editable installs bake the source worktree path into .pth files and
+              # dist-info metadata (direct_url.json, METADATA Requires-Dist URLs).
+              # Rewriting them up-front lets `poetry install --sync` treat each
+              # editable install as already in-sync instead of reinstalling it.
+              for SP in "$VENV_PATH"/lib/python*/site-packages; do
+                [ -d "$SP" ] || continue
+                find "$SP" -maxdepth 1 -name "*.pth" -type f \
+                  -exec sed -i.bak "s|$MAIN_WORKTREE|$CURRENT_ROOT|g" {} +
+                find "$SP" -mindepth 2 -maxdepth 2 \
+                  \( -name "direct_url.json" -o -name "METADATA" \) -type f \
+                  -exec sed -i.bak "s|$MAIN_WORKTREE|$CURRENT_ROOT|g" {} +
+                find "$SP" -name "*.bak" -type f -delete
+              done
             fi
           fi
         fi
