@@ -30,7 +30,7 @@ from dl_api_commons.logging import RequestObfuscator
 from dl_api_commons.retrier.requests import RequestsPolicyRetrier
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_api_commons.utils import (
-    get_retriable_requests_session,
+    get_requests_session,
     stringify_dl_cookies,
     stringify_dl_headers,
 )
@@ -755,7 +755,7 @@ class UStorageClient(UStorageClientBase):
             context_workbook_id=context_workbook_id,
         )
 
-        self._session = get_retriable_requests_session()
+        self._session = get_requests_session()
         self._session.headers.update(self._default_headers)
         self._session.cookies.update(self._cookies)
 
