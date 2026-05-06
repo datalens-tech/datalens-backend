@@ -175,3 +175,8 @@ class CacheInvalidationLastResultEngineUnavailableError(CacheInvalidationLastRes
 class CacheInvalidationLastResultNoResultError(CacheInvalidationLastResultError):
     err_code = CacheInvalidationLastResultError.err_code + ["NO_RESULT"]
     default_message = "No cached invalidation result found"
+
+
+class ConnectionTemplateNotFound(DLBaseException):
+    err_code = DLBaseException.err_code + ["CONNECTION_TEMPLATE_NOT_FOUND"]
+    default_message = "Connection has no associated template"

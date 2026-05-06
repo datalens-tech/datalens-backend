@@ -68,6 +68,7 @@ class ConnectionForm(SerializableConfig):
     rows                form body (labels, fields, etc. => without action buttons)
     api_schema          specifies form fields' validation and action request body schemas
     template_name       name of the template that stored in the US; for connectors with templates (service, partner)
+    with_template       if True, the UI should request a template_name from the backend and copy the template identified by template_name via US
     form_ui_override    override form elements' visibility
 
     Keep in mind that the naming convention here is camelCase,
@@ -90,7 +91,8 @@ class ConnectionForm(SerializableConfig):
     title: str = attr.ib()
     rows: list[FormRow] = attr.ib(converter=rows_converter)
     api_schema: FormApiSchema | None = attr.ib(default=None, metadata=remap_skip_if_null("apiSchema"))
-    template_name: str | None = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))
+    template_name: str | None = attr.ib(default=None, metadata=remap_skip_if_null("templateName"))  # TODO BI-7235
+    with_template: bool | None = attr.ib(default=None, metadata=remap_skip_if_null("withTemplate"))
     form_ui_override: FormUIOverride | None = attr.ib(default=None, metadata=remap_skip_if_null("uiSchema"))
 
     implicit_form_fields: set[TFieldName] = attr.ib(factory=set, metadata=inner())

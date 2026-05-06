@@ -35,6 +35,7 @@ from dl_api_lib.schemas.connection import (
     ConnectionItemQuerySchema,
     ConnectionSourcesQuerySchema,
     ConnectionSourceTemplatesResponseSchema,
+    ConnectionTemplateResponseSchema,
     GenericConnectionSchema,
 )
 from dl_api_lib.schemas.main import ImportResponseSchema
@@ -642,3 +643,28 @@ class ConnectionInfoSourceSchema(BIResource):
         return {
             "raw_schema": schema_info.schema,
         }
+
+
+@ns.route("/<connection_id>/info/template")
+class ConnectionInfoTemplate(BIResource):
+    @schematic_request(
+        ns=ns,
+        responses={
+            200: ("Success", ConnectionTemplateResponseSchema()),
+            400: ("Failed", BadRequestResponseSchema()),
+        },
+    )
+    def get(self, connection_id: str) -> dict:
+        us_manager = self.get_regular_us_manager()
+        connection = us_manager.get_by_id(
+            connection_id,
+            expected_type=ConnectionBase,
+            context_name="connection",
+        )
+        need_permission_on_entry(connection, USPermissionKind.read)
+
+        template_name = connection.template_name
+        if template_name is None:
+            raise exc.ConnectionTemplateNotFound()
+
+        return {"templateName": template_name}

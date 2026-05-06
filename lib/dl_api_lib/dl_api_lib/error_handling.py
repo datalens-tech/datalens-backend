@@ -97,6 +97,7 @@ EXCEPTION_CODES = {
     common_exc.DataSourceNotFound: status.BAD_REQUEST,
     exc.CacheInvalidationTestNotEditorError: status.FORBIDDEN,
     exc.CacheInvalidationTestError: status.BAD_REQUEST,
+    exc.ConnectionTemplateNotFound: status.BAD_REQUEST,
 }
 
 

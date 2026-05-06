@@ -10,6 +10,12 @@ class DatasourceTemplateSettingsMixin(dl_settings.BaseSettings):
     ENABLE_DATASOURCE_TEMPLATE: bool = True
 
 
+class TemplateNameSettingsMixin(dl_settings.BaseSettings):
+    """Mixin for connector settings that have an associated template name."""
+
+    TEMPLATE_NAME: str
+
+
 class TableDatasourceSettingsMixin(dl_settings.BaseSettings):
     """Mixin for connector settings that enables table datasource functionality."""
 

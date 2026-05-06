@@ -90,6 +90,10 @@ class BadRequestResponseSchema(BaseSchema):
     message = ma_fields.String()
 
 
+class ConnectionTemplateResponseSchema(BaseSchema):
+    templateName = ma_fields.String(required=True)
+
+
 class GenericConnectionSchema(OneOfSchema):
     type_schemas: dict[str, type[ConnectionSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[ConnectionSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
     supported_connections: ClassVar[set[type[ConnectionBase]]] = set()

@@ -56,6 +56,7 @@ from dl_core.connection_models import (
     SchemaIdent,
 )
 from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.connectors.settings.mixins import TemplateNameSettingsMixin
 from dl_core.exc import (
     InvalidRequestError,
     QuerySettingForbidden,
@@ -390,6 +391,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     @property
     def is_datasource_template_allowed(self) -> bool:
         return False
+
+    @property
+    def template_name(self) -> str | None:
+        return None
 
     @property
     def is_typed_query_raw_allowed(self) -> bool:
@@ -921,6 +926,23 @@ class ConnectionSettingsMixin(ConnectionBase, Generic[CONNECTOR_SETTINGS_TV], me
     @classmethod
     def _get_connector_settings(cls, usm: SyncUSManager) -> CONNECTOR_SETTINGS_TV:
         return _get_connector_settings(usm, cls.conn_type, cls.settings_type)
+
+
+TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV = TypeVar(
+    "TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV",
+    bound=TemplateNameSettingsMixin,
+)
+
+
+class ConnectionTemplateNameMixin(
+    ConnectionSettingsMixin[TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV],  # type: ignore[type-var]
+    Generic[TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV],
+):
+    """Connection mixin for connectors whose settings include a TEMPLATE_NAME field."""
+
+    @property
+    def template_name(self) -> str:
+        return self._connector_settings.TEMPLATE_NAME
 
 
 class HiddenDatabaseNameMixin(ConnectionSQL):
