@@ -16,6 +16,7 @@ dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-i18n = {path = "../dl_i18n"}
+dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 python = ">=3.10, <3.13"
 sqlalchemy = "*"
 

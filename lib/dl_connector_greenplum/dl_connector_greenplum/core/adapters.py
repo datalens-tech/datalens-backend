@@ -7,6 +7,7 @@ import sqlalchemy as sa
 from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo
 from dl_core.connection_models import TableDefinition
 from dl_core.connection_models.common_models import DBIdent
+from dl_sqlalchemy_postgres.asyncpg import DBAPIMock
 
 from dl_connector_postgresql.core.postgresql_base.adapters_base_postgres import PostgresQueryConstructorMixin
 from dl_connector_postgresql.core.postgresql_base.adapters_postgres import PostgresAdapter
@@ -123,6 +124,16 @@ class GreenplumAdapter(GreenplumQueryConstructorMixin, PostgresAdapter):
 
 
 class AsyncGreenplumAdapter(GreenplumQueryConstructorMixin, AsyncPostgresAdapter):
+    def _pg_compile_exclude_types(self) -> frozenset:
+        # Greenplum is based on a PostgreSQL fork that predates the PG 10 type-resolution change
+        # where untyped parameters in SELECT output columns are resolved to "text" as a fallback.
+        # Without that rule, PREPARE of "SELECT $1 AS col LIMIT $2::integer" fails with
+        # IndeterminateDatatypeError. Keeping STRING in the exclude set (inherited from PG) causes
+        # string literals to compile to bare $1 with no type annotation, which Greenplum cannot
+        # resolve during PREPARE. Removing STRING from exclude_types produces $1::varchar, which
+        # Greenplum can use.
+        return frozenset({DBAPIMock.ENUM})
+
     async def get_table_info(self, table_def: TableDefinition, fetch_idx_info: bool) -> RawSchemaInfo:
         raise NotImplementedError()
 

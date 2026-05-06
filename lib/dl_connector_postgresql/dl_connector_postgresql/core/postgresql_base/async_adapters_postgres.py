@@ -253,6 +253,13 @@ class AsyncPostgresAdapter(
     async def _query_preparation_context(self, connection: asyncpg.Connection) -> AsyncIterator[None]:
         yield
 
+    def _pg_compile_exclude_types(self) -> frozenset:
+        # exclude ENUM because of
+        # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/asyncpg.py#L345
+        # and exclude STRINGS because of our BI ENUMS (it's strings)
+        # in asyncpg we can skip type annotations for strings, it should work like in psycopg
+        return frozenset({DBAPIMock.ENUM, DBAPIMock.STRING})
+
     async def _execute_by_step(self, query: DBAdapterQuery) -> AsyncIterator[ExecutionStep]:
         def make_record(raw_rec: asyncpg.Record, query_attrs: Iterable[asyncpg.Attribute]) -> TBIDataRow:
             row_converters = self._get_row_converters(query_attrs=query_attrs)
@@ -263,11 +270,7 @@ class AsyncPostgresAdapter(
             )
 
         q = query.query
-        # exclude ENUM because of
-        # https://github.com/sqlalchemy/sqlalchemy/blob/rel_1_4/lib/sqlalchemy/dialects/postgresql/asyncpg.py#L345
-        # and exclude STRINGS because of our BI ENUMS (it's strings)
-        # in asyncpg we can skip type annotations for strings, it should work like in psycopg
-        compiled_query, params = compile_pg_query(q, self._dialect, exclude_types={DBAPIMock.ENUM, DBAPIMock.STRING})
+        compiled_query, params = compile_pg_query(q, self._dialect, exclude_types=self._pg_compile_exclude_types())
         inspector_query = None
         debug_query = None
         if self._target_dto.pass_db_query_to_user:
