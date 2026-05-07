@@ -29,12 +29,10 @@ class MetadataProvider(abc.ABC):
         pass
 
 
-class MetadataProviderSettings(dl_settings.TypedBaseSettings):
-    ...
+class MetadataProviderSettings(dl_settings.TypedBaseSettings): ...
 
 
-class EmptyMetadataProviderSettings(MetadataProviderSettings):
-    ...
+class EmptyMetadataProviderSettings(MetadataProviderSettings): ...
 
 
 MetadataProviderSettings.register("empty", EmptyMetadataProviderSettings)

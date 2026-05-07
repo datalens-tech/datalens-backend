@@ -4,8 +4,7 @@ from dl_core.us_manager.schema_migration.base import (
 )
 
 
-class ConnectionSchemaMigration(BaseEntrySchemaMigration):
-    ...
+class ConnectionSchemaMigration(BaseEntrySchemaMigration): ...
 
 
 class DefaultConnectionSchemaMigration(ConnectionSchemaMigration):

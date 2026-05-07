@@ -99,12 +99,10 @@ class Response(aiohttp_web.Response):
         )
 
 
-class ResponseException(Response, Exception):
-    ...
+class ResponseException(Response, Exception): ...
 
 
-class BaseResponseSchema(dl_pydantic.BaseSchema):
-    ...
+class BaseResponseSchema(dl_pydantic.BaseSchema): ...
 
 
 class ErrorResponseSchema(BaseResponseSchema):
@@ -176,11 +174,9 @@ class BaseRequestSchema(dl_pydantic.BaseSchema):
 
 
 class BaseHandler(abc.ABC):
-    class RequestSchema(BaseRequestSchema):
-        ...
+    class RequestSchema(BaseRequestSchema): ...
 
-    class ResponseSchema(BaseResponseSchema):
-        ...
+    class ResponseSchema(BaseResponseSchema): ...
 
     OPENAPI_TAGS: ClassVar[list[str]] = []
     OPENAPI_DESCRIPTION: ClassVar[str] = ""
@@ -198,8 +194,7 @@ class BaseHandler(abc.ABC):
         return self.RequestSchema
 
     @abc.abstractmethod
-    async def process(self, request: aiohttp.web.Request) -> aiohttp.web.StreamResponse:
-        ...
+    async def process(self, request: aiohttp.web.Request) -> aiohttp.web.StreamResponse: ...
 
 
 @attrs.define(frozen=True, kw_only=True)

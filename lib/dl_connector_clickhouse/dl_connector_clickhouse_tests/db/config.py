@@ -30,9 +30,9 @@ class CoreConnectionSettings:
 class CoreSslConnectionSettings(CoreConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("db-clickhouse-22-10-ssl", fallback_port=52206).host
     PORT: ClassVar[int] = get_test_container_hostport("db-clickhouse-22-10-ssl", fallback_port=52206).port
-    CERT_PROVIDER_URL: ClassVar[
-        str
-    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=52213).as_pair()}"
+    CERT_PROVIDER_URL: ClassVar[str] = (
+        f"http://{get_test_container_hostport('ssl-provider', fallback_port=52213).as_pair()}"
+    )
 
 
 class CoreConnectionSettingsCH26:

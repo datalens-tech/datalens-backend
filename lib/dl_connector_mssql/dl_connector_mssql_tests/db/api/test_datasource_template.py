@@ -20,32 +20,28 @@ class TestTableControlApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     MSSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateSettingsDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     MSSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateConnectionDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     MSSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableDataApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     MSSQLDataApiTestBase,
-):
-    ...
+): ...
 
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
@@ -57,29 +53,25 @@ class TestSubselectControlApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     MSSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateSettingsDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     MSSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateConnectionDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     MSSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectDataApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     MSSQLDataApiTestBase,
-):
-    ...
+): ...

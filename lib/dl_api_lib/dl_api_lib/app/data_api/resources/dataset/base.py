@@ -950,9 +950,9 @@ class DatasetDataBaseView(BaseView):
 
         result = DataRequestResponseSerializer.make_data_response_v2(
             merged_stream=merged_stream,
-            reporting_registry=self.dl_request.services_registry.get_reporting_registry()
-            if self.allow_notifications
-            else None,
+            reporting_registry=(
+                self.dl_request.services_registry.get_reporting_registry() if self.allow_notifications else None
+            ),
             data_export_info=data_export_info,
         )
         return result

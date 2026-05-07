@@ -30,13 +30,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MigrationFunction(Protocol):
-    def __call__(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
-        ...
+    def __call__(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict: ...
 
 
 class AwaitMigrationFunction(Protocol):
-    async def __call__(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict:
-        ...
+    async def __call__(self, entry: dict, services_registry: ServicesRegistry | None = None) -> dict: ...
 
 
 @attr.s

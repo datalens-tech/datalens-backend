@@ -24,17 +24,14 @@ class StringJsonableTypeMixin(Generic[T]):
 
     @classmethod
     @abc.abstractmethod
-    def from_string(cls, value: str) -> Self:
-        ...
+    def from_string(cls, value: str) -> Self: ...
 
     @abc.abstractmethod
-    def to_string(self) -> str:
-        ...
+    def to_string(self) -> str: ...
 
     @classmethod
     @abc.abstractmethod
-    def from_original(cls, value: Any) -> Self:
-        ...
+    def from_original(cls, value: Any) -> Self: ...
 
     @classmethod
     def __get_pydantic_core_schema__(

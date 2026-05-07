@@ -39,12 +39,10 @@ class ActivityResult(dl_temporal.BaseActivityResult):
     activity_nested_result: common.NestedModel
 
 
-class EmptyActivityResult(dl_temporal.BaseActivityResult):
-    ...
+class EmptyActivityResult(dl_temporal.BaseActivityResult): ...
 
 
-class ActivityError(dl_temporal.BaseActivityError):
-    ...
+class ActivityError(dl_temporal.BaseActivityError): ...
 
 
 @dl_temporal.define_activity

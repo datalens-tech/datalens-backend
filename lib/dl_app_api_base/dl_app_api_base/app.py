@@ -46,8 +46,7 @@ class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
     APP_INFO: AppInfoSettings = pydantic.Field(default_factory=AppInfoSettings)
 
 
-class HttpServerAppDynconfigMixin(dl_dynconfig.DynConfig):
-    ...
+class HttpServerAppDynconfigMixin(dl_dynconfig.DynConfig): ...
 
 
 @attr.define(frozen=True, kw_only=True)
@@ -86,8 +85,7 @@ AppType = TypeVar("AppType", bound=HttpServerAppMixin)
 class HttpServerRequestContextDependencies(
     auth.AuthRequestContextDependenciesMixin,
     request_context.BaseRequestContextDependencies,
-):
-    ...
+): ...
 
 
 class HttpServerRequestContext(

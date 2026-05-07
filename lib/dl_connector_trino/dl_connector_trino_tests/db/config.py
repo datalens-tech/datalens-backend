@@ -46,9 +46,9 @@ class CoreSslConnectionSettings(BaseConnectionSettings):
     PORT: ClassVar[int] = get_test_container_hostport("trino-tls-nginx", fallback_port=21124).port
     USERNAME: ClassVar[str] = "trino_user"
     SSL_ENABLE: ClassVar[bool] = True
-    CERT_PROVIDER_URL: ClassVar[
-        str
-    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=26002).as_pair()}"
+    CERT_PROVIDER_URL: ClassVar[str] = (
+        f"http://{get_test_container_hostport('ssl-provider', fallback_port=26002).as_pair()}"
+    )
 
 
 class CorePasswordConnectionSettings(CoreSslConnectionSettings):

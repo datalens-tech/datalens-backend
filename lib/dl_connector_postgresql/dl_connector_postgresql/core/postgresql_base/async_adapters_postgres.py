@@ -279,9 +279,10 @@ class AsyncPostgresAdapter(
                 query.debug_compiled_query or inspector_query
             )  # TODO: BI-6448 move out the if; make query if query.debug_compiled_query is None
 
-        with self.handle_execution_error(
-            debug_query=debug_query, inspector_query=inspector_query
-        ), self.execution_context():
+        with (
+            self.handle_execution_error(debug_query=debug_query, inspector_query=inspector_query),
+            self.execution_context(),
+        ):
             async with self._get_connection(query.db_name) as conn:  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "_get_connection" of "AsyncPostgresAdapter" has incompatible type "str | None"; expected "str"  [arg-type]
                 # prepare works only inside a transaction
                 async with conn.transaction(readonly=True):

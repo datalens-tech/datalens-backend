@@ -3,8 +3,7 @@ import attr
 import dl_app_api_base.auth.checkers.base as auth_checkers_base
 
 
-class AlwaysAllowAuthResult(auth_checkers_base.BaseRequestAuthResult):
-    ...
+class AlwaysAllowAuthResult(auth_checkers_base.BaseRequestAuthResult): ...
 
 
 @attr.define(frozen=True, kw_only=True)

@@ -397,9 +397,11 @@ class FuncUserInfo(FuncMarkup):
     variants = [
         VW(
             D.DUMMY | D.SQLITE,
-            lambda user_id, user_info_type: markup_node("userinfo", user_id, user_info_type)
-            if user_info_type.node.value in ["name", "email"]
-            else markup_node("c", user_id),
+            lambda user_id, user_info_type: (
+                markup_node("userinfo", user_id, user_info_type)
+                if user_info_type.node.value in ["name", "email"]
+                else markup_node("c", user_id)
+            ),
         ),
     ]
 

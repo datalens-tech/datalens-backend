@@ -40,32 +40,28 @@ class TestTableControlApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     StarRocksDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateSettingsDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     StarRocksDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableDataApiSourceTemplateConnectionDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     StarRocksDataApiTestBase,
-):
-    ...
+): ...
 
 
 class TestTableDataApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     StarRocksDataApiTestBase,
-):
-    ...
+): ...
 
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
@@ -83,29 +79,25 @@ class TestSubselectControlApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     StarRocksDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateSettingsDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     StarRocksDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateConnectionDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     StarRocksDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectDataApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     StarRocksDataApiTestBase,
-):
-    ...
+): ...

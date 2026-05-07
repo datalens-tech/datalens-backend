@@ -209,8 +209,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         return cls.model_fields["type"].alias or "type"
 
 
-class TypedBaseSchema(TypedBaseModel, base.BaseSchema):
-    ...
+class TypedBaseSchema(TypedBaseModel, base.BaseSchema): ...
 
 
 TypedBaseSchemaT = TypeVar("TypedBaseSchemaT", bound=TypedBaseSchema)

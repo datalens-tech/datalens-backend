@@ -68,5 +68,4 @@ class DLAuthorizationHeaderPrefix(DLHeaders):
     OAUTH = "OAuth "
 
 
-class DLCookiesCommon(DLCookies):
-    ...
+class DLCookiesCommon(DLCookies): ...

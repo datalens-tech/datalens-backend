@@ -23,32 +23,28 @@ class TestTableControlApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     OracleDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateSettingsDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     OracleDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateConnectionDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     OracleDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableDataApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     OracleDataApiTestBase,
-):
-    ...
+): ...
 
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
@@ -63,29 +59,25 @@ class TestSubselectControlApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     OracleDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateSettingsDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     OracleDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateConnectionDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     OracleDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectDataApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     OracleDataApiTestBase,
-):
-    ...
+): ...

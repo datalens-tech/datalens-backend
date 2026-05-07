@@ -21,8 +21,7 @@ class BaseTemporalWorkerAppSettings(
     temporal_app.TemporalWorkerAppSettingsMixin,
     dl_app_api_base.HttpServerAppSettingsMixin,
     dl_app_base.BaseAppSettings,
-):
-    ...
+): ...
 
 
 class BaseTemporalWorkerAppDynconfigMixin(dl_app_api_base.HttpServerAppDynconfigMixin):
@@ -36,8 +35,7 @@ class BaseTemporalWorkerApp(
     temporal_app.TemporalWorkerAppMixin,
     dl_app_api_base.HttpServerAppMixin,
     dl_app_base.BaseApp,
-):
-    ...
+): ...
 
 
 AppType = TypeVar("AppType", bound=BaseTemporalWorkerApp)

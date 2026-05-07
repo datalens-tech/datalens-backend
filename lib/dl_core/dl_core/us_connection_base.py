@@ -761,9 +761,11 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         conn_executor = conn_executor_factory(self)
         return conn_executor.get_tables(
             SchemaIdent(db_name=db_name, schema_name=schema_name),
-            PageIdent(search_text=search_text, limit=limit, offset=offset)
-            if search_text or offset or limit is not None
-            else None,
+            (
+                PageIdent(search_text=search_text, limit=limit, offset=offset)
+                if search_text or offset or limit is not None
+                else None
+            ),
         )
 
 

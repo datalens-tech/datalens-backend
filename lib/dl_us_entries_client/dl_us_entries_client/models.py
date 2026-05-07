@@ -28,8 +28,7 @@ class PingRequest(dl_httpx.BaseRequest):
 
 
 class TenantProtocol(Protocol):
-    def get_outbound_tenancy_headers(self) -> dict[dl_constants.DLHeaders, str]:
-        ...
+    def get_outbound_tenancy_headers(self) -> dict[dl_constants.DLHeaders, str]: ...
 
 
 @attrs.define(kw_only=True, frozen=True)

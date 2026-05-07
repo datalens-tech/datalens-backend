@@ -2,8 +2,7 @@ import attrs
 import httpx
 
 
-class BaseHttpxClientException(Exception):
-    ...
+class BaseHttpxClientException(Exception): ...
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -18,5 +17,4 @@ class RequestHttpxClientException(BaseHttpxClientException):
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class NoRetriesHttpxClientException(BaseHttpxClientException):
-    ...
+class NoRetriesHttpxClientException(BaseHttpxClientException): ...

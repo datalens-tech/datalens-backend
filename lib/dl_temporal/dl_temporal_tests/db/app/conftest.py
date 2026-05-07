@@ -22,12 +22,10 @@ DIR_PATH = os.path.dirname(__file__)
 LOGGER = logging.getLogger(__name__)
 
 
-class Settings(dl_temporal.app.BaseTemporalWorkerAppSettings):
-    ...
+class Settings(dl_temporal.app.BaseTemporalWorkerAppSettings): ...
 
 
-class App(dl_temporal.app.BaseTemporalWorkerApp):
-    ...
+class App(dl_temporal.app.BaseTemporalWorkerApp): ...
 
 
 @attr.define(kw_only=True, slots=False)

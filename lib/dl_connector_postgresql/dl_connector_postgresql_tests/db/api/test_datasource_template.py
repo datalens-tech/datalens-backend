@@ -20,32 +20,28 @@ class TestTableControlApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     PostgreSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateSettingsDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     PostgreSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableControlApiSourceTemplateConnectionDisabled(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     PostgreSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestTableDataApiSourceTemplate(
     BaseTableTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     PostgreSQLDataApiTestBase,
-):
-    ...
+): ...
 
 
 class BaseSubselectTestSourceTemplate(dl_api_lib_testing.BaseSubselectTestSourceTemplate):
@@ -57,29 +53,25 @@ class TestSubselectControlApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplate,
     PostgreSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateSettingsDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateSettingsDisabled,
     PostgreSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectControlApiSourceTemplateConnectionDisabled(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestControlApiSourceTemplateConnectionDisabled,
     PostgreSQLDatasetTestBase,
-):
-    ...
+): ...
 
 
 class TestSubselectDataApiSourceTemplate(
     BaseSubselectTestSourceTemplate,
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     PostgreSQLDataApiTestBase,
-):
-    ...
+): ...

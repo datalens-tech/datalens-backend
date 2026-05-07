@@ -11,16 +11,13 @@ import dl_utils
 
 class ParentContextProtocol(Protocol):
     @property
-    def request_id(self) -> str | None:
-        ...
+    def request_id(self) -> str | None: ...
 
     @property
-    def user_ip(self) -> str | None:
-        ...
+    def user_ip(self) -> str | None: ...
 
     @property
-    def trace_id(self) -> str | None:
-        ...
+    def trace_id(self) -> str | None: ...
 
 
 @attrs.define(kw_only=True, frozen=True)
@@ -79,8 +76,7 @@ class BaseRequest:
         return {}
 
 
-class BaseResponseSchema(dl_pydantic.BaseSchema):
-    ...
+class BaseResponseSchema(dl_pydantic.BaseSchema): ...
 
 
 __all__ = [

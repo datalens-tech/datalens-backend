@@ -31,9 +31,9 @@ class CoreConnectionSettings:
 class CoreSslConnectionSettings(CoreConnectionSettings):
     HOST: ClassVar[str] = get_test_container_hostport("db-postgres-9-4-ssl", fallback_port=52303).host
     PORT: ClassVar[int] = get_test_container_hostport("db-postgres-9-4-ssl", fallback_port=52303).port
-    CERT_PROVIDER_URL: ClassVar[
-        str
-    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=52313).as_pair()}"
+    CERT_PROVIDER_URL: ClassVar[str] = (
+        f"http://{get_test_container_hostport('ssl-provider', fallback_port=52313).as_pair()}"
+    )
 
 
 SUBSELECT_QUERY_FULL = r"""

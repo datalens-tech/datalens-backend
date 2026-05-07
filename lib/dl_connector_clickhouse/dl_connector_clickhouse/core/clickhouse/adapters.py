@@ -16,8 +16,7 @@ from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TY
 LOGGER = logging.getLogger(__name__)
 
 
-class DLClickHouseAdapter(ClickHouseAdapter):
-    ...
+class DLClickHouseAdapter(ClickHouseAdapter): ...
 
 
 class DLAsyncClickHouseAdapter(AsyncClickHouseAdapter):

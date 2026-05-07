@@ -81,17 +81,19 @@ class DeprecatedAppSettings:
     RQE_CACHES_REDIS: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         "RQE_CACHES_REDIS",
         fallback_factory=(
-            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
-                MODE=RedisMode.single_host,
-                CLUSTER_NAME=cfg.REDIS_RQE_CACHES_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_RQE_CACHES_HOSTS),
-                PORT=cfg.REDIS_RQE_CACHES_PORT,
-                SSL=cfg.REDIS_RQE_CACHES_SSL,
-                DB=cfg.REDIS_RQE_CACHES_DB,
-                PASSWORD=required(str),
+            lambda cfg: (
+                dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+                    MODE=RedisMode.single_host,
+                    CLUSTER_NAME=cfg.REDIS_RQE_CACHES_CLUSTER_NAME,
+                    HOSTS=_list_to_tuple(cfg.REDIS_RQE_CACHES_HOSTS),
+                    PORT=cfg.REDIS_RQE_CACHES_PORT,
+                    SSL=cfg.REDIS_RQE_CACHES_SSL,
+                    DB=cfg.REDIS_RQE_CACHES_DB,
+                    PASSWORD=required(str),
+                )
+                if is_setting_applicable(cfg, "REDIS_RQE_CACHES_DB")
+                else None
             )
-            if is_setting_applicable(cfg, "REDIS_RQE_CACHES_DB")
-            else None
         ),
         missing=None,
     )
@@ -100,19 +102,21 @@ class DeprecatedAppSettings:
     RATE_LIMITER_REDIS: dl_configs.RedisSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RedisSettings | None")  [assignment]
         "RATE_LIMITER_REDIS",
         fallback_factory=(
-            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
-                MODE=RedisMode.single_host,
-                CLUSTER_NAME=cfg.RATE_LIMITER_REDIS_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.RATE_LIMITER_REDIS_HOSTS),
-                PORT=cfg.RATE_LIMITER_REDIS_PORT,
-                SSL=cfg.RATE_LIMITER_REDIS_SSL,
-                DB=cfg.RATE_LIMITER_REDIS_DB,
-                PASSWORD=required(str),
-                SOCKET_TIMEOUT=0.1,
-                SOCKET_CONNECT_TIMEOUT=0.5,
+            lambda cfg: (
+                dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+                    MODE=RedisMode.single_host,
+                    CLUSTER_NAME=cfg.RATE_LIMITER_REDIS_CLUSTER_NAME,
+                    HOSTS=_list_to_tuple(cfg.RATE_LIMITER_REDIS_HOSTS),
+                    PORT=cfg.RATE_LIMITER_REDIS_PORT,
+                    SSL=cfg.RATE_LIMITER_REDIS_SSL,
+                    DB=cfg.RATE_LIMITER_REDIS_DB,
+                    PASSWORD=required(str),
+                    SOCKET_TIMEOUT=0.1,
+                    SOCKET_CONNECT_TIMEOUT=0.5,
+                )
+                if is_setting_applicable(cfg, "RATE_LIMITER_REDIS_DB")
+                else None
             )
-            if is_setting_applicable(cfg, "RATE_LIMITER_REDIS_DB")
-            else None
         ),
         missing=None,
     )
@@ -216,17 +220,19 @@ class DeprecatedControlApiAppSettings(DeprecatedAppSettings):
         # TODO: move this values to a separate key
         "REDIS_ARQ",
         fallback_factory=(
-            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
-                MODE=RedisMode(cfg.REDIS_PERSISTENT_MODE),
-                CLUSTER_NAME=cfg.REDIS_PERSISTENT_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_PERSISTENT_HOSTS),
-                PORT=cfg.REDIS_PERSISTENT_PORT,
-                SSL=cfg.REDIS_PERSISTENT_SSL,
-                DB=cfg.REDIS_FILE_UPLOADER_TASKS_DB,
-                PASSWORD=required(str),
+            lambda cfg: (
+                dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+                    MODE=RedisMode(cfg.REDIS_PERSISTENT_MODE),
+                    CLUSTER_NAME=cfg.REDIS_PERSISTENT_CLUSTER_NAME,
+                    HOSTS=_list_to_tuple(cfg.REDIS_PERSISTENT_HOSTS),
+                    PORT=cfg.REDIS_PERSISTENT_PORT,
+                    SSL=cfg.REDIS_PERSISTENT_SSL,
+                    DB=cfg.REDIS_FILE_UPLOADER_TASKS_DB,
+                    PASSWORD=required(str),
+                )
+                if is_setting_applicable(cfg, "REDIS_PERSISTENT_CLUSTER_NAME")
+                else None
             )
-            if is_setting_applicable(cfg, "REDIS_PERSISTENT_CLUSTER_NAME")
-            else None
         ),
         missing=None,
     )
@@ -243,17 +249,19 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
         # TODO: move this values to a separate key
         "CACHES_REDIS",
         fallback_factory=(
-            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
-                MODE=RedisMode.sentinel,
-                CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
-                PORT=cfg.REDIS_CACHES_PORT,
-                SSL=cfg.REDIS_CACHES_SSL,
-                DB=cfg.REDIS_CACHES_DB,
-                PASSWORD=required(str),
+            lambda cfg: (
+                dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+                    MODE=RedisMode.sentinel,
+                    CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
+                    HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
+                    PORT=cfg.REDIS_CACHES_PORT,
+                    SSL=cfg.REDIS_CACHES_SSL,
+                    DB=cfg.REDIS_CACHES_DB,
+                    PASSWORD=required(str),
+                )
+                if is_setting_applicable(cfg, "REDIS_CACHES_DB")
+                else None
             )
-            if is_setting_applicable(cfg, "REDIS_CACHES_DB")
-            else None
         ),
         missing=None,
     )
@@ -263,17 +271,19 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
         # TODO: move this values to a separate key
         "MUTATIONS_REDIS",
         fallback_factory=(
-            lambda cfg: dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
-                MODE=RedisMode.sentinel,
-                CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
-                HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
-                PORT=cfg.REDIS_CACHES_PORT,
-                SSL=cfg.REDIS_CACHES_SSL,
-                DB=cfg.REDIS_MUTATIONS_CACHES_DB,
-                PASSWORD=required(str),
+            lambda cfg: (
+                dl_configs.RedisSettings(  # type: ignore  # 2024-01-30 # TODO: Unexpected keyword argument "MODE" for "RedisSettings"  [call-arg]
+                    MODE=RedisMode.sentinel,
+                    CLUSTER_NAME=cfg.REDIS_CACHES_CLUSTER_NAME,
+                    HOSTS=_list_to_tuple(cfg.REDIS_CACHES_HOSTS),
+                    PORT=cfg.REDIS_CACHES_PORT,
+                    SSL=cfg.REDIS_CACHES_SSL,
+                    DB=cfg.REDIS_MUTATIONS_CACHES_DB,
+                    PASSWORD=required(str),
+                )
+                if is_setting_applicable(cfg, "REDIS_MUTATIONS_CACHES_DB")
+                else None
             )
-            if is_setting_applicable(cfg, "REDIS_MUTATIONS_CACHES_DB")
-            else None
         ),
         missing=None,
     )
@@ -314,21 +324,17 @@ class ControlApiAppTestingsSettings:
 
 
 @attr.s(frozen=True)
-class DeprecatedControlApiAppSettingsOS(DeprecatedControlApiAppSettings):
-    ...
+class DeprecatedControlApiAppSettingsOS(DeprecatedControlApiAppSettings): ...
 
 
 @attr.s(frozen=True)
-class DeprecatedDataApiAppSettingsOS(DeprecatedDataApiAppSettings):
-    ...
+class DeprecatedDataApiAppSettingsOS(DeprecatedDataApiAppSettings): ...
 
 
-class BaseAuthSettingsOS(dl_settings.TypedBaseSettings):
-    ...
+class BaseAuthSettingsOS(dl_settings.TypedBaseSettings): ...
 
 
-class NullAuthSettingsOS(BaseAuthSettingsOS):
-    ...
+class NullAuthSettingsOS(BaseAuthSettingsOS): ...
 
 
 BaseAuthSettingsOS.register("NONE", NullAuthSettingsOS)
@@ -354,8 +360,7 @@ class NativeAuthSettingsOS(BaseAuthSettingsOS):
 BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
-class AppSettings(dl_settings.BaseRootSettingsWithFallback):
-    ...
+class AppSettings(dl_settings.BaseRootSettingsWithFallback): ...
 
 
 class WhitelistsAppSettings(dl_settings.BaseRootSettings):
@@ -479,9 +484,7 @@ class AppSettingsOS(
     }
 
 
-class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings):
-    ...
+class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings): ...
 
 
-class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings):
-    ...
+class DataApiAppSettingsOS(AppSettingsOS, DataApiAppSettings): ...

@@ -12,12 +12,10 @@ with temporalio.workflow.unsafe.imports_passed_through():
 LOGGER = logging.getLogger(__name__)
 
 
-class SyncSchedulesFromDynconfigWorkflowParams(base.BaseWorkflowParams):
-    ...
+class SyncSchedulesFromDynconfigWorkflowParams(base.BaseWorkflowParams): ...
 
 
-class SyncSchedulesFromDynconfigWorkflowResult(base.BaseWorkflowResult):
-    ...
+class SyncSchedulesFromDynconfigWorkflowResult(base.BaseWorkflowResult): ...
 
 
 @base.define_workflow

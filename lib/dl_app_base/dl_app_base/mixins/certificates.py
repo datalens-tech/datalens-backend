@@ -21,8 +21,7 @@ class CertificatesAppSettingsMixin(base.BaseAppSettings):
     CERTIFICATES: CertificatesSettings = pydantic.Field(default_factory=CertificatesSettings)
 
 
-class CertificatesAppMixin(base.BaseApp):
-    ...
+class CertificatesAppMixin(base.BaseApp): ...
 
 
 class CertificatesAppFactoryMixin(

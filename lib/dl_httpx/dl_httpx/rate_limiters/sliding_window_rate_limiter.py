@@ -18,8 +18,7 @@ import dl_httpx.utils.attrs as attrs_utils
 
 
 class DateTimeProvider(Protocol):
-    def get_now(self) -> float:
-        ...
+    def get_now(self) -> float: ...
 
 
 class DefaultDateTimeProvider:

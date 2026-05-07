@@ -95,7 +95,6 @@ class TestSslNoVerifyIgnoredWhenSettingDisabled(
     BaseSslClickHouseTestClass,
     BaseClickHouseTestClass,
 ):
-
     """SSL ClickHouse with ssl_ca_verify=False stored but ALLOW_SSL_CA_VERIFY_OPTION=False.
 
     Verifies that when the setting is disabled the stored ssl_ca_verify=False is ignored

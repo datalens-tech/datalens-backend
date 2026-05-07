@@ -108,7 +108,12 @@ class PivotTotalsNormalizerHelper:
         this_dir_dimensions: list[RawPivotLegendItem],
         other_dir_dimensions: list[RawPivotLegendItem],
         measures: list[RawPivotLegendItem],
-    ) -> tuple[list[RawSelectFieldSpec], list[RawPivotLegendItem], list[RawPivotLegendItem], list[RawPivotLegendItem],]:
+    ) -> tuple[
+        list[RawSelectFieldSpec],
+        list[RawPivotLegendItem],
+        list[RawPivotLegendItem],
+        list[RawPivotLegendItem],
+    ]:
         """
         Generate new items for the legend (raw_query_spec_union)
         and pivot spec.

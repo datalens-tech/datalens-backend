@@ -16,8 +16,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.define(kw_only=True, slots=False)
-class BaseRequestContextDependencies:
-    ...
+class BaseRequestContextDependencies: ...
 
 
 _RequestContextDependenciesContravariantType = TypeVar(
@@ -88,8 +87,7 @@ class RequestContextFactoryProtocol(
         self,
         aiohttp_request: aiohttp.web.Request,
         dependencies: _RequestContextDependenciesContravariantType,
-    ) -> _RequestContextCovariantType:
-        ...
+    ) -> _RequestContextCovariantType: ...
 
 
 def _get_context_var() -> contextvars.ContextVar[_RequestContextCovariantType | None]:
@@ -139,13 +137,10 @@ class BaseRequestContextManager(Generic[_RequestContextDependenciesContravariant
 
 
 class RequestContextProviderProtocol(Protocol[_RequestContextCovariantType]):
-    def get(self) -> _RequestContextCovariantType:
-        ...
+    def get(self) -> _RequestContextCovariantType: ...
 
 
 class RequestContextManagerProtocol(Protocol[_RequestContextCovariantType]):
-    def create(self, aiohttp_request: aiohttp.web.Request) -> _RequestContextCovariantType:
-        ...
+    def create(self, aiohttp_request: aiohttp.web.Request) -> _RequestContextCovariantType: ...
 
-    def clear(self) -> None:
-        ...
+    def clear(self) -> None: ...

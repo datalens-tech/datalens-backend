@@ -44,9 +44,9 @@ class CoreSSLConnectionSettings:
     USERNAME: ClassVar[str] = "datalens"
     PASSWORD: ClassVar[str] = "qwerty"
     SSL_ENABLE: ClassVar[bool] = True
-    CERT_PROVIDER_URL: ClassVar[
-        str
-    ] = f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
+    CERT_PROVIDER_URL: ClassVar[str] = (
+        f"http://{get_test_container_hostport('ssl-provider', fallback_port=8080).as_pair()}"
+    )
 
 
 DEFAULT_ORACLE_SCHEMA_NAME = "DATALENS"

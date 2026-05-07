@@ -15,17 +15,14 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.define(frozen=True, kw_only=True)
-class BaseRequestAuthResult:
-    ...
+class BaseRequestAuthResult: ...
 
 
 class RequestAuthCheckerProtocol(Protocol):
     @property
-    def name(self) -> str:
-        ...
+    def name(self) -> str: ...
 
-    async def is_applicable(self) -> bool:
-        ...
+    async def is_applicable(self) -> bool: ...
 
     async def check(self) -> BaseRequestAuthResult:
         """
@@ -48,5 +45,4 @@ class BaseRequestAuthChecker(abc.ABC):
         return any(route_matcher.matches(context.path, context.method) for route_matcher in self._route_matchers)
 
     @abc.abstractmethod
-    async def check(self) -> BaseRequestAuthResult:
-        ...
+    async def check(self) -> BaseRequestAuthResult: ...

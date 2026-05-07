@@ -141,9 +141,9 @@ class USMFactory:
         self, rci: RequestContextInfo, services_registry: ServicesRegistry, is_token_stored: bool | None = True
     ) -> SyncUSManager:
         return SyncUSManager(
-            us_auth_context=self.get_master_auth_context_sync()
-            if is_token_stored
-            else self.get_master_auth_context_from_headers(),
+            us_auth_context=(
+                self.get_master_auth_context_sync() if is_token_stored else self.get_master_auth_context_from_headers()
+            ),
             us_base_url=self.us_base_url,
             bi_context=rci,
             crypto_keys_config=self.crypto_keys_config,

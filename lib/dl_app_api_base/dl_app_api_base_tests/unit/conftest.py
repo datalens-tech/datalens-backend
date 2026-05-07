@@ -53,8 +53,7 @@ class Counter:
         return self.value
 
 
-class App(dl_app_api_base.HttpServerAppMixin):
-    ...
+class App(dl_app_api_base.HttpServerAppMixin): ...
 
 
 class HttpServerSettings(dl_app_api_base.HttpServerSettings):
@@ -100,8 +99,7 @@ class RequestContextDependencies(
     CounterRequestContextDependenciesMixin,
     ValueRequestContextDependenciesMixin,
     dl_app_api_base.HttpServerRequestContextDependencies,
-):
-    ...
+): ...
 
 
 @attr.define(kw_only=True, slots=False)

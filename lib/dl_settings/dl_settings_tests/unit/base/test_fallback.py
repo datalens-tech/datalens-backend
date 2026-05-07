@@ -7,8 +7,7 @@ import dl_settings
 
 
 def test_no_fallback_raises() -> None:
-    class Settings(dl_settings.BaseRootSettings):
-        ...
+    class Settings(dl_settings.BaseRootSettings): ...
 
     settings = Settings()
 
@@ -26,8 +25,7 @@ def test_default() -> None:
 
 
 def test_no_fallback_map() -> None:
-    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings):
-        ...
+    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings): ...
 
     settings = Settings()
 
@@ -36,8 +34,7 @@ def test_no_fallback_map() -> None:
 
 
 def test_fallback_getattr() -> None:
-    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings):
-        ...
+    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings): ...
 
     @attr.s(auto_attribs=True)
     class Fallback:
@@ -50,8 +47,7 @@ def test_fallback_getattr() -> None:
 
 
 def test_fallback_getattr_upper() -> None:
-    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings):
-        ...
+    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings): ...
 
     @attr.s(auto_attribs=True)
     class Fallback:
@@ -64,8 +60,7 @@ def test_fallback_getattr_upper() -> None:
 
 
 def test_fallback_getattr_lower() -> None:
-    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings):
-        ...
+    class Settings(dl_settings.WithFallbackGetAttr, dl_settings.BaseRootSettings): ...
 
     @attr.s(auto_attribs=True)
     class Fallback:

@@ -25,8 +25,7 @@ class TemporalWorkerAppSettingsMixin(dl_app_base.BaseAppSettings):
 
 
 @attr.define(frozen=True, kw_only=True)
-class TemporalWorkerAppMixin(dl_app_base.BaseApp):
-    ...
+class TemporalWorkerAppMixin(dl_app_base.BaseApp): ...
 
 
 AppType = TypeVar("AppType", bound=TemporalWorkerAppMixin)
@@ -106,5 +105,4 @@ class TemporalWorkerAppFactoryMixin(
     @dl_app_base.singleton_class_method_result
     async def _get_temporal_client_metadata_provider(
         self,
-    ) -> client.MetadataProvider:
-        ...
+    ) -> client.MetadataProvider: ...

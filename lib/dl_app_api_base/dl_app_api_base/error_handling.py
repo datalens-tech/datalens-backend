@@ -30,8 +30,7 @@ class _InternalServerErrorResponseSchema(dl_app_api_base.handlers.ErrorResponseS
 
 
 class ErrorHandlerProtocol(Protocol):
-    def __call__(self, exc: Exception) -> aiohttp.web.StreamResponse | None:
-        ...
+    def __call__(self, exc: Exception) -> aiohttp.web.StreamResponse | None: ...
 
 
 class _UnauthorizedErrorResponseSchema(dl_app_api_base.handlers.ErrorResponseSchema):

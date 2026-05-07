@@ -138,9 +138,9 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
     ) -> dict[str, Any]:
         data: dict[str, Any] = {}
 
-        data[
-            "data_export_forbidden"
-        ] = not data_export_info.enabled_in_conn  # TODO: BI-6539 remove after switch to new schema
+        data["data_export_forbidden"] = (
+            not data_export_info.enabled_in_conn
+        )  # TODO: BI-6539 remove after switch to new schema
 
         data_export_result = get_data_export_base_result(data_export_info)
         enrich_resp_dict_with_data_export_info(data, data_export_result)

@@ -16,8 +16,7 @@ _LOCKED_AND_UNSET_VALUE = object()
 _LOCKED_AND_UNSET_ERROR_MESSAGE_TEMPLATE = "Singleton result for {function_name} is locked and unset, but function is called again, probably because of a recursive call"
 
 
-class LockedAndUnsetError(RuntimeError):
-    ...
+class LockedAndUnsetError(RuntimeError): ...
 
 
 SINGLETON_FUNCTION_RESULT_ATTRIBUTE = "_singleton_function_result"

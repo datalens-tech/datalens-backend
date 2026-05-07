@@ -71,8 +71,7 @@ class ParentContext(BaseModel):
     trace_id: str | None = pydantic.Field(default=None)
 
 
-class _UnsetStr(str):
-    ...
+class _UnsetStr(str): ...
 
 
 class BaseResultModel(BaseModel):
@@ -94,9 +93,9 @@ class BaseResultModel(BaseModel):
 
 @dataclasses.dataclass(frozen=True)
 class DataConverter(temporalio.converter.DataConverter):
-    payload_converter_class: type[
-        temporalio.converter.PayloadConverter
-    ] = temporalio.contrib.pydantic.PydanticPayloadConverter
+    payload_converter_class: type[temporalio.converter.PayloadConverter] = (
+        temporalio.contrib.pydantic.PydanticPayloadConverter
+    )
 
 
 class BaseActivityParams(BaseModel):
@@ -109,12 +108,10 @@ class BaseActivityParams(BaseModel):
     parent_context: ParentContext = pydantic.Field(default_factory=ParentContext)
 
 
-class BaseActivityResult(BaseResultModel):
-    ...
+class BaseActivityResult(BaseResultModel): ...
 
 
-class BaseActivityError(BaseActivityResult):
-    ...
+class BaseActivityError(BaseActivityResult): ...
 
 
 ActivityParamsT = TypeVar("ActivityParamsT", bound=BaseActivityParams)
@@ -130,8 +127,7 @@ class ActivityProtocol(Protocol[ActivityParamsT, ActivityResultT]):
     Params: ClassVar[type[ActivityParamsT]]  # type: ignore
     Result: ClassVar[type[ActivityResultT]]  # type: ignore
 
-    async def run(self, params: ActivityParamsT) -> ActivityResultT:
-        ...
+    async def run(self, params: ActivityParamsT) -> ActivityResultT: ...
 
 
 _ActivityType = ActivityProtocol[ActivityParamsT, ActivityResultT]
@@ -209,8 +205,7 @@ class BaseActivity(ActivityProtocol, Generic[ActivityParamsT, ActivityResultT]):
     logger: ClassVar[logging.Logger]
 
     @abc.abstractmethod
-    async def run(self, params: ActivityParamsT) -> ActivityResultT:
-        ...
+    async def run(self, params: ActivityParamsT) -> ActivityResultT: ...
 
 
 DEFAULT_WORKFLOW_EXECUTION_TIMEOUT = dl_pydantic.JsonableTimedelta(minutes=10)
@@ -228,8 +223,7 @@ class BaseWorkflowResult(BaseResultModel):
         return []
 
 
-class BaseWorkflowError(BaseWorkflowResult):
-    ...
+class BaseWorkflowError(BaseWorkflowResult): ...
 
 
 WorkflowParamsT = TypeVar("WorkflowParamsT", bound=BaseWorkflowParams)
@@ -246,8 +240,7 @@ class WorkflowProtocol(Protocol[SelfType, WorkflowParamsT, WorkflowResultT]):
     Params: ClassVar[type[WorkflowParamsT]]  # type: ignore
     Result: ClassVar[type[WorkflowResultT]]  # type: ignore
 
-    async def run(self: SelfType, params: WorkflowParamsT) -> WorkflowResultT:
-        ...
+    async def run(self: SelfType, params: WorkflowParamsT) -> WorkflowResultT: ...
 
 
 _WorkflowType = WorkflowProtocol[SelfType, WorkflowParamsT, WorkflowResultT]
@@ -368,8 +361,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
         cls.run = _parent_context_middleware(cls.run)  # type: ignore
 
     @abc.abstractmethod
-    async def run(self, params: WorkflowParamsT) -> WorkflowResultT:
-        ...
+    async def run(self, params: WorkflowParamsT) -> WorkflowResultT: ...
 
     async def execute_activity(
         self,

@@ -56,8 +56,7 @@ def fixture_another_public_key_pem() -> str:
 
 
 class Encoder(typing.Protocol):
-    def __call__(self, payload: dict) -> str:
-        ...
+    def __call__(self, payload: dict) -> str: ...
 
 
 @pytest.fixture(name="encoder")

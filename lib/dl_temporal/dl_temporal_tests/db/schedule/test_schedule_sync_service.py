@@ -18,12 +18,10 @@ import dl_temporal_tests.db.common as common
 LOGGER = logging.getLogger(__name__)
 
 
-class _TestWorkflowParams(dl_temporal.BaseWorkflowParams):
-    ...
+class _TestWorkflowParams(dl_temporal.BaseWorkflowParams): ...
 
 
-class _TestWorkflowResult(dl_temporal.BaseWorkflowResult):
-    ...
+class _TestWorkflowResult(dl_temporal.BaseWorkflowResult): ...
 
 
 class _TestWorkflow(dl_temporal.BaseWorkflow):

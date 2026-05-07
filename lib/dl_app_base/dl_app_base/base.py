@@ -21,8 +21,7 @@ import dl_app_base.singleton as singleton
 import dl_settings
 
 
-class BaseAppSettings(dl_settings.BaseRootSettings):
-    ...
+class BaseAppSettings(dl_settings.BaseRootSettings): ...
 
 
 class RuntimeStatus(enum.Enum):
@@ -264,5 +263,4 @@ class BaseAppFactory(Generic[AppType]):
     @singleton.singleton_class_method_result
     async def _get_logger(
         self,
-    ) -> logging.Logger:
-        ...
+    ) -> logging.Logger: ...

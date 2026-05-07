@@ -22,8 +22,7 @@ _US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 
 @attr.s
-class HookResult:
-    ...
+class HookResult: ...
 
 
 @attr.s

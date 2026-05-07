@@ -42,8 +42,7 @@ class ValidationError(TokenError):
 
 
 class DecoderProtocol(typing.Protocol):
-    def decode(self, token: str) -> Payload:
-        ...
+    def decode(self, token: str) -> Payload: ...
 
 
 @attr.s(frozen=True)

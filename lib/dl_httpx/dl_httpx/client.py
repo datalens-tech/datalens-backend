@@ -59,13 +59,11 @@ def _response_to_debug_string(response: httpx.Response) -> str:
 
 
 class SyncRequestFunction(Protocol):
-    def __call__(self, request: httpx.Request) -> httpx.Response:
-        ...
+    def __call__(self, request: httpx.Request) -> httpx.Response: ...
 
 
 class AsyncRequestFunction(Protocol):
-    async def __call__(self, request: httpx.Request) -> httpx.Response:
-        ...
+    async def __call__(self, request: httpx.Request) -> httpx.Response: ...
 
 
 THttpxTransport = TypeVar("THttpxTransport", httpx.BaseTransport, httpx.AsyncBaseTransport)
@@ -134,8 +132,7 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _get_transport(cls, ssl_context: ssl.SSLContext) -> THttpxTransport:
-        ...
+    def _get_transport(cls, ssl_context: ssl.SSLContext) -> THttpxTransport: ...
 
     @property
     def _client_name(self) -> str:

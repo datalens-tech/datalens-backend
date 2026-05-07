@@ -11,16 +11,13 @@ class TransportAdapterProtocol(Protocol):
         self,
         transport: httpx.BaseTransport,
         request: httpx.Request,
-    ) -> contextlib.AbstractContextManager[httpx.BaseTransport]:
-        ...
+    ) -> contextlib.AbstractContextManager[httpx.BaseTransport]: ...
 
     def context_async(
         self,
         transport: httpx.AsyncBaseTransport,
         request: httpx.Request,
-    ) -> contextlib.AbstractAsyncContextManager[httpx.AsyncBaseTransport]:
-        ...
+    ) -> contextlib.AbstractAsyncContextManager[httpx.AsyncBaseTransport]: ...
 
 
-class BaseTransportAdapterSettings(dl_settings.TypedBaseSettings):
-    ...
+class BaseTransportAdapterSettings(dl_settings.TypedBaseSettings): ...

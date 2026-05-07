@@ -308,9 +308,12 @@ class BaseSAAdapter(
 
     @final
     def is_table_exists(self, table_ident: TableIdent) -> bool:
-        with self.handle_execution_error(
-            debug_query=f"<exists({table_ident})>", inspector_query=f"<exists({table_ident})>"
-        ), self.execution_context():  # TODO: BI-6448
+        with (
+            self.handle_execution_error(
+                debug_query=f"<exists({table_ident})>", inspector_query=f"<exists({table_ident})>"
+            ),
+            self.execution_context(),
+        ):  # TODO: BI-6448
             return self._is_table_exists(table_ident)
 
     def _test(self) -> None:

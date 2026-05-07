@@ -10,34 +10,27 @@ import dl_constants
 import dl_settings
 
 
-class AuthProviderSettings(dl_settings.TypedBaseSettings):
-    ...
+class AuthProviderSettings(dl_settings.TypedBaseSettings): ...
 
 
 class AuthProviderProtocol(Protocol):
     @abc.abstractmethod
-    def get_headers(self) -> dict[str, str]:
-        ...
+    def get_headers(self) -> dict[str, str]: ...
 
     @abc.abstractmethod
-    def get_cookies(self) -> dict[str, str]:
-        ...
+    def get_cookies(self) -> dict[str, str]: ...
 
-    async def get_headers_async(self) -> dict[str, str]:
-        ...
+    async def get_headers_async(self) -> dict[str, str]: ...
 
-    async def get_cookies_async(self) -> dict[str, str]:
-        ...
+    async def get_cookies_async(self) -> dict[str, str]: ...
 
 
 class BaseAuthProvider(abc.ABC):
     @abc.abstractmethod
-    def get_headers(self) -> dict[str, str]:
-        ...
+    def get_headers(self) -> dict[str, str]: ...
 
     @abc.abstractmethod
-    def get_cookies(self) -> dict[str, str]:
-        ...
+    def get_cookies(self) -> dict[str, str]: ...
 
     async def get_headers_async(self) -> dict[str, str]:
         return self.get_headers()
@@ -46,8 +39,7 @@ class BaseAuthProvider(abc.ABC):
         return self.get_cookies()
 
 
-class NoAuthProviderSettings(AuthProviderSettings):
-    ...
+class NoAuthProviderSettings(AuthProviderSettings): ...
 
 
 AuthProviderSettings.register("NONE", NoAuthProviderSettings)
@@ -109,8 +101,7 @@ class USMasterTokenAuthProvider(BaseAuthProvider):
         return {}
 
 
-class AuthDataProviderSettings(AuthProviderSettings):
-    ...
+class AuthDataProviderSettings(AuthProviderSettings): ...
 
 
 AuthProviderSettings.register("AUTH_DATA", AuthDataProviderSettings)

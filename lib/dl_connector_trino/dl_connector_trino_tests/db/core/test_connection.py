@@ -154,13 +154,13 @@ class TestTrinoConnection(
         with pytest.raises(InvalidRequestError, match="db_name parameter is required when search_text is provided"):
             conn.get_data_source_templates_paginated(
                 sync_conn_executor_factory_for_conn,
-                search_text="some_search_term"
+                search_text="some_search_term",
                 # db_name is intentionally omitted
             )
         with pytest.raises(InvalidRequestError, match="db_name parameter is required when offset > 0 is provided"):
             conn.get_data_source_templates_paginated(
                 sync_conn_executor_factory_for_conn,
-                offset=1
+                offset=1,
                 # db_name is intentionally omitted
             )
 

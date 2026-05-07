@@ -74,13 +74,11 @@ class RequestPattern:
 
 
 class SyncRequestRateLimiterProtocol(typing.Protocol):
-    def check_limit(self, request: Request) -> bool:
-        ...
+    def check_limit(self, request: Request) -> bool: ...
 
 
 class AsyncRequestRateLimiterProtocol(typing.Protocol):
-    async def check_limit(self, request: Request) -> bool:
-        ...
+    async def check_limit(self, request: Request) -> bool: ...
 
 
 @attr.s(auto_attribs=True)

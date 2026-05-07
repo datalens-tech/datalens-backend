@@ -16,12 +16,10 @@ class EncryptedData(TypedDict):
 
 class CryptoKeysProtocol(Protocol):
     @property
-    def map_id_key(self) -> dict[str, str]:
-        ...
+    def map_id_key(self) -> dict[str, str]: ...
 
     @property
-    def actual_key_id(self) -> str:
-        ...
+    def actual_key_id(self) -> str: ...
 
 
 @attr.define

@@ -17,12 +17,10 @@ async def test_default(
 ) -> None:
     monkeypatch.setenv("CERTIFICATES__CA_FILE", dl_testing.get_root_certificates_path())
 
-    class Settings(dl_app_base.CertificatesAppSettingsMixin):
-        ...
+    class Settings(dl_app_base.CertificatesAppSettingsMixin): ...
 
     @attrs.define(frozen=True, kw_only=True)
-    class Application(dl_app_base.CertificatesAppMixin):
-        ...
+    class Application(dl_app_base.CertificatesAppMixin): ...
 
     class Factory(dl_app_base.CertificatesAppFactoryMixin[Application]):
         settings: Settings

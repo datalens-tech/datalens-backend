@@ -46,9 +46,11 @@ DEFINITIONS_DATETIME = [
         variants=[
             V(
                 D.TRINO,
-                lambda date, unit: date
-                if base.norm_datetrunc_unit(unit) in ("second", "minute", "hour", "day")
-                else sa.func.date_trunc(unit, date),
+                lambda date, unit: (
+                    date
+                    if base.norm_datetrunc_unit(unit) in ("second", "minute", "hour", "day")
+                    else sa.func.date_trunc(unit, date)
+                ),
             ),
         ]
     ),

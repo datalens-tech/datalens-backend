@@ -107,8 +107,7 @@ class AppSettings(dl_app_api_base.HttpServerAppSettingsMixin):
     SHUTDOWN_CALLBACK_SIDE_EFFECT: CallbackSideEffect = CallbackSideEffect.NO_SIDE_EFFECT
 
 
-class App(dl_app_api_base.HttpServerAppMixin):
-    ...
+class App(dl_app_api_base.HttpServerAppMixin): ...
 
 
 class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
@@ -175,8 +174,7 @@ async def get_app() -> App:
 
 
 @pytest.fixture(name="app")
-def fixture_app() -> None:
-    ...
+def fixture_app() -> None: ...
 
 
 class AppContextProtocol(Protocol):
@@ -185,8 +183,7 @@ class AppContextProtocol(Protocol):
         startup_callback_side_effect: CallbackSideEffect = CallbackSideEffect.NO_SIDE_EFFECT,
         main_callback_side_effect: CallbackSideEffect = CallbackSideEffect.INFINITE_LOOP,
         shutdown_callback_side_effect: CallbackSideEffect = CallbackSideEffect.NO_SIDE_EFFECT,
-    ) -> contextlib.AbstractAsyncContextManager[None]:
-        ...
+    ) -> contextlib.AbstractAsyncContextManager[None]: ...
 
 
 @pytest.fixture(name="app_context")

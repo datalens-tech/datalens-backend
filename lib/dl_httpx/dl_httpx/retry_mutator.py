@@ -8,8 +8,7 @@ import dl_utils
 
 
 class RetryRequestMutator(Protocol):
-    def on_retry(self, request: httpx.Request, retry: dl_retrier.Retry) -> None:
-        ...
+    def on_retry(self, request: httpx.Request, retry: dl_retrier.Retry) -> None: ...
 
 
 class RequestIdRetryMutator:
