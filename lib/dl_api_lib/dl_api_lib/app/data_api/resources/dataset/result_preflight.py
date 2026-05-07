@@ -5,6 +5,7 @@ import logging
 from aiohttp import web
 
 from dl_api_lib import exc
+from dl_api_lib.api_common.data_serialization import get_fields_data_raw
 from dl_api_lib.app.data_api.resources.base import (
     RequiredResourceDSAPI,
     requires,
@@ -69,11 +70,13 @@ class DatasetResultPreflightView(DatasetDataBaseView):
         any_errors = bool(registry.items)
         code = self._format_err_code(exc.DLValidationError.err_code) if any_errors else CODE_OK
         message = exc.DLValidationError.default_message if any_errors else VALIDATION_OK_MESSAGE
+        fields = get_fields_data_raw(self.dataset, for_result=True)
         return self._make_response(
             code=code,
             message=message,
             registry=registry,
             status=HTTPStatus.BAD_REQUEST if any_errors else HTTPStatus.OK,
+            fields=fields,
         )
 
     @staticmethod
@@ -87,12 +90,16 @@ class DatasetResultPreflightView(DatasetDataBaseView):
         message: str,
         registry: ComponentErrorRegistry,
         status: HTTPStatus,
+        fields: list[dict] | None = None,
     ) -> web.Response:
+        dataset_payload: dict = {"component_errors": registry}
+        if fields is not None:
+            dataset_payload["fields"] = fields
         body = _RESPONSE_SCHEMA.dump(
             {
                 "code": code,
                 "message": message,
-                "dataset": {"component_errors": registry},
+                "dataset": dataset_payload,
             }
         )
         return web.json_response(body, status=status)
