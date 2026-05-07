@@ -39,6 +39,7 @@ class TestResultPreflight(DefaultApiTestBase):
             "guid": new_field_id,
             "data_type": "float",
             "calc_mode": "formula",
+            "type": "DIMENSION",
         }
 
     def test_non_whitelisted_action_is_rejected(
@@ -99,6 +100,7 @@ class TestResultPreflight(DefaultApiTestBase):
             "guid": new_field_id,
             "data_type": "genericdatetime",
             "calc_mode": "formula",
+            "type": "DIMENSION",
         }
 
     def test_broken_formula_returns_field_component_error(

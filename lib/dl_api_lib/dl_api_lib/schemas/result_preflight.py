@@ -12,7 +12,7 @@ class ResultPreflightDatasetResponseSchema(BaseSchema):
         attribute="fields",
         data_key="fields",
         many=True,
-        only=("title", "guid", "data_type", "calc_mode"),
+        only=("title", "guid", "data_type", "calc_mode", "type"),
         required=False,
     )
 

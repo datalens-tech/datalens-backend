@@ -70,7 +70,7 @@ class DatasetResultPreflightView(DatasetDataBaseView):
         any_errors = bool(registry.items)
         code = self._format_err_code(exc.DLValidationError.err_code) if any_errors else CODE_OK
         message = exc.DLValidationError.default_message if any_errors else VALIDATION_OK_MESSAGE
-        fields = get_fields_data_raw(self.dataset, for_result=True)
+        fields = get_fields_data_raw(self.dataset, for_result=False)
         return self._make_response(
             code=code,
             message=message,
