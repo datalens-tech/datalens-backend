@@ -58,6 +58,23 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
         },
     )
 
+    @pytest.mark.xfail(reason="BI-7339", strict=True)
+    def test_simple_select(
+        self,
+        dataset_wrapper: DatasetTestWrapper,
+        saved_dataset: Dataset,
+        conn_async_service_registry: ServicesRegistry,
+        sync_us_manager: SyncUSManager,
+    ) -> None:
+        self._check_simple_select(
+            dataset_wrapper=dataset_wrapper,
+            saved_dataset=saved_dataset,
+            async_service_registry=conn_async_service_registry,
+            sync_us_manager=sync_us_manager,
+            limit=5,
+            result_cnt=5,
+        )
+
     @pytest.fixture(scope="function")
     def dsrc_params(self) -> dict:
         return dict(
