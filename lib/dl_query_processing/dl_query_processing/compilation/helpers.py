@@ -128,7 +128,7 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
                 val_dt = _datetime_fromisoformat(val)
                 # Incoming offset-less datetimes are interpreted as UTC
                 if val_dt.tzinfo is None:
-                    val_dt = val_dt.replace(tzinfo=datetime.timezone.utc)
+                    val_dt = val_dt.replace(tzinfo=datetime.UTC)
                 node = formula_nodes.LiteralDatetimeTZ.make(val_dt)
             elif data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME):
                 node = formula_nodes.LiteralGenericDatetime.make(_datetime_fromisoformat(val))

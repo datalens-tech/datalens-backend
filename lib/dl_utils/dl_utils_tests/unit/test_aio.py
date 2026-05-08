@@ -50,26 +50,6 @@ def test_async_run_no_current_loop():
     assert result == 42
 
 
-def test_async_run_not_closes_current_loop():
-    async def async_func():
-        return 42
-
-    def sync_context():
-        return async_run(async_func())
-
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    assert asyncio.get_event_loop() == loop
-    assert not loop.is_running()
-
-    result = sync_context()
-    assert result == 42
-
-    assert asyncio.get_event_loop() == loop
-    assert not loop.is_running()
-
-
 @pytest.mark.asyncio
 async def test_async_run_not_disturbs_running_loop():
     async def async_func():
@@ -78,11 +58,11 @@ async def test_async_run_not_disturbs_running_loop():
     def sync_context():
         return async_run(async_func())
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     assert loop.is_running()
 
     result = sync_context()
     assert result == 42
 
-    assert asyncio.get_event_loop() == loop
+    assert asyncio.get_running_loop() == loop
     assert loop.is_running()

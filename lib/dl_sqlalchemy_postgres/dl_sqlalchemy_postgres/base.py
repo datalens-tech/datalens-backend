@@ -86,7 +86,7 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
                 # This should've been `type_.timezone` but it didn't go well
                 if value.tzinfo is not None:
                     type_name = "timestamp with time zone"
-                    value = value.astimezone(datetime.timezone.utc)
+                    value = value.astimezone(datetime.UTC)
                     value = value.replace(tzinfo=None)
                 else:
                     type_name = "timestamp"

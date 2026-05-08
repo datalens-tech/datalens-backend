@@ -13,7 +13,7 @@ def postprocess_datetime(value: datetime.datetime) -> Optional[str]:
     if isinstance(value, str):
         value = datetime.datetime.fromisoformat(value)
     if value.tzinfo is not None:
-        value = value.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+        value = value.astimezone(datetime.UTC).replace(tzinfo=None)
 
     return value.isoformat()
 
@@ -36,7 +36,7 @@ def make_postprocess_datetimetz(tzname: str):  # type: ignore  # TODO: fix
             return value
 
         if value.tzinfo is None:
-            value = value.replace(tzinfo=datetime.timezone.utc)
+            value = value.replace(tzinfo=datetime.UTC)
         return value.astimezone(tzobj).isoformat()
 
     return _postprocess_datetimetz

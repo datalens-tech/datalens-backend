@@ -9,8 +9,8 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
-python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+python = ">=3.12, <3.13"
+sqlalchemy = "==1.4.51" # see metapkg: 1.4.52 ext.serializer regression
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"

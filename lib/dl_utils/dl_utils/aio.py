@@ -44,8 +44,7 @@ async def shield_wait_for_complete(
     :param log_msg_on_cancel: message to log in case of cancellation (will be logged exactly when cancellation occurs)
     :return: shielded coroutine result
     """
-    loop = asyncio.get_event_loop()
-    real_task = loop.create_task(coro)  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "real_task"  [var-annotated]
+    real_task = asyncio.get_running_loop().create_task(coro)  # type: ignore  # 2024-01-24 # TODO: Need type annotation for "real_task"  [var-annotated]
 
     try:
         return await asyncio.shield(real_task)
@@ -86,10 +85,24 @@ class ContextVarExecutor(ThreadPoolExecutor):
 _WRAPPED_RT = TypeVar("_WRAPPED_RT")
 
 
+_thread_loop_holder = threading.local()
+
+
+def get_thread_loop() -> asyncio.AbstractEventLoop:
+    # Per-thread persistent event loop for sync->async bridges. Mirrors pre-3.12
+    # asyncio.get_event_loop() semantics so long-lived async resources (arq's redis
+    # pool, GRPC channels, etc.) initialized on one bridged call stay valid across
+    # subsequent calls.
+    loop = getattr(_thread_loop_holder, "loop", None)
+    if loop is None or loop.is_closed():
+        loop = asyncio.new_event_loop()
+        _thread_loop_holder.loop = loop
+    return loop
+
+
 def await_sync(coro: Awaitable[_WRAPPED_RT], loop: Optional[asyncio.AbstractEventLoop] = None) -> _WRAPPED_RT:
     if loop is None:
-        loop = asyncio.get_event_loop()
-
+        loop = get_thread_loop()
     return loop.run_until_complete(coro)
 
 
@@ -114,7 +127,7 @@ def async_run(
 ) -> _WRAPPED_RT:
     if loop is None:
         try:
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
         except RuntimeError:
             loop = None
 
@@ -139,7 +152,7 @@ def to_sync_iterable(
     async_iterable: AsyncIterable[_ITERABLE_T],
     loop: Optional[asyncio.AbstractEventLoop] = None,
 ) -> Iterable[_ITERABLE_T]:
-    actual_loop = asyncio.get_event_loop() if loop is None else loop
+    actual_loop = get_thread_loop() if loop is None else loop
 
     def wrapper() -> Iterable[_ITERABLE_T]:
         aiter = async_iterable.__aiter__()

@@ -80,12 +80,14 @@ class PingReadyView(BaseView):
             ),
         )
 
+        request_id = self.dl_request.rci.request_id
+        assert request_id is not None
         async with session as rqe_session:
             try:
                 resp = await rqe_session.get(
                     url=f"{base_url}/ping",
                     headers={
-                        HEADER_REQUEST_ID: self.dl_request.rci.request_id,
+                        HEADER_REQUEST_ID: request_id,
                     },
                 )
             except Exception as e:

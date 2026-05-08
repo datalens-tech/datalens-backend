@@ -107,10 +107,10 @@ class JsonableDatetime(datetime.datetime, StringJsonableTypeMixin):
         if self.tzinfo is None:
             return self.strftime("%Y-%m-%dT%H:%M:%S.%f")
 
-        if self.tzinfo == datetime.timezone.utc:
+        if self.tzinfo == datetime.UTC:
             return self.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
-        return self.astimezone(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        return self.astimezone(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
     @classmethod
     def from_original(cls, value: datetime.datetime) -> Self:

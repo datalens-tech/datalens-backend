@@ -11,7 +11,7 @@ import sqlalchemy.orm as sqlalchemy_orm
     "timezone",
     (
         None,
-        datetime.timezone.utc,
+        datetime.UTC,
         pytz.timezone("America/New_York"),
     ),
     ids=["no_timezone", "utc_timezone", "ny_timezone"],

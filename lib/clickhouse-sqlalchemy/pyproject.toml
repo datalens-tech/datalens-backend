@@ -13,7 +13,7 @@ version = "0.1.3.14"
 [tool.poetry.dependencies]
 clickhouse-driver = "*"
 dill = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 pytz = "*"
 requests = "*"
 sqlalchemy = "*"

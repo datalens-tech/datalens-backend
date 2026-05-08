@@ -41,7 +41,7 @@ marshmallow = "*"
 marshmallow-oneofschema = "*"
 pydantic = "*"
 pydantic_settings = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 requests = "*"
 statcommons = {path = "../statcommons"}
 typing-extensions = "*"

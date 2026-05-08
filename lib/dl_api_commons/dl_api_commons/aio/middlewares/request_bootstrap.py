@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import contextlib
 from http import HTTPStatus
 import json
@@ -101,7 +100,7 @@ class RequestBootstrap:
                     try:
                         async with timeout(self.timeout_sec):
                             result = await handler(request)
-                    except asyncio.TimeoutError:
+                    except TimeoutError:
                         raise RequestTimeoutError() from None
                 else:
                     result = await handler(request)

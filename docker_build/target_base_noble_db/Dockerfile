@@ -8,6 +8,8 @@ RUN apt-get update \
         freetds-dev tdsodbc unixodbc unixodbc-dev libtcmalloc-minimal4 \
         # For Postgres
         libpq-dev \
+        # Toolchain for building source-only sdists (e.g. ujson 1.35, no cp312 wheels)
+        build-essential \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Configure libraries for MSSQL

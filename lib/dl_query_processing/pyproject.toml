@@ -15,7 +15,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
 dl-utils = {path = "../dl_utils"}
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 pytz = "*"
 typing-extensions = "*"
 

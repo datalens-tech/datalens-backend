@@ -12,8 +12,7 @@ ENV PATH="/venv/bin:$PATH" \
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VIRTUALENVS_CREATE=0 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache \
-    SETUPTOOLS_USE_DISTUTILS=stdlib
+    POETRY_CACHE_DIR=/tmp/poetry_cache
 
 WORKDIR /src/metapkg
 RUN --mount=type=cache,target=$POETRY_CACHE_DIR \

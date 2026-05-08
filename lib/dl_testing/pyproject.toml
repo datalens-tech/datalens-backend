@@ -18,7 +18,7 @@ dl-s3 = {path = "../dl_s3"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 pytest = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 pyyaml = "*"
 
 [tool.mypy]

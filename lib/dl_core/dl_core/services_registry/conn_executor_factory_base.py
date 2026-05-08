@@ -30,6 +30,7 @@ from dl_core.connection_models import (
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.utils import FutureRef
+from dl_utils.aio import get_thread_loop
 
 
 if TYPE_CHECKING:
@@ -173,8 +174,7 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
         async_ce = self._cook_conn_executor(recipe, with_tpe=not with_sync_wrapper)
         sync_wrapper = (
             SyncWrapperForAsyncConnExecutor(
-                # TODO CONSIDER: May be move to arguments
-                loop=asyncio.get_event_loop(),
+                loop=get_thread_loop(),
                 async_conn_executor=async_ce,
             )
             if with_sync_wrapper

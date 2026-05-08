@@ -7,7 +7,7 @@ readme = "README.md"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10"
+python = ">=3.12, <3.13"
 
 [tool.black]
 force-exclude = '''
@@ -20,7 +20,7 @@ force-exclude = '''
 )
 '''
 line-length = 120
-target-version = ['py310']
+target-version = ['py312']
 
 [tool.isort]
 force_grid_wrap = 2
@@ -83,7 +83,7 @@ exclude = [
 ]
 force-exclude = true
 line-length = 120
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 ignore = [
@@ -111,6 +111,7 @@ ignore = [
   "UP035", # Import from `collections.abc`
   "UP037", # [*] Remove quotes from type annotation
   "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
+  "UP040", # `type` keyword (PEP 695) — re-enable when mypy is bumped to >=1.12
 ]
 select = [
   # Bugbear

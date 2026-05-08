@@ -51,7 +51,7 @@ def test_default(
         response = client.get("/", headers={"Authorization": "Bearer token"})
 
     assert response.status_code == 200
-    assert token_decoder.decode.called_once_with("token")
+    token_decoder.decode.assert_called_once_with("token")
 
 
 def test_missing_token_header(

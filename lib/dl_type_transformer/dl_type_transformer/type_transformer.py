@@ -158,7 +158,7 @@ class UTCDatetimeTypeCaster(TypeCaster):
     def _cast_for_input(self, value: Any) -> Optional[datetime.datetime]:
         result = super()._cast_for_output(value)
         if isinstance(result, datetime.datetime) and result.tzinfo is not None:
-            result = result.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+            result = result.astimezone(datetime.UTC).replace(tzinfo=None)
         return result
 
 

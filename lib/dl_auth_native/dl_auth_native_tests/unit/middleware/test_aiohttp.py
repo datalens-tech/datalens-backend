@@ -68,7 +68,7 @@ async def test_default(
         },
     )
 
-    assert token_decoder.decode.called_once_with("token")
+    token_decoder.decode.assert_called_once_with("token")
     assert response.status == 200
 
 
@@ -111,6 +111,6 @@ async def test_invalid_token(
         },
     )
 
-    assert token_decoder.decode.called_once_with("token")
+    token_decoder.decode.assert_called_once_with("token")
     assert response.status == 401
     assert await response.text() == "401: Invalid user access token: Invalid token"

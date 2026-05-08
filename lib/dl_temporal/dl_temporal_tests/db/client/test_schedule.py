@@ -27,8 +27,8 @@ def fixture_workflow_params() -> workflows.WorkflowParams:
         workflow_timedelta_param=dl_pydantic.JsonableTimedelta(seconds=1),
         workflow_uuid_param=dl_pydantic.JsonableUUID(str(uuid.uuid4())),
         workflow_date_param=dl_pydantic.JsonableDate.today(),
-        workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.timezone.utc),
-        workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.timezone.utc),
+        workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.UTC),
+        workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.UTC),
         workflow_nested_param=common.NestedModel(test_int=1),
         return_error=False,
     )

@@ -13,7 +13,7 @@ dl-constants = {path = "../dl_constants"}
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-settings = {path = "../dl_settings"}
 pydantic = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]

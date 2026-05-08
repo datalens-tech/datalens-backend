@@ -39,7 +39,7 @@ dl-version = {path = "../../lib/dl_version"}
 dl-zitadel = {extras = ["aiohttp"], path = "../../lib/dl_zitadel"}
 gunicorn = "*"
 httpx = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [

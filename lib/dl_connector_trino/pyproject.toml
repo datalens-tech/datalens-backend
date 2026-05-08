@@ -23,7 +23,7 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 requests = "*"
 sqlalchemy = "*"
 trino = {extras = ["sqlalchemy"], version = "*"}

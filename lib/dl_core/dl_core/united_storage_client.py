@@ -1,9 +1,9 @@
 import abc
 from contextlib import contextmanager
 from datetime import (
+    UTC,
     datetime,
     timedelta,
-    timezone,
 )
 from json.decoder import JSONDecodeError
 import logging
@@ -367,7 +367,7 @@ class UStorageClientBase:
     def parse_datetime(dt: str) -> datetime:
         # TODO: remove after migrating to python 3.11 or above
         if dt[-1] == "Z":
-            return datetime.fromisoformat(dt.removesuffix("Z")).replace(tzinfo=timezone.utc)
+            return datetime.fromisoformat(dt.removesuffix("Z")).replace(tzinfo=UTC)
         return datetime.fromisoformat(dt)
 
     @staticmethod

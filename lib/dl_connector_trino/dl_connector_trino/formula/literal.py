@@ -30,7 +30,7 @@ class TrinoLiteralizer(Literalizer):
                 tsa.TIMESTAMP(precision=precision),
             )
 
-        if value.tzinfo == datetime.timezone.utc:
+        if value.tzinfo == datetime.UTC:
             timezone_repr = "UTC"
 
         elif hasattr(value.tzinfo, "zone"):

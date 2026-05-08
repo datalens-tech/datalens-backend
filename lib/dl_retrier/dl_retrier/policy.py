@@ -1,11 +1,9 @@
 import datetime
 import http
-from typing import (
-    Iterator,
-    TypeAlias,
-)
+from typing import Iterator
 
 import attr
+from typing_extensions import TypeAlias
 
 
 @attr.s(kw_only=True, frozen=True, auto_attribs=True)

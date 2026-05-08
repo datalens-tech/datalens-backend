@@ -7,7 +7,7 @@ packages = [{include = "statcommons"}]
 version = "0.28.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.mypy]
 check_untyped_defs = true

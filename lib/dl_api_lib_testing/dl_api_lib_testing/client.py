@@ -76,7 +76,7 @@ class TestClientConverterAiohttpToFlask:
             ),
             loop=self._loop,
         )
-        resp_data = await_sync(resp.read())
+        resp_data = await_sync(resp.read(), loop=self._loop)
 
         js: Optional[dict] = None
         if resp_data is not None:

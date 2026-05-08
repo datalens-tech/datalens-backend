@@ -53,7 +53,7 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
 
     @staticmethod
     def _format_timestamp(executed_at: float) -> str:
-        return datetime.datetime.fromtimestamp(executed_at, tz=datetime.timezone.utc).isoformat()
+        return datetime.datetime.fromtimestamp(executed_at, tz=datetime.UTC).isoformat()
 
     def _exc_to_last_result_error(self, dl_exc: DLBaseException) -> dict[str, Any]:
         error_code = ".".join((*DEFAULT_GLOBAL_ERR_CODE_API_PREFIX, *dl_exc.err_code))

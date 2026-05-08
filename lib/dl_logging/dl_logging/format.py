@@ -45,6 +45,8 @@ DEFAULT_RECORD_ATTRS = frozenset(
         "threadName",
         "processName",
         "process",
+        # Python 3.12+ built-in: asyncio.current_task name (or None)
+        "taskName",
         # Added around here:
         "message",
         # Around here and in BI:

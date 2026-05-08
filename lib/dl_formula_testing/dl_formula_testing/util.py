@@ -11,11 +11,11 @@ import dateutil.relativedelta
 
 
 def now() -> datetime.datetime:
-    return datetime.datetime.utcnow().replace(microsecond=0)
+    return datetime.datetime.now(datetime.UTC).replace(microsecond=0)
 
 
 def today() -> datetime.date:
-    return datetime.datetime.utcnow().date()
+    return datetime.datetime.now(datetime.UTC).date()
 
 
 hour = datetime.timedelta(hours=1)
@@ -72,7 +72,7 @@ def dt_strip(value: Union[datetime.datetime, str]) -> datetime.datetime:
 
 
 def utcize(dt: datetime.datetime) -> datetime.datetime:
-    return dt.replace(tzinfo=datetime.timezone.utc)
+    return dt.replace(tzinfo=datetime.UTC)
 
 
 def utc_ts(*args, tzinfo: Optional[datetime.tzinfo] = None) -> float:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]

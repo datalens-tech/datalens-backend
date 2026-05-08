@@ -11,7 +11,7 @@ version = "0.0.1"
 aiohttp = {optional = true, version = "*"}
 attrs = "*"
 flask = {optional = true, version = "*"}
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 redis = "*"
 
 [tool.poetry.group.tests.dependencies]

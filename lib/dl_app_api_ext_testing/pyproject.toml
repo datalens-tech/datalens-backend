@@ -13,7 +13,7 @@ dl-settings = {path = "../dl_settings"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.mypy]
 check_untyped_defs = true

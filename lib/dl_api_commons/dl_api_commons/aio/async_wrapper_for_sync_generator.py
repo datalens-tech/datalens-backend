@@ -164,7 +164,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
     _worker_thread_start_timeout: float = attr.ib(default=0.1)
     _worker_thread_start_confirmation_timeout: float = attr.ib(default=0.1)
 
-    _loop: AbstractEventLoop = attr.ib(init=False, factory=asyncio.get_event_loop)
+    _loop: AbstractEventLoop = attr.ib(init=False, factory=asyncio.get_running_loop)
     _worker_done_fut: Optional[asyncio.Future] = attr.ib(init=False, default=None)
 
     _ss: SynchronizedJobState = attr.ib(init=False, default=None)

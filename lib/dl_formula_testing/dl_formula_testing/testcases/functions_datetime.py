@@ -428,7 +428,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
 
         # -05:00, so +5hrs at UTC
         expected = datetime.datetime(2019, 1, 1, 5, 1, 2)
-        assert resp.astimezone(datetime.timezone.utc).replace(tzinfo=None) == expected
+        assert resp.astimezone(datetime.UTC).replace(tzinfo=None) == expected
 
     @pytest.fixture(params=["const", "lit"])
     def dttz_expr(self, request: Any, dbe: DbEvaluator, forced_literal_use: Any) -> str:

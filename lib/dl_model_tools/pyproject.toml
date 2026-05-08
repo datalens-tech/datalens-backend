@@ -15,7 +15,7 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 msgpack = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}

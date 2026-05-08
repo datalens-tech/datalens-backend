@@ -14,7 +14,7 @@ dl-formula = {path = "../dl_formula"}
 dl-testing = {path = "../dl_testing"}
 dl-utils = {path = "../dl_utils"}
 pytest = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 python-dateutil = "*"
 pytz = "*"
 sqlalchemy = "*"

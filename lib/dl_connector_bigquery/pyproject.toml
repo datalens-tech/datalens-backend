@@ -26,7 +26,7 @@ google-cloud-bigquery-storage = {extras = ["pyarrow"], version = "*"}
 google-cloud-core = "*"
 google-resumable-media = "*"
 marshmallow = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = "*"
 sqlalchemy-bigquery = "*"
 

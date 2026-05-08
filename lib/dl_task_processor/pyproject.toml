@@ -15,8 +15,9 @@ dl-app-tools = {path = "../dl_app_tools"}
 dl-configs = {path = "../dl_configs"}
 dl-logging = {path = "../dl_logging"}
 dl-utils = {path = "../dl_utils"}
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 redis = "*"
+typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}

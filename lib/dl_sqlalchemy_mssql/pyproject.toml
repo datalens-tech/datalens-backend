@@ -10,7 +10,7 @@ version = "0.3"
 [tool.poetry.dependencies]
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 pyodbc = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]

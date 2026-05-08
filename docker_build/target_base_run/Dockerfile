@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     container=docker
 
 COPY trusted.gpg.d/ /etc/apt/trusted.gpg.d/
-COPY install_py_310.sh /tmp/install_py_310.sh
+COPY install_py_312.sh /tmp/install_py_312.sh
 
 RUN apt-get update \
     && apt-get -y upgrade -o Dpkg::Options::="--force-confold" \
@@ -25,8 +25,8 @@ RUN apt-get update \
 RUN cat /usr/share/tdsodbc/odbcinst.ini >> /etc/odbcinst.ini
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc
 
-# install python 3.10
-RUN bash /tmp/install_py_310.sh
+# install python 3.12
+RUN bash /tmp/install_py_312.sh
 
 RUN curl "https://storage.yandexcloud.net/cloud-certs/CA.pem" > /usr/local/share/ca-certificates/yandex-cloud-ca.crt
 RUN update-ca-certificates

@@ -13,7 +13,7 @@ def test_literal_shortcuts():
     assert n.lit(12.3) == nodes.LiteralFloat.make(12.3)
     assert n.lit(True) == nodes.LiteralBoolean.make(True)
     assert n.lit(None) == nodes.Null()
-    dt = datetime.datetime.utcnow().replace(microsecond=0, tzinfo=None)
+    dt = datetime.datetime.now(datetime.UTC).replace(microsecond=0, tzinfo=None)
     assert n.lit(dt) == nodes.LiteralGenericDatetime.make(dt)
     assert n.lit(dt.date()) == nodes.LiteralDate.make(dt.date())
     my_uuid = uuid.uuid4()

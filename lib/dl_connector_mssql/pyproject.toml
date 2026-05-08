@@ -20,7 +20,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 pyodbc = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]

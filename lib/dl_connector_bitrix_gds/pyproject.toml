@@ -23,7 +23,7 @@ dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 redis = "*"
 redis_cache_lock = {path = "../redis-cache-lock"}
 sqlalchemy = "*"

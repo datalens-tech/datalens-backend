@@ -198,6 +198,7 @@ class RecordDataFormatterMixin:
         "threadName",  # 'MainThread',
         "processName",  # 'MainProcess',
         "process",  # 409783}
+        "taskName",  # Python 3.12+ built-in: asyncio.current_task name (or None)
         # func-based:
         # 'timestamp',
         # 'timestampns',

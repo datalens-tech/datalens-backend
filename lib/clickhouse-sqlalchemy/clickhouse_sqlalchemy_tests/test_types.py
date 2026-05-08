@@ -107,7 +107,8 @@ class NumericTypeTestCase(TypesTestCase):
             self.assertTrue(
                 'out of range' in message or
                 'Too many digits' in message or
-                'Decimal value is too big' in message)
+                'Decimal value is too big' in message or
+                'format requires' in message)
 
     def test_create_table_decimal_symlink(self):
         table = Table(

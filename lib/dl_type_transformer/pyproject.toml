@@ -12,7 +12,7 @@ attrs = "*"
 dl-constants = {path = "../dl_constants"}
 marshmallow = "*"
 marshmallow-oneofschema = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 python-dateutil = "*"
 pytz = "*"
 sqlalchemy = "*"

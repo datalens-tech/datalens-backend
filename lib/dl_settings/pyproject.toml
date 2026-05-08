@@ -11,7 +11,7 @@ version = "0.0.1"
 dl-pydantic = {path = "../dl_pydantic"}
 pydantic = "*"
 pydantic-settings = {extras = ["yaml"], version = "*"}
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 attrs = "*"

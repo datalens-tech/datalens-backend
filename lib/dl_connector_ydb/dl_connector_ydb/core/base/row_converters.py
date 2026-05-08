@@ -21,8 +21,8 @@ def convert_interval(value: datetime.timedelta | int) -> int:
 
 def convert_timestamp(value: int | datetime.datetime) -> datetime.datetime:
     if isinstance(value, datetime.datetime):
-        return value.replace(tzinfo=datetime.timezone.utc)
-    return datetime.datetime.utcfromtimestamp(value / 1e6).replace(tzinfo=datetime.timezone.utc)
+        return value.replace(tzinfo=datetime.UTC)
+    return datetime.datetime.utcfromtimestamp(value / 1e6).replace(tzinfo=datetime.UTC)
 
 
 ROW_CONVERTERS: dict[str, Callable[[Any], Any]] = {

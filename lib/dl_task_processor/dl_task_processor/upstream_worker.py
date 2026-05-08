@@ -200,7 +200,7 @@ class Worker:
         # self.job_tasks holds references the actual jobs running
         self.job_tasks: dict[str, asyncio.Task[Any]] = {}
         self.main_task: Optional[asyncio.Task[None]] = None
-        self.loop = asyncio.get_event_loop()
+        self.loop = asyncio.get_running_loop()
         self.ctx = ctx or {}
         max_timeout = max(f.timeout_s or self.job_timeout_s for f in self.functions.values())
         self.in_progress_timeout_s = (max_timeout or 0) + 10
@@ -728,7 +728,7 @@ class Worker:
         """
         Wait for tasks to complete, until `wait_for_job_completion_on_signal_second` has been reached.
         """
-        with contextlib.suppress(asyncio.TimeoutError):
+        with contextlib.suppress(TimeoutError):
             await asyncio.wait_for(
                 self._sleep_until_tasks_complete(),
                 self._job_completion_wait,

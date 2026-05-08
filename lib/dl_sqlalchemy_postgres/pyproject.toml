@@ -11,7 +11,7 @@ version = "0.3"
 asyncpg = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
 psycopg2-binary = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]

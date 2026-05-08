@@ -10,4 +10,4 @@ class TestConditionalBlockMSSQL(MSSQLTestBase, DefaultLiteralFormulaConnectorTes
     supports_microseconds = True
     supports_utc = True
     supports_custom_tz = True
-    default_tz = datetime.timezone.utc
+    default_tz = datetime.UTC

@@ -16,7 +16,7 @@ dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-utils = {path = "../dl_utils"}
 jinja2 = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = "*"
 tabulate = "*"
 typing-extensions = "*"

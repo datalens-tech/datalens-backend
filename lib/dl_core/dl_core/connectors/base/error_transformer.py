@@ -1,5 +1,4 @@
 import abc
-import asyncio
 import re
 from typing import (
     Any,
@@ -180,7 +179,7 @@ default_error_transformer_rules = (
         then_raise=exc.SourceDoesNotExist,
     ),
     ErrorTransformerRule(when=wrapper_exc_is(sa_exc.OperationalError), then_raise=exc.DatabaseOperationalError),
-    ErrorTransformerRule(when=wrapper_exc_is(asyncio.TimeoutError), then_raise=exc.SourceTimeout),
+    ErrorTransformerRule(when=wrapper_exc_is(TimeoutError), then_raise=exc.SourceTimeout),
 )
 
 

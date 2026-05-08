@@ -103,7 +103,7 @@ class PdPivotTransformer(PivotTransformer):
             assert isinstance(pd_pivot_res, pd.DataFrame)
             pd_df = pd_pivot_res
             # Drop the fake dimension `fake_measure_liid_str` from the column index:
-            pd_df = pd_df.set_axis(axis="columns", labels=pd_df.columns.droplevel(0), copy=False)
+            pd_df = pd_df.set_axis(axis="columns", labels=pd_df.columns.droplevel(0))
             facade = PdDataFrameFacade(
                 pd_df=pd_df,
                 legend=self._legend,
@@ -111,11 +111,13 @@ class PdPivotTransformer(PivotTransformer):
             )
 
         elif column_ids:
-            pd_pivot_res = wrapped_pivot(columns=column_ids, index=row_ids)
-            assert isinstance(pd_pivot_res, pd.Series)
-            pd_series = pd_pivot_res
-            # Drop `fake_measure_liid_str` from the index:
-            pd_series = pd_series.set_axis(labels=pd_series.index.droplevel(0), copy=False)
+            # row_ids is empty here. Pandas 2.2's pivot delegates to
+            # unstack(future_stack=True), which crashes on the empty-index
+            # corner case. Construct the Series directly via set_index;
+            # equivalent to the pre-2.2 pivot output for this branch.
+            if raw_pd_df.duplicated(subset=column_ids).any():
+                raise dl_query_processing.exc.PivotDuplicateDimensionValue()
+            pd_series = raw_pd_df.set_index(column_ids)[fake_measure_piid_str]
             facade = PdHSeriesDataFrameFacade(
                 pd_series=pd_series,
                 legend=self._legend,
@@ -123,14 +125,11 @@ class PdPivotTransformer(PivotTransformer):
             )
 
         elif row_ids:
-            # Fool pandas into thinking columns are rows and vice-versa.
-            # Otherwise it creates a DataFrame with an empty index for columns,
-            # which does not behave the way a "normal" DataFrame should
-            pd_pivot_res = wrapped_pivot(columns=row_ids, index=column_ids)
-            assert isinstance(pd_pivot_res, pd.Series)
-            pd_series = pd_pivot_res
-            # Drop `fake_measure_liid_str` from the index:
-            pd_series = pd_series.set_axis(labels=pd_series.index.droplevel(0), copy=False)
+            # column_ids is empty. Same pandas 2.2 unstack regression as above —
+            # use set_index to build the Series directly.
+            if raw_pd_df.duplicated(subset=row_ids).any():
+                raise dl_query_processing.exc.PivotDuplicateDimensionValue()
+            pd_series = raw_pd_df.set_index(row_ids)[fake_measure_piid_str]
             facade = PdVSeriesDataFrameFacade(
                 pd_series=pd_series,
                 legend=self._legend,

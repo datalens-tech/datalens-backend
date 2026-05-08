@@ -27,8 +27,8 @@ dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 marshmallow = "*"
 pymysql = ">=1.0.2"
-python = ">=3.10, <3.13"
-sqlalchemy = ">=1.4.46, <2.0"
+python = ">=3.12, <3.13"
+sqlalchemy = "==1.4.51" # see metapkg: 1.4.52 ext.serializer regression
 
 [tool.poetry.group.tests.dependencies]
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}

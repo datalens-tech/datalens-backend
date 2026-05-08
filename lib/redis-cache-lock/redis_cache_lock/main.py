@@ -163,7 +163,7 @@ class RedisCacheLock:
     async def _wait_network_call(self, coro: Awaitable[_WNC_RET_T]) -> _WNC_RET_T:
         try:
             return await asyncio.wait_for(coro, timeout=self.network_call_timeout_sec)
-        except asyncio.TimeoutError as err:
+        except TimeoutError as err:
             raise NetworkCallTimeoutError() from err
 
     async def _finalize_maybe_in_background(

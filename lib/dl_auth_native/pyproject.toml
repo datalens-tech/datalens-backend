@@ -17,7 +17,7 @@ dl-pydantic = {path = "../dl_pydantic"}
 flask = {optional = true, version = "*"}
 pydantic = "*"
 pyjwt = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 typing-extensions = "*"
 werkzeug = "*"
 

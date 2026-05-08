@@ -31,7 +31,7 @@ dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 pydantic = "*"
 pytest = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 pytz = "*"
 requests = "*"
 shortuuid = "*"

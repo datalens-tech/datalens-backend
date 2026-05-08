@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import copy
 from datetime import (
+    UTC,
     datetime,
-    timezone,
 )
 from typing import (
     TYPE_CHECKING,
@@ -62,9 +62,7 @@ class MockedUStorageClient(UStorageClient):
     def format_dt(cls, dt: datetime) -> str:
         assert dt.tzinfo
         pre_formatted = (
-            dt.replace(microsecond=dt.microsecond // 1000 * 1000)
-            .astimezone(timezone.utc)
-            .strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+            dt.replace(microsecond=dt.microsecond // 1000 * 1000).astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
         )
         return f"{pre_formatted}Z"
 
@@ -94,7 +92,7 @@ class MockedUStorageClient(UStorageClient):
         entry_id = shortuuid.uuid()
         rev_id = shortuuid.uuid()
         subject = "unknown"
-        created_at = self.format_dt(datetime.now(timezone.utc))
+        created_at = self.format_dt(datetime.now(UTC))
 
         resp = dict(
             entryId=entry_id,
@@ -137,7 +135,7 @@ class MockedUStorageClient(UStorageClient):
         previous_resp = self._saved_entries[entry_id]
 
         new_revision_id = shortuuid.uuid()
-        new_updated_at = self.format_dt(datetime.now(timezone.utc))
+        new_updated_at = self.format_dt(datetime.now(UTC))
         subject = "unknown"
 
         previous_resp.update(

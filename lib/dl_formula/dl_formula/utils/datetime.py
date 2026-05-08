@@ -10,7 +10,7 @@ import pytz.tzinfo
 
 # TODO: re-check and document the useful differences between
 # `datetime.timezone.utc` and `pytz.utc`.
-UTC = datetime.timezone.utc
+UTC = datetime.UTC
 
 
 SOME_DT = datetime.datetime(2020, 1, 1, 0, 0, 0)

@@ -35,7 +35,7 @@ class LatencyTracker:
         bins = self._bins
         self._bins = {}
         bins_s = ", ".join(f">={dur}ms: {cnt}" for dur, cnt in bins.items())
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         loop_scheduled = len(getattr(loop, "_scheduled", None) or ())
         loop_ready = len(getattr(loop, "_ready", None) or ())
         self._logger.debug(

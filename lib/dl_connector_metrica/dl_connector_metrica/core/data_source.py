@@ -77,7 +77,7 @@ class MetrikaApiDataSource(PseudoSQLDataSource):
             raise exc.InvalidColumnError("Invalid field for value range")
 
         creation_date = self.connection.data.counter_creation_date
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
         if column.user_type in (UserDataType.datetime, UserDataType.genericdatetime):
             min_value = datetime.datetime(creation_date.year, creation_date.month, creation_date.day)
             max_value = now

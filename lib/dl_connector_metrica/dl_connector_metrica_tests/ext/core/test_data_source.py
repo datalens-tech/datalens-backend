@@ -35,12 +35,12 @@ class TestMetricaDataSource(
 
         # datetime
         min_value, max_value = dsrc.get_expression_value_range(col_name="ym:pv:dateTime")
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
         assert min_value.date() == conn.data.counter_creation_date
         assert max_value - now < datetime.timedelta(seconds=1)
 
         # date
         min_value, max_value = dsrc.get_expression_value_range(col_name="ym:pv:startOfQuarter")
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.UTC)
         assert min_value == conn.data.counter_creation_date
         assert max_value == now.date()

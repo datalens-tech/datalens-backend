@@ -11,7 +11,7 @@ version = "0.7"
 clickhouse-sqlalchemy = {path = "../clickhouse-sqlalchemy"}
 dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 sqlalchemy = "*"
 
 [tool.poetry.plugins."sqlalchemy.dialects"]

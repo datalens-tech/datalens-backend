@@ -37,7 +37,7 @@ dl-version = {path = "../../lib/dl_version"}
 dl-zitadel = {extras = ["flask"], path = "../../lib/dl_zitadel"}
 flask = "*"
 httpx = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [

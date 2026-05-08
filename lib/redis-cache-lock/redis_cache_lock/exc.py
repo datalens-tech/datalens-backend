@@ -7,7 +7,7 @@ class CacheError(Exception):
     """Common base exception"""
 
 
-class NetworkCallTimeoutError(asyncio.TimeoutError, CacheError):
+class NetworkCallTimeoutError(TimeoutError, CacheError):
     """Timed out while waiting on a network request"""
 
 

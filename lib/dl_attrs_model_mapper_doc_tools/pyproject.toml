@@ -10,7 +10,7 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-attrs-model-mapper = {path = "../dl_attrs_model_mapper"}
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 pyyaml = "*"
 
 [tool.mypy]

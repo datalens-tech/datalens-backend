@@ -199,7 +199,7 @@ async def get_invalidation_payload_formula(
                 execute_formula_func(),
                 timeout=_INVALIDATION_QUERY_TIMEOUT_SEC,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             LOGGER.warning(
                 "Formula invalidation query timed out after %.1f seconds",
                 _INVALIDATION_QUERY_TIMEOUT_SEC,
@@ -287,7 +287,7 @@ def _make_sql_generate_func(
 
         try:
             rows = await asyncio.wait_for(_execute_sql(), timeout=_INVALIDATION_QUERY_TIMEOUT_SEC)
-        except asyncio.TimeoutError:
+        except TimeoutError:
             LOGGER.warning(
                 "Cache invalidation SQL query timed out after %.1f seconds",
                 _INVALIDATION_QUERY_TIMEOUT_SEC,

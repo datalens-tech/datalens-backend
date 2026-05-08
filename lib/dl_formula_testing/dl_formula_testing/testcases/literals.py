@@ -78,17 +78,15 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
         # With UTC without microseconds
         if self.supports_utc:
             assert as_dt(
-                dbe.db.scalar(
-                    literal(datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone.utc), d=dbe.dialect)
-                )
-            ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone.utc)
+                dbe.db.scalar(literal(datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.UTC), d=dbe.dialect))
+            ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.UTC)
 
         # With UTC and microseconds
         if self.supports_utc:
             assert as_dt(
                 dbe.db.scalar(
                     literal(
-                        datetime.datetime(2020, 4, 8, 12, 34, 56, microsecond=7890, tzinfo=datetime.timezone.utc),
+                        datetime.datetime(2020, 4, 8, 12, 34, 56, microsecond=7890, tzinfo=datetime.UTC),
                         d=dbe.dialect,
                     )
                 )
@@ -100,7 +98,7 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
                 34,
                 56,
                 microsecond=7890 if self.supports_microseconds else 0,
-                tzinfo=datetime.timezone.utc,
+                tzinfo=datetime.UTC,
             )
 
         # With custom tz
@@ -112,7 +110,7 @@ class DefaultLiteralFormulaConnectorTestSuite(FormulaConnectorTestBase):
                         d=dbe.dialect,
                     )
                 )
-            ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.timezone.utc)
+            ) == datetime.datetime(2020, 4, 8, 12, 34, 56, tzinfo=datetime.UTC)
 
     def test_arrays(self, dbe: DbEvaluator) -> None:
         if not self.supports_arrays:

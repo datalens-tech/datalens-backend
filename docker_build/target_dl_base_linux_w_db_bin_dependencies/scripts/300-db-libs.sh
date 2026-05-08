@@ -8,4 +8,5 @@ apt-get install --yes --fix-missing \
     tdsodbc \
     unixodbc  \
     unixodbc-dev  \
-    libtcmalloc-minimal4
+    libtcmalloc-minimal4 \
+    libaio1

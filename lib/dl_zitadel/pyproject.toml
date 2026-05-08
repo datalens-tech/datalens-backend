@@ -16,7 +16,7 @@ dl-constants = {path = "../dl_constants"}
 dl-httpx = {path = "../dl_httpx"}
 flask = {optional = true, version = "*"}
 httpx = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 werkzeug = "*"
 
 [tool.poetry.group.tests.dependencies]

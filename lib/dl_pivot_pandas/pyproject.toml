@@ -13,7 +13,7 @@ dl-constants = {path = "../dl_constants"}
 dl-pivot = {path = "../dl_pivot"}
 dl-query-processing = {path = "../dl_query_processing"}
 pandas = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.poetry.plugins."dl_pivot.pivot_engine_plugins"]
 pandas = "dl_pivot_pandas.pandas.plugin:PandasPivotEnginePlugin"

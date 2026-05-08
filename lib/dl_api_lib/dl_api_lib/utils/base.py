@@ -68,7 +68,9 @@ def profile_stats(stats_dir: Optional[str] = None) -> Iterator[None]:
         pr.disable()
         filename = os.path.join(
             stats_dir,
-            "{}-{}.stats".format(datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-%M-%S"), str(uuid.uuid4())[:4]),
+            "{}-{}.stats".format(
+                datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%d-%H-%M-%S"), str(uuid.uuid4())[:4]
+            ),
         )
         pr.dump_stats(filename)
 

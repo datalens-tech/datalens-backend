@@ -13,7 +13,7 @@ dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-json = {path = "../dl_json"}
 pydantic = "*"
 pydantic-core = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]

@@ -12,7 +12,7 @@ attrs = "*"
 dl-api-commons = {path = "../dl_api_commons"}
 dl-constants = {path = "../../lib/dl_constants"}
 marshmallow = "*"
-python = ">=3.10, <3.13"
+python = ">=3.12, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"

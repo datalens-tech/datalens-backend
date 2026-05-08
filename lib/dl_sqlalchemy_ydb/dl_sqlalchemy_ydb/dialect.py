@@ -59,13 +59,13 @@ class YqlTimestamp(sa.types.DateTime):
                 return None
             if not self.timezone:
                 return value
-            return value.replace(tzinfo=datetime.timezone.utc)
+            return value.replace(tzinfo=datetime.UTC)
 
         return process
 
     def literal_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
         def process(value: datetime.datetime) -> str:
-            dt = value.astimezone(datetime.timezone.utc)
+            dt = value.astimezone(datetime.UTC)
             dt = dt.replace(tzinfo=None)
             formatted_dt = dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
@@ -86,14 +86,14 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
             if value is None:
                 return None
             if not self.timezone:
-                value = value.replace(tzinfo=datetime.timezone.utc)
+                value = value.replace(tzinfo=datetime.UTC)
             return int(value.timestamp())
 
         return process
 
     def literal_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
         def process(value: datetime.datetime) -> str:
-            dt = value.astimezone(datetime.timezone.utc)
+            dt = value.astimezone(datetime.UTC)
             dt = dt.replace(tzinfo=None)
             formatted_dt = dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
