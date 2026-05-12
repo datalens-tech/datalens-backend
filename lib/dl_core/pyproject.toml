@@ -57,6 +57,7 @@ aiopg = "*"
 asyncpg = "*"
 dl-compeng-pg = {path = "../dl_compeng_pg"}
 dl-connector-clickhouse = {path = "../dl_connector_clickhouse"}
+dl-connector-postgresql = {path = "../dl_connector_postgresql"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
