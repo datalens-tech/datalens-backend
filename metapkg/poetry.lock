@@ -3547,7 +3547,6 @@ dl-configs = {path = "../dl_configs"}
 dl-logging = {path = "../dl_logging"}
 dl-utils = {path = "../dl_utils"}
 redis = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3574,7 +3573,6 @@ dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
 pydantic = "*"
 temporalio = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"

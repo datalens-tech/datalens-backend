@@ -4,6 +4,7 @@ from typing import (
     Any,
     Optional,
     Protocol,
+    TypeAlias,
     runtime_checkable,
 )
 
@@ -16,7 +17,6 @@ from arq import Retry as ArqRetry
 from arq.connections import RedisSettings as ArqRedisSettings
 from arq.cron import CronJob as _CronJob
 import attr
-from typing_extensions import TypeAlias
 
 from dl_configs.enums import RedisMode
 from dl_task_processor.executor import (

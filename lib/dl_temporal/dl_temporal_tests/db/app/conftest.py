@@ -3,13 +3,13 @@ import os
 from typing import (
     AsyncGenerator,
     ClassVar,
+    override,
 )
 
 import aiohttp
 import attr
 import pytest
 import pytest_asyncio
-from typing_extensions import override
 
 import dl_temporal
 import dl_temporal.app

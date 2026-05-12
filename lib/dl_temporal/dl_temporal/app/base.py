@@ -1,11 +1,11 @@
 from typing import (
     Generic,
     TypeVar,
+    override,
 )
 
 import attr
 import pydantic
-from typing_extensions import override
 
 import dl_app_api_base
 import dl_app_base

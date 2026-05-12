@@ -20,7 +20,6 @@ dl-utils = {path = "../dl_utils"}
 pydantic = "*"
 python = ">=3.12, <3.13"
 temporalio = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 aiohttp = "*"

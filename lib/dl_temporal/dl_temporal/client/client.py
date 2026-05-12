@@ -1,13 +1,15 @@
 import asyncio
 import datetime
 import logging
-from typing import Mapping
+from typing import (
+    Mapping,
+    Self,
+)
 
 import attrs
 import temporalio.api
 import temporalio.client
 import temporalio.service
-from typing_extensions import Self
 
 import dl_settings
 import dl_temporal.base as base

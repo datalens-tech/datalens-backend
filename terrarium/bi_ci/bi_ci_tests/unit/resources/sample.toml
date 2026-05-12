@@ -9,7 +9,7 @@ packages = [{include = "datalens_local_dev"}]
 
 [tool.poetry.dependencies]
 attrs = "22.2.0"
-python = "^3.10"
+python = "^3.12"
 frozendict = "*"
 toml = "*"
 packaging = ">=23.1"

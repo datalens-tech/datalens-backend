@@ -32,7 +32,9 @@ class SnowFlakeTestBase(FormulaConnectorTestBase):
 
     @pytest.fixture(scope="class")
     def loop(self):
-        return asyncio.new_event_loop()
+        loop = asyncio.new_event_loop()
+        yield loop
+        loop.close()
 
     @pytest.fixture(scope="class")
     def _sf_target_dto(self, loop, settings: Settings):

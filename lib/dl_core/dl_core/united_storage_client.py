@@ -1,7 +1,6 @@
 import abc
 from contextlib import contextmanager
 from datetime import (
-    UTC,
     datetime,
     timedelta,
 )
@@ -365,9 +364,6 @@ class UStorageClientBase:
 
     @staticmethod
     def parse_datetime(dt: str) -> datetime:
-        # TODO: remove after migrating to python 3.11 or above
-        if dt[-1] == "Z":
-            return datetime.fromisoformat(dt.removesuffix("Z")).replace(tzinfo=UTC)
         return datetime.fromisoformat(dt)
 
     @staticmethod

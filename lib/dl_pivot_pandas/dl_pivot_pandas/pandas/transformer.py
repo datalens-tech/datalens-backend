@@ -103,7 +103,7 @@ class PdPivotTransformer(PivotTransformer):
             assert isinstance(pd_pivot_res, pd.DataFrame)
             pd_df = pd_pivot_res
             # Drop the fake dimension `fake_measure_liid_str` from the column index:
-            pd_df = pd_df.set_axis(axis="columns", labels=pd_df.columns.droplevel(0))
+            pd_df = pd_df.set_axis(axis="columns", labels=pd_df.columns.droplevel(0), copy=False)
             facade = PdDataFrameFacade(
                 pd_df=pd_df,
                 legend=self._legend,

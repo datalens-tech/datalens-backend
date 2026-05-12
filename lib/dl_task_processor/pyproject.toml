@@ -17,7 +17,6 @@ dl-logging = {path = "../dl_logging"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.12, <3.13"
 redis = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}

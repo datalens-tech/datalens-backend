@@ -2,11 +2,11 @@ import abc
 from typing import (
     Generic,
     TypeVar,
+    override,
 )
 
 import attr
 import temporalio.worker
-from typing_extensions import override
 
 import dl_app_base
 import dl_settings
