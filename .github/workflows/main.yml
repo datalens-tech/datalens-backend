@@ -291,10 +291,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      split_base: ${{ steps.get_split.outputs.split_base }}
+      split_default: ${{ steps.get_split.outputs.split_default }}
       split_fat: ${{ steps.get_split.outputs.split_fat }}
       split_ext_public: ${{ steps.get_split.outputs.split_ext_public }}
-      split_no_compose: ${{ steps.get_split.outputs.split_no_compose }}
     steps:
       - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
@@ -308,11 +307,11 @@ jobs:
         id: get_split
         run: |
           . /venv/bin/activate && echo "$CHANGED_PACKAGES" >> /tmp/dl_test_targets.json
-          split-pytest-tasks base,fat,ext_public,no_compose /src /tmp/dl_test_targets.json true true >> "$GITHUB_OUTPUT"
+          split-pytest-tasks default,fat,ext_public /src /tmp/dl_test_targets.json true true >> "$GITHUB_OUTPUT"
         env:
           CHANGED_PACKAGES: ${{ needs.router.outputs.changed-packages }}
 
-  run_tests_base:
+  run_tests_default:
     name: "🐍[pytest]${{ matrix.value }}"
     runs-on: ubuntu-22.04
     permissions:
@@ -322,7 +321,7 @@ jobs:
     needs:
       - pytest_split
       - gh_build_image
-    if: ${{ needs.pytest_split.outputs.split_base != '[]' }}
+    if: ${{ needs.pytest_split.outputs.split_default != '[]' }}
 
     container:
       image: ${{ needs.gh_build_image.outputs.IMAGE }}
@@ -337,65 +336,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        value: ${{fromJson(needs.pytest_split.outputs.split_base)}}
-
-    env:
-      TEST_NAME: ${{ matrix.value }}
-
-    steps:
-      - run: echo "Running py tests for $TEST_NAME"
-      - name: Log in to the Container registry
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
-        with:
-          registry: "ghcr.io"
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - id: get_compose_prj
-        run: |
-          compose_path="/src/$(echo $TEST_NAME | cut -d ":" -f1)/"
-          cd "$compose_path" && echo result="$(basename "$PWD")_$(shuf -i 1000000-1000000000 -n 1)" >> "$GITHUB_OUTPUT"
-      # We need to set custom compose project name to ensure "unique" container names in the host docker env
-      - name: run bash script with all logic for starting compose and running tests
-        run: |
-          bash /src/ci/execute_test_with_docker_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT" \
-            WE_ARE_IN_CI=1
-        env:
-          CONTAINER_NETWORK: "${{ job.container.network }}"
-          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
-      - name: Stop compose if provided
-        # We could not put this into bash script, since job could be cancelled by user request
-        if: always()  # yes! always
-        run: bash /src/ci/stop_compose.sh "$TEST_NAME" "$CONTAINER_NETWORK" "$COMPOSE_PROJECT"
-        env:
-          CONTAINER_NETWORK: "${{ job.container.network }}"
-          COMPOSE_PROJECT: "${{ steps.get_compose_prj.outputs.result }}"
-
-  run_tests_no_compose:
-    name: "🐍[pytest][no_compose]${{ matrix.value }}"
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-      contents: read
-
-    needs:
-      - pytest_split
-      - gh_build_image
-    if: ${{ needs.pytest_split.outputs.split_no_compose != '[]' }}
-
-    container:
-      image: ${{ needs.gh_build_image.outputs.IMAGE }}
-      options: -v /var/run/docker.sock:/var/run/docker.sock
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-
-    timeout-minutes: 60
-    strategy:
-      fail-fast: false
-      matrix:
-        value: ${{fromJson(needs.pytest_split.outputs.split_no_compose)}}
+        value: ${{fromJson(needs.pytest_split.outputs.split_default)}}
 
     env:
       TEST_NAME: ${{ matrix.value }}
@@ -611,9 +552,8 @@ jobs:
     needs:
       - check-skip-tests-label
       - pytest_split
-      - run_tests_base
+      - run_tests_default
       - run_tests_fat
-      - run_tests_no_compose
       - run_tests_ext_public
 
     if: always() && !cancelled()

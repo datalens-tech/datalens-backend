@@ -95,6 +95,5 @@ skip_compose = "true"
 skip_tests = true # TODO: BI-5317
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_connector_bigquery_tests/unit"
 skip_compose = "true"

@@ -80,7 +80,6 @@ root_dir = "dl_connector_bitrix_gds_tests/"
 target_path = "ext"
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_connector_bitrix_gds_tests/"
 skip_compose = "true"
 target_path = "unit"

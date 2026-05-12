@@ -52,6 +52,5 @@ root_dir = "dl_zitadel_tests/db"
 skip_tests = true # won't fix until deleted from repository
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_zitadel_tests/unit"
 skip_compose = "true"

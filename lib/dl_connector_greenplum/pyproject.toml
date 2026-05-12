@@ -67,7 +67,6 @@ root_dir = "dl_connector_greenplum_tests/"
 target_path = "db"
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_connector_greenplum_tests/"
 skip_compose = "true"
 target_path = "unit"

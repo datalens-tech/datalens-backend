@@ -59,6 +59,5 @@ root_dir = "dl_auth_api_lib_tests/"
 target_path = "ext"
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_auth_api_lib_tests/"
 target_path = "unit"

@@ -51,6 +51,5 @@ labels = ["fat"]
 root_dir = "dl_rate_limiter_tests/db"
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_rate_limiter_tests/unit"
 skip_compose = "true"

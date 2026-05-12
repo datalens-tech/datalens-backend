@@ -32,7 +32,6 @@ requires = [
 ]
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "{{cookiecutter.package_slug}}_tests/"
 skip_compose = "true"
 target_path = "unit"

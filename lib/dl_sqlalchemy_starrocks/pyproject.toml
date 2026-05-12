@@ -39,7 +39,6 @@ requires = [
 ]
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_sqlalchemy_starrocks_tests/"
 skip_compose = "true"
 target_path = "unit"

@@ -115,7 +115,6 @@ root_dir = "dl_connector_clickhouse_tests/"
 target_path = "db/formula"
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_connector_clickhouse_tests/"
 skip_compose = "true"
 target_path = "unit"

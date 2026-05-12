@@ -43,7 +43,6 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core"]
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_testing_tests/"
 skip_compose = "true"
 target_path = "unit"

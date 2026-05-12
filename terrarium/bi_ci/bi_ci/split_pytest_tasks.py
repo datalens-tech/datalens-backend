@@ -24,7 +24,7 @@ target_path = "aio caches capabilities common"
 labels = ["fat"]
 """
 
-DEFAULT_MODE = "base"
+DEFAULT_MODE = "default"
 DEFAULT_LABELS = frozenset([DEFAULT_MODE])
 DEFAULT_TARGET_NAME = "__default__"
 DEFAULT_TARGET_PATHS = frozenset(["."])

@@ -38,7 +38,6 @@ requires = [
 ]
 
 [datalens.pytest.unit]
-labels = ["no_compose"]
 root_dir = "dl_retrier_tests/"
 skip_compose = "true"
 target_path = "unit"
