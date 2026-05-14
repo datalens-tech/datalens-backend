@@ -43,6 +43,7 @@ from dl_api_lib.query.formalization.raw_specs import (
 from dl_api_lib.request_model.data import (
     DataRequestModel,
     PivotDataRequestModel,
+    PreviewDataRequestModel,
     ResultDataRequestModel,
 )
 from dl_api_lib.schemas.action import ActionSchema
@@ -96,7 +97,7 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema):
     limit = ma_fields.Integer(load_default=100)
     row_count_hard_limit = ma_fields.Integer(load_default=DataAPILimits.PREVIEW_API_DEFAULT_ROW_COUNT_HARD_LIMIT)
     updates = ma_fields.Nested(ActionSchema, many=True, load_default=[])
-    TARGET_CLS = DataRequestModel
+    TARGET_CLS = PreviewDataRequestModel
 
     def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raw_query_spec_union = RawQuerySpecUnion(
@@ -109,8 +110,8 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema):
         )
         return raw_query_spec_union
 
-    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
-        return DataRequestModel(
+    def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> PreviewDataRequestModel:
+        return PreviewDataRequestModel(
             raw_query_spec_union=raw_query_spec_union,
             dataset=data.get("dataset"),
             updates=data["updates"],

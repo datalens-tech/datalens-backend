@@ -4,7 +4,7 @@ from typing import Any
 
 from marshmallow import fields as ma_fields
 
-from dl_api_lib.request_model.data import DataRequestModel
+from dl_api_lib.request_model.data import CacheInvalidationTestDataRequestModel
 from dl_api_lib.schemas.action import ActionSchema
 from dl_api_lib.schemas.dataset_base import DatasetContentInternalSchema
 from dl_model_tools.schema.base import (
@@ -13,7 +13,7 @@ from dl_model_tools.schema.base import (
 )
 
 
-class CacheInvalidationTestRequestSchema(DefaultSchema[DataRequestModel]):
+class CacheInvalidationTestRequestSchema(DefaultSchema[CacheInvalidationTestDataRequestModel]):
     """
     Request schema for cache invalidation test endpoint.
 
@@ -24,13 +24,13 @@ class CacheInvalidationTestRequestSchema(DefaultSchema[DataRequestModel]):
     the invalidation query by the user.
     """
 
-    TARGET_CLS = DataRequestModel
+    TARGET_CLS = CacheInvalidationTestDataRequestModel
 
     dataset = ma_fields.Nested(DatasetContentInternalSchema, required=False)
     updates = ma_fields.Nested(ActionSchema, many=True, load_default=[])
 
-    def to_object(self, data: dict[str, Any]) -> DataRequestModel:
-        return DataRequestModel(
+    def to_object(self, data: dict[str, Any]) -> CacheInvalidationTestDataRequestModel:
+        return CacheInvalidationTestDataRequestModel(
             dataset=data.get("dataset"),
             updates=data.get("updates", []),
         )

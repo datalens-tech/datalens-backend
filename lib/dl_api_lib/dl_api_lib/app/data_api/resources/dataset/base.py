@@ -258,7 +258,7 @@ class DatasetDataBaseView(BaseView):
         update_info = loader.update_dataset_from_body(
             dataset=self.dataset,
             us_manager=us_manager,
-            dataset_data=req_model.dataset,
+            dataset_data=req_model.get_dataset_data(),
             allow_rls_change=False,
             allow_settings_change=False,
             allow_query_settings_change=False,
@@ -579,7 +579,7 @@ class DatasetDataBaseView(BaseView):
             update_info = loader.update_dataset_from_body(
                 dataset=self.dataset,
                 us_manager=us_manager,
-                dataset_data=req_model.dataset,
+                dataset_data=req_model.get_dataset_data(),
                 allow_rls_change=False,
                 allow_settings_change=False,
                 allow_query_settings_change=False,

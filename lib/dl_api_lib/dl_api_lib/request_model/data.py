@@ -218,8 +218,6 @@ _DRM_TV = TypeVar("_DRM_TV", bound="DataRequestModel")
 
 @attr.s()
 class DataRequestModel:
-    # Dataset state
-    dataset: Optional[dict[str, Any]] = attr.ib(kw_only=True, default=None)  # TODO: schematize
     # Updates to apply to the given dataset state
     updates: list[Action] = attr.ib(kw_only=True, factory=list)
 
@@ -234,6 +232,28 @@ class DataRequestModel:
 
     def clone(self: _DRM_TV, **updates: Any) -> _DRM_TV:
         return attr.evolve(self, **updates)
+
+    def get_dataset_data(self) -> Optional[dict[str, Any]]:
+        """Dataset state patch from the request body. None for endpoints that do not carry one."""
+        return None
+
+
+@attr.s()
+class PreviewDataRequestModel(DataRequestModel):
+    # Dataset state patch from the request body (preview-only).
+    dataset: Optional[dict[str, Any]] = attr.ib(kw_only=True, default=None)  # TODO: schematize
+
+    def get_dataset_data(self) -> Optional[dict[str, Any]]:
+        return self.dataset
+
+
+@attr.s()
+class CacheInvalidationTestDataRequestModel(DataRequestModel):
+    # Dataset state patch from the request body (cache invalidation test only).
+    dataset: Optional[dict[str, Any]] = attr.ib(kw_only=True, default=None)  # TODO: schematize
+
+    def get_dataset_data(self) -> Optional[dict[str, Any]]:
+        return self.dataset
 
 
 @attr.s()

@@ -34,7 +34,7 @@ from dl_query_processing.postprocessing.primitives import PostprocessedQuery
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 
-    from dl_api_lib.request_model.data import DataRequestModel
+    from dl_api_lib.request_model.data import PreviewDataRequestModel
     from dl_core.us_dataset import Dataset
 
 
@@ -111,15 +111,15 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
             allow_cache_usage=allow_cache_usage,
         )
 
-    def load_req_model(self) -> DataRequestModel:
+    def load_req_model(self) -> PreviewDataRequestModel:
         schema = dl_api_lib.schemas.data.DatasetPreviewRequestSchema()
-        req_model: DataRequestModel = schema.load(self.dl_request.json)
+        req_model: PreviewDataRequestModel = schema.load(self.dl_request.json)
         return req_model
 
     @abc.abstractmethod
     def make_response(
         self,
-        req_model: DataRequestModel,
+        req_model: PreviewDataRequestModel,
         merged_stream: MergedQueryDataStream,
     ) -> dict[str, Any]:
         raise NotImplementedError()
@@ -132,7 +132,7 @@ class DatasetPreviewViewV1(DatasetPreviewView):
 
     def make_response(
         self,
-        req_model: DataRequestModel,
+        req_model: PreviewDataRequestModel,
         merged_stream: MergedQueryDataStream,
     ) -> dict[str, Any]:
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
@@ -151,7 +151,7 @@ class DatasetPreviewViewV2(DatasetPreviewView):
 
     def make_response(
         self,
-        req_model: DataRequestModel,
+        req_model: PreviewDataRequestModel,
         merged_stream: MergedQueryDataStream,
     ) -> dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)
