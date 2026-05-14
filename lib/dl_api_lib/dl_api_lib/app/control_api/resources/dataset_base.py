@@ -20,6 +20,7 @@ from dl_api_lib.dataset.utils import (
 from dl_api_lib.enums import (
     BI_TYPE_AGGREGATIONS,
     CASTS_BY_TYPE,
+    USPermissionKind,
 )
 from dl_api_lib.exc import DatasetExportError
 from dl_api_lib.query.registry import (
@@ -27,6 +28,7 @@ from dl_api_lib.query.registry import (
     is_compeng_executable,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
+from dl_api_lib.utils.base import check_permission_on_entry
 from dl_constants.enums import (
     AggregationFunction,
     BinaryJoinOperator,
@@ -83,6 +85,14 @@ class DatasetResource(BIResource):
         )
 
     @classmethod
+    def is_dataset_edit_allowed(cls, dataset: Dataset) -> bool:
+        # In-memory datasets have no permissions attached; the caller is by
+        # definition entitled to mutate them.
+        if dataset.permissions is None:
+            return True
+        return check_permission_on_entry(dataset, USPermissionKind.edit)
+
+    @classmethod
     def get_dataset(
         cls,
         dataset_id: Optional[str],
@@ -110,11 +120,16 @@ class DatasetResource(BIResource):
         if load_dependencies:
             us_manager.load_dependencies(dataset)
 
+        dataset_edit_allowed = cls.is_dataset_edit_allowed(dataset)
+
         loader = cls.create_dataset_api_loader()
         update_info = loader.update_dataset_from_body(
             dataset=dataset,
             us_manager=us_manager,
             dataset_data=body.get("dataset"),
+            allow_rls_change=dataset_edit_allowed,
+            allow_settings_change=dataset_edit_allowed,
+            allow_query_settings_change=dataset_edit_allowed,
         )
         return dataset, update_info
 

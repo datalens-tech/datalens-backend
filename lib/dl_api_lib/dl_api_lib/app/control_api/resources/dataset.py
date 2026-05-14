@@ -542,7 +542,11 @@ class DatasetVersionValidator(DatasetResource):
             body=body,
         )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
-        ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
+        ds_validator = dataset_validator_factory.get_dataset_validator(
+            ds=dataset,
+            us_manager=us_manager,
+            is_data_api=not self.is_dataset_edit_allowed(dataset),
+        )
         data = {}
 
         # apply updates
@@ -612,7 +616,11 @@ class DatasetVersionFieldValidator(DatasetResource):
             body=body,
         )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
-        ds_validator = dataset_validator_factory.get_dataset_validator(ds=dataset, us_manager=us_manager)
+        ds_validator = dataset_validator_factory.get_dataset_validator(
+            ds=dataset,
+            us_manager=us_manager,
+            is_data_api=not self.is_dataset_edit_allowed(dataset),
+        )
         formula = body["field"]["formula"]
         # TODO full validation (with aggregation check for this field), not just formula
         field_errors = ds_validator.get_single_formula_errors(formula)
