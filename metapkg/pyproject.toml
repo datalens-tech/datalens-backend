@@ -146,6 +146,7 @@ dl-dashsql = {develop = true, path = "../lib/dl_dashsql"}
 dl-db-testing = {develop = true, path = "../lib/dl_db_testing"}
 dl-dynamic-enum = {develop = true, path = "../lib/dl_dynamic_enum"}
 dl-dynconfig = {develop = true, path = "../lib/dl_dynconfig"}
+dl-extract = {develop = true, path = "../lib/dl_extract"}
 dl-formula = {develop = true, path = "../lib/dl_formula"}
 dl-formula-ref = {develop = true, path = "../lib/dl_formula_ref"}
 dl-formula-testing = {develop = true, path = "../lib/dl_formula_testing"}

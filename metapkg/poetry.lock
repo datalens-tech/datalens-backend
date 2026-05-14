@@ -2902,6 +2902,22 @@ type = "directory"
 url = "../lib/dl_dynconfig"
 
 [[package]]
+name = "dl-extract"
+version = "0.0.1"
+description = "Extract"
+optional = false
+python-versions = ">=3.10, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+dl-constants = {path = "../dl_constants"}
+
+[package.source]
+type = "directory"
+url = "../lib/dl_extract"
+
+[[package]]
 name = "dl-formula"
 version = "7.47.0"
 description = ""
@@ -9515,4 +9531,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "8ced86ff3c2bc54a4abbab1a36be7e5324aeae9fc0197faf5168bbc6e0059312"
+content-hash = "8ca14041c802978204367d9e0fe92347a37d201748aa83b01585c10f478f44dd"
