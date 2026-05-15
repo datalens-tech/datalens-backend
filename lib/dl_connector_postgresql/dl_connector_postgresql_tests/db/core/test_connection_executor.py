@@ -6,17 +6,29 @@ from typing import (
 import uuid
 
 import pytest
+import shortuuid
 from sqlalchemy.dialects import postgresql as pg_types
 
 from dl_constants.enums import UserDataType
 from dl_core.connection_executors import AsyncConnExecutorBase
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
-from dl_core.connection_models.common_models import DBIdent
-from dl_core_testing.database import Db
+from dl_core.connection_models.common_models import (
+    DBIdent,
+    TableIdent,
+)
+from dl_core.db import IndexInfo
+from dl_core_testing.database import (
+    Db,
+    make_schema,
+)
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
+    DefaultIndexDiscoveryTestSuite,
+    DefaultSchemaListingTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite,
+    IndexTestCase,
+    SchemaNamesTestCase,
 )
 from dl_sqlalchemy_postgres.base import CITEXT
 from dl_testing.regulated_test import RegulatedTestParams
@@ -51,17 +63,62 @@ class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
     def enabled_citext_extension(self, db: Db) -> None:
         db.execute("CREATE EXTENSION IF NOT EXISTS CITEXT;")
 
+    @pytest.fixture(scope="function")
+    def schema_names_test_case(self, db: Db) -> SchemaNamesTestCase:
+        schema_name_list = [make_schema(db) for _ in range(3)]
+        return SchemaNamesTestCase(
+            target_db_ident=DBIdent(None),
+            expected_schemas=schema_name_list,
+            full_match_required=False,
+        )
+
 
 @pytest.mark.usefixtures("enabled_citext_extension")
 class TestPostgreSQLSyncConnectionExecutor(
     PostgreSQLSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionPostgreSQL],
+    DefaultSchemaListingTestSuite[ConnectionPostgreSQL],
+    DefaultIndexDiscoveryTestSuite[ConnectionPostgreSQL],
 ):
     test_params = RegulatedTestParams(
         mark_tests_skipped={
             DefaultAsyncConnectionExecutorTestSuite.test_table_exists: "",  # TODO: FIXME
         },
     )
+
+    @pytest.fixture(scope="function", params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
+    def index_test_case(self, db: Db, request: pytest.FixtureRequest):
+        table_name = f"idx_test_{shortuuid.uuid()}"
+        cases = dict(
+            no_idx=(
+                [f'CREATE TABLE "{table_name}" (num_1 integer, num_2 integer, txt text)'],
+                [],
+            ),
+            one_columns_sorting=(
+                [
+                    f'CREATE TABLE "{table_name}" (num_1 integer, num_2 integer, txt text)',
+                    f'CREATE INDEX ON "{table_name}" (num_1)',
+                ],
+                [IndexInfo(columns=("num_1",), kind=None)],
+            ),
+            two_columns_sorting=(
+                [
+                    f'CREATE TABLE "{table_name}" (num_1 integer, num_2 integer, txt text)',
+                    f'CREATE INDEX ON "{table_name}" (num_1, num_2)',
+                ],
+                [IndexInfo(columns=("num_1", "num_2"), kind=None)],
+            ),
+        )
+        ddl_list, expected_indexes = cases[request.param]
+        try:
+            for ddl in ddl_list:
+                db.execute(ddl)
+            yield IndexTestCase(
+                table_ident=TableIdent(db_name=None, schema_name=None, table_name=table_name),
+                expected_indexes=frozenset(expected_indexes),
+            )
+        finally:
+            db.execute(f'DROP TABLE IF EXISTS "{table_name}"')
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
         return {

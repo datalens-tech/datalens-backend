@@ -387,3 +387,94 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
     ) -> None:
         with pytest.raises(core_exc.DLBaseException):
             await async_connection_executor.get_table_schema_info(table_def=nonexistent_table_ident)
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class IndexTestCase:
+    table_ident: TableIdent
+    expected_indexes: "frozenset"
+    # `frozenset[IndexInfo]` — IndexInfo lives in dl_core.db; not imported here to
+    # keep this module's import surface narrow. Connectors construct frozensets directly.
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class SchemaNamesTestCase:
+    target_db_ident: DBIdent
+    expected_schemas: list[str]
+    # If false, get_schema_names result must contain expected_schemas; if true, sets must match exactly.
+    full_match_required: bool
+
+
+class DefaultIndexDiscoveryTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
+    """Sync-only — covers the legacy `BaseConnExecutorSet.test_indexes_discovery`."""
+
+    @pytest.fixture(scope="function")
+    def index_test_case(self) -> "IndexTestCase":
+        pytest.skip("No `index_test_case` fixture defined for this connector")
+
+    @pytest.fixture(scope="function")
+    def fetch_table_indexes_sync_connection_executor(
+        self,
+        sync_conn_executor_factory: Callable[[], "SyncConnExecutorBase"],
+    ) -> Generator["SyncConnExecutorBase", None, None]:
+        # Mirrors `sync_connection_executor` but flips `fetch_table_indexes` on
+        # via the executor's connect options. For sync envs that wrap an async
+        # executor (`SyncWrapperForAsyncConnExecutor`), mutate the inner one.
+        from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor
+        from dl_core.connection_executors.sync_executor_wrapper import SyncWrapperForAsyncConnExecutor
+
+        sync_conn_executor = sync_conn_executor_factory()
+        target: DefaultSqlAlchemyConnExecutor
+        if isinstance(sync_conn_executor, SyncWrapperForAsyncConnExecutor):
+            inner = sync_conn_executor._async_conn_executor
+            assert isinstance(inner, DefaultSqlAlchemyConnExecutor)
+            target = inner
+        else:
+            assert isinstance(sync_conn_executor, DefaultSqlAlchemyConnExecutor)
+            target = sync_conn_executor
+        target._conn_options = attr.evolve(target._conn_options, fetch_table_indexes=True)
+        try:
+            yield sync_conn_executor
+        finally:
+            sync_conn_executor.close()
+
+    def test_indexes_discovery(
+        self,
+        fetch_table_indexes_sync_connection_executor: "SyncConnExecutorBase",
+        index_test_case: "IndexTestCase",
+    ) -> None:
+        actual_schema_info = fetch_table_indexes_sync_connection_executor.get_table_schema_info(
+            index_test_case.table_ident,
+        )
+        assert actual_schema_info.indexes == index_test_case.expected_indexes
+
+
+class DefaultSchemaListingTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
+    """Sync + async — covers the legacy `BaseSchemaSupportedExecutorSet` schema-name tests."""
+
+    @pytest.fixture(scope="function")
+    def schema_names_test_case(self) -> "SchemaNamesTestCase":
+        raise NotImplementedError("Override `schema_names_test_case` for this connector")
+
+    def test_get_schema_names(
+        self,
+        sync_connection_executor: "SyncConnExecutorBase",
+        schema_names_test_case: "SchemaNamesTestCase",
+    ) -> None:
+        actual = sync_connection_executor.get_schema_names(schema_names_test_case.target_db_ident)
+        if schema_names_test_case.full_match_required:
+            assert sorted(actual) == sorted(schema_names_test_case.expected_schemas)
+        else:
+            assert set(actual).issuperset(set(schema_names_test_case.expected_schemas))
+
+    @pytest.mark.asyncio
+    async def test_get_schema_names_async(
+        self,
+        async_connection_executor: "AsyncConnExecutorBase",
+        schema_names_test_case: "SchemaNamesTestCase",
+    ) -> None:
+        actual = await async_connection_executor.get_schema_names(schema_names_test_case.target_db_ident)
+        if schema_names_test_case.full_match_required:
+            assert sorted(actual) == sorted(schema_names_test_case.expected_schemas)
+        else:
+            assert set(actual).issuperset(set(schema_names_test_case.expected_schemas))

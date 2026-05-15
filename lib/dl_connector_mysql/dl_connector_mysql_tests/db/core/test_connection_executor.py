@@ -14,6 +14,7 @@ from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
+    DefaultIndexDiscoveryTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite,
 )
@@ -49,6 +50,7 @@ class MySQLSyncAsyncConnectionExecutorCheckBase(
 class TestMySQLSyncConnectionExecutor(
     MySQLSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionMySQL],
+    DefaultIndexDiscoveryTestSuite[ConnectionMySQL],
 ):
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
         return {

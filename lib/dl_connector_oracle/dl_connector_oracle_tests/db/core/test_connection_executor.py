@@ -19,6 +19,7 @@ from dl_core_testing.database import (
 )
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
+    DefaultIndexDiscoveryTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite,
 )
@@ -58,6 +59,7 @@ class OracleSyncAsyncConnectionExecutorCheckBase(
 class TestOracleSyncConnectionExecutor(
     OracleSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionSQLOracle],
+    DefaultIndexDiscoveryTestSuite[ConnectionSQLOracle],
 ):
     subselect_query_for_schema_test = "(SELECT 1 AS num FROM DUAL)"
 

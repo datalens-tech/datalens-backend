@@ -8,10 +8,17 @@ from sqlalchemy.dialects import mssql as mssql_types
 
 from dl_constants.enums import UserDataType
 from dl_core.connection_models.common_models import DBIdent
+from dl_core_testing.database import (
+    Db,
+    make_schema,
+)
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,
+    DefaultIndexDiscoveryTestSuite,
+    DefaultSchemaListingTestSuite,
     DefaultSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite,
+    SchemaNamesTestCase,
 )
 from dl_testing.regulated_test import RegulatedTestParams
 
@@ -40,10 +47,21 @@ class MSSQLSyncAsyncConnectionExecutorCheckBase(
         assert db_version is not None
         assert "." in db_version
 
+    @pytest.fixture(scope="function")
+    def schema_names_test_case(self, db: Db) -> SchemaNamesTestCase:
+        schema_name_list = [make_schema(db) for _ in range(3)]
+        return SchemaNamesTestCase(
+            target_db_ident=DBIdent(None),
+            expected_schemas=schema_name_list,
+            full_match_required=False,
+        )
+
 
 class TestMSSQLSyncConnectionExecutor(
     MSSQLSyncAsyncConnectionExecutorCheckBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionMSSQL],
+    DefaultIndexDiscoveryTestSuite[ConnectionMSSQL],
+    DefaultSchemaListingTestSuite[ConnectionMSSQL],
 ):
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
         return {
