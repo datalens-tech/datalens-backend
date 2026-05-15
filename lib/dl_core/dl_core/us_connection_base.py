@@ -112,6 +112,7 @@ class DataSourceTemplate(NamedTuple):
             source_type=self.source_type,
             connection_id=self.connection_id,
             **self.parameters,
+            manual=False,
         )
 
 

@@ -135,6 +135,7 @@ class DataSource(metaclass=abc.ABCMeta):
     preview_enabled: ClassVar[bool] = True
     default_chunk_row_count: ClassVar[int] = 10000
     chunk_size_bytes: ClassVar[int] = 3 * 1024**2
+    is_table_source: ClassVar[bool] = False
 
     compiler_cls: type[QueryCompiler] = QueryCompiler
     conn_type: ClassVar[ConnectionType]  # TODO unbind DataSource and Connection classes BI-4083
@@ -198,7 +199,30 @@ class DataSource(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def get_parameters(self) -> dict:
-        return {}
+        return {"manual": self.manual}
+
+    @property
+    def manual(self) -> bool:
+        if self.spec.manual is not None:
+            return self.spec.manual
+        return self.get_default_manual()
+
+    def get_default_manual(self) -> bool:
+        if not self.is_table_source:
+            return True
+        try:
+            if self.is_templated():
+                return True
+        except Exception:
+            # Some connectors compute their templated value from connection state and may
+            # raise non-DL exceptions if the configuration isn't ready. Fall back to
+            # ``manual=False`` rather than crashing the whole validation request.
+            return False
+        return False
+
+    def is_manual_allowed(self) -> bool:
+        """Whether this data source can be used with ``manual=True`` given its connection state."""
+        return True
 
     @property
     def id(self) -> str | None:

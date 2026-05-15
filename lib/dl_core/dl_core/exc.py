@@ -680,6 +680,16 @@ class DashSQLNotAllowed(ConnectionConfigurationError):
     default_message = "DashSQL API is disallowed in the connection settings"
 
 
+class ManualSourceNotAllowed(ConnectionConfigurationError):
+    err_code = ConnectionConfigurationError.err_code + ["MANUAL_SOURCE_NOT_ALLOWED"]
+    default_message = "Manual source is disallowed in the connection settings"
+
+
+class NonManualSourceUnsupported(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["NON_MANUAL_SOURCE_UNSUPPORTED"]
+    default_message = "Source kind cannot be used with manual=False"
+
+
 class NotAvailableError(DLBaseException):
     err_code = DLBaseException.err_code + ["NOT_AVAILABLE"]
     default_message = "Not available"

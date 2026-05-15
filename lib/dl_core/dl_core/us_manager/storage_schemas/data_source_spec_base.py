@@ -39,6 +39,7 @@ class DataSourceSpecStorageSchema(BaseStorageSchema):  # noqa
         allow_none=True,
     )
     created_from = DynamicEnumField(DataSourceType, attribute="source_type")
+    manual = ma_fields.Boolean(allow_none=True, load_default=None)
 
     def pre_process_input_data(self, data: dict[str, Any]) -> dict:
         data = data.copy()

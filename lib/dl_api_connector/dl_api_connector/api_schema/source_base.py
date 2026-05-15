@@ -80,10 +80,10 @@ class IndexInfoSchema(BaseSchema):
 
 
 class SimpleParametersSchema(BaseSchema):
-    pass
+    manual = ma_fields.Boolean(allow_none=True, load_default=None)
 
 
-class SQLParametersSchema(BaseSchema):
+class SQLParametersSchema(SimpleParametersSchema):
     db_name = ma_fields.String(allow_none=True)
     table_name = ma_fields.String(allow_none=True)
     db_version = ma_fields.String(allow_none=True)

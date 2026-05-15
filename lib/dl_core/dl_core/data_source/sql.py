@@ -225,6 +225,13 @@ class SubselectDataSource(BaseSQLDataSource):
 class SQLDataSource(abc.ABC, BaseSQLDataSource):
     """Data source for SQL database"""
 
+    is_table_source: ClassVar[bool] = True
+
+    def is_manual_allowed(self) -> bool:
+        # Marking a regular table source as manual lets the user point at a table that is not in
+        # the connector listing — that requires raw-SQL-level privileges on the connection.
+        return self.connection.is_subselect_allowed
+
     @property
     @abc.abstractmethod
     def db_name(self) -> str | None:

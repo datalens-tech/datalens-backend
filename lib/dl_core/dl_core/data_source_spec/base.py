@@ -11,6 +11,7 @@ class DataSourceSpec:
     connection_ref: ConnectionRef | None = attr.ib(kw_only=True, default=None)
     raw_schema: list[SchemaColumn] | None = attr.ib(kw_only=True, default=None)
     data_dump_id: str | None = attr.ib(kw_only=True, default=None)
+    manual: bool | None = attr.ib(kw_only=True, default=None)
 
     @property
     def is_configured(self) -> bool:

@@ -1261,6 +1261,36 @@ class DatasetValidator(DatasetBaseWrapper):
             new_raw_schema = tuple(new_raw_schema)
         return new_raw_schema == old_raw_schema
 
+    def _validate_manual_field(self, source_id: str) -> None:
+        """
+        Validate the ``manual`` flag on the source against its kind and connection state.
+
+        - ``manual=False`` is only meaningful for non-templated table sources that the
+          connector can list; subselects and templated sources cannot be discovered through
+          the listing.
+        - ``manual=True`` requires the connection to allow user-input sources (i.e. a
+          ``raw_sql_level`` of at least ``subselect``).
+        """
+        dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
+        origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
+
+        err: Optional[common_exc.DLBaseException] = None
+        if origin_dsrc.manual:
+            if not origin_dsrc.is_manual_allowed():
+                err = common_exc.ManualSourceNotAllowed()
+        elif origin_dsrc.get_default_manual():
+            # The source defaults to manual (non-table or templated), so ``manual=False`` is invalid.
+            err = common_exc.NonManualSourceUnsupported()
+
+        if err is not None:
+            self._ds.error_registry.add_error(
+                id=source_id,
+                type=ComponentType.data_source,
+                message=err.message,
+                code=err.err_code,
+                details=err.details,
+            )
+
     def refresh_data_source(
         self,
         source_id: str,
@@ -1321,6 +1351,10 @@ class DatasetValidator(DatasetBaseWrapper):
                     if not schema_info.schema:  # TODO: remove when get_schema starts raising errors
                         raise common_exc.DLBaseException(message="Failed to load table schema")
                     return schema_info
+                elif origin_dsrc.spec.manual is True:
+                    # Manual sources are user-provided: skip raising SourceDoesNotExist when
+                    # the source can't be discovered through the connector listing.
+                    return None
                 else:
                     params = dict()
                     if isinstance(origin_dsrc, BaseSQLDataSource):
@@ -1337,8 +1371,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         exists = get_source_exists()
         LOGGER.info(f"Data source {source_id} exists: {exists}")
-
-        new_raw_schema_info = get_schema_info(exists=exists)
+        new_raw_schema_info: Optional[SchemaInfo] = get_schema_info(exists=exists)
 
         new_raw_schema = new_raw_schema_info.schema if new_raw_schema_info is not None else []
         new_idx_info_set = new_raw_schema_info.indexes if new_raw_schema_info is not None else None
@@ -1482,6 +1515,7 @@ class DatasetValidator(DatasetBaseWrapper):
             for field in self._ds.error_registry.for_type(ComponentType.field):
                 self._ds.error_registry.remove_errors(id=field.id, code=common_exc.DataSourceNotFound.err_code)
             add_source(title=source_data.get("title") or None)  # type: ignore  # TODO: fix
+            self._validate_manual_field(source_id=source_id)
             self.refresh_data_source(source_id=source_id, old_raw_schema=None)
             new_title = source_data["title"]
             self.add_affected_component(component_ref)
@@ -1506,6 +1540,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
             if (set(source_data) - {"title", "id", "source_type", "parameters"}) or parameters:
                 # something besides the title was updated
+                self._validate_manual_field(source_id=source_id)
                 self.refresh_data_source(source_id=source_id, old_raw_schema=old_raw_schema)
 
         elif action == DatasetAction.delete_source:
