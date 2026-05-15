@@ -180,3 +180,8 @@ class CacheInvalidationLastResultNoResultError(CacheInvalidationLastResultError)
 class ConnectionTemplateNotFound(DLBaseException):
     err_code = DLBaseException.err_code + ["CONNECTION_TEMPLATE_NOT_FOUND"]
     default_message = "Connection has no associated template"
+
+
+class PreviewSourceModificationNotAllowedError(DLBaseException):
+    err_code = DLBaseException.err_code + ["PREVIEW_SOURCE_MODIFICATION_NOT_ALLOWED"]
+    default_message = "Modifying data source parameters in /preview requires view permission on the connection"

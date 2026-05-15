@@ -98,6 +98,7 @@ EXCEPTION_CODES = {
     exc.CacheInvalidationTestNotEditorError: status.FORBIDDEN,
     exc.CacheInvalidationTestError: status.BAD_REQUEST,
     exc.ConnectionTemplateNotFound: status.BAD_REQUEST,
+    exc.PreviewSourceModificationNotAllowedError: status.FORBIDDEN,
 }
 
 

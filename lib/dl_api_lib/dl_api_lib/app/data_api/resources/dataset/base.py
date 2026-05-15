@@ -48,6 +48,7 @@ from dl_api_lib.dataset.validator import (
     validate_cache_invalidation_sql_mode,
 )
 from dl_api_lib.dataset.view import DatasetView
+from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.query.formalization.block_formalizer import BlockFormalizer
 from dl_api_lib.query.formalization.legend_formalizer import (
     DistinctLegendFormalizer,
@@ -70,6 +71,7 @@ from dl_api_lib.request_model.data import (
     FieldAction,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
+from dl_api_lib.utils.base import check_permission_on_entry
 from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler,
@@ -244,6 +246,14 @@ class DatasetDataBaseView(BaseView):
 
         self.dataset = dataset
         self.ds_accessor = DatasetComponentAccessor(dataset=dataset)
+
+    def is_dataset_edit_allowed(self) -> bool:
+        # In-memory datasets (no `permissions` attached) are created from the
+        # request body and have no US-side ACL — the caller is by definition
+        # entitled to mutate them.
+        if self.dataset.permissions is None:
+            return True
+        return check_permission_on_entry(self.dataset, USPermissionKind.edit)
 
     async def _apply_updates_to_dataset(
         self,
