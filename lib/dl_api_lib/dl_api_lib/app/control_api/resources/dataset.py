@@ -48,7 +48,6 @@ from dl_core.base_models import (
     PathEntryLocation,
     WorkbookEntryLocation,
 )
-from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.constants import DatasetConstraints
 from dl_core.enums import USEntryMode
@@ -299,9 +298,6 @@ class DatasetVersionItem(DatasetResource):
             if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
                 raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
 
-            ds_accessor = DatasetComponentAccessor(dataset=ds)
-
-            old_sources = ds_accessor.get_data_source_id_list()
             loader = self.create_dataset_api_loader()
             original_ds = us_manager.clone_entry_instance(ds)
 
@@ -313,11 +309,11 @@ class DatasetVersionItem(DatasetResource):
                 us_manager=us_manager,
             )
 
-            # checks that all dataset sources have read rights
-            sources_to_check = set(new_sources) - set(old_sources)
+            # Read rights required for all added and changed sources: a connection swap on an
+            # existing source must be gated the same as adding a new source on that connection.
             check_permissions_for_origin_sources(
                 dataset=ds,
-                source_ids=sources_to_check,
+                source_ids=new_sources,
                 permission_kind=USPermissionKind.read,
                 us_entry_buffer=us_manager.get_entry_buffer(),
             )
