@@ -41,6 +41,7 @@ from dl_api_lib.schemas.connection import (
 from dl_api_lib.schemas.main import ImportResponseSchema
 from dl_api_lib.utils import (
     check_permission_on_entry,
+    need_delete_permission_on_entry,
     need_permission_on_entry,
 )
 from dl_constants.api_constants import DLHeadersCommon
@@ -332,7 +333,7 @@ class ConnectionItem(BIResource):
             expected_type=ConnectionBase,
             context_name="connection",
         )
-        need_permission_on_entry(conn, USPermissionKind.admin)
+        need_delete_permission_on_entry(conn)
 
         us_manager.delete(conn)
 

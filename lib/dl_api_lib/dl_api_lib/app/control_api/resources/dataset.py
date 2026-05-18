@@ -131,7 +131,7 @@ class DatasetItem(BIResource):
         us_manager.set_context("connection", connection_headers)
 
         ds, _ = DatasetResource.get_dataset(dataset_id=dataset_id, body={}, load_dependencies=False)
-        utils.need_permission_on_entry(ds, USPermissionKind.admin)
+        utils.need_delete_permission_on_entry(ds)
 
         us_manager.delete(ds)
 

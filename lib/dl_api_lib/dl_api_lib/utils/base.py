@@ -22,6 +22,7 @@ from dl_api_lib.common_models.data_export import (
     DataExportResult,
 )
 from dl_api_lib.enums import USPermissionKind
+from dl_core.base_models import WorkbookEntryLocation
 import dl_core.exc as common_exc
 
 
@@ -85,6 +86,18 @@ def need_permission_on_entry(us_entry: USEntry, permission: USPermissionKind) ->
     assert us_entry.uuid is not None
     if not us_entry.permissions[permission.name]:
         raise common_exc.USPermissionRequired(us_entry.uuid, permission.name)
+
+
+def need_delete_permission_on_entry(us_entry: USEntry) -> None:
+    """Check the permission required to delete *us_entry*.
+
+    Workbook entries only need ``edit``; all other entries (path, collection)
+    require ``admin``.
+    """
+    if isinstance(us_entry.entry_key, WorkbookEntryLocation):
+        need_permission_on_entry(us_entry, USPermissionKind.edit)
+    else:
+        need_permission_on_entry(us_entry, USPermissionKind.admin)
 
 
 def get_data_export_base_result(data_export_info: DataExportInfo) -> DataExportResult:
