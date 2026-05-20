@@ -37,6 +37,7 @@ LOGGER = logging.getLogger(__name__)
 _REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
 _TRACE_ID_HEADER = dl_constants.DLHeadersCommon.UBER_TRACE_ID.value
 _REQUEST_HEADERS_TO_LOG = (_REQUEST_ID_HEADER,)
+_RESPONSE_HEADERS_TO_LOG = (_REQUEST_ID_HEADER,)
 
 
 def _request_to_string(request: httpx.Request) -> str:
@@ -50,7 +51,8 @@ def _request_to_debug_string(request: httpx.Request) -> str:
 
 
 def _response_to_string(response: httpx.Response) -> str:
-    return f"Response(status_code={response.status_code})"
+    headers = {header: response.headers[header] for header in _RESPONSE_HEADERS_TO_LOG if header in response.headers}
+    return f"Response(status_code={response.status_code}, headers={headers})"
 
 
 def _response_to_debug_string(response: httpx.Response) -> str:
