@@ -440,7 +440,7 @@ tasks:
     vars:
       DOCKER_COMPOSE_FILE: '{{.DOCKER_COMPOSE_FILE | default "docker-compose.yml"}}'
       DOCKER_COMPOSE_DEV_FILE:
-        sh: find . -type f -name docker-compose-dev.yml
+        sh: find . -maxdepth 1 -type f -name docker-compose-dev.yml
       DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
 
   compose-start:
@@ -527,10 +527,12 @@ tasks:
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
       - echo "Stopping all docker containers"
-      - task: _compose
-        vars:
-          CLI_ARGS: rm --stop --force --volumes
-          DOCKER_HOST: '{{.DOCKER_HOST | default ""}}'
+      - |
+        if [ -f docker-compose.yml ]; then
+          task dev:_compose CLI_ARGS='rm --stop --force --volumes' DOCKER_HOST='{{.DOCKER_HOST | default ""}}'
+        else
+          echo "No docker-compose.yml in {{.USER_WORKING_DIR}}, skipping compose rm step"
+        fi
       - echo "Removing all docker containers"
       - |
         {{ if .DOCKER_HOST }}DOCKER_HOST={{.DOCKER_HOST}}{{ end }} \
