@@ -157,7 +157,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
                 continue
             # `with_resolved_entities` pre-loads connections only for the saved dataset;
             # body may reference new ones (e.g. replace-connection flow), so ensure first.
-            await us_manager.ensure_entry_preloaded(DefaultConnectionRef(conn_id=connection_id))
+            await us_manager.ensure_connection_preloaded(DefaultConnectionRef(conn_id=connection_id))
             connection = us_manager.get_loaded_us_connection(connection_id)
             if connection.permissions is None or not check_permission_on_entry(connection, USPermissionKind.read):
                 LOGGER.info(

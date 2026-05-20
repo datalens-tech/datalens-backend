@@ -500,7 +500,7 @@ class DatasetComponentEditor:
     def set_extract_mode(self, extract_mode: ExtractMode) -> None:
         self._dataset.data.extract.mode = extract_mode
 
-        # TODO(extracts): Change type when mode != disabled
+        # TODO(DLPROJECTS-749): Change type when mode != disabled
         # if extract_mode != ExtractMode.disabled:
         #     self._dataset.type_ = "extract"
         # else:

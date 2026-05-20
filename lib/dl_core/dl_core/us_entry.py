@@ -100,7 +100,7 @@ class USEntry:
             raise AssertionError(f"Unexpected type of entry key: {type(ds_key)}")
 
         obj = cls(
-            data=data_dict,  # type: ignore  # TODO: fix
+            data=data_dict,
             entry_key=effective_entry_key,
             type_=type_,
             meta=meta,
@@ -113,7 +113,7 @@ class USEntry:
     def __init__(
         self,
         uuid: Optional[str] = None,
-        data: Optional[dict] = None,
+        data: dict | BaseAttrsDataModel | None = None,
         entry_key: Optional[EntryLocation] = None,
         type_: Optional[str] = None,
         meta: Optional[dict] = None,
@@ -182,14 +182,22 @@ class USEntry:
     def on_updated(self) -> None:
         """Post-update actions go here"""
 
-    def _load_data(self, data: dict, strict: bool = True) -> Union[BaseAttrsDataModel, DotDict]:
+    def _load_data(self, data: dict | BaseAttrsDataModel, strict: bool = True) -> Union[BaseAttrsDataModel, DotDict]:
         from dl_core.us_manager.us_manager import USManagerBase
 
         if self.DataModel is None:
+            if not isinstance(data, dict):
+                raise TypeError(f"Expected data with type dict, but got type {type(data)}")
+
             return DotDict(data)
         elif issubclass(self.DataModel, BaseAttrsDataModel):
             if isinstance(data, self.DataModel):
                 return data
+
+            if isinstance(data, BaseAttrsDataModel):
+                raise TypeError(
+                    f"Expected DataModel to be a subtype of type {self.DataModel}, but got type {type(data)}"
+                )
 
             schema = USManagerBase.get_load_storage_schema(self.DataModel)
             if schema is None:
@@ -313,7 +321,7 @@ class USMigrationEntry(USEntry):
     def __init__(
         self,
         uuid: Optional[str] = None,
-        data: Optional[dict] = None,
+        data: dict | BaseAttrsDataModel | None = None,
         entry_key: Optional[EntryLocation] = None,
         type_: Optional[str] = None,
         meta: Optional[dict] = None,

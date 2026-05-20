@@ -1470,7 +1470,14 @@ class DatasetValidator(DatasetBaseWrapper):
                 raise exc.DLValidationFatal("source connection_id cannot be None")
 
             connection_ref = DefaultConnectionRef(conn_id=connection_id)
-            self._sync_us_manager.ensure_entry_preloaded(connection_ref)
+
+            source_type = source_data.get("source_type")
+
+            self._sync_us_manager.ensure_source_preloaded(
+                connection_ref,
+                source_type=source_type,
+            )
+
             self._ds_editor.add_data_source(
                 source_id=source_id,
                 role=DataSourceRole.origin,
@@ -1808,14 +1815,16 @@ class DatasetValidator(DatasetBaseWrapper):
         old_connection: Optional[ConnectionBase]
         try:
             old_connection_ref = DefaultConnectionRef(conn_id=connection_data.id)
-            self._sync_us_manager.ensure_entry_preloaded(old_connection_ref)
+            # TODO(BI-7375): Support replace_connection for virtual connections
+            self._sync_us_manager.ensure_connection_preloaded(old_connection_ref)
             old_connection = self._sync_us_manager.get_loaded_us_connection(old_connection_ref)
         except (common_exc.ReferencedUSEntryNotFound, common_exc.ReferencedUSEntryAccessDenied) as e:
             LOGGER.info(f'Failed to get the old connection, reason: "{e}"')
             old_connection = None
 
         new_connection_ref = DefaultConnectionRef(conn_id=connection_data.new_id)
-        self._sync_us_manager.ensure_entry_preloaded(new_connection_ref)
+        # TODO(BI-7375): Support replace_connection for virtual connections
+        self._sync_us_manager.ensure_connection_preloaded(new_connection_ref)
         new_connection = self._sync_us_manager.get_loaded_us_connection(new_connection_ref)
         utils.need_permission_on_entry(new_connection, USPermissionKind.read)
 
@@ -2205,7 +2214,10 @@ class DatasetValidator(DatasetBaseWrapper):
             dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             try:
-                self._sync_us_manager.ensure_entry_preloaded(dsrc.connection_ref)
+                self._sync_us_manager.ensure_connection_preloaded(
+                    dsrc.connection_ref,
+                    connection_type=dsrc.conn_type,
+                )
             except common_exc.ReferencedUSEntryNotFound:
                 self._ds.error_registry.add_error(
                     id=dsrc_coll.id,

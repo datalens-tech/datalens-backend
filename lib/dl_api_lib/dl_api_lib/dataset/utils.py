@@ -56,6 +56,7 @@ def _iter_data_source_collections(
         yield dsrc_coll
 
 
+# TODO(DLPROJECTS-749): Verify that permission check works correctly
 def check_permissions_for_origin_sources(
     dataset: Dataset,
     source_ids: Iterable[str],

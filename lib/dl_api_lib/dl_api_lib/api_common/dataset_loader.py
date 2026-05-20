@@ -136,7 +136,10 @@ class DatasetApiLoader:
                 connection_id = source_data["connection_id"]
                 connection_ref = DefaultConnectionRef(conn_id=connection_id)
                 try:
-                    us_manager.ensure_entry_preloaded(connection_ref)
+                    us_manager.ensure_source_preloaded(
+                        connection_ref,
+                        source_type=source_data.get("source_type"),
+                    )
                 except core_exc.ReferencedUSEntryNotFound:
                     # Ignore deleted connections here - an error will be raised
                     # when it is fetched from the buffer

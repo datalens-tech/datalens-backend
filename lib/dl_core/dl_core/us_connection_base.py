@@ -11,6 +11,7 @@ from typing import (
     Generic,
     NamedTuple,
     Optional,
+    Self,
     TypeVar,
     Union,
 )
@@ -86,6 +87,7 @@ if TYPE_CHECKING:
     from dl_core.connection_models.common_models import TableIdent
     from dl_core.services_registry import ServicesRegistry
     from dl_core.us_manager.us_manager import USManagerBase
+    from dl_core.us_manager.us_manager_async import AsyncUSManager
     from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 
@@ -279,6 +281,24 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     supports_source_pagination: ClassVar[bool] = False
     supports_db_name_listing: ClassVar[bool] = False
     db_name_required_for_search: ClassVar[bool] = False
+
+    is_virtual: ClassVar[bool] = False
+
+    @classmethod
+    def sync_create_virtual(
+        cls,
+        connection_id: str,
+        us_manager: "SyncUSManager",
+    ) -> Self:
+        raise NotImplementedError(f"{cls} does not support sync virtual creation")
+
+    @classmethod
+    async def async_create_virtual(
+        cls,
+        connection_id: str,
+        us_manager: "AsyncUSManager",
+    ) -> Self:
+        raise NotImplementedError(f"{cls} does not support async virtual creation")
 
     _preview_conn = None
 

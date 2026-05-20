@@ -19,11 +19,16 @@ from typing_extensions import Self
 from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler
 from dl_configs.crypto_keys import CryptoKeysConfig
+from dl_constants.enums import (
+    ConnectionType,
+    DataSourceType,
+)
 from dl_core import exc
 from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.data_source.type_mapping import get_connection_type_for_source_type
 from dl_core.enums import (
     USEntryBranch,
     USEntryMode,
@@ -32,6 +37,7 @@ from dl_core.united_storage_client import (
     USAuthContextBase,
     UStorageClient,
 )
+from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 from dl_core.us_entry import USEntry
@@ -46,6 +52,7 @@ from dl_utils.aio import await_sync
 
 
 if TYPE_CHECKING:
+    from dl_constants.enums import ConnectionType
     from dl_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase
     from dl_core.services_registry import ServicesRegistry
 
@@ -493,16 +500,58 @@ class SyncUSManager(USManagerBase):
             self._ensure_conn_in_cache(None, identity)
         return super().get_loaded_us_connection(identity)
 
-    def ensure_entry_preloaded(self, conn_ref: ConnectionRef) -> None:
-        self._ensure_conn_in_cache(None, conn_ref)
+    def ensure_source_preloaded(
+        self,
+        conn_ref: ConnectionRef,
+        source_type: DataSourceType | None = None,
+    ) -> None:
+        connection_type = get_connection_type_for_source_type(source_type)
 
-    def _ensure_conn_in_cache(self, referrer: Optional[USEntry], conn_ref: ConnectionRef) -> Optional[ConnectionBase]:
+        if source_type is not None and connection_type is None:
+            LOGGER.warning(f"Failed get connection_type for source_type {source_type}")
+
+        self.ensure_connection_preloaded(
+            conn_ref=conn_ref,
+            connection_type=connection_type,
+        )
+
+    def ensure_connection_preloaded(
+        self,
+        conn_ref: ConnectionRef,
+        connection_type: ConnectionType | None = None,
+    ) -> None:
+        self._ensure_conn_in_cache(
+            None,
+            conn_ref,
+            connection_type=connection_type,
+        )
+
+    def _ensure_conn_in_cache(
+        self,
+        referrer: USEntry | None,
+        conn_ref: ConnectionRef,
+        connection_type: ConnectionType | None = None,
+    ) -> ConnectionBase | None:
         conn: Union[USEntry, BrokenUSLink]
         if conn_ref in self._loaded_entries:
             conn = self._loaded_entries[conn_ref]
         else:
+            assert isinstance(conn_ref, DefaultConnectionRef)
+
+            # Try to construct a virtual connection without going to US
+            if connection_type is not None:
+                connection_cls = get_connection_class(connection_type)
+
+                if connection_cls.is_virtual:
+                    conn = connection_cls.sync_create_virtual(
+                        connection_id=conn_ref.conn_id,
+                        us_manager=self,
+                    )
+
+                    self._loaded_entries[conn_ref] = conn
+                    return conn
+
             try:
-                assert isinstance(conn_ref, DefaultConnectionRef)
                 conn = self.get_by_id(
                     conn_ref.conn_id,
                     ConnectionBase,
@@ -551,6 +600,7 @@ class SyncUSManager(USManagerBase):
             ref = refs_to_load_queue.pop()
             processed_refs.add(ref)
             try:
+                # TODO(DLPROJECTS-749): Support type detection to preload virtual connections that are not stored in US
                 resolved_ref = self._ensure_conn_in_cache(referrer=entry, conn_ref=ref)
             except Exception:
                 LOGGER.exception("Can not load linked US entry %s for entry %s", ref, entry.uuid)
