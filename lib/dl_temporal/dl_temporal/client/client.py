@@ -172,6 +172,7 @@ class TemporalClient:
             task_queue=task_queue,
             result_type=workflow.Result,
             execution_timeout=params.execution_timeout,
+            run_timeout=params.run_timeout,
         )
 
     async def get_schedule(
@@ -194,6 +195,7 @@ class TemporalClient:
             id=schedule_id,
             task_queue=task_queue,
             execution_timeout=params.execution_timeout,
+            run_timeout=params.run_timeout,
         )
         schedule = temporalio.client.Schedule(
             action=action,
@@ -225,6 +227,7 @@ class TemporalClient:
             schedule.action.id = schedule_id
             schedule.action.task_queue = task_queue
             schedule.action.execution_timeout = params.execution_timeout
+            schedule.action.run_timeout = params.run_timeout
             schedule.spec = spec
 
             return temporalio.client.ScheduleUpdate(schedule=schedule)

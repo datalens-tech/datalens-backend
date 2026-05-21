@@ -208,11 +208,13 @@ class BaseActivity(ActivityProtocol, Generic[ActivityParamsT, ActivityResultT]):
     async def run(self, params: ActivityParamsT) -> ActivityResultT: ...
 
 
-DEFAULT_WORKFLOW_EXECUTION_TIMEOUT = dl_pydantic.JsonableTimedelta(minutes=10)
+DEFAULT_WORKFLOW_EXECUTION_TIMEOUT = dl_pydantic.JsonableTimedelta(minutes=20)
+DEFAULT_WORKFLOW_RUN_TIMEOUT = dl_pydantic.JsonableTimedelta(minutes=10)
 
 
 class BaseWorkflowParams(BaseModel):
     execution_timeout: dl_pydantic.JsonableTimedelta = DEFAULT_WORKFLOW_EXECUTION_TIMEOUT
+    run_timeout: dl_pydantic.JsonableTimedelta | None = DEFAULT_WORKFLOW_RUN_TIMEOUT
     parent_close_policy: temporalio.workflow.ParentClosePolicy = temporalio.workflow.ParentClosePolicy.TERMINATE
     parent_context: ParentContext = pydantic.Field(default_factory=ParentContext)
 
@@ -391,6 +393,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
             arg=params,
             id=workflow_id,
             execution_timeout=params.execution_timeout,
+            run_timeout=params.run_timeout,
             parent_close_policy=params.parent_close_policy,
             result_type=workflow.Result,
         )
@@ -408,6 +411,7 @@ class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, Workflow
             workflow=workflow.name,
             arg=params,
             execution_timeout=params.execution_timeout,
+            run_timeout=params.run_timeout,
             parent_close_policy=params.parent_close_policy,
             result_type=workflow.Result,
         )
