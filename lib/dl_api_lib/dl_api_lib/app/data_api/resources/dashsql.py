@@ -1,48 +1,39 @@
-from __future__ import annotations
-
 import datetime
-import decimal
-import json
+import logging
 import math
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
-    Optional,
 )
-import uuid
 
 from aiohttp import web
 
-from dl_api_commons.aiohttp.aiohttp_wrappers import RequiredResourceCommon
 from dl_api_lib.app.data_api.resources.base import (
-    BaseView,
     RequiredResourceDSAPI,
     requires,
 )
+from dl_api_lib.app.data_api.resources.sql_base import SQLBaseView
 from dl_api_lib.common_models.data_export import (
     DataExportForbiddenReason,
     DataExportInfo,
 )
-from dl_api_lib.enums import USPermissionKind
 import dl_api_lib.schemas.main
 from dl_api_lib.utils.base import (
     enrich_resp_dict_with_data_export_info,
     get_data_export_base_result,
-    need_permission_on_entry,
 )
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_constants.enums import UserDataType
 from dl_core.data_processing.dashsql import (
     DashSQLCachedSelector,
     DashSQLEvent,
+)
+from dl_core.data_processing.sql_selector_base import (
+    TResultEvents,
     TRow,
+    flatten_rowchunks,
 )
-from dl_core.exc import UnexpectedUSEntryType
-from dl_core.us_connection_base import (
-    ConnectionBase,
-    RawSqlLevelConnectionMixin,
-)
+from dl_core.us_connection_base import ConnectionBase
 from dl_dashsql.exc import DashSQLError
 from dl_dashsql.formatting.base import QueryIncomingParameter
 from dl_dashsql.types import (
@@ -56,20 +47,13 @@ from dl_query_processing.postprocessing.postprocessors.all import (
 from dl_query_processing.utils.datetime import parse_datetime
 
 
-if TYPE_CHECKING:
-    from dl_constants.types import TJSONLike
-    from dl_core.data_processing.dashsql import TResultEvents
-
-import logging
-
-
 LOGGER = logging.getLogger(__name__)
 
 
 TRowProcessor = Callable[[TRow], TRow]
 
 
-def parse_value(value: Optional[str], bi_type: UserDataType) -> IncomingDSQLParamType:
+def parse_value(value: str | None, bi_type: UserDataType) -> IncomingDSQLParamType:
     if value is None:
         return None
     if bi_type == UserDataType.string:
@@ -116,36 +100,16 @@ def make_param_obj(name: str, param: dict) -> QueryIncomingParameter:
     )
 
 
-@requires(RequiredResourceCommon.US_MANAGER)
-class DashSQLView(BaseView):
+class DashSQLView(SQLBaseView):
     """
     Connection + SQL query -> special-format data result.
 
     Partially related to `DatasetPreviewView` and its bases, but much more stripped down.
     """
 
-    # TODO?: cache support
-
     endpoint_code = "DashSQL"
     profiler_prefix = "dashsql_result"
     dashsql_selector_cls: type[DashSQLCachedSelector] = DashSQLCachedSelector
-
-    @property
-    def conn_id(self) -> Optional[str]:
-        return self.request.match_info.get("conn_id")
-
-    def enrich_logging_context(self, conn: ConnectionBase) -> None:
-        """
-        See also:
-        `dl_api_lib.app.data_api.resources.dataset.base.DatasetDataBaseView.default_query_execution_cm_stack`
-        """
-        if not self.dl_request.log_ctx_controller:
-            # TODO?: warn
-            return
-        self.dl_request.log_ctx_controller.put_to_context("conn_type", conn.conn_type.name)
-        sr = self.dl_request.services_registry
-        ce_cls_str = sr.get_conn_executor_factory().get_async_conn_executor_cls(conn).__qualname__
-        self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
 
     def get_data_export_info(self, conn: ConnectionBase) -> DataExportInfo:
         tenant = self.dl_request.rci.tenant
@@ -157,20 +121,6 @@ class DashSQLView(BaseView):
             allowed_in_conn_type=conn.allow_background_data_export_for_conn_type,
             background_allowed_in_tenant=tenant.is_background_data_export_allowed,
         )
-
-    @staticmethod
-    def _json_default(value: Any) -> TJSONLike:
-        if isinstance(value, bytes):
-            return value.decode("utf-8", errors="replace")
-        if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
-            return value.isoformat()
-        if isinstance(value, datetime.timedelta):
-            return value.total_seconds()
-        if isinstance(value, decimal.Decimal):
-            return str(value)
-        if isinstance(value, uuid.UUID):
-            return str(value)
-        raise DashSQLError("Unexpected value type in dashsql serialization: {!r}".format(type(value)))
 
     @classmethod
     def _postprocess_key(cls, value: Any) -> str:
@@ -224,7 +174,7 @@ class DashSQLView(BaseView):
         return _postprocess_row
 
     async def _postprocess_events(self, result_events: TResultEvents) -> TResultEvents:
-        postprocess_row: Optional[TRowProcessor] = None
+        postprocess_row: TRowProcessor | None = None
         async for event_name, event_data in result_events:
             if postprocess_row is None and event_name == DashSQLEvent.metadata.value:
                 assert isinstance(event_data, dict)
@@ -234,17 +184,6 @@ class DashSQLView(BaseView):
             elif event_name == DashSQLEvent.row.value and postprocess_row is not None:  # should be obsolete
                 event_data = postprocess_row(event_data)  # type: ignore  # TODO: fix
             yield event_name, event_data
-
-    @staticmethod
-    async def _flatten_chunk_events(result_events: TResultEvents) -> TResultEvents:
-        """Unwrap `rowchunk` events into `row` events, to avoid changing the protocol (for now)"""
-        async for event_name, event_data in result_events:
-            if event_name == DashSQLEvent.rowchunk.value:
-                for row in event_data:
-                    assert isinstance(row, (tuple, list))
-                    yield DashSQLEvent.row.value, row  # type: ignore  # TODO: fix
-            else:
-                yield event_name, event_data
 
     async def collect_result_events_into_response(
         self, result_events: TResultEvents, conn: ConnectionBase
@@ -262,12 +201,7 @@ class DashSQLView(BaseView):
 
             events.append(dict(event=event_name, data=event_data))
 
-        data = json.dumps(events, default=self._json_default)
-        response = web.Response(
-            body=data.encode(),
-            content_type="application/json",
-        )
-        return response
+        return self._json_sql_response(events)
 
     async def collect_dashsql_response(self, result_events: TResultEvents, conn: ConnectionBase) -> web.Response:
         events: list = []
@@ -282,21 +216,12 @@ class DashSQLView(BaseView):
         data_export_result.background.reason.append(DataExportForbiddenReason.prohibited_in_dashsql.value)
         enrich_resp_dict_with_data_export_info(resp_data, data_export_result)
 
-        data = json.dumps(resp_data, default=self._json_default)
-        response = web.Response(
-            body=data.encode(),
-            content_type="application/json",
-        )
-        return response
+        return self._json_sql_response(resp_data)
 
     @generic_profiler_async("dashsql-result")
     @requires(RequiredResourceDSAPI.JSON_REQUEST)
     async def post(self) -> web.Response:
-        conn_id = self.conn_id
-        assert conn_id
-
-        if self.dl_request.log_ctx_controller:
-            self.dl_request.log_ctx_controller.put_to_context("conn_id", conn_id)
+        _conn_id, conn = await self._resolve_raw_sql_connection()
 
         schema = dl_api_lib.schemas.main.DashSQLRequestSchema()
         body = schema.load(self.dl_request.json)
@@ -305,22 +230,7 @@ class DashSQLView(BaseView):
         db_params = body.get("db_params")
         connector_specific_params = body.get("connector_specific_params")
 
-        conn = await self.dl_request.us_manager.get_by_id(
-            conn_id,
-            ConnectionBase,
-            context_name="connection",
-        )
-        assert isinstance(conn, ConnectionBase)
-
-        self.enrich_logging_context(conn)
-
-        if not isinstance(conn, RawSqlLevelConnectionMixin):
-            raise UnexpectedUSEntryType("Expecting a subselect-compatible connection")
-
-        # A slightly more explicit check (which should have been done in `get_by_id` anyway):
-        need_permission_on_entry(conn, USPermissionKind.execute)
-
-        incoming_parameters: Optional[list[QueryIncomingParameter]] = None
+        incoming_parameters: list[QueryIncomingParameter] | None = None
         if raw_params is not None:
             incoming_parameters = [make_param_obj(name, param) for name, param in raw_params.items()]
 
@@ -344,7 +254,7 @@ class DashSQLView(BaseView):
 
         # TODO: modify API consumers to allow `rowchunk` events;
         # but for now, unroll them into `row` events.
-        result_events = self._flatten_chunk_events(result_events)
+        result_events = flatten_rowchunks(result_events)
 
         with_export_info = self.request.query.get("with_export_info", False)
         if with_export_info:

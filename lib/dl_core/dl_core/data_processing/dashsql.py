@@ -1,17 +1,7 @@
-from __future__ import annotations
-
-import enum
 import logging
 import sys
 import time
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncIterable,
-    Mapping,
-    Optional,
-    Sequence,
-)
+from typing import Mapping
 
 import attr
 import sqlalchemy as sa
@@ -22,12 +12,13 @@ from dl_api_commons.reporting.models import (
     QueryExecutionEndReportingRecord,
     QueryExecutionStartReportingRecord,
 )
+from dl_cache_engine.primitives import BIQueryCacheOptions
 from dl_cache_engine.processing_helper import (
     CacheProcessingHelper,
     CacheSituation,
     TJSONExtChunkStream,
 )
-from dl_constants.types import TJSONExt  # not under `TYPE_CHECKING`, need to define new type aliases.
+from dl_constants.types import TJSONExt
 from dl_core import exc
 from dl_core.backend_types import get_backend_type
 from dl_core.base_models import WorkbookEntryLocation
@@ -35,9 +26,15 @@ from dl_core.connection_executors.adapters.sa_utils import (
     compile_query_for_debug,
     compile_query_for_inspector,
 )
+from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connectors.base.dashsql import get_custom_dash_sql_key_names
 from dl_core.data_processing.cache.utils import DashSQLCacheOptionsBuilder
+from dl_core.data_processing.sql_selector_base import (
+    BaseSQLSelector,
+    SQLSelectorEvent,
+    TResultEvents,
+)
 from dl_core.utils import (
     make_id,
     sa_plain_text,
@@ -55,50 +52,18 @@ from dl_utils.streaming import (
 )
 
 
-if TYPE_CHECKING:
-    from dl_cache_engine.primitives import BIQueryCacheOptions
-    from dl_core.connection_executors.async_base import (
-        AsyncConnExecutorBase,
-        AsyncExecutionResult,
-    )
-    from dl_core.services_registry import ServicesRegistry
-    from dl_core.us_connection_base import ConnectionBase
-
-
 LOGGER = logging.getLogger(__name__)
 
 
-@enum.unique
-class DashSQLEvent(enum.Enum):
-    metadata = "metadata"
-    row = "row"  # to be deprecated
-    rowchunk = "rowchunk"
-    error = "error"
-    footer = "footer"
-
-
-TRow = tuple[TJSONExt, ...]
-TMeta = dict[str, TJSONExt]
-# # More correct but mymy couldn't:
-# TResultEvent = Union[
-#     tuple[Literal['metadata'], TMeta],
-#     tuple[Literal['row'], TRow],
-#     tuple[Literal['rowchunk'], tuple[TRow, ...]],
-#     tuple[Literal['error'], TMeta],
-#     tuple[Literal['footer'], TMeta],
-# ]
-TResultEvent = tuple[str, TMeta | TRow]
-TResultEvents = AsyncIterable[TResultEvent]
+DashSQLEvent = SQLSelectorEvent
 
 
 @attr.s(auto_attribs=True)
-class DashSQLSelector:
-    conn: ConnectionBase
+class DashSQLSelector(BaseSQLSelector):
     sql_query: str
-    incoming_parameters: Optional[list[QueryIncomingParameter]]
+    incoming_parameters: list[QueryIncomingParameter] | None
     db_params: dict[str, str]
-    _service_registry: ServicesRegistry
-    connector_specific_params: Optional[Mapping[str, IncomingDSQLParamTypeExt]] = attr.ib(default=None)
+    connector_specific_params: Mapping[str, IncomingDSQLParamTypeExt] | None = attr.ib(default=None)
 
     def __attrs_post_init__(self) -> None:
         specific_param_keys = get_custom_dash_sql_key_names(conn_type=self.conn.conn_type)
@@ -112,11 +77,8 @@ class DashSQLSelector:
                 param for param in self.incoming_parameters if param.original_name not in specific_param_keys
             ]
 
-    def make_ce(self) -> AsyncConnExecutorBase:
-        ce_factory = self._service_registry.get_conn_executor_factory()
-        ce = ce_factory.get_async_conn_executor(self.conn)
-        ce = ce.mutate_for_dashsql(db_params=self.db_params)
-        return ce
+    def _mutate_ce(self, ce: AsyncConnExecutorBase) -> AsyncConnExecutorBase:
+        return ce.mutate_for_dashsql(db_params=self.db_params)
 
     def _formatted_query_to_sa_query(self, formatted_query: FormattedQuery) -> TextClause:
         backend_type = get_backend_type(conn_type=self.conn.conn_type)
@@ -180,58 +142,10 @@ class DashSQLSelector:
             is_dashsql_query=True,
         )
 
-    @staticmethod
-    async def event_gen(
-        result_head: TMeta,
-        result_chunks: AsyncIterable[Sequence[Any]],
-        result_footer_holder: TMeta,
-    ) -> TResultEvents:
-        # Note: returning strings for easier jsonability.
-        # Additionally, those strings are in the API output as-is.
-        yield DashSQLEvent.metadata.value, result_head
-        try:
-            async for chunk in result_chunks:
-                yield DashSQLEvent.rowchunk.value, tuple(chunk)
-        except Exception as err:
-            LOGGER.exception("Runtime error while fetching rows: %r", err)
-            raise err
-        else:
-            yield DashSQLEvent.footer.value, result_footer_holder
-
-    def process_result(self, exec_result: AsyncExecutionResult) -> TResultEvents:
-        result_head = exec_result.cursor_info
-        assert result_head
-        db_types = result_head.get("db_types")
-        user_types = exec_result.user_types
-        result_head = dict(
-            result_head,
-            bi_types=[],
-            db_types=[],
-        )
-        if user_types:
-            result_head["bi_types"] = [bi_type.name if bi_type else None for bi_type in user_types]
-        if db_types:
-            result_head["db_types"] = [db_type.name if db_type else None for db_type in db_types]
-
-        result_chunks = exec_result.result
-        result_footer_holder: dict = {}  # mutable  # TODO: return footer from CE
-
-        # Wrapping the rest in an additional function to have the code above
-        # execute on call rather than on iteration.
-        return self.event_gen(result_head, result_chunks, result_footer_holder)
-
-    async def _execute(self, ce: AsyncConnExecutorBase, ce_query: ConnExecutorQuery) -> TResultEvents:
-        """Simplified override point"""
-        exec_result = await ce.execute(ce_query)
-        return self.process_result(exec_result)
-
     async def execute(self) -> TResultEvents:
         if not self.conn.is_dashsql_allowed:
             raise exc.DashSQLNotAllowed()
-
-        ce = self.make_ce()
-        ce_query = self.make_ce_query()
-        return await self._execute(ce, ce_query)
+        return await super().execute()
 
 
 @attr.s
@@ -241,7 +155,7 @@ class DashSQLCachedSelector(DashSQLSelector):
     def make_query_id(self) -> str:
         return "dashsql_{}".format(make_id())
 
-    def _get_jsonable_params(self) -> Optional[TJSONExt]:
+    def _get_jsonable_params(self) -> TJSONExt | None:
         if self.incoming_parameters is None:
             return None
         return tuple(
@@ -250,7 +164,7 @@ class DashSQLCachedSelector(DashSQLSelector):
             for param in self.incoming_parameters
         )
 
-    def _get_jsonable_connector_specific_params(self) -> Optional[TJSONExt]:
+    def _get_jsonable_connector_specific_params(self) -> TJSONExt | None:
         if self.connector_specific_params is None:
             return None
         return tuple((name, value) for name, value in self.connector_specific_params.items())
@@ -274,7 +188,7 @@ class DashSQLCachedSelector(DashSQLSelector):
             exec_result = await ce.execute(ce_query)
             return self.process_result(exec_result)
 
-        async def _generate_func() -> Optional[TJSONExtChunkStream]:
+        async def _generate_func() -> TJSONExtChunkStream | None:
             events = await _request_db()
             chunks = chunkify_by_one(events)  # not `await` for tricky reasons.
             # ^ At this point there's sometimes a chunk that contains one item

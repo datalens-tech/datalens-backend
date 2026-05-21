@@ -178,7 +178,7 @@ class DatasetDataBaseView(BaseView):
     ) -> AsyncIterable[AsyncExitStack]:
         """
         See also:
-        `dl_api_lib.app.data_api.resources.dashsql.DashSQLView.enrich_logging_context`
+        `dl_api_lib.app.data_api.resources.sql_base.SQLBaseView._enrich_logging_context_with_conn`
         """
         async with AsyncExitStack() as stack:
             if self.dl_request.log_ctx_controller:
