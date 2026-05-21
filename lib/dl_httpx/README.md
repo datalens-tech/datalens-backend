@@ -52,7 +52,7 @@ All exports are available from `dl_httpx` directly.
 |---|---|
 | `BaseRequest` | Abstract attrs class. Subclass and implement `path` and `method` properties |
 | `BaseSchema` | Re-export of `dl_pydantic.BaseSchema`. Use for request body data models |
-| `BaseResponseSchema` | Extends `BaseSchema`. Use for response data models |
+| `BaseResponseSchema` | Extends `BaseSchema`. Use for response data models. On `pydantic.ValidationError` from `model_validate` / `model_validate_json`, logs the offending raw payload and re-raises (see [Response validation logging](#response-validation-logging)) |
 | `TypedBaseSchema` | For discriminated unions (polymorphic models). Call `.register(key, subclass)` |
 | `TypedSchemaAnnotation` | Pydantic annotation type for `TypedBaseSchema` fields |
 | `TypedSchemaListAnnotation` | Annotation for lists of typed schemas |
@@ -340,6 +340,8 @@ class ItemResponse(dl_httpx.BaseResponseSchema):
     status: str
 ```
 
+> **Always inherit response models from `BaseResponseSchema`** (directly or by mixing it in alongside an externally-defined schema, e.g. `class GetItemResponse(SharedItemSchema, dl_httpx.BaseResponseSchema): ...`). On a `pydantic.ValidationError` raised from `model_validate` / `model_validate_json`, `BaseResponseSchema` logs the offending raw payload at `ERROR` (via the `dl_httpx.models.base` logger) before re-raising. Plain `dl_pydantic.BaseSchema` will not log on failure, leaving you with a `ValidationError` that says *which* field is broken but not *what* the server actually returned.
+
 #### 6. Error Handling
 
 ```python
@@ -526,6 +528,28 @@ def error_transform_context(self, error_transformer):
 ### Network errors
 
 `RequestHttpxClientException` wraps network-level errors (DNS, connection refused, timeout after all retries). Its `original_exception` attribute holds the underlying error. Network errors are **never** passed through the error transformer mechanism — only `HttpStatusHttpxClientException` (HTTP 4xx/5xx) is.
+
+## Response validation logging
+
+`BaseResponseSchema` overrides `model_validate` and `model_validate_json` to catch `pydantic.ValidationError`, log the raw payload via the `dl_httpx.models.base` logger at `ERROR` level, and re-raise the original exception unchanged. This is the only difference from plain `dl_pydantic.BaseSchema`.
+
+Without this, a `ValidationError` only says *which* field failed validation — not *what* the upstream service actually returned. Logging the raw payload makes incidents like missing/renamed server-side fields actionable from logs alone.
+
+Conventions:
+
+- Inherit any HTTP response model from `BaseResponseSchema`, directly or via mixin.
+- When the response shape is shared with the server via an external schema package, do **not** add `dl_httpx` as a dependency of that package. Instead, define a thin client-side subclass that mixes in `BaseResponseSchema`:
+
+  ```python
+  import dl_httpx
+  import shared_schemas
+
+
+  class GetItemResponse(shared_schemas.ItemSchema, dl_httpx.BaseResponseSchema): ...
+  ```
+
+- The logger is `dl_httpx.models.base`. Configure level/handlers there if you need to suppress (e.g. tests that intentionally feed malformed payloads).
+- The raw payload is `repr()`-ed and truncated at 5000 characters (with a `... [truncated, N chars total]` suffix) to keep log lines bounded. Treat the log as potentially sensitive: callers handling tokens or PII should sanitize upstream.
 
 ## Request Tracing
 

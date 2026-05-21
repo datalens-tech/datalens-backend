@@ -97,7 +97,7 @@ class EntryGetRequest(BaseRequest):
         return params
 
 
-EntryGetResponse = Entry
+class EntryGetResponse(Entry, dl_httpx.BaseResponseSchema): ...
 
 
 @attrs.define(kw_only=True, frozen=True)
@@ -117,7 +117,7 @@ class EntryPostRequest(BaseRequest):
         return self.entry.model_dump_jsonable()
 
 
-EntryPostResponse = Entry
+class EntryPostResponse(Entry, dl_httpx.BaseResponseSchema): ...
 
 
 @attrs.define(kw_only=True, frozen=True)
