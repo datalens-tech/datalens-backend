@@ -3183,6 +3183,19 @@ type = "directory"
 url = "../lib/dl_pivot_pandas"
 
 [[package]]
+name = "dl-prometheus"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.12, <3.13"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../lib/dl_prometheus"
+
+[[package]]
 name = "dl-pydantic"
 version = "0.0.1"
 description = ""
@@ -9531,4 +9544,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "8ca14041c802978204367d9e0fe92347a37d201748aa83b01585c10f478f44dd"
+content-hash = "b849fdb6cfd99584d2f85a1dda4533632fa39dcd2499f4c8995e2008c82ddd10"
