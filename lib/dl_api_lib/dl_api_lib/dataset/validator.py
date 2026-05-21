@@ -1815,8 +1815,10 @@ class DatasetValidator(DatasetBaseWrapper):
         old_connection: Optional[ConnectionBase]
         try:
             old_connection_ref = DefaultConnectionRef(conn_id=connection_data.id)
-            # TODO(BI-7375): Support replace_connection for virtual connections
-            self._sync_us_manager.ensure_connection_preloaded(old_connection_ref)
+            self._sync_us_manager.ensure_source_preloaded(
+                conn_ref=old_connection_ref,
+                source_type=self._ds.find_source_type(connection_data.id),
+            )
             old_connection = self._sync_us_manager.get_loaded_us_connection(old_connection_ref)
         except (common_exc.ReferencedUSEntryNotFound, common_exc.ReferencedUSEntryAccessDenied) as e:
             LOGGER.info(f'Failed to get the old connection, reason: "{e}"')

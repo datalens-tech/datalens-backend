@@ -155,9 +155,18 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
             connection_id = source.get("connection_id")
             if connection_id is None:
                 continue
+
+            source_type_str = source.get("source_type")
+            source_type = None
+            if source_type_str is not None and DataSourceType.is_declared(source_type_str):
+                source_type = DataSourceType(source_type_str)
+
             # `with_resolved_entities` pre-loads connections only for the saved dataset;
             # body may reference new ones (e.g. replace-connection flow), so ensure first.
-            await us_manager.ensure_connection_preloaded(DefaultConnectionRef(conn_id=connection_id))
+            await us_manager.ensure_source_preloaded(
+                conn_ref=DefaultConnectionRef(conn_id=connection_id),
+                source_type=source_type,
+            )
             connection = us_manager.get_loaded_us_connection(connection_id)
             if connection.permissions is None or not check_permission_on_entry(connection, USPermissionKind.read):
                 LOGGER.info(

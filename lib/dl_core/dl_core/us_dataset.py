@@ -136,6 +136,44 @@ class Dataset(USEntry):
                 if dsrc_spec.table_name is not None:
                     yield dsrc_spec.table_name
 
+    def find_source_type(
+        self,
+        connection_id: str | None,
+    ) -> DataSourceType | None:
+        """
+        If dataset has a source with the given ID, returns it's source type.
+
+        When dataset has multiple source types for the same connection_id, returns first of them and prints a warning.
+        """
+
+        if connection_id is None:
+            return None
+
+        connection_ref = connection_ref_from_id(connection_id=connection_id)
+
+        source_types = set()
+        for dsrc_coll_spec in self.data.source_collections:
+            if (
+                isinstance(dsrc_coll_spec, DataSourceCollectionSpec)
+                and dsrc_coll_spec.origin is not None
+                and dsrc_coll_spec.origin.connection_ref == connection_ref
+            ):
+                source_types.add(dsrc_coll_spec.origin.source_type)
+
+        if len(source_types) > 1:
+            source_types_str = ", ".join(source_type.value for source_type in source_types)
+            LOGGER.warning(
+                "Connection %s in dataset %s has multiple source types: %s",
+                connection_id,
+                self.uuid,
+                source_types_str,
+            )
+
+        if len(source_types) == 1:
+            return source_types.pop()
+
+        return None
+
     def find_data_source_configuration(
         self,
         connection_id: str | None,
