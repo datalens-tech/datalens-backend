@@ -5,6 +5,12 @@ import dl_testing
 
 dl_testing.register_all_assert_rewrites(__name__, pathlib.Path(__file__).parent)
 
+from .datasource_manual_base import (
+    BaseTestDatasourceManual,
+    BaseTestDatasourceManualRawSqlLevelOff,
+    BaseTestDatasourceManualSubselect,
+    BaseTestDatasourceManualTable,
+)
 from .datasource_template_base import (
     BaseSubselectTestSourceTemplate,
     BaseTableTestSourceTemplate,
@@ -25,6 +31,10 @@ __all__ = [
     "BaseTestControlApiSourceTemplateConnectionDisabled",
     "BaseTestControlApiSourceTemplateSettingsDisabled",
     "BaseTestDataApiSourceTemplate",
+    "BaseTestDatasourceManual",
+    "BaseTestDatasourceManualRawSqlLevelOff",
+    "BaseTestDatasourceManualSubselect",
+    "BaseTestDatasourceManualTable",
     "BaseTestSourceTemplate",
     "DatasetFactoryProtocol",
     "ParameterFieldsFactoryProtocol",
