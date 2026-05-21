@@ -35,5 +35,5 @@ class TestYDBConnectionSchemaRoundtrip(
         del result["token"]
         return {
             **result,
-            **self._common_output_data(db_type="ydb", include_meta=False),
+            **self._common_output_data(db_type="ydb"),
         }

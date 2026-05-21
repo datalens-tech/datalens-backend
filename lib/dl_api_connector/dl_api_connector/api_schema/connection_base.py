@@ -27,6 +27,7 @@ class ConnectionSchema(USEntryBaseSchema):
     # TODO FIX: Change for datetime field after created/updated _at become datetime instead of string
     created_at = ma_fields.String(dump_only=True)
     updated_at = ma_fields.String(dump_only=True)
+    meta = ma_fields.Dict(dump_only=True)
 
     # Create only fields
     permissions_mode = ma_fields.Raw(load_default=None, load_only=True)
@@ -57,15 +58,6 @@ class ConnectionSchema(USEntryBaseSchema):
         )
 
         return ret
-
-
-class ConnectionMetaMixin(ConnectionSchema):
-    """
-    This is a base class for Schematic-based connections
-    To be removed after migration to attrs
-    """
-
-    meta = ma_fields.Dict(dump_only=True)  # In ConnectionBase.as_dict() meta was included
 
 
 class RequiredParameterInfoSchema(Schema):

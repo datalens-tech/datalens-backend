@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 
-from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
@@ -15,9 +14,7 @@ from dl_connector_oracle.core.constants import OracleDbNameType
 from dl_connector_oracle.core.us_connection import ConnectionSQLOracle
 
 
-class OracleConnectionSchema(
-    ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema
-):
+class OracleConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema):
     TARGET_CLS = ConnectionSQLOracle
     ALLOW_MULTI_HOST = True
 

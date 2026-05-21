@@ -47,15 +47,15 @@ class ConnectionSchemaRoundtripTestSuite(ConnectionTestBase):
         allow_dataset_usage: bool = True,
         allow_typed_query_usage: bool = False,
         allow_selector: bool = False,
-        include_meta: bool = True,
     ) -> dict[str, Any]:
-        common: dict[str, Any] = {
+        return {
             "id": mock.ANY,
             "key": mock.ANY,
             "created_at": mock.ANY,
             "updated_at": mock.ANY,
             "db_type": db_type,
             "description": "",
+            "meta": {},
             "options": {
                 "allow_dashsql_usage": allow_dashsql_usage,
                 "allow_dataset_usage": allow_dataset_usage,
@@ -70,9 +70,6 @@ class ConnectionSchemaRoundtripTestSuite(ConnectionTestBase):
                 ],
             },
         }
-        if include_meta:
-            common["meta"] = {}
-        return common
 
     def test_schema_roundtrip(
         self,

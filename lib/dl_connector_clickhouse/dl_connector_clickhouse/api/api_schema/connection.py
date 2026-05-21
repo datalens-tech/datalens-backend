@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 
-from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
@@ -15,9 +14,7 @@ import dl_core.marshmallow as core_ma_fields
 from dl_connector_clickhouse.core.clickhouse.us_connection import ConnectionClickhouse
 
 
-class ClickHouseConnectionSchema(
-    ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema
-):
+class ClickHouseConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema):
     TARGET_CLS = ConnectionClickhouse
     ALLOW_MULTI_HOST = True
 

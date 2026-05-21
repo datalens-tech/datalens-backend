@@ -10,7 +10,6 @@ from typing import (
 from marshmallow import ValidationError
 from marshmallow import fields as ma_fields
 
-from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import DataExportForbiddenMixin
 from dl_api_connector.api_schema.connection_sql import ClassicSQLConnectionSchema
@@ -44,7 +43,7 @@ class DBPathField(ma_fields.String):
         return user_path_str
 
 
-class PromQLConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, ClassicSQLConnectionSchema):
+class PromQLConnectionSchema(DataExportForbiddenMixin, ClassicSQLConnectionSchema):
     TARGET_CLS = PromQLConnection
     auth_type = DynamicEnumField(
         PromQLAuthType,

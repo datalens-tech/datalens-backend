@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import marshmallow as ma
 
-from dl_api_connector.api_schema.connection_base import (
-    ConnectionMetaMixin,
-    ConnectionSchema,
-)
+from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.connection_base_fields import (
     alias_string_field,
     secret_string_field,
@@ -21,9 +18,7 @@ from dl_api_connector.api_schema.extras import FieldExtra
 from dl_connector_chyt.core.us_connection import ConnectionCHYTToken
 
 
-class CHYTConnectionSchema(
-    ConnectionMetaMixin, RawSQLLevelMixin, DataExportForbiddenMixin, QueryCacheMixin, ConnectionSchema
-):
+class CHYTConnectionSchema(RawSQLLevelMixin, DataExportForbiddenMixin, QueryCacheMixin, ConnectionSchema):
     TARGET_CLS = ConnectionCHYTToken
 
     ALLOW_MULTIHOST = False

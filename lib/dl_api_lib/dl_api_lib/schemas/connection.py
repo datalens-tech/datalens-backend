@@ -9,10 +9,7 @@ from typing import (
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_api_connector.api_schema.connection_base import (
-    ConnectionMetaMixin,
-    ConnectionSchema,
-)
+from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.source import DataSourceSchema
 from dl_api_connector.api_schema.source_base import (
     DataSourceTemplateResponseField,
@@ -141,7 +138,7 @@ def register_sub_schema_class(conn_type: CT, schema_cls: type[ConnectionSchema])
     GenericConnectionSchema.supported_connections.add(schema_cls.TARGET_CLS)
 
 
-class UnknownConnectionSchema(ConnectionMetaMixin, ConnectionSchema):
+class UnknownConnectionSchema(ConnectionSchema):
     TARGET_CLS = UnknownConnection
 
 

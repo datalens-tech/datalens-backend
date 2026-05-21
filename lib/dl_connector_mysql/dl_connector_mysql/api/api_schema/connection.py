@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 
-from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
@@ -16,7 +15,6 @@ from dl_connector_mysql.core.us_connection import ConnectionMySQL
 
 
 class MySQLConnectionSchema(
-    ConnectionMetaMixin,
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
     ClassicSQLConnectionSchema,

@@ -5,10 +5,7 @@ from urllib.parse import urlparse
 from marshmallow import fields as ma_fields
 from marshmallow import validate as ma_validate
 
-from dl_api_connector.api_schema.connection_base import (
-    ConnectionMetaMixin,
-    ConnectionSchema,
-)
+from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
@@ -29,7 +26,7 @@ class BitrixPortalValidator(ma_validate.Validator):
         return portal
 
 
-class BitrixGDSConnectionSchema(ConnectionMetaMixin, DataExportForbiddenMixin, QueryCacheMixin, ConnectionSchema):
+class BitrixGDSConnectionSchema(DataExportForbiddenMixin, QueryCacheMixin, ConnectionSchema):
     TARGET_CLS = BitrixGDSConnection
 
     portal = ma_fields.String(

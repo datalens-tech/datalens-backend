@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from marshmallow import fields
 
-from dl_api_connector.api_schema.connection_base import ConnectionMetaMixin
 from dl_api_connector.api_schema.connection_mixins import (
     DataExportForbiddenMixin,
     RawSQLLevelMixin,
@@ -15,9 +14,7 @@ from dl_connector_postgresql.core.postgresql.us_connection import ConnectionPost
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 
 
-class PostgreSQLConnectionSchema(
-    ConnectionMetaMixin, DataExportForbiddenMixin, RawSQLLevelMixin, ClassicSQLConnectionSchema
-):
+class PostgreSQLConnectionSchema(DataExportForbiddenMixin, RawSQLLevelMixin, ClassicSQLConnectionSchema):
     TARGET_CLS = ConnectionPostgreSQL
     ALLOW_MULTI_HOST = True
 
