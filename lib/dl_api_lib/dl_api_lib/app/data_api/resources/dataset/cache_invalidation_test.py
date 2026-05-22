@@ -12,6 +12,7 @@ from dl_api_lib.app.data_api.resources.base import (
 from dl_api_lib.app.data_api.resources.dataset.base import DatasetDataBaseView
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.exc import (
+    CacheInvalidationTestConnectionViewRequiredError,
     CacheInvalidationTestError,
     CacheInvalidationTestInvalidResultError,
     CacheInvalidationTestModeOffError,
@@ -34,14 +35,12 @@ from dl_constants.enums import (
     CacheInvalidationMode,
     UserDataType,
 )
+from dl_core.base_models import DefaultConnectionRef
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.fields import ResultSchema
-from dl_core.us_connection_base import (
-    ConnectionBase,
-    RawSqlLevelConnectionMixin,
-)
+from dl_core.us_connection_base import RawSqlLevelConnectionMixin
 from dl_core.utils import sa_plain_text
 from dl_query_processing.enums import (
     GroupByPolicy,
@@ -68,8 +67,12 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
     the configured invalidation cache throttling. It is intended for debugging
     the invalidation query by the user.
 
-    Returns 400 when:
+    Returns 403 when:
     - The user is not an editor of the dataset (risk of exposing RLS-restricted data).
+    - The caller lacks `connection->view` and the request body changes the SQL invalidation
+      query relative to the saved dataset (sql mode).
+
+    Returns 400 when:
     - The connection does not support subqueries (sql mode).
     - The query execution fails.
     - The result type is not string.
@@ -97,6 +100,8 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         if not check_permission_on_entry(self.dataset, USPermissionKind.edit):
             raise CacheInvalidationTestNotEditorError()
 
+        saved_cache_invalidation_source = self.dataset.data.cache_invalidation_source
+
         await self.prepare_dataset_for_request(req_model=req_model)
 
         cache_invalidation_source = self.dataset.data.cache_invalidation_source
@@ -108,7 +113,14 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             sql_query = cache_invalidation_source.sql or ""
             if not sql_query.strip():
                 raise CacheInvalidationTestQueryError("Empty cache invalidation SQL query is not allowed")
-            return await self._execute_sql_mode(sql_query=sql_query)
+            require_connection_view = (
+                saved_cache_invalidation_source.mode != CacheInvalidationMode.sql
+                or (saved_cache_invalidation_source.sql or "") != sql_query
+            )
+            return await self._execute_sql_mode(
+                sql_query=sql_query,
+                require_connection_view=require_connection_view,
+            )
 
         if cache_invalidation_source.mode == CacheInvalidationMode.formula:
             return await self._execute_formula_mode(cache_invalidation_source=cache_invalidation_source)
@@ -232,7 +244,7 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         # 9. Build response
         return self._build_response(value=value_str, query=debug_query)
 
-    async def _execute_sql_mode(self, sql_query: str) -> Response:
+    async def _execute_sql_mode(self, sql_query: str, require_connection_view: bool) -> Response:
         ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
         source_ids = ds_accessor.get_data_source_id_list()
         if not source_ids:
@@ -251,11 +263,15 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         if conn_id is None:
             raise CacheInvalidationTestQueryError(message="Could not determine connection for data source")
 
-        connection = await self.dl_request.us_manager.get_by_id(
-            conn_id,
-            ConnectionBase,
-        )
-        assert isinstance(connection, ConnectionBase)
+        await self.dl_request.us_manager.ensure_entry_preloaded(DefaultConnectionRef(conn_id=conn_id))
+        connection = self.dl_request.us_manager.get_loaded_us_connection(conn_id)
+
+        if require_connection_view and not check_permission_on_entry(connection, USPermissionKind.read):
+            LOGGER.info(
+                "caller lacks connection->view on %s; rejecting body-supplied cache invalidation SQL",
+                conn_id,
+            )
+            raise CacheInvalidationTestConnectionViewRequiredError()
 
         if isinstance(connection, RawSqlLevelConnectionMixin):
             if not connection.is_subselect_allowed:

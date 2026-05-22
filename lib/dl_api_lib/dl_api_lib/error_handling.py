@@ -96,6 +96,7 @@ EXCEPTION_CODES = {
     exc.WorkbookExportError: status.BAD_REQUEST,
     common_exc.DataSourceNotFound: status.BAD_REQUEST,
     exc.CacheInvalidationTestNotEditorError: status.FORBIDDEN,
+    exc.CacheInvalidationTestConnectionViewRequiredError: status.FORBIDDEN,
     exc.CacheInvalidationTestError: status.BAD_REQUEST,
     exc.ConnectionTemplateNotFound: status.BAD_REQUEST,
     exc.PreviewSourceModificationNotAllowedError: status.FORBIDDEN,

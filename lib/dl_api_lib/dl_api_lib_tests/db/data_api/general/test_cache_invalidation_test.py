@@ -1,16 +1,39 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from http import HTTPStatus
+
+import pytest
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
+import dl_api_lib.app.data_api.resources.dataset.cache_invalidation_test as cache_invalidation_test_module
+from dl_api_lib.enums import USPermissionKind
+from dl_api_lib.utils.base import check_permission_on_entry
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import (
     CacheInvalidationMode,
     RawSQLLevel,
     WhereClauseOperation,
 )
+from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_entry import USEntry
+
+
+PermissionPatch = Callable[[USEntry, USPermissionKind], bool]
+
+
+def _connection_read_denied_patch() -> PermissionPatch:
+    """Force connection-level `read` permission to False; delegate other checks."""
+    real = check_permission_on_entry
+
+    def patched(entry: USEntry, permission: USPermissionKind) -> bool:
+        if isinstance(entry, ConnectionBase) and permission is USPermissionKind.read:
+            return False
+        return real(entry, permission)
+
+    return patched
 
 
 class CacheInvalidationTestBase(DefaultApiTestBase):
@@ -414,3 +437,139 @@ class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
         # The query field should contain actual SQL, not the formula text
         assert "SELECT" in query.upper()
         assert "MAX" in query.upper()
+
+
+class TestCacheInvalidationTestConnectionViewCheck(CacheInvalidationTestBase):
+    """SQL test executed against a connection the caller can't view requires extra perm."""
+
+    raw_sql_level = RawSQLLevel.subselect
+
+    def _install_connection_read_denied(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        patched = _connection_read_denied_patch()
+        monkeypatch.setattr(cache_invalidation_test_module, "check_permission_on_entry", patched)
+
+    def _build_body_with_cache_invalidation_override(
+        self,
+        data_api: SyncHttpDataApiV2,
+        saved_dataset: Dataset,
+        cache_invalidation_source: dict,
+    ) -> dict:
+        """Build a full-dataset body (mirrors what the frontend sends) and override the
+        cache_invalidation_source — sources/avatars/schema must come along so the
+        endpoint's dataset patch produces a usable state."""
+        body = data_api.serial_adapter.make_req_data_get_preview(dataset=saved_dataset)
+        body["dataset"]["cache_invalidation_source"] = cache_invalidation_source
+        return body
+
+    def test_sql_unchanged_does_not_require_connection_view(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Saved SQL == request SQL: the connection-view check must not fire."""
+        update_data = dict(mode=CacheInvalidationMode.sql.value, sql="SELECT 'unchanged'")
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        self._install_connection_read_denied(monkeypatch)
+
+        # No body override → the endpoint uses the saved SQL verbatim.
+        resp = self._call_cache_invalidation_test(
+            data_api=data_api,
+            dataset_id=saved_dataset.id,
+        )
+
+        assert resp["status_code"] == HTTPStatus.OK, resp["json"]
+        assert resp["json"]["result"]["value"] == "unchanged"
+
+    def test_sql_changed_via_body_requires_connection_view(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Body overrides SQL to a value different from US — connection-view perm required."""
+        update_data = dict(mode=CacheInvalidationMode.sql.value, sql="SELECT 'saved'")
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        self._install_connection_read_denied(monkeypatch)
+
+        body = self._build_body_with_cache_invalidation_override(
+            data_api=data_api,
+            saved_dataset=saved_dataset,
+            cache_invalidation_source={
+                "mode": CacheInvalidationMode.sql.value,
+                "sql": "SELECT 'modified'",
+            },
+        )
+        resp = self._call_cache_invalidation_test(
+            data_api=data_api,
+            dataset_id=saved_dataset.id,
+            body=body,
+        )
+
+        assert resp["status_code"] == HTTPStatus.FORBIDDEN, resp["json"]
+        assert "CACHE_INVALIDATION_TEST" in resp["json"].get("code", "")
+        assert "CONNECTION_VIEW_REQUIRED" in resp["json"].get("code", "")
+
+    def test_mode_flipped_to_sql_via_body_requires_connection_view(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Saved mode = formula, body flips to sql — connection-view perm required."""
+        update_data = dict(
+            mode=CacheInvalidationMode.formula.value,
+            field=dict(guid="cache_field_1", formula="MAX([category])"),
+        )
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        self._install_connection_read_denied(monkeypatch)
+
+        body = self._build_body_with_cache_invalidation_override(
+            data_api=data_api,
+            saved_dataset=saved_dataset,
+            cache_invalidation_source={
+                "mode": CacheInvalidationMode.sql.value,
+                "sql": "SELECT 'flipped'",
+            },
+        )
+        resp = self._call_cache_invalidation_test(
+            data_api=data_api,
+            dataset_id=saved_dataset.id,
+            body=body,
+        )
+
+        assert resp["status_code"] == HTTPStatus.FORBIDDEN, resp["json"]
+        assert "CONNECTION_VIEW_REQUIRED" in resp["json"].get("code", "")
+
+    def test_formula_mode_does_not_require_connection_view(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        saved_dataset: Dataset,
+        data_api: SyncHttpDataApiV2,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Saved + effective mode = formula: the SQL-mode connection-view check must not fire."""
+        update_data = dict(
+            mode=CacheInvalidationMode.formula.value,
+            field=dict(guid="cache_field_1", formula="MAX([category])"),
+        )
+        saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
+        saved_dataset = control_api.save_dataset(saved_dataset).dataset
+
+        self._install_connection_read_denied(monkeypatch)
+
+        resp = self._call_cache_invalidation_test(
+            data_api=data_api,
+            dataset_id=saved_dataset.id,
+        )
+
+        assert resp["status_code"] == HTTPStatus.OK, resp["json"]

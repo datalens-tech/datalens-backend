@@ -26,7 +26,7 @@ def _make_permission_patch(
     dataset_edit_allowed: bool = True,
     connection_read_allowed: bool = True,
 ) -> PermissionPatch:
-    """Override `check_permission_on_entry` to simulate BI-7288 permission combinations.
+    """Override `check_permission_on_entry` to simulate dataset/connection permission combinations.
 
     All non-listed permissions delegate to the real implementation, so existing
     test fixtures (full-rights users) continue to behave normally.
@@ -44,7 +44,7 @@ def _make_permission_patch(
 
 
 class TestPreviewPermissions(DefaultApiTestBase):
-    """BI-7288 — /preview must respect connection × dataset permission combinations."""
+    """`/preview` must respect connection × dataset permission combinations."""
 
     def _install_patch(
         self,

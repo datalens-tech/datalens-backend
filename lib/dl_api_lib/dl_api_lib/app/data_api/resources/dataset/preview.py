@@ -127,7 +127,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
         return req_model
 
     async def _enforce_request_dataset_permissions(self, req_model: PreviewDataRequestModel) -> PreviewDataRequestModel:
-        """Apply BI-7288 permission rules to the ``dataset`` field of the request body.
+        """Apply permission rules to the ``dataset`` field of the request body.
 
         - `dataset->view` only — drop the body's `dataset` patch silently;
           the saved US version is previewed as-is.

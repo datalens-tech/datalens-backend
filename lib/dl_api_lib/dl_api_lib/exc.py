@@ -132,6 +132,11 @@ class CacheInvalidationTestNonStringResultError(CacheInvalidationTestError):
     default_message = "Cache invalidation query must return a string value"
 
 
+class CacheInvalidationTestConnectionViewRequiredError(CacheInvalidationTestError):
+    err_code = CacheInvalidationTestError.err_code + ["CONNECTION_VIEW_REQUIRED"]
+    default_message = "View permission on the connection is required to test modified SQL invalidation queries"
+
+
 class CacheInvalidationLastResultError(DLBaseException):
     err_code = DLBaseException.err_code + ["CACHE_INVALIDATION_LAST_RESULT"]
     default_message = "Cache invalidation last result error"
