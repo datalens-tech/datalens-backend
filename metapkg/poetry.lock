@@ -3191,6 +3191,10 @@ python-versions = ">=3.12, <3.13"
 files = []
 develop = true
 
+[package.dependencies]
+attrs = "*"
+prometheus-client = "==0.25.0"
+
 [package.source]
 type = "directory"
 url = "../lib/dl_prometheus"
@@ -6152,6 +6156,22 @@ files = [
 [package.dependencies]
 poetry = ">=1.6.0,<2.0.0"
 poetry-core = ">=1.7.0,<2.0.0"
+
+[[package]]
+name = "prometheus-client"
+version = "0.25.0"
+description = "Python client for the Prometheus monitoring system."
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "prometheus_client-0.25.0-py3-none-any.whl", hash = "sha256:d5aec89e349a6ec230805d0df882f3807f74fd6c1a2fa86864e3c2279059fed1"},
+    {file = "prometheus_client-0.25.0.tar.gz", hash = "sha256:5e373b75c31afb3c86f1a52fa1ad470c9aace18082d39ec0d2f918d11cc9ba28"},
+]
+
+[package.extras]
+aiohttp = ["aiohttp"]
+django = ["django"]
+twisted = ["twisted"]
 
 [[package]]
 name = "prompt-toolkit"
@@ -9544,4 +9564,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "a489d5186f1fb55725a49ee1513833a6b1c7738e20a32cebad46658e93ff0816"
+content-hash = "54d463b2bc7238422a58328691e3548ac58e2326e6ecef029b724bb6621fbe33"
