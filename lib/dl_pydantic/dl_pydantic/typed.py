@@ -57,6 +57,7 @@ class TypedMeta(pydantic_model_construction.ModelMetaclass):
     def __init__(cls, name: str, bases: tuple[type, ...], attrs: dict[str, Any]):
         cls._classes: dict[str, type["TypedBaseModel"]] = {}
         cls._unknown_class: type["TypedBaseModel"] | None = None
+        cls._unset_class: type["TypedBaseModel"] | None = None
 
     @property
     def classes(cls) -> dict[str, type["TypedBaseModel"]]:
@@ -97,6 +98,17 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         LOGGER.debug("Registered unknown for %s: %s", cls.__name__, class_)
 
     @classmethod
+    def register_unset(cls, class_: Type) -> None:  # noqa: UP006
+        if cls._unset_class is not None:
+            raise ValueError("Unset class already registered")
+
+        if not issubclass(class_, cls):
+            raise ValueError(f"Class '{class_}' must be subclass of {cls}")
+
+        cls._unset_class = class_
+        LOGGER.debug("Registered unset for %s: %s", cls.__name__, class_)
+
+    @classmethod
     def _prepare_data(cls, data: dict[str, Any]) -> dict[str, Any]:
         return data
 
@@ -104,7 +116,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     def _get_class_name(cls, data: dict[str, Any]) -> str:
         type_key = cls.type_key()
         if type_key not in data:
-            raise ValueError(f"Data must contain '{type_key}' key")
+            raise exceptions.UnsetTypeException(f"Data must contain '{type_key}' key")
 
         data_type = data[type_key]
 
@@ -125,6 +137,10 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
         try:
             class_name = cls._get_class_name(data)
+        except exceptions.UnsetTypeException as exc:
+            if cls._unset_class is None:
+                raise exc
+            class_ = cls._unset_class
         except exceptions.UnknownTypeException as exc:
             if cls._unknown_class is None:
                 raise exc

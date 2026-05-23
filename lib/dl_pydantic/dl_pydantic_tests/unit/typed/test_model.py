@@ -391,3 +391,130 @@ def test_register_unknown() -> None:
     data = Base.factory(raw_data)
 
     assert isinstance(data, Child)
+
+
+def test_unset_type_exception_is_value_error() -> None:
+    assert issubclass(dl_pydantic.UnsetTypeException, ValueError)
+
+
+def test_factory_without_type_key_raises_unset() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class Child(Base): ...
+
+    Base.register("child", Child)
+
+    with pytest.raises(dl_pydantic.UnsetTypeException) as exc_info:
+        Base.factory({})
+
+    assert isinstance(exc_info.value, ValueError)
+    assert "type" in str(exc_info.value)
+
+
+def test_register_unset() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class Child(Base): ...
+
+    class DefaultChild(Base):
+        type: str = "default"
+
+    Base.register("child", Child)
+    Base.register_unset(DefaultChild)
+
+    assert isinstance(Base.factory({"type": "child"}), Child)
+    assert isinstance(Base.factory({}), DefaultChild)
+
+    with pytest.raises(dl_pydantic.UnknownTypeException):
+        Base.factory({"type": "bebebe"})
+
+
+def test_register_unset_already_registered() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class DefaultChild(Base):
+        type: str = "default"
+
+    class AnotherDefaultChild(Base):
+        type: str = "another_default"
+
+    Base.register_unset(DefaultChild)
+
+    with pytest.raises(ValueError):
+        Base.register_unset(AnotherDefaultChild)
+
+
+def test_register_unset_not_subclass() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class Stranger(dl_pydantic.TypedBaseModel):
+        type: str = "stranger"
+
+    with pytest.raises(ValueError):
+        Base.register_unset(Stranger)
+
+
+def test_register_unset_with_unknown() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class Child(Base): ...
+
+    class DefaultChild(Base):
+        type: str = "default"
+
+    class UnknownChild(Base):
+        type: str = "unknown"
+        raw_data: typing.Any
+
+        @pydantic.model_validator(mode="before")
+        @classmethod
+        def transform_to_raw_data(cls, data: typing.Any) -> typing.Any:
+            return {"raw_data": data}
+
+    Base.register("child", Child)
+    Base.register_unset(DefaultChild)
+    Base.register_unknown(UnknownChild)
+
+    assert isinstance(Base.factory({}), DefaultChild)
+    assert isinstance(Base.factory({"type": "child"}), Child)
+
+    unknown = Base.factory({"type": "bebebe"})
+    assert isinstance(unknown, UnknownChild)
+    assert unknown.raw_data == {"type": "bebebe"}
+
+
+def test_register_unset_prepare_data() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class DefaultChild(Base):
+        type: str = "default"
+        marker: str
+
+        @classmethod
+        def _prepare_data(cls, data: dict[str, typing.Any]) -> dict[str, typing.Any]:
+            return {**data, "marker": "prepared"}
+
+    Base.register_unset(DefaultChild)
+
+    instance = Base.factory({})
+
+    assert isinstance(instance, DefaultChild)
+    assert instance.marker == "prepared"
+
+
+def test_register_unset_with_typed_annotation() -> None:
+    class Base(dl_pydantic.TypedBaseModel): ...
+
+    class Child(Base): ...
+
+    class DefaultChild(Base):
+        type: str = "default"
+
+    Base.register("child", Child)
+    Base.register_unset(DefaultChild)
+
+    class Root(dl_pydantic.BaseModel):
+        child: dl_pydantic.TypedAnnotation[Base]
+
+    assert isinstance(Root.model_validate({"child": {}}).child, DefaultChild)
+    assert isinstance(Root.model_validate({"child": {"type": "child"}}).child, Child)

@@ -2,7 +2,10 @@ from .base import (
     BaseModel,
     BaseSchema,
 )
-from .exceptions import UnknownTypeException
+from .exceptions import (
+    UnknownTypeException,
+    UnsetTypeException,
+)
 from .jsonable import (
     JsonableDate,
     JsonableDatetime,
@@ -47,4 +50,5 @@ __all__ = [
     "TypedSchemaDictAnnotation",
     "TypedSchemaListAnnotation",
     "UnknownTypeException",
+    "UnsetTypeException",
 ]

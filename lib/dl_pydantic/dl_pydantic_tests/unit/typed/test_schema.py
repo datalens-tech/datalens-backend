@@ -234,3 +234,24 @@ def test_dict_annotation() -> None:
     assert isinstance(root.children["child"], Child)
 
     assert root.model_dump() == {"children": {"child": {"type": "child", "value": "test"}}}
+
+
+def test_register_unset() -> None:
+    class Base(dl_pydantic.TypedBaseSchema): ...
+
+    class Child(Base):
+        value: str
+
+    class DefaultChild(Base):
+        type: str = "default"
+        marker: str = "default_marker"
+
+    Base.register("child", Child)
+    Base.register_unset(DefaultChild)
+
+    child = Base.factory({"type": "child", "value": "test"})
+    default = Base.factory({})
+
+    assert isinstance(child, Child)
+    assert isinstance(default, DefaultChild)
+    assert default.model_dump() == {"type": "default", "marker": "default_marker"}
