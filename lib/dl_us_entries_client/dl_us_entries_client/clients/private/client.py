@@ -8,6 +8,7 @@ from typing_extensions import Self
 import dl_auth
 import dl_httpx
 import dl_settings
+import dl_us_entries_client.clients.private.models as private_models
 import dl_us_entries_client.exceptions as exceptions
 import dl_us_entries_client.models as models
 
@@ -15,17 +16,17 @@ import dl_us_entries_client.models as models
 LOGGER = logging.getLogger(__name__)
 
 
-US_ENTRIES_AUTH_TARGET = dl_auth.AuthTarget.declare("US_ENTRIES")
+US_ENTRIES_PRIVATE_AUTH_TARGET = dl_auth.AuthTarget.declare("US_ENTRIES_PRIVATE")
 
 
-class USEntriesClientSettings(dl_settings.BaseSettings):
+class USEntriesPrivateClientSettings(dl_settings.BaseSettings):
     BASE_URL: str
-    USER_AUTH_PROVIDER: dl_settings.TypedAnnotation[dl_auth.AuthProviderSettings]
+    SERVICE_AUTH_PROVIDER: dl_settings.TypedAnnotation[dl_auth.AuthProviderSettings]
 
 
 @attrs.define(kw_only=True)
-class USEntriesAsyncClient:
-    AUTH_TARGET: ClassVar[dl_auth.AuthTarget] = US_ENTRIES_AUTH_TARGET
+class USEntriesPrivateAsyncClient:
+    AUTH_TARGET: ClassVar[dl_auth.AuthTarget] = US_ENTRIES_PRIVATE_AUTH_TARGET
     _base_client: dl_httpx.HttpxAsyncClient
 
     @classmethod
@@ -62,26 +63,28 @@ class USEntriesAsyncClient:
             await self.ping(models.PingRequest())
             return True
         except Exception:
-            LOGGER.exception("USEntriesAsyncClient.check_readiness failed")
+            LOGGER.exception("USEntriesPrivateAsyncClient.check_readiness failed")
             return False
 
     async def ping(self, request: models.PingRequest) -> None:
         prepared = await self._base_client.prepare_request(request=request)
         await self._send(prepared)
 
-    async def get_entry(self, request: models.EntryGetRequest) -> models.EntryGetResponse:
+    async def get_entry(self, request: private_models.PrivateEntryGetRequest) -> private_models.PrivateEntryGetResponse:
         prepared = await self._base_client.prepare_request(request=request)
         response = await self._send(prepared, error_transformer=request.error_transformer)
-        result = models.EntryGetResponse.model_validate(response.json())
+        result = private_models.PrivateEntryGetResponse.model_validate(response.json())
         if request.include_permissions_info and result.permissions is None:
             raise exceptions.UsEntriesClientException("Permissions requested but not returned by US")
         return result
 
-    async def post_entry(self, request: models.EntryPostRequest) -> models.EntryPostResponse:
+    async def post_entry(
+        self, request: private_models.PrivateEntryPostRequest
+    ) -> private_models.PrivateEntryPostResponse:
         prepared = await self._base_client.prepare_request(request=request)
         response = await self._send(prepared)
-        return models.EntryPostResponse.model_validate(response.json())
+        return private_models.PrivateEntryPostResponse.model_validate(response.json())
 
-    async def delete_entry(self, request: models.EntryDeleteRequest) -> None:
+    async def delete_entry(self, request: private_models.PrivateEntryDeleteRequest) -> None:
         prepared = await self._base_client.prepare_request(request=request)
         await self._send(prepared)
