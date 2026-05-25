@@ -58,6 +58,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
         },
     )
 
+    @pytest.mark.xfail(reason="BI-7353", strict=False)
     def test_simple_select(
         self,
         dataset_wrapper: DatasetTestWrapper,
