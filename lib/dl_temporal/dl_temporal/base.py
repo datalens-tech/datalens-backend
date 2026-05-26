@@ -49,10 +49,17 @@ def _generate_workflow_id() -> str:
     return str(temporalio.workflow.uuid4())
 
 
+class LoggingExcluded:
+    """Marker for `Annotated[T, LoggingExcluded]` fields to omit from logging dumps."""
+
+
 class BaseModel(dl_pydantic.BaseModel):
     def model_dump_for_logging(self) -> str:
-        data = self.model_dump(mode="json")
-        return dl_json.dumps_str(data)
+        exclude: set[str] = set()
+        for name, field in type(self).model_fields.items():
+            if LoggingExcluded in field.metadata:
+                exclude.add(name)
+        return dl_json.dumps_str(self.model_dump(mode="json", exclude=exclude))
 
     @pydantic.model_validator(mode="before")
     @classmethod
