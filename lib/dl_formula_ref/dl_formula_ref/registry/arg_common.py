@@ -67,7 +67,7 @@ class TypeStrategyInspector:
         args: list[FuncArg],
     ) -> str:
         ct_args = cls._extract_common_type_args(ret_type_strat, args)
-        arg_str = ", ".join("`{}`".format(a.name) for a in ct_args)
+        arg_str = ", ".join(f"`{a.name}`" for a in ct_args)
         if inf_args is None:
             arg_str += ", ..."
         return arg_str

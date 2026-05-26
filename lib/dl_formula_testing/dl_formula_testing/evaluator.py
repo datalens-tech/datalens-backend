@@ -104,7 +104,7 @@ class DbEvaluator:
                 if field_node.name in other_fields:
                     formula = formula.replace_at_index(
                         index=field_node_idx,
-                        expr=CompiledExpression.make(self.translate_formula((other_fields[field_node.name]))),
+                        expr=CompiledExpression.make(self.translate_formula(other_fields[field_node.name])),
                     )
 
             # mutate
@@ -133,12 +133,12 @@ class DbEvaluator:
     @staticmethod
     def print_as_example(formula: Union[str, Formula], result: Any) -> None:
         if isinstance(result, datetime.date):
-            result_str = "#{}#".format(str(result))
+            result_str = f"#{str(result)}#"
         elif isinstance(result, bool):
             result_str = str(result).upper()
         else:
             result_str = repr(result)
-        print("{},".format(repr("{} = {}".format(formula, result_str))))
+        print("{},".format(repr(f"{formula} = {result_str}")))
 
     def eval(  # type: ignore  # 2024-01-29 # TODO: Function is missing a return type annotation  [no-untyped-def]
         self,

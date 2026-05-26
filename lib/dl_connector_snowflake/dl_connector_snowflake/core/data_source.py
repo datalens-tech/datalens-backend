@@ -79,7 +79,7 @@ class SnowFlakeTableDataSource(SnowFlakeDataSourceMixin, TableSQLDataSourceMixin
         self,
         conn_executor_factory: Callable[[], SyncConnExecutorBase],
     ) -> SchemaInfo:
-        return super(SnowFlakeTableDataSource, self).get_schema_info(conn_executor_factory=conn_executor_factory)
+        return super().get_schema_info(conn_executor_factory=conn_executor_factory)
 
     @require_table_name
     def get_sql_source(self, alias: str | None = None) -> SqlSourceType:

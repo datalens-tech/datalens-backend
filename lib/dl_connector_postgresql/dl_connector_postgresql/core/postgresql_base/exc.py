@@ -18,7 +18,7 @@ class PostgresSourceDoesNotExistError(exc.SourceDoesNotExist):
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
     ):
-        super(PostgresSourceDoesNotExistError, self).__init__(
+        super().__init__(
             db_message=db_message,
             query=query,
             inspector_query=inspector_query,

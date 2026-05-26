@@ -2,13 +2,6 @@
 Common tools for unistat-format stats collection
 """
 
-from __future__ import (
-    absolute_import,
-    division,
-    print_function,
-    unicode_literals,
-)
-
 from json import dumps as json_dumps
 import os
 import socket
@@ -41,9 +34,9 @@ def get_sys_memstatus(pid):
     if not pid:
         return {}
     try:
-        with open("/proc/{}/statm".format(pid), "r") as fobj:
+        with open(f"/proc/{pid}/statm") as fobj:
             data_statm = fobj.read()
-    except (OSError, IOError) as exc:
+    except OSError as exc:
         return dict(_exc=repr(exc))
     data_m = data_statm.strip("\n").split(" ")
     return dict(zip(STATM_COLS, data_m, strict=True))
@@ -109,4 +102,4 @@ def results_to_response(results, indent="    "):
 
 def dump_for_prometheus(results):
     for label, value in results:
-        yield "{} {}\n".format(label, value)
+        yield f"{label} {value}\n"

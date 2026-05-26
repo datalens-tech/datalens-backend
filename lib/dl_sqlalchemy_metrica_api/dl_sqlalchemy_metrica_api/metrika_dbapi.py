@@ -103,7 +103,7 @@ def check_connected(func):
     return func_wrapper
 
 
-class Connection(object):
+class Connection:
     metrica_host = METRIKA_API_HOST
     metrica_fields_namespaces_enum = MetrikaApiCounterSource
 
@@ -185,7 +185,7 @@ class InternalCommands(Enum):
     get_avail_date_max = "__GET_AVAILABLE_DATE_MAX__"
 
 
-class Cursor(object):
+class Cursor:
     description = None
     rowcount = -1
     arraysize = 1

@@ -56,7 +56,7 @@ _RET_TV = TypeVar("_RET_TV")
 
 def init_required(wrapped: Callable[..., _RET_TV]) -> Callable[..., _RET_TV]:
     @functools.wraps(wrapped)
-    def wrapper(self: "SyncWrapperForAsyncConnExecutor", *args: Any, **kwargs: Any) -> _RET_TV:
+    def wrapper(self: SyncWrapperForAsyncConnExecutor, *args: Any, **kwargs: Any) -> _RET_TV:
         if not self.is_initialized:
             self.initialize()
         return wrapped(self, *args, **kwargs)

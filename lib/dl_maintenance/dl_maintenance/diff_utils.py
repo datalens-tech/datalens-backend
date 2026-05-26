@@ -111,7 +111,7 @@ def dump_gron(
             yield line_tpl.format(name=name, value="true" if node else "false")
             return
         if isinstance(node, (str, bytes)):
-            yield line_tpl.format(name=name, value='"{}"'.format(node))  # type: ignore  # TODO: fix
+            yield line_tpl.format(name=name, value=f'"{node}"')  # type: ignore  # TODO: fix
             return
         if isinstance(node, dict):
             if init_values:
@@ -120,7 +120,7 @@ def dump_gron(
             if sort_keys:
                 items = sorted(items)  # type: ignore  # TODO: fix
             for key, value in items:
-                children = gron_walk(value, name="{}{}".format(name, quote_key(key)))
+                children = gron_walk(value, name=f"{name}{quote_key(key)}")
                 for child in children:
                     yield child
             return
@@ -128,7 +128,7 @@ def dump_gron(
             if init_values:
                 yield line_tpl.format(name=name, value="[]")
             for idx, value in enumerate(node):
-                children = gron_walk(value, name="{}[{}]".format(name, idx))
+                children = gron_walk(value, name=f"{name}[{idx}]")
                 for child in children:
                     yield child
             return

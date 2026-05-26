@@ -316,7 +316,7 @@ class EnvSettingsLoader:
         loaded_keys: dict[str, str] = {}
 
         for key, file_path in map_key_file_path.items():
-            with open(file_path, "r", encoding="ascii") as file:
+            with open(file_path, encoding="ascii") as file:
                 loaded_keys[key] = file.read()
 
         return loaded_keys

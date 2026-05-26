@@ -19,7 +19,7 @@ def stringify_dl_cookies(headers: dict[DLCookies, str]) -> dict[str, str]:
 
 def get_requests_session() -> requests.Session:
     session = requests.Session()
-    ua = "{}, Datalens".format(requests.utils.default_user_agent())
+    ua = f"{requests.utils.default_user_agent()}, Datalens"
     session.headers.update({"User-Agent": ua})
     return session
 

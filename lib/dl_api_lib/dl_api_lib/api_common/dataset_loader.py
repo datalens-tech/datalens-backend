@@ -431,7 +431,7 @@ class DatasetApiLoader:
 
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
-        schema_guids = set((field.guid for field in dataset.result_schema.fields))
+        schema_guids = set(field.guid for field in dataset.result_schema.fields)
 
         # Validate sorting fields
         if extract.mode != ExtractMode.disabled:

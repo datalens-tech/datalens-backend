@@ -105,8 +105,8 @@ class TestArrayFunctionYDB(YQLViewTableTestBase, ArrayFunctionYDBTestSuite):
         inp_int = (1, 2, 3, -1)
         inp_float = (1.2, 12, 0.1, 12.0)
 
-        bi_inp_int = ", ".join((str(item) for item in inp_int))
-        bi_inp_float = ", ".join((str(item) for item in inp_float))
+        bi_inp_int = ", ".join(str(item) for item in inp_int)
+        bi_inp_float = ", ".join(str(item) for item in inp_float)
 
         assert dbe.eval(f"{bi_func}(ARRAY({bi_inp_int}))", from_=data_table) == eval_func(inp_int)
         assert dbe.eval(f"{bi_func}(REPLACE([arr_int_value], NULL, 1))", from_=data_table) == eval_func((0, 23, 456, 1))

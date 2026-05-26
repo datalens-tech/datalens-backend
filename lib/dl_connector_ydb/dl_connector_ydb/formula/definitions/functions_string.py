@@ -53,7 +53,7 @@ DEFINITIONS_STRING = [
         ]
     ),
     # concat
-    base.Concat1.for_dialect((D.YQL)),
+    base.Concat1.for_dialect(D.YQL),
     base.ConcatMultiStrConst.for_dialect(D.YQL),
     base.ConcatMultiStr(
         variants=[

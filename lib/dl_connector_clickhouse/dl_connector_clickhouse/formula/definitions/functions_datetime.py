@@ -63,7 +63,7 @@ def _datetrunc3_ch_impl_19_3_3(
 
 def _datetime_interval_ch(type_name: str, mult: int) -> ClauseElement:
     type_name = normalize_and_validate_datetime_interval_type(type_name)
-    func_name = "toInterval{}".format(type_name.capitalize())
+    func_name = f"toInterval{type_name.capitalize()}"
     return getattr(sa.func, func_name)(mult)
 
 

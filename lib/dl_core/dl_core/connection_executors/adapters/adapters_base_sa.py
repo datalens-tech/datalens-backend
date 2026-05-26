@@ -265,7 +265,7 @@ class BaseSAAdapter(
             # A catch-point intended for adding `query` and `db_message` only for subselect-schema errors.
             def exc_post_processor(db_exc: exc.DatabaseQueryError) -> None:
                 assert isinstance(db_exc, exc.DatabaseQueryError)  # TODO: BI-6448 is any transformations needed?
-                db_exc.query = "SELECT * FROM {}".format(table_def.text)
+                db_exc.query = f"SELECT * FROM {table_def.text}"
                 db_exc.details.setdefault("query", db_exc.query)
                 db_exc.details.setdefault("db_message", db_exc.db_message)
 

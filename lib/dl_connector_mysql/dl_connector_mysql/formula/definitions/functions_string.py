@@ -20,7 +20,7 @@ DEFINITIONS_STRING = [
     # char
     base.FuncChar.for_dialect(D.MYSQL),
     # concat
-    base.Concat1.for_dialect((D.MYSQL)),
+    base.Concat1.for_dialect(D.MYSQL),
     base.ConcatMultiStrConst.for_dialect(D.MYSQL),
     base.ConcatMultiStr.for_dialect(D.MYSQL),
     base.ConcatMultiAny.for_dialect(D.MYSQL),

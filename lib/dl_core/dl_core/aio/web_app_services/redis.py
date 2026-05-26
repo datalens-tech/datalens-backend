@@ -77,7 +77,7 @@ class RedisBaseService(metaclass=abc.ABCMeta):
         return f"{cls.APP_KEY}_{instance_kind.name}"
 
     @classmethod
-    def get_app_instance(cls, app: web.Application, instance_kind: RedisInstanceKind) -> "RedisBaseService":
+    def get_app_instance(cls, app: web.Application, instance_kind: RedisInstanceKind) -> RedisBaseService:
         service = app.get(cls.get_full_app_key(instance_kind), None)
         if service is None:
             raise ValueError("Redis was not initiated for application")

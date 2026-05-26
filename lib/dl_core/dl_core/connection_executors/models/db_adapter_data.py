@@ -70,7 +70,7 @@ class RawColumnInfo:
     name: str
     title: Optional[str]
     nullable: bool
-    native_type: "GenericNativeType"
+    native_type: GenericNativeType
 
 
 @attr.s(frozen=True, slots=True, auto_attribs=True)

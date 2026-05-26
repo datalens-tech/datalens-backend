@@ -215,9 +215,7 @@ class ResultCacheEntry:
 
         if initial_bi_c_version_str != cls.bi_c_version_str():
             raise CachedEntryPackageVersionMismatch(
-                "Package version mismatch. In cache: {}. Actual: {}".format(
-                    initial_bi_c_version_str, cls.bi_c_version_str()
-                )
+                f"Package version mismatch. In cache: {initial_bi_c_version_str}. Actual: {cls.bi_c_version_str()}"
             )
 
         is_compressed = metadata["is_compressed"]
@@ -555,10 +553,7 @@ class EntityCacheEngineBase:
 
     def _get_key_query_cache_entry(self, local_key_rep: LocalKeyRepresentation) -> str:
         local_key_rep.validate()
-        return "{entity_root_key}/{local_key_rep_str}".format(
-            entity_root_key=self._get_key_root(),
-            local_key_rep_str=local_key_rep.key_parts_hash,
-        )
+        return f"{self._get_key_root()}/{local_key_rep.key_parts_hash}"
 
     def _get_all_keys_pattern(self) -> str:
         """Returns pattern for all cached keys for the entity"""
@@ -647,9 +642,7 @@ class EntityCacheEngineBase:
             self._log_cache_miss(
                 reason="query_hash_collision",
                 details=details,
-                message="Query hash collision: {!r} != {!r}".format(
-                    cache_entry.key_parts_str, local_key_rep.key_parts_str
-                ),
+                message=f"Query hash collision: {cache_entry.key_parts_str!r} != {local_key_rep.key_parts_str!r}",
             )
             return None
 

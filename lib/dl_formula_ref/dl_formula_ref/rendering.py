@@ -70,7 +70,7 @@ def human_dialect(dialect: Union[DialectCombo, str], locale: str, style: Dialect
     if isinstance(dialect, str):
         dialect = D.by_name(dialect.upper())
 
-    return "{}".format(translate(HUMAN_DIALECTS[dialect].for_style(style), locale=locale))
+    return f"{translate(HUMAN_DIALECTS[dialect].for_style(style), locale=locale)}"
 
 
 def human_data_type(types: Collection[DataType], locale: str) -> str:

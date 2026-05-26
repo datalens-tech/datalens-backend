@@ -38,13 +38,13 @@ class TestRevisionResult(DefaultApiTestBase):
         assert len(entry_revisions) == 1
         rev_id = entry_revisions[-1]["revId"]
 
-        dataset = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(ds.id)).json
+        dataset = control_api.client.get(f"/api/v1/datasets/{ds.id}/versions/draft").json
         result_schema = copy.deepcopy(dataset["dataset"]["result_schema"])
 
         new_result_schema = [item for item in result_schema if item["title"] != "city"]
 
         resp = control_api.client.put(
-            "/api/v1/datasets/{}/versions/draft".format(saved_dataset.id),
+            f"/api/v1/datasets/{saved_dataset.id}/versions/draft",
             data=json.dumps(
                 {
                     "dataset": {

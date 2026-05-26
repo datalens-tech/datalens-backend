@@ -93,7 +93,7 @@ def is_bound_only_to(node: nodes.FormulaItem, allow_nodes: NodeSet) -> bool:
 
 def is_aggregate_expression(
     node: nodes.FormulaItem,
-    env: "dl_formula.inspect.env.InspectionEnvironment",
+    env: dl_formula.inspect.env.InspectionEnvironment,
 ) -> bool:
     """
     Check whether the given formula node (subtree) defines an aggregate expression.
@@ -146,7 +146,7 @@ def is_aggregated_above_sub_node(
 
 def is_window_expression(
     node: nodes.FormulaItem,
-    env: "dl_formula.inspect.env.InspectionEnvironment",
+    env: dl_formula.inspect.env.InspectionEnvironment,
 ) -> bool:
     """
     Check whether the given formula node (subtree) defines a window function expression.
@@ -171,7 +171,7 @@ def is_window_expression(
 
 def is_query_fork_expression(
     node: nodes.FormulaItem,
-    env: "dl_formula.inspect.env.InspectionEnvironment",
+    env: dl_formula.inspect.env.InspectionEnvironment,
 ) -> bool:
     """
     Check whether the given formula node (subtree) contains any ``QueryFork`` nodes
@@ -197,7 +197,7 @@ def is_query_fork_expression(
 
 def get_query_fork_nesting_level(
     node: nodes.FormulaItem,
-    env: "dl_formula.inspect.env.InspectionEnvironment",
+    env: dl_formula.inspect.env.InspectionEnvironment,
 ) -> int:
     """
     TODO
@@ -227,7 +227,7 @@ def get_query_fork_nesting_level(
 def infer_data_type(
     node: nodes.FormulaItem,
     field_types: dict[str, DataType],
-    env: "dl_formula.inspect.env.InspectionEnvironment",
+    env: dl_formula.inspect.env.InspectionEnvironment,
 ) -> DataType:
     """Calculate the data type that should be returned by the given expression"""
 
@@ -450,7 +450,7 @@ def contains_lookup_functions(node: nodes.FormulaItem) -> bool:
 def resolve_dimensions(
     node_stack: Iterable[nodes.FormulaItem],
     dimensions: list[nodes.FormulaItem],  # TODO: rename to global_dimensions
-    env: "dl_formula.inspect.env.InspectionEnvironment",
+    env: dl_formula.inspect.env.InspectionEnvironment,
     exclude_constants: bool = True,
 ) -> tuple[list[nodes.FormulaItem], NodeSet, NodeSet]:
     """

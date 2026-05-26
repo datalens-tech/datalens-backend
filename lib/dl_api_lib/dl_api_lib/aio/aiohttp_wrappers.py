@@ -17,7 +17,7 @@ class AppWrapper:
     _APP_KEY = "DL_APP_WRAPPER"
 
     @classmethod
-    def from_app(cls, app: web.Application) -> "AppWrapper":
+    def from_app(cls, app: web.Application) -> AppWrapper:
         return app[cls._APP_KEY]
 
     def bind(self, app: web.Application) -> None:

@@ -199,14 +199,14 @@ class SubselectDataSource(BaseSQLDataSource):
 
         subsql = self.render_dataset_parameter_values(subsql)
 
-        from_sql = "(\n{}\n)".format(subsql)
+        from_sql = f"(\n{subsql}\n)"
 
         # e.g. PG doesn't allow unaliased subqueries at all.
         if alias is None:
             alias = self._subquery_auto_alias
 
         if alias is not None:
-            from_sql = "{}{}{}".format(from_sql, self._subquery_alias_joiner, self.quote(alias))
+            from_sql = f"{from_sql}{self._subquery_alias_joiner}{self.quote(alias)}"
         return sa_plain_text(from_sql)
 
     def is_templated(self) -> bool:

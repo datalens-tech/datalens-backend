@@ -35,7 +35,7 @@ SUPPORTED_INTERVAL_TYPES = ("second", "minute", "hour", "day", "week", "month", 
 def normalize_and_validate_datetime_interval_type(type_name: str) -> str:
     type_name = type_name.lower()
     if type_name not in SUPPORTED_INTERVAL_TYPES:
-        raise exc.TranslationError("Invalid interval type: '{}'".format(type_name))
+        raise exc.TranslationError(f"Invalid interval type: '{type_name}'")
     return type_name
 
 
@@ -50,11 +50,11 @@ def datetime_interval(
 
     if literal_mult:
         if literal_type:
-            sql = "INTERVAL '{} {}'".format(mult, type_name)
+            sql = f"INTERVAL '{mult} {type_name}'"
         else:
-            sql = "INTERVAL '{}' {}".format(mult, type_name)
+            sql = f"INTERVAL '{mult}' {type_name}"
     else:
-        sql = "INTERVAL {} {}".format(mult, type_name)
+        sql = f"INTERVAL {mult} {type_name}"
 
     if caps:
         sql = sql.upper()

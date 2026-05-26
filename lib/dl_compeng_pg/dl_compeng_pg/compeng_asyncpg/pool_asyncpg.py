@@ -20,12 +20,12 @@ class AsyncpgPoolWrapper(BasePgPoolWrapper):
 
     @classmethod
     async def connect(
-        cls: type["AsyncpgPoolWrapper"],
+        cls: type[AsyncpgPoolWrapper],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size
         operation_timeout: float = DEFAULT_OPERATION_TIMEOUT,  # SQL operation timeout
-    ) -> "AsyncpgPoolWrapper":
+    ) -> AsyncpgPoolWrapper:
         pool = await asyncpg.create_pool(
             url,
             min_size=pool_min_size,

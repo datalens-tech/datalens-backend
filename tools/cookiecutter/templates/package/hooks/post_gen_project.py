@@ -20,7 +20,7 @@ def add_package_to_metapkg(
     package_table.add("path", tomlkit.string(f"../lib/{package_slug}"))
 
     metapkg_file = get_metapkg_file()
-    with open(metapkg_file, "r") as f:
+    with open(metapkg_file) as f:
         metapkg = tomlkit.load(f)
 
     dependencies = metapkg["tool"]["poetry"]["group"]["ci"]["dependencies"]

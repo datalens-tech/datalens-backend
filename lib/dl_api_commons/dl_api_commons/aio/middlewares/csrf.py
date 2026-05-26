@@ -17,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def generate_csrf_token(user_id: str, timestamp: int, csrf_secret: str) -> str:
-    msg = bytes("{}:{}".format(user_id, timestamp), encoding="utf-8")
+    msg = bytes(f"{user_id}:{timestamp}", encoding="utf-8")
     secret = bytes(csrf_secret, encoding="utf-8")
     h = hmac.new(key=secret, msg=msg, digestmod="sha1")
     return h.hexdigest()

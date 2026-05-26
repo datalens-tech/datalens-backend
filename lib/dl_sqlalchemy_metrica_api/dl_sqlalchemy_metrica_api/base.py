@@ -50,7 +50,7 @@ class MetrikaApiReqPreparer(compiler.IdentifierPreparer):
 
     def __init__(self, dialect, **kwargs):
         kwargs.update(initial_quote="'", escape_quote="'")
-        super(MetrikaApiReqPreparer, self).__init__(dialect, **kwargs)
+        super().__init__(dialect, **kwargs)
 
     def _requires_quotes(self, value):
         """Return True if the given identifier requires quoting."""
@@ -201,7 +201,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             )
         else:
             raise NotSupportedError(
-                "BETWEEN operator supported only for date/datetime fields. " "Requested field: {}".format(left_value)
+                "BETWEEN operator supported only for date/datetime fields. " f"Requested field: {left_value}"
             )
 
         return ""

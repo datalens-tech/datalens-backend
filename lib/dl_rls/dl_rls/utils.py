@@ -60,7 +60,7 @@ def quote_by_quote(value: str, quote: str = "'") -> str:
     >>> split_by_quoted_quote(quote_by_quote("a'b'") + "and 'stuff'")
     ("a'b'", "and 'stuff'")
     """
-    return "{}{}{}".format(quote, value.replace(quote, quote + quote), quote)
+    return f"{quote}{value.replace(quote, quote + quote)}{quote}"
 
 
 def is_slug(group_id: str, group_name: str) -> bool:

@@ -288,7 +288,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def sync_create_virtual(
         cls,
         connection_id: str,
-        us_manager: "SyncUSManager",
+        us_manager: SyncUSManager,
     ) -> Self:
         raise NotImplementedError(f"{cls} does not support sync virtual creation")
 
@@ -296,7 +296,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     async def async_create_virtual(
         cls,
         connection_id: str,
-        us_manager: "AsyncUSManager",
+        us_manager: AsyncUSManager,
     ) -> Self:
         raise NotImplementedError(f"{cls} does not support async virtual creation")
 

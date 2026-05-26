@@ -39,21 +39,17 @@ class RCIHeadersMiddleware:
         updated_rci = temp_rci.clone(
             plain_headers=CIMultiDict(
                 (
-                    (
-                        header,
-                        flask.request.headers.get(header),
-                    )
-                    for header in self.plain_headers
+                    header,
+                    flask.request.headers.get(header),
                 )
+                for header in self.plain_headers
             ),
             secret_headers=CIMultiDict(
                 (
-                    (
-                        header,
-                        flask.request.headers.get(header),
-                    )
-                    for header in self.secret_headers
+                    header,
+                    flask.request.headers.get(header),
                 )
+                for header in self.secret_headers
             ),
         )
         ReqCtxInfoMiddleware.replace_temp_rci(updated_rci)

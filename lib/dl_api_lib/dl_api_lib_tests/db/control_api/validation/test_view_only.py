@@ -47,9 +47,9 @@ class TestValidatorViewOnly(DefaultApiTestBase):
                     "action": "add_field",
                     "field": {
                         "guid": "view_only_added_field",
-                        "title": "Copy {}".format(a_field.title),
+                        "title": f"Copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                     },
                 }
             ],

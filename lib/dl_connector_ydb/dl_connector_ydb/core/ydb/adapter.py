@@ -124,7 +124,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
                 res = resp.result()
                 children = [
                     (
-                        "{}/{}".format(path, child.name),
+                        f"{path}/{child.name}",
                         child,
                     )
                     for child in res.children

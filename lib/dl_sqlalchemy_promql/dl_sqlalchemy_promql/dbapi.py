@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from dl_sqlalchemy_promql.connection import Connection
 from dl_sqlalchemy_promql.errors import (
     DatabaseError,

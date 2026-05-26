@@ -98,7 +98,7 @@ class TranslationCtx:
             _c0,
         )
 
-    def copy(self) -> "TranslationCtx":
+    def copy(self) -> TranslationCtx:
         return copy.copy(self)
 
     @property
@@ -115,7 +115,7 @@ class TranslationCtx:
         """Return list of registered warnings."""
         return self._messages[MessageLevel.WARNING]
 
-    def flush(self) -> "TranslationCtx":
+    def flush(self) -> TranslationCtx:
         """
         Flatten child contexts into self and validate:
         - aggregation consistency and
@@ -217,7 +217,7 @@ class TranslationCtx:
         flags: Optional[int] = None,
         node: Optional[FormulaItem] = None,
         required_scopes: Optional[int] = None,
-    ) -> "TranslationCtx":
+    ) -> TranslationCtx:
         """
         Spawn new child context.
         In `forked` mode only one child is permitted.
@@ -239,7 +239,7 @@ class TranslationCtx:
         self.children.append(child)
         return child
 
-    def adopt(self, child: "TranslationCtx") -> None:
+    def adopt(self, child: TranslationCtx) -> None:
         """
         "Adopt" a child context by adding it to children of self as if it were created by `self.fork()`.
         Can be used for substituting formula nodes for already translated expressions.

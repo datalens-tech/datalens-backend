@@ -167,7 +167,7 @@ NON_STR_CONTAINMENT_TYPES = {
 
 class FuncContainsConst(FuncContains):
     variants = [
-        V(D.DUMMY, lambda x, y: x.like("%{}%".format(quote_like(y.value)), escape="\\")),
+        V(D.DUMMY, lambda x, y: x.like(f"%{quote_like(y.value)}%", escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -233,7 +233,7 @@ class FuncIContainsConst(FuncIContains):
             lambda x, y: x.ilike(
                 # WARNING: even with a proper collation, the python's
                 # `val.lower()` might not exactly match postgresql's `lower(val)`
-                "%{}%".format(quote_like(y.value.lower())),
+                f"%{quote_like(y.value.lower())}%",
                 escape="\\",
             ),
         ),
@@ -275,7 +275,7 @@ class FuncEndswith(StringFunction):
 
 class FuncEndswithConst(FuncEndswith):
     variants = [
-        V(D.DUMMY, lambda x, y: x.like("%{}".format(quote_like(y.value)), escape="\\")),
+        V(D.DUMMY, lambda x, y: x.like(f"%{quote_like(y.value)}", escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -307,7 +307,7 @@ class FuncIEndswith(StringFunction):
 
 class FuncIEndswithConst(FuncIEndswith):
     variants = [
-        V(D.DUMMY, lambda x, y: x.ilike("%{}".format(quote_like(y.value.lower())), escape="\\")),
+        V(D.DUMMY, lambda x, y: x.ilike(f"%{quote_like(y.value.lower())}", escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -345,7 +345,7 @@ class FuncStartswith(StringFunction):
 
 class FuncStartswithConst(FuncStartswith):
     variants = [
-        V(D.DUMMY, lambda x, y: x.like("{}%".format(quote_like(y.value)), escape="\\")),
+        V(D.DUMMY, lambda x, y: x.like(f"{quote_like(y.value)}%", escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),
@@ -377,7 +377,7 @@ class FuncIStartswith(StringFunction):
 
 class FuncIStartswithConst(FuncIStartswith):
     variants = [
-        V(D.DUMMY, lambda x, y: x.ilike("{}%".format(quote_like(y.value.lower())), escape="\\")),
+        V(D.DUMMY, lambda x, y: x.ilike(f"{quote_like(y.value.lower())}%", escape="\\")),
     ]
     argument_types = [
         ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),

@@ -6,7 +6,7 @@ import yaml
 
 
 def remove_ports_from_docker_compose(src: Path, dst: Path) -> None:
-    with open(src, "r") as file:
+    with open(src) as file:
         data = yaml.safe_load(file)
 
     for service in data.get("services", {}).values():

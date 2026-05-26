@@ -22,7 +22,7 @@ class Validator:
         self._collect_errors = collect_errors
 
     @contextmanager
-    def handle_error(self, checker_cls: type["Checker"], node: nodes.FormulaItem):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def handle_error(self, checker_cls: type[Checker], node: nodes.FormulaItem):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         try:
             yield
         except exc.ValidationError as err:
@@ -39,13 +39,13 @@ class Validator:
             if not self._collect_errors:
                 raise err
 
-    def get_from_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> Optional[ErrInfo]:
+    def get_from_cache(self, checker_cls: type[Checker], node: nodes.FormulaItem) -> Optional[ErrInfo]:
         return self._env.generic_cache_valid[checker_cls].get(node)
 
-    def mark_as_ok_in_cache(self, checker_cls: type["Checker"], node: nodes.FormulaItem) -> None:
+    def mark_as_ok_in_cache(self, checker_cls: type[Checker], node: nodes.FormulaItem) -> None:
         return self._env.generic_cache_valid[checker_cls].add(node, value=ErrInfo(is_error=False, exception=None))
 
-    def proxy_for(self, checker: "Checker") -> "ValidatorProxy":
+    def proxy_for(self, checker: Checker) -> ValidatorProxy:
         return ValidatorProxy(validator=self, checker_cls=type(checker))
 
     def get_all_errors(self, node: nodes.FormulaItem) -> list[FormulaErrorCtx]:
@@ -60,7 +60,7 @@ class Validator:
 
 
 class ValidatorProxy:
-    def __init__(self, validator: Validator, checker_cls: type["Checker"]):
+    def __init__(self, validator: Validator, checker_cls: type[Checker]):
         self._validator = validator
         self._checker_cls = checker_cls
 

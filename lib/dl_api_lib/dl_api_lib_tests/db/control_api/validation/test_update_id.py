@@ -86,9 +86,9 @@ class TestUpdateId(DefaultApiTestBase):
                 {
                     "action": "add_field",
                     "field": {
-                        "title": "Doubled {}".format(a_field.title),
+                        "title": f"Doubled {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}] * 2".format(a_field.title),
+                        "formula": f"[{a_field.title}] * 2",
                     },
                 }
             ],
@@ -96,7 +96,7 @@ class TestUpdateId(DefaultApiTestBase):
         assert ds_resp.status_code == HTTPStatus.OK
         ds = ds_resp.dataset
 
-        b_field = [f for f in ds.result_schema if f.title == "Doubled {}".format(a_field.title)][0]
+        b_field = [f for f in ds.result_schema if f.title == f"Doubled {a_field.title}"][0]
         ds_resp = control_api.apply_updates(
             dataset=ds,
             updates=[
@@ -104,7 +104,7 @@ class TestUpdateId(DefaultApiTestBase):
                     "action": "update_field",
                     "field": {
                         "guid": b_field.id,
-                        "formula": "GREATEST([{}] * 2, ".format(a_field.title),
+                        "formula": f"GREATEST([{a_field.title}] * 2, ",
                     },
                 }
             ],

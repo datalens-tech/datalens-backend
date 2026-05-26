@@ -88,7 +88,7 @@ _RESULT_TV = TypeVar("_RESULT_TV")
 def ensure_env(async_env: bool = True) -> Callable[[Callable[..., _RESULT_TV]], Callable[..., _RESULT_TV]]:
     def real_deco(wrapped: Callable[..., _RESULT_TV]) -> Callable[..., _RESULT_TV]:
         @functools.wraps(wrapped)
-        def wrapper(self: "BaseClosableExecutorFactory", *args: Any, **kwargs: Any) -> _RESULT_TV:
+        def wrapper(self: BaseClosableExecutorFactory, *args: Any, **kwargs: Any) -> _RESULT_TV:
             if self._async_env != async_env:
                 meth_env = "async" if async_env else "sync"
                 factory_env = "async" if self._async_env else "sync"

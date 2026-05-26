@@ -146,7 +146,7 @@ class MacroExpander:
         elif tag_name == "audience":
             block_param = block_param
             assert block_param is not None
-            audiences = [item.strip() for item in block_param.split((","))]
+            audiences = [item.strip() for item in block_param.split(",")]
             element = AudienceBlock(
                 audience_types=audiences,
                 rich_text=RichText(text=block_text, replacements=nested_replacements),
@@ -243,7 +243,7 @@ class MacroExpander:
     @expand_macro.register
     def expand_macro_ref(self, macro: RefMacro) -> LinkTextElement:
         # In theory, we can easily support anchors here just like in category links
-        assert macro.arg.count("/") <= 1, 'The format is "[category_name/]function_name", got "{}"'.format(macro.arg)
+        assert macro.arg.count("/") <= 1, f'The format is "[category_name/]function_name", got "{macro.arg}"'
         if macro.arg.find("/") > -1:
             macro.category_name, macro.arg = macro.arg.split("/")
         func_name, url = self._get_func_name_and_url(func_name=macro.arg, category_name=macro.category_name)
@@ -254,7 +254,7 @@ class MacroExpander:
 
     @expand_macro.register
     def expand_macro_category(self, macro: CategoryMacro) -> LinkTextElement:
-        assert macro.arg.count("#") <= 1, 'The format is "category_name[#anchor_name]", got "{}"'.format(macro.arg)
+        assert macro.arg.count("#") <= 1, f'The format is "category_name[#anchor_name]", got "{macro.arg}"'
         if macro.arg.find("#") > -1:
             macro.arg, macro.anchor_name = macro.arg.split("#")
         cat_name, url = self._get_cat_name_and_url(category_name=macro.arg, anchor_name=macro.anchor_name)

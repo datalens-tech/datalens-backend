@@ -23,7 +23,7 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
         debug_info: Optional[dict[str, Any]] = None,
         params: Optional[dict[str, Any]] = None,
     ):
-        super(ClickHouseSourceDoesNotExistError, self).__init__(
+        super().__init__(
             db_message=db_message,
             query=query,
             inspector_query=inspector_query,

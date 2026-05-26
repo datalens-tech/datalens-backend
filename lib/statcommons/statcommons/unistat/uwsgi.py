@@ -1,14 +1,6 @@
-# coding: utf8
 """
 uwsgi as source of signals for unistat.
 """
-
-from __future__ import (
-    absolute_import,
-    division,
-    print_function,
-    unicode_literals,
-)
 
 from collections import OrderedDict
 import json
@@ -80,7 +72,7 @@ def uwsgi_collect_sensors(data, add_sensor):
         w_by_s.setdefault(key, [])
     for status, items in w_by_s.items():
         add_sensor(
-            "workers_{}".format(status),
+            f"workers_{status}",
             len(items),
             suffixes=["_ammx", "_ahhh"],
         )
@@ -114,7 +106,7 @@ def uwsgi_collect_sensors(data, add_sensor):
         if not series:
             continue
         for func_name, func in (("max", max), ("all", sum)):
-            add_sensor("{}_worker_{}".format(func_name, key), func(series))
+            add_sensor(f"{func_name}_worker_{key}", func(series))
 
     cores = [core for worker in data["workers"] for core in worker["cores"]]
     running_cores = [core for core in cores if core.get("req_info")]

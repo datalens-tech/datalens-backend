@@ -39,9 +39,9 @@ class DBHostField(ma_fields.String):
                 try:
                     validate_hostname_or_ip_address(user_host)
                 except ValueError as err:
-                    raise marshmallow.ValidationError("Unable to parse host: {}".format(user_host)) from err
+                    raise marshmallow.ValidationError(f"Unable to parse host: {user_host}") from err
         else:
-            raise marshmallow.ValidationError("Unable to parse host: {}".format(user_hosts_str))
+            raise marshmallow.ValidationError(f"Unable to parse host: {user_hosts_str}")
 
     def _deserialize(self, value: Any, attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any) -> Any:
         user_host_str = super()._deserialize(value, attr, data, **kwargs)

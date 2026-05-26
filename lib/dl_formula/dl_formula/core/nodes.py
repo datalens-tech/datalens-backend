@@ -142,7 +142,7 @@ class FormulaItem(abc.ABC):
             pair = f"{name}={attr_value_s}"
             kv_pairs.append(pair)
         param_str = ", ".join(kv_pairs)
-        return "{}({})".format(self.__class__.__name__, param_str)
+        return f"{self.__class__.__name__}({param_str})"
 
     def __repr__(self) -> str:
         return self.stringify()
@@ -181,7 +181,7 @@ class FormulaItem(abc.ABC):
                 res = "(\n"
                 item_indent = _initial_indent + indent
                 for item in _child:
-                    res += "{}{},\n".format(item_indent, prettify_child(item, item_indent))
+                    res += f"{item_indent}{prettify_child(item, item_indent)},\n"
                 res += _initial_indent + ")"
                 return res
             else:
@@ -195,8 +195,8 @@ class FormulaItem(abc.ABC):
                 child = str(self.__meta)
             else:
                 child = prettify_child(getattr(self, name), initial_indent + indent)
-            lines.append("{}{}={},".format(initial_indent + indent, name, child))
-        lines.append("{})".format(initial_indent))
+            lines.append(f"{initial_indent + indent}{name}={child},")
+        lines.append(f"{initial_indent})")
 
         return "\n".join(lines)
 

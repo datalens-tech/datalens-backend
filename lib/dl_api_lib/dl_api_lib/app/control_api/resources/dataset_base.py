@@ -110,7 +110,7 @@ class DatasetResource(BIResource):
                     context_name="dataset",
                 )
             except UnexpectedUSEntryType as e:
-                raise USObjectNotFoundException("Dataset with id {} does not exist".format(dataset_id)) from e
+                raise USObjectNotFoundException(f"Dataset with id {dataset_id} does not exist") from e
         else:
             dataset = Dataset.create_from_dict(
                 Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required

@@ -51,7 +51,7 @@ class ServicesRegistryMiddleware:
         flask.g.bi_services_registry = self.services_registry_factory.make_service_registry(rci)
 
     @classmethod
-    def get_request_services_registry(cls) -> "ServicesRegistry":
+    def get_request_services_registry(cls) -> ServicesRegistry:
         try:
             services_registry = flask.g.bi_services_registry
         except AttributeError as e:

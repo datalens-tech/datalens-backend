@@ -20,7 +20,7 @@ class BitrixPortalValidator(ma_validate.Validator):
     error = "Not a valid portal name"
 
     def __call__(self, portal: str) -> str:
-        parsed_host = urlparse("//{}".format(portal)).hostname
+        parsed_host = urlparse(f"//{portal}").hostname
         if portal.lower() != parsed_host:
             raise ma_validate.ValidationError(self.error)
         return portal

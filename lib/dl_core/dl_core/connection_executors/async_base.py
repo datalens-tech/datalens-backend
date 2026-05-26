@@ -77,7 +77,7 @@ _RET_TV = TypeVar("_RET_TV")
 
 def init_required(wrapped: Callable[..., Awaitable[_RET_TV]]) -> Callable[..., Awaitable[_RET_TV]]:
     @functools.wraps(wrapped)
-    async def wrapper(self: "AsyncConnExecutorBase", *args: Any, **kwargs: Any) -> _RET_TV:
+    async def wrapper(self: AsyncConnExecutorBase, *args: Any, **kwargs: Any) -> _RET_TV:
         if not self._is_initialized:
             await self.initialize()
 

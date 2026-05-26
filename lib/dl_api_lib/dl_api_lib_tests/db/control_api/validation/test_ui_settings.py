@@ -24,9 +24,9 @@ class TestUISettings(DefaultApiTestBase):
                     "action": "add_field",
                     "field": {
                         "guid": "test_ui_settings_field",
-                        "title": "Copy {}".format(a_field.title),
+                        "title": f"Copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                         "ui_settings": ui_settings,
                     },
                 }
@@ -36,7 +36,7 @@ class TestUISettings(DefaultApiTestBase):
 
         assert ds_resp.status_code == http.HTTPStatus.OK
 
-        field = ds_resp.dataset.find_field("Copy {}".format(a_field.title))
+        field = ds_resp.dataset.find_field(f"Copy {a_field.title}")
         assert field.id == "test_ui_settings_field"
         assert field.ui_settings == ui_settings
 
@@ -63,9 +63,9 @@ class TestUISettings(DefaultApiTestBase):
                 {
                     "action": "add_field",
                     "field": {
-                        "title": "Copy {}".format(a_field.title),
+                        "title": f"Copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                         "ui_settings": oversized_ui_settings,
                     },
                 }
@@ -94,9 +94,9 @@ class TestUISettings(DefaultApiTestBase):
                     {
                         "action": "add_field",
                         "field": {
-                            "title": "Copy {} {}".format(i, a_field.title),
+                            "title": f"Copy {i} {a_field.title}",
                             "calc_mode": "formula",
-                            "formula": "[{}]".format(a_field.title),
+                            "formula": f"[{a_field.title}]",
                             "ui_settings": large_ui_settings,
                         },
                     }
@@ -113,9 +113,9 @@ class TestUISettings(DefaultApiTestBase):
                 {
                     "action": "add_field",
                     "field": {
-                        "title": "One more copy {}".format(a_field.title),
+                        "title": f"One more copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                         "ui_settings": large_ui_settings,
                     },
                 }
@@ -141,9 +141,9 @@ class TestUISettings(DefaultApiTestBase):
                     "action": "add_field",
                     "field": {
                         "guid": "test_update_ui_settings",
-                        "title": "Copy {}".format(a_field.title),
+                        "title": f"Copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                         "ui_settings": initial_ui_settings,
                     },
                 }
@@ -171,7 +171,7 @@ class TestUISettings(DefaultApiTestBase):
 
         assert ds_resp.status_code == http.HTTPStatus.OK
 
-        field = ds_resp.dataset.find_field("Copy {}".format(a_field.title))
+        field = ds_resp.dataset.find_field(f"Copy {a_field.title}")
         assert field.ui_settings == updated_ui_settings
 
     def test_remove_field_ui_settings(
@@ -189,9 +189,9 @@ class TestUISettings(DefaultApiTestBase):
                     "action": "add_field",
                     "field": {
                         "guid": "test_remove_ui_settings",
-                        "title": "Copy {}".format(a_field.title),
+                        "title": f"Copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                         "ui_settings": initial_ui_settings,
                     },
                 }
@@ -217,7 +217,7 @@ class TestUISettings(DefaultApiTestBase):
 
         assert ds_resp.status_code == http.HTTPStatus.OK
 
-        field = ds_resp.dataset.find_field("Copy {}".format(a_field.title))
+        field = ds_resp.dataset.find_field(f"Copy {a_field.title}")
         assert field.ui_settings == ""
 
     def test_update_field_exceeding_ui_settings_limit(
@@ -235,9 +235,9 @@ class TestUISettings(DefaultApiTestBase):
                     "action": "add_field",
                     "field": {
                         "guid": "test_update_exceed_limit",
-                        "title": "Copy {}".format(a_field.title),
+                        "title": f"Copy {a_field.title}",
                         "calc_mode": "formula",
-                        "formula": "[{}]".format(a_field.title),
+                        "formula": f"[{a_field.title}]",
                         "ui_settings": initial_ui_settings,
                     },
                 }

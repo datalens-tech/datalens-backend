@@ -147,7 +147,7 @@ class BIError:
         ex: Exception,
         default_message: Optional[str] = None,
         exc_code_mapping: Optional[dict[type[Exception], int]] = None,
-    ) -> "BIError":
+    ) -> BIError:
         """
         Creates BIError from exception
         :param ex: Exception to create BIError from

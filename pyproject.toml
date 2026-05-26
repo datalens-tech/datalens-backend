@@ -91,25 +91,14 @@ ignore = [
   "B904", # force `raise ... from err` or `raise ... from None`
   "B905", # `zip()` without an explicit `strict=` parameter
   "E501", # line length, should be checked and fixed by black
-  "UP004", # [*] Class ... inherits from `object`
   "UP007", # Use `X | Y` for type annotations
-  "UP008", # Use `super()` instead of `super(__class__, self)`
-  "UP009", # [*] UTF-8 encoding declaration is unnecessary
-  "UP010", # [*] Unnecessary `__future__` import ...
-  "UP012", # [*] Unnecessary UTF-8 `encoding` argument to `encode`
   "UP014", # Convert `RequestData` from `NamedTuple` functional to class syntax
-  "UP015", # [*] Unnecessary open mode parameters
-  "UP018", # [*] Unnecessary `int` call (rewrite as a literal)
-  "UP024", # [*] Replace aliased errors with `OSError`
   "UP026", # [*] `mock` is deprecated, use `unittest.mock`
   "UP027", # [*] Replace unpacked list comprehension with a generator expression
   "UP028", # Replace `yield` over `for` loop with `yield from`
   "UP030", # Use implicit references for positional format fields
   "UP031", # Use format specifiers instead of percent format
-  "UP032", # [*] Use f-string instead of `format` call
-  "UP034", # [*] Avoid extraneous parentheses
   "UP035", # Import from `collections.abc`
-  "UP037", # [*] Remove quotes from type annotation
   "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
   "UP040", # `type` keyword (PEP 695) — re-enable when mypy is bumped to >=1.12
 ]

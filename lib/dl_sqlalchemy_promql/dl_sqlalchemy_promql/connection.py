@@ -22,11 +22,7 @@ class Connection:
         cli_cls=None,
         **conn_kwargs,
     ):
-        base_url = "{protocol}://{host}:{port}".format(
-            protocol=protocol,
-            host=host,
-            port=port,
-        )
+        base_url = f"{protocol}://{host}:{port}"
         if path is not None:
             if not path.endswith("/"):
                 path += "/"

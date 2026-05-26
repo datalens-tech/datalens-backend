@@ -27,7 +27,7 @@ def make_connection(
     conn_cls: Optional[type[ConnectionBase]] = None,
     annotation: Optional[dict] = None,
 ) -> ConnectionBase:
-    conn_name = conn_name or "{} test conn {}".format(conn_type.name, uuid.uuid4())
+    conn_name = conn_name or f"{conn_type.name} test conn {uuid.uuid4()}"
     data_dict = data_dict or {}
     if conn_cls is None:
         conn_cls = get_connection_class(conn_type)

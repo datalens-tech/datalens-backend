@@ -916,7 +916,7 @@ class DatasetValidator(DatasetBaseWrapper):
             except common_exc.FieldNotFound:
                 pass
             else:
-                err_msg = "Field with ID {} already exists".format(checked_field_id)
+                err_msg = f"Field with ID {checked_field_id} already exists"
                 LOGGER.error(err_msg)
                 if strict:
                     raise exc.DLValidationFatal(err_msg)
@@ -1975,7 +1975,7 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> None:
         current_mode = self._ds_accessor.get_extract_mode()
 
-        schema_guids = set((field.guid for field in self._ds.result_schema.fields))
+        schema_guids = set(field.guid for field in self._ds.result_schema.fields)
 
         # Clear old errors
         self._ds.error_registry.remove_errors_by_component_type(ComponentType.extract_filter)

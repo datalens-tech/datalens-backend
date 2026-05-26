@@ -57,7 +57,7 @@ DEFINITIONS_STRING = [
         ]
     ),
     # concat
-    base.Concat1.for_dialect((D.POSTGRESQL)),
+    base.Concat1.for_dialect(D.POSTGRESQL),
     base.ConcatMultiStrConst.for_dialect(D.POSTGRESQL),
     base.ConcatMultiStr(
         variants=[

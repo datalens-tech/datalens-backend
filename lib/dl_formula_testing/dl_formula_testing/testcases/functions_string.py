@@ -234,11 +234,11 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             return
 
         # const:
-        statement = "CONTAINS(__LIT__({}), {})".format(value_fl, pattern_fl)
+        statement = f"CONTAINS(__LIT__({value_fl}), {pattern_fl})"
         assert dbe.eval(statement) is expected, (statement, expected)
 
         # var:
-        statement = "CONTAINS(__LIT__({}), __LIT__({}))".format(value_fl, pattern_fl)
+        statement = f"CONTAINS(__LIT__({value_fl}), __LIT__({pattern_fl}))"
         assert dbe.eval(statement) is expected, (statement, expected)
 
     @pytest.mark.parametrize("value_fl,pattern_fl,expected", CONTAINS_TESTS)
@@ -256,12 +256,12 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             return
 
         # const:
-        statement = "NOTCONTAINS(__LIT__({}), {})".format(value_fl, pattern_fl)
+        statement = f"NOTCONTAINS(__LIT__({value_fl}), {pattern_fl})"
         dbe.eval(statement)
         assert dbe.eval(statement) is not expected, (statement, expected)
 
         # var:
-        statement = "NOTCONTAINS(__LIT__({}), __LIT__({}))".format(value_fl, pattern_fl)
+        statement = f"NOTCONTAINS(__LIT__({value_fl}), __LIT__({pattern_fl}))"
         assert dbe.eval(statement) is not expected, (statement, expected)
 
     def test_icontains_simple(self, dbe: DbEvaluator, forced_literal_use: Any) -> None:

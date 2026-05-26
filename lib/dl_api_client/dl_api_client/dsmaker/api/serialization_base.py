@@ -248,7 +248,7 @@ class BaseApiV1SerializationAdapter:
                 item_data = {k: v for k, v in item_data.items() if v is not None}
                 result.append(
                     {
-                        "action": "{}_{}".format(update.action.name, action_postfix),
+                        "action": f"{update.action.name}_{action_postfix}",
                         "order_index": update.order_index,
                         action_postfix: item_data,
                     }

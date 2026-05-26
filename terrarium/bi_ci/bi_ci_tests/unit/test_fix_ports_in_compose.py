@@ -16,10 +16,10 @@ def test_remove_ports_from_docker_compose(
 
     remove_ports_from_docker_compose(tmp_src, tmp_dst)
 
-    with open(tmp_dst, "r") as fh:
+    with open(tmp_dst) as fh:
         output_data = fh.read()
 
-    with open(sample_compose_expected, "r") as fh:
+    with open(sample_compose_expected) as fh:
         expected_output_data = fh.read()
 
     assert output_data == expected_output_data

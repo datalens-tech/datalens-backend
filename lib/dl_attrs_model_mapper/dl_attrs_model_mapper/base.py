@@ -223,7 +223,7 @@ class AttribDescriptor:
         return {self.METADATA_KEY: self}
 
     @classmethod
-    def from_attrib(cls, attr_ib: attr.Attribute) -> Optional["AttribDescriptor"]:
+    def from_attrib(cls, attr_ib: attr.Attribute) -> Optional[AttribDescriptor]:
         meta = attr_ib.metadata
         if cls.METADATA_KEY in meta:
             may_be_attrib_descriptor = meta[cls.METADATA_KEY]

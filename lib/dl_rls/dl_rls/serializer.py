@@ -61,12 +61,12 @@ class FieldRLSSerializer:
         for (pattern_type, allowed_value), rls_entries in rls_entries_by_value:
             subjects_text = ", ".join(rls_entry.subject.subject_name for rls_entry in rls_entries)
             if pattern_type == RLSPatternType.all:
-                line = "*: {}".format(subjects_text)
+                line = f"*: {subjects_text}"
             elif pattern_type == RLSPatternType.userid:
                 line = cls.userid_line
             elif pattern_type == RLSPatternType.value:
                 assert allowed_value is not None
-                line = "{}: {}".format(quote_by_quote(allowed_value), subjects_text)
+                line = f"{quote_by_quote(allowed_value)}: {subjects_text}"
             else:
                 raise Exception("RLS pattern type not yet supported", type(pattern_type), pattern_type)
             lines.append(line)

@@ -109,7 +109,7 @@ class DatasetComponentEditor:
             bound_avatars = self._ds_accessor.get_avatar_list(source_id=source_id)
             if bound_avatars:
                 raise exc.DatasetConfigurationError(
-                    "Can't delete source because it is bound by avatars: {}".format([ava.id for ava in bound_avatars])
+                    f"Can't delete source because it is bound by avatars: {[ava.id for ava in bound_avatars]}"
                 )
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
         assert dsrc_coll_spec is not None
@@ -270,7 +270,7 @@ class DatasetComponentEditor:
         ) + self._ds_accessor.get_avatar_relation_list(right_avatar_id=avatar_id)
         if bound_relations:
             raise exc.DatasetConfigurationError(
-                "Can't delete avatar because it is bound by relations: {}".format([rel.id for rel in bound_relations])
+                f"Can't delete avatar because it is bound by relations: {[rel.id for rel in bound_relations]}"
             )
 
         avatar = self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
@@ -321,7 +321,7 @@ class DatasetComponentEditor:
     ) -> None:
         # validate
         if self._ds_accessor.get_avatar_relation_list(right_avatar_id=right_avatar_id):
-            raise exc.DatasetConfigurationError("Avatar {} already has a left relation".format(right_avatar_id))
+            raise exc.DatasetConfigurationError(f"Avatar {right_avatar_id} already has a left relation")
         for avatar_id in (left_avatar_id, right_avatar_id):
             if avatar_id:  # isn't it always true?
                 self.ensure_avatar_exists(avatar_id=avatar_id)

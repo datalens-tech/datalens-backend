@@ -126,7 +126,7 @@ class ConnectionFormTestBase:
         if not os.path.exists(expected_form_config_file):
             pytest.fail(f"Expected form config file does not exist: {expected_form_config_file}")
 
-        with open(expected_form_config_file, mode="r") as f:
+        with open(expected_form_config_file) as f:
             return json.load(f)
 
     def test_validate_conditional_fields(self, form_config: ConnectionForm) -> None:

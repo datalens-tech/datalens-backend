@@ -392,7 +392,7 @@ class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutor
 @attr.s(auto_attribs=True, frozen=True)
 class IndexTestCase:
     table_ident: TableIdent
-    expected_indexes: "frozenset"
+    expected_indexes: frozenset
     # `frozenset[IndexInfo]` — IndexInfo lives in dl_core.db; not imported here to
     # keep this module's import surface narrow. Connectors construct frozensets directly.
 
@@ -409,14 +409,14 @@ class DefaultIndexDiscoveryTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase
     """Sync-only — covers the legacy `BaseConnExecutorSet.test_indexes_discovery`."""
 
     @pytest.fixture(scope="function")
-    def index_test_case(self) -> "IndexTestCase":
+    def index_test_case(self) -> IndexTestCase:
         pytest.skip("No `index_test_case` fixture defined for this connector")
 
     @pytest.fixture(scope="function")
     def fetch_table_indexes_sync_connection_executor(
         self,
-        sync_conn_executor_factory: Callable[[], "SyncConnExecutorBase"],
-    ) -> Generator["SyncConnExecutorBase", None, None]:
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+    ) -> Generator[SyncConnExecutorBase, None, None]:
         # Mirrors `sync_connection_executor` but flips `fetch_table_indexes` on
         # via the executor's connect options. For sync envs that wrap an async
         # executor (`SyncWrapperForAsyncConnExecutor`), mutate the inner one.
@@ -440,8 +440,8 @@ class DefaultIndexDiscoveryTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase
 
     def test_indexes_discovery(
         self,
-        fetch_table_indexes_sync_connection_executor: "SyncConnExecutorBase",
-        index_test_case: "IndexTestCase",
+        fetch_table_indexes_sync_connection_executor: SyncConnExecutorBase,
+        index_test_case: IndexTestCase,
     ) -> None:
         actual_schema_info = fetch_table_indexes_sync_connection_executor.get_table_schema_info(
             index_test_case.table_ident,
@@ -453,13 +453,13 @@ class DefaultSchemaListingTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[
     """Sync + async — covers the legacy `BaseSchemaSupportedExecutorSet` schema-name tests."""
 
     @pytest.fixture(scope="function")
-    def schema_names_test_case(self) -> "SchemaNamesTestCase":
+    def schema_names_test_case(self) -> SchemaNamesTestCase:
         raise NotImplementedError("Override `schema_names_test_case` for this connector")
 
     def test_get_schema_names(
         self,
-        sync_connection_executor: "SyncConnExecutorBase",
-        schema_names_test_case: "SchemaNamesTestCase",
+        sync_connection_executor: SyncConnExecutorBase,
+        schema_names_test_case: SchemaNamesTestCase,
     ) -> None:
         actual = sync_connection_executor.get_schema_names(schema_names_test_case.target_db_ident)
         if schema_names_test_case.full_match_required:
@@ -470,8 +470,8 @@ class DefaultSchemaListingTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[
     @pytest.mark.asyncio
     async def test_get_schema_names_async(
         self,
-        async_connection_executor: "AsyncConnExecutorBase",
-        schema_names_test_case: "SchemaNamesTestCase",
+        async_connection_executor: AsyncConnExecutorBase,
+        schema_names_test_case: SchemaNamesTestCase,
     ) -> None:
         actual = await async_connection_executor.get_schema_names(schema_names_test_case.target_db_ident)
         if schema_names_test_case.full_match_required:

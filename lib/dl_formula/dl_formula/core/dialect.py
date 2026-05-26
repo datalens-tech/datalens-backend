@@ -76,7 +76,7 @@ class DialectCombo(NamedTuple):
 
     @property
     def common_name_and_version(self) -> str:
-        return f'{self.common_name.name}_{"_".join((str(part) for part in self.common_version))}'.strip("_")
+        return f'{self.common_name.name}_{"_".join(str(part) for part in self.common_version)}'.strip("_")
 
     def __sub__(self, other: Any) -> DialectCombo:
         if isinstance(other, DialectBit):

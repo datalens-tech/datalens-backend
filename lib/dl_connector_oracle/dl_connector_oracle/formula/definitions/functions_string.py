@@ -20,7 +20,7 @@ DEFINITIONS_STRING = [
         ]
     ),
     # concat
-    base.Concat1.for_dialect((D.ORACLE)),
+    base.Concat1.for_dialect(D.ORACLE),
     base.ConcatMultiStrConst.for_dialect(D.ORACLE),
     base.ConcatMultiStr(
         variants=[

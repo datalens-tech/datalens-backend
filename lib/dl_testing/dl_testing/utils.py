@@ -93,7 +93,7 @@ def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds
             sock.close()
             LOGGER.info(f"{host}:{port} is available")
             return
-        except socket.error:
+        except OSError:
             LOGGER.warning(f"Waiting for {host}:{port} to become available")
             time.sleep(period_seconds)
 

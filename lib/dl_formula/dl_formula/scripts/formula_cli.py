@@ -290,7 +290,7 @@ class FormulaCliTool:
         if show:
             print(filename, lineno)
         else:
-            os.system('{0} --line {2} "{1}"'.format(editor_exe, filename, lineno))
+            os.system(f'{editor_exe} --line {lineno} "{filename}"')
 
     @classmethod
     def slice(cls, text: str, levels: list[str], diff: bool = False) -> None:

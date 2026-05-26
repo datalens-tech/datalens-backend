@@ -160,7 +160,7 @@ class C:
         return make_sa_type(backend_type=backend_type, native_type=native_type, nullable=self.nullable)
 
     @classmethod
-    def array_data_getter(cls, data_container) -> "C.ArrayDataGetter":  # type: ignore  # TODO: fix
+    def array_data_getter(cls, data_container) -> C.ArrayDataGetter:  # type: ignore  # TODO: fix
         return cls.ArrayDataGetter(data_container)
 
     @classmethod
@@ -317,7 +317,7 @@ class DbView(NamedTuple):
 
 
 def make_view(db: Db, query: str, schema: str = None, name: str = None) -> DbView:  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "schema" (default has type "None", argument has type "str")  [assignment]
-    name = name or "test_view_{}".format(uuid.uuid4().hex[:10])
+    name = name or f"test_view_{uuid.uuid4().hex[:10]}"
     db.create_view(query=query, schema=schema, name=name)
     return DbView(db=db, schema=schema, name=name, query=query)
 

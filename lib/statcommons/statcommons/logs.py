@@ -1,4 +1,3 @@
-# coding: utf-8
 """
 Modifications of `ylog`.
 """
@@ -269,7 +268,7 @@ class RecordDataFormatterMixin:
         exc_info_formatted = "".join(smart_str(val) for val in traceback.format_exception(*exc_info))
 
         # str(exc) at the beginning for some readability.
-        return "{}\n{}".format(robust_smart_str(exc), exc_info_formatted)
+        return f"{robust_smart_str(exc)}\n{exc_info_formatted}"
 
     def __init__(self, skipped_record_attrs=unspecified):
         if skipped_record_attrs is self.unspecified:
@@ -286,7 +285,7 @@ class RecordDataFormatterMixin:
         # Dubious: Prioritize the func-based over the base.
         for name in self.func_based_record_attrs:
             if name not in skiplist:
-                func = getattr(self, "get_record_{}".format(name))
+                func = getattr(self, f"get_record_{name}")
                 result[name] = func(record)
 
         return result
@@ -329,10 +328,10 @@ class TaggedSysLogHandlerBase(logging.handlers.SysLogHandler):
 
     def __init__(self, *args, **kwargs):
         self.syslog_tag = kwargs.pop("syslog_tag")
-        super(TaggedSysLogHandlerBase, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def format(self, *args, **kwargs):  # pylint: disable=arguments-differ
-        res = super(TaggedSysLogHandlerBase, self).format(*args, **kwargs)
+        res = super().format(*args, **kwargs)
         return self.syslog_tag + " " + res
 
 
@@ -343,7 +342,7 @@ class TaggedSysLogHandler(TaggedSysLogHandlerBase):
 
     def __init__(self, *args, **kwargs):
         self._sbdbuf_size = kwargs.pop("sbdbuf_size", self._sndbuf_size)
-        super(TaggedSysLogHandler, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.configure_socket(self.socket)
 
     def configure_socket(self, sock):

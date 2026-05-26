@@ -67,7 +67,7 @@ class GenericProfiler:
         return outer_stages
 
     @classmethod
-    def get_profilers_stack(cls) -> list["GenericProfiler"]:
+    def get_profilers_stack(cls) -> list[GenericProfiler]:
         profilers_stack = cls.CTX_LOCAL_PROFILER_STACK.get(None)
         if profilers_stack is None:
             profilers_stack = []

@@ -102,9 +102,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         # Zero matching elements
         assert (
             dbe.eval(
-                "AVG_IF([int_value], [int_value] > {max_val} and [int_value] < {min_val})".format(
-                    max_val=max(values), min_val=min(values)
-                ),
+                f"AVG_IF([int_value], [int_value] > {max(values)} and [int_value] < {min(values)})",
                 from_=data_table,
             )
             is None

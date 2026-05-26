@@ -95,7 +95,7 @@ class DatasetCapabilities:
     def _get_first_dsrc_collection(
         self,
         ignore_source_ids: Optional[Collection[str]] = None,
-    ) -> Optional["data_source.DataSourceCollection"]:
+    ) -> Optional[data_source.DataSourceCollection]:
         source_id = self._dataset.get_single_data_source_id(ignore_source_ids=ignore_source_ids)
         if source_id is not None:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_opt(source_id)

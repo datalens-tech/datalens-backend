@@ -30,16 +30,16 @@ class CHYTTableExpression(sa.sql.elements.TextClause):
 
     def __init__(self, text, alias=None, **kwargs):
         if alias:
-            text = "{} as {}".format(text, self._quote_identifier(alias))
+            text = f"{text} as {self._quote_identifier(alias)}"
         text = text.replace(":", r"\:")  # see also: dl_core.utils.sa_plain_text
-        super(CHYTTableExpression, self).__init__(text, **kwargs)
+        super().__init__(text, **kwargs)
 
 
 class CHYTTablesConcat(CHYTTableExpression):
     def __init__(self, *tables, **kwargs):
         text = "concatYtTables({})".format(", ".join(self._quote_identifier(table) for table in tables if table))
         self._tables = tables
-        super(CHYTTablesConcat, self).__init__(text, **kwargs)
+        super().__init__(text, **kwargs)
 
 
 class CHYTTablesRange(CHYTTableExpression):
@@ -55,14 +55,14 @@ class CHYTTablesRange(CHYTTableExpression):
         self._directory = directory
         self._start = start
         self._end = end
-        super(CHYTTablesRange, self).__init__(text, **kwargs)
+        super().__init__(text, **kwargs)
 
 
 class CHYTTableSubselect(CHYTTableExpression):
     def __init__(self, subsql, **kwargs):
-        text = "(\n{}\n)".format(subsql)
+        text = f"(\n{subsql}\n)"
         self._subsql = subsql
-        super(CHYTTableSubselect, self).__init__(text, **kwargs)
+        super().__init__(text, **kwargs)
 
 
 class BICHYTTypeCompiler(UPSTREAM.type_compiler):
@@ -79,7 +79,7 @@ class BICHYTDialect(UPSTREAM):
         if not isinstance(table_name, (CHYTTableExpression, sa.sql.elements.TextClause)):
             table_name = self.identifier_preparer.quote_identifier(table_name)
 
-        query = "DESCRIBE TABLE {}".format(table_name)
+        query = f"DESCRIBE TABLE {table_name}"
         rows = self._execute(connection, query)
 
         return [self._get_column_info(row.name, row.type) for row in rows]

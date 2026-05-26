@@ -49,7 +49,7 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
         return self.context[CtxKey.fernet]
 
     @property
-    def usm(self) -> "USManagerBase":
+    def usm(self) -> USManagerBase:
         return self.context[CtxKey.us_manager]
 
     # Lifecycle

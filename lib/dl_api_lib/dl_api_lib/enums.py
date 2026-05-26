@@ -219,11 +219,11 @@ class DatasetAction(Enum):
     update_extract = "update_extract"
 
     @staticmethod
-    def remap_legacy(action: "DatasetAction") -> "DatasetAction":
+    def remap_legacy(action: DatasetAction) -> DatasetAction:
         return _LEGACY_ACTIONS.get(action, action)
 
     @staticmethod
-    def get_actions_whitelist_for_data_api() -> set["DatasetAction"]:
+    def get_actions_whitelist_for_data_api() -> set[DatasetAction]:
         return {DatasetAction.add_field, DatasetAction.update_field, DatasetAction.delete_field}
 
 

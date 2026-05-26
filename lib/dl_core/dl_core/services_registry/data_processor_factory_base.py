@@ -26,10 +26,10 @@ LOGGER = logging.getLogger(__name__)
 
 @attr.s(frozen=True)
 class DataProcessorFactory(metaclass=abc.ABCMeta):
-    _services_registry_ref: FutureRef["ServicesRegistry"] = attr.ib(kw_only=True)
+    _services_registry_ref: FutureRef[ServicesRegistry] = attr.ib(kw_only=True)
 
     @property
-    def services_registry(self) -> "ServicesRegistry":
+    def services_registry(self) -> ServicesRegistry:
         return self._services_registry_ref.ref
 
     @abc.abstractmethod

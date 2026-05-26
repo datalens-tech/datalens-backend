@@ -52,7 +52,7 @@ def _get_retriable_requests_session():
             ),
         )
     # TODO: allow to customize UA
-    ua = "{}, {}".format(requests.utils.default_user_agent(), package.__name__)
+    ua = f"{requests.utils.default_user_agent()}, {package.__name__}"
     session.headers.update({"User-Agent": ua})
     return session
 
@@ -67,7 +67,7 @@ def _parse_metrika_error(response):
     return msg
 
 
-class MetrikaApiClient(object):
+class MetrikaApiClient:
     """
     Simple HTTP client for Metrika API
     https://tech.yandex.ru/metrika/doc/api2/api_v1/intro-docpage/
@@ -83,7 +83,7 @@ class MetrikaApiClient(object):
             self.default_timeout = default_timeout
         self.oauth_token = oauth_token
         self._session = _get_retriable_requests_session()
-        self._session.headers.update({"Authorization": "OAuth {}".format(oauth_token)})
+        self._session.headers.update({"Authorization": f"OAuth {oauth_token}"})
 
     @property
     def _is_appmetrica(self):
@@ -210,7 +210,7 @@ class MetrikaApiClient(object):
 
     def get_available_counters(self, **kwargs) -> list[dict]:
         obj_name = "applications" if self._is_appmetrica else "counters"
-        uri = "/management/v1/{}".format(obj_name)
+        uri = f"/management/v1/{obj_name}"
         resp = self.get(uri, **kwargs)
         return [dict(id=c_info["id"], name=c_info["name"]) for c_info in resp[obj_name]]
 
@@ -219,7 +219,7 @@ class MetrikaApiClient(object):
         https://tech.yandex.ru/metrika/doc/api2/management/counters/counter-docpage/
         """
         obj_name = "application" if self._is_appmetrica else "counter"
-        uri = "/management/v1/{obj_name}/{counter_id}".format(obj_name=obj_name, counter_id=counter_id)
+        uri = f"/management/v1/{obj_name}/{counter_id}"
         resp = self.get(uri)
         return resp[obj_name]
 

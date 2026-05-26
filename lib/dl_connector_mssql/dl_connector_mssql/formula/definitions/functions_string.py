@@ -45,7 +45,7 @@ DEFINITIONS_STRING = [
     # char
     base.FuncChar.for_dialect(D.MSSQLSRV),
     # concat
-    base.Concat1.for_dialect((D.MSSQLSRV)),
+    base.Concat1.for_dialect(D.MSSQLSRV),
     base.ConcatMultiStrConst.for_dialect(D.MSSQLSRV),
     base.ConcatMultiStr.for_dialect(D.MSSQLSRV),
     base.ConcatMultiAny.for_dialect(D.MSSQLSRV),

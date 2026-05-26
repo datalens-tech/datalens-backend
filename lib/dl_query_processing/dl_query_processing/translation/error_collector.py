@@ -22,7 +22,7 @@ class FormulaErrorCollector:
     def get_errors(self, feature_errors: bool = True) -> list[FormulaErrorCtx]:
         return [err for err in self._errors if feature_errors or err.code != FEATURE_ERROR_CODE]
 
-    def __enter__(self) -> "FormulaErrorCollector":
+    def __enter__(self) -> FormulaErrorCollector:
         return self
 
     def __exit__(self, exc_type: Optional[type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> bool:

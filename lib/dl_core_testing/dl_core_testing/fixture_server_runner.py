@@ -84,7 +84,7 @@ class WSGIRunner:
     _proc: subprocess.Popen = attr.ib(init=False, default=None)
 
     def _debug(self, message, *args):  # type: ignore  # TODO: fix
-        sys.stderr.write("{} @ {}: ".format(self.__class__.__name__, os.getpid()))
+        sys.stderr.write(f"{self.__class__.__name__} @ {os.getpid()}: ")
         sys.stderr.write(message % args)
         sys.stderr.write("\n")
         sys.stderr.flush()

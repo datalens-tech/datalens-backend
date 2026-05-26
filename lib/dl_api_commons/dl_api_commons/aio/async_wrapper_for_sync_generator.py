@@ -85,7 +85,7 @@ _STATE_ITEM_TV = TypeVar("_STATE_ITEM_TV")
 
 
 class _NoSet:
-    instance: "_NoSet" = None  # type: ignore  # TODO: fix
+    instance: _NoSet = None  # type: ignore  # TODO: fix
 
 
 _NoSet.instance = _NoSet()

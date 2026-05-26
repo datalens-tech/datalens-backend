@@ -97,11 +97,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "OK_just_cookie",
             "POST",
             False,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET,),
         ),
@@ -109,11 +105,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "OK_just_user_id",
             "POST",
             True,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             {"does_not": "matter"},
             (_VALID_CSRF_SECRET,),
         ),
@@ -121,11 +113,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "OK_cookie_and_user_id",
             "POST",
             True,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET,),
         ),
@@ -133,11 +121,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "SKIP_non_csrf_method",
             "GET",
             False,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET,),
         ),
@@ -145,11 +129,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "SKIP_no_cookies",
             "POST",
             True,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             None,
             (_VALID_CSRF_SECRET,),
         ),
@@ -157,11 +137,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "SKIP_no_user_tokens",
             "POST",
             False,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             {"does_not": "matter"},
             (_VALID_CSRF_SECRET,),
         ),
@@ -177,11 +153,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "OK_two_valid_secrets",
             "POST",
             True,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _VALID_CSRF_SECRET)}:{ts_now()}"},
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET, _ANOTHER_VALID_CSRF_SECRET),
         ),
@@ -190,9 +162,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "POST",
             True,
             {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _ANOTHER_VALID_CSRF_SECRET), ts_now()
-                )
+                "x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _ANOTHER_VALID_CSRF_SECRET)}:{ts_now()}"
             },
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET, _ANOTHER_VALID_CSRF_SECRET),
@@ -202,9 +172,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
             "POST",
             True,
             {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _ANOTHER_VALID_CSRF_SECRET), ts_now()
-                )
+                "x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _ANOTHER_VALID_CSRF_SECRET)}:{ts_now()}"
             },
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_INVALID_CSRF_SECRET, _VALID_CSRF_SECRET, _ANOTHER_VALID_CSRF_SECRET),
@@ -273,10 +241,7 @@ async def test_csrf_ok(
             "POST",
             False,
             {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now() - 2 * _CSRF_TIME_LIMIT, _VALID_CSRF_SECRET),
-                    ts_now() - 2 * _CSRF_TIME_LIMIT,
-                )
+                "x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now() - 2 * _CSRF_TIME_LIMIT, _VALID_CSRF_SECRET)}:{ts_now() - 2 * _CSRF_TIME_LIMIT}"
             },
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET,),
@@ -285,11 +250,7 @@ async def test_csrf_ok(
             "INVALID_bad_secret",
             "POST",
             False,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _INVALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _INVALID_CSRF_SECRET)}:{ts_now()}"},
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET,),
         ),
@@ -297,11 +258,7 @@ async def test_csrf_ok(
             "INVALID_bad_secret_multiple_secrets",
             "POST",
             False,
-            {
-                "x-csrf-token": "{}:{}".format(
-                    generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _INVALID_CSRF_SECRET), ts_now()
-                )
-            },
+            {"x-csrf-token": f"{generate_csrf_token(_SAMPLE_USER_ID, ts_now(), _INVALID_CSRF_SECRET)}:{ts_now()}"},
             {"user_id_cookie": _SAMPLE_USER_ID},
             (_VALID_CSRF_SECRET, _ANOTHER_VALID_CSRF_SECRET),
         ),

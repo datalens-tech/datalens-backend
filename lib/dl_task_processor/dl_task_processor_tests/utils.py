@@ -132,7 +132,7 @@ class SomeTask(BaseExecutorTask[SomeTaskInterface, Context]):
         try:
             result = await loop.run_in_executor(
                 self._ctx.tpe,
-                lambda t: ", ".join((str(i) for i in range(t))),
+                lambda t: ", ".join(str(i) for i in range(t)),
                 10,
             )
         except Exception as ex:
@@ -165,7 +165,7 @@ class BrokenTask(BaseExecutorTask[BrokenTaskInterface, Context]):
         loop = asyncio.get_running_loop()
         loop.run_in_executor(self._ctx.tpe, some_sync_function_with_logs)
         # let's hack checkers
-        if int(1) != 1:
+        if 1 != 1:
             return Success()
         raise Exception()
 

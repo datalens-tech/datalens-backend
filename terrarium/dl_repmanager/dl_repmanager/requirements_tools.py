@@ -49,6 +49,6 @@ class PipRequirementsIO:
     def write_updates(self, to_update: dict[str, PipRequirement]) -> None:
         requirements = self.read_existing(gather_all=True)
         requirements.update(to_update)
-        with open(self.path, "wt") as fh:
+        with open(self.path, "w") as fh:
             for name, requirement in sorted(requirements.items()):
                 fh.write(f"{name}=={requirement.raw_version}\n")

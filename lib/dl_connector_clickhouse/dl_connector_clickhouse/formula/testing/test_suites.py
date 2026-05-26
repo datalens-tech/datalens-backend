@@ -187,8 +187,8 @@ class DateTypeFunctionClickHouseTestSuite(DefaultDateTypeFunctionFormulaConnecto
         ts = utc_ts(2019, 1, 2, 23, 4, 5)
         tz = "Europe/Moscow"
         expected = datetime.date(2019, 1, 3)
-        assert dbe.eval('DATE({}, "{}")'.format(int(ts), tz)) == expected
-        assert dbe.eval('DATE({}, "{}")'.format(float(ts), tz)) == expected
+        assert dbe.eval(f'DATE({int(ts)}, "{tz}")') == expected
+        assert dbe.eval(f'DATE({float(ts)}, "{tz}")') == expected
 
 
 class GenericDatetimeParseTypeFunctionClickHouseTestSuite(FormulaConnectorTestBase):

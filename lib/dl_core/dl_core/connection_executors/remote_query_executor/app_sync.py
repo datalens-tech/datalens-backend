@@ -150,7 +150,7 @@ class ActionHandlingView(flask.views.View):
     def serialize_event(event: RQEEventType, data: Any) -> bytes:
         return pickle.dumps((event.value, data))
 
-    def response_events_gen(self, db_result: "DBAdapterQueryResult", dba: SyncDirectDBAdapter) -> Iterable[bytes]:
+    def response_events_gen(self, db_result: DBAdapterQueryResult, dba: SyncDirectDBAdapter) -> Iterable[bytes]:
         try:
             yield self.serialize_event(RQEEventType.raw_cursor_info, db_result.cursor_info)
 

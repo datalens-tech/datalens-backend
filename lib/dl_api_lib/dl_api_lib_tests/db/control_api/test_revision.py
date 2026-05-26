@@ -17,7 +17,7 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
         usm = sync_us_manager
         us_client = usm._us_client
 
-        dataset = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_dataset.id)).json
+        dataset = control_api.client.get(f"/api/v1/datasets/{saved_dataset.id}/versions/draft").json
 
         result_schema = copy.deepcopy(dataset["dataset"]["result_schema"])
         result_schema.append(dict(result_schema[1]))
@@ -25,7 +25,7 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
         result_schema[-1]["title"] = "New Field"
 
         resp = control_api.client.put(
-            "/api/v1/datasets/{}/versions/draft".format(saved_dataset.id),
+            f"/api/v1/datasets/{saved_dataset.id}/versions/draft",
             data=json.dumps(
                 {
                     "dataset": {
@@ -37,7 +37,7 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
         )
         assert resp.status_code == 200
 
-        upd_dataset = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_dataset.id)).json
+        upd_dataset = control_api.client.get(f"/api/v1/datasets/{saved_dataset.id}/versions/draft").json
         revision_id = upd_dataset["dataset"]["revision_id"]
 
         entry_revisions = us_client.get_entry_revisions(saved_dataset.id)
@@ -45,9 +45,7 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
 
         old_rev_id = entry_revisions[-1]["revId"]
 
-        resp = control_api.client.get(
-            "/api/v1/datasets/{}/versions/draft?rev_id={}".format(saved_dataset.id, old_rev_id)
-        )
+        resp = control_api.client.get(f"/api/v1/datasets/{saved_dataset.id}/versions/draft?rev_id={old_rev_id}")
         assert resp.status_code == 200
 
         old_dataset = resp.json
@@ -58,11 +56,11 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
         usm = sync_us_manager
         us_client = usm._us_client
 
-        conn = control_api.client.get("/api/v1/connections/{}".format(saved_connection_id)).json
+        conn = control_api.client.get(f"/api/v1/connections/{saved_connection_id}").json
         username = conn["username"]
 
         control_api.client.put(
-            "/api/v1/connections/{}".format(saved_connection_id),
+            f"/api/v1/connections/{saved_connection_id}",
             data=json.dumps(
                 {
                     "username": "new_username",
@@ -71,7 +69,7 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
             content_type="application/json",
         )
 
-        upd_conn = control_api.client.get("/api/v1/connections/{}".format(saved_connection_id)).json
+        upd_conn = control_api.client.get(f"/api/v1/connections/{saved_connection_id}").json
         upd_username = upd_conn["username"]
         assert username != upd_username
 
@@ -80,7 +78,7 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
 
         old_rev_id = entry_revisions[-1]["revId"]
 
-        resp = control_api.client.get("/api/v1/connections/{}?rev_id={}".format(saved_connection_id, old_rev_id))
+        resp = control_api.client.get(f"/api/v1/connections/{saved_connection_id}?rev_id={old_rev_id}")
         assert resp.status_code == 200
 
         old_conn = resp.json

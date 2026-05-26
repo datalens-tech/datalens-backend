@@ -153,7 +153,7 @@ class DashSQLCachedSelector(DashSQLSelector):
     _is_bleeding_edge_user: bool = attr.ib(default=False)
 
     def make_query_id(self) -> str:
-        return "dashsql_{}".format(make_id())
+        return f"dashsql_{make_id()}"
 
     def _get_jsonable_params(self) -> TJSONExt | None:
         if self.incoming_parameters is None:

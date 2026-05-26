@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 @attr.s
 class TypedQueryRawProcessorFactory(abc.ABC):
-    _service_registry_ref: FutureRef["ServicesRegistry"] = attr.ib(kw_only=True)
+    _service_registry_ref: FutureRef[ServicesRegistry] = attr.ib(kw_only=True)
 
     @property
     def service_registry(self) -> ServicesRegistry:

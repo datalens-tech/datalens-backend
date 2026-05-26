@@ -19,13 +19,13 @@ class TestControlApiErrors(DefaultApiTestBase):
         dash = us_client.create_entry(scope="dash", key=path)
         dash_id = dash["entryId"]
 
-        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_dataset.id))
+        resp = control_api.client.get(f"/api/v1/datasets/{saved_dataset.id}/versions/draft")
         assert resp.status_code == 200
 
-        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(saved_connection_id))
+        resp = control_api.client.get(f"/api/v1/datasets/{saved_connection_id}/versions/draft")
         assert resp.status_code == 404
 
-        resp = control_api.client.get("/api/v1/datasets/{}/versions/draft".format(dash_id))
+        resp = control_api.client.get(f"/api/v1/datasets/{dash_id}/versions/draft")
         assert resp.status_code == 404
 
     def test_create_entity_with_existing_name(self, control_api, saved_connection_id, saved_dataset, dataset_params):

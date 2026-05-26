@@ -116,7 +116,7 @@ class Container(Generic[_ITEM_TV]):
     Items can be fetched both by integer (by index) and string (by alias) keys.
     """
 
-    def __init__(self, data: Union[list, tuple, dict, "Container"] = None):  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "data" (default has type "None", argument has type "list[Any] | tuple[Any, ...] | dict[Any, Any] | Container[Any]")  [assignment]
+    def __init__(self, data: Union[list, tuple, dict, Container] = None):  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "data" (default has type "None", argument has type "list[Any] | tuple[Any, ...] | dict[Any, Any] | Container[Any]")  [assignment]
         self._item_ids: list[str] = []  # order list of object IDs
         self._items: dict[str, _ITEM_TV] = {}  # objects by ID
         self._id_by_alias: dict[str, str] = {}  # alias -> ID
@@ -237,7 +237,7 @@ class DataSource(ApiProxyObject):
     def avatar(self, **kwargs: Any) -> SourceAvatar:
         return SourceAvatar(source_id=self.id, **kwargs)
 
-    def refresh(self, force_update_fields: bool = False) -> "UpdateAction":
+    def refresh(self, force_update_fields: bool = False) -> UpdateAction:
         """Generate ``refresh_source`` action"""
         return self._make_action(Action.refresh, data={"force_update_fields": force_update_fields})
 
@@ -261,10 +261,10 @@ class SourceAvatar(ApiProxyObject):
 
     def join(
         self,
-        other: "SourceAvatar",
-        conditions: list["JoinCondition"] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "conditions" (default has type "None", argument has type "list[JoinCondition]")  [assignment]
+        other: SourceAvatar,
+        conditions: list[JoinCondition] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "conditions" (default has type "None", argument has type "list[JoinCondition]")  [assignment]
         join_type: JoinType = JoinType.inner,
-    ) -> "AvatarRelation":
+    ) -> AvatarRelation:
         return AvatarRelation(
             left_avatar_id=self.id,
             right_avatar_id=other.id,
@@ -272,7 +272,7 @@ class SourceAvatar(ApiProxyObject):
             join_type=join_type,
         )
 
-    def field(self, **kwargs) -> "ResultField":  # type: ignore  # TODO: fix
+    def field(self, **kwargs) -> ResultField:  # type: ignore  # TODO: fix
         return ResultField(avatar_id=self.id, **kwargs)
 
 
@@ -301,27 +301,27 @@ class FormulaJoinPart(JoinPart):
 class ConditionMakerMixin:
     """Mixin that enables construction of join conditions using Python's comparison operators"""
 
-    def _simple_condition(self, other: "ConditionMakerMixin", operator: BinaryJoinOperator) -> "JoinCondition":
+    def _simple_condition(self, other: ConditionMakerMixin, operator: BinaryJoinOperator) -> JoinCondition:
         return JoinCondition(
             left_part=self.get_cpart_from_self(), right_part=other.get_cpart_from_self(), operator=operator
         )
 
-    def __eq__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
+    def __eq__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.eq)
 
-    def __ne__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
+    def __ne__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.ne)
 
-    def __lt__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
+    def __lt__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.lt)
 
-    def __le__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
+    def __le__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.lte)
 
-    def __gt__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
+    def __gt__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.gt)
 
-    def __ge__(self, other: "ConditionMakerMixin"):  # type: ignore  # TODO: fix
+    def __ge__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.gte)
 
     def get_cpart_from_self(self) -> JoinPart:
@@ -1062,7 +1062,7 @@ class Dataset(ApiProxyObject):
             kwargs["title"] = name
         return Column(name=name, **kwargs)
 
-    def field(self, avatar: SourceAvatar = None, **kwargs) -> "ResultField":  # type: ignore  # TODO: fix
+    def field(self, avatar: SourceAvatar = None, **kwargs) -> ResultField:  # type: ignore  # TODO: fix
         avatar_id = avatar.id if avatar is not None else kwargs.pop("avatar_id", None)
         return ResultField(avatar_id=avatar_id, **kwargs)
 

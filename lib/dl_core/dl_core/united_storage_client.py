@@ -516,7 +516,7 @@ class UStorageClientBase:
 
         return cls.RequestData(
             method="get",
-            relative_url="/entries/{}".format(entry_id),
+            relative_url=f"/entries/{entry_id}",
             params=params,
             json=None,
         )
@@ -525,7 +525,7 @@ class UStorageClientBase:
     def _req_data_move_entry(cls, entry_id: str, destination: str) -> RequestData:
         return cls.RequestData(
             method="post",
-            relative_url="/entries/{}/move".format(entry_id),
+            relative_url=f"/entries/{entry_id}/move",
             params=None,
             json={"destination": destination},
         )
@@ -566,7 +566,7 @@ class UStorageClientBase:
             json_data["annotation"] = annotation
         return cls.RequestData(
             method="post",
-            relative_url="/entries/{}".format(entry_id),
+            relative_url=f"/entries/{entry_id}",
             params=None,
             json=json_data,
         )
@@ -576,7 +576,7 @@ class UStorageClientBase:
         params = None
         if lock is not None:
             params = {"lockToken": lock}
-        return cls.RequestData(method="delete", relative_url="/entries/{}".format(entry_id), params=params, json=None)
+        return cls.RequestData(method="delete", relative_url=f"/entries/{entry_id}", params=params, json=None)
 
     @classmethod
     def _req_data_iter_entries(
@@ -597,9 +597,9 @@ class UStorageClientBase:
             req_params.update(type=entry_type)
         meta = meta or {}
         if meta:
-            req_params.update({"meta[{}]".format(k): v for k, v in meta.items()})
+            req_params.update({f"meta[{k}]": v for k, v in meta.items()})
         if creation_time:
-            req_params.update({"creationTime[{}]".format(k): v for k, v in creation_time.items()})
+            req_params.update({f"creationTime[{k}]": v for k, v in creation_time.items()})
         if ids:
             req_params["ids"] = ids
         if limit:
@@ -638,12 +638,12 @@ class UStorageClientBase:
         if force is not None:
             params.update(force=force)
 
-        return cls.RequestData(method="post", relative_url="/locks/{}".format(entry_id), params=None, json=params)
+        return cls.RequestData(method="post", relative_url=f"/locks/{entry_id}", params=None, json=params)
 
     @classmethod
     def _req_data_release_lock(cls, entry_id: str, lock: str) -> RequestData:
         return cls.RequestData(
-            method="delete", relative_url="/locks/{}".format(entry_id), params={"lockToken": lock}, json=None
+            method="delete", relative_url=f"/locks/{entry_id}", params={"lockToken": lock}, json=None
         )
 
     @classmethod
@@ -664,7 +664,7 @@ class UStorageClientBase:
     def _req_data_entry_revisions(cls, entry_id: str) -> RequestData:
         return cls.RequestData(
             method="get",
-            relative_url="/entries/{}/revisions".format(entry_id),
+            relative_url=f"/entries/{entry_id}/revisions",
             params=None,
             json=None,
         )

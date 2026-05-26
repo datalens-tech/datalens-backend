@@ -116,7 +116,7 @@ def validate_hostname_or_ip_address(hostname: str) -> None:
         raise ValueError("Not a valid domain name")
 
     # Ensure valid netloc (from previous hostname validation mechanism)
-    parsed_url = urlparse("//{}".format(hostname))
+    parsed_url = urlparse(f"//{hostname}")
     if parsed_url.netloc != hostname:
         raise ValueError("Not a valid netloc")
 

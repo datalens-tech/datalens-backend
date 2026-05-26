@@ -100,7 +100,7 @@ class DefaultSignatureGenerator(SignatureGeneratorBase):
         category_name: str,
     ) -> FunctionSignature:
         if not args:  # to avoid extra spaces with 0-argument functions
-            return FunctionSignature(body="{}()".format(func_name))
+            return FunctionSignature(body=f"{func_name}()")
 
         args_str = ""
         cur_opt_level = 0

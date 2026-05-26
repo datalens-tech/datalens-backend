@@ -187,7 +187,7 @@ class ReferenceDocGenerator:
         global_audiences = set(self._gen_config.function_scopes.keys())
 
         print("items:")
-        print("  - name: {}\n    href: {}".format(trans(DOC_ALL_TITLE), self._gen_config.doc_all_filename))
+        print(f"  - name: {trans(DOC_ALL_TITLE)}\n    href: {self._gen_config.doc_all_filename}")
 
         localized_categories = {
             category: human_category(category=funcs_by_category[category][0].category.name, locale=self._locale)
@@ -197,8 +197,8 @@ class ReferenceDocGenerator:
         for category in locale_sorted_categories:
             print(f"  - name: {localized_categories[category]}")
             print("    items:")
-            print("      - name: {}".format(trans(DOC_OVERVIEW_TEXT)))
-            print("        href: {}".format(renderer.path_renderer.get_cat_path(category_name=category)))
+            print(f"      - name: {trans(DOC_OVERVIEW_TEXT)}")
+            print(f"        href: {renderer.path_renderer.get_cat_path(category_name=category)}")
             if list_funcs:
                 for multi_func in sorted(
                     funcs_by_category[category], key=lambda func: func.get_title(locale=self._locale)
@@ -217,13 +217,13 @@ class ReferenceDocGenerator:
                         items = multi_func.items()
 
                     for audience, raw_func in items:
-                        print("      - name: {}".format(raw_func.get_short_title(locale=self._locale)))
-                        print("        href: {}".format(renderer.path_renderer.get_func_path(func_key=func_key)))
+                        print(f"      - name: {raw_func.get_short_title(locale=self._locale)}")
+                        print(f"        href: {renderer.path_renderer.get_func_path(func_key=func_key)}")
                         if not audience.default:
                             print(f'        when: audience == "{audience.name}"')
 
         if self._gen_config.gen_availability_table:
-            print("  - name: {}\n    href: {}".format(trans(DOC_AVAIL_TITLE), self._gen_config.doc_avail_filename))
+            print(f"  - name: {trans(DOC_AVAIL_TITLE)}\n    href: {self._gen_config.doc_avail_filename}")
 
     def _generate_doc_list(
         self,
@@ -330,10 +330,7 @@ class ReferenceDocGenerator:
                 if len(supported_dialects) == 1 and next(iter(supported_dialects)) == D.ANY:
                     supported_dialects = ANY_DIALECTS
             func_data = [
-                "[{}]({})".format(
-                    func.get_title(locale=self._locale),
-                    relative_path_renderer.get_func_path(func_key=func_key),
-                ),
+                f"[{func.get_title(locale=self._locale)}]({relative_path_renderer.get_func_path(func_key=func_key)})",
                 *[("X" if dialect in supported_dialects else "") for dialect in dialects],
             ]
             table_data.append(func_data)

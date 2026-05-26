@@ -36,11 +36,11 @@ def shrink_metrika_default_date_period(monkeypatch):
 
 
 def _metrika_db_engine():
-    return sqlalchemy.create_engine("metrika_api://:{}@/hits".format(_get_oauth_from_env()))
+    return sqlalchemy.create_engine(f"metrika_api://:{_get_oauth_from_env()}@/hits")
 
 
 def _appmetrica_db_engine():
-    return sqlalchemy.create_engine("appmetrica_api://:{}@/installs".format(_get_oauth_from_env()))
+    return sqlalchemy.create_engine(f"appmetrica_api://:{_get_oauth_from_env()}@/installs")
 
 
 @pytest.fixture(scope="function")
@@ -50,7 +50,7 @@ def metrika_db_engine(shrink_metrika_default_date_period):
 
 @pytest.fixture(scope="function")
 def metrika_db_engine_with_accuracy(shrink_metrika_default_date_period):
-    return sqlalchemy.create_engine("metrika_api://:{}@/hits?accuracy=0.1".format(_get_oauth_from_env()))
+    return sqlalchemy.create_engine(f"metrika_api://:{_get_oauth_from_env()}@/hits?accuracy=0.1")
 
 
 @pytest.fixture(scope="function")

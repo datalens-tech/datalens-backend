@@ -19,12 +19,12 @@ class AiopgPoolWrapper(BasePgPoolWrapper):
 
     @classmethod
     async def connect(
-        cls: type["AiopgPoolWrapper"],
+        cls: type[AiopgPoolWrapper],
         url: str,
         pool_min_size: int = DEFAULT_POOL_MIN_SIZE,  # Initial pool size
         pool_max_size: int = DEFAULT_POOL_MAX_SIZE,  # Maximum pool size
         operation_timeout: float = DEFAULT_OPERATION_TIMEOUT,  # SQL operation timeout
-    ) -> "AiopgPoolWrapper":
+    ) -> AiopgPoolWrapper:
         pool = await aiopg.sa.create_engine(
             url,
             minsize=pool_min_size,

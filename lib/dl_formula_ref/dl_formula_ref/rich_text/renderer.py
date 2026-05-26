@@ -112,5 +112,5 @@ class MdRichTextRenderer(RichTextRenderer):
         if len(value.audience_types) == 1:
             return f"{{% if audience == '{value.audience_types[0]}' %}}{content}{{% endif %}}"
 
-        audience_types_str = "[{}]".format(", ".join(["'{}'".format(aud) for aud in value.audience_types]))
+        audience_types_str = "[{}]".format(", ".join([f"'{aud}'" for aud in value.audience_types]))
         return f"{{% if audience in {audience_types_str} %}}{content}{{% endif %}}"

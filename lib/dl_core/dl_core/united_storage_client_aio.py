@@ -75,7 +75,7 @@ class UStorageClientAIO(UStorageClientBase):
             return self._content
 
         @property
-        def request(self) -> "UStorageClientBase.RequestAdapter":
+        def request(self) -> UStorageClientBase.RequestAdapter:
             return self._request_adapter
 
         def raise_for_status(self) -> None:

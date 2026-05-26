@@ -101,15 +101,7 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
                     sa.literal_column("dataset_id"),
                     sa.literal_column("table_id"),
                 ]
-            ).select_from(
-                sa.text(
-                    quoter(
-                        "{project_id}.{dataset_id}.__TABLES__".format(
-                            project_id=project_id, dataset_id=dataset_info.dataset_id
-                        )
-                    )
-                )
-            )
+            ).select_from(sa.text(quoter(f"{project_id}.{dataset_info.dataset_id}.__TABLES__")))
             for dataset_info in bq_datasets
         ]
         query = DBAdapterQuery(query=sa.union_all(*subqueries))

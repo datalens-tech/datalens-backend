@@ -251,8 +251,8 @@ class DefaultDateTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         expected_date = (
             datetime.datetime(2019, 1, 2, 3, 4, 5, tzinfo=pytz.UTC).astimezone(dbe.db.tzinfo).date()
         )  # Note that the result depends on db's TZ
-        assert dbe.eval("DATE({})".format(int(utc_ts(2019, 1, 2, 3, 4, 5)))) == expected_date
-        assert dbe.eval("DATE({})".format(float(utc_ts(2019, 1, 2, 3, 4, 5)))) == expected_date
+        assert dbe.eval(f"DATE({int(utc_ts(2019, 1, 2, 3, 4, 5))})") == expected_date
+        assert dbe.eval(f"DATE({float(utc_ts(2019, 1, 2, 3, 4, 5))})") == expected_date
 
     def test_date_from_null(self, dbe: DbEvaluator) -> None:
         assert dbe.eval("DATE(NULL)") is None

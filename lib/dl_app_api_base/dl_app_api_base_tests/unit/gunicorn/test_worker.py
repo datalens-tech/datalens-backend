@@ -43,7 +43,7 @@ class CallbackCounter:
         if not os.path.exists(self.path):
             return 0
 
-        with open(self.path, "r") as f:
+        with open(self.path) as f:
             return int(f.read())
 
     def set(self, value: int) -> None:

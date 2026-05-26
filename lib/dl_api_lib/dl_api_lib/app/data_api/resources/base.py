@@ -52,7 +52,7 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
         coro: Callable[..., Coroutine[Any, Any, Any]]
     ) -> Callable[..., Coroutine[Any, Any, Any]]:
         @functools.wraps(coro)
-        async def wrapper(self: "BaseView", *args: Any, **kwargs: Any) -> Any:
+        async def wrapper(self: BaseView, *args: Any, **kwargs: Any) -> Any:
             await self.resolve_entities()
             return await coro(self, *args, **kwargs)
 

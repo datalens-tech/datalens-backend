@@ -92,10 +92,7 @@ class DLMYSQLCompilerBasic(UPSTREAM.statement_compiler):
             if isinstance(type_, type_key):
                 for value_type, value_conv in value_converters.items():
                     if isinstance(value, value_type):
-                        return "{type_key}'{value_string}'".format(
-                            type_key=type_literal,
-                            value_string=value_conv(value),
-                        )
+                        return f"{type_literal}'{value_conv(value)}'"
 
         return super().render_literal_value(value, type_)
 

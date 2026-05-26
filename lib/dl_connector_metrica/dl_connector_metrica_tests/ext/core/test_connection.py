@@ -33,7 +33,7 @@ class TestMetricaConnection(BaseMetricaTestClass, DefaultConnectionTestClass[Met
         assert isinstance(revision_id_after_save, str)
         assert revision_id_after_save
 
-        conn.data.name = "{} (changed)".format(conn.data.name)
+        conn.data.name = f"{conn.data.name} (changed)"
         usm.save(conn)
         revision_id_after_modify = conn.revision_id
         assert isinstance(revision_id_after_modify, str)

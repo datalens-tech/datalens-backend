@@ -48,7 +48,7 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_dataset_validator_factory(self) -> "DatasetValidatorFactory":
+    def get_dataset_validator_factory(self) -> DatasetValidatorFactory:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -100,7 +100,7 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
     _default_formula_parser_type: Optional[ParserType] = attr.ib(kw_only=True, default=None)
     _formula_parser_factory: Optional[FormulaParserFactory] = attr.ib(kw_only=True)
-    _dataset_validator_factory: Optional["DatasetValidatorFactory"] = attr.ib(kw_only=True)
+    _dataset_validator_factory: Optional[DatasetValidatorFactory] = attr.ib(kw_only=True)
     _field_id_generator_factory: Optional[FieldIdGeneratorFactory] = attr.ib(kw_only=True)
     _supported_functions_manager: Optional[SupportedFunctionsManager] = attr.ib(kw_only=True, default=None)
     _localizer_factory: Optional[LocalizerFactory] = attr.ib(kw_only=True, default=None)
@@ -140,7 +140,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
         assert self._formula_parser_factory is not None
         return self._formula_parser_factory
 
-    def get_dataset_validator_factory(self) -> "DatasetValidatorFactory":
+    def get_dataset_validator_factory(self) -> DatasetValidatorFactory:
         assert self._dataset_validator_factory is not None
         return self._dataset_validator_factory
 

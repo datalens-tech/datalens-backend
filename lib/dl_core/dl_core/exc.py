@@ -404,7 +404,7 @@ class DatabaseQueryError(DLBaseException):
         self.debug_info.setdefault("query", inspector_query)
 
     @classmethod
-    def _from_jsonable_dict(cls, data: dict) -> "DLBaseException":
+    def _from_jsonable_dict(cls, data: dict) -> DLBaseException:
         new_exc = cls(
             db_message=data.pop("db_message"),
             query=data.pop("query"),
@@ -424,7 +424,7 @@ class DatabaseQueryError(DLBaseException):
         return d
 
     def __str__(self) -> str:
-        return "{0.db_message} (DB query: {0.query})".format(self)
+        return f"{self.db_message} (DB query: {self.query})"
 
 
 class ResultRowCountLimitExceeded(DLBaseException):
@@ -450,7 +450,7 @@ class SourceDoesNotExist(DatabaseQueryError):
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
     ):
-        super(SourceDoesNotExist, self).__init__(
+        super().__init__(
             db_message=db_message,
             query=query,
             inspector_query=inspector_query,

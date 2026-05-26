@@ -65,7 +65,7 @@ class FieldIdValidator:
     def is_valid(self, field_id: FieldId) -> bool:
         if not len(field_id) or len(field_id) > self._id_length:
             return False
-        if any((symbol not in self._id_valid_symbols for symbol in field_id)):
+        if any(symbol not in self._id_valid_symbols for symbol in field_id):
             return False
         return True
 
@@ -112,7 +112,7 @@ class ReadableFieldIdGenerator(FieldIdGenerator):
         idx = 1
         orig_item = item
         while item in existing_items:
-            _idx = "_{}".format(idx)
+            _idx = f"_{idx}"
             item = "".join([orig_item[: self._id_length - len(_idx)], _idx])
             idx += 1
         return item

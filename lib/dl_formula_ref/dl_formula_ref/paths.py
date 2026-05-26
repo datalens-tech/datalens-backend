@@ -94,9 +94,8 @@ class PathRenderer:
             found_in_categories = [raw_func.category.name for raw_func in self._func_ref.filter(name=func_name)]
             if len(found_in_categories) > 1:
                 raise ValueError(
-                    "Function with name {} found in following categories: {} - but category is not specified. "
-                    'Use the following syntax to specify category: "{{ref:category_name/FUNC_NAME[:ref text]}}"'
-                    "".format(func_name, found_in_categories)
+                    f"Function with name {func_name} found in following categories: {found_in_categories} - but category is not specified. "
+                    'Use the following syntax to specify category: "{ref:category_name/FUNC_NAME[:ref text]}"'
                 )
             category_name = found_in_categories[0]
         func_key = RefFunctionKey.normalized(name=func_name, category_name=category_name)

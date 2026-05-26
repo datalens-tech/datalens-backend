@@ -64,7 +64,7 @@ class SchemaColumn(_SchemaColumn):
             description=description or "",
         )
 
-    def clone(self, **kwargs) -> "SchemaColumn":  # type: ignore  # TODO: fix
+    def clone(self, **kwargs) -> SchemaColumn:  # type: ignore  # TODO: fix
         return SchemaColumn(**dict(self._asdict(), **kwargs))
 
 

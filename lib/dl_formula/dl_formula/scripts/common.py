@@ -32,7 +32,7 @@ def make_graphviz_graph(dot: Dot, render_to: str, view: bool) -> None:
 
     if render_to or view:
         if not render_to:
-            render_to = os.path.join(tempfile.gettempdir(), "dotfile_{}".format(uuid.uuid4().hex))
+            render_to = os.path.join(tempfile.gettempdir(), f"dotfile_{uuid.uuid4().hex}")
 
         dot.format = "png"
         dot.render(render_to, view=view, cleanup=True)

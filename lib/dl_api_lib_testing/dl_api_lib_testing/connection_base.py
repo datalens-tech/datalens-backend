@@ -103,7 +103,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
 
         yield conn_id
 
-        control_api_sync_client.delete("/api/v1/connections/{}".format(conn_id))
+        control_api_sync_client.delete(f"/api/v1/connections/{conn_id}")
 
     @pytest.fixture(scope="class")
     def sample_table(self, db: Db) -> DbTable:

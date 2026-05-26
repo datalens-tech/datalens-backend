@@ -283,7 +283,7 @@ def implements_stage(stage: ProcessingStage) -> Callable[[StageProcType], StageP
 
     def decorator(func: StageProcType) -> StageProcType:
         @wraps(func)
-        def wrapper(self: "FormulaCompiler", field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
+        def wrapper(self: FormulaCompiler, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula:
             # First check the error cache
             if not collect_errors:
                 # Error collection is disabled, so we can just raise the first error we encounter
