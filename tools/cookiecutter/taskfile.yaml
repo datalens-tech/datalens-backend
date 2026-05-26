@@ -28,4 +28,4 @@ tasks:
         vars:
           TEMPLATE_PATH: '{{.TASKFILE_DIR}}/templates/package'
           OUTPUT_PATH: '{{.PROJECT_ROOT_PATH}}/lib'
-      - echo "Don't forget to dev:lint-fix and dev:poetry-lock"
+      - echo "Don't forget to dev:lint-fix and update the metapackage lock file"

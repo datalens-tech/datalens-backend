@@ -111,20 +111,6 @@ tasks:
           | sed 's/ (Activated)//g'
           | grep -v \".venv\" || true
 
-  poetry-lock:
-    desc: Lock dependencies in metapkg
-    vars:
-      POETRY_VERSION:
-        sh: cat .poetry-version
-    cmds:
-      - git reset -- {{.METAPKG_DIR}}/poetry.lock
-      - git restore -- {{.METAPKG_DIR}}/poetry.lock
-      - poetry self update {{.POETRY_VERSION}}
-      - poetry lock --no-update --directory={{.METAPKG_DIR}}
-    requires:
-      vars:
-        - METAPKG_DIR
-
   venv-bin:
     desc: Run venv bin
     dir: '{{ if .DIR }}{{ .DIR }}{{ else }}{{ .USER_WORKING_DIR }}{{ end }}'
