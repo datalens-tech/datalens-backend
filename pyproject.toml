@@ -94,13 +94,15 @@ ignore = [
   "UP007", # Use `X | Y` for type annotations
   "UP014", # Convert `RequestData` from `NamedTuple` functional to class syntax
   "UP026", # [*] `mock` is deprecated, use `unittest.mock`
-  "UP027", # [*] Replace unpacked list comprehension with a generator expression
   "UP028", # Replace `yield` over `for` loop with `yield from`
   "UP030", # Use implicit references for positional format fields
   "UP031", # Use format specifiers instead of percent format
   "UP035", # Import from `collections.abc`
-  "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
   "UP040", # `type` keyword (PEP 695) — re-enable when mypy is bumped to >=1.12
+  "UP042", # Class inherits from both `str` and `enum.Enum`
+  "UP045", # Use `X | None` for type annotations (autofix of UP007 successor)
+  "UP046", # Non-PEP 695 generic class — re-enable when mypy is bumped to >=1.12
+  "UP047", # Non-PEP 695 generic function — re-enable when mypy is bumped to >=1.12
 ]
 select = [
   # Bugbear
