@@ -94,6 +94,12 @@ class JsonableDate(datetime.date, StringJsonableTypeMixin):
 
 
 class JsonableDatetime(datetime.datetime, StringJsonableTypeMixin):
+    """
+    Deprecated: kept only for backwards compatibility with schemas where
+    tzinfo may be absent. New code should use :class:`JsonableDatetimeWithTimeZone`,
+    which enforces tz-aware datetimes and prevents silent timezone loss on roundtrip.
+    """
+
     original_type = datetime.datetime
 
     @classmethod
@@ -118,10 +124,15 @@ class JsonableDatetime(datetime.datetime, StringJsonableTypeMixin):
 
 
 class JsonableDatetimeWithTimeZone(JsonableDatetime):
+    """Tz-aware variant of :class:`JsonableDatetime`. Raises if `tzinfo` is missing."""
+
     def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         result = super().__new__(cls, *args, **kwargs)
 
-        if result.tzinfo is None:
-            raise ValueError("tzinfo is required")
+        # Per Python's definition, a datetime is aware iff both tzinfo is set
+        # AND tzinfo.utcoffset() returns a value. A tzinfo whose utcoffset()
+        # returns None is still naive and would fail later in astimezone().
+        if result.tzinfo is None or result.utcoffset() is None:
+            raise ValueError("tz-aware datetime is required")
 
         return result
