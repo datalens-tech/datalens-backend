@@ -1,6 +1,9 @@
 from .base import MetricBase
 from .counter import Counter
-from .gauge import Gauge
+from .gauge import (
+    Gauge,
+    MultiprocessMode,
+)
 from .histogram import Histogram
 from .summary import Summary
 
@@ -10,5 +13,6 @@ __all__ = (
     "Gauge",
     "Histogram",
     "MetricBase",
+    "MultiprocessMode",
     "Summary",
 )

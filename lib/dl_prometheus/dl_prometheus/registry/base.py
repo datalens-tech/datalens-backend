@@ -1,12 +1,3 @@
-# Why wrap prometheus_client.CollectorRegistry?
-#
-# 1. Owns the metric set explicitly. Wrappers are passed in at construction
-#    and registered into an internal CollectorRegistry; the global
-#    prometheus_client.REGISTRY is never touched.
-# 2. iter_*/get_* helpers expose the contents as flat lists/iterators of
-#    Metric and Sample objects without callers needing to know about the
-#    inner CollectorRegistry.
-
 from typing import (
     Iterator,
     Sequence,
@@ -21,16 +12,17 @@ import dl_prometheus.metrics as metrics
 
 
 @attrs.define(kw_only=True, eq=False, slots=False)
-class MetricsRegistry:
+class BaseMetricsRegistry:
     _metrics: Sequence[metrics.MetricBase]
-    _inner: prometheus_client.CollectorRegistry = attrs.field(
-        init=False,
-        factory=prometheus_client.CollectorRegistry,
-    )
+    _inner: prometheus_client.CollectorRegistry = attrs.field(init=False)
 
     def __attrs_post_init__(self) -> None:
+        self._inner = prometheus_client.CollectorRegistry()
         for metric in self._metrics:
-            metric.register(self._inner)
+            self.register_metric(metric)
+
+    def register_metric(self, metric: metrics.MetricBase) -> None:
+        metric.register(self._inner)
 
     def iter_metrics(self) -> Iterator[prometheus_client.metrics_core.Metric]:
         yield from self._inner.collect()

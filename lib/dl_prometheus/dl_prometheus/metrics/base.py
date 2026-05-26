@@ -16,10 +16,17 @@
 #    labelnames.
 #
 # Construction model:
-# The inner prometheus_client metric is built in MetricBase.__attrs_post_init__
-# via _build_inner(), which subclasses override. post_init runs after all
-# attrs fields (parent and subclass) are initialized, so subclass-specific
-# fields (e.g. Histogram._buckets) are visible.
+# The inner prometheus_client metric is built lazily on register(), not on
+# __attrs_post_init__. This is load-bearing for MultiprocessMetricsRegistry:
+# constructing prometheus_client.Counter (etc.) eagerly materializes its
+# _value using whatever prometheus_client.values.ValueClass is currently
+# installed. If we build the inner during MetricBase.__init__, then the
+# value class is captured *before* MultiprocessMetricsRegistry has had a
+# chance to install its patched ValueClass — and counter.inc() writes go to
+# in-process memory instead of the shared mmap files. Building inside
+# register() ensures the patch is in place first (the registry applies the
+# patch before delegating to BaseMetricsRegistry.__attrs_post_init__, which
+# is where metric.register() is called).
 
 from typing import (
     Generic,
@@ -40,26 +47,22 @@ class MetricBase(Generic[_InnerMetricT]):
     _name: str
     _documentation: str
     _labelnames: tuple[str, ...] = ()
-    _is_registered: bool = attrs.field(init=False, default=False)
-    _inner: _InnerMetricT = attrs.field(init=False)
-
-    def __attrs_post_init__(self) -> None:
-        self._inner = self._build_inner()
+    _inner: _InnerMetricT | None = attrs.field(init=False, default=None)
 
     def _build_inner(self) -> _InnerMetricT:
         raise NotImplementedError
 
     def register(self, collector_registry: prometheus_client.CollectorRegistry) -> None:
-        if self._is_registered:
+        if self._inner is not None:
             raise RuntimeError(
                 f"metric {self._name!r} is already attached to a MetricsRegistry",
             )
 
+        self._inner = self._build_inner()
         collector_registry.register(self._inner)
-        self._is_registered = True
 
     def _select(self, labels: Mapping[str, str] | None) -> _InnerMetricT:
-        if not self._is_registered:
+        if self._inner is None:
             raise RuntimeError(
                 f"metric {self._name!r} is not registered with a MetricsRegistry; "
                 f"pass it via MetricsRegistry(metrics=...) before use",
