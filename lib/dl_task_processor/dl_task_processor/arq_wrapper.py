@@ -4,7 +4,6 @@ from typing import (
     Any,
     Optional,
     Protocol,
-    TypeAlias,
     runtime_checkable,
 )
 
@@ -34,7 +33,7 @@ EXECUTOR_KEY = "bi_executor"
 LOGGER = logging.getLogger(__name__)
 
 
-CronTask: TypeAlias = _CronJob
+type CronTask = _CronJob
 
 
 @attr.s

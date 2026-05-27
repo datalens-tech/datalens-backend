@@ -14,7 +14,6 @@ from typing import (
     Generator,
     Iterable,
     Optional,
-    TypeVar,
     final,
 )
 
@@ -36,10 +35,7 @@ from dl_type_transformer.native_type import (
 make_native_type = GenericNativeType.normalize_name_and_create
 
 
-_INN_TV = TypeVar("_INN_TV")
-
-
-def _if_not_none(value: _INN_TV, func: Callable[[_INN_TV], Any]) -> Any:
+def _if_not_none[INN_TV](value: INN_TV, func: Callable[[INN_TV], Any]) -> Any:
     if value is not None:
         try:
             return func(value)
@@ -186,7 +182,7 @@ class UnsupportedCaster(TypeCaster):
         raise exc.TypeCastUnsupported("Asked `cast_for_output` for an Unsupported type for a non-null")
 
 
-def _cast_array(value: Optional[Iterable[_INN_TV]], f: Callable[[_INN_TV], Any]) -> Optional[tuple]:
+def _cast_array[INN_TV](value: Optional[Iterable[INN_TV]], f: Callable[[INN_TV], Any]) -> Optional[tuple]:
     if value is None:
         return None
     return tuple(map(f, value))

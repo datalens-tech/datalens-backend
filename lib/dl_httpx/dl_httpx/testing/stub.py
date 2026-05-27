@@ -108,5 +108,5 @@ class TrackedCallable(Generic[CallableT]):
         ), f"Expected {self.method.__name__!r} not to be awaited, but it was awaited {len(awaited)} time(s)"
 
 
-def tracked(func: CallableT) -> "TrackedCallable[CallableT]":
+def tracked[CallableT: Callable](func: CallableT) -> "TrackedCallable[CallableT]":
     return TrackedCallable(method=func)

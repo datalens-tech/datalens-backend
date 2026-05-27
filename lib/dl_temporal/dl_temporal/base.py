@@ -156,7 +156,7 @@ def _activity_info_to_logging_context(
     }
 
 
-def _activity_logging_middleware(
+def _activity_logging_middleware[ActivityParamsT: BaseActivityParams, ActivityResultT: BaseActivityResult](
     func: Callable[[_ActivityType, ActivityParamsT], Awaitable[ActivityResultT]],
 ) -> Callable[[_ActivityType, ActivityParamsT], Awaitable[ActivityResultT]]:
     @functools.wraps(func)
@@ -267,7 +267,7 @@ def _workflow_info_to_logging_context(
     }
 
 
-def _workflow_logging_middleware(
+def _workflow_logging_middleware[WorkflowParamsT: BaseWorkflowParams, WorkflowResultT: BaseWorkflowResult](
     func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
 ) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
     @functools.wraps(func)
@@ -320,7 +320,7 @@ def _workflow_logging_middleware(
     return inner
 
 
-def _search_attributes_middleware(
+def _search_attributes_middleware[WorkflowParamsT: BaseWorkflowParams, WorkflowResultT: BaseWorkflowResult](
     func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
 ) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
     @functools.wraps(func)
@@ -335,7 +335,7 @@ def _search_attributes_middleware(
     return inner
 
 
-def _parent_context_middleware(
+def _parent_context_middleware[WorkflowParamsT: BaseWorkflowParams, WorkflowResultT: BaseWorkflowResult](
     func: Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]],
 ) -> Callable[[_WorkflowType, WorkflowParamsT], Awaitable[WorkflowResultT]]:
     @functools.wraps(func)

@@ -918,7 +918,7 @@ class ClassicConnectionSQL(ConnectionSQL):
 CONNECTOR_SETTINGS_TV = TypeVar("CONNECTOR_SETTINGS_TV", bound=ConnectorSettings)
 
 
-def _get_connector_settings(
+def _get_connector_settings[CONNECTOR_SETTINGS_TV: ConnectorSettings](
     usm: USManagerBase,
     conn_type: ConnectionType,
     settings_type: type[CONNECTOR_SETTINGS_TV],

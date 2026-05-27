@@ -84,10 +84,10 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
                 wrapper.cache_clear()  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_clear"  [attr-defined]
 
 
-def multi_cached_with_errors(
+def multi_cached_with_errors[QUALIFIER_VALUE_TV](
     maxsize: int,
     cache_exceptions: tuple[type[Exception], ...] = (),
-    cache_qualifier: Optional[Callable[..., _QUALIFIER_VALUE_TV]] = None,
+    cache_qualifier: Optional[Callable[..., QUALIFIER_VALUE_TV]] = None,
 ) -> Callable[[_FUNC], _FUNC]:
     """
     Parameterized decorator that works just like ``lru_cache``,
@@ -96,7 +96,7 @@ def multi_cached_with_errors(
     """
 
     def decorator(func: _FUNC) -> _FUNC:
-        cache_manager: MultiCacheManager[_QUALIFIER_VALUE_TV] = MultiCacheManager(
+        cache_manager: MultiCacheManager[QUALIFIER_VALUE_TV] = MultiCacheManager(
             wrapped_function=func,
             maxsize=maxsize,
             cache_exceptions=cache_exceptions,

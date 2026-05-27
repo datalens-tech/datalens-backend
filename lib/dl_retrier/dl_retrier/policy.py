@@ -1,9 +1,6 @@
 import datetime
 import http
-from typing import (
-    Iterator,
-    TypeAlias,
-)
+from typing import Iterator
 
 import attr
 
@@ -16,7 +13,7 @@ class Retry:
     sleep_before_seconds: float
 
 
-ErrorCode: TypeAlias = int
+type ErrorCode = int
 
 
 @attr.s(frozen=True, hash=True)

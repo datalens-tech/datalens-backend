@@ -1,16 +1,11 @@
-from typing import (
-    Iterable,
-    TypeVar,
-)
+from typing import Iterable
 
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import RLSEntry
 
-_T = TypeVar("_T")
-
 
 # TODO: replace with itertools.batched after switching to Python 3.12
-def chunks(lst: list[_T], size: int) -> Iterable[list[_T]]:
+def chunks[T](lst: list[T], size: int) -> Iterable[list[T]]:
     """Yield successive chunks from lst. No padding."""
     for idx in range(0, len(lst), size):
         yield lst[idx : idx + size]

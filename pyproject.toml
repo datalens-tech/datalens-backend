@@ -97,11 +97,9 @@ ignore = [
   "UP030", # Use implicit references for positional format fields
   "UP031", # Use format specifiers instead of percent format
   "UP035", # Import from `collections.abc`
-  "UP040", # `type` keyword (PEP 695) — re-enable when mypy is bumped to >=1.12
   "UP042", # Class inherits from both `str` and `enum.Enum`
   "UP045", # Use `X | None` for type annotations (autofix of UP007 successor)
-  "UP046", # Non-PEP 695 generic class — re-enable when mypy is bumped to >=1.12
-  "UP047", # Non-PEP 695 generic function — re-enable when mypy is bumped to >=1.12
+  "UP046", # Non-PEP 695 generic class — needs manual conversion for attrs+cross-module TypeVar bounds
 ]
 select = [
   # Bugbear

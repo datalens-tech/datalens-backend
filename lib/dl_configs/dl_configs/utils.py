@@ -6,7 +6,6 @@ import typing
 from typing import (
     Callable,
     Container,
-    TypeVar,
 )
 
 import typing_extensions
@@ -20,11 +19,8 @@ TEMP_ROOT_CERTIFICATES_FOLDER_PATH = "/tmp/ssl/certs/"
 LOGGER = logging.getLogger(__name__)
 
 
-_T = TypeVar("_T")
-
-
-def validate_one_of(valid_values: Container[_T]) -> Callable[[_T], _T]:
-    def validator(value: _T) -> _T:
+def validate_one_of[T](valid_values: Container[T]) -> Callable[[T], T]:
+    def validator(value: T) -> T:
         if value not in valid_values:
             raise ValueError(f"Expected one of {valid_values}, but got '{value}'")
         return value
@@ -86,7 +82,7 @@ class ConstructableSettingsProtocol(typing.Protocol):
 SettingsT = typing.TypeVar("SettingsT", bound=ConstructableSettingsProtocol)
 
 
-def tuple_of_models_json_converter_factory(
+def tuple_of_models_json_converter_factory[SettingsT: ConstructableSettingsProtocol](
     model: type[SettingsT],
 ) -> typing.Callable[[typing.Any], tuple[SettingsT, ...]]:
     assert hasattr(model, "from_json")
@@ -98,7 +94,7 @@ def tuple_of_models_json_converter_factory(
     return tuple_of_models_json_converter
 
 
-def tuple_of_models_env_converter_factory(
+def tuple_of_models_env_converter_factory[SettingsT: ConstructableSettingsProtocol](
     model: type[SettingsT],
 ) -> typing.Callable[[str], tuple[SettingsT, ...]]:
     def tuple_of_models_env_converter(env_value: str) -> tuple[SettingsT, ...]:

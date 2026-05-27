@@ -41,24 +41,24 @@ class EnvError(Exception):
 
 
 @overload
-def get_from_env(env_key: str, converter: Callable[[str], _RET_TV], default: Literal[None]) -> Optional[_RET_TV]:
+def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: Literal[None]) -> Optional[RET_TV]:
     pass
 
 
 @overload  # noqa
-def get_from_env(env_key: str, converter: Callable[[str], _RET_TV], default: Required) -> _RET_TV:
+def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: Required) -> RET_TV:
     pass
 
 
 @overload  # noqa
-def get_from_env(
-    env_key: str, converter: Callable[[str], _RET_TV], default: Union[_RET_TV, Factory[_RET_TV]]
-) -> _RET_TV:
+def get_from_env[RET_TV](
+    env_key: str, converter: Callable[[str], RET_TV], default: Union[RET_TV, Factory[RET_TV]]
+) -> RET_TV:
     pass
 
 
 @overload  # noqa
-def get_from_env(env_key: str, converter: Callable[[str], _RET_TV]) -> _RET_TV:
+def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV]) -> RET_TV:
     pass
 
 

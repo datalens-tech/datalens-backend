@@ -1,7 +1,4 @@
-from typing import (
-    Any,
-    TypeVar,
-)
+from typing import Any
 
 import attr
 
@@ -56,13 +53,10 @@ def apply_query_patch(multi_query: CompiledMultiQueryBase, patch: CompiledMultiQ
     return CompiledMultiQuery(queries=queries)
 
 
-_FORMULA_NODE_TV = TypeVar("_FORMULA_NODE_TV", bound=formula_nodes.FormulaItem)
-
-
-def remap_formula_obj_fields(
-    node: _FORMULA_NODE_TV,
+def remap_formula_obj_fields[FORMULA_NODE_TV: formula_nodes.FormulaItem](
+    node: FORMULA_NODE_TV,
     field_name_map: dict[str, str],
-) -> _FORMULA_NODE_TV:
+) -> FORMULA_NODE_TV:
     def remap_field(_node: formula_nodes.Field, *args: Any, **kwargs: Any) -> formula_nodes.Field:
         return formula_nodes.Field.make(name=field_name_map[_node.name])
 

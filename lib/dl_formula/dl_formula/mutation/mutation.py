@@ -8,10 +8,7 @@ Can be used to prepare the formula for translation and also for optimization of 
 from __future__ import annotations
 
 import abc
-from typing import (
-    Sequence,
-    TypeVar,
-)
+from typing import Sequence
 
 import dl_formula.core.nodes as nodes
 
@@ -34,10 +31,7 @@ class FormulaMutation(abc.ABC):
         raise NotImplementedError
 
 
-_NODE_TV = TypeVar("_NODE_TV", bound=nodes.FormulaItem)
-
-
-def apply_mutations(tree: _NODE_TV, mutations: Sequence[FormulaMutation]) -> _NODE_TV:
+def apply_mutations[NODE_TV: nodes.FormulaItem](tree: NODE_TV, mutations: Sequence[FormulaMutation]) -> NODE_TV:
     """Apply multiple mutations to formula node tree"""
 
     def match_func(node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:

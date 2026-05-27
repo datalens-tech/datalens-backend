@@ -1,14 +1,9 @@
-from typing import (
-    Optional,
-    TypeVar,
-)
+from typing import Optional
 
 from dl_query_processing.legend.block_legend import BlockLegend
 
-_VAL_TV = TypeVar("_VAL_TV")
 
-
-def ifnull(value: _VAL_TV, null_value: _VAL_TV) -> _VAL_TV:
+def ifnull[VAL_TV](value: VAL_TV, null_value: VAL_TV) -> VAL_TV:
     if value is not None:
         return value
     return null_value

@@ -5,7 +5,6 @@ from typing import (
     Callable,
     ClassVar,
     Optional,
-    TypeVar,
     cast,
 )
 
@@ -82,15 +81,12 @@ def s_attrib(
     )
 
 
-_REQUIRED_TV = TypeVar("_REQUIRED_TV")
-
-
 @attr.s(frozen=True)
 class RequiredValue:
     message: Optional[str] = attr.ib(default=None)
 
 
-def required(t: type[_REQUIRED_TV]) -> _REQUIRED_TV:
+def required[REQUIRED_TV](t: type[REQUIRED_TV]) -> REQUIRED_TV:
     """
     Usage: set constructor args of attrs objects in fallback_config_factory.
     Fields with `REQUIRED_VALUE` value must be replaced by settings loader or exception must be thrown

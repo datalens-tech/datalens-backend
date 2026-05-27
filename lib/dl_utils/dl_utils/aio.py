@@ -29,12 +29,10 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_CORO_TV = TypeVar("_CORO_TV")
 
-
-async def shield_wait_for_complete(
-    coro: Awaitable[_CORO_TV], log_msg_on_cancel: str = "CancelledError during critical section execution"
-) -> _CORO_TV:
+async def shield_wait_for_complete[CORO_TV](
+    coro: Awaitable[CORO_TV], log_msg_on_cancel: str = "CancelledError during critical section execution"
+) -> CORO_TV:
     """
     Shields coroutine from cancellation and waits until it finished.
     If execution was cancelled - raise CancelledError after coroutine done.
@@ -99,7 +97,7 @@ def get_thread_loop() -> asyncio.AbstractEventLoop:
     return loop
 
 
-def await_sync(coro: Awaitable[_WRAPPED_RT], loop: Optional[asyncio.AbstractEventLoop] = None) -> _WRAPPED_RT:
+def await_sync[WRAPPED_RT](coro: Awaitable[WRAPPED_RT], loop: Optional[asyncio.AbstractEventLoop] = None) -> WRAPPED_RT:
     if loop is None:
         loop = get_thread_loop()
     return loop.run_until_complete(coro)
@@ -120,10 +118,10 @@ class RunThread(threading.Thread):
 # Should be avoided by making context async and using await_sync on higher level of sync counterparts.
 # USE IT ONLY IN THE RAREST OF OCCASIONS, WHEN YOU HAVE NO OTHER CHOICE.
 # Please, lord, have mercy on my soul, for I have sinned.
-def async_run(
-    coro: typing.Coroutine[typing.Any, typing.Any, _WRAPPED_RT],
+def async_run[WRAPPED_RT](
+    coro: typing.Coroutine[typing.Any, typing.Any, WRAPPED_RT],
     loop: typing.Optional[asyncio.AbstractEventLoop] = None,
-) -> _WRAPPED_RT:
+) -> WRAPPED_RT:
     if loop is None:
         try:
             loop = asyncio.get_running_loop()
@@ -144,16 +142,13 @@ def async_run(
     return thread.result  # type: ignore[return-value]  # 26.05.2026 mypy bump 1.20.2
 
 
-_ITERABLE_T = TypeVar("_ITERABLE_T")
-
-
-def to_sync_iterable(
-    async_iterable: AsyncIterable[_ITERABLE_T],
+def to_sync_iterable[ITERABLE_T](
+    async_iterable: AsyncIterable[ITERABLE_T],
     loop: Optional[asyncio.AbstractEventLoop] = None,
-) -> Iterable[_ITERABLE_T]:
+) -> Iterable[ITERABLE_T]:
     actual_loop = get_thread_loop() if loop is None else loop
 
-    def wrapper() -> Iterable[_ITERABLE_T]:
+    def wrapper() -> Iterable[ITERABLE_T]:
         aiter = async_iterable.__aiter__()
         while True:
             try:
@@ -164,7 +159,7 @@ def to_sync_iterable(
     return wrapper()
 
 
-async def alist(aiterable: AsyncIterable[_ITERABLE_T]) -> list[_ITERABLE_T]:
+async def alist[ITERABLE_T](aiterable: AsyncIterable[ITERABLE_T]) -> list[ITERABLE_T]:
     """Gather an async iterable into a single list"""
     result = []
     async for item in aiterable:

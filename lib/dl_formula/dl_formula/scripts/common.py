@@ -4,18 +4,15 @@ import os
 import tempfile
 from typing import (
     Callable,
-    TypeVar,
     Union,
 )
 import uuid
 
 from graphviz.dot import Dot
 
-_TV = TypeVar("_TV")
 
-
-def csv_type(type_func: Callable[[str], _TV]) -> Callable[[str], Union[list[_TV], str]]:
-    def wrapper(s: str) -> Union[list[_TV], str]:
+def csv_type[TV](type_func: Callable[[str], TV]) -> Callable[[str], Union[list[TV], str]]:
+    def wrapper(s: str) -> Union[list[TV], str]:
         if isinstance(s, str):
             return [type_func(it) for it in s.split(",")]
         return s

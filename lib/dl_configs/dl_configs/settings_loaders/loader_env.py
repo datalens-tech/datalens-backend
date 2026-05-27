@@ -644,11 +644,11 @@ class EnvSettingsLoader:
         return extractor.extract(effective_s_dict)
 
 
-def load_settings_from_env_with_fallback_legacy(
-    settings_type: type[_SETTINGS_TV],
+def load_settings_from_env_with_fallback_legacy[SETTINGS_TV](
+    settings_type: type[SETTINGS_TV],
     fallback_cfg_resolver: FallbackConfigResolver,
     env: Optional[SDict] = None,
-) -> _SETTINGS_TV:
+) -> SETTINGS_TV:
     effective_env = os.environ if env is None else env
 
     return EnvSettingsLoader(effective_env).load_settings(
@@ -657,11 +657,11 @@ def load_settings_from_env_with_fallback_legacy(
     )
 
 
-def load_settings_from_env_with_fallback(
-    settings_type: type[_SETTINGS_TV],
+def load_settings_from_env_with_fallback[SETTINGS_TV](
+    settings_type: type[SETTINGS_TV],
     env: Optional[SDict] = None,
     default_fallback_cfg_resolver: Optional[FallbackConfigResolver] = None,
-) -> _SETTINGS_TV:
+) -> SETTINGS_TV:
     effective_env = os.environ if env is None else env
 
     if YamlFileConfigResolver.is_config_enabled(s_dict=effective_env):

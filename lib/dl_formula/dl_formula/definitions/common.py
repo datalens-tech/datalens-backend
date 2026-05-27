@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Callable,
     Optional,
-    TypeVar,
     Union,
     no_type_check,
 )
@@ -44,14 +43,12 @@ def raw_sql(sql_text: str) -> _TextClauseHack:
 TransCallResult = Union[ClauseElement, nodes.FormulaItem]
 TranslateCallback = Callable[[nodes.FormulaItem], TransCallResult]
 
-_BINARY_CHAIN_TV = TypeVar("_BINARY_CHAIN_TV", bound=TransCallResult)
 
-
-def make_binary_chain(
-    binary_callable: Callable[[_BINARY_CHAIN_TV, _BINARY_CHAIN_TV], _BINARY_CHAIN_TV],
-    *args: _BINARY_CHAIN_TV,
+def make_binary_chain[BINARY_CHAIN_TV: TransCallResult](
+    binary_callable: Callable[[BINARY_CHAIN_TV, BINARY_CHAIN_TV], BINARY_CHAIN_TV],
+    *args: BINARY_CHAIN_TV,
     wrap_as_nodes: bool = True,
-) -> _BINARY_CHAIN_TV:
+) -> BINARY_CHAIN_TV:
     if len(args) == 0:
         return sa.null()
 

@@ -1,12 +1,11 @@
 import enum
-from typing import TypeAlias
 
 import pydantic
 
 import dl_httpx
 import dl_pydantic
 
-EntryId: TypeAlias = str
+type EntryId = str
 
 
 class EntryScope(str, enum.Enum):

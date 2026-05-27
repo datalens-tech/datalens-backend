@@ -152,12 +152,9 @@ class LazyAsyncChunked(AsyncChunkedBase[_ENTRY_TV]):
         return chunk_gen()
 
 
-_CBO_ITEM_TV = TypeVar("_CBO_ITEM_TV")
-
-
-async def chunkify_by_one(
-    items: AsyncIterable[_CBO_ITEM_TV],
-) -> AsyncIterable[Sequence[_CBO_ITEM_TV]]:
+async def chunkify_by_one[CBO_ITEM_TV](
+    items: AsyncIterable[CBO_ITEM_TV],
+) -> AsyncIterable[Sequence[CBO_ITEM_TV]]:
     """Helper to wrap an iterable into a chunked iterable with one item per chunk"""
     async for item in items:
         yield (item,)
