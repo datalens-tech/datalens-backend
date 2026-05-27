@@ -1611,12 +1611,12 @@ class DatasetValidator(DatasetBaseWrapper):
             new_title = source_avatar_data["title"]
             self._ds_editor.add_avatar(
                 avatar_id=avatar_id,
-                source_id=source_id,
+                source_id=source_id,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
                 title=new_title,  # type: ignore  # TODO: fix
             )
-            new_dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
+            new_dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             new_raw_schema = new_dsrc_coll.get_cached_raw_schema(role=DataSourceRole.origin)
-            self.formula_compiler.register_avatar(avatar_id=avatar_id, source_id=source_id)
+            self.formula_compiler.register_avatar(avatar_id=avatar_id, source_id=source_id)  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             update_fields = True
 
         if action == DatasetAction.update_source_avatar:

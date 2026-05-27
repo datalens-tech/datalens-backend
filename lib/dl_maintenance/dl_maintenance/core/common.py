@@ -59,7 +59,7 @@ class MaintenanceEnvironmentManagerBase:
             us_base_url=us_config.base_url,
             us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
             bi_context=rci,
-            services_registry=service_registry,
+            services_registry=service_registry,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             retry_policy_factory=self.get_retry_policy_factory(),
         )
 
@@ -74,7 +74,7 @@ class MaintenanceEnvironmentManagerBase:
             us_base_url=us_config.base_url,
             us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
             bi_context=rci,
-            services_registry=service_registry,
+            services_registry=service_registry,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             ca_data=ca_data,
             retry_policy_factory=self.get_retry_policy_factory(),
         )

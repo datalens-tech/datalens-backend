@@ -626,7 +626,7 @@ class USManagerBase:
 
         self.get_lifecycle_manager(entry=copied_entry).post_copy_hook()
 
-        return copied_entry  # type: ignore  # TODO: fix
+        return copied_entry
 
     @staticmethod
     @contextmanager

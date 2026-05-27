@@ -260,7 +260,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
                 while should_continue:
                     should_continue = self._worker_do_step(generator)
             finally:
-                if generator.gi_frame is not None:
+                if generator.gi_frame is not None:  # type: ignore[attr-defined]  # 26.05.2026 mypy bump 1.20.2
                     self._log.error("Worker main cycle exits with running generator")
                     try:
                         generator.close()

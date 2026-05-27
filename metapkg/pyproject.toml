@@ -232,7 +232,7 @@ asyncpg-stubs = "==0.29.0"
 boto3-stubs = {extras = ["s3"], version = "==1.36.3"}
 botocore-stubs = "==1.36.3"
 grpc-stubs = "==1.53.0.5"
-mypy = "==1.7.0"
+mypy = "==1.20.2"
 pandas-stubs = "==2.2.3.250527"
 types-aiobotocore = {extras = ["s3"], version = "==2.19.0"}
 types-aiofiles = "==23.1.0"

@@ -113,15 +113,15 @@ class TypeCaster:
 
 
 class IntegerTypeCaster(TypeCaster):
-    cast_func = make_int
+    cast_func = make_int  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
 
 class FloatTypeCaster(TypeCaster):
-    cast_func = lambda value: _if_not_none(value, float)  # noqa
+    cast_func = lambda value: _if_not_none(value, float)  # type: ignore[assignment]  # noqa  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
 
 
 class BooleanTypeCaster(TypeCaster):
-    cast_func = lambda value: _if_not_none(value, bool)  # noqa
+    cast_func = lambda value: _if_not_none(value, bool)  # type: ignore[assignment]  # noqa  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
 
 
 class YTBooleanTypeCaster(BooleanTypeCaster):
@@ -135,23 +135,23 @@ class YTBooleanTypeCaster(BooleanTypeCaster):
 
 
 class StringTypeCaster(TypeCaster):
-    cast_func = lambda value: _if_not_none(value, str)  # noqa
+    cast_func = lambda value: _if_not_none(value, str)  # type: ignore[assignment]  # noqa  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
 
 
 class DateTypeCaster(TypeCaster):
-    cast_func = make_date
+    cast_func = make_date  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
 
 class DatetimeTypeCaster(TypeCaster):
-    cast_func = make_datetime
+    cast_func = make_datetime  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
 
 class DatetimeTZTypeCaster(TypeCaster):
-    cast_func = make_datetime  # TODO: re-check edgy cases
+    cast_func = make_datetime  # type: ignore[assignment]  # TODO: re-check edgy cases  # 26.05.2026 mypy bump 1.20.2
 
 
 class GenericDatetimeTypeCaster(TypeCaster):
-    cast_func = make_datetime
+    cast_func = make_datetime  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
 
 class UTCDatetimeTypeCaster(TypeCaster):
@@ -212,7 +212,7 @@ def _make_lowercase(value: Optional[str]) -> Optional[str]:
 
 
 class LowercaseTypeCaster(TypeCaster):
-    cast_func = _make_lowercase
+    cast_func = _make_lowercase  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
 
 class TypeTransformer:

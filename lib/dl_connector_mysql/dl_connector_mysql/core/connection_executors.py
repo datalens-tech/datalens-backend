@@ -28,7 +28,7 @@ class _BaseMySQLConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_MYSQL_ADAPTER_T
             enforce_collate = MySQLEnforceCollateMode.off
         return enforce_collate
 
-    async def _make_target_conn_dto_pool(self) -> list[MySQLConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[MySQLConnTargetDTO]:
         dto_pool = []
         effective_enforce_collate = self._get_effective_enforce_collate(
             enforce_collate=self._conn_dto.enforce_collate,

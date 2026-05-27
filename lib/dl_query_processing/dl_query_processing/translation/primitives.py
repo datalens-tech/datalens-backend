@@ -67,7 +67,7 @@ class TranslatedQueryMetaInfo(QueryMetaInfo):
     @property
     def extract(self) -> QueryElementExtract:
         return QueryElementExtract(
-            values=(
+            values=(  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
                 *super().extract,
                 (
                     (dt.extract if dt is not None else None for dt in self.detailed_types)

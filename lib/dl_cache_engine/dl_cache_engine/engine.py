@@ -390,11 +390,11 @@ class RedisCacheLockWrapped(RedisCacheLock):
     async def get_data_slave(self) -> Optional[bytes]:
         return await super().get_data_slave()
 
-    @generic_profiler_async("qcache-locked-get-data-main")  # type: ignore  # TODO: fix
+    @generic_profiler_async("qcache-locked-get-data-main")
     async def _get_data(self) -> Any:
         return await super()._get_data()
 
-    @generic_profiler_async("qcache-locked-get-data-wait")  # type: ignore  # TODO: fix
+    @generic_profiler_async("qcache-locked-get-data-wait")
     async def _wait_for_result(self, sub: Any) -> Any:
         return await super()._wait_for_result(sub)
 

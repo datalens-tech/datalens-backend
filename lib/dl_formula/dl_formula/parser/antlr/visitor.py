@@ -297,7 +297,7 @@ class CustomDataLensVisitor(DataLensVisitor):
         assert len(ctx.children) == 4
         return nodes.WhenPart.make(
             val=self.visit(ctx.children[1]),
-            expr=self.visit(ctx.children[3]) if len(ctx.children) > 2 else None,
+            expr=self.visit(ctx.children[3]) if len(ctx.children) > 2 else None,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             meta=self._make_node_meta(ctx),
         )
 

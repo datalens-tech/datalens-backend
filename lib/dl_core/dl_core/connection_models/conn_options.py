@@ -27,7 +27,7 @@ class ConnectOptions:
             **kwargs,
         }
         # `error: Incompatible return value type (got "ConnectOptions", expected "_CONNECT_OPTIONS_TV")`
-        return subcls(**full_kwargs)  # type: ignore  # TODO: fix
+        return subcls(**full_kwargs)
 
     def clone(self: _CONNECT_OPTIONS_TV, **kwargs: Any) -> _CONNECT_OPTIONS_TV:
         return attr.evolve(self, **kwargs)

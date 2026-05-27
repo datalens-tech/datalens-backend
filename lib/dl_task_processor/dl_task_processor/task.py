@@ -115,7 +115,7 @@ class Retry(TaskResult):
 
 @attr.s
 class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metaclass=abc.ABCMeta):
-    cls_meta: ClassVar[type[_BASE_TASK_META_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    cls_meta: ClassVar[type[_BASE_TASK_META_TV]]
     meta: _BASE_TASK_META_TV = attr.ib()
     _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()

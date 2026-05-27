@@ -213,7 +213,7 @@ AppType = TypeVar("AppType", bound=BaseApp)
 @attr.define(kw_only=True, slots=False)
 class BaseAppFactory(Generic[AppType]):
     settings: BaseAppSettings
-    app_class: ClassVar[type[AppType]]  # type: ignore
+    app_class: ClassVar[type[AppType]]
 
     async def create_application(
         self,

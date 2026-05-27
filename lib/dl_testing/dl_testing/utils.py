@@ -101,7 +101,7 @@ def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds
 
 
 @overload
-def get_log_record(  # type: ignore  # 2024-01-24 # TODO: Overloaded function signatures 1 and 2 overlap with incompatible return types  [misc]
+def get_log_record(
     caplog: Any, predicate: Callable[[logging.LogRecord], bool], single: Literal[True] = True
 ) -> logging.LogRecord:
     pass

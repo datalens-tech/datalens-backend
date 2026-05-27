@@ -131,8 +131,8 @@ class ActivityProtocol(Protocol[ActivityParamsT, ActivityResultT]):
 
     # After python 3.13 migrate to typing.ReadOnly[type[ActivityParamsT]]
     # and move declaration to the class body.
-    Params: ClassVar[type[ActivityParamsT]]  # type: ignore
-    Result: ClassVar[type[ActivityResultT]]  # type: ignore
+    Params: ClassVar[type[ActivityParamsT]]
+    Result: ClassVar[type[ActivityResultT]]
 
     async def run(self, params: ActivityParamsT) -> ActivityResultT: ...
 
@@ -246,8 +246,8 @@ class WorkflowProtocol(Protocol[SelfType, WorkflowParamsT, WorkflowResultT]):
 
     # After python 3.13 migrate to typing.ReadOnly[type[WorkflowParamsT]]
     # and move declaration to the class body.
-    Params: ClassVar[type[WorkflowParamsT]]  # type: ignore
-    Result: ClassVar[type[WorkflowResultT]]  # type: ignore
+    Params: ClassVar[type[WorkflowParamsT]]
+    Result: ClassVar[type[WorkflowResultT]]
 
     async def run(self: SelfType, params: WorkflowParamsT) -> WorkflowResultT: ...
 

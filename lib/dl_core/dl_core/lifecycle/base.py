@@ -32,7 +32,7 @@ class PostSaveHookResult(HookResult):
 
 @attr.s
 class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
-    ENTRY_CLS: ClassVar[type[_US_ENTRY_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    ENTRY_CLS: ClassVar[type[_US_ENTRY_TV]]
 
     # Old entry value used to handle changes in post_save and pre_save hooks.
     _original_entry: _US_ENTRY_TV | None = attr.ib(kw_only=True, default=None)

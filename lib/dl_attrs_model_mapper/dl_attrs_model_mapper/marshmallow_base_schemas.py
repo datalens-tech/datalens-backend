@@ -31,7 +31,7 @@ _TARGET_OBJECT_GENERATED_TV = TypeVar("_TARGET_OBJECT_GENERATED_TV")
 
 
 class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
-    target_cls: ClassVar[type[_TARGET_OBJECT_BASE_TV]]  # type: ignore  # 2024-01-29 # TODO: ClassVar cannot contain type variables  [misc]
+    target_cls: ClassVar[type[_TARGET_OBJECT_BASE_TV]]
     _fields_to_skip_on_none: ClassVar[set[str]]
 
     # TODO FIX: Make tests

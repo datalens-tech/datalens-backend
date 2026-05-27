@@ -215,7 +215,7 @@ class QueryCompiler:
             chain.from_iterable(
                 formula.avatar_ids
                 for expr_list in (select, group_by, order_by, filters, join_on)
-                for formula in expr_list  # type: ignore  # TODO: fix
+                for formula in expr_list
             )
         )
 

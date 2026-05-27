@@ -109,7 +109,7 @@ class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTar
             # # Going by the comparison with the 'create view' -> SA logic.
             # if scale == -127:
             #     scale = 0
-            sa_type = sa_cls(precision, scale)  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
+            sa_type = sa_cls(precision, scale)
         else:
             sa_type = sa_cls
 

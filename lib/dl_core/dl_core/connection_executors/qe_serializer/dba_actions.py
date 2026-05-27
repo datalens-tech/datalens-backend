@@ -107,7 +107,7 @@ class ActionGetTableInfo(NonStreamAction[RawSchemaInfo]):
     table_def: TableDefinition = attr.ib()
     fetch_idx_info: bool = attr.ib()
 
-    ResultSchema = RawSchemaInfoSchema
+    ResultSchema = RawSchemaInfoSchema  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
 
 @attr.s(frozen=True)

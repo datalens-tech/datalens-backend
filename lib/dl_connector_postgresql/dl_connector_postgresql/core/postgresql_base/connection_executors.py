@@ -35,7 +35,7 @@ class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAP
             enforce_collate = PGEnforceCollateMode.off
         return enforce_collate
 
-    async def _make_target_conn_dto_pool(self) -> list[PostgresConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[PostgresConnTargetDTO]:
         dto_pool = []
         effective_enforce_collate = self._get_effective_enforce_collate(
             enforce_collate=self._conn_dto.enforce_collate,

@@ -28,7 +28,7 @@ class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE
     _conn_dto: ClickHouseConnDTO = attr.ib()
     _conn_options: CHConnectOptions = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> list[ClickHouseConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[ClickHouseConnTargetDTO]:
         dto_pool = []
         for host in self._conn_hosts_pool:
             dto_pool.append(

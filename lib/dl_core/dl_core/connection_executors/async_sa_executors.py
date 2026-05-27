@@ -127,7 +127,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     Why do we need it: to keep initialization creation of DBA in one place for sync and async environments.
     """
 
-    TARGET_ADAPTER_CLS: ClassVar[type[_DBA_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    TARGET_ADAPTER_CLS: ClassVar[type[_DBA_TV]]
     REMOTE_ADAPTER_CLS: ClassVar[Optional[type[RemoteAsyncAdapter]]] = None
 
     # Constructor attributes

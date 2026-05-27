@@ -54,10 +54,10 @@ def json_body_middleware() -> Middleware:
 
         if isinstance(view_cls, type) and issubclass(view_cls, BaseView):
 
-            async def json_is_ready():
+            async def json_is_ready():  # type: ignore[no-untyped-def]  # 26.05.2026 mypy bump 1.20.2
                 raise Exception("Direct usage of request.json() is prohibited. Use DLRequest.json_body")
 
-            request.json = json_is_ready
+            request.json = json_is_ready  # type: ignore[assignment,method-assign]  # 26.05.2026 mypy bump 1.20.2
 
         return await handler(request)
 

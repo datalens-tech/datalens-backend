@@ -27,7 +27,7 @@ _BASE_SNOWFLAKE_ADAPTER_TV = TypeVar("_BASE_SNOWFLAKE_ADAPTER_TV", bound=CommonB
 class BaseSnowFlakeConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_SNOWFLAKE_ADAPTER_TV]):
     _conn_dto: SnowFlakeConnDTO = attr.ib()
 
-    async def _make_target_conn_dto_pool(self) -> list[SnowFlakeConnTargetDTO]:  # type: ignore  # TODO: fix
+    async def _make_target_conn_dto_pool(self) -> list[SnowFlakeConnTargetDTO]:
         sf_auth_provider = SFAuthProvider.from_dto(self._conn_dto)
 
         if sf_auth_provider.is_refresh_token_expired():

@@ -168,9 +168,9 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
             if scale == -127:
                 scale = 0
 
-            sa_type = sa_cls(precision, scale)  # type: ignore  # 2024-01-24 # TODO: Too many arguments for "TypeEngine"  [call-arg]
+            sa_type = sa_cls(precision, scale)
         else:
-            sa_type = sa_cls
+            sa_type = sa_cls  # type: ignore[assignment]  # 26.05.2026 mypy bump 1.20.2
 
         return sa_type
 

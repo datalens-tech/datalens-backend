@@ -109,7 +109,7 @@ class DeployJsonFormatter(logging.Formatter):
         if standard_fields:
             fields["std"] = standard_fields
 
-        context_data = {}
+        context_data = {}  # type: ignore[var-annotated]  # 26.05.2026 mypy bump 1.20.2
         log_context_fields = record.log_context if hasattr(record, "log_context") else context.get_log_context()
         context_data.update(log_context_fields)
         context_data.update(get_record_extra(record))

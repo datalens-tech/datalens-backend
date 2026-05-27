@@ -257,7 +257,7 @@ def generic_profiler(
 
 
 _GPA_CORO_RET_TV = TypeVar("_GPA_CORO_RET_TV")
-_GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_RET_TV]])  # type: ignore  # 2024-01-24 # TODO: Type variable "dl_app_tools.profiling_base._GPA_CORO_RET_TV" is unbound  [valid-type]
+_GPA_CORO_TV = TypeVar("_GPA_CORO_TV", bound=Callable[..., Awaitable[_GPA_CORO_RET_TV]])
 
 
 def generic_profiler_async(

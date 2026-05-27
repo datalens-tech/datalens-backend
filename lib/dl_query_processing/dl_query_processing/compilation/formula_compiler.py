@@ -306,7 +306,7 @@ def implements_stage(stage: ProcessingStage) -> Callable[[StageProcType], StageP
                 self._stage_manager.set_result(formula_obj, field=field, stage=stage)
             return formula_obj
 
-        return wrapper
+        return wrapper  # type: ignore[return-value]  # 26.05.2026 mypy bump 1.20.2
 
     return decorator
 

@@ -60,7 +60,7 @@ class ObfuscationEngine:
         on_error: OnObfuscationError = OnObfuscationError.FAIL,
     ) -> _ObfuscatableT:
         if data is None:
-            return None
+            return None  # type: ignore[return-value]  # 26.05.2026 mypy bump 1.20.2
         if isinstance(data, str):
             try:
                 return cast(_ObfuscatableT, self._obfuscate_text(data, context))

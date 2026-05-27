@@ -114,7 +114,7 @@ def schematic_request(  # type: ignore  # TODO: fix
 
             if body_schema is not None:
                 try:
-                    kwargs["body"] = body_schema.load(body)
+                    kwargs["body"] = body_schema.load(body)  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
                 except MValidationError as err:
                     LOGGER.exception("Validation errors")
                     abort_request(status.BAD_REQUEST, err.messages)

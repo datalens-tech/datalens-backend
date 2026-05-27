@@ -341,7 +341,7 @@ class _Column:
     lock_aggregation: bool = attr.ib(default=False)
 
 
-class Column(ConditionMakerMixin, _Column):  # type: ignore  # TODO: fix
+class Column(ConditionMakerMixin, _Column):
     def get_cpart_from_self(self) -> JoinPart:
         return DirectJoinPart(source=self.name)
 
@@ -689,7 +689,7 @@ class ObligatoryFilter(ApiProxyObject):
     valid: bool = attr.ib(default=True)
 
 
-class ResultField(ConditionMakerMixin, _ResultField):  # type: ignore  # TODO: fix
+class ResultField(ConditionMakerMixin, _ResultField):
     def get_cpart_from_self(self) -> JoinPart:
         return ResultFieldJoinPart(field_id=self.id)
 

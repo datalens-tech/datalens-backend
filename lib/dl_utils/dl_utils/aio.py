@@ -142,7 +142,7 @@ def async_run(
     thread.join()
 
     assert thread.result is not None
-    return thread.result
+    return thread.result  # type: ignore[return-value]  # 26.05.2026 mypy bump 1.20.2
 
 
 _ITERABLE_T = TypeVar("_ITERABLE_T")

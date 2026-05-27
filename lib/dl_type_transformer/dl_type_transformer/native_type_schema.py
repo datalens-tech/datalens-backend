@@ -49,7 +49,7 @@ class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
         # TODO: Eventually datasets should be migrated so that this can be removed
         unknown = EXCLUDE
 
-    TARGET_CLS: ClassVar[type[_TARGET_TV]]  # type: ignore  # 2024-01-24 # TODO: ClassVar cannot contain type variables  [misc]
+    TARGET_CLS: ClassVar[type[_TARGET_TV]]
 
     @post_load(pass_many=False)
     def to_object(self, data: dict, **_):  # type: ignore  # TODO: fix
@@ -99,7 +99,7 @@ class ClickHouseDateTime64NativeTypeSchema(ClickHouseNativeTypeSchema):
 
 
 class ClickHouseDateTime64WithTZNativeTypeSchema(ClickHouseDateTime64NativeTypeSchema):
-    TARGET_CLS = ClickHouseDateTime64WithTZNativeType  # type: ignore  # TODO: fix
+    TARGET_CLS = ClickHouseDateTime64WithTZNativeType
     timezone_name = fields.String(required=False, load_default="UTC")
     explicit_timezone = fields.Boolean(required=False, load_default=True)
 

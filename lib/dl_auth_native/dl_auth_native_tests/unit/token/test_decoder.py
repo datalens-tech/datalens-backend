@@ -38,7 +38,7 @@ def fixture_private_key_pem(private_key: rsa.RSAPrivateKey) -> str:
 @pytest.fixture(name="public_key_pem")
 def fixture_public_key_pem(public_key: rsa.RSAPublicKey) -> str:
     public_key_bytes = public_key.public_bytes(
-        encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo
+        encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
     )
 
     return public_key_bytes.decode()
@@ -48,8 +48,8 @@ def fixture_public_key_pem(public_key: rsa.RSAPublicKey) -> str:
 def fixture_another_public_key_pem() -> str:
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
     private_key_bytes = private_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.PKCS8,
+        encoding=serialization.Encoding.PEM,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
+        format=serialization.PrivateFormat.PKCS8,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
         encryption_algorithm=serialization.NoEncryption(),
     )
     return private_key_bytes.decode()
