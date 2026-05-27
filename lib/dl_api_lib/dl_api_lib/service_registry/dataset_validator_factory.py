@@ -4,6 +4,7 @@ import abc
 
 import attr
 
+from dl_api_lib.app_settings import ConstraintsSettings
 from dl_api_lib.dataset.validator import DatasetValidator
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
@@ -23,6 +24,8 @@ class DatasetValidatorFactory(metaclass=abc.ABCMeta):
 
 @attr.s(frozen=True)
 class DefaultDatasetValidatorFactory(DatasetValidatorFactory):
+    _constraints: ConstraintsSettings = attr.ib(kw_only=True, factory=ConstraintsSettings)
+
     def get_dataset_validator(
         self,
         ds: Dataset,
@@ -33,4 +36,5 @@ class DefaultDatasetValidatorFactory(DatasetValidatorFactory):
             ds=ds,
             us_manager=us_manager,
             is_data_api=is_data_api,
+            constraints=self._constraints,
         )

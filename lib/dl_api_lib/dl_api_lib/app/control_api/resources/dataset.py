@@ -49,7 +49,6 @@ from dl_core.base_models import (
     WorkbookEntryLocation,
 )
 from dl_core.components.editor import DatasetComponentEditor
-from dl_core.constants import DatasetConstraints
 from dl_core.enums import USEntryMode
 from dl_core.us_dataset import Dataset
 from dl_core.utils import generate_revision_id
@@ -99,7 +98,8 @@ class DatasetCollection(DatasetResource):
             ds_editor.set_created_via(created_via=body["created_via"])
 
         result_schema = body["dataset"].get("result_schema", [])
-        if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
+        constraints = self.get_service_registry().get_constraints()
+        if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
             raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
 
         loader = self.create_dataset_api_loader()
@@ -294,7 +294,8 @@ class DatasetVersionItem(DatasetResource):
             us_manager.load_dependencies(ds)
 
             result_schema = body["dataset"].get("result_schema", [])
-            if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
+            constraints = self.get_service_registry().get_constraints()
+            if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
                 raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
 
             loader = self.create_dataset_api_loader()
@@ -482,7 +483,9 @@ class DatasetImportCollection(DatasetResource):
         ds_editor.set_created_via(created_via=DataSourceCreatedVia.workbook_copy)
 
         result_schema = data["dataset"].get("result_schema", [])
-        if len(result_schema) > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
+        service_registry = self.get_service_registry()
+        constraints = service_registry.get_constraints()
+        if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
             raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
 
         loader = self.create_dataset_api_loader()
@@ -495,7 +498,7 @@ class DatasetImportCollection(DatasetResource):
 
         LOGGER.info("New dataset was saved with ID %s", dataset.uuid)
 
-        localizer = self.get_service_registry().get_localizer()
+        localizer = service_registry.get_localizer()
         ds_warnings = dataset.get_import_warnings_list(localizer=localizer)
         if ds_warnings:
             notifications.extend(ds_warnings)

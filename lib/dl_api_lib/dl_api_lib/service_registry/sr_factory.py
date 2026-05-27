@@ -9,6 +9,7 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import FeatureFlags
+from dl_api_lib.app_settings import ConstraintsSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.service_registry.dataset_validator_factory import DefaultDatasetValidatorFactory
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
@@ -42,6 +43,7 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     _query_proc_mode: QueryProcessingMode = attr.ib(kw_only=True, default=QueryProcessingMode.basic)
     _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
     _feature_flags: FeatureFlags = attr.ib(kw_only=True, factory=FeatureFlags)
+    _constraints: ConstraintsSettings = attr.ib(kw_only=True, factory=ConstraintsSettings)
 
     def additional_sr_constructor_kwargs(
         self,
@@ -50,7 +52,7 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     ) -> dict[str, Any]:
         return dict(
             default_formula_parser_type=self._default_formula_parser_type,
-            dataset_validator_factory=DefaultDatasetValidatorFactory(),
+            dataset_validator_factory=DefaultDatasetValidatorFactory(constraints=self._constraints),
             field_id_generator_factory=FieldIdGeneratorFactory(
                 field_id_generator_type=self._field_id_generator_type,
             ),
@@ -61,4 +63,5 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
             query_proc_mode=self._query_proc_mode,
             pivot_transformer_factory=self._pivot_transformer_factory,
             feature_flags=self._feature_flags,
+            constraints=self._constraints,
         )

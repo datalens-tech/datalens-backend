@@ -17,6 +17,7 @@ from dl_api_lib import (
     exc,
     utils,
 )
+from dl_api_lib.app_settings import ConstraintsSettings
 from dl_api_lib.dataset.base_wrapper import DatasetBaseWrapper
 from dl_api_lib.dataset.component_abstraction import (
     DatasetComponentAbstraction,
@@ -295,9 +296,11 @@ class DatasetValidator(DatasetBaseWrapper):
         ds: Dataset,
         us_manager: USManagerBase,
         is_data_api: bool = False,
+        constraints: ConstraintsSettings | None = None,
     ):
         super().__init__(ds=ds, us_manager=us_manager)
         self._is_data_api = is_data_api
+        self._constraints = constraints if constraints is not None else ConstraintsSettings()
 
         self._ds_ca = DatasetComponentAbstraction(dataset=self._ds, us_entry_buffer=self._us_manager.get_entry_buffer())
         self._remapped_source_ids: dict[str, str] = {}
@@ -435,9 +438,9 @@ class DatasetValidator(DatasetBaseWrapper):
         self._ds.error_registry.remove_errors(id=self._ds.result_schema.id, code=exc.TooManyFieldsError.err_code)
 
         new_result_schema_len = len(self._ds.result_schema) + field_cnt_diff
-        if new_result_schema_len > DatasetConstraints.FIELD_COUNT_LIMIT_HARD and field_cnt_diff > 0:
+        if new_result_schema_len > self._constraints.FIELD_COUNT_LIMIT_HARD and field_cnt_diff > 0:
             raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
-        if new_result_schema_len > DatasetConstraints.FIELD_COUNT_LIMIT_SOFT:
+        if new_result_schema_len > self._constraints.FIELD_COUNT_LIMIT_SOFT:
             self._ds.error_registry.add_error(
                 id=self._ds.result_schema.id,
                 type=ComponentType.result_schema,

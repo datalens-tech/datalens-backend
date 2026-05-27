@@ -67,7 +67,6 @@ from dl_rls.serializer import FieldRLSSerializer
 LOGGER = logging.getLogger(__name__)
 
 DEFAULT_DATABASE_DIALECT = StandardDialect.DUMMY
-DEFAULT_MAX_AVATARS = 32
 DEFAULT_MAX_CONNECTIONS = 20
 UNAVAILABLE = object()
 
@@ -450,7 +449,7 @@ class DatasetResource(BIResource):
 
         opt_data["source_avatars"] = dict(
             # if JOINs are supported, then new tables can be added
-            max=DEFAULT_MAX_AVATARS if capabilities.get_supported_join_types() else 1,
+            max=(service_registry.get_constraints().MAX_AVATARS if capabilities.get_supported_join_types() else 1),
             items=[],
         )
         for avatar in ds_accessor.get_avatar_list():

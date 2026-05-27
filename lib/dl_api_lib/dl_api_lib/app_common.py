@@ -14,7 +14,10 @@ import attr
 
 from dl_api_commons.base_models import FeatureFlags
 from dl_api_lib.app_common_settings import ConnOptionsMutatorsFactory
-from dl_api_lib.app_settings import AppSettings
+from dl_api_lib.app_settings import (
+    AppSettings,
+    ConstraintsSettings,
+)
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.i18n.registry import (
     LOCALIZATION_CONFIGS,
@@ -113,6 +116,9 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
     def _get_feature_flags(self, settings: TSettings) -> FeatureFlags:
         return FeatureFlags()
 
+    def _get_constraints(self, settings: TSettings) -> ConstraintsSettings:
+        return settings.CONSTRAINTS
+
     @property
     def _extra_translation_configs(self) -> set[TranslationConfig]:
         return set()
@@ -183,5 +189,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             pivot_transformer_factory=pivot_transformer_factory,
             exports_history_url_path=settings.EXPORTS_HISTORY_URL_PATH,
             feature_flags=self._get_feature_flags(settings),
+            constraints=self._get_constraints(settings),
         )
         return sr_factory

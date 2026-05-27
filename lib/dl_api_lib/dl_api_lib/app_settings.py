@@ -360,7 +360,14 @@ class NativeAuthSettingsOS(BaseAuthSettingsOS):
 BaseAuthSettingsOS.register("NATIVE", NativeAuthSettingsOS)
 
 
-class AppSettings(dl_settings.BaseRootSettingsWithFallback): ...
+class ConstraintsSettings(dl_settings.BaseSettings):
+    MAX_AVATARS: int = 32
+    FIELD_COUNT_LIMIT_SOFT: int = 1200
+    FIELD_COUNT_LIMIT_HARD: int = 1250
+
+
+class AppSettings(dl_settings.BaseRootSettingsWithFallback):
+    CONSTRAINTS: ConstraintsSettings = pydantic.Field(default_factory=ConstraintsSettings)
 
 
 class WhitelistsAppSettings(dl_settings.BaseRootSettings):
@@ -434,14 +441,14 @@ class RedisSentinelSettings(RedisSettings):
 RedisSettings.register(RedisMode.sentinel.name, RedisSentinelSettings)
 
 
-class ConnectorsSettingsMixin(AppSettings):
+class ConnectorsSettingsMixin(dl_settings.BaseRootSettingsWithFallback):
     CONNECTORS: Annotated[
         dl_settings.TypedDictWithTypeKeyAnnotation[ConnectorSettings],
         pydantic.AfterValidator(postload_connectors_settings),
     ] = pydantic.Field(default_factory=dict)
 
 
-class ControlApiAppSettings(ConnectorsSettingsMixin):
+class ControlApiAppSettings(AppSettings, ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
     LOG_FORMAT_PROFILING_ENABLED: bool = False
@@ -460,7 +467,7 @@ class CacheInvalidationSettings(dl_settings.BaseSettings):
         return self
 
 
-class DataApiAppSettings(ConnectorsSettingsMixin):
+class DataApiAppSettings(AppSettings, ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
     LOG_FORMAT_PROFILING_ENABLED: bool = False

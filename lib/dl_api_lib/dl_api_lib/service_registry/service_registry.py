@@ -9,6 +9,7 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import FeatureFlags
+from dl_api_lib.app_settings import ConstraintsSettings
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.formula_parser_factory import FormulaParserFactory
@@ -94,6 +95,10 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     def get_feature_flags(self) -> FeatureFlags:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def get_constraints(self) -> ConstraintsSettings:
+        raise NotImplementedError
+
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
@@ -110,6 +115,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _typed_query_processor_factory: TypedQueryProcessorFactory = attr.ib(kw_only=True)
     _typed_query_raw_processor_factory: TypedQueryRawProcessorFactory = attr.ib(kw_only=True)
     _feature_flags: FeatureFlags = attr.ib(kw_only=True, factory=FeatureFlags)
+    _constraints: ConstraintsSettings = attr.ib(kw_only=True, factory=ConstraintsSettings)
 
     _multi_query_mutator_factory_factory: SRMultiQueryMutatorFactory = attr.ib(
         init=False,
@@ -184,6 +190,9 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
 
     def get_feature_flags(self) -> FeatureFlags:
         return self._feature_flags
+
+    def get_constraints(self) -> ConstraintsSettings:
+        return self._constraints
 
     def close(self) -> None:
         if self._formula_parser_factory is not None:
