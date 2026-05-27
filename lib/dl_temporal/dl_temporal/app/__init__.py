@@ -11,7 +11,6 @@ from .temporal import (
     TemporalWorkerSettings,
 )
 
-
 __all__ = [
     "BaseTemporalWorkerApp",
     "BaseTemporalWorkerAppDynconfigMixin",

@@ -20,9 +20,7 @@ def test_parse(tool):
     assert stderr == ""
 
     stdout, stderr = tool.run(["parse", "--pretty", "--with-meta", "very_very_long_func_name(nested_func())"])
-    assert (
-        stdout
-        == """Formula(
+    assert stdout == """Formula(
   expr=FuncCall(
     name='very_very_long_func_name',
     args=(
@@ -37,7 +35,6 @@ def test_parse(tool):
   meta=NodeMeta(position=Position(start=0, end=39, start_row=0, end_row=0, start_col=0, end_col=39)),
 )
 """
-    )
     assert stderr == ""
 
     stdout, stderr = tool.run(

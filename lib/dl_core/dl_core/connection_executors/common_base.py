@@ -41,7 +41,6 @@ from dl_type_transformer.type_transformer import (
     get_type_transformer,
 )
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TJSONExt
     from dl_core.connections_security.base import ConnectionSecurityManager

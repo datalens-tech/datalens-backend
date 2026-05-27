@@ -10,7 +10,6 @@ import attr
 import dl_app_api_base.auth.models as auth_models
 import dl_app_api_base.request_context as request_context
 
-
 LOGGER = logging.getLogger(__name__)
 
 

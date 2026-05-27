@@ -34,7 +34,6 @@ from dl_utils.streaming import (
 from dl_connector_postgresql.core.postgresql_base.error_transformer import make_async_pg_error_transformer
 from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TBIDataValue
 

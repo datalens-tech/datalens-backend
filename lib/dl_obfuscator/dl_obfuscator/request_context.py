@@ -2,7 +2,6 @@ from contextvars import ContextVar
 
 from dl_obfuscator.engine import ObfuscationEngine
 
-
 _obfuscation_engine: ContextVar[ObfuscationEngine | None] = ContextVar("obfuscation_engine", default=None)
 
 

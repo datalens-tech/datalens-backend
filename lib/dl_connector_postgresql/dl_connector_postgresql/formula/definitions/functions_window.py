@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_window as base
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 SUPPORTED_DIALECTS = D.COMPENG | D.and_above(D.POSTGRESQL_9_4)
 
 

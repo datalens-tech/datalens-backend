@@ -2,14 +2,12 @@ import logging
 
 import temporalio.workflow
 
-
 with temporalio.workflow.unsafe.imports_passed_through():
     import dl_pydantic
     import dl_temporal_tests.db.activities as activities
     import dl_temporal_tests.db.common as common
 
 import dl_temporal
-
 
 LOGGER = logging.getLogger(__name__)
 

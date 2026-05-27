@@ -2,7 +2,6 @@ import dl_formula.definitions.operators_unary as base
 
 from dl_connector_mysql.formula.constants import MySQLDialect as D
 
-
 DEFINITIONS_UNARY = [
     # isfalse
     base.UnaryIsFalseStringGeo.for_dialect(D.MYSQL),

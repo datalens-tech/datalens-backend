@@ -22,7 +22,6 @@ from dl_formula_ref.registry.example import SimpleExample
 from dl_formula_ref.registry.note import Note
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 
-
 _ = get_gettext()
 
 

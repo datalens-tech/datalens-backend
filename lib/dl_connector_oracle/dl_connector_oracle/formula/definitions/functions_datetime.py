@@ -21,7 +21,6 @@ from dl_formula.definitions.literals import (
 
 from dl_connector_oracle.formula.constants import OracleDialect as D
 
-
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ColumnElement
 

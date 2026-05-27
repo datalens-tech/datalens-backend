@@ -11,7 +11,6 @@ import aiohttp.web
 import attr
 from typing_extensions import Self
 
-
 LOGGER = logging.getLogger(__name__)
 
 

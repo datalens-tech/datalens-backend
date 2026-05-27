@@ -2,7 +2,6 @@ from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
 
-
 METRIKA_SAMPLE_COUNTER_ID = "44147844"
 APPMETRICA_SAMPLE_COUNTER_ID = "1111"
 

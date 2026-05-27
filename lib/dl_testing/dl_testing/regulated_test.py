@@ -14,7 +14,6 @@ from typing import (
 import attr
 import pytest
 
-
 _FUNC_META_ATTR = "_regulated_test_function_meta"
 
 

@@ -7,7 +7,6 @@ import ciso8601
 import pytz
 import pytz.tzinfo
 
-
 # TODO: re-check and document the useful differences between
 # `datetime.timezone.utc` and `pytz.utc`.
 UTC = datetime.UTC

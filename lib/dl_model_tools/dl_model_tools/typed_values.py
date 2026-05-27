@@ -15,7 +15,6 @@ import attr
 
 from dl_constants.enums import UserDataType
 
-
 _INNER_TYPE = TypeVar("_INNER_TYPE")
 
 

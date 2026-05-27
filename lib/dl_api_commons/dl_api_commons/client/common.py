@@ -18,7 +18,6 @@ from dl_api_commons.client.base import (
 )
 import dl_api_commons.exc
 
-
 LOGGER = logging.getLogger(__name__)
 
 

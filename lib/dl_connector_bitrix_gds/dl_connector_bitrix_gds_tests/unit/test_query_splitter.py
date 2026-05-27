@@ -15,7 +15,6 @@ from dl_query_processing.enums import ExecutionLevel
 
 from dl_connector_bitrix_gds.api.multi_query import BitrixGDSMultiQuerySplitter
 
-
 RESULT_SCHEMA = ResultSchema(
     [
         BIField.make(

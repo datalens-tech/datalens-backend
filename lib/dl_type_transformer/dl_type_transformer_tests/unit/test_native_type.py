@@ -13,7 +13,6 @@ from dl_type_transformer.native_type import (
 )
 from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
-
 SAMPLE_NATIVE_TYPES = (
     GenericNativeType(name="tinyblob"),
     CommonNativeType(name="double_precision", nullable=True),

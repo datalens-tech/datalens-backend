@@ -8,7 +8,6 @@ import dl_app_api_base.headers as headers
 import dl_app_api_base.request_context as request_context
 import dl_logging
 
-
 LOGGER = logging.getLogger(__name__)
 
 

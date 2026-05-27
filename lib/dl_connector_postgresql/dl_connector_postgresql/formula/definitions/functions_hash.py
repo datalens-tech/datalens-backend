@@ -8,7 +8,6 @@ import dl_formula.definitions.functions_hash as base
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 V = TranslationVariant.make
 
 

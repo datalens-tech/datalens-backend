@@ -77,7 +77,6 @@ from dl_formula_testing.database import (
     make_db_from_config,
 )
 
-
 try:
     from dl_formula_ref.examples.data_prep import DataPreparer
 except exc.ParserNotFoundError:

@@ -15,7 +15,6 @@ from dl_connector_promql.core.adapter import (
 )
 from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
 
-
 if TYPE_CHECKING:
     from dl_connector_promql.core.dto import PromQLConnDTO
 

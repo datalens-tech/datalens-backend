@@ -80,7 +80,6 @@ from .request_context import (
     RequestContextProviderProtocol,
 )
 
-
 __all__ = [
     "AlwaysAllowAuthChecker",
     "AlwaysAllowAuthResult",

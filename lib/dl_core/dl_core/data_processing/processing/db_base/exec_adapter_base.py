@@ -28,7 +28,6 @@ from dl_core.query.bi_query import QueryAndResultInfo
 from dl_core.utils import make_id
 from dl_utils.streaming import AsyncChunkedBase
 
-
 if TYPE_CHECKING:
     from dl_api_commons.reporting.records import ReportingRecord
     from dl_api_commons.reporting.registry import ReportingRegistry

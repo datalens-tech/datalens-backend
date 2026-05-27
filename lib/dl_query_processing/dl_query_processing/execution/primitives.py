@@ -12,7 +12,6 @@ from dl_constants.types import TBIDataRow
 from dl_core.utils import attrs_evolve_to_subclass
 from dl_query_processing.translation.primitives import TranslatedQueryMetaInfo
 
-
 _META_TV = TypeVar("_META_TV", bound="ExecutedQueryMetaInfo")
 
 

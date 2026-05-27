@@ -7,7 +7,6 @@ import dl_formula.definitions.functions_string as base
 
 from dl_connector_mssql.formula.constants import MssqlDialect as D
 
-
 V = TranslationVariant.make
 
 

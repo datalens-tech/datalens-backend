@@ -12,7 +12,6 @@ from .services import (
     ZitadelSyncTokenStorage,
 )
 
-
 __all__ = [
     "AioHTTPMiddleware",
     "FlaskMiddleware",

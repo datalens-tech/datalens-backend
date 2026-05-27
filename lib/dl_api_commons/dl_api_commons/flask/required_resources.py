@@ -8,7 +8,6 @@ from flask import (
     request,
 )
 
-
 logger = logging.getLogger(__name__)
 
 

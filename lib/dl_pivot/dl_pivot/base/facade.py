@@ -17,7 +17,6 @@ from dl_pivot.primitives import (
     DataCellVector,
 )
 
-
 if TYPE_CHECKING:
     from dl_pivot.base.data_frame import PivotDataFrame
     from dl_pivot.base.paginator import PivotPaginator

@@ -10,7 +10,6 @@ from dl_cache_engine.cache_invalidation.engine import (
 )
 from dl_core.utils import FutureRef
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
 

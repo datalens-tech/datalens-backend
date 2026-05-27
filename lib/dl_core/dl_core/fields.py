@@ -31,7 +31,6 @@ from dl_core.components.ids import FieldId
 from dl_core.exc import FieldNotFound
 from dl_model_tools.typed_values import BIValue
 
-
 LOGGER = logging.getLogger(__name__)
 
 

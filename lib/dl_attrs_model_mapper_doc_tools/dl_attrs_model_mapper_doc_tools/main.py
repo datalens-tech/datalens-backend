@@ -93,14 +93,12 @@ class Docs:
                 type_text = scalar_type.__name__
 
             return [
-                (
-                    FieldLine(
-                        path,
-                        type_text=type_text,
-                        nullable=cp.allow_none,
-                        required=cp.required,
-                        description=description,
-                    )
+                FieldLine(
+                    path,
+                    type_text=type_text,
+                    nullable=cp.allow_none,
+                    required=cp.required,
+                    description=description,
                 )
             ]
 

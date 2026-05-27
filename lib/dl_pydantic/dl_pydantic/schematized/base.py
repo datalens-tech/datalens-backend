@@ -6,7 +6,6 @@ from typing import (
     TypeVar,
 )
 
-
 _T = TypeVar("_T")
 LOGGER = logging.getLogger(__name__)
 

@@ -12,7 +12,6 @@ from .types import (
     JsonSerializableSequence,
 )
 
-
 __all__ = [
     "JsonSerializable",
     "JsonSerializableMapping",

@@ -5,7 +5,6 @@ from dl_core.connection_executors.qe_serializer.serializer import (
     ResponseTypes,
 )
 
-
 __all__ = (
     "ActionSerializer",
     "ResponseTypes",

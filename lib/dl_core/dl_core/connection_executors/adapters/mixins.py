@@ -18,7 +18,6 @@ from dl_type_transformer.native_type import (
     SATypeSpec,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

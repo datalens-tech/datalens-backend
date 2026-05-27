@@ -7,7 +7,6 @@ from dl_i18n.localizer_base import TranslationConfig
 
 import dl_connector_snowflake as package
 
-
 DOMAIN = f"{package.__name__}"
 CONFIGS = [
     TranslationConfig(

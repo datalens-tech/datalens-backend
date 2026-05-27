@@ -39,7 +39,6 @@ from dl_connector_snowflake.core.constants import (
 )
 from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry import ServicesRegistry
 

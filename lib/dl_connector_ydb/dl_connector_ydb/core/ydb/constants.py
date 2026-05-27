@@ -9,7 +9,6 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 
-
 BACKEND_TYPE_YDB = SourceBackendType.declare("YDB")
 
 CONNECTION_TYPE_YDB = ConnectionType.declare("ydb")

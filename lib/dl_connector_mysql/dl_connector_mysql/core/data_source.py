@@ -19,7 +19,6 @@ from dl_connector_mysql.core.constants import (
     SOURCE_TYPE_MYSQL_TABLE,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

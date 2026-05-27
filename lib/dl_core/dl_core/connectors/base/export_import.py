@@ -1,6 +1,5 @@
 from dl_constants.enums import ConnectionType
 
-
 _EXPORT_IMPORT_ALLOWED_BY_CONN_TYPE: dict[ConnectionType, bool] = {}
 
 

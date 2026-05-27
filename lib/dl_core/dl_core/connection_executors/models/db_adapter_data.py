@@ -13,7 +13,6 @@ import attr
 from sqlalchemy.sql.elements import ClauseElement
 from typing_extensions import Self
 
-
 if TYPE_CHECKING:
     from dl_constants.enums import IndexKind
     from dl_constants.types import TJSONExt

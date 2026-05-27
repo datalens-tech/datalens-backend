@@ -34,7 +34,6 @@ from dl_obfuscator import (
     create_base_obfuscators,
 )
 
-
 _TSettings = TypeVar("_TSettings", bound=AuthAPISettings)
 
 

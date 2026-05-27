@@ -27,7 +27,6 @@ from dl_core.data_processing.prepared_components.primitives import (
 from dl_core.query.bi_query import SqlSourceType
 from dl_core.query.expression import JoinOnExpressionCtx
 
-
 LOGGER = logging.getLogger(__name__)
 
 JoinExpressionType = Union[ClauseElement, str]

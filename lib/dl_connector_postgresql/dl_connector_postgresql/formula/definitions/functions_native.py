@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_native as base
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 DEFINITIONS_NATIVE = [
     base.DBCallInt.for_dialect(D.POSTGRESQL),
     base.DBCallFloat.for_dialect(D.POSTGRESQL),

@@ -38,7 +38,6 @@ from dl_configs.settings_loaders.meta_definition import (
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_utils.utils import get_type_full_name
 
-
 _SETTINGS_TV = TypeVar("_SETTINGS_TV")
 
 SEP = "_"

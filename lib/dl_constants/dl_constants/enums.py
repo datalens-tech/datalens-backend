@@ -22,7 +22,6 @@ from dl_dynamic_enum import (
     DynamicEnum,
 )
 
-
 _ENUM_TYPE = TypeVar("_ENUM_TYPE", bound=Enum)
 
 

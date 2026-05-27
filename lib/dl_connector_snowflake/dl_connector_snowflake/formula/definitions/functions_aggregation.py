@@ -10,7 +10,6 @@ from dl_formula.definitions.literals import un_literal
 
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
-
 V = TranslationVariant.make
 
 

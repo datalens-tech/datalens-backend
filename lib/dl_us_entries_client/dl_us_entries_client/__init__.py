@@ -31,7 +31,6 @@ from .models import (
 )
 from .protocols import TenantProtocol
 
-
 __all__ = [
     "BaseRequest",
     "Entry",

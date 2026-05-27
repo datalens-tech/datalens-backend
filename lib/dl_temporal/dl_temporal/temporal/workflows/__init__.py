@@ -4,7 +4,6 @@ from .sync_schedules_from_dynconfig import (
     SyncSchedulesFromDynconfigWorkflowResult,
 )
 
-
 __all__ = [
     "SyncSchedulesFromDynconfigWorkflow",
     "SyncSchedulesFromDynconfigWorkflowParams",

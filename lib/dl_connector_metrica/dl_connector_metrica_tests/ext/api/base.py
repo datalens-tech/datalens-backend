@@ -37,7 +37,6 @@ from dl_connector_metrica_tests.ext.core.base import (
     BaseMetricaTestClass,
 )
 
-
 # The shared sample counter (44147844) does not always have data in the rolling
 # 60-day window that the Metrika dialect injects when no date filter is given.
 # Pin a known-populated week so the data API tests stay deterministic.

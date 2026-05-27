@@ -31,7 +31,6 @@ from dl_pivot.primitives import (
 from dl_pivot.sort_helpers import invert
 import dl_query_processing.exc as exc
 
-
 if TYPE_CHECKING:
     from dl_pivot.primitives import PivotMeasureSortingSettings
 

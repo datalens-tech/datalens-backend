@@ -3,7 +3,6 @@ import sqlalchemy
 import sqlalchemy.dialects.postgresql.psycopg2 as sqlalchemy_dialect_psycopg2
 import sqlalchemy.orm as sqlalchemy_orm
 
-
 SERVER_VERSION_INFO = (123, 45, 67, 89)
 SERVER_VERSION = ".".join(map(str, SERVER_VERSION_INFO))
 

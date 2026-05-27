@@ -13,7 +13,6 @@ from dl_formula.core.dialect import DialectCombo
 from dl_query_processing.multi_query.factory import MultiQueryMutatorFactoryBase
 from dl_query_processing.multi_query.mutators.base import MultiQueryMutatorBase
 
-
 LOGGER = logging.getLogger(__name__)
 
 

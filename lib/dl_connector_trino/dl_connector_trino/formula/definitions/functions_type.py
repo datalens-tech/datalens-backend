@@ -20,7 +20,6 @@ from dl_formula.translation.context import TranslationCtx
 from dl_connector_trino.formula.constants import TrinoDialect as D
 from dl_connector_trino.formula.definitions.functions_array import format_float
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

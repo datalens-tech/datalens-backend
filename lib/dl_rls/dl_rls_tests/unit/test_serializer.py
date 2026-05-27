@@ -11,7 +11,6 @@ from dl_rls.testing.testing_data import (
     config_to_comparable,
 )
 
-
 SUBJECTS = ["@sa:123", "@group:gg", "user1", "user2", "@sa:456"]
 
 

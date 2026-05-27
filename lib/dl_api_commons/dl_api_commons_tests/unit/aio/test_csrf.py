@@ -26,7 +26,6 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
     RequiredResourceCommon,
 )
 
-
 _SAMPLE_USER_ID = "123"
 _SAMPLE_TIMESTAMP = 1
 _VALID_CSRF_SECRET = "valid_secret"

@@ -78,7 +78,6 @@ import dl_logging
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_utils.utils import make_url
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
     from dl_core.connection_models.common_models import (

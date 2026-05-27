@@ -38,7 +38,6 @@ from dl_query_processing.legend.block_legend import BlockSpec
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_query_processing.postprocessing.primitives import PostprocessedQuery
 
-
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

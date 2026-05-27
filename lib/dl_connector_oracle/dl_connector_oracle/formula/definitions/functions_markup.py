@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_markup as base
 
 from dl_connector_oracle.formula.constants import OracleDialect as D
 
-
 DEFINITIONS_MARKUP = [
     # +
     base.BinaryPlusMarkup.for_dialect(D.ORACLE),

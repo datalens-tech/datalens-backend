@@ -6,7 +6,6 @@ import attrs
 import dl_httpx.error_transformers.base as base
 import dl_httpx.exceptions as exceptions
 
-
 LOGGER = logging.getLogger(__name__)
 
 

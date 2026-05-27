@@ -17,7 +17,6 @@ from dl_connector_starrocks.core.constants import (
     SOURCE_TYPE_STARROCKS_TABLE,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

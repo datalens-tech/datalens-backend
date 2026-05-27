@@ -8,7 +8,6 @@ from dl_connector_clickhouse_tests.db.formula.base import (
     ClickHouse_22_10TestBase,
 )
 
-
 CH_HASH_FUNCTION_SUPPORT = HashFunctionSupport(
     md5=True,
     sha1=True,

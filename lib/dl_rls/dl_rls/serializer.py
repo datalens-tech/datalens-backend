@@ -25,7 +25,6 @@ from dl_rls.utils import (
     split_by_quoted_quote,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

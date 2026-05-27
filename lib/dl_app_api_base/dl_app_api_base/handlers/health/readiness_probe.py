@@ -11,7 +11,6 @@ from dl_app_api_base.health import (
     SubsystemStatusSchema,
 )
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -15,7 +15,6 @@ import dl_zitadel.clients as clients
 import dl_zitadel.middlewares.models as middlewares_models
 import dl_zitadel.services as services
 
-
 LOGGER = logging.getLogger(__name__)
 
 

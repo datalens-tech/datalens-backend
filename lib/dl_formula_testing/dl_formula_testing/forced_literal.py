@@ -13,7 +13,6 @@ from dl_formula.definitions.base import (
 from dl_formula.definitions.registry import OPERATION_REGISTRY
 from dl_formula.definitions.type_strategy import FromArgs
 
-
 V = TranslationVariant.make
 
 

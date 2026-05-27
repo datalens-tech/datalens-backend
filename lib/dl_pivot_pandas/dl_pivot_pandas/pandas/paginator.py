@@ -12,7 +12,6 @@ from dl_pivot_pandas.pandas.data_frame import (
     PdVSeriesPivotDataFrame,
 )
 
-
 if TYPE_CHECKING:
     from dl_pivot.base.data_frame import PivotDataFrame
 

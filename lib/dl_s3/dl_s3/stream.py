@@ -8,7 +8,6 @@ from typing import (
     TypeVar,
 )
 
-
 _ITER_TV = TypeVar("_ITER_TV")
 
 

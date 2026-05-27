@@ -5,7 +5,6 @@ import dl_formula.definitions.operators_unary as base
 
 from dl_connector_oracle.formula.constants import OracleDialect as D
 
-
 V = TranslationVariant.make
 
 

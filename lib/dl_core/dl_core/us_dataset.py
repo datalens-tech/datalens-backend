@@ -50,7 +50,6 @@ from dl_i18n.localizer_base import Localizer
 from dl_rls.rls import RLS
 from dl_utils.utils import DataKey
 
-
 if TYPE_CHECKING:
     from dl_core.components.ids import FieldIdGenerator
 

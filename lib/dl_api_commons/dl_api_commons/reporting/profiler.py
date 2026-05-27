@@ -31,7 +31,6 @@ from dl_obfuscator import (
     OnObfuscationError,
 )
 
-
 if TYPE_CHECKING:
     from dl_api_commons.reporting.registry import ReportingRegistry
 

@@ -6,7 +6,6 @@ from json import dumps as json_dumps
 import os
 import socket
 
-
 __all__ = (
     "get_common_prefix",
     "get_context_data",

@@ -15,7 +15,6 @@ from dl_formula_ref.registry.example import (
 )
 from dl_formula_ref.registry.note import Note
 
-
 _ = get_gettext()
 
 _d = datetime.date

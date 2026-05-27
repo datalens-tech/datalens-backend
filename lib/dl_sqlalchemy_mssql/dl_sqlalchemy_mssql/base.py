@@ -14,7 +14,6 @@ from sqlalchemy.dialects.mssql.pyodbc import MSDialect_pyodbc as UPSTREAM
 
 from dl_sqlalchemy_common.base import CompilerPrettyMixin
 
-
 LOGGER = logging.getLogger(__name__)
 
 

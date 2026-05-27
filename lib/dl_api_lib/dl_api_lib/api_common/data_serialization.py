@@ -38,7 +38,6 @@ from dl_query_processing.legend.field_legend import LegendItem
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_utils.utils import enum_not_none
 
-
 LOGGER = logging.getLogger(__name__)
 
 

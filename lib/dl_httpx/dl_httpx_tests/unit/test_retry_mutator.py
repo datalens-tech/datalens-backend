@@ -5,7 +5,6 @@ import dl_constants
 from dl_httpx.retry_mutator import RequestIdRetryMutator
 import dl_retrier
 
-
 REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
 
 

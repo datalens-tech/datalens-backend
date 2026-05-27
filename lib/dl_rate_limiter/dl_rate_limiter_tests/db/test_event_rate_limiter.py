@@ -8,7 +8,6 @@ import redis.asyncio
 
 import dl_rate_limiter
 
-
 DEFAULT_WINDOW_MS = 10000
 
 

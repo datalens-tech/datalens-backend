@@ -5,7 +5,6 @@ import pytest
 
 import dl_pydantic
 
-
 STRING_VALUE = "123e4567-e89b-12d3-a456-426614174000"
 JSON_VALUE = f'"{STRING_VALUE}"'
 ORIGINAL = uuid.UUID(STRING_VALUE)

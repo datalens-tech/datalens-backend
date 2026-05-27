@@ -9,7 +9,6 @@ from dl_type_transformer.type_transformer import (
     make_native_type,
 )
 
-
 CH_TYPES_INT = frozenset(
     (
         ch_types.Int,

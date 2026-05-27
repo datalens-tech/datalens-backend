@@ -26,7 +26,6 @@ import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 import dl_connector_ydb.core.base.row_converters
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import BaseSQLConnTargetDTO  # noqa: F401
     from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo

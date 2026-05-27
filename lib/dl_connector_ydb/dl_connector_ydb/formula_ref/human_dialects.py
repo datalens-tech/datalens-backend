@@ -2,7 +2,6 @@ from dl_formula_ref.texts import StyledDialect
 
 from dl_connector_ydb.formula.constants import YqlDialect
 
-
 HUMAN_DIALECTS = {
     YqlDialect.YDB: StyledDialect(
         "`YDB`",

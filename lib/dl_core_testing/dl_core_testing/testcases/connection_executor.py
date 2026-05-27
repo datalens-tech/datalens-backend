@@ -47,7 +47,6 @@ from dl_type_transformer.native_type import (
     norm_native_type,
 )
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.async_base import AsyncConnExecutorBase
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase

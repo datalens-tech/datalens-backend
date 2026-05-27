@@ -1,7 +1,6 @@
 import aiohttp
 import pytest
 
-
 TEST_USER_IP = "123.45.67.89"
 
 

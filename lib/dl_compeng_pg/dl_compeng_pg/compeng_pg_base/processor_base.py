@@ -21,7 +21,6 @@ from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 
-
 _POOL_TV = TypeVar("_POOL_TV", bound=BasePgPoolWrapper)
 _CONN_TV = TypeVar("_CONN_TV")
 

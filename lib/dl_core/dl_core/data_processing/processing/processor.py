@@ -31,7 +31,6 @@ from dl_core.data_processing.stream_base import (
     DataStreamAsync,
 )
 
-
 if TYPE_CHECKING:
     from dl_api_commons.reporting.registry import ReportingRegistry
 

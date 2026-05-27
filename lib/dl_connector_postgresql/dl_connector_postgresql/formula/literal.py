@@ -17,7 +17,6 @@ from dl_formula.core.dialect import DialectCombo
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 PG_SMALLINT_MIN = -32768
 PG_SMALLINT_MAX = 32767
 PG_INTEGER_MIN = -2147483648

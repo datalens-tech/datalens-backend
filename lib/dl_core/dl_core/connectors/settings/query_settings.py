@@ -5,7 +5,6 @@ from typing_extensions import Self
 
 import dl_settings
 
-
 LOGGER = logging.getLogger(__name__)
 
 

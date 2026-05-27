@@ -18,7 +18,6 @@ from dl_formula_ref.examples.query_gen import QueryGenerator
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
-
 if TYPE_CHECKING:
     from dl_formula.core import nodes
 

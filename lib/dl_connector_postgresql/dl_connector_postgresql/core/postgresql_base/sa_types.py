@@ -16,7 +16,6 @@ from dl_connector_postgresql.core.postgresql_base.type_transformer import (
     PG_TYPES_STRING,
 )
 
-
 SQLALCHEMY_POSTGRES_BASE_TYPES = (
     *PG_TYPES_INT,
     *PG_TYPES_FLOAT,

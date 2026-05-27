@@ -39,7 +39,6 @@ from dl_model_tools.typed_values import (
     UuidValue,
 )
 
-
 VALUE_TYPE_CONTEXT_KEY = "bi_value_type"
 
 

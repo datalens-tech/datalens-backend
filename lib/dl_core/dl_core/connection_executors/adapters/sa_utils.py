@@ -18,7 +18,6 @@ from dl_obfuscator import (
 )
 from dl_obfuscator.engine import ObfuscationEngine
 
-
 LOGGER = logging.getLogger(__name__)
 
 

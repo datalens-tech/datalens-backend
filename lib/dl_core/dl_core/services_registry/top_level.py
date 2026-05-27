@@ -40,7 +40,6 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import USE
 from dl_core.utils import FutureRef
 from dl_task_processor.processor import TaskProcessorFactory
 
-
 if TYPE_CHECKING:
     from dl_constants.enums import ConnectionType
     from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService

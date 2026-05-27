@@ -1,7 +1,6 @@
 from dl_constants.enums import ConnectionType
 from dl_core.connectors.settings.base import ConnectorSettings
 
-
 CONNECTORS_SETTINGS_ROOT_FALLBACK_ENV_KEYS: dict[str, str] = {}
 
 

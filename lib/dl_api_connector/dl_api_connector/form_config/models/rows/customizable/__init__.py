@@ -18,7 +18,6 @@ from .components import (
     StyleItem,
 )
 
-
 __all__ = (
     "CheckboxRowItem",
     "CustomizableRow",

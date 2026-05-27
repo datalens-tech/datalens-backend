@@ -5,7 +5,6 @@ from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_mssql.core.constants import BACKEND_TYPE_MSSQL
 
-
 SQLALCHEMY_MSSQL_BASE_TYPES = (
     ms_types.TINYINT,
     ms_types.SMALLINT,

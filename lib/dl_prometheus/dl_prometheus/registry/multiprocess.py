@@ -17,7 +17,6 @@ import prometheus_client.values
 
 import dl_prometheus.registry.base as base
 
-
 LOGGER = logging.getLogger(__name__)
 
 

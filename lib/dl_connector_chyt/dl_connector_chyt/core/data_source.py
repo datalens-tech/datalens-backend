@@ -53,7 +53,6 @@ from dl_connector_clickhouse.core.clickhouse_base.data_source import (
     CommonClickHouseSubselectDataSource,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

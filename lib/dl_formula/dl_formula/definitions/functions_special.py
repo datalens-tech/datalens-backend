@@ -9,7 +9,6 @@ from dl_formula.definitions.base import (
 from dl_formula.definitions.scope import Scope
 from dl_formula.definitions.type_strategy import Fixed
 
-
 V = TranslationVariant.make
 
 

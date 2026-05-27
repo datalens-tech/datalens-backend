@@ -35,7 +35,6 @@ from dl_connector_ydb.core.ydb.constants import (
 )
 from dl_connector_ydb.core.ydb.target_dto import YDBConnTargetDTO
 
-
 if TYPE_CHECKING:
     from dl_core.connection_models import (
         PageIdent,

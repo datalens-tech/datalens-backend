@@ -18,7 +18,6 @@ import attr
 from dl_attrs_model_mapper.utils import MText
 from dl_dynamic_enum import DynamicEnum
 
-
 _CLS_T = TypeVar("_CLS_T", bound=type)
 _DESCRIPTOR_T = TypeVar("_DESCRIPTOR_T", bound="BaseClassDescriptor")
 

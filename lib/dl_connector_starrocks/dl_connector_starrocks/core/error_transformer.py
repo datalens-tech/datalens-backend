@@ -10,7 +10,6 @@ from dl_core.connectors.base.error_transformer import DbErrorTransformer
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
 
-
 TABLE_DOES_NOT_EXIST_ERROR_CODES = (
     1051,  # StarRocks <= 3.2 "Unknown table"
     5502,  # StarRocks >= 3.4 "Getting analyzing error. Detail message: Unknown table"

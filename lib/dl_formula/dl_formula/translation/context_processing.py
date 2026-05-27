@@ -3,7 +3,6 @@ from functools import lru_cache
 from dl_formula.connectors.base.context_processor import ContextPostprocessor
 from dl_formula.core.dialect import DialectCombo
 
-
 _CONTEXT_PROCESSORS: dict[DialectCombo, ContextPostprocessor] = {}
 
 

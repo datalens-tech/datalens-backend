@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 from dl_core.connections_security.base import ConnectionSecurityManager
 
-
 if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
 

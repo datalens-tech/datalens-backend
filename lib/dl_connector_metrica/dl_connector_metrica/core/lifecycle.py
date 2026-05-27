@@ -8,7 +8,6 @@ from dl_sqlalchemy_metrica_api.exceptions import MetrikaApiAccessDeniedException
 
 from dl_connector_metrica.core.us_connection import MetrikaBaseMixin
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -4,7 +4,6 @@ import typing
 
 import dl_zitadel.clients as dl_zitadel_clients
 
-
 LOGGER = logging.getLogger(__name__)
 
 

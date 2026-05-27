@@ -17,7 +17,6 @@ from dl_api_commons.logging import (
     RequestObfuscator,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 LOG_HELPER = RequestLogHelper(logger=LOGGER)
 

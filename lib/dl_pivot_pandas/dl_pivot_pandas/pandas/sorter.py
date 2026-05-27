@@ -33,7 +33,6 @@ from dl_pivot_pandas.pandas.data_frame import (
 )
 import dl_query_processing.exc as exc
 
-
 if TYPE_CHECKING:
     from dl_pivot.primitives import PivotMeasureSortingSettings
 

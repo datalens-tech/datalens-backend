@@ -11,7 +11,6 @@ import pydantic_core
 from dl_dynamic_enum import DynamicEnum
 import dl_pydantic.schematized.base as base
 
-
 _DYNAMIC_ENUM_TV = TypeVar("_DYNAMIC_ENUM_TV", bound=DynamicEnum)
 
 

@@ -8,7 +8,6 @@ from dl_dynamic_enum import (
     DynamicEnum,
 )
 
-
 BACKEND_TYPE_TRINO = SourceBackendType.declare("TRINO")
 CONNECTION_TYPE_TRINO = ConnectionType.declare("trino")
 SOURCE_TYPE_TRINO_TABLE = DataSourceType.declare("TRINO_TABLE")

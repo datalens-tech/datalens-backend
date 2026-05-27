@@ -10,7 +10,6 @@ from sqlalchemy.exc import DatabaseError
 
 from dl_sqlalchemy_metrica_api import exceptions
 
-
 registry.register("metrika_api", "dl_sqlalchemy_metrica_api.base", "MetrikaApiDialect")
 registry.register("appmetrica_api", "dl_sqlalchemy_metrica_api.base", "AppMetricaApiDialect")
 

@@ -14,7 +14,6 @@ from dl_formula.definitions.literals import un_literal
 
 from dl_connector_mssql.formula.constants import MssqlDialect as D
 
-
 V = TranslationVariant.make
 
 

@@ -13,7 +13,6 @@ import typing_extensions
 
 from dl_constants.enums import ConnectionType
 
-
 DEFAULT_ROOT_CERTIFICATES_FILENAME = "/etc/ssl/certs/ca-certificates.crt"
 TEMP_ROOT_CERTIFICATES_FOLDER_PATH = "/tmp/ssl/certs/"
 

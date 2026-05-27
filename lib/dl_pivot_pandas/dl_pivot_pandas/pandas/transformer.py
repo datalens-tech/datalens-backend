@@ -31,7 +31,6 @@ from dl_pivot_pandas.pandas.facade import (
 import dl_query_processing.exc
 from dl_query_processing.merging.primitives import MergedQueryDataRow
 
-
 if TYPE_CHECKING:
     from dl_pivot.base.facade import TableDataFacade
     from dl_pivot.stream_modifiers import TransposedDataRow

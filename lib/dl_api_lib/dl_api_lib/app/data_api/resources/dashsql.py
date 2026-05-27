@@ -46,7 +46,6 @@ from dl_query_processing.postprocessing.postprocessors.all import (
 )
 from dl_query_processing.utils.datetime import parse_datetime
 
-
 LOGGER = logging.getLogger(__name__)
 
 

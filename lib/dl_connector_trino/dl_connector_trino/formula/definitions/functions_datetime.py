@@ -10,7 +10,6 @@ from dl_formula.shortcuts import n
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

@@ -29,7 +29,6 @@ from dl_query_processing.execution.executor import QueryExecutor
 from dl_query_processing.execution.primitives import ExecutedQuery
 from dl_query_processing.legend.block_legend import BlockSpec
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TBIDataValue
     from dl_query_processing.compilation.filter_compiler import FilterFormulaCompiler

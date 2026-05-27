@@ -9,7 +9,6 @@ from typing_extensions import Self
 from dl_auth_api_lib.oauth.base import BaseOAuth
 from dl_auth_api_lib.settings import BaseOAuthClient
 
-
 _AUTH_URL: str = "https://accounts.google.com/o/oauth2/v2/auth?"
 _TOKEN_URL: str = "https://oauth2.googleapis.com/token"
 

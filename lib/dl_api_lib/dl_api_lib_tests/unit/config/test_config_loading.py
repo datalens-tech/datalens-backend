@@ -20,7 +20,6 @@ from dl_configs.rqe import RQEConfig
 from dl_configs.settings_loaders.loader_env import load_settings_from_env_with_fallback
 from dl_core.core_connectors import load_all_connectors
 
-
 TEST_CONFIG_PATH = Path(test_directory.__file__).parent / "config.yaml"
 
 CRYPTO_KEYS_CONFIG = CryptoKeysConfig(

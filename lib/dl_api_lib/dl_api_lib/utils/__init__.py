@@ -17,7 +17,6 @@ from .base import (  # ...
     query_execution_context,
 )
 
-
 __all__ = (
     "check_permission_on_entry",
     "enrich_resp_dict_with_data_export_info",

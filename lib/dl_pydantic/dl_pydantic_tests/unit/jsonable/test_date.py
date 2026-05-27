@@ -5,7 +5,6 @@ import pytest
 
 import dl_pydantic
 
-
 JSON_VALUE = '"2025-01-02"'
 ORIGINAL = datetime.date(2025, 1, 2)
 EXPECTED = dl_pydantic.JsonableDate(2025, 1, 2)

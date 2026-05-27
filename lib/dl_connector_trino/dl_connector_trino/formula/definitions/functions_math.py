@@ -8,7 +8,6 @@ from dl_formula.shortcuts import n
 from dl_connector_trino.formula.constants import TrinoDialect as D
 from dl_connector_trino.formula.definitions.custom_constructors import TrinoArray
 
-
 V = TranslationVariant.make
 
 cast_int = lambda x: sa.cast(sa.func.floor(x), sa.BIGINT())

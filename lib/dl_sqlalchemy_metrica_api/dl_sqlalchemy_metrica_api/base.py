@@ -36,7 +36,6 @@ from dl_sqlalchemy_metrica_api.exceptions import (
     NotSupportedError,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

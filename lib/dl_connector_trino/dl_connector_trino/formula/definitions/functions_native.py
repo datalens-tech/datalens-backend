@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_native as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
 
-
 DEFINITIONS_NATIVE = [
     base.DBCallInt.for_dialect(D.TRINO),
     base.DBCallFloat.for_dialect(D.TRINO),

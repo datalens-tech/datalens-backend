@@ -22,7 +22,6 @@ import attr
 from dl_core import exc
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncDirectDBAdapter
 
-
 if TYPE_CHECKING:
     from aiohttp import BasicAuth
 

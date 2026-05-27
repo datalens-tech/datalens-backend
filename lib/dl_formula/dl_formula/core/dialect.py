@@ -1,4 +1,4 @@
-""" ... """
+"""..."""
 
 from __future__ import annotations
 
@@ -20,7 +20,6 @@ from dl_dynamic_enum import (
     AutoEnumValue,
     DynamicEnum,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 

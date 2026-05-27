@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     import dl_formula_ref.registry.base as _registry_base
     from dl_formula_ref.registry.env import GenerationEnvironment

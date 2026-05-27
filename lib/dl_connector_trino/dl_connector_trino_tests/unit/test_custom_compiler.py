@@ -5,7 +5,6 @@ import sqlalchemy as sa
 
 from dl_connector_trino.core.adapters import CustomTrinoDialect
 
-
 QUERY_TEMPLATE = """
 SELECT
     t1.int,

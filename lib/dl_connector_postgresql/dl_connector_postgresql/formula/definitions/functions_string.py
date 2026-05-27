@@ -15,7 +15,6 @@ from dl_formula.shortcuts import n
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

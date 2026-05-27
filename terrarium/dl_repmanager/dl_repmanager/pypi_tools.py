@@ -4,7 +4,6 @@ Simple methods to get package info from public PyPI
 
 import requests
 
-
 DEFAULT_ENDPOINT = "https://pypi.org/pypi/"
 
 

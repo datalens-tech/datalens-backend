@@ -15,7 +15,6 @@ from dl_pivot.native.data_frame import (
 )
 from dl_pivot.primitives import DataCellVector
 
-
 if TYPE_CHECKING:
     from dl_pivot.base.data_frame import PivotDataFrame
 

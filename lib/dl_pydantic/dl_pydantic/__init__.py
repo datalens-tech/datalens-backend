@@ -29,7 +29,6 @@ from .typed import (
     TypedSchemaListAnnotation,
 )
 
-
 __all__ = [
     "BaseModel",
     "BaseSchema",

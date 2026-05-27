@@ -38,7 +38,6 @@ from dl_api_connector.form_config.models.rows.prepared.base import PreparedRow
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_i18n.localizer_base import Localizer
 
-
 if TYPE_CHECKING:
     from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 

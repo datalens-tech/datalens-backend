@@ -12,7 +12,6 @@ from dl_formula_ref.registry.arg_base import (
     FuncArg,
 )
 
-
 if TYPE_CHECKING:
     import dl_formula_ref.registry.base as _registry_base
     from dl_formula_ref.registry.env import GenerationEnvironment

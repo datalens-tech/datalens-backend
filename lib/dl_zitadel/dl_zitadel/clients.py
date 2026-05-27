@@ -7,7 +7,6 @@ import httpx
 
 import dl_httpx
 
-
 LOGGER = logging.getLogger(__name__)
 
 

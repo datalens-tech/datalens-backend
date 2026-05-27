@@ -10,7 +10,6 @@ from typing_extensions import Self
 from dl_auth_api_lib.oauth.base import BaseOAuth
 from dl_auth_api_lib.settings import BaseOAuthClient
 
-
 _AUTH_URL: str = "https://oauth.yandex.ru/authorize?"
 _TOKEN_URL: str = "https://oauth.yandex.ru/token"
 

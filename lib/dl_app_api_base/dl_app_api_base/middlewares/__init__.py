@@ -4,7 +4,6 @@ from .logging_context import (
     StaticLoggingContext,
 )
 
-
 __all__ = [
     "LoggingContextMiddleware",
     "LoggingMiddleware",

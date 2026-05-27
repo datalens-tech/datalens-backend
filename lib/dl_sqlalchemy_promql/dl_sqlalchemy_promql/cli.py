@@ -12,7 +12,6 @@ from .errors import (
     NotSupportedError,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

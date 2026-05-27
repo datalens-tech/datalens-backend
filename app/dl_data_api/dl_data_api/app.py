@@ -21,7 +21,6 @@ from dl_core.connectors.settings.registry import CONNECTORS_SETTINGS_ROOT_FALLBA
 from dl_data_api.app_factory import StandaloneDataApiAppFactory
 import dl_logging
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -22,7 +22,6 @@ from dl_connector_chyt.core.target_dto import (
     CHYTConnTargetDTO,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

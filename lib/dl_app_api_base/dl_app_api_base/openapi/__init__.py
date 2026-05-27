@@ -12,7 +12,6 @@ from .protocols import (
 )
 from .settings import OpenApiSettings
 
-
 __all__ = [
     "OpenApiHandler",
     "OpenApiHandlerProtocol",

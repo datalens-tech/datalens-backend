@@ -32,7 +32,6 @@ from dl_connector_trino.core.constants import (
 from dl_connector_trino.core.dto import TrinoConnDTO
 from dl_connector_trino.core.settings import TrinoConnectorSettings
 
-
 TRINO_SYSTEM_CATALOGS = (
     "system",
     "tpch",

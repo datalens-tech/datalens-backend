@@ -105,7 +105,6 @@ from dl_rls.models import (
     RLSSubject,
 )
 
-
 if TYPE_CHECKING:
     from dl_api_client.dsmaker.primitives import JoinPart
 

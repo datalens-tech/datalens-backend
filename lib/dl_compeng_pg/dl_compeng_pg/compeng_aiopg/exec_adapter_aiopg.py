@@ -27,7 +27,6 @@ from dl_utils.streaming import (
     AsyncChunkedBase,
 )
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TBIDataValue
 

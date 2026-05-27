@@ -10,7 +10,6 @@ from typing import (
 
 import dateutil.parser
 
-
 spaces_in_numbers_re = re.compile(r"(?<=\d) (?=\d)")
 
 

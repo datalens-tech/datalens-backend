@@ -15,7 +15,6 @@ from dl_db_testing.loader import load_db_testing_lib
 import dl_logging
 from dl_utils.wait import wait_for
 
-
 if TYPE_CHECKING:
     from docker import DockerClient
 

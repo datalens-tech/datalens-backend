@@ -13,7 +13,6 @@ from dl_core.us_manager.storage_schemas.base import (
 )
 from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
-
 LOGGER = logging.getLogger(__name__)
 
 

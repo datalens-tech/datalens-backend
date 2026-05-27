@@ -42,7 +42,6 @@ from dl_type_transformer.exc import UnsupportedNativeTypeError
 from dl_type_transformer.native_type import GenericNativeType
 from dl_type_transformer.type_transformer import TypeTransformer
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.async_adapters_base import AsyncDBAdapter
 

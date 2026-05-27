@@ -5,7 +5,6 @@ from .certificates import (
     CertificatesSettings,
 )
 
-
 __all__ = [
     "CertificatesAppFactoryMixin",
     "CertificatesAppMixin",

@@ -21,7 +21,6 @@ from .format import (
 )
 from .settings import Settings
 
-
 __all__ = (
     "DeployJsonFormatter",
     "FastLogsFilter",

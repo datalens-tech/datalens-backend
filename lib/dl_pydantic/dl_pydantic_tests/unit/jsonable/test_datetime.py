@@ -5,7 +5,6 @@ import pytest
 
 import dl_pydantic
 
-
 ORIGINAL = datetime.datetime(2025, 1, 2, 3, 4, 5, 6)
 EXPECTED = dl_pydantic.JsonableDatetime(2025, 1, 2, 3, 4, 5, 6)
 

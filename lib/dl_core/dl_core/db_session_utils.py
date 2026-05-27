@@ -21,7 +21,6 @@ from dl_app_tools.profiling_base import GenericProfiler
 from dl_constants.enums import SourceBackendType
 from dl_core import exc
 
-
 LOGGER = logging.getLogger(__name__)
 
 

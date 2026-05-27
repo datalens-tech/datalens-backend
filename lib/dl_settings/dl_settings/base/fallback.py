@@ -7,7 +7,6 @@ import pydantic_settings
 
 import dl_settings.base.settings as base_settings
 
-
 LOGGER = logging.getLogger(__name__)
 
 

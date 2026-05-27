@@ -31,7 +31,6 @@ from dl_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_4TestBase,
 )
 
-
 # STR
 
 

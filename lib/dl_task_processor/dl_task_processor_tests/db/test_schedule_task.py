@@ -13,7 +13,6 @@ from dl_task_processor_tests.utils import (
     WaitingTaskInterface,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

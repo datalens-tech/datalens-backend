@@ -19,7 +19,6 @@ from .request_rate_limiter import (
     SyncRequestRateLimiterProtocol,
 )
 
-
 __all__ = [
     "AioHTTPMiddleware",
     "AsyncEventRateLimiterProtocol",

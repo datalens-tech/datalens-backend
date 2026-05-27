@@ -43,7 +43,6 @@ from dl_utils.streaming import (
     LazyAsyncChunked,
 )
 
-
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Select
 

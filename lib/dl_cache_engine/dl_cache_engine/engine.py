@@ -100,7 +100,6 @@ from dl_model_tools.serialization import (
     common_loads,
 )
 
-
 if TYPE_CHECKING:
     from redis.asyncio import Redis
 

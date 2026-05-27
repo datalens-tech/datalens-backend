@@ -16,7 +16,6 @@ from dl_connector_mssql.core.constants import (
 )
 from dl_connector_mssql.core.query_compiler import MSSQLQueryCompiler
 
-
 LOGGER = logging.getLogger(__name__)
 
 

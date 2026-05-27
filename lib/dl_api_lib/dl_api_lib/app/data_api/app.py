@@ -91,7 +91,6 @@ from dl_obfuscator import (
     create_base_obfuscators,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

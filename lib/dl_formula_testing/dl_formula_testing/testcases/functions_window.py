@@ -16,7 +16,6 @@ import sqlalchemy as sa
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
-
 NUMERIC = Union[decimal.Decimal, int, float]
 
 

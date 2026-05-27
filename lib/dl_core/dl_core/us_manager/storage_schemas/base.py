@@ -20,7 +20,6 @@ from marshmallow import (
 
 import dl_json
 
-
 if TYPE_CHECKING:
     from dl_core.us_manager.us_manager import USManagerBase  # noqa
 

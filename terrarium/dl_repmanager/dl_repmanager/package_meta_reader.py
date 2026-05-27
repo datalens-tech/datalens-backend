@@ -21,7 +21,6 @@ from dl_repmanager.toml_tools import (
     TOMLWriter,
 )
 
-
 log = logging.getLogger(__name__)
 
 

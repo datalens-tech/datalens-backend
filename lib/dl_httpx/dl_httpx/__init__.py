@@ -56,7 +56,6 @@ from .transport_adapters import (
     TransportAdapterProtocol,
 )
 
-
 __all__ = [
     "BaseHttpxClientException",
     "BaseRequest",

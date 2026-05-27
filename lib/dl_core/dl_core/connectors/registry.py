@@ -9,7 +9,6 @@ import dl_core as package
 from dl_core.connectors.base.connector import CoreConnector
 from dl_utils.entrypoints import EntrypointClassManager
 
-
 _CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 

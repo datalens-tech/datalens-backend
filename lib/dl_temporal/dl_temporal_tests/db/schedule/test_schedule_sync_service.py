@@ -14,7 +14,6 @@ import dl_temporal
 import dl_temporal.schedule
 import dl_temporal_tests.db.common as common
 
-
 LOGGER = logging.getLogger(__name__)
 
 

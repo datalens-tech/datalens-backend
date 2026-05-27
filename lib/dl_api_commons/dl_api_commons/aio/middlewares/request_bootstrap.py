@@ -27,7 +27,6 @@ from dl_api_commons.logging import RequestLoggingContextController
 from dl_api_commons.reporting.records import RequestResultReportingRecord
 from dl_utils.aio import timeout
 
-
 LOGGER = logging.getLogger(__name__)
 
 

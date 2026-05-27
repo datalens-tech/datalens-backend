@@ -20,7 +20,6 @@ from dl_core.query.expression import (
     OrderByExpressionCtx,
 )
 
-
 SqlSourceType = Union[FromClause, TextClause]
 
 

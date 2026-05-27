@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry import ServicesRegistry
 

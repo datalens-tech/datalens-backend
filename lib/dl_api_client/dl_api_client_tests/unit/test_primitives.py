@@ -9,7 +9,6 @@ from dl_constants.enums import (
     UserDataType,
 )
 
-
 # FIXME: This is practically a dummy. Add tests please
 
 

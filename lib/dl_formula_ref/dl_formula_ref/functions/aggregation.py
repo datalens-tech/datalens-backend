@@ -13,7 +13,6 @@ from dl_formula_ref.registry.example import (
     SimpleExample,
 )
 
-
 _ = get_gettext()
 
 _d = datetime.date

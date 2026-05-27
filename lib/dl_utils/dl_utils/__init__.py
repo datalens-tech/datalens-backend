@@ -8,7 +8,6 @@ from .wait import (
     wait_for,
 )
 
-
 __all__ = [
     "append_retry_suffix",
     "await_for",

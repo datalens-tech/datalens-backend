@@ -18,7 +18,6 @@ from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 
-
 _TARGET_DTO_TV = TypeVar("_TARGET_DTO_TV", bound=BaseSQLConnTargetDTO)
 
 

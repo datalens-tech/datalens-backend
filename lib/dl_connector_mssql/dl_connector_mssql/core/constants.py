@@ -4,7 +4,6 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 
-
 BACKEND_TYPE_MSSQL = SourceBackendType.declare("MSSQL")
 CONNECTION_TYPE_MSSQL = ConnectionType.declare("mssql")
 SOURCE_TYPE_MSSQL_TABLE = DataSourceType.declare("MSSQL_TABLE")

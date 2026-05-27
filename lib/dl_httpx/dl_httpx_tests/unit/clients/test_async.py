@@ -19,7 +19,6 @@ import dl_httpx
 import dl_logging
 import dl_retrier
 
-
 LOGGER = logging.getLogger(__name__)
 REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value
 TRACE_ID_HEADER = dl_constants.DLHeadersCommon.UBER_TRACE_ID.value

@@ -18,7 +18,6 @@ from dl_formula.definitions.type_strategy import (
     FromArgs,
 )
 
-
 V = TranslationVariant.make
 
 

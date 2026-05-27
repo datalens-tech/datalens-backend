@@ -11,7 +11,6 @@ import attr
 from sqlalchemy.types import TypeEngine
 from typing_extensions import Self
 
-
 SATypeSpec = Union[type[TypeEngine], TypeEngine, str, None]
 
 

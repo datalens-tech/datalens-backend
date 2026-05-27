@@ -12,7 +12,6 @@ from dl_formula_ref.registry.note import (
     NoteLevel,
 )
 
-
 _ = get_gettext()
 
 

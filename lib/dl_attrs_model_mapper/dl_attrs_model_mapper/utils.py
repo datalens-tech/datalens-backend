@@ -12,7 +12,6 @@ import attr
 
 from dl_attrs_model_mapper.structs.mappings import FrozenStrMapping
 
-
 Locale = Union[Literal["ru"], Literal["en"]]
 
 

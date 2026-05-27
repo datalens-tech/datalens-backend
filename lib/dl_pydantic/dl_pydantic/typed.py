@@ -16,7 +16,6 @@ from typing_extensions import Self
 import dl_pydantic.base as base
 import dl_pydantic.exceptions as exceptions
 
-
 LOGGER = logging.getLogger(__name__)
 
 

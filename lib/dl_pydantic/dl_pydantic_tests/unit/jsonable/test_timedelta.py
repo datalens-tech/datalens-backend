@@ -5,7 +5,6 @@ import pytest
 
 import dl_pydantic
 
-
 JSON_VALUE = '"P9DT3H4M5.006007S"'
 ORIGINAL = datetime.timedelta(weeks=1, days=2, hours=3, minutes=4, seconds=5, milliseconds=6, microseconds=7)
 EXPECTED = dl_pydantic.JsonableTimedelta(weeks=1, days=2, hours=3, minutes=4, seconds=5, milliseconds=6, microseconds=7)

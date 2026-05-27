@@ -7,7 +7,6 @@ from dl_formula.definitions.literals import un_literal
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
-
 V = TranslationVariant.make
 
 

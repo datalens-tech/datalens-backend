@@ -39,7 +39,6 @@ from dl_connector_metrica.core.dto import (
     MetricaAPIConnDTO,
 )
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors import SyncConnExecutorBase
     from dl_core.services_registry.top_level import ServicesRegistry

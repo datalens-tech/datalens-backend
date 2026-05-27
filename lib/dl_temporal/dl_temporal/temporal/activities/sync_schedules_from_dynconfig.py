@@ -5,7 +5,6 @@ import attrs
 
 import dl_temporal.base as base
 
-
 LOGGER = logging.getLogger(__name__)
 
 

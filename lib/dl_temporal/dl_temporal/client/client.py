@@ -16,7 +16,6 @@ import dl_temporal.base as base
 import dl_temporal.client.exc as exc
 import dl_temporal.client.metadata as metadata
 
-
 LOGGER = logging.getLogger(__name__)
 
 

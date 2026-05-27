@@ -16,7 +16,6 @@ from typing_extensions import Self
 import dl_json
 import dl_pydantic
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -16,7 +16,6 @@ from dl_connector_chyt.core.us_connection import (
     ConnectionCHYTToken,
 )
 
-
 _CHYT_CONN_DATA_TV = TypeVar("_CHYT_CONN_DATA_TV", bound=BaseConnectionCHYT.DataModel)
 
 

@@ -3,7 +3,6 @@ from dl_constants.enums import UserDataType
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 from dl_testing.containers import get_test_container_hostport
 
-
 # Infra settings
 CORE_TEST_CONFIG = CoreTestEnvironmentConfiguration(
     host_us_http=get_test_container_hostport("us", fallback_port=51700).host,

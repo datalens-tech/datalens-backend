@@ -14,7 +14,6 @@ from dl_formula_ref.primitives import (
     NoteType,
 )
 
-
 if TYPE_CHECKING:
     from dl_formula.core.dialect import DialectCombo
     from dl_formula_ref.audience import Audience

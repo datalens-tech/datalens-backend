@@ -6,7 +6,6 @@ import pydantic
 import dl_httpx
 import dl_pydantic
 
-
 EntryId: TypeAlias = str
 
 

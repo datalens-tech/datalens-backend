@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_native as base
 
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
-
 DEFINITIONS_NATIVE = [
     base.DBCallInt.for_dialect(D.BIGQUERY),
     base.DBCallFloat.for_dialect(D.BIGQUERY),

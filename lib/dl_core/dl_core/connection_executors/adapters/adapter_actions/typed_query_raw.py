@@ -15,7 +15,6 @@ from dl_dashsql.typed_query.primitives import (
 )
 from dl_utils.utils import hide_url_args
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.async_adapters_base import AsyncDBAdapter
 

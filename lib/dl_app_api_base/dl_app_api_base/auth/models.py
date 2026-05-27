@@ -3,7 +3,6 @@ import re
 
 import attr
 
-
 LOGGER = logging.getLogger(__name__)
 
 _DEFAULT_ROUTE_MATCHER_METHODS = frozenset(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])

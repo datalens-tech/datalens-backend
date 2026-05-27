@@ -19,7 +19,6 @@ from dl_connector_postgresql.core.postgresql_base.exc import (
     PostgresSourceDoesNotExistError,
 )
 
-
 sync_pg_db_error_transformer: DbErrorTransformer = ChainedDbErrorTransformer(
     [
         Rule(

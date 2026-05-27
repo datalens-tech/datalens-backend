@@ -22,7 +22,6 @@ from dl_app_tools.profiling_base import (
 from dl_pivot.pivot_legend import PivotLegend
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 
-
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 
@@ -32,7 +31,6 @@ if TYPE_CHECKING:
     from dl_query_processing.legend.field_legend import Legend
 
 from dl_constants.api_constants import DLHeadersCommon
-
 
 LOGGER = logging.getLogger(__name__)
 

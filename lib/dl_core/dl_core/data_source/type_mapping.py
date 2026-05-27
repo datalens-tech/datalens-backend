@@ -6,7 +6,6 @@ from dl_constants.enums import (
 )
 from dl_core.data_source.base import DataSource
 
-
 _DSRC_TYPES: dict[DataSourceType, type[DataSource]] = {}
 
 

@@ -14,7 +14,6 @@ from .oauth import (
     OAuthResult,
 )
 
-
 __all__ = [
     "AlwaysAllowAuthChecker",
     "AlwaysAllowAuthResult",

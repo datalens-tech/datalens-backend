@@ -18,7 +18,6 @@ from typing import (
 import attr
 import flask
 
-
 if TYPE_CHECKING:
     from dl_api_commons.flask.types import (
         WSGICallable,

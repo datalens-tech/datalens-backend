@@ -3,7 +3,6 @@ import dl_formula.definitions.functions_string as base
 
 from dl_connector_metrica.formula.constants import MetricaDialect as D
 
-
 V = TranslationVariant.make
 
 

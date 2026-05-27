@@ -6,7 +6,6 @@ import dl_api_lib as package
 from dl_i18n.localizer_base import Translatable as BaseTranslatable
 from dl_i18n.localizer_base import TranslationConfig
 
-
 DOMAIN = f"{package.__name__}"
 CONFIGS = [
     TranslationConfig(

@@ -7,7 +7,6 @@ from dl_type_transformer.type_transformer import (
     make_native_type,
 )
 
-
 STARROCKS_TYPES_INT = frozenset((mysql_types.TINYINT, mysql_types.SMALLINT, mysql_types.INTEGER, mysql_types.BIGINT))
 STARROCKS_TYPES_FLOAT = frozenset((mysql_types.FLOAT, mysql_types.DOUBLE, mysql_types.DECIMAL))
 STARROCKS_TYPES_STRING = frozenset((mysql_types.CHAR, mysql_types.VARCHAR, mysql_types.TEXT))

@@ -17,7 +17,6 @@ import dl_temporal_tests.db.activities as activities
 import dl_temporal_tests.db.workflows as workflows
 import dl_testing
 
-
 DIR_PATH = os.path.dirname(__file__)
 LOGGER = logging.getLogger(__name__)
 

@@ -5,7 +5,6 @@ from marshmallow import validate as ma_validate
 
 from dl_auth_api_lib.schemas.base import BaseRequestSchema
 
-
 VALID_SYMBOLS = string.ascii_letters + string.digits + "-_."
 
 

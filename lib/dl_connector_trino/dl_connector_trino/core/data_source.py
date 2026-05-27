@@ -17,7 +17,6 @@ from dl_connector_trino.core.constants import (
     SOURCE_TYPE_TRINO_TABLE,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

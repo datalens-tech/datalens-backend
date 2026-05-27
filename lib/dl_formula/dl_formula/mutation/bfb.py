@@ -6,7 +6,6 @@ from typing import Optional
 import dl_formula.core.nodes as nodes
 from dl_formula.mutation.mutation import FormulaMutation
 
-
 LOGGER = logging.getLogger(__name__)
 
 

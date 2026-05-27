@@ -5,7 +5,6 @@ import dl_formula.definitions.functions_logical as base
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
 
-
 V = TranslationVariant.make
 
 

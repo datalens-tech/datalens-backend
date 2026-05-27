@@ -14,7 +14,6 @@ from dl_formula.translation.columns import register_column_renderer_cls
 from dl_formula.translation.context_processing import register_context_processor
 from dl_formula.translation.sa_dialects import register_sa_dialect
 
-
 _REGISTERED: set[type[FormulaConnector]] = set()
 
 

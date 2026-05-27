@@ -12,7 +12,6 @@ from dl_api_commons.aiohttp.required_resources import (
 import dl_api_commons.base_models as dl_api_commons_base_models
 import dl_auth_native.middlewares.base as middlewares_base
 
-
 LOGGER = logging.getLogger(__name__)
 
 

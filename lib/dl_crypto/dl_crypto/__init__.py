@@ -6,7 +6,6 @@ from .main import (
 )
 from .settings import CryptoKeysSettings
 
-
 __all__ = [
     "CryptoController",
     "CryptoKeysProtocol",

@@ -13,7 +13,6 @@ from dl_formula.definitions.type_strategy import Fixed
 
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
-
 V = TranslationVariant.make
 
 

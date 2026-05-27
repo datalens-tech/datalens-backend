@@ -11,7 +11,6 @@ from dl_obfuscator import (
     get_request_obfuscation_engine,
 )
 
-
 log = logging.getLogger()
 
 SECRET_VAR_RE = re.compile(

@@ -16,7 +16,6 @@ from dl_connector_oracle.core.constants import (
     SOURCE_TYPE_ORACLE_TABLE,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

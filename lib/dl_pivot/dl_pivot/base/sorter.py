@@ -15,7 +15,6 @@ from dl_pivot.sort_strategy import (
 )
 import dl_query_processing.exc as exc
 
-
 if TYPE_CHECKING:
     from dl_pivot.base.data_frame import PivotDataFrame
     from dl_pivot.pivot_legend import PivotLegend

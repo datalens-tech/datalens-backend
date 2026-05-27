@@ -1,7 +1,6 @@
 from dl_constants.enums import DataSourceType
 from dl_core.data_source_spec.base import DataSourceSpec
 
-
 _DSRC_SPEC_CLASSES: dict[DataSourceType, type[DataSourceSpec]] = {}
 
 

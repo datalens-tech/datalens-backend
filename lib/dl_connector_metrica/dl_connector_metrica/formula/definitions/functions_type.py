@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_type as base
 
 from dl_connector_metrica.formula.constants import MetricaDialect as D
 
-
 DEFINITIONS_TYPE = [
     # datetime
     base.FuncDatetime1FromDatetime.for_dialect(D.METRIKAAPI),

@@ -17,7 +17,6 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset as USDataset
 from dl_core.us_entry import USEntry
 
-
 PermissionPatch = Callable[[USEntry, USPermissionKind], bool]
 
 

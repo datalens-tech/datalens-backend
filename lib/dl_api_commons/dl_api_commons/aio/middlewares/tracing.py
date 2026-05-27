@@ -19,7 +19,6 @@ from dl_api_commons.aio.middlewares.commons import (
 )
 from dl_api_commons.logging_tracing import OpenTracingLoggingContextController
 
-
 LOGGER = logging.getLogger(__name__)
 
 

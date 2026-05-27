@@ -10,7 +10,6 @@ from .null import (
 )
 from .status_map import StatusMapTransformer
 
-
 __all__ = [
     "ChainTransformer",
     "CodeMapTransformer",

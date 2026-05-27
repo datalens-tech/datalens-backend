@@ -25,7 +25,6 @@ from dl_formula.definitions.type_strategy import (
 from dl_formula.shortcuts import n
 from dl_formula.translation.context import TranslationCtx
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

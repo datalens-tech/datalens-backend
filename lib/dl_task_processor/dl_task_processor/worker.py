@@ -29,7 +29,6 @@ from dl_task_processor.context import BaseContextFabric
 from dl_task_processor.executor import ExecutorFabric
 from dl_task_processor.upstream_worker import Worker
 
-
 LOGGER = logging.getLogger(__name__)
 
 CONTEXT_KEY = "bi_context"

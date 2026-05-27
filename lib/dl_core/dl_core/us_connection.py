@@ -14,7 +14,6 @@ from dl_core.us_connection_base import (
     UnknownConnection,
 )
 
-
 CONNECTION_TYPES: dict[ConnectionType, type[ConnectionBase]] = {
     ConnectionType.unknown: UnknownConnection,
 }

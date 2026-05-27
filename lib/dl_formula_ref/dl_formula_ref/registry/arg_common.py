@@ -23,7 +23,6 @@ from dl_formula_ref.texts import (
     FROM_ARGS,
 )
 
-
 if TYPE_CHECKING:
     from dl_formula_ref.registry.arg_base import FuncArg
     import dl_formula_ref.registry.base as _registry_base

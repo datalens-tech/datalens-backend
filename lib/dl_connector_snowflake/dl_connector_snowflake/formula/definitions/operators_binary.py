@@ -6,7 +6,6 @@ import dl_formula.definitions.operators_binary as base
 
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
-
 V = TranslationVariant.make
 
 

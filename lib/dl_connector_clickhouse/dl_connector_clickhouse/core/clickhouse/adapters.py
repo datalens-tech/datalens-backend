@@ -12,7 +12,6 @@ from dl_connector_clickhouse.core.clickhouse_base.adapters import (
 from dl_connector_clickhouse.core.clickhouse_base.ch_commons import ClickHouseUtils
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
-
 LOGGER = logging.getLogger(__name__)
 
 

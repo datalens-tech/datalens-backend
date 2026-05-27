@@ -17,7 +17,6 @@ from dl_attrs_model_mapper.utils import (
     unwrap_container_stack_with_single_type,
 )
 
-
 _TARGET_TV = TypeVar("_TARGET_TV", bound=attr.AttrsInstance)
 _PROCESSING_OBJECT_TV = TypeVar("_PROCESSING_OBJECT_TV")
 

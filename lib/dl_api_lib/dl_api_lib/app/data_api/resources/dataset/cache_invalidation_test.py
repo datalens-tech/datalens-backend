@@ -47,7 +47,6 @@ from dl_query_processing.enums import (
     QueryType,
 )
 
-
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

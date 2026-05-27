@@ -16,7 +16,6 @@ from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_PO
 from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceCollateMode
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 
-
 # One way to obtain this data:
 # docker exec bi-api_db-postgres_1 psql -U datalens -d  bi_db -A -t -F, -c 'select oid, typname from pg_type order by oid'
 OID_KNOWLEDGE_RAW = """
@@ -377,8 +376,7 @@ class PostgresQueryConstructorMixin:
     def get_list_all_tables_query(
         self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
     ) -> sa.sql.elements.TextClause:
-        sql_parts = [
-            """
+        sql_parts = ["""
         SELECT
             pg_namespace.nspname as schema,
             pg_class.relname as name
@@ -391,8 +389,7 @@ class PostgresQueryConstructorMixin:
             AND pg_namespace.nspname != 'information_schema'
             AND pg_class.relkind in ('m', 'p', 'r', 'v')
             AND NOT COALESCE((row_to_json(pg_class)->>'relispartition')::boolean, false)
-        """
-        ]
+        """]
 
         if search_text:
             sql_parts.append("AND (pg_namespace.nspname || '.' || pg_class.relname) ILIKE :search_text")
@@ -409,12 +406,10 @@ class PostgresQueryConstructorMixin:
     def get_list_schema_names_query(
         self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
     ) -> sa.sql.elements.TextClause:
-        sql_parts = [
-            """
+        sql_parts = ["""
         SELECT nspname FROM pg_namespace
         WHERE nspname NOT LIKE 'pg\_%'
-        """
-        ]
+        """]
 
         if search_text:
             sql_parts.append("AND nspname ILIKE :search_text")
@@ -431,15 +426,13 @@ class PostgresQueryConstructorMixin:
     def get_list_table_and_view_names_query(
         self, schema_name: str, search_text: str | None = None, limit: int | None = None, offset: int | None = None
     ) -> sa.sql.elements.TextClause:
-        sql_parts = [
-            """
+        sql_parts = ["""
         SELECT c.relname FROM pg_class c
         JOIN pg_namespace n ON n.oid = c.relnamespace
         WHERE n.nspname = :schema
         AND c.relkind in ('r', 'p', 'v', 'm')
         AND NOT COALESCE((row_to_json(c)->>'relispartition')::boolean, false)
-        """
-        ]
+        """]
 
         if search_text:
             sql_parts.append("AND c.relname ILIKE :search_text")

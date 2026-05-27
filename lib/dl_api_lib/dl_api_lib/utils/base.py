@@ -1,4 +1,4 @@
-""" ... """
+"""..."""
 
 from __future__ import annotations
 
@@ -24,7 +24,6 @@ from dl_api_lib.common_models.data_export import (
 from dl_api_lib.enums import USPermissionKind
 from dl_core.base_models import WorkbookEntryLocation
 import dl_core.exc as common_exc
-
 
 if TYPE_CHECKING:
     from dl_core.us_entry import USEntry

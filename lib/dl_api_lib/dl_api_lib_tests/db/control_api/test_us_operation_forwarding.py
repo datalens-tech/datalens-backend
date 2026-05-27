@@ -10,7 +10,6 @@ from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_core.enums import USEntryMode
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
-
 SAMPLE_OPERATION = {"id": "op-test-123", "done": False, "metadata": {}}
 
 

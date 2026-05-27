@@ -19,7 +19,6 @@ from dl_connector_clickhouse.core.clickhouse_base.conn_options import CHConnectO
 from dl_connector_clickhouse.core.clickhouse_base.dto import ClickHouseConnDTO
 from dl_connector_clickhouse.core.clickhouse_base.target_dto import ClickHouseConnTargetDTO
 
-
 _BASE_CLICKHOUSE_ADAPTER_TV = TypeVar("_BASE_CLICKHOUSE_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 

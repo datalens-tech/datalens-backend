@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import attr
 
-
 if TYPE_CHECKING:
     from dl_constants.enums import DataSourceRole
     from dl_core.us_connection_base import ClassicConnectionSQL

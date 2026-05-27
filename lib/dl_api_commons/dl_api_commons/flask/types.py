@@ -4,7 +4,6 @@ from typing import (
     Iterable,
 )
 
-
 WSGIEnviron = dict[str, Any]
 WSGIStartResponse = Callable[[str, list[tuple[str, str]], Any], Any]
 WSGIReturn = Iterable[bytes]

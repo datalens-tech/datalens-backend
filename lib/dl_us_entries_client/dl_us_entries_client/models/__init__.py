@@ -8,7 +8,6 @@ from .entry import (
 )
 from .ping import PingRequest
 
-
 __all__ = [
     "BaseRequest",
     "Entry",

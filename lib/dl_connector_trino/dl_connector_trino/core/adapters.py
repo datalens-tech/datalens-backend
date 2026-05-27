@@ -43,7 +43,6 @@ from dl_connector_trino.core.error_transformer import (
 )
 from dl_connector_trino.core.target_dto import TrinoConnTargetDTO
 
-
 TRINO_SYSTEM_SCHEMAS = ("information_schema",)
 
 

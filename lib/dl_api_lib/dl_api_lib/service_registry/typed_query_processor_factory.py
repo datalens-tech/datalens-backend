@@ -17,7 +17,6 @@ from dl_dashsql.typed_query.processor.cache import (
     DefaultTypedQueryCacheKeyBuilder,
 )
 
-
 if TYPE_CHECKING:
     from dl_cache_engine.engine import EntityCacheEngineAsync
     from dl_core.services_registry.top_level import ServicesRegistry  # noqa

@@ -11,7 +11,6 @@ from dl_formula_testing.testcases.functions_type_conversion import (
 
 from dl_connector_bigquery_tests.ext.formula.base import BigQueryTestBase
 
-
 # STR
 
 

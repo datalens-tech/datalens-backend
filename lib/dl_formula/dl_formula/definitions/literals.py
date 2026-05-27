@@ -21,7 +21,6 @@ from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.nodes import BaseLiteral
 from dl_formula.utils.datetime import make_datetime_value
 
-
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx
 

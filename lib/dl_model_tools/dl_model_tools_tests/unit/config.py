@@ -14,7 +14,6 @@ from dl_type_transformer.native_type import (
     LengthedNativeType,
 )
 
-
 TZINFO = datetime.timezone(datetime.timedelta(seconds=-1320))
 SAMPLE_DATA: dict[str, Any] = dict(
     # Scalars

@@ -68,7 +68,6 @@ from dl_connector_postgresql.core.postgresql_base.error_transformer import make_
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 from dl_connector_postgresql.core.postgresql_base.utils import compile_pg_query
 
-
 _DBA_ASYNC_POSTGRES_TV = TypeVar("_DBA_ASYNC_POSTGRES_TV", bound="AsyncPostgresAdapter")
 
 LOGGER = logging.getLogger(__name__)

@@ -24,7 +24,6 @@ import dl_query_processing.exc
 import dl_rls.exc
 import dl_type_transformer.exc
 
-
 LOGGER = logging.getLogger(__name__)
 
 status = http.HTTPStatus

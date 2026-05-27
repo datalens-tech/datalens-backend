@@ -6,7 +6,6 @@ from .entry import (
     PrivateEntryPostResponse,
 )
 
-
 __all__ = [
     "PingRequest",
     "PrivateEntryDeleteRequest",

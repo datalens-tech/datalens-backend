@@ -7,7 +7,6 @@ from .no_transport_adapter import (
     NoTransportAdapterSettings,
 )
 
-
 __all__ = [
     "BaseTransportAdapterSettings",
     "NoTransportAdapter",

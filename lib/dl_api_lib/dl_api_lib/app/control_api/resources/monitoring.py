@@ -27,7 +27,6 @@ from dl_api_lib.app.control_api.resources import API
 from dl_api_lib.app.control_api.resources.base import BIResource
 from dl_constants.exc import DLBaseException
 
-
 LOGGER = logging.getLogger(__name__)
 
 ns = API.namespace("Monitoring", path="/", description="Monitoring endpoints")

@@ -5,7 +5,6 @@ from dl_constants.enums import (
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import BACKEND_TYPE_CLICKHOUSE
 
-
 BACKEND_TYPE_CHYT = BACKEND_TYPE_CLICKHOUSE
 CONNECTION_TYPE_CHYT = ConnectionType.declare("chyt")
 

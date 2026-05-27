@@ -7,7 +7,6 @@ import dl_formula.definitions.functions_math as base
 
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
-
 V = TranslationVariant.make
 
 DEFINITIONS_MATH = [

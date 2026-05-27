@@ -12,7 +12,6 @@ from dl_constants.exc import (
     DLBaseException,
 )
 
-
 KEY_PREFIX = "cache_inval_"
 
 

@@ -21,7 +21,6 @@ from dl_app_tools.profiling_base import (
 from dl_constants.enums import MigrationStatus
 from dl_core.exc import UnknownEntryMigration
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry import ServicesRegistry
 

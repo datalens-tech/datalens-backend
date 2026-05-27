@@ -17,7 +17,6 @@ from dl_query_processing.multi_query.tools import (
 )
 from dl_query_processing.utils.name_gen import PrefixedIdGen
 
-
 LOGGER = logging.getLogger(__name__)
 
 

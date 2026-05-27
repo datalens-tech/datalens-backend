@@ -18,7 +18,6 @@ from dl_obfuscator.request_context import (
 )
 from dl_obfuscator.secret_keeper import SecretKeeper
 
-
 OBFUSCATION_BASE_OBFUSCATORS_KEY = "OBFUSCATION_BASE_OBFUSCATORS"
 
 __all__ = [

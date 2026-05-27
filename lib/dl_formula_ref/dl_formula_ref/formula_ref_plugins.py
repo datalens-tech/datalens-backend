@@ -10,7 +10,6 @@ from dl_formula_ref.plugins.base.plugin import FormulaRefPlugin
 from dl_formula_ref.plugins.registration import FORMULA_REF_PLUGIN_REG
 from dl_utils.entrypoints import EntrypointClassManager
 
-
 _PLUGIN_EP_GROUP = f"{package.__name__}.plugins"
 
 

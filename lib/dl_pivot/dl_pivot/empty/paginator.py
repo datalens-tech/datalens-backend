@@ -8,7 +8,6 @@ from typing import (
 from dl_pivot.base.paginator import PivotPaginator
 from dl_pivot.empty.data_frame import EmptyPivotDataFrame
 
-
 if TYPE_CHECKING:
     from dl_pivot.base.data_frame import PivotDataFrame
 

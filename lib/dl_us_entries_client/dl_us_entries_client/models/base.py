@@ -5,7 +5,6 @@ import attrs
 import dl_httpx
 from dl_us_entries_client.protocols.tenant import TenantProtocol
 
-
 LOGGER = logging.getLogger(__name__)
 
 

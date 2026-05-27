@@ -11,7 +11,6 @@ from .models import (
     EntryPostResponse,
 )
 
-
 __all__ = [
     "EntryDeleteRequest",
     "EntryGetRequest",

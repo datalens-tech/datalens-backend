@@ -5,7 +5,6 @@ import dl_formula.definitions.functions_logical as base
 
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
-
 V = TranslationVariant.make
 
 

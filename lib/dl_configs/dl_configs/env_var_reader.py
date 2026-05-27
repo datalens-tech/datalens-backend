@@ -12,7 +12,6 @@ from typing import (
     overload,
 )
 
-
 _RET_TV = TypeVar("_RET_TV")
 _FACTORY_RET_TV = TypeVar("_FACTORY_RET_TV")
 

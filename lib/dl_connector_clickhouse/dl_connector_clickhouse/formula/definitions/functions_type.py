@@ -24,7 +24,6 @@ from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

@@ -7,7 +7,6 @@ import attrs
 
 import dl_settings
 
-
 LOGGER = logging.getLogger(__name__)
 
 

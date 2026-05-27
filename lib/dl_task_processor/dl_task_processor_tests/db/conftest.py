@@ -31,7 +31,6 @@ from dl_task_processor_tests.utils import (
 )
 from dl_testing.containers import get_test_container_hostport
 
-
 LOGGER = logging.getLogger(__name__)
 
 

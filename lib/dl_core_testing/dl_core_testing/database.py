@@ -37,7 +37,6 @@ from dl_db_testing.database.engine_wrapper import get_engine_wrapper_cls_for_url
 from dl_type_transformer.sa_types import make_sa_type
 from dl_type_transformer.type_transformer import get_type_transformer
 
-
 if TYPE_CHECKING:
     from dl_type_transformer.type_transformer import TypeTransformer
 

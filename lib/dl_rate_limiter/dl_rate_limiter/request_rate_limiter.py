@@ -6,7 +6,6 @@ import attr
 
 import dl_rate_limiter.event_rate_limiter as event_rate_limiter
 
-
 logger = logging.getLogger(__name__)
 
 

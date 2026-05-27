@@ -19,7 +19,6 @@ import attr
 from dl_api_commons.headers import normalize_header_name
 import dl_logging
 
-
 LOGGER = logging.getLogger(__name__)
 
 NON_TRANSITIVE_LOGGING_CTX_KEYS = frozenset(

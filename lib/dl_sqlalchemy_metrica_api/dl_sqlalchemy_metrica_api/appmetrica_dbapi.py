@@ -39,7 +39,6 @@ from dl_sqlalchemy_metrica_api.exceptions import (  # noqa
     Warning,
 )
 
-
 apilevel = "2.0"
 threadsafety = 2
 paramstyle = "pyformat"

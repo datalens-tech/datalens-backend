@@ -24,7 +24,6 @@ from dl_pivot.primitives import (
     SortAxis,
 )
 
-
 if TYPE_CHECKING:
     from dl_pivot.primitives import (
         MeasureValues,

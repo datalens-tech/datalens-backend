@@ -13,7 +13,6 @@ from dl_core.us_entry import USEntry
 from dl_core.us_manager.mutation_cache.mutation_key_base import MutationKey
 from dl_core.us_manager.us_manager import USManagerBase
 
-
 LOGGER = logging.getLogger(__name__)
 
 

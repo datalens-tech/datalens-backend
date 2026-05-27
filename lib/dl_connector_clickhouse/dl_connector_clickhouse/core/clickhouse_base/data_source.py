@@ -13,7 +13,6 @@ from dl_core.data_source.sql import (
 
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 
-
 LOGGER = logging.getLogger(__name__)
 
 

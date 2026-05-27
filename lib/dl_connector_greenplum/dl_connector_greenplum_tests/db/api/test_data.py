@@ -12,7 +12,6 @@ from dl_connector_greenplum_tests.db.api.base import (
     GP7DataApiTestBase,
 )
 
-
 # GP6
 
 

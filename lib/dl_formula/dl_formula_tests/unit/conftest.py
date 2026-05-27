@@ -9,7 +9,6 @@ from dl_formula_testing.configuration import FormulaTestEnvironmentConfiguration
 from dl_formula_testing.forced_literal import forced_literal_use  # noqa
 from dl_formula_testing.initialization import initialize_formula_test
 
-
 PARSERS = (ParserType.antlr_py,)
 
 

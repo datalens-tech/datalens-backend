@@ -4,7 +4,6 @@ from functools import lru_cache
 import json
 from typing import Optional
 
-
 DUMMY_GEO_VALUE = "__DUMMY_GEO_VALUE__"
 
 

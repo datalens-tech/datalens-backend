@@ -34,7 +34,6 @@ from dl_dashsql.registry import register_dash_sql_param_literalizer_cls
 from dl_type_transformer.sa_types import register_sa_types
 from dl_type_transformer.type_transformer import register_type_transformer_class
 
-
 if TYPE_CHECKING:
     from dl_core.connections_security.base import ConnSecuritySettings  # noqa: F401
 

@@ -3,7 +3,6 @@ import itertools
 import logging
 from typing import Any
 
-
 LOGGER = logging.getLogger(__name__)
 
 import attr
@@ -32,7 +31,6 @@ from dl_query_processing.multi_query.splitters.mask_based import (
     SubqueryType,
 )
 from dl_query_processing.utils.name_gen import PrefixedIdGen
-
 
 _JOIN_TYPE_MAP = {
     formula_fork_nodes.JoinType.inner: JoinType.inner,

@@ -19,7 +19,6 @@ from .validators import (
     split_validator,
 )
 
-
 __all__ = [
     "BaseRootSettings",
     "BaseRootSettingsWithFallback",

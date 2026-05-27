@@ -11,7 +11,6 @@ from dl_api_commons.aio.middlewares.error_handling_outer import (
 )
 from dl_core.connection_executors.qe_serializer import ActionSerializer
 
-
 LOGGER = logging.getLogger(__name__)
 
 

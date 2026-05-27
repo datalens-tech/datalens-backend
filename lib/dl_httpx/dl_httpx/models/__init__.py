@@ -13,7 +13,6 @@ from .base import (
     ParentContextProtocol,
 )
 
-
 __all__ = [
     "BaseRequest",
     "BaseResponseSchema",

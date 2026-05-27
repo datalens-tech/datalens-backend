@@ -12,7 +12,6 @@ from dl_core.data_processing.processing.cache.exec_adapter import CacheExecAdapt
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry.cache_engine_factory import CacheEngineFactory
 

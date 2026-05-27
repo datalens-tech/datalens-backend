@@ -5,7 +5,6 @@ import dl_formula.definitions.functions_special as base
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 V = TranslationVariant.make
 
 

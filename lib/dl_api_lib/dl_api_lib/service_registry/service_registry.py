@@ -36,7 +36,6 @@ from dl_i18n.localizer_base import (
 from dl_pivot.base.transformer_factory import PivotTransformerFactory
 from dl_rls.subject_resolver import BaseSubjectResolver
 
-
 if TYPE_CHECKING:
     from dl_api_lib.service_registry.dataset_validator_factory import DatasetValidatorFactory
 

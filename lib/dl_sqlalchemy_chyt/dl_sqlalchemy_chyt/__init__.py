@@ -8,7 +8,6 @@ from .base import (
     CHYTTableSubselect,
 )
 
-
 __all__ = (
     "BICHYTDialect",
     "CHYTTableExpression",

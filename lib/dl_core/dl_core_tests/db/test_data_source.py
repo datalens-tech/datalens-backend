@@ -10,7 +10,6 @@ from dl_core_tests.db.base import DefaultCoreTestClass
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 
-
 FAKE_CREATED_FROM = DataSourceType.declare("FAKE_SOURCE")
 
 

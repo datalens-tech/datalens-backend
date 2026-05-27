@@ -22,7 +22,6 @@ import temporalio.workflow
 
 import dl_json
 
-
 with temporalio.workflow.unsafe.imports_passed_through():
     import dl_logging
     import dl_pydantic

@@ -10,7 +10,6 @@ import dl_formula.definitions.operators_binary as base
 
 from dl_connector_mysql.formula.constants import MySQLDialect as D
 
-
 V = TranslationVariant.make
 
 

@@ -16,7 +16,6 @@ from dl_configs.enums import RedisMode
 from dl_configs.settings_submodels import RedisSettings
 from dl_core.loader import CoreLibraryConfig
 
-
 LOGGER = logging.getLogger(__name__)
 
 

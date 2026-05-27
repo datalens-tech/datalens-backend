@@ -4,7 +4,6 @@ import orjson
 
 import dl_json.types as json_types
 
-
 dumps_bytes = orjson.dumps
 loads_bytes = orjson.loads
 

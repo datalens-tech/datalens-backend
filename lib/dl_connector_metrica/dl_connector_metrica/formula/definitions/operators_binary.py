@@ -2,7 +2,6 @@ import dl_formula.definitions.operators_binary as base
 
 from dl_connector_metrica.formula.constants import MetricaDialect as D
 
-
 DEFINITIONS_BINARY = [
     # !=
     base.BinaryNotEqual.for_dialect(D.METRIKAAPI),

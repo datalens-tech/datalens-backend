@@ -50,7 +50,6 @@ from dl_core.us_manager.us_manager import USManagerBase
 import dl_retrier
 from dl_utils.aio import await_sync
 
-
 if TYPE_CHECKING:
     from dl_constants.enums import ConnectionType
     from dl_core.lifecycle.factory_base import EntryLifecycleManagerFactoryBase

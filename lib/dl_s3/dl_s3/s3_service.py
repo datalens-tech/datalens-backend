@@ -20,7 +20,6 @@ import typing_extensions
 
 import dl_settings
 
-
 if TYPE_CHECKING:
     from mypy_boto3_s3.client import S3Client as SyncS3Client
     from types_aiobotocore_s3 import S3Client as AsyncS3Client

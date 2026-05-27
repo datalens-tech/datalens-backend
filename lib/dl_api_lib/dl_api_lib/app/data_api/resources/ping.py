@@ -31,7 +31,6 @@ from .base import (
     requires,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

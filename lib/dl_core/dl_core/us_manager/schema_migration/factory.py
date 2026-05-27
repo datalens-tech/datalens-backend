@@ -7,7 +7,6 @@ from dl_core.us_manager.schema_migration.base import BaseEntrySchemaMigration
 from dl_core.us_manager.schema_migration.dataset import DatasetSchemaMigration
 from dl_core.us_manager.schema_migration.factory_base import EntrySchemaMigrationFactoryBase
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry import ServicesRegistry
 

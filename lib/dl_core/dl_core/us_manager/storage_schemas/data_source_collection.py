@@ -12,7 +12,6 @@ from dl_core.us_manager.storage_schemas.base import (
 )
 from dl_core.us_manager.storage_schemas.data_source_spec import GenericDataSourceSpecStorageSchema
 
-
 LOGGER = logging.getLogger(__name__)
 
 

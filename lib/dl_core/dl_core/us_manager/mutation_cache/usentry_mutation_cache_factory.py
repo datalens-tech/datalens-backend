@@ -10,7 +10,6 @@ from dl_core.us_manager.mutation_cache.usentry_mutation_cache import (
 )
 from dl_core.us_manager.us_manager import USManagerBase
 
-
 LOGGER = logging.getLogger(__name__)
 
 

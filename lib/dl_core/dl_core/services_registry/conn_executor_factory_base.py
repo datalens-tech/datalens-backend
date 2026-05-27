@@ -32,7 +32,6 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core.utils import FutureRef
 from dl_utils.aio import get_thread_loop
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors import (
         AsyncConnExecutorBase,

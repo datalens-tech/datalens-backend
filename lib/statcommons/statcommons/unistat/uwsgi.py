@@ -14,7 +14,6 @@ from .common import (
     maybe_float_size,
 )
 
-
 __all__ = ("uwsgi_unistat",)
 
 

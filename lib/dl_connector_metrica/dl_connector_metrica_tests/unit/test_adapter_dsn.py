@@ -8,7 +8,6 @@ from dl_connector_metrica.core.adapters_metrica_x import MetricaAPIDefaultAdapte
 from dl_connector_metrica.core.constants import CONNECTION_TYPE_METRICA_API
 from dl_connector_metrica.core.target_dto import MetricaAPIConnTargetDTO
 
-
 register_dialect_string(CONNECTION_TYPE_METRICA_API, "metrika_api")
 
 

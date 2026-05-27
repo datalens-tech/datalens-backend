@@ -14,7 +14,6 @@ from typing import (
 
 import attr
 
-
 if TYPE_CHECKING:
     from dl_cache_engine.primitives import LocalKeyRepresentation
     from dl_constants.enums import UserDataType

@@ -16,7 +16,6 @@ import uuid
 from anyascii import anyascii
 import attr
 
-
 if TYPE_CHECKING:
     from dl_core.us_dataset import Dataset
 

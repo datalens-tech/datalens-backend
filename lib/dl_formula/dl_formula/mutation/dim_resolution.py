@@ -10,7 +10,6 @@ from dl_formula.inspect.env import InspectionEnvironment
 from dl_formula.inspect.expression import resolve_dimensions
 from dl_formula.mutation.mutation import FormulaMutation
 
-
 if TYPE_CHECKING:
     from dl_formula.collections import NodeSet
 

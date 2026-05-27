@@ -5,7 +5,6 @@ from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_bigquery.core.constants import BACKEND_TYPE_BIGQUERY
 
-
 SQLALCHEMY_BIGQUERY_TYPES = {
     (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.DATE)): simple_instantiator(bq_types.DATE),
     (BACKEND_TYPE_BIGQUERY, make_native_type(bq_types.DATETIME)): simple_instantiator(bq_types.DATETIME),

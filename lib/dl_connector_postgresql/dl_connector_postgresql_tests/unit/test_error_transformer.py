@@ -10,7 +10,6 @@ from dl_connector_postgresql.core.postgresql_base.error_transformer import (
     sync_pg_db_error_transformer,
 )
 
-
 NAME_OR_SERVICE_NOT_KNOWN_MSG = """
         could not translate host name
         "c-someclusterid.ro.mdb.yandexcloud.net" to address:

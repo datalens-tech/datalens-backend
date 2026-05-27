@@ -60,7 +60,6 @@ from dl_obfuscator import (
     create_base_obfuscators,
 )
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.adapters_base import DBAdapterQueryResult
 

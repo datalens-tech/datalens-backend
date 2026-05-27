@@ -14,7 +14,6 @@ import attr
 
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 
-
 if TYPE_CHECKING:
     from dl_api_commons.reporting.registry import ReportingRegistry
 

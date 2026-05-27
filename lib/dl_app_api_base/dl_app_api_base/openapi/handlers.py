@@ -9,7 +9,6 @@ from typing_extensions import Self
 
 import dl_app_api_base.handlers.base as base
 
-
 SWAGGER_TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "swagger/templates/")
 SWAGGER_STATIC_DIR = os.path.join(os.path.dirname(__file__), "swagger/static/")
 

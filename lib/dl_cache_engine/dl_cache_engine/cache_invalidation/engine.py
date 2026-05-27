@@ -17,7 +17,6 @@ from dl_cache_engine.cache_invalidation.primitives import (
 )
 from dl_cache_engine.cache_invalidation.schemas import deserialize_cache_invalidation_entry
 
-
 LOGGER = logging.getLogger(__name__)
 
 RESOURCE_TAG = "bic_cache_inval"

@@ -23,7 +23,6 @@ from marshmallow_oneofschema import OneOfSchema
 
 from dl_attrs_model_mapper.base import MapperBaseModel
 
-
 LOGGER = logging.getLogger(__name__)
 
 _TARGET_OBJECT_BASE_TV = TypeVar("_TARGET_OBJECT_BASE_TV")

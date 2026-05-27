@@ -19,7 +19,6 @@ from dl_attrs_model_mapper_doc_tools.domain import (
     AmmOperationExample,
 )
 
-
 _OPERATION_KIND_ENUM_TV = TypeVar("_OPERATION_KIND_ENUM_TV", bound=enum.Enum)
 
 

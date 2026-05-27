@@ -16,7 +16,6 @@ from .metadata import (
     MetadataProviderSettings,
 )
 
-
 __all__ = [
     "AlreadyExists",
     "EmptyMetadataProvider",

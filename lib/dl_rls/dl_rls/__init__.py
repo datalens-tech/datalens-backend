@@ -27,7 +27,6 @@ from .utils import (
     rls_uses_real_group_ids,
 )
 
-
 __all__ = [
     "BaseSubjectResolver",
     "FieldRLSSerializer",

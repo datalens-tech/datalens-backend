@@ -17,7 +17,6 @@ from .s3 import (
     S3SourceSettings,
 )
 
-
 __all__ = [
     "BaseS3Source",
     "BaseSource",

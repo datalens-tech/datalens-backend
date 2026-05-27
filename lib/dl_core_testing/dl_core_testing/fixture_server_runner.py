@@ -16,7 +16,6 @@ import requests
 from statcommons.log_config import deconfigure_logging
 from typing_extensions import Self
 
-
 LOGGER = logging.getLogger()
 
 

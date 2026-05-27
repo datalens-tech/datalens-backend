@@ -18,7 +18,6 @@ from dl_attrs_model_mapper.structs.mappings import (
 from dl_attrs_model_mapper.structs.singleormultistring import SingleOrMultiString
 from dl_dynamic_enum import DynamicEnum
 
-
 _INDENT = " " * 4
 
 

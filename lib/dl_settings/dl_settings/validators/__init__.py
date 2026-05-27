@@ -8,7 +8,6 @@ from .json import (
 )
 from .split import split_validator
 
-
 __all__ = [
     "decode_multiline",
     "decode_multiline_validator",

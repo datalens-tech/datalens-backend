@@ -27,7 +27,6 @@ from dl_formula.inspect.function import (
     supports_ordering,
 )
 
-
 FORMULA_CACHE_SIZE = int(os.environ.get("FORMULA_CACHE_SIZE", 1000))
 
 

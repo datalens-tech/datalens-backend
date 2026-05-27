@@ -22,7 +22,6 @@ from dl_connector_trino.formula.definitions.custom_constructors import (
     TrinoLambda,
 )
 
-
 V = TranslationVariant.make
 
 x_col, y_col = sa.column("x"), sa.column("y")

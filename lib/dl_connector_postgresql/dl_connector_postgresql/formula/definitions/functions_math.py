@@ -14,7 +14,6 @@ from dl_formula.definitions.literals import (
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 V = TranslationVariant.make
 
 

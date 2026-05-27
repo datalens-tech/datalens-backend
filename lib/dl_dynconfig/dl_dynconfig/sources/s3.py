@@ -20,7 +20,6 @@ import dl_dynconfig.sources.cached as cached
 import dl_dynconfig.utils.types as types_utils
 import dl_settings
 
-
 T = TypeVar("T")
 
 LOGGER = logging.getLogger(__name__)

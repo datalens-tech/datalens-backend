@@ -12,7 +12,6 @@ import dl_us_entries_client.clients.public.models as public_models
 import dl_us_entries_client.exceptions as exceptions
 import dl_us_entries_client.models as models
 
-
 LOGGER = logging.getLogger(__name__)
 
 

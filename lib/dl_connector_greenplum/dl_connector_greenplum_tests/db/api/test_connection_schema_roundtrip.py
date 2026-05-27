@@ -11,7 +11,6 @@ from dl_connector_greenplum_tests.db.config import (
     GreenplumVersion,
 )
 
-
 GP6_PARAMS = CONNECTION_PARAMS_BY_VERSION[GreenplumVersion.GP6]
 
 

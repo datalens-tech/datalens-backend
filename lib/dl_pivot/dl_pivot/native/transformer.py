@@ -27,7 +27,6 @@ from dl_pivot.table import PivotTable
 import dl_query_processing.exc as qp_exc
 from dl_query_processing.merging.primitives import MergedQueryDataRow
 
-
 if TYPE_CHECKING:
     from dl_pivot.stream_modifiers import TransposedDataRow
 

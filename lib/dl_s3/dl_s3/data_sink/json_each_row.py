@@ -10,7 +10,6 @@ from typing import (
     TypeVar,
 )
 
-
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client as AsyncS3Client
     from mypy_boto3_s3.client import S3Client as SyncS3Client
@@ -27,7 +26,6 @@ from dl_s3.stream import (
     SimpleUntypedAsyncDataStream,
     SimpleUntypedDataStream,
 )
-
 
 LOGGER = logging.getLogger(__name__)
 

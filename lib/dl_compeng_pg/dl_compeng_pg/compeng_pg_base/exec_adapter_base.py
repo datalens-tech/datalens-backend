@@ -25,7 +25,6 @@ from dl_utils.streaming import AsyncChunkedBase
 from dl_connector_postgresql.core.postgresql.constants import BACKEND_TYPE_POSTGRES
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 
-
 LOGGER = logging.getLogger(__name__)
 
 _CONN_TV = TypeVar("_CONN_TV")

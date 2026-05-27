@@ -4,7 +4,6 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 
-
 BACKEND_TYPE_BIGQUERY = SourceBackendType.declare("BIGQUERY")
 
 CONNECTION_TYPE_BIGQUERY = ConnectionType.declare("bigquery")

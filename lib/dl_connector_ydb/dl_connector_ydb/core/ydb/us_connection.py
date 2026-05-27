@@ -31,7 +31,6 @@ from dl_connector_ydb.core.ydb.constants import (
 from dl_connector_ydb.core.ydb.dto import YDBConnDTO
 from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 
-
 if TYPE_CHECKING:
     from dl_core.connection_models.common_models import TableIdent
 

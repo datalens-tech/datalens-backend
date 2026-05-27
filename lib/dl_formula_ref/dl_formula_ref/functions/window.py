@@ -20,7 +20,6 @@ from dl_formula_ref.registry.note import (
     NoteLevel,
 )
 
-
 _ = get_gettext()
 
 _SOURCE_SALES_DATA_1 = ExampleSource(

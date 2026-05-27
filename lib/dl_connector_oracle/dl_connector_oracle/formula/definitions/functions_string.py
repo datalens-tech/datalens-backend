@@ -6,7 +6,6 @@ import dl_formula.definitions.functions_string as base
 
 from dl_connector_oracle.formula.constants import OracleDialect as D
 
-
 V = TranslationVariant.make
 
 

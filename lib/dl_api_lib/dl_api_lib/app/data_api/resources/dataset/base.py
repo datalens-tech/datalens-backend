@@ -122,7 +122,6 @@ from dl_query_processing.postprocessing.primitives import (
 import dl_rls
 from dl_utils.task_runner import ConcurrentTaskRunner
 
-
 if TYPE_CHECKING:
     from dl_api_lib.query.formalization.raw_specs import RawQuerySpecUnion
 
@@ -1034,7 +1033,7 @@ class DatasetDataBaseView(BaseView):
 
     @staticmethod
     def with_dataset_us_context(
-        coro: Callable[..., Coroutine[Any, Any, Any]]
+        coro: Callable[..., Coroutine[Any, Any, Any]],
     ) -> Callable[..., Coroutine[Any, Any, Any]]:
         @functools.wraps(coro)
         async def wrapper(self: DatasetDataBaseView, *args: Any, **kwargs: Any) -> Any:

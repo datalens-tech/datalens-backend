@@ -10,7 +10,6 @@ from dl_formula.connectors.base.connector import FormulaConnector
 from dl_formula.connectors.registration import CONN_REG_FORMULA
 from dl_utils.entrypoints import EntrypointClassManager
 
-
 _CONNECTOR_EP_GROUP = f"{package.__name__}.connectors"
 
 

@@ -8,7 +8,6 @@ from typing_extensions import final
 
 from dl_constants.types import TJSONLike
 
-
 GLOBAL_ERR_PREFIX = "ERR"
 DEFAULT_ERR_CODE_API_PREFIX = "DS_API"
 DEFAULT_GLOBAL_ERR_CODE_API_PREFIX = (GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX)

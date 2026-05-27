@@ -4,7 +4,6 @@ import pydantic
 
 import dl_settings
 
-
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 

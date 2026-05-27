@@ -13,7 +13,6 @@ from dl_formula_testing.util import (
     to_unicode,
 )
 
-
 CONTAINS_TESTS = [
     ('"a b c % d e"', '""', True),
     ('"a b c % d e"', '"c % d"', True),

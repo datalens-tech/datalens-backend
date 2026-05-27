@@ -10,7 +10,6 @@ from dl_formula.definitions.literals import un_literal
 
 from dl_connector_bigquery.formula.constants import BigQueryDialect as D
 
-
 V = TranslationVariant.make
 
 

@@ -3,7 +3,6 @@ from enum import (
     unique,
 )
 
-
 _BIT = 1
 
 

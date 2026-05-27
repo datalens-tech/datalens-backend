@@ -3,7 +3,6 @@ import sys
 import google.protobuf
 import packaging.version
 
-
 protobuf_version = packaging.version.Version(google.protobuf.__version__)
 
 

@@ -13,7 +13,6 @@ import pydantic
 import dl_app_api_base.auth as auth
 import dl_app_api_base.handlers
 
-
 LOGGER = logging.getLogger(__name__)
 
 

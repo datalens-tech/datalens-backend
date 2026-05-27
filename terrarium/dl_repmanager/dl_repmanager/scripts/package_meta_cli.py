@@ -32,7 +32,6 @@ from dl_repmanager.repository_env import (
     discover_config,
 )
 
-
 log = logging.getLogger(__name__)
 
 

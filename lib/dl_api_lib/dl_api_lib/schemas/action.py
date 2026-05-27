@@ -58,7 +58,6 @@ from dl_model_tools.schema.typed_values import (
     WithNestedValueSchema,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

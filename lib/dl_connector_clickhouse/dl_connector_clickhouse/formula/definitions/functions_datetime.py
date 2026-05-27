@@ -24,7 +24,6 @@ from dl_formula.definitions.literals import un_literal
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
-
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx
 

@@ -14,7 +14,6 @@ from .request_id import (
 )
 from .tracing import TracingMiddleware
 
-
 __all__ = [
     "AIOEventLoopMiddleware",
     "BodySignatureValidator",

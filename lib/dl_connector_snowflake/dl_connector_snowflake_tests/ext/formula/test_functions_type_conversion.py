@@ -9,7 +9,6 @@ from dl_formula_testing.testcases.functions_type_conversion import (
 
 from dl_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
 
-
 # STR
 
 

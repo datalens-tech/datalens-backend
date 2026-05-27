@@ -8,7 +8,6 @@ from dl_dynamic_enum import (
     DynamicEnum,
 )
 
-
 BACKEND_TYPE_STARROCKS = SourceBackendType.declare("STARROCKS")
 CONNECTION_TYPE_STARROCKS = ConnectionType.declare("starrocks")
 SOURCE_TYPE_STARROCKS_TABLE = DataSourceType.declare("STARROCKS_TABLE")

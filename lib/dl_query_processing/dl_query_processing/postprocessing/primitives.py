@@ -16,7 +16,6 @@ from dl_query_processing.execution.primitives import ExecutedQueryMetaInfo
 from dl_query_processing.legend.block_legend import BlockSpec
 from dl_query_processing.legend.field_legend import Legend
 
-
 PostprocessedValue = Union[TBIDataValue, dict]
 PostprocessedRow = tuple[PostprocessedValue, ...]
 PostprocessedData = tuple[PostprocessedRow, ...]

@@ -6,7 +6,6 @@ from typing import (
     Optional,
 )
 
-
 if TYPE_CHECKING:
     from dl_core.connection_models import ConnectOptions
     from dl_core.us_connection_base import ConnectionBase

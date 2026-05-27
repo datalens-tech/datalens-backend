@@ -25,7 +25,6 @@ from dl_formula.translation.env import TranslationEnvironment
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
-
 V = TranslationVariant.make
 
 SUPPORTED_DIALECTS = D.and_above(D.CLICKHOUSE_22_10)

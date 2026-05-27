@@ -13,7 +13,6 @@ from dl_api_commons.base_models import TenantCommon
 from dl_api_lib.aio.aiohttp_wrappers import DSAPIRequest
 from dl_constants.api_constants import DLHeadersCommon
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -18,7 +18,6 @@ from dl_api_lib.app.data_api.resources.base import (
     RequiredResourceDSAPI,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

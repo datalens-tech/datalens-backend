@@ -6,7 +6,6 @@ import sys
 
 from .logs import LOGMUTATORS
 
-
 # Warning: an on-import network request; if there's a danger of a broken DNS
 # setup, use `socket.gethostname()`.
 HOSTNAME = socket.getfqdn()

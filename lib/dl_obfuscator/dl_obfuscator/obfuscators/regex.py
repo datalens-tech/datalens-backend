@@ -5,7 +5,6 @@ import attr
 from dl_obfuscator.context import ObfuscationContext
 from dl_obfuscator.obfuscators.base import BaseObfuscator
 
-
 JWT_TOKEN_REGEX = r"ey[JKL][\w-]{13,}\.ey[JKL][\w-]{8,}\.[\w-]{20,}"
 URL_CREDENTIALS_REGEX = r"[a-z0-9]{3,20}://[a-zA-Z0-9_-]{3,20}:[^$][^:@/\s]{6,40}@[a-z0-9.-]{10,}"
 AUTHORIZATION_HEADER_REGEX = r"Authorization:\s*\S+(?:\s+\S+)?"

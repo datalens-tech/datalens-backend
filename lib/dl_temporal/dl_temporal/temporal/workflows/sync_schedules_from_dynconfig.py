@@ -4,7 +4,6 @@ import temporalio.workflow
 
 import dl_temporal.base as base
 
-
 with temporalio.workflow.unsafe.imports_passed_through():
     import dl_temporal.temporal.activities as temporal_activities
 

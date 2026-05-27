@@ -25,7 +25,6 @@ from .singleton import (
     singleton_function_result,
 )
 
-
 __all__ = [
     "ApplicationError",
     "BaseApp",

@@ -7,7 +7,6 @@ from dl_type_transformer.type_transformer import (
     make_native_type,
 )
 
-
 TRINO_TYPES_INT = frozenset(
     (
         sa.SMALLINT,

@@ -11,7 +11,6 @@ import pydantic
 import pydantic_core
 from typing_extensions import Self
 
-
 JsonableTimedelta = datetime.timedelta
 JsonableUUID = uuid.UUID
 

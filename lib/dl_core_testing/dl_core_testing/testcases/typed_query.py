@@ -16,7 +16,6 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryResult,
 )
 
-
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

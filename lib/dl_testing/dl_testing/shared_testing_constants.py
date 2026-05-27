@@ -4,7 +4,6 @@ import os
 
 from dl_configs.utils import DEFAULT_ROOT_CERTIFICATES_FILENAME
 
-
 RUN_DEVHOST_TESTS = os.environ.get("RUN_DEVHOST_TESTS")
 TESTS_CACHES_DIR = os.environ.get("TESTS_CACHES_DIR")
 CA_BUNDLE_FILE = (

@@ -9,7 +9,6 @@ from typing import (
 
 from dl_utils.aio import ContextVarExecutor
 
-
 _IDENTITY_TV = TypeVar("_IDENTITY_TV")
 
 

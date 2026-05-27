@@ -14,7 +14,6 @@ from dl_connector_chyt.core.target_dto import BaseCHYTConnTargetDTO
 from dl_connector_chyt.core.utils import CHYTUtils
 from dl_connector_clickhouse.core.clickhouse_base.adapters import BaseAsyncClickHouseAdapter
 
-
 LOGGER = logging.getLogger(__name__)
 
 

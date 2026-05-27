@@ -37,7 +37,6 @@ from dl_pivot.sort_helpers import (
     TOTAL_LEAST_NULL_VALUE,
 )
 
-
 if TYPE_CHECKING:
     from dl_pivot.pivot_legend import PivotLegend
     from dl_query_processing.legend.field_legend import Legend

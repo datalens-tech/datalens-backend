@@ -16,7 +16,6 @@ from dl_formula_ref.functions.window import FUNCTIONS_WINDOW
 from dl_formula_ref.registry.base import FunctionDocRegistryItem
 from dl_formula_ref.registry.registry import FUNC_REFERENCE_REGISTRY
 
-
 EXPLICITLY_DEFINED_FUNCTIONS: list[FunctionDocRegistryItem] = [
     *FUNCTIONS_AGGREGATION,
     *FUNCTIONS_ARRAY,

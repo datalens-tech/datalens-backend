@@ -24,7 +24,6 @@ from .request_context import (
     UserAuthProviderFactory,
 )
 
-
 __all__ = [
     "AlwaysAllowAuthChecker",
     "AlwaysAllowAuthResult",

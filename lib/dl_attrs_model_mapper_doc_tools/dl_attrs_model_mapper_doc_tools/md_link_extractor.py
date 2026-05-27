@@ -7,7 +7,6 @@ from typing import (
 
 from dl_attrs_model_mapper_doc_tools.render_units import DocLink
 
-
 INLINE_LINK_RE = re.compile(r"\[([^]]+)]\(([^)]+)\)")
 
 

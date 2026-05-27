@@ -14,7 +14,6 @@ from dl_s3.stream import (
     DataStreamBase,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

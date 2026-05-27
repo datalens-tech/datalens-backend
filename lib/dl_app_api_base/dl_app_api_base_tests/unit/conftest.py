@@ -18,7 +18,6 @@ import dl_app_api_base
 import dl_app_base
 import dl_pydantic
 
-
 DIR_PATH = os.path.dirname(__file__)
 LOGGER = logging.getLogger(__name__)
 

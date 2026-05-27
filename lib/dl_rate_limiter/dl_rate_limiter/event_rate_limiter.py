@@ -5,7 +5,6 @@ import attr
 import redis
 import redis.asyncio
 
-
 logger = logging.getLogger(__name__)
 
 

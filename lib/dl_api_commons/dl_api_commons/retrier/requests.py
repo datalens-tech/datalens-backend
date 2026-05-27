@@ -11,7 +11,6 @@ import requests.adapters
 
 import dl_retrier
 
-
 LOGGER = logging.getLogger(__name__)
 
 

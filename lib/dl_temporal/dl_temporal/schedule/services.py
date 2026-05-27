@@ -14,7 +14,6 @@ import dl_temporal.client as client
 from dl_temporal.schedule.config import TemporalSchedulesDynConfig
 import dl_temporal.temporal.workflows as temporal_workflows
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -100,15 +100,12 @@ def test_table():
             },
         )
     )
-    assert (
-        text
-        == """
+    assert text == """
 Hi
 | My     | friend   |
 |:-------|:---------|
 | `smth` |          |
 """.strip()
-    )
 
 
 def test_conditional_block():

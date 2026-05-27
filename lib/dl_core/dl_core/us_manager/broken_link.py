@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 
 import attr
 
-
 if TYPE_CHECKING:
     from dl_core.base_models import ConnectionRef
 

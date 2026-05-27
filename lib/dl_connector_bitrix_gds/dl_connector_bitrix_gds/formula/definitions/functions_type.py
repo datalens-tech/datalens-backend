@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_type as base
 
 from dl_connector_bitrix_gds.formula.constants import BitrixDialect as D
 
-
 DEFINITIONS_TYPE = [
     # date
     base.FuncDate1FromDatetime.for_dialect(D.BITRIX),

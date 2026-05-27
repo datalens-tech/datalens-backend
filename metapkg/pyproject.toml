@@ -194,10 +194,10 @@ statcommons = {develop = true, path = "../lib/statcommons"}
 
 [tool.poetry.group.dev.dependencies]
 babel = "==2.12.1"
-black = "==24.10.0"
+black = "==26.5.1"
 clize = "==5.0.0"
 cookiecutter = "==2.6.0"
-deptry = "==0.16.1"
+deptry = "==0.25.1"
 docker = "==7.1.0"
 flaky = "==3.8.1"
 ipdb = "==0.13.13"

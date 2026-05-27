@@ -7,7 +7,6 @@ from aiohttp import web
 
 from dl_auth_api_lib.oauth.base import BaseOAuth
 
-
 _BASE_OAUTH_TV = TypeVar("_BASE_OAUTH_TV", bound=BaseOAuth)
 
 

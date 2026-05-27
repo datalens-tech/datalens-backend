@@ -10,7 +10,6 @@ from dl_connector_ydb.core.ydb.constants import (
 from dl_connector_ydb.core.ydb.settings import YDBConnectorSettings
 from dl_connector_ydb_tests.db.api.base import YDBDatasetTestBase
 
-
 _YDB_MANUAL_VALIDATES_TABLE = (
     "YDB validator always resolves the table path even when manual=True, so this invariant doesn't hold"
 )

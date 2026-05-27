@@ -16,7 +16,6 @@ import attr
 
 from dl_dynamic_enum import DynamicEnum
 
-
 Align = Literal["start", "center", "end"]
 WidthVariant = Literal["s", "m", "l", "auto"]
 Width = Union[WidthVariant, int, float]

@@ -9,7 +9,6 @@ from typing import (
 
 from dl_i18n.localizer_base import Localizer
 
-
 if TYPE_CHECKING:
     from dl_api_commons.base_models import RequestContextInfo
     from dl_core.us_connection_base import ConnectionBase

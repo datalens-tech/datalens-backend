@@ -7,7 +7,6 @@ import dl_app_api_base_tests.settings as test_settings
 import dl_app_api_ext_testing
 import dl_json
 
-
 SPEC_FILE_PATH = os.path.join(os.path.dirname(__file__), "data/expected_spec.json")
 
 

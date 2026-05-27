@@ -17,7 +17,6 @@ from .collection import (
     DataSourceCollectionFactory,
 )
 
-
 __all__ = (
     "BaseSQLDataSource",
     "DataSource",

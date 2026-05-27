@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_markup as base
 
 from dl_connector_mysql.formula.constants import MySQLDialect as D
 
-
 DEFINITIONS_MARKUP = [
     # +
     base.BinaryPlusMarkup.for_dialect(D.MYSQL),

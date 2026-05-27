@@ -10,7 +10,6 @@ from typing_extensions import Self
 import dl_dynconfig.sources.base as base
 import dl_pydantic
 
-
 LOGGER = logging.getLogger(__name__)
 
 

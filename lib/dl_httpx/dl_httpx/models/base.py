@@ -14,7 +14,6 @@ import dl_json
 import dl_pydantic
 import dl_utils
 
-
 LOGGER = logging.getLogger(__name__)
 
 

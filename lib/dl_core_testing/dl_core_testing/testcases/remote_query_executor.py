@@ -32,7 +32,6 @@ from dl_core_testing.rqe import RQEConfigurationMaker
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 from dl_utils.aio import alist
 
-
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

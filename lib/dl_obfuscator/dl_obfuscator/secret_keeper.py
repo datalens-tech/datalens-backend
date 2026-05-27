@@ -2,7 +2,6 @@ import logging
 
 import attr
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -6,7 +6,6 @@ from dl_type_transformer.type_transformer import (
     make_native_type,
 )
 
-
 SNOW_TYPES_INT = frozenset(
     (
         ssa.BIGINT,

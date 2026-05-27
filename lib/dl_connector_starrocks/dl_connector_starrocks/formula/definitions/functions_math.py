@@ -7,7 +7,6 @@ import dl_formula.definitions.functions_math as base
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
-
 V = TranslationVariant.make
 
 

@@ -36,7 +36,6 @@ from dl_constants.enums import ComponentType
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 
-
 TACTION = dict[str, Any]
 
 

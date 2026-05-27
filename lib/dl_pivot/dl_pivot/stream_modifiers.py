@@ -32,7 +32,6 @@ from dl_query_processing.legend.field_legend import (
 )
 from dl_query_processing.merging.primitives import MergedQueryDataRow
 
-
 if TYPE_CHECKING:
     from dl_pivot.hashable_packing import HashableValuePackerBase
     from dl_query_processing.legend.field_legend import Legend

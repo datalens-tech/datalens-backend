@@ -13,7 +13,6 @@ import gunicorn.workers.base
 import dl_app_api_base.app as app
 import dl_app_base
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -14,7 +14,6 @@ from dl_connector_postgresql_tests.db.core.base import (
     BaseSslPostgreSQLTestClass,
 )
 
-
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionSQL)
 
 

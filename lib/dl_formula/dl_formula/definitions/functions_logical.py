@@ -18,7 +18,6 @@ from dl_formula.definitions.type_strategy import (
 )
 from dl_formula.shortcuts import n
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

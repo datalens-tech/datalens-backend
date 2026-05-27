@@ -14,7 +14,6 @@ from dl_connector_starrocks.core.constants import (
 )
 from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
-
 _IDENTIFIER_PREPARER = BIStarRocksDialect().identifier_preparer
 
 _SYSTEM_CATALOGS_SQL_LIST = ", ".join(f"'{c}'" for c in STARROCKS_SYSTEM_CATALOGS)

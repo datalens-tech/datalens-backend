@@ -12,7 +12,6 @@ from typing_extensions import Self
 
 from dl_constants.enums import OrderDirection
 
-
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ClauseElement
 

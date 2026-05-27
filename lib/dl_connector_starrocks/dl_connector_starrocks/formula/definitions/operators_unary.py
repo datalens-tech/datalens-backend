@@ -3,7 +3,6 @@ import dl_formula.definitions.operators_unary as base
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
-
 V = TranslationVariant.make
 
 

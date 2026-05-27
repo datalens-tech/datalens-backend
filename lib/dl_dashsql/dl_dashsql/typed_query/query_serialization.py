@@ -26,7 +26,6 @@ from dl_model_tools.schema.typed_values import (
     WithNestedValueSchema,
 )
 
-
 _TYPED_QUERY_TV = TypeVar("_TYPED_QUERY_TV", bound=TypedQueryBase)
 
 

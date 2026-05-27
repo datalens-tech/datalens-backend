@@ -6,7 +6,6 @@ from .components import (
     RawSqlLevelRow,
 )
 
-
 __all__ = (
     "CacheInvalidationRow",
     "CacheTTLRow",

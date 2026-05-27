@@ -11,7 +11,6 @@ from .token import (
     ValidationError,
 )
 
-
 __all__ = [
     "AioHTTPMiddleware",
     "DecodeError",

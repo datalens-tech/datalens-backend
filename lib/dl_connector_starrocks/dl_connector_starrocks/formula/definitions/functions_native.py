@@ -2,7 +2,6 @@ import dl_formula.definitions.functions_native as base
 
 from dl_connector_starrocks.formula.constants import StarRocksDialect as D
 
-
 DEFINITIONS_NATIVE = [
     base.DBCallInt.for_dialect(D.STARROCKS),
     base.DBCallFloat.for_dialect(D.STARROCKS),

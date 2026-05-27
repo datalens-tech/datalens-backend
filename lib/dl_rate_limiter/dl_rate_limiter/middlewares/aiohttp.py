@@ -6,7 +6,6 @@ import attr
 
 import dl_rate_limiter.request_rate_limiter as request_rate_limiter
 
-
 logger = logging.getLogger(__name__)
 
 

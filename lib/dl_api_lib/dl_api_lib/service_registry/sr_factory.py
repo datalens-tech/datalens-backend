@@ -26,7 +26,6 @@ from dl_i18n.localizer_base import (
 )
 from dl_pivot.base.transformer_factory import PivotTransformerFactory
 
-
 if TYPE_CHECKING:
     from dl_api_commons.base_models import RequestContextInfo
 

@@ -5,7 +5,6 @@ from enum import (
     unique,
 )
 
-
 ContextFlags = int  # bitwise combination of ContextFlag values
 
 

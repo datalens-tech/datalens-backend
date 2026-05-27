@@ -38,7 +38,6 @@ import attrs
 import prometheus_client
 import prometheus_client.metrics
 
-
 _InnerMetricT = TypeVar("_InnerMetricT", bound=prometheus_client.metrics.MetricWrapperBase)
 
 

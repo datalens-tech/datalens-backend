@@ -33,7 +33,6 @@ from dl_type_transformer.native_type import (
     GenericNativeType,
 )
 
-
 make_native_type = GenericNativeType.normalize_name_and_create
 
 

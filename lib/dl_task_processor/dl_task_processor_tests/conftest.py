@@ -19,7 +19,6 @@ from dl_task_processor_tests.utils import (
     LocalContextFab,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

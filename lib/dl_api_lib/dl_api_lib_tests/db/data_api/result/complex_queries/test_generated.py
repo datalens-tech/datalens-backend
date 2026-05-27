@@ -9,7 +9,6 @@ from dl_api_lib_tests.db.data_api.result.complex_queries.generation.generator im
 from dl_api_lib_tests.db.data_api.result.complex_queries.generation.runner import PreGeneratedLODTestRunner
 from dl_constants.enums import WhereClauseOperation
 
-
 GENERATED_TESTS = [
     {
         "base_dimensions": ["category"],

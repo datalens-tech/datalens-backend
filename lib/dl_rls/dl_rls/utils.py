@@ -6,7 +6,6 @@ from typing import (
 from dl_constants.enums import RLSSubjectType
 from dl_rls.models import RLSEntry
 
-
 _T = TypeVar("_T")
 
 

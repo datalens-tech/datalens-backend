@@ -11,7 +11,6 @@ from dl_formula_ref.loader import load_formula_ref
 from dl_formula_ref.localization import DEFAULT_LOCALE
 from dl_formula_ref.scripts.common import conf_version_type
 
-
 parser = argparse.ArgumentParser(prog="Formula documentation command line tool")
 subparsers = parser.add_subparsers(title="command", dest="command")
 

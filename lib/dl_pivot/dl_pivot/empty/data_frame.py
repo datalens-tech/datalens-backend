@@ -11,7 +11,6 @@ from typing_extensions import Self
 
 from dl_pivot.base.data_frame import PivotDataFrame
 
-
 if TYPE_CHECKING:
     from dl_pivot.primitives import (
         MeasureValues,

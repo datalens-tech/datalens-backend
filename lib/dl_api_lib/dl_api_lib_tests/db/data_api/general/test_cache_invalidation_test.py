@@ -20,7 +20,6 @@ from dl_constants.enums import (
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_entry import USEntry
 
-
 PermissionPatch = Callable[[USEntry, USPermissionKind], bool]
 
 

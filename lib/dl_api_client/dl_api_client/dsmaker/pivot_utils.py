@@ -42,7 +42,6 @@ from dl_constants.internal_constants import (
     MEASURE_NAME_TITLE,
 )
 
-
 SPECIAL_TITLES = {
     MEASURE_NAME_TITLE,
     DIMENSION_NAME_TITLE,

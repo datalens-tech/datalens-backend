@@ -1,6 +1,5 @@
 from dl_constants.enums import ConnectionType
 
-
 _CONNECTION_DASHSQL_KEYS: dict[ConnectionType, frozenset[str]] = {}
 
 

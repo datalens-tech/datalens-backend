@@ -8,7 +8,6 @@ from typing import (
 
 import attr
 
-
 _CONNECT_OPTIONS_TV = TypeVar("_CONNECT_OPTIONS_TV", bound="ConnectOptions")
 
 

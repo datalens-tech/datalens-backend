@@ -10,7 +10,6 @@ from dl_obfuscator.obfuscators.regex import (
     RegexObfuscator,
 )
 
-
 _EXTRA_PATTERNS_FOR_TEST: tuple[str, ...] = (
     r"XTOKEN_[A-Za-z0-9]{20,}",
     r"test-key-[0-9a-f]{16}",

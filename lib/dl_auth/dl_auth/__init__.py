@@ -17,7 +17,6 @@ from .data import (
     NoAuthData,
 )
 
-
 __all__ = [
     "AuthData",
     "AuthDataAuthProvider",

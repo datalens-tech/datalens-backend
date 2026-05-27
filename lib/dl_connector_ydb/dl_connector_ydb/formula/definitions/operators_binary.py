@@ -11,7 +11,6 @@ import dl_formula.definitions.operators_binary as base
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
 
-
 V = TranslationVariant.make
 
 

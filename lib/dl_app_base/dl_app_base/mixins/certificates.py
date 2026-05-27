@@ -9,7 +9,6 @@ import dl_app_base.singleton as singleton
 import dl_configs
 import dl_settings
 
-
 LOGGER = logging.getLogger(__name__)
 
 

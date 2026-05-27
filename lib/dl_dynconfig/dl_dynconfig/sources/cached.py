@@ -9,7 +9,6 @@ import attrs
 
 import dl_dynconfig.sources.base as base
 
-
 T = TypeVar("T")
 Unset = object()
 

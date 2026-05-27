@@ -15,7 +15,6 @@ from .typed import (
     TypedListAnnotation,
 )
 
-
 __all__ = [
     "BaseRootSettings",
     "BaseRootSettingsWithFallback",

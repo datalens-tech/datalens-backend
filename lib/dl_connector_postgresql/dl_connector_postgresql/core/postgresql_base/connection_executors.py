@@ -18,7 +18,6 @@ from dl_connector_postgresql.core.postgresql_base.constants import PGEnforceColl
 from dl_connector_postgresql.core.postgresql_base.dto import PostgresConnDTOBase
 from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConnTargetDTO
 
-
 _BASE_POSTGRES_ADAPTER_TV = TypeVar("_BASE_POSTGRES_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 

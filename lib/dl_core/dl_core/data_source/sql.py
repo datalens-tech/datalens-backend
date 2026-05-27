@@ -43,7 +43,6 @@ from dl_core.db import (
 from dl_core.query.bi_query import SqlSourceType
 from dl_core.utils import sa_plain_text
 
-
 LOGGER = logging.getLogger(__name__)
 
 

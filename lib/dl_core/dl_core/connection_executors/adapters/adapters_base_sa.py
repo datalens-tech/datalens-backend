@@ -66,7 +66,6 @@ from dl_core.db_session_utils import db_session_context
 from dl_type_transformer.native_type import CommonNativeType
 from dl_utils.utils import get_type_full_name
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
 

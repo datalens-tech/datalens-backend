@@ -17,7 +17,6 @@ from dl_core.connection_executors.qe_serializer.schemas_common import (
     DBAdapterScopedRCISchema,
 )
 
-
 # Full RCI is used in test-cases to prevent extra work when scope of DBAdapterScopedRCI will be extended
 _TEST_REQ_CTX_INFO = (
     DBAdapterScopedRCI.from_full_rci(

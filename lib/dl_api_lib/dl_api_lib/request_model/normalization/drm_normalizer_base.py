@@ -8,7 +8,6 @@ from dl_api_lib.query.formalization.id_gen import IdGenerator
 from dl_api_lib.query.formalization.raw_specs import RawQuerySpecUnion
 from dl_api_lib.request_model.data import DataRequestModel
 
-
 _SPEC_TV = TypeVar("_SPEC_TV")
 
 

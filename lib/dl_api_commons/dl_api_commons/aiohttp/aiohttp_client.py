@@ -21,7 +21,6 @@ import aiohttp
 import aiohttp.web
 import attr
 
-
 LOGGER = logging.getLogger(__name__)
 
 

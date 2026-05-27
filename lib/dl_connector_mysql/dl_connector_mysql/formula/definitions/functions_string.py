@@ -9,7 +9,6 @@ from dl_formula.shortcuts import n
 
 from dl_connector_mysql.formula.constants import MySQLDialect as D
 
-
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
 

@@ -8,7 +8,6 @@ from typing_extensions import Self
 
 from dl_auth_api_lib.settings import BaseOAuthClient
 
-
 _TBaseOAuthClient = TypeVar("_TBaseOAuthClient", bound=BaseOAuthClient)
 
 

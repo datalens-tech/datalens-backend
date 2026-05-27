@@ -191,7 +191,7 @@ def make_rule_from_descr(
     descr: tuple[
         tuple[type[Exception], str | None],
         type[exc.DatabaseQueryError],
-    ]
+    ],
 ) -> ErrorTransformerRule:
     (wrapper_exc, re_pattern), then_raise = descr
     if re_pattern is None:

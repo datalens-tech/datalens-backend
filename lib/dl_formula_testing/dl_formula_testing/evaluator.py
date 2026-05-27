@@ -42,7 +42,6 @@ from dl_formula.translation.translator import (
 from dl_formula_testing.database import Db
 from dl_formula_testing.forced_literal import forced_literal_use  # noqa
 
-
 FIELD_TYPES = {
     # for the above table
     "id": DataType.INTEGER,

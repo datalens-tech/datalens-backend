@@ -34,7 +34,6 @@ from dl_query_processing.compilation.specs import (
 import dl_query_processing.exc
 from dl_query_processing.utils.datetime import parse_datetime
 
-
 LOGGER = logging.getLogger(__name__)
 
 CONTAINMENT_OPS = {

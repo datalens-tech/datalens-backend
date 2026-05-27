@@ -8,7 +8,6 @@ from typing import (
 
 from typing_extensions import Self
 
-
 ContextItem = Any
 ContextItemCollection = list[ContextItem]
 Context = dict[str, ContextItemCollection]

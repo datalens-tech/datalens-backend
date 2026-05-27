@@ -13,7 +13,6 @@ import attr
 from dl_api_commons.aiohttp.aiohttp_client import BaseRetrier
 import dl_retrier
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -9,7 +9,6 @@ from aiohttp.typedefs import (
     Middleware,
 )
 
-
 ALL_METHODS = ("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT")
 
 

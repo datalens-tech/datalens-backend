@@ -7,7 +7,6 @@ from .gauge import (
 from .histogram import Histogram
 from .summary import Summary
 
-
 __all__ = (
     "Counter",
     "Gauge",

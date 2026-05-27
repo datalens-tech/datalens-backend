@@ -7,14 +7,12 @@ from typing import (
     Optional,
 )
 
-
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
 from dl_constants.exc import DLBaseException
 from dl_s3.data_sink.base import DataSinkAsync
 from dl_s3.stream import RawBytesAsyncDataStream
-
 
 LOGGER = logging.getLogger(__name__)
 

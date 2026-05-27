@@ -10,7 +10,6 @@ from sqlalchemy.types import TypeEngine
 from dl_constants.enums import SourceBackendType
 from dl_type_transformer.native_type import GenericNativeType
 
-
 SQLALCHEMY_TYPES: dict[tuple[SourceBackendType, GenericNativeType], Callable[[GenericNativeType], TypeEngine]] = {}
 
 

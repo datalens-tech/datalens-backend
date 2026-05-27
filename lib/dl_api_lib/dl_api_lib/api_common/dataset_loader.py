@@ -45,7 +45,6 @@ from dl_core.us_manager.us_manager_sync import SyncUSManager
 import dl_rls
 from dl_utils.aio import await_sync
 
-
 if TYPE_CHECKING:
     from dl_rls.models import RLSEntry
 

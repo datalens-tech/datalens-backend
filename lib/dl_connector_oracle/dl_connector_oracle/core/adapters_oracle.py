@@ -213,15 +213,13 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         limit: int | None = None,
         offset: int | None = None,
     ) -> sa.sql.elements.TextClause:
-        sql_parts: list[str] = [
-            """
+        sql_parts: list[str] = ["""
             SELECT OWNER, TABLE_NAME FROM ALL_TABLES
             WHERE nvl(tablespace_name, 'no tablespace')
                 NOT IN ('SYSTEM', 'SYSAUX')
                 AND IOT_NAME IS NULL
                 AND DURATION IS NULL
-            """.strip()
-        ]
+            """.strip()]
         if search_text:
             sql_parts.append("AND LOWER(OWNER || '.' || TABLE_NAME) LIKE LOWER(:search_text)")
         sql_parts.append("ORDER BY OWNER, TABLE_NAME")
@@ -241,8 +239,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
         limit: int | None = None,
         offset: int | None = None,
     ) -> sa.sql.elements.TextClause:
-        sql_parts: list[str] = [
-            """
+        sql_parts: list[str] = ["""
             SELECT name FROM (
                 SELECT TABLE_NAME AS name FROM ALL_TABLES
                 WHERE OWNER = :schema_name
@@ -253,8 +250,7 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
                 SELECT VIEW_NAME AS name FROM ALL_VIEWS
                 WHERE OWNER = :schema_name
             )
-            """.strip()
-        ]
+            """.strip()]
         if search_text:
             sql_parts.append("WHERE LOWER(name) LIKE LOWER(:search_text)")
         sql_parts.append("ORDER BY name")

@@ -14,7 +14,6 @@ from dl_api_commons.reporting.records import (
     RequestResultReportingRecord,
 )
 
-
 _RECORD_TV = TypeVar("_RECORD_TV", bound=ReportingRecord)
 
 

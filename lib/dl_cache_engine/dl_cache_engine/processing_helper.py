@@ -19,7 +19,6 @@ from dl_utils.streaming import (
     AsyncChunkedBase,
 )
 
-
 if TYPE_CHECKING:
     from dl_cache_engine.cache_invalidation.engine import (
         CacheInvalidationEngine,

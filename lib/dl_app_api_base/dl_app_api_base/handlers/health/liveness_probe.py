@@ -5,7 +5,6 @@ import aiohttp.web
 
 import dl_app_api_base.handlers.base as base
 
-
 logger = logging.getLogger(__name__)
 
 

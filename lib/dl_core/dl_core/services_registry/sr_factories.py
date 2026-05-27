@@ -36,7 +36,6 @@ from dl_core.utils import FutureRef
 from dl_task_processor.processor import ARQTaskProcessorFactory
 from dl_utils.aio import ContextVarExecutor
 
-
 if TYPE_CHECKING:
     from redis.asyncio import Redis
 

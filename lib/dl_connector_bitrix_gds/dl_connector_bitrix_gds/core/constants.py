@@ -9,7 +9,6 @@ from dl_constants.enums import (
     SourceBackendType,
 )
 
-
 BACKEND_TYPE_BITRIX_GDS = SourceBackendType.declare("BITRIX_GDS")
 CONNECTION_TYPE_BITRIX24 = ConnectionType.declare("bitrix24")
 SOURCE_TYPE_BITRIX_GDS = DataSourceType.declare("BITRIX_GDS")

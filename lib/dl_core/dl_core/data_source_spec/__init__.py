@@ -15,7 +15,6 @@ from .type_mapping import (
     register_data_source_spec_class,
 )
 
-
 __all__ = [
     "DataSourceCollectionSpec",
     "DataSourceSpec",

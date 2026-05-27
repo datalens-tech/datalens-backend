@@ -32,7 +32,6 @@ from dl_constants.types import (
 from dl_type_transformer.native_type import GenericNativeType
 from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 
-
 LOGGER = logging.getLogger(__name__)
 
 

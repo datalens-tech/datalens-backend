@@ -14,7 +14,6 @@ from sqlalchemy.sql import sqltypes
 
 from dl_sqlalchemy_common.base import CompilerPrettyMixin
 
-
 LOGGER = logging.getLogger(__name__)
 
 

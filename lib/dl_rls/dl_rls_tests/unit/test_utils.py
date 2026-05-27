@@ -12,7 +12,6 @@ from dl_rls.utils import (
     split_by_quoted_quote,
 )
 
-
 TEST_DATA = ["'abc'de", "'ab''c'''de", "'ab''c'''"]
 EXPECTED = [("abc", "de"), ("ab'c'", "de"), ("ab'c'", "")]
 

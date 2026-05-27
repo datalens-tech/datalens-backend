@@ -5,7 +5,6 @@ import dl_formula.definitions.functions_aggregation as base
 
 from dl_connector_trino.formula.constants import TrinoDialect as D
 
-
 V = TranslationVariant.make
 
 

@@ -29,7 +29,6 @@ from dl_core.utils import FutureRef
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 from dl_utils.aio import ContextVarExecutor
 
-
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

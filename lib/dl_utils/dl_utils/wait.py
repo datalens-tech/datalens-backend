@@ -9,7 +9,6 @@ from typing import (
     Union,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

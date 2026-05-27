@@ -14,7 +14,6 @@ from dl_i18n.localizer_base import (
     Translatable,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -17,7 +17,6 @@ from dl_testing.containers import get_test_container_hostport
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
-
 ALL_DB_CONFIGURATIONS = {
     ClickHouseDialect.CLICKHOUSE_22_10: (
         f'clickhouse://datalens:qwerty@{get_test_container_hostport("db-clickhouse-22-10", fallback_port=51110).as_pair()}/datalens_test'

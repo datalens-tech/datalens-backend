@@ -17,7 +17,6 @@ import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
 
-
 V = TranslationVariant.make
 
 # Notes:

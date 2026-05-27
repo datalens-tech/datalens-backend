@@ -11,7 +11,6 @@ from typing import (
 )
 import uuid
 
-
 TJSONScalar = Union[str, float, int, bool, None]
 TBIDataValue = Union[
     # All the python types that connection executors are known to spit out.

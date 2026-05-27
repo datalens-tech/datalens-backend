@@ -35,7 +35,6 @@ from dl_dashsql.literalizer import (
     DefaultDashSQLParamLiteralizer,
 )
 
-
 if TYPE_CHECKING:
     from marshmallow import Schema
     from sqlalchemy.types import TypeEngine

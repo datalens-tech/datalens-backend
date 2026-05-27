@@ -29,7 +29,6 @@ from dl_task_processor.task import (
     Retry,
 )
 
-
 EXECUTOR_KEY = "bi_executor"
 
 LOGGER = logging.getLogger(__name__)

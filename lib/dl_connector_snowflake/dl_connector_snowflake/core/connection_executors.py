@@ -16,7 +16,6 @@ from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 from dl_connector_snowflake.core.exc import SnowflakeRefreshTokenInvalid
 from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -26,7 +26,6 @@ from dl_constants.api_constants import DLHeadersCommon
 import dl_logging
 import dl_utils
 
-
 LOGGER = logging.getLogger(__name__)
 LOG_HELPER = RequestLogHelper(logger=LOGGER)
 

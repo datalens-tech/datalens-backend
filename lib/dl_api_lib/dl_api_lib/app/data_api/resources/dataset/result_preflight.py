@@ -22,7 +22,6 @@ from dl_constants.exc import (
 )
 from dl_core.component_errors import ComponentErrorRegistry
 
-
 LOGGER = logging.getLogger(__name__)
 
 VALIDATION_OK_MESSAGE = "Validation was successful"

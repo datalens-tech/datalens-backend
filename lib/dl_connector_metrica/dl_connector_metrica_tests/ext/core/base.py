@@ -24,7 +24,6 @@ from dl_connector_metrica.core.us_connection import (
 )
 import dl_connector_metrica_tests.ext.config as test_config
 
-
 _CONN_TV = TypeVar("_CONN_TV", MetrikaApiConnection, AppMetricaApiConnection)
 
 

@@ -8,7 +8,6 @@ from .base import (
 )
 from .middleware import RequestContextMiddleware
 
-
 __all__ = [
     "BaseRequestContext",
     "BaseRequestContextDependencies",

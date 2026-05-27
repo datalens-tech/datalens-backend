@@ -6,7 +6,6 @@ from dl_api_connector.api_schema.source_base import (
     SimpleParametersSchema,
 )
 
-
 # Effectively `CHYTTableSourceSchema = SQLDataSourceSchema` because it is in `SQL_SOURCE_TYPES`.
 
 

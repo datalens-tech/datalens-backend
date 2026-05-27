@@ -5,7 +5,6 @@ from typing import (
     Union,
 )
 
-
 SDict = Mapping[str, str]
 FallbackFactory = Union[
     Callable[[Any, Any], Any],  # fallback_cfg & app_cfg_type

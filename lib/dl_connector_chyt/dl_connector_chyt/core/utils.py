@@ -11,7 +11,6 @@ from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
     ParsedErrorMsg,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

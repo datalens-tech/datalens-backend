@@ -38,7 +38,6 @@ from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_data_api import app_version
 import dl_retrier
 
-
 LOGGER = logging.getLogger(__name__)
 
 

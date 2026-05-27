@@ -31,7 +31,6 @@ from dl_formula.definitions.type_strategy import (
 )
 from dl_formula.shortcuts import n
 
-
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx
     from dl_formula.translation.env import TranslationEnvironment

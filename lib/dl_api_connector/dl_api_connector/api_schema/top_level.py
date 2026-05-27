@@ -48,7 +48,6 @@ from dl_core.base_models import (
 from dl_core.us_entry import USEntry
 from dl_core.us_manager.us_manager import USManagerBase
 
-
 LOGGER = logging.getLogger(__name__)
 
 _TARGET_OBJECT_TV = TypeVar("_TARGET_OBJECT_TV")

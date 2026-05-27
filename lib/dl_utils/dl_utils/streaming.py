@@ -16,7 +16,6 @@ from typing import (
 
 import attr
 
-
 LOGGER = logging.getLogger(__name__)
 
 

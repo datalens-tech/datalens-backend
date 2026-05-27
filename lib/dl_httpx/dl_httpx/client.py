@@ -31,7 +31,6 @@ import dl_httpx.transport_adapters as transport_adapters
 import dl_logging
 import dl_retrier
 
-
 LOGGER = logging.getLogger(__name__)
 
 _REQUEST_ID_HEADER = dl_constants.DLHeadersCommon.REQUEST_ID.value

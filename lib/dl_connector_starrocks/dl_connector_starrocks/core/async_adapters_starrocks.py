@@ -51,7 +51,6 @@ from dl_connector_starrocks.core.adapters_base_starrocks import BaseStarRocksAda
 from dl_connector_starrocks.core.error_transformer import async_starrocks_db_error_transformer
 from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
-
 LOGGER = logging.getLogger(__name__)
 
 

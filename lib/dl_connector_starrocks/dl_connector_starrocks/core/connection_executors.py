@@ -10,7 +10,6 @@ from dl_connector_starrocks.core.async_adapters_starrocks import AsyncStarRocksA
 from dl_connector_starrocks.core.dto import StarRocksConnDTO
 from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 
-
 _BASE_STARROCKS_ADAPTER_TV = TypeVar("_BASE_STARROCKS_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 

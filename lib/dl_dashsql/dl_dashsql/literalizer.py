@@ -7,7 +7,6 @@ from dl_constants.enums import UserDataType
 from dl_dashsql.exc import DashSQLError
 from dl_dashsql.types import IncomingDSQLParamTypeExt
 
-
 BI_TYPE_TO_SA_TYPE: dict[UserDataType, TypeEngine] = {
     UserDataType.string: sa.TEXT(),
     UserDataType.integer: sa.BIGINT(),

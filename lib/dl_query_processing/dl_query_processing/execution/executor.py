@@ -52,7 +52,6 @@ from dl_query_processing.translation.primitives import (
     TranslatedMultiQueryBase,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

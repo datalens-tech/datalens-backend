@@ -7,7 +7,6 @@ from typing_extensions import override
 import dl_app_base
 import dl_testing
 
-
 LOGGER = logging.getLogger(__name__)
 
 

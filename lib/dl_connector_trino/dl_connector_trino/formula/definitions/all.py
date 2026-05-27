@@ -15,7 +15,6 @@ from dl_connector_trino.formula.definitions.operators_binary import DEFINITIONS_
 from dl_connector_trino.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_trino.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
-
 DEFINITIONS = [
     *DEFINITIONS_COND_BLOCKS,
     *DEFINITIONS_AGG,

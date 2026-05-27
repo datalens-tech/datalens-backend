@@ -16,7 +16,6 @@ from dl_formula.definitions.functions_aggregation import AggregationFunctionBase
 from dl_formula.definitions.type_strategy import Fixed
 from dl_formula.translation.context import TranslationCtx
 
-
 VW = TranslationVariantWrapped.make
 
 

@@ -12,7 +12,6 @@ import yaml
 
 from dl_configs.settings_loaders.common import SDict
 
-
 LOGGER = logging.getLogger(__name__)
 
 

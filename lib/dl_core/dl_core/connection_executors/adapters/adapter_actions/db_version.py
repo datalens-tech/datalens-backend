@@ -11,7 +11,6 @@ from dl_core.connection_executors.adapters.adapter_actions.async_base import Asy
 from dl_core.connection_executors.adapters.sa_utils import get_db_version_query
 from dl_core.connection_models import DBIdent
 
-
 if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.async_adapters_base import AsyncDBAdapter
 

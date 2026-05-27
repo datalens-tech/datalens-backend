@@ -32,7 +32,6 @@ from dl_core.connection_executors.models.db_adapter_data import (
 from dl_core.connection_models import SATextTableDefinition
 from dl_type_transformer.native_type import CommonNativeType
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -40,7 +40,6 @@ from .temporal import (
 )
 from .worker import create_worker
 
-
 __all__ = [
     "ActivityProtocol",
     "AlreadyExists",

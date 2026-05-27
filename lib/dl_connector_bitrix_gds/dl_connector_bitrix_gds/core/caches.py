@@ -20,7 +20,6 @@ from dl_model_tools.serialization import (
     common_loads,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 

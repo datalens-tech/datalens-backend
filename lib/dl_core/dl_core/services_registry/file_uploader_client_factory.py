@@ -27,7 +27,6 @@ from dl_core.db.elements import SchemaColumn
 from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 from dl_utils.aio import await_sync
 
-
 LOGGER = logging.getLogger(__name__)
 
 

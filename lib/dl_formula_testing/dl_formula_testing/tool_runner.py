@@ -15,7 +15,6 @@ from typing import (
     TextIO,
 )
 
-
 if TYPE_CHECKING:
     import argparse
 

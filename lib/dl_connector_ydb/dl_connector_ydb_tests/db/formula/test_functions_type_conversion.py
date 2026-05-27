@@ -27,7 +27,6 @@ import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 from dl_connector_ydb_tests.db.formula.base import YQLTestBase
 
-
 # STR
 
 

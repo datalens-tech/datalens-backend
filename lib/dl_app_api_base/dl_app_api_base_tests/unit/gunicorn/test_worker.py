@@ -20,7 +20,6 @@ from typing_extensions import override
 import dl_app_api_base
 import dl_app_base
 
-
 DIR_PATH = os.path.dirname(__file__)
 LOGGER = logging.getLogger(__name__)
 GUNICORN_HOST = "0.0.0.0"

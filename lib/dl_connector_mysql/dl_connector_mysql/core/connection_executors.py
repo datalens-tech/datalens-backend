@@ -13,7 +13,6 @@ from dl_connector_mysql.core.constants import MySQLEnforceCollateMode
 from dl_connector_mysql.core.dto import MySQLConnDTO
 from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 
-
 _BASE_MYSQL_ADAPTER_TV = TypeVar("_BASE_MYSQL_ADAPTER_TV", bound=CommonBaseDirectAdapter)
 
 

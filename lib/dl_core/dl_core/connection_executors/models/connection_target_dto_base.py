@@ -22,7 +22,6 @@ from typing_extensions import (
 
 from dl_core.utils import secrepr
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TJSONLike
 

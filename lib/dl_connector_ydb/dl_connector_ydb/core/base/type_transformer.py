@@ -13,7 +13,6 @@ from dl_type_transformer.type_transformer import (
     make_native_type,
 )
 
-
 if TYPE_CHECKING:
     from dl_type_transformer.native_type import SATypeSpec
 

@@ -16,7 +16,6 @@ from dl_constants.enums import (
 )
 from dl_utils.utils import DataKey
 
-
 LOGGER = logging.getLogger(__name__)
 
 

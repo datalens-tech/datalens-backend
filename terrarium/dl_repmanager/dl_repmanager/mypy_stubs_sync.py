@@ -14,7 +14,6 @@ from dl_repmanager.requirements_tools import (
     PipRequirementsIO,
 )
 
-
 log = logging.getLogger(__name__)
 
 

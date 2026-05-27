@@ -31,7 +31,6 @@ from dl_testing.shared_testing_constants import (
 )
 from dl_utils.wait import wait_for
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -21,7 +21,6 @@ from .health import (
 )
 from .system import AppInfoHandler
 
-
 __all__ = [
     "AppInfoHandler",
     "BadRequestResponseSchema",

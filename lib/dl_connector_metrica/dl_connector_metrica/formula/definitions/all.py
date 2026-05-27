@@ -6,7 +6,6 @@ from dl_connector_metrica.formula.definitions.operators_binary import DEFINITION
 from dl_connector_metrica.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_metrica.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
-
 DEFINITIONS = [
     *DEFINITIONS_DATETIME,
     *DEFINITIONS_MARKUP,

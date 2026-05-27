@@ -13,7 +13,6 @@ from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_ydb.formula.constants import YqlDialect as D
 
-
 VW = TranslationVariantWrapped.make
 
 

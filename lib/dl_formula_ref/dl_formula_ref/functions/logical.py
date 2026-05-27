@@ -19,7 +19,6 @@ from dl_formula_ref.registry.signature_gen import (
     TemplatedSignatureGenerator,
 )
 
-
 _ = get_gettext()
 
 _SOURCE_SALES_1 = ExampleSource(
@@ -151,8 +150,7 @@ CASE(
         ),
     ),
     examples=[
-        SimpleExample(
-            """
+        SimpleExample("""
 CASE (
     [country],
     "AO", "Angola",
@@ -161,10 +159,8 @@ CASE (
     "CA", "Canada",
     "TT", "Trinidad and Tobago",
     "Other Country"
-)"""
-        ),
-        SimpleExample(
-            """
+)"""),
+        SimpleExample("""
 CASE [country]
     WHEN "AO" THEN "Angola"
     WHEN "AU" THEN "Australia"
@@ -172,8 +168,7 @@ CASE [country]
     WHEN "CA" THEN "Canada"
     WHEN "TT" THEN "Trinidad and Tobago"
     ELSE "Other Country"
-END"""
-        ),
+END"""),
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with data table"),
@@ -235,16 +230,14 @@ IF(
         ),
     ],
     examples=[
-        SimpleExample(
-            """
+        SimpleExample("""
 IF
     [Profit] > 100
         THEN "High"
     ELSEIF [Profit] > 25
         THEN "Medium"
     ELSE "Low"
-END"""
-        ),
+END"""),
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with data table"),

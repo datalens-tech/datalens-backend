@@ -29,7 +29,6 @@ from dl_query_processing.compilation.specs import (
 )
 from dl_query_processing.legend.block_legend import BlockSpec
 
-
 LOGGER = logging.getLogger(__name__)
 
 

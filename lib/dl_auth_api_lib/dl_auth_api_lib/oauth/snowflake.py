@@ -7,7 +7,6 @@ import attr
 
 from dl_auth_api_lib import exc
 
-
 _AUTH_URL: str = "https://{account}.snowflakecomputing.com/oauth/authorize?"
 _TOKEN_URL: str = "https://{account}.snowflakecomputing.com/oauth/token-request"
 

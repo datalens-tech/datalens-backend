@@ -4,7 +4,6 @@ import pytest
 
 import dl_settings
 
-
 T = typing.TypeVar("T")
 
 

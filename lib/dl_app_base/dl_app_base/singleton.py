@@ -9,7 +9,6 @@ from typing import (
     cast,
 )
 
-
 LOGGER = logging.getLogger(__name__)
 
 _LOCKED_AND_UNSET_VALUE = object()

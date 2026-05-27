@@ -10,7 +10,6 @@ from dl_type_transformer.native_type import (
     LengthedNativeType,
 )
 
-
 if TYPE_CHECKING:
     from sqlalchemy.types import TypeEngine
 

@@ -4,7 +4,6 @@ from .config import (
 )
 from .services import ScheduleSyncService
 
-
 __all__ = [
     "ScheduleConfig",
     "ScheduleSyncService",

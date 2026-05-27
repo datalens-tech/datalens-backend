@@ -19,7 +19,6 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
 )
 from dl_api_lib.aio import aiohttp_wrappers
 
-
 _METHOD_REQ_RESOURCES_ATTR_NAME = "__dl_required_resources__"
 
 
@@ -49,7 +48,7 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
 
     @staticmethod
     def with_resolved_entities(
-        coro: Callable[..., Coroutine[Any, Any, Any]]
+        coro: Callable[..., Coroutine[Any, Any, Any]],
     ) -> Callable[..., Coroutine[Any, Any, Any]]:
         @functools.wraps(coro)
         async def wrapper(self: BaseView, *args: Any, **kwargs: Any) -> Any:

@@ -5,7 +5,6 @@ import xxhash
 
 from dl_constants.enums import DataSourceType
 
-
 _IGNORE_IN_HASH = frozenset(("db_version",))
 
 

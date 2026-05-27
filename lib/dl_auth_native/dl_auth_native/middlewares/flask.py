@@ -12,7 +12,6 @@ from dl_api_commons.flask.required_resources import (
 )
 import dl_auth_native.middlewares.base as middlewares_base
 
-
 LOGGER = logging.getLogger(__name__)
 
 

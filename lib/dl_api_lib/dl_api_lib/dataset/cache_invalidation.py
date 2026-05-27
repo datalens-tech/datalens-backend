@@ -27,7 +27,6 @@ from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.utils import sa_plain_text
 
-
 TValidateFunc = Callable[[], CacheInvalidationError | None]
 
 

@@ -20,7 +20,6 @@ from dl_formula.shortcuts import n
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 
-
 if TYPE_CHECKING:
     from dl_formula.translation.context import TranslationCtx
 

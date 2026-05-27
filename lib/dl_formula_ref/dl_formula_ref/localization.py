@@ -2,7 +2,6 @@
 
 import gettext
 
-
 DEFAULT_LOCALE = "en"
 
 

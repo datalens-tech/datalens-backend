@@ -12,7 +12,6 @@ import dl_core.exc as exc
 
 from dl_connector_mysql.core.exc import MysqlSourceDoesNotExistError
 
-
 TABLE_DOES_NOT_EXIST_ERROR_CODE = 1146
 SOURCE_CONNECT_ERROR_CODE = 2003
 SQL_SYNTAX_ERROR_CODE = 1064

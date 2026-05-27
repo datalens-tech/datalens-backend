@@ -10,7 +10,6 @@ import pytest_asyncio
 import dl_api_commons.aio.middlewares as dl_api_commons_aio_middlewares
 import dl_auth_native
 
-
 AiohttpHandler = typing.Callable[[aiohttp_web.Request], typing.Awaitable[aiohttp_web.Response]]
 
 

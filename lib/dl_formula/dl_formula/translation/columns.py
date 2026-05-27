@@ -5,7 +5,6 @@ from dl_formula.connectors.base.column import (
 from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
 
-
 _COLUMN_RENDERER_TYPES: dict[DialectCombo, type[ColumnRenderer]] = {
     D.DUMMY: DefaultColumnRenderer,
 }

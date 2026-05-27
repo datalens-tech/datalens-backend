@@ -10,7 +10,6 @@ import clize
 import tomlkit
 import typing_extensions
 
-
 """
 example test spec:
 

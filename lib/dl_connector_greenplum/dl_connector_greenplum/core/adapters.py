@@ -18,8 +18,7 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
     def get_list_all_tables_query(
         self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
     ) -> sa.sql.elements.TextClause:
-        sql_parts = [
-            """
+        sql_parts = ["""
         SELECT
             pg_namespace.nspname as schema,
             pg_class.relname as name
@@ -38,8 +37,7 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
                 SELECT 1 FROM pg_inherits 
                 WHERE pg_inherits.inhrelid = pg_class.oid
             )
-        """
-        ]
+        """]
 
         if search_text:
             sql_parts.append("AND (pg_namespace.nspname || '.' || pg_class.relname) ILIKE :search_text")
@@ -56,15 +54,13 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
     def get_list_schema_names_query(
         self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
     ) -> sa.sql.elements.TextClause:
-        sql_parts = [
-            """
+        sql_parts = ["""
         SELECT nspname FROM pg_namespace
         WHERE nspname NOT LIKE 'pg\_%'
         AND nspname NOT LIKE 'gp\_%'
         AND nspname != 'session_state'
         AND nspname != 'information_schema'
-        """
-        ]
+        """]
 
         if search_text:
             sql_parts.append("AND nspname ILIKE :search_text")
@@ -81,8 +77,7 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
     def get_list_table_and_view_names_query(
         self, schema_name: str, search_text: str | None = None, limit: int | None = None, offset: int | None = None
     ) -> sa.sql.elements.TextClause:
-        sql_parts = [
-            """
+        sql_parts = ["""
         SELECT c.relname
         FROM
             pg_class c
@@ -95,8 +90,7 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
                 SELECT 1 FROM pg_inherits 
                 WHERE pg_inherits.inhrelid = c.oid
             )
-        """
-        ]
+        """]
 
         if search_text:
             sql_parts.append("AND c.relname ILIKE :search_text")

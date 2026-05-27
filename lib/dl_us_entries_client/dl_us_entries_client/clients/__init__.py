@@ -19,7 +19,6 @@ from .public import (
     USEntriesClientSettings,
 )
 
-
 __all__ = [
     "EntryDeleteRequest",
     "EntryGetRequest",

@@ -13,7 +13,6 @@ from typing import (
     Callable,
 )
 
-
 # Minor note:
 # `context` in the formatter is a wrong approach.
 # Use a 'logging filter' that adds whatever context you need to the record

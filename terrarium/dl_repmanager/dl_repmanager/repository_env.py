@@ -70,7 +70,6 @@ from dl_repmanager.management_plugins import (
 )
 from dl_repmanager.primitives import MetaPackageSpec
 
-
 if TYPE_CHECKING:
     from dl_repmanager.package_index import PackageIndex
 

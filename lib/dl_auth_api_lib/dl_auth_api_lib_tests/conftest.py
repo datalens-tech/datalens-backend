@@ -14,7 +14,6 @@ from dl_auth_api_lib.oauth.yandex import YandexOAuthClient
 from dl_auth_api_lib.settings import AuthAPISettings
 from dl_testing.utils import get_default_aiohttp_session
 
-
 LOGGER = logging.getLogger(__name__)
 
 

@@ -6,7 +6,6 @@ from .entry import (
     EntryPostResponse,
 )
 
-
 __all__ = [
     "EntryDeleteRequest",
     "EntryGetRequest",

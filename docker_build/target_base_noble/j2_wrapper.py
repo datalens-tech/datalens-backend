@@ -10,6 +10,7 @@ needed. j2cli is archived (June 2024) and breaks on Python 3.12 (pkg_resources
 + imp removals); jinjanator is the maintained replacement but isn't on
 pypi.yandex-team.ru. This wrapper avoids both problems.
 """
+
 import os
 import sys
 

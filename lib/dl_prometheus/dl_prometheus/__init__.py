@@ -13,7 +13,6 @@ from .registry import (
     MultiprocessMetricsRegistry,
 )
 
-
 __all__ = (
     "BaseMetricsRegistry",
     "Counter",

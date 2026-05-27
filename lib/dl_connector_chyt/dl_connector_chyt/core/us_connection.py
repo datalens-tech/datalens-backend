@@ -42,7 +42,6 @@ from dl_connector_chyt.core.dto import CHYTDTO
 from dl_connector_chyt.core.settings import CHYTConnectorSettings
 from dl_connector_clickhouse.core.clickhouse_base.us_connection import ConnectionClickhouseBase
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
 

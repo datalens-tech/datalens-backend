@@ -12,7 +12,6 @@ from dl_connector_postgresql_tests.db.formula.base import (
     PostgreSQL_9_4TestBase,
 )
 
-
 PG_HASH_FUNCTION_SUPPORT = HashFunctionSupport(
     md5=True,
     sha1=True,

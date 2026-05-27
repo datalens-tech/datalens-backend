@@ -6,7 +6,6 @@ import dl_formula.definitions.functions_datetime as base
 
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
 
-
 V = TranslationVariant.make
 
 

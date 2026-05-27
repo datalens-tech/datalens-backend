@@ -5,7 +5,6 @@ from .json_each_row import (
 )
 from .raw_bytes import S3RawFileAsyncDataSink
 
-
 __all__ = (
     "S3FileDataSink",
     "S3JsonEachRowUntypedFileAsyncDataSink",

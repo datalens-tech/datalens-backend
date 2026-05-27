@@ -18,7 +18,6 @@ from dl_cache_engine.primitives import (
 from dl_core.us_connection_base import ConnectionBase
 from dl_model_tools.serialization import hashable_dumps
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TJSONExt
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo

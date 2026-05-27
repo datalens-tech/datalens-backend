@@ -16,7 +16,6 @@ from dl_obfuscator.obfuscators.regex import (
 from dl_obfuscator.obfuscators.secret import SecretObfuscator
 from dl_obfuscator.secret_keeper import SecretKeeper
 
-
 LOGGER = logging.getLogger(__name__)
 ObfuscatableData = str | None | dict[str, "ObfuscatableData"] | list["ObfuscatableData"]
 

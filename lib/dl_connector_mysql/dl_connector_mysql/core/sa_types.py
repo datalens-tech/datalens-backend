@@ -10,7 +10,6 @@ from dl_type_transformer.type_transformer import make_native_type
 
 from dl_connector_mysql.core.constants import BACKEND_TYPE_MYSQL
 
-
 SQLALCHEMY_MYSQL_BASE_TYPES = (
     my_types.TINYINT,
     my_types.SMALLINT,

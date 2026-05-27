@@ -12,7 +12,6 @@ from dl_connector_oracle.formula.definitions.operators_binary import DEFINITIONS
 from dl_connector_oracle.formula.definitions.operators_ternary import DEFINITIONS_TERNARY
 from dl_connector_oracle.formula.definitions.operators_unary import DEFINITIONS_UNARY
 
-
 DEFINITIONS = [
     *DEFINITIONS_COND_BLOCKS,
     *DEFINITIONS_AGG,

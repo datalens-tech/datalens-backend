@@ -31,7 +31,6 @@ from dl_constants.exc import DEFAULT_GLOBAL_ERR_CODE_API_PREFIX
 from dl_core.flask_utils.us_manager_middleware import USManagerFlaskMiddleware
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
-
 PROFILE_REQUESTS = os.environ.get("PROFILE_REQUESTS", "")
 PROFILE_REQ_CLASSES = {v for v in set(os.environ.get("PROFILE_REQ_CLASSES", "").split(",")) if v}
 PROFILE_REQ_METHODS = {v for v in set(os.environ.get("PROFILE_REQ_METHODS", "").lower().split(",")) if v}
@@ -59,7 +58,7 @@ def _profile_request_check(*args, **kwargs) -> bool:  # type: ignore  # TODO: fi
 
 
 def wrap_export_import_exception(
-    func: Callable[Concatenate[BIResource, ...], dict | tuple[list | dict, int]]
+    func: Callable[Concatenate[BIResource, ...], dict | tuple[list | dict, int]],
 ) -> Callable[Concatenate[BIResource, ...], dict | tuple[list | dict, int]]:
     def wrapper(self: BIResource, *args: Any, **kwargs: Any) -> dict | tuple[list | dict, int]:
         export_import_errors = (  # exceptions which error codes are be covered by UI error handling

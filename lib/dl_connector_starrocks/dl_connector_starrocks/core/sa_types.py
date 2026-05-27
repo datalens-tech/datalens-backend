@@ -10,7 +10,6 @@ from dl_connector_starrocks.core.type_transformer import (
     STARROCKS_TYPES_STRING,
 )
 
-
 SQLALCHEMY_STARROCKS_BASE_TYPES = (
     *STARROCKS_TYPES_INT,
     *STARROCKS_TYPES_FLOAT,

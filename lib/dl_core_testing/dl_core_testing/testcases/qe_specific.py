@@ -17,7 +17,6 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
 import dl_logging
 
-
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

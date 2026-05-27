@@ -81,7 +81,6 @@ from dl_connector_clickhouse.core.clickhouse_base.ch_commons import (
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE
 from dl_connector_clickhouse.core.clickhouse_base.exc import CHRowTooLarge
 
-
 if TYPE_CHECKING:
     from dl_constants.types import TBIChunksGen
     from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI

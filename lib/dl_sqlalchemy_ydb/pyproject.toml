@@ -25,6 +25,7 @@ DEP001 = ["google"]
 DEP002 = [
   "dl-sqlalchemy-common",
 ]
+DEP003 = ["google"]
 
 [tool.mypy]
 check_untyped_defs = true

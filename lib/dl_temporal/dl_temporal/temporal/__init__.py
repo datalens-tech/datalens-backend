@@ -9,7 +9,6 @@ from .workflows import (
     SyncSchedulesFromDynconfigWorkflowResult,
 )
 
-
 __all__ = [
     "SyncSchedulesFromDynconfigActivity",
     "SyncSchedulesFromDynconfigActivityParams",

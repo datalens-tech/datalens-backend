@@ -46,7 +46,6 @@ from dl_rls.subject_resolver import (
 )
 from dl_task_processor.arq_wrapper import create_arq_redis_settings
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory
 

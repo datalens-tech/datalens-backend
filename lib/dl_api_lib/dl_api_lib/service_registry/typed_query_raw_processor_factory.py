@@ -10,7 +10,6 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core.utils import FutureRef
 from dl_dashsql.typed_query.processor.base import TypedQueryRawProcessorBase
 
-
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry  # noqa
 

@@ -42,7 +42,6 @@ from dl_query_processing.legend.field_legend import (
 from dl_query_processing.merging.primitives import MergedQueryDataStream
 from dl_query_processing.postprocessing.primitives import PostprocessedRow
 
-
 if TYPE_CHECKING:
     from aiohttp.web_response import Response
 

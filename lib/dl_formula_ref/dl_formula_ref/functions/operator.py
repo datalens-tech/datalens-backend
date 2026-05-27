@@ -14,7 +14,6 @@ from dl_formula_ref.registry.signature_gen import (
     TemplatedSignatureGenerator,
 )
 
-
 _ = get_gettext()
 
 

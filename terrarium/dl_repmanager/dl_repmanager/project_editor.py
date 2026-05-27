@@ -16,7 +16,6 @@ from dl_repmanager.package_meta_reader import (
 )
 from dl_repmanager.repository_env import RepoEnvironment
 
-
 log = getLogger()
 
 

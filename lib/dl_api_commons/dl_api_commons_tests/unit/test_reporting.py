@@ -23,7 +23,6 @@ from dl_constants.enums import (
     ReportingQueryType,
 )
 
-
 CONNECTION_TYPE_CHYT_TEST = ConnectionType.declare("chyt_test")
 CONNECTION_TYPE_TEST = ConnectionType.declare("test")
 

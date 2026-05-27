@@ -20,7 +20,6 @@ from dl_core_testing.database import Db
 from dl_core_testing.executors import ExecutorFactoryBase
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 
-
 _CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 

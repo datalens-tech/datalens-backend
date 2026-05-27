@@ -6,7 +6,6 @@ from dl_connector_promql.core.adapter import PromQLConnLineConstructor
 from dl_connector_promql.core.constants import PromQLAuthType
 from dl_connector_promql.core.target_dto import PromQLConnTargetDTO
 
-
 DSN_TEMPLATE = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
 
 

@@ -10,7 +10,6 @@ from dl_formula.definitions.literals import un_literal
 
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect as D
 
-
 V = TranslationVariant.make
 
 

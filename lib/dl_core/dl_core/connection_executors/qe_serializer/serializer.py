@@ -16,7 +16,6 @@ from dl_core.connection_executors.qe_serializer import (
     schemas_exc,
 )
 
-
 ResponseTypes = Union[RawSchemaInfo, list[str], Optional[str], None, bool, int]
 
 

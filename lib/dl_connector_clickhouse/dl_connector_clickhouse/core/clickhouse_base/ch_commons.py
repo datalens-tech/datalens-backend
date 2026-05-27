@@ -31,7 +31,6 @@ from dl_connector_clickhouse.core.clickhouse_base.exc import (
     TooManyColumns,
 )
 
-
 if TYPE_CHECKING:
     from dl_type_transformer.type_transformer import TypeTransformer
 
