@@ -10,6 +10,7 @@ from .jsonable import (
     JsonableDate,
     JsonableDatetime,
     JsonableDatetimeWithTimeZone,
+    JsonableDict,
     JsonableTimedelta,
     JsonableUUID,
 )
@@ -35,6 +36,7 @@ __all__ = [
     "JsonableDate",
     "JsonableDatetime",
     "JsonableDatetimeWithTimeZone",
+    "JsonableDict",
     "JsonableTimedelta",
     "JsonableUUID",
     "SchematizedAnnotation",

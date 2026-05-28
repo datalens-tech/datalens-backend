@@ -4,6 +4,8 @@ from .entry import (
     PrivateEntryGetResponse,
     PrivateEntryPostRequest,
     PrivateEntryPostResponse,
+    PrivateEntryUnversionedDataPostRequest,
+    PrivateEntryUnversionedDataPostResponse,
 )
 
 __all__ = [
@@ -13,4 +15,6 @@ __all__ = [
     "PrivateEntryGetResponse",
     "PrivateEntryPostRequest",
     "PrivateEntryPostResponse",
+    "PrivateEntryUnversionedDataPostRequest",
+    "PrivateEntryUnversionedDataPostResponse",
 ]

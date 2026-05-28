@@ -5,6 +5,8 @@ from .private import (
     PrivateEntryGetResponse,
     PrivateEntryPostRequest,
     PrivateEntryPostResponse,
+    PrivateEntryUnversionedDataPostRequest,
+    PrivateEntryUnversionedDataPostResponse,
     USEntriesPrivateAsyncClient,
     USEntriesPrivateClientSettings,
 )
@@ -30,6 +32,8 @@ __all__ = [
     "PrivateEntryGetResponse",
     "PrivateEntryPostRequest",
     "PrivateEntryPostResponse",
+    "PrivateEntryUnversionedDataPostRequest",
+    "PrivateEntryUnversionedDataPostResponse",
     "USEntriesAsyncClient",
     "USEntriesClientSettings",
     "USEntriesPrivateAsyncClient",

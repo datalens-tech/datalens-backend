@@ -135,3 +135,6 @@ class JsonableDatetimeWithTimeZone(JsonableDatetime):
             raise ValueError("tz-aware datetime is required")
 
         return result
+
+
+type JsonableDict = dict[str, pydantic.JsonValue]

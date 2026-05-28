@@ -9,6 +9,8 @@ from .models import (
     PrivateEntryGetResponse,
     PrivateEntryPostRequest,
     PrivateEntryPostResponse,
+    PrivateEntryUnversionedDataPostRequest,
+    PrivateEntryUnversionedDataPostResponse,
 )
 
 __all__ = [
@@ -17,6 +19,8 @@ __all__ = [
     "PrivateEntryGetResponse",
     "PrivateEntryPostRequest",
     "PrivateEntryPostResponse",
+    "PrivateEntryUnversionedDataPostRequest",
+    "PrivateEntryUnversionedDataPostResponse",
     "USEntriesPrivateAsyncClient",
     "USEntriesPrivateClientSettings",
     "US_ENTRIES_PRIVATE_AUTH_TARGET",

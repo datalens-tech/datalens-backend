@@ -87,3 +87,10 @@ class USEntriesPrivateAsyncClient:
     async def delete_entry(self, request: private_models.PrivateEntryDeleteRequest) -> None:
         prepared = await self._base_client.prepare_request(request=request)
         await self._send(prepared)
+
+    async def post_unversioned_data(
+        self, request: private_models.PrivateEntryUnversionedDataPostRequest
+    ) -> private_models.PrivateEntryUnversionedDataPostResponse:
+        prepared = await self._base_client.prepare_request(request=request)
+        response = await self._send(prepared)
+        return private_models.PrivateEntryUnversionedDataPostResponse.model_validate(response.json())

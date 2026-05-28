@@ -18,4 +18,5 @@ class BaseRequest(dl_httpx.BaseRequest):
         if self.tenant is not None:
             tenant_headers = self.tenant.get_outbound_tenancy_headers()
             result.update({k.value.lower(): v for k, v in tenant_headers.items()})
+
         return result

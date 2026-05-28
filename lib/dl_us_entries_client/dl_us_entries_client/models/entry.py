@@ -11,6 +11,7 @@ type EntryId = str
 class EntryScope(str, enum.Enum):
     dashboard = "dash"
     connection = "connection"
+    dataset = "dataset"
 
 
 class EntryPermissions(dl_httpx.BaseResponseSchema):
@@ -25,6 +26,11 @@ class EntryData(dl_pydantic.BaseSchema):
     type: str = ""
     key: str
     permissions: EntryPermissions | None = None
+    data: dl_pydantic.JsonableDict | None = None
+    unversioned_data: dl_pydantic.JsonableDict | None = pydantic.Field(
+        default=None,
+        alias="unversionedData",
+    )
 
     @property
     def permissions_strict(self) -> EntryPermissions:
