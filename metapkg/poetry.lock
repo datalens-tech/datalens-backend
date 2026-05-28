@@ -1805,6 +1805,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
+dl-extract = {path = "../dl_extract"}
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
@@ -2969,7 +2970,8 @@ files = []
 develop = true
 
 [package.dependencies]
-dl-constants = {path = "../dl_constants"}
+attrs = "*"
+dl-settings = {path = "../dl_settings"}
 
 [package.source]
 type = "directory"
@@ -3780,7 +3782,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "dl-version"
-version = "0.2718.0"
+version = "0.2719.0"
 description = ""
 optional = false
 python-versions = ">=3.12, <3.13"

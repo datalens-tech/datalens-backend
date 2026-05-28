@@ -37,6 +37,7 @@ from dl_core.services_registry.inst_specific_sr import (
 from dl_core.services_registry.rqe_caches import RQECachesSetting
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.utils import FutureRef
+import dl_extract
 from dl_i18n.localizer_base import (
     LocalizerLoader,
     TranslationConfig,
@@ -119,6 +120,9 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
     def _get_constraints(self, settings: TSettings) -> ConstraintsSettings:
         return settings.CONSTRAINTS
 
+    def _get_extract_clickhouse_provider(self, settings: TSettings) -> dl_extract.ExtractClickhouseProvider | None:
+        return None
+
     @property
     def _extra_translation_configs(self) -> set[TranslationConfig]:
         return set()
@@ -190,5 +194,6 @@ class SRFactoryBuilder(Generic[TSettings], abc.ABC):
             exports_history_url_path=settings.EXPORTS_HISTORY_URL_PATH,
             feature_flags=self._get_feature_flags(settings),
             constraints=self._get_constraints(settings),
+            extract_clickhouse_provider=self._get_extract_clickhouse_provider(settings),
         )
         return sr_factory

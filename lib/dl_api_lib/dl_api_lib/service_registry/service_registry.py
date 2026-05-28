@@ -29,6 +29,7 @@ from dl_core.services_registry.top_level import (
     ServicesRegistry,
 )
 from dl_core.utils import FutureRef
+import dl_extract
 from dl_formula.parser.factory import ParserType
 from dl_i18n.localizer_base import (
     Localizer,
@@ -99,6 +100,9 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
     def get_constraints(self) -> ConstraintsSettings:
         raise NotImplementedError
 
+    def get_extract_clickhouse_provider(self) -> dl_extract.ExtractClickhouseProvider:
+        raise NotImplementedError
+
 
 @attr.s
 class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
@@ -116,6 +120,7 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
     _typed_query_raw_processor_factory: TypedQueryRawProcessorFactory = attr.ib(kw_only=True)
     _feature_flags: FeatureFlags = attr.ib(kw_only=True, factory=FeatureFlags)
     _constraints: ConstraintsSettings = attr.ib(kw_only=True, factory=ConstraintsSettings)
+    _extract_clickhouse_provider: dl_extract.ExtractClickhouseProvider | None = attr.ib(kw_only=True, default=None)
 
     _multi_query_mutator_factory_factory: SRMultiQueryMutatorFactory = attr.ib(
         init=False,
@@ -193,6 +198,10 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
 
     def get_constraints(self) -> ConstraintsSettings:
         return self._constraints
+
+    def get_extract_clickhouse_provider(self) -> dl_extract.ExtractClickhouseProvider:
+        assert self._extract_clickhouse_provider is not None
+        return self._extract_clickhouse_provider
 
     def close(self) -> None:
         if self._formula_parser_factory is not None:

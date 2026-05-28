@@ -21,6 +21,7 @@ dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-dashsql = {path = "../../lib/dl_dashsql"}
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
+dl-extract = {path = "../dl_extract"}
 dl-formula = {path = "../dl_formula"}
 dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}

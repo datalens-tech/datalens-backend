@@ -20,6 +20,7 @@ from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.utils import FutureRef
+import dl_extract
 from dl_formula.parser.factory import ParserType
 from dl_i18n.localizer_base import (
     Localizer,
@@ -44,6 +45,7 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
     _pivot_transformer_factory: Optional[PivotTransformerFactory] = attr.ib(kw_only=True, default=None)
     _feature_flags: FeatureFlags = attr.ib(kw_only=True, factory=FeatureFlags)
     _constraints: ConstraintsSettings = attr.ib(kw_only=True, factory=ConstraintsSettings)
+    _extract_clickhouse_provider: dl_extract.ExtractClickhouseProvider | None = attr.ib(kw_only=True, default=None)
 
     def additional_sr_constructor_kwargs(
         self,
@@ -64,4 +66,5 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
             pivot_transformer_factory=self._pivot_transformer_factory,
             feature_flags=self._feature_flags,
             constraints=self._constraints,
+            extract_clickhouse_provider=self._extract_clickhouse_provider,
         )

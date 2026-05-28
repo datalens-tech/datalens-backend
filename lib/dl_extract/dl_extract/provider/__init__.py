@@ -2,9 +2,9 @@ from .provider import (
     ExtractClickhouseConfig,
     ExtractClickhouseProvider,
     ExtractClickhouseProviderArguments,
-    PrimitiveClusterExtractClickhouseProviderSettings,
     StaticExtractClickhouseProvider,
 )
+from .settings import PrimitiveClusterExtractClickhouseProviderSettings
 
 __all__ = [
     "ExtractClickhouseConfig",
