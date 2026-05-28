@@ -1,12 +1,13 @@
 from marshmallow import Schema
 
+from dl_core.base_models import BaseAttrsDataModel
 from dl_core.us_connection_base import (
     ConnectionBase,
     UnknownConnection,
 )
 from dl_core.us_manager.storage_schemas.connection import ConnectionBaseDataStorageSchema
 
-MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA = {}
+MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA: dict[type[BaseAttrsDataModel], type[Schema]] = {}
 
 
 def register_connection_schema(conn_cls: type[ConnectionBase], schema_cls: type[Schema]) -> None:

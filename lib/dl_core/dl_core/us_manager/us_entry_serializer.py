@@ -54,7 +54,7 @@ class USDataPack:
 
 class USEntrySerializer(abc.ABC):
     _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[type[BaseAttrsDataModel], type[marshmallow.Schema]]] = ChainMap(
-        MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "ChainMap" has incompatible type "dict[type[DataModel], type[Schema]]"; expected "MutableMapping[type[BaseAttrsDataModel], type[Schema]]"  [arg-type]
+        MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,
         {
             Dataset.DataModel: DatasetStorageSchema,
         },

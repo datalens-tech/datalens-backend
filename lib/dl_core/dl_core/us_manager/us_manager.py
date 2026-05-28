@@ -90,7 +90,7 @@ class USManagerBase:
     ITER_ENTRIES_PAGE_SIZE: ClassVar[int] = 1500
 
     _MAP_TYPE_TO_SCHEMA: ClassVar[ChainMapGeneric[type[BaseAttrsDataModel], type[marshmallow.Schema]]] = ChainMap(
-        MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,  # type: ignore  # TODO: fix
+        MAP_TYPE_TO_SCHEMA_MAP_TYPE_TO_SCHEMA,
         {
             Dataset.DataModel: DatasetStorageSchema,
         },
