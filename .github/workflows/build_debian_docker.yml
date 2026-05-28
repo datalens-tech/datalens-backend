@@ -6,7 +6,7 @@ on:
     - cron: "04 05 * * 6" # every Saturday at 05:04
   push:
     branches:
-      - master
+      - main
     paths:
       - "docker_build/debian_docker/**"
       - ".github/workflows/build_debian_docker.yml"
