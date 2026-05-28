@@ -15,5 +15,7 @@ __all__ = [
     "EntryId",
     "EntryPermissions",
     "EntryScope",
+    "Lock",
+    "LockToken",
     "PingRequest",
 ]

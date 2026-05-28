@@ -72,6 +72,7 @@ class PrivateEntryPostResponse(Entry, dl_httpx.BaseResponseSchema): ...
 @attrs.define(kw_only=True, frozen=True)
 class PrivateEntryDeleteRequest(BaseRequest):
     entry_id: EntryId
+    lock_token: str | None = None
 
     @property
     def path(self) -> str:
@@ -81,11 +82,21 @@ class PrivateEntryDeleteRequest(BaseRequest):
     def method(self) -> str:
         return "DELETE"
 
+    @property
+    def body(self) -> dl_json.JsonSerializableMapping:
+        body: dict[str, dl_json.JsonSerializable] = {}
+
+        if self.lock_token is not None:
+            body["lockToken"] = self.lock_token
+
+        return body
+
 
 @attrs.define(kw_only=True, frozen=True)
 class PrivateEntryUnversionedDataPostRequest(BaseRequest):
     entry_id: EntryId
     unversioned_data: dl_json.JsonSerializableMapping
+    lock_token: str | None = None
 
     @property
     def path(self) -> str:
@@ -97,9 +108,14 @@ class PrivateEntryUnversionedDataPostRequest(BaseRequest):
 
     @property
     def body(self) -> dl_json.JsonSerializableMapping:
-        return {
+        body: dict[str, dl_json.JsonSerializable] = {
             "unversionedData": self.unversioned_data,
         }
+
+        if self.lock_token is not None:
+            body["lockToken"] = self.lock_token
+
+        return body
 
 
 class PrivateEntryUnversionedDataPostResponse(Entry, dl_httpx.BaseResponseSchema): ...

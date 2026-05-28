@@ -59,20 +59,16 @@ class PrivateEntryLockDeleteRequest(BaseRequest):
         return "POST"
 
     @property
-    def body(self) -> dl_json.JsonSerializableMapping:
-        body: dict[str, dl_json.JsonSerializable] = {}
+    def query_params(self) -> dict[str, str]:
+        query_params: dict[str, str] = {}
 
         if self.lock_token is not None:
-            body["lockToken"] = self.lock_token
+            query_params["lockToken"] = self.lock_token
 
         if self.force is not None:
-            body["force"] = self.force
+            query_params["force"] = "1" if self.force else "0"
 
-        return body
-
-    @property
-    def query_params(self) -> dict[str, str]:
-        return {}
+        return query_params
 
 
 class PrivateEntryLockDeleteResponse(Lock, dl_httpx.BaseResponseSchema): ...

@@ -46,6 +46,8 @@ __all__ = [
     "EntryPostRequest",
     "EntryPostResponse",
     "EntryScope",
+    "Lock",
+    "LockToken",
     "PingRequest",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
