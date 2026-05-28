@@ -58,11 +58,10 @@ class DefaultMutationCacheEngineFactory(MutationCacheEngineFactory):
     def get_cache_engine(self, allow_slave: bool) -> GenericCacheEngine:
         if self.cache_type == MemoryCacheEngine:
             return self._get_memory_cache_engine_singleton()
-        elif self.cache_type == RedisCacheEngine:
+        if self.cache_type == RedisCacheEngine:
             redis_cache_engine = self._get_redis_cache_engine(allow_slave)
             if redis_cache_engine:
                 return redis_cache_engine
             LOGGER.info("Can not create mutation cache engine: service registry did not return a Redis client")
             raise CacheInitializationError("Cannot create mutation cache engine")
-        else:
-            raise CacheInitializationError("No initialization for this type of Cache Engine in factory")
+        raise CacheInitializationError("No initialization for this type of Cache Engine in factory")

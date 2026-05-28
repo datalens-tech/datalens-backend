@@ -36,9 +36,9 @@ def _oracle_dateadd_impl(date_expr: ColumnElement, unit: str, num: int) -> Colum
     unit_lower = unit.lower()
     if unit_lower == "month":
         return sa.cast(sa.func.ADD_MONTHS(date_expr, num), sa.Date)
-    elif unit_lower == "quarter":
+    if unit_lower == "quarter":
         return sa.cast(sa.func.ADD_MONTHS(date_expr, 3 * num), sa.Date)
-    elif unit_lower == "year":
+    if unit_lower == "year":
         return sa.cast(sa.func.ADD_MONTHS(date_expr, 12 * num), sa.Date)
     return sa.cast(date_expr + datetime_interval(unit, num, literal_mult=True), sa.Date)
 

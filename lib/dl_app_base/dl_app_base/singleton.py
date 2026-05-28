@@ -27,8 +27,7 @@ Function = SyncFunction | AsyncFunction
 def singleton_function_result[FunctionType: Function](func: FunctionType) -> FunctionType:
     if inspect.iscoroutinefunction(func):
         return _async_singleton_function_result(func)
-    else:
-        return _sync_singleton_function_result(func)
+    return _sync_singleton_function_result(func)
 
 
 def _async_singleton_function_result[AsyncFunctionType: AsyncFunction](func: AsyncFunctionType) -> AsyncFunctionType:
@@ -77,8 +76,7 @@ def _sync_singleton_function_result[SyncFunctionType: SyncFunction](func: SyncFu
 def singleton_class_method_result[FunctionType: Function](func: FunctionType) -> FunctionType:
     if inspect.iscoroutinefunction(func):
         return _async_singleton_class_method_result(func)
-    else:
-        return _sync_singleton_class_method_result(func)
+    return _sync_singleton_class_method_result(func)
 
 
 def _async_singleton_class_method_result[AsyncFunctionType: AsyncFunction](

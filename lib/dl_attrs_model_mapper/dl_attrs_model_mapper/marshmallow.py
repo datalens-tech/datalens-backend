@@ -129,7 +129,7 @@ class ModelMapperMarshmallow:
 
         if container_type is None:
             return self.create_field_for_unwrapped_type(effective_type, attrib_descriptor, common_props)
-        elif is_sequence(container_type):
+        if is_sequence(container_type):
             nested_field_bundle = self.create_field_for_type(
                 effective_type,
                 attrib_descriptor,
@@ -140,7 +140,7 @@ class ModelMapperMarshmallow:
                 ma_field=fields.List(nested_field_bundle.ma_field, **common_props.to_common_ma_field_kwargs()),
                 amm_field=AmmListField(common_props, nested_field_bundle.amm_field),
             )
-        elif is_str_mapping(container_type):
+        if is_str_mapping(container_type):
             nested_field_bundle = self.create_field_for_type(
                 effective_type,
                 attrib_descriptor,
@@ -156,10 +156,9 @@ class ModelMapperMarshmallow:
                 amm_field=AmmStringMappingField(common_props, nested_field_bundle.amm_field),
             )
 
-        else:
-            raise AssertionError(
-                f"Got unexpected container type from unwrap_typing_container_with_single_type(): {container_type!r}"
-            )
+        raise AssertionError(
+            f"Got unexpected container type from unwrap_typing_container_with_single_type(): {container_type!r}"
+        )
 
     def create_field_for_unwrapped_type(
         self,
@@ -174,7 +173,7 @@ class ModelMapperMarshmallow:
                 amm_field=AmmNestedField(common_ma_field_kwargs, schema_bundle.amm_schema),
             )
 
-        elif the_type in self._map_scalar_type_schema_cls:
+        if the_type in self._map_scalar_type_schema_cls:
             return FieldBundle(
                 ma_field=fields.Nested(
                     self._map_scalar_type_schema_cls[the_type],
@@ -183,7 +182,7 @@ class ModelMapperMarshmallow:
                 amm_field=AmmScalarField(common_ma_field_kwargs, the_type),
             )
 
-        elif the_type in self._map_scalar_type_field_cls:
+        if the_type in self._map_scalar_type_field_cls:
             return FieldBundle(
                 ma_field=self._map_scalar_type_field_cls[the_type](
                     **common_ma_field_kwargs.to_common_ma_field_kwargs(),
@@ -191,7 +190,7 @@ class ModelMapperMarshmallow:
                 amm_field=AmmScalarField(common_ma_field_kwargs, the_type),
             )
 
-        elif isinstance(the_type, type) and issubclass(the_type, enum.Enum):
+        if isinstance(the_type, type) and issubclass(the_type, enum.Enum):
             enum_by_value = False if attrib_descriptor is None else attrib_descriptor.enum_by_value
 
             return FieldBundle(
@@ -207,7 +206,7 @@ class ModelMapperMarshmallow:
                 ),
             )
 
-        elif isinstance(the_type, type) and issubclass(the_type, DynamicEnum):
+        if isinstance(the_type, type) and issubclass(the_type, DynamicEnum):
             return FieldBundle(
                 ma_field=DynamicEnumField(
                     the_type,
@@ -220,8 +219,7 @@ class ModelMapperMarshmallow:
                 ),
             )
 
-        else:
-            raise TypeError(f"Can not build field for {the_type!r}")
+        raise TypeError(f"Can not build field for {the_type!r}")
 
     def link_to_parents(self, the_type: type, the_schema_bundle: RegularSchemaBundle) -> None:
         the_type_model_descriptor = ModelDescriptor.get_for_type(the_type)

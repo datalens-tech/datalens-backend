@@ -23,7 +23,7 @@ def normalize_explicit_avatar_ids(dataset: Dataset, required_avatar_ids: set[Ava
         if len(required_avatar_ids) > 1:
             raise dl_query_processing.exc.InvalidQueryStructure("Cannot build query with only feature-managed avatars")
 
-        elif not required_avatar_ids:
+        if not required_avatar_ids:
             # Attempt to fall back to root avatar
             root_avatar = accessor.get_root_avatar_opt()
             if root_avatar is not None:

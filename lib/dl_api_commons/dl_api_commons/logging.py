@@ -76,8 +76,7 @@ class RequestObfuscator:
         repl_str = "<hidden>"
         if len(secret_value) > 8:
             return secret_value[:3] + repl_str + secret_value[-3:]
-        else:
-            return repl_str
+        return repl_str
 
     def _obfuscate_cookie_header_value(self, cookie_string: str) -> str:
         cookie: SimpleCookie = SimpleCookie(cookie_string)

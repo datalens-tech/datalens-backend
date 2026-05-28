@@ -59,10 +59,9 @@ class ReadinessService:
     async def _check_subsystem_readiness(self, subsystem: SubsystemReadinessCallback) -> bool:
         if isinstance(subsystem, SubsystemReadinessAsyncCallback):
             return await subsystem.is_ready()
-        elif isinstance(subsystem, SubsystemReadinessSyncCallback):
+        if isinstance(subsystem, SubsystemReadinessSyncCallback):
             return subsystem.is_ready()
-        else:
-            raise ValueError(f"Unknown subsystem type: {type(subsystem)}")
+        raise ValueError(f"Unknown subsystem type: {type(subsystem)}")
 
     async def _update_statuses(self) -> None:
         now = datetime.datetime.now()

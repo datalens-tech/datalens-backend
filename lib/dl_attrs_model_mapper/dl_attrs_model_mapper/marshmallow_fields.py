@@ -44,7 +44,7 @@ class SingleOrMultiStringField(fields.Field):
         try:
             if isinstance(value, str):
                 return SingleOrMultiString.from_string(value)
-            elif isinstance(value, list):
+            if isinstance(value, list):
                 assert all(isinstance(s, str) for s in value)
                 return SingleOrMultiString.from_sequence(value)
         except Exception as error:

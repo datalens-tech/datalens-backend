@@ -205,7 +205,7 @@ class DLRequestBase:
             if required:
                 raise InvalidHeaderException("Header required, but missing", header_name=header_name)
             return None
-        elif len(header_value_list) > 1:
+        if len(header_value_list) > 1:
             raise InvalidHeaderException("Expecting single header but multiple received", header_name=header_name)
 
         return header_value_list[0]

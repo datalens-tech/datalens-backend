@@ -295,13 +295,12 @@ class BaseSAAdapter(
 
                 return RawSchemaInfo(columns=columns, indexes=indexes)
 
-            elif isinstance(table_def, SATextTableDefinition):
+            if isinstance(table_def, SATextTableDefinition):
                 return self._get_subselect_table_info(table_def)
 
-            else:
-                raise TypeError(
-                    f"Unsupported type of table table definition to get info: {get_type_full_name(type(table_def))}"
-                )
+            raise TypeError(
+                f"Unsupported type of table table definition to get info: {get_type_full_name(type(table_def))}"
+            )
 
         raise AssertionError("Non handled case of get_table_info()")
 

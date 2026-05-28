@@ -33,7 +33,7 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
 
         if RequiredResourceCommon.SKIP_AUTH in required_resources:
             LOGGER.info("Auth was skipped due to SKIP_AUTH flag in target view")
-            return None
+            return
 
         if RequiredResourceCommon.ONLY_SERVICES_ALLOWED in required_resources:
             LOGGER.info("Using service auth flow due to ONLY_SERVICES_ALLOWED flag in target view")
@@ -48,7 +48,7 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
                 LOGGER.warning(f"Service auth forbidden: {exc.message}")
                 raise werkzeug_exceptions.Forbidden(description=exc.message) from exc
 
-            return None
+            return
 
         user_access_token_header = flask.request.headers.get(self._user_access_header_key)
 
@@ -67,7 +67,7 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
             )
         )
 
-        return None
+        return
 
 
 __all__ = [

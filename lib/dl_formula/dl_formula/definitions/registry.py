@@ -106,10 +106,9 @@ class OperationRegistry:
                 if dialect is None:
                     assert for_any_dialect
                     return func_translation
-                elif func_translation.match_dialect(dialect):
+                if func_translation.match_dialect(dialect):
                     return func_translation
-                else:
-                    some_type_match = True
+                some_type_match = True
 
         # such a function does exist, but there is no implementation that accepts the given arguments
         what = "function" if translations[0].is_function else "operator"

@@ -13,5 +13,4 @@ class PostgreSQLTypeConstructor(DefaultSATypeConstructor):
         }
         if (type_eng := type_map.get(data_type)) is not None:
             return type_eng
-        else:
-            return super().get_sa_type(data_type)
+        return super().get_sa_type(data_type)

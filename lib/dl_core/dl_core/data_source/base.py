@@ -246,8 +246,7 @@ class DataSource(metaclass=abc.ABCMeta):
         try:
             if strict:
                 return getattr(self.connection, attr_name)
-            else:
-                return getattr(self.connection, attr_name, None)
+            return getattr(self.connection, attr_name, None)
         except DLBaseException as e:
             if strict:
                 raise

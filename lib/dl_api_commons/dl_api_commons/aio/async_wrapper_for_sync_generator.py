@@ -333,30 +333,27 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
                     self._ss.set_state(JobState.closed)
                     raise EndOfStream()
 
-                elif self.state == JobState.chunk_in_buffer:
+                if self.state == JobState.chunk_in_buffer:
                     ret = self._ss.fetch_buffer()
                     self._ss.set_state(JobState.ready_for_next_chunk)
                     return ret
 
-                elif self.state == JobState.ready_for_next_chunk:
+                if self.state == JobState.ready_for_next_chunk:
                     # Case: worker thread did not catch monitor after previous fetch procedure launch
                     #  So we should give it another chance to
                     self._ss.wait_for_state_change()
                     continue
 
-                elif self.state == JobState.error:
+                if self.state == JobState.error:
                     self._ss.set_state(JobState.closed)
                     raise _ErrorInWorkerThread()
 
-                elif self.state in (JobState.closed, JobState.pending_close):
+                if self.state in (JobState.closed, JobState.pending_close):
                     raise WorkerIsClosed()
 
-                else:
-                    self._log.error(
-                        "Unexpected state encountered during fetching next, scheduling close: %s", self.state
-                    )
-                    self._ss.set_state(JobState.pending_close)
-                    raise AWFSGRuntimeError(f"Unexpected state encountered during fetching next: {self.state}")
+                self._log.error("Unexpected state encountered during fetching next, scheduling close: %s", self.state)
+                self._ss.set_state(JobState.pending_close)
+                raise AWFSGRuntimeError(f"Unexpected state encountered during fetching next: {self.state}")
 
     # TODO FIX: Use async lock to prevent concurrent calls
     # TODO FIX: Assert that job is running

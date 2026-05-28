@@ -45,12 +45,11 @@ class DbQueryExecutionReport:
     def convert_for_logging_extras(self, value) -> Union[str, int, bool, None]:  # type: ignore  # TODO: fix
         if value is None:
             return None
-        elif isinstance(value, (str, int, bool)):
+        if isinstance(value, (str, int, bool)):
             return value
-        elif isinstance(value, enum.Enum):
+        if isinstance(value, enum.Enum):
             return value.name
-        else:
-            return repr(value)
+        return repr(value)
 
     def to_logging_extras(self) -> dict[str, Union[str, int, bool]]:
         return dict(

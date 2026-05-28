@@ -246,7 +246,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             state = err_match.group("state").upper()
             if code in cls._EXC_CODE_MAP:
                 return cls._EXC_CODE_MAP[code]
-            elif state in cls._EXC_STATE_MAP:
+            if state in cls._EXC_STATE_MAP:
                 return cls._EXC_STATE_MAP[state]
             return exc.DatabaseQueryError
 

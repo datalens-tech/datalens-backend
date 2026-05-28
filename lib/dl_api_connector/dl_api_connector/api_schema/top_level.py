@@ -432,11 +432,10 @@ def resolve_entry_loc_from_api_req_body(
             collection_id=collection_id,
             entry_name=name,
         )
-    elif workbook_id is not None:
+    if workbook_id is not None:
         return WorkbookEntryLocation(
             workbook_id=workbook_id,
             entry_name=name,
         )
-    else:
-        assert dir_path is not None, "dir_path can not be None"
-        return PathEntryLocation(os.path.join(dir_path, name))
+    assert dir_path is not None, "dir_path can not be None"
+    return PathEntryLocation(os.path.join(dir_path, name))

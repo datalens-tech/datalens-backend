@@ -40,8 +40,7 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
                 return frozenset(
                     itertools.chain(cls._COMMON_REQUIRED_RESOURCES, getattr(method, _METHOD_REQ_RESOURCES_ATTR_NAME))
                 )
-            else:
-                return cls._COMMON_REQUIRED_RESOURCES
+            return cls._COMMON_REQUIRED_RESOURCES
 
         # If method is not implemented - we will not use any resource
         return frozenset()

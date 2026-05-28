@@ -128,11 +128,11 @@ class DimensionSortValueNormalizer(BaseSortValueNormalizer):
             # The data type of these values may be different from the main data.
             if self._direction == OrderDirection.asc:
                 return TOTAL_GREATEST_NULL_VALUE
-            else:  # desc
-                # Sorting is reversed, but totals still must be at the end,
-                # even after regular NULLs.
-                # So a `LeastNullValue` value with a smaller weight is used.
-                return TOTAL_LEAST_NULL_VALUE
+            # desc
+            # Sorting is reversed, but totals still must be at the end,
+            # even after regular NULLs.
+            # So a `LeastNullValue` value with a smaller weight is used.
+            return TOTAL_LEAST_NULL_VALUE
 
         return super().normalize_vector_value(vector)
 

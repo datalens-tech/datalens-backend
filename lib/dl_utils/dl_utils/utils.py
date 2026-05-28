@@ -74,10 +74,9 @@ class AddressableData:
                     raise ValueError(
                         f"Cannot create nested objects for key {key.parts!r}: value is not a dict (got {type(data).__name__})"
                     )
-                else:
-                    raise ValueError(
-                        f"Cannot create nested objects for key {key.parts!r}: intermediate value at {prev_part!r} is not a dict (got {type(data).__name__})"
-                    )
+                raise ValueError(
+                    f"Cannot create nested objects for key {key.parts!r}: intermediate value at {prev_part!r} is not a dict (got {type(data).__name__})"
+                )
 
             data[part] = data.get(part, {})
             data = data[part]

@@ -521,9 +521,9 @@ class DatasetDataBaseView(BaseView):
         dataset: Dataset,
     ) -> None:
         if mutation_key is None:
-            return None
+            return
         if mutation_cache is None:
-            return None
+            return
         await mutation_cache.save_mutation_cache(dataset, mutation_key)
 
     async def resolve_rls_groups_for_dataset(

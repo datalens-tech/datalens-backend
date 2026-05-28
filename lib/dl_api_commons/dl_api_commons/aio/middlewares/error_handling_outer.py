@@ -67,30 +67,29 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
         if isinstance(err, CancelledError):
             LOGGER.warning("Client request was cancelled", exc_info=True)
             raise  # noqa
-        elif isinstance(err, web.HTTPSuccessful):
+        if isinstance(err, web.HTTPSuccessful):
             raise  # noqa
-        else:
-            try:
-                # TODO CONSIDER: Validate that response is serializable
-                err_data = self._classify_error(err, request)
-                self.log_error_http_response(err, err_data, req_logging_ctx_ctrl)
-                return self.make_response(err_data, err, request), err_data
+        try:
+            # TODO CONSIDER: Validate that response is serializable
+            err_data = self._classify_error(err, request)
+            self.log_error_http_response(err, err_data, req_logging_ctx_ctrl)
+            return self.make_response(err_data, err, request), err_data
 
-            except Exception as on_error_error:  # noqa
-                req_logging_ctx_ctrl.put_to_context("is_error", True)
-                LOGGER.error(
-                    "Error handler raised an error during handling this exception",
-                    exc_info=(type(err), err, err.__traceback__),
-                )
-                LOGGER.critical("Error handler raised an error during creating error response", exc_info=True)
-                err_data = DEFAULT_INTERNAL_SERVER_ERROR_DATA
-                return (
-                    web.json_response(
-                        dict(message="Internal Server Error"),
-                        status=500,
-                    ),
-                    err_data,
-                )
+        except Exception as on_error_error:  # noqa
+            req_logging_ctx_ctrl.put_to_context("is_error", True)
+            LOGGER.error(
+                "Error handler raised an error during handling this exception",
+                exc_info=(type(err), err, err.__traceback__),
+            )
+            LOGGER.critical("Error handler raised an error during creating error response", exc_info=True)
+            err_data = DEFAULT_INTERNAL_SERVER_ERROR_DATA
+            return (
+                web.json_response(
+                    dict(message="Internal Server Error"),
+                    status=500,
+                ),
+                err_data,
+            )
 
     def log_error_http_response(  # type: ignore  # TODO: fix
         self,

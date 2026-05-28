@@ -102,9 +102,8 @@ class Checker(abc.ABC):
         from_cache = validator.get_from_cache(node)
         if from_cache is not None and from_cache.exception:
             raise from_cache.exception
-        else:
-            # no errors in this node and its children
-            validator.mark_as_ok_in_cache(node)
+        # no errors in this node and its children
+        validator.mark_as_ok_in_cache(node)
 
     @abc.abstractmethod
     def perform_node_check(

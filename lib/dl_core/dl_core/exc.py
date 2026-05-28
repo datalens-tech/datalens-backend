@@ -637,13 +637,12 @@ class DataStreamValidationError(Exception):
     def jsonify_value(val: Any) -> TJSONLike:
         if isinstance(val, bytes):
             return val.decode("utf-8", "backslashreplace")
-        elif isinstance(val, (str, int, float)):
+        if isinstance(val, (str, int, float)):
             return val
-        elif val is None:
+        if val is None:
             return val
-        else:
-            # TODO CONSIDER: different variants for logging & error response
-            return {"unexpected_value_type": str(type(val)), "str_val": str(val)}
+        # TODO CONSIDER: different variants for logging & error response
+        return {"unexpected_value_type": str(type(val)), "str_val": str(val)}
 
     # TODO FIX: Replace with schema
     def get_context_dict(self) -> dict[str, TJSONLike]:

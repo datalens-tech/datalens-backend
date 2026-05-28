@@ -223,8 +223,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
                 if block_spec.ignore_nonexistent_filters:
                     self._log_info("Skipping filter for unknown field %s", legend_filter_spec)
                     continue
-                else:
-                    raise
+                raise
 
             filter_spec = FilterFieldSpec(
                 field_id=field_id,
@@ -289,8 +288,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
                 if block_spec.ignore_nonexistent_filters:
                     self._log_info("Skipping parameter value for unknown field %s", legend_parameter_spec)
                     continue
-                else:
-                    raise
+                raise
 
             parameter_value_spec = ParameterValueSpec(field_id=field_id, value=parameter_role_spec.value)
             result.append(parameter_value_spec)

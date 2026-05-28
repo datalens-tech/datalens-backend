@@ -388,16 +388,14 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
 
         if isinstance(type_, YqlOptionalItemListType):
             return f"List<{inner}?>"
-        else:
-            return f"List<{inner}>"
+        return f"List<{inner}>"
 
     def visit_list_type(self, type_: ydb_sa.types.ListType, **kw: Any):
         inner = self.process(type_.item_type, **kw)
 
         if isinstance(type_, YqlOptionalItemListType):
             return f"List<{inner}?>"
-        else:
-            return f"List<{inner}>"
+        return f"List<{inner}>"
 
 
 class CustomYqlCompiler(ydb_sa.YqlCompiler):

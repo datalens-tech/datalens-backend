@@ -71,10 +71,9 @@ class DataSourceCollection:
         conn_ref = self.get_strict(role=role).connection_ref
         if isinstance(conn_ref, DefaultConnectionRef):
             return conn_ref.conn_id
-        elif isinstance(conn_ref, InternalMaterializationConnectionRef):
+        if isinstance(conn_ref, InternalMaterializationConnectionRef):
             return None
-        else:
-            raise TypeError(f"Unexpected conn_ref class: {type(conn_ref)}")
+        raise TypeError(f"Unexpected conn_ref class: {type(conn_ref)}")
 
     @property
     def effective_connection_id(self) -> str | None:

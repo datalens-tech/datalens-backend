@@ -19,11 +19,9 @@ def format_response_body(obj: Any) -> str:
     if isinstance(obj, str):
         if len(obj) > str_limit:
             return repr(obj[: str_limit - len(tail_placeholder)] + tail_placeholder)
-        else:
-            return repr(obj)
-    else:
-        orig_repr = repr(obj)
-        return format_response_body(orig_repr)
+        return repr(obj)
+    orig_repr = repr(obj)
+    return format_response_body(orig_repr)
 
 
 class ExceptionWithData(Generic[_EXC_DATA_TV], Exception):

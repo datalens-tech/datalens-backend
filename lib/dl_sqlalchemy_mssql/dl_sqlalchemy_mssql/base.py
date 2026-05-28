@@ -132,27 +132,26 @@ class BIMSSQLDialectBasic(UPSTREAM):
 
             result = connection.execute(s.limit(1))
             return result.scalar() is not None
-        else:
-            tables = upbase.ischema.tables
+        tables = upbase.ischema.tables
 
-            s = upbase.sql.select(tables.c.table_name).where(
-                upbase.sql.and_(
-                    # Original: `tables.c.table_type == "BASE TABLE",`
-                    upbase.sql.or_(
-                        tables.c.table_type == "BASE TABLE",
-                        tables.c.table_type == "VIEW",
-                    ),
-                    # ...
-                    tables.c.table_name == tablename,
-                )
+        s = upbase.sql.select(tables.c.table_name).where(
+            upbase.sql.and_(
+                # Original: `tables.c.table_type == "BASE TABLE",`
+                upbase.sql.or_(
+                    tables.c.table_type == "BASE TABLE",
+                    tables.c.table_type == "VIEW",
+                ),
+                # ...
+                tables.c.table_name == tablename,
             )
+        )
 
-            if owner:
-                s = s.where(tables.c.table_schema == owner)
+        if owner:
+            s = s.where(tables.c.table_schema == owner)
 
-            c = connection.execute(s)
+        c = connection.execute(s)
 
-            return c.first() is not None
+        return c.first() is not None
 
 
 class BIMSSQLCompiler(UPSTREAM.statement_compiler, CompilerPrettyMixin):

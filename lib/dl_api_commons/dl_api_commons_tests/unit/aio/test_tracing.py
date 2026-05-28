@@ -48,13 +48,12 @@ def get_view(the_endpoint_code: Optional[str], action: Callable[[], dict]) -> ty
                 return web.json_response(action())
 
         return EPView
-    else:
 
-        class NonEPView(web.View):
-            async def get(self) -> web.Response:
-                return web.json_response(action())
+    class NonEPView(web.View):
+        async def get(self) -> web.Response:
+            return web.json_response(action())
 
-        return NonEPView
+    return NonEPView
 
 
 def register_view(

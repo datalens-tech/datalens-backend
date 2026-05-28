@@ -134,7 +134,7 @@ class TranslationCtx:
             if self.forked:
                 raise RuntimeError("Data type must be set for forked contexts")
 
-            elif self.children:
+            if self.children:
                 # propagate directly because there were no calculations here
                 # (single child, no operator)
                 self.data_type = self.children[0].data_type

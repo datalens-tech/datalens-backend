@@ -82,19 +82,18 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         if container_type is None:
             if do_processing:
                 return self._process_single_object(value, target_meta)
-            else:
-                effective_nested_type = target_meta.clz
-                if isinstance(effective_nested_type, type) and attr.has(effective_nested_type):
-                    if value is not None:
-                        # Recursively call entry point for nested object
-                        return self.process(value)
+            effective_nested_type = target_meta.clz
+            if isinstance(effective_nested_type, type) and attr.has(effective_nested_type):
+                if value is not None:
+                    # Recursively call entry point for nested object
+                    return self.process(value)
 
-                return value
+            return value
 
-        elif container_type is Optional:
+        if container_type is Optional:
             return self._process_attr_ib_value(value, target_meta, do_processing)
 
-        elif is_sequence(container_type):
+        if is_sequence(container_type):
             if value is None:
                 return None
 
@@ -113,7 +112,7 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
                 return tuple(processed_values_sequence)
             return value
 
-        elif is_str_mapping(container_type):
+        if is_str_mapping(container_type):
             if do_processing:
                 raise NotImplementedError("Processing of string mappings is not yet supported")
             return value
@@ -136,5 +135,4 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
 
         if changes:
             return attr.evolve(target, **changes)  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "evolve" has a variable type "_TARGET_TV" not bound to an attrs class  [misc]
-        else:
-            return target
+        return target

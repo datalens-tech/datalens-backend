@@ -86,8 +86,7 @@ class DialectCombo(NamedTuple):
             return DialectCombo(
                 bits=self.bits - other.bits,
             )
-        else:
-            raise TypeError(type(other))
+        raise TypeError(type(other))
 
     def __or__(self, other: Any) -> DialectCombo:
         if isinstance(other, DialectBit):
@@ -98,8 +97,7 @@ class DialectCombo(NamedTuple):
             return DialectCombo(
                 bits=self.bits | other.bits,
             )
-        else:
-            raise TypeError(type(other))
+        raise TypeError(type(other))
 
     def __and__(self, other: Any) -> DialectCombo:
         if isinstance(other, DialectBit):
@@ -110,8 +108,7 @@ class DialectCombo(NamedTuple):
             return DialectCombo(
                 bits=self.bits & other.bits,
             )
-        else:
-            raise TypeError(type(other))
+        raise TypeError(type(other))
 
     def __bool__(self) -> bool:
         return bool(self.bits)

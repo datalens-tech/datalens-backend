@@ -120,12 +120,11 @@ class WithDatabaseNameOverride:
             if default != from_query and warn_override:
                 LOGGER.warning(f"Divergence in DB names: default='{default}' from_query='{from_query}'")
             return from_query
-        elif default is not None:
+        if default is not None:
             return default
-        elif from_query is not None:
+        if from_query is not None:
             return from_query
-        else:
-            raise ValueError("Can not determine DB name for engine construction. Both are None")
+        raise ValueError("Can not determine DB name for engine construction. Both are None")
 
 
 class WithNoneRowConverters:

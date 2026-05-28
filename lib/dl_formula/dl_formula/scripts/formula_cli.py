@@ -159,8 +159,7 @@ class FormulaCliTool:
             if suppress_errors:
                 print(ERROR_TOKEN)
                 return
-            else:
-                raise
+            raise
 
         if pos is not None:
             tree = tree.get_by_pos(pos)  # type: ignore  # TODO: fix
@@ -241,8 +240,7 @@ class FormulaCliTool:
             if suppress_errors:
                 print(ERROR_TOKEN)
                 return
-            else:
-                raise
+            raise
 
     @staticmethod
     def list_dialects() -> None:

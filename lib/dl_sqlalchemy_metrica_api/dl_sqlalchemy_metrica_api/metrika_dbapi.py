@@ -96,8 +96,7 @@ def check_connected(func):
     def func_wrapper(self, *args, **kwargs):
         if self.is_connected is False:
             raise ConnectionClosedException("Connection object is closed")
-        else:
-            return func(self, *args, **kwargs)
+        return func(self, *args, **kwargs)
 
     return func_wrapper
 
@@ -169,10 +168,9 @@ def check_cursor_connected(func):
     def func_wrapper(self, *args, **kwargs):
         if not self._connected:
             raise CursorClosedException("Cursor object is closed")
-        elif not self.connection.is_connected:
+        if not self.connection.is_connected:
             raise ConnectionClosedException("Connection object is closed")
-        else:
-            return func(self, *args, **kwargs)
+        return func(self, *args, **kwargs)
 
     return func_wrapper
 
@@ -312,8 +310,7 @@ class Cursor:
         try:
             if self._result_data:
                 return self._result_data.pop(0)
-            else:
-                return None
+            return None
         except StopIteration:
             return None
 

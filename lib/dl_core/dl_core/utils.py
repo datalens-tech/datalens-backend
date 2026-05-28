@@ -163,8 +163,7 @@ def attrs_evolve_to_subclass[MODEL_TYPE_TV: attr.AttrsInstance](cls: type[MODEL_
     if super_cls is cls:
         if kwargs:
             return attr.evolve(inst, **kwargs)
-        else:
-            return inst
+        return inst
     assert issubclass(cls, super_cls), f"Expected subclass of {super_cls.__name__}, got {cls.__name__}"
     all_attrs = {f.name: getattr(inst, f.name.lstrip("_")) for f in attr.fields(super_cls) if f.init}
     all_attrs.update(kwargs)
@@ -181,8 +180,7 @@ def attrs_evolve_to_superclass[MODEL_TYPE_TV: attr.AttrsInstance](cls: type[MODE
     if sub_cls is cls:
         if kwargs:
             return attr.evolve(inst, **kwargs)
-        else:
-            return inst
+        return inst
     assert issubclass(sub_cls, cls), f"Expected superclass of {sub_cls.__name__}, got {cls.__name__}"
     all_attrs = {f.name: getattr(inst, f.name.lstrip("_")) for f in attr.fields(cls) if f.init}
     all_attrs.update(kwargs)

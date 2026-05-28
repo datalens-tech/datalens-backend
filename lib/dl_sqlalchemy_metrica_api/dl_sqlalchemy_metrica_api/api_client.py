@@ -134,10 +134,9 @@ class MetrikaApiClient:
             msg = _parse_metrika_error(response)
             if response.status_code == 403:
                 raise MetrikaApiAccessDeniedException(msg, orig_exc=ex) from ex
-            elif response.status_code == 404:
+            if response.status_code == 404:
                 raise MetrikaApiObjectNotFoundException(msg, orig_exc=ex) from ex
-            else:
-                raise MetrikaHttpApiException(msg, orig_exc=ex) from ex
+            raise MetrikaHttpApiException(msg, orig_exc=ex) from ex
 
         try:
             parsed_resp = response.json()

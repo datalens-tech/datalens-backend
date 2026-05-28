@@ -462,10 +462,9 @@ class AsyncUSManager(USManagerBase):
                 assert referrer.uuid is not None
                 conn.add_referrer_id(referrer.uuid)
             return None
-        elif isinstance(conn, ConnectionBase):
+        if isinstance(conn, ConnectionBase):
             return conn
-        else:
-            raise ValueError("Entry was in cache but it is not a connection: %s", type(conn))
+        raise ValueError("Entry was in cache but it is not a connection: %s", type(conn))
 
     # TODO FIX: Think about cache control
     @generic_profiler_async("us-load-dependencies")  # type: ignore  # TODO: fix

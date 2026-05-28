@@ -43,15 +43,13 @@ def process_one(requirement: PipRequirement, override: dict | None = None) -> tu
         case {"version": override_version}:
             if check_if_exists_in_pypi(guessed_name, override_version):
                 return guessed_name, override_version
-            else:
-                log.error(f"PyPI doesn't have package {guessed_name} with version from overrides: {override_version}")
-                return None
+            log.error(f"PyPI doesn't have package {guessed_name} with version from overrides: {override_version}")
+            return None
         case {"name": override_name}:
             if check_if_exists_in_pypi(override_name, cleaned_version):
                 return override_name, cleaned_version
-            else:
-                log.debug(f"PyPI doesn't have package {guessed_name} with name from overrides: {override_name}")
-                return None
+            log.debug(f"PyPI doesn't have package {guessed_name} with name from overrides: {override_name}")
+            return None
         case {"ignore": True}:
             log.debug(f"Skip check for types- pkg fro {requirement.name} due to override")
             return None

@@ -435,8 +435,7 @@ class DatasetImportCollection(DatasetResource):
                     source.get("id"),
                 )
                 raise exc.DatasetImportError("Can not import dataset without a connection")  # TODO BI-6296
-            else:
-                source["connection_id"] = conn_id_mapping[fake_conn_id]
+            source["connection_id"] = conn_id_mapping[fake_conn_id]
 
     @put_to_request_context(endpoint_code="DatasetImport")
     @schematic_request(

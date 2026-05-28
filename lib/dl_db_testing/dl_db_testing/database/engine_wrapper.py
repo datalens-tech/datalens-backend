@@ -171,8 +171,7 @@ class EngineWrapperBase:
         host = self.get_conn_credentials(full=True).get("host")
         if host:
             return tuple(h.strip() for h in host.split(","))
-        else:
-            return ()
+        return ()
 
     @contextlib.contextmanager
     def connect(self) -> Generator[Connection, None, None]:

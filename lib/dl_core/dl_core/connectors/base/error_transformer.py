@@ -78,8 +78,7 @@ class ErrorTransformerRule(abc.ABC):
     ) -> type[exc.DatabaseQueryError] | None:
         if self.when(wrapper_exc):
             return self.then_raise
-        else:
-            return None
+        return None
 
 
 def wrapper_exc_is(wrapper_exc_cls: type[Exception]) -> ExcMatchCondition:
@@ -196,5 +195,4 @@ def make_rule_from_descr(
     (wrapper_exc, re_pattern), then_raise = descr
     if re_pattern is None:
         return ErrorTransformerRule(when=wrapper_exc_is(wrapper_exc), then_raise=then_raise)
-    else:
-        return ErrorTransformerRule(when=wrapper_exc_is_and_matches_re(wrapper_exc, re_pattern), then_raise=then_raise)
+    return ErrorTransformerRule(when=wrapper_exc_is_and_matches_re(wrapper_exc, re_pattern), then_raise=then_raise)

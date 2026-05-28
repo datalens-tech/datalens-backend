@@ -124,7 +124,7 @@ class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
             # The timezone goes into the data_type_params.
             return value
 
-        elif value_type == DataType.STRING:
+        if value_type == DataType.STRING:
             # Casting to `timestamptz` ensures tzoffset in ISO strings isn't ignored.
             value = sa.cast(value, sa.TIMESTAMP(timezone=True))
             # Then making the naive datetime of the value minus the offset (if it had one)

@@ -167,8 +167,7 @@ class DatasetResource(BIResource):
                         source_id,
                     )
                     raise DatasetExportError("Can not export dataset without a connection")  # TODO BI-6296
-                else:
-                    connection_id = conn_id_mapping[connection_id]
+                connection_id = conn_id_mapping[connection_id]
 
             sources.append(
                 {

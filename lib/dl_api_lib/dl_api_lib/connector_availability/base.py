@@ -67,7 +67,7 @@ class Section(LocalizedSerializable):
         def _connector_from_settings(settings: ConnectorBaseSettings | ObjectLikeConfig) -> ConnectorBase:
             if hasattr(settings, "conn_type"):
                 return Connector.from_settings(settings)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "from_settings" of "Connector" has incompatible type "ConnectorBaseSettings | ObjectLikeConfig"; expected "ConnectorSettings"  [arg-type]
-            elif hasattr(settings, "includes"):
+            if hasattr(settings, "includes"):
                 return ConnectorContainer.from_settings(settings)  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "from_settings" of "ConnectorContainer" has incompatible type "ConnectorBaseSettings"; expected "ConnectorContainerSettings"  [arg-type]
             raise ValueError('Can\'t create a connector, neither "conn_type" nor "includes" found among settings')
 

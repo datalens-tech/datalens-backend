@@ -64,82 +64,79 @@ class BaseApiV1SerializationAdapter:
     def dump_data_source(self, item: DataSource, action: Action) -> dict:
         if action == Action.delete:
             return dict(id=item.id)
-        else:
-            assert item.source_type is not None
-            return dict(
-                id=item.id,
-                connection_id=item.connection_id,
-                source_type=item.source_type.name,
-                title=item.title,
-                raw_schema=(
-                    [
-                        dict(
-                            name=col.name,
-                            title=col.title,
-                            user_type=col.user_type.name,
-                            native_type=col.native_type,
-                            description=col.description,
-                            nullable=col.nullable,
-                            has_auto_aggregation=col.has_auto_aggregation,
-                            lock_aggregation=col.lock_aggregation,
-                        )
-                        for col in item.raw_schema
-                    ]
-                    if item.raw_schema is not None
-                    else None
-                ),
-                index_info_set=None if item.index_info_set is None else list(item.index_info_set),
-                parameters=item.parameters,
-                managed_by=item.managed_by.name,
-                valid=item.valid,
-            )
+        assert item.source_type is not None
+        return dict(
+            id=item.id,
+            connection_id=item.connection_id,
+            source_type=item.source_type.name,
+            title=item.title,
+            raw_schema=(
+                [
+                    dict(
+                        name=col.name,
+                        title=col.title,
+                        user_type=col.user_type.name,
+                        native_type=col.native_type,
+                        description=col.description,
+                        nullable=col.nullable,
+                        has_auto_aggregation=col.has_auto_aggregation,
+                        lock_aggregation=col.lock_aggregation,
+                    )
+                    for col in item.raw_schema
+                ]
+                if item.raw_schema is not None
+                else None
+            ),
+            index_info_set=None if item.index_info_set is None else list(item.index_info_set),
+            parameters=item.parameters,
+            managed_by=item.managed_by.name,
+            valid=item.valid,
+        )
 
     @_dump_item.register(SourceAvatar)
     def dump_source_avatar(self, item: SourceAvatar, action: Action) -> dict:
         if action == Action.delete:
             return dict(id=item.id)
-        else:
-            return dict(
-                id=item.id,
-                source_id=item.source_id,
-                title=item.title,
-                is_root=item.is_root,
-                managed_by=item.managed_by.name,
-            )
+        return dict(
+            id=item.id,
+            source_id=item.source_id,
+            title=item.title,
+            is_root=item.is_root,
+            managed_by=item.managed_by.name,
+        )
 
     @_dump_item.register(AvatarRelation)
     def dump_avatar_relation(self, item: AvatarRelation, action: Action) -> dict:
         if action == Action.delete:
             return dict(id=item.id)
-        else:
 
-            def dump_condition_part(part: JoinPart) -> dict:
-                data = dict(calc_mode=part.calc_mode.name)
-                if isinstance(part, DirectJoinPart):
-                    data["source"] = part.source
-                elif isinstance(part, FormulaJoinPart):
-                    data["formula"] = part.formula
-                elif isinstance(part, ResultFieldJoinPart):
-                    data["field_id"] = part.field_id
-                return data
+        def dump_condition_part(part: JoinPart) -> dict:
+            data = dict(calc_mode=part.calc_mode.name)
+            if isinstance(part, DirectJoinPart):
+                data["source"] = part.source
+            elif isinstance(part, FormulaJoinPart):
+                data["formula"] = part.formula
+            elif isinstance(part, ResultFieldJoinPart):
+                data["field_id"] = part.field_id
+            return data
 
-            return dict(
-                id=item.id,
-                left_avatar_id=item.left_avatar_id,
-                right_avatar_id=item.right_avatar_id,
-                conditions=[
-                    dict(
-                        type=JoinConditionType.binary.name,
-                        left=dump_condition_part(condition.left_part),
-                        right=dump_condition_part(condition.right_part),
-                        operator=condition.operator.name,
-                    )
-                    for condition in item.conditions
-                ],
-                join_type=item.join_type.name,
-                managed_by=item.managed_by.name,
-                required=item.required,
-            )
+        return dict(
+            id=item.id,
+            left_avatar_id=item.left_avatar_id,
+            right_avatar_id=item.right_avatar_id,
+            conditions=[
+                dict(
+                    type=JoinConditionType.binary.name,
+                    left=dump_condition_part(condition.left_part),
+                    right=dump_condition_part(condition.right_part),
+                    operator=condition.operator.name,
+                )
+                for condition in item.conditions
+            ],
+            join_type=item.join_type.name,
+            managed_by=item.managed_by.name,
+            required=item.required,
+        )
 
     @_dump_item.register(ResultField)
     def dump_field(self, item: ResultField, action: Action) -> dict:
@@ -172,8 +169,7 @@ class BaseApiV1SerializationAdapter:
                 ),
                 template_enabled=item.template_enabled,
             )
-        else:
-            return dict(guid=item.id)
+        return dict(guid=item.id)
 
     @_dump_item.register(ObligatoryFilter)
     def dump_obligatory_filter(self, item: ObligatoryFilter, action: Action) -> dict:
@@ -181,8 +177,7 @@ class BaseApiV1SerializationAdapter:
             return dict(id=item.id)
         if action == Action.add:
             return ObligatoryFilterSchema().dump(item)
-        else:
-            return ObligatoryFilterUpdateSchema().dump(item)
+        return ObligatoryFilterUpdateSchema().dump(item)
 
     @_dump_item.register(CacheInvalidationSource)
     def dump_cache_invalidation(self, item: CacheInvalidationSource, action: Action) -> dict:

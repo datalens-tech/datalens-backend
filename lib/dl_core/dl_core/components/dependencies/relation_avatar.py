@@ -37,7 +37,7 @@ class RelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
     ) -> AbstractSet[AvatarId]:
         if isinstance(part, ConditionPartDirect):
             return {default_avatar_id}
-        elif isinstance(part, ConditionPartResultField):
+        if isinstance(part, ConditionPartResultField):
             return self._field_avatar_mgr.get_field_avatar_references(part.field_id)
         raise TypeError(f"Unsupported type for part: {type(part)}")
 

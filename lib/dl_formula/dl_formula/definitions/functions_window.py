@@ -93,7 +93,7 @@ def _rows_stretching_window(
     dir_value = direction.value.lower()  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "value"  [attr-defined]
     if dir_value == "asc":
         return None, 0
-    elif dir_value == "desc":
+    if dir_value == "desc":
         return 0, None
     raise exc.TranslationError("Invalid value for direction parameter")
 

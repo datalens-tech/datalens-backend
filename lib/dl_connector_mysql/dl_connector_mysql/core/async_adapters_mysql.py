@@ -142,8 +142,7 @@ class AsyncMySQLAdapter(
                 LOGGER.info("Using SSL for async MySQL connection")
                 create_engine_using_ssl = partial(self._create_engine, force_ssl=True)
                 return await self._engines.get(db_name, generator=create_engine_using_ssl)
-            else:
-                raise
+            raise
 
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: Optional[str]) -> AsyncIterator[aiomysql.sa.SAConnection]:

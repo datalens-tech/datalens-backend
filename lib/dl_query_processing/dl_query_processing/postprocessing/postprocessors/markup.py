@@ -119,8 +119,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     def n_tooltip(self, text: NodeInput, tooltip: NodeInput, placement: Optional[str] = "") -> _NODE_TV:
         if placement:
             return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip), str(placement))
-        else:
-            return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip))
+        return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip))
 
     # Node-structure into a string
 

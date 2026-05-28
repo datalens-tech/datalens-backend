@@ -44,8 +44,8 @@ class ArgTypeSequence(ArgTypeMatcher):
         expected_arg_type = self._exp_arg_types[pos]
         if isinstance(expected_arg_type, DataType):
             return {expected_arg_type}
-        else:  # set, frozenset
-            return set(expected_arg_type)
+        # set, frozenset
+        return set(expected_arg_type)
 
 
 class ArgTypeForAll(ArgTypeMatcher):
@@ -103,11 +103,10 @@ class ArgTypeSequenceThenForAll(ArgTypeMatcher):
         if pos < self._fixed_arg_num:
             # Return fixed type for this position
             return self._fixed_arg_types_matcher.get_possible_arg_types_at_pos(pos, self._fixed_arg_num)
-        else:
-            # Return 'for all' types for positions beyond fixed types
-            return self._for_all_types_matcher.get_possible_arg_types_at_pos(
-                pos - self._fixed_arg_num, total - self._fixed_arg_num
-            )
+        # Return 'for all' types for positions beyond fixed types
+        return self._for_all_types_matcher.get_possible_arg_types_at_pos(
+            pos - self._fixed_arg_num, total - self._fixed_arg_num
+        )
 
 
 class ArgFlagDispenser:

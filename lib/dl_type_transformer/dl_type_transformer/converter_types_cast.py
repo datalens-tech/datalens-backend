@@ -65,7 +65,7 @@ def _to_boolean(value: str | bool) -> bool:
         value = value.lower()
         if value in ("true", "1"):
             return True
-        elif value in ("false", "0"):
+        if value in ("false", "0"):
             return False
         raise ValueError(value)
     return bool(value)

@@ -145,8 +145,7 @@ class GenericDBAQuerySchema(OneOfSchema):
     def get_obj_type(self, obj: DBAdapterQuery) -> str:
         if isinstance(obj.query, str):
             return QueryExecutorMode.text.name
-        else:
-            return QueryExecutorMode.sqla_dump.name
+        return QueryExecutorMode.sqla_dump.name
 
 
 # TODO FIX: Validation

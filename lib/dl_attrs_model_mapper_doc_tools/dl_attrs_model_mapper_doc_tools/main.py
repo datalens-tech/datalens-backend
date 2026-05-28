@@ -102,7 +102,7 @@ class Docs:
                 )
             ]
 
-        elif isinstance(field, AmmNestedField):
+        if isinstance(field, AmmNestedField):
             nested_schema = field.item
             nested_schema_doc_file_path = self.get_file_path_for_type(nested_schema.clz)
 
@@ -125,7 +125,7 @@ class Docs:
                 *self.field_dict_to_doc_lines(nested_schema.fields, path),
             ]
 
-        elif isinstance(field, AmmListField):
+        if isinstance(field, AmmListField):
             next_path = [*path[:-1], path[-1] + "[]"]
             return [
                 FieldLine(

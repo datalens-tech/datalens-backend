@@ -48,8 +48,7 @@ class SnowflakeOAuth:
                             status=resp.status,
                         ),
                     )
-                else:
-                    token_response = await resp.json()
+                token_response = await resp.json()
         return token_response
 
     def _get_session_headers(self, client_secret: str) -> dict[str, str]:

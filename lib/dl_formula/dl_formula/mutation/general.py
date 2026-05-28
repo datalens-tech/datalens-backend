@@ -68,7 +68,7 @@ class ConvertBlocksToFunctionsMutation(FormulaMutation):
     ) -> nodes.FormulaItem:
         if isinstance(old, nodes.IfBlock):
             return self._make_replacement_for_if_block(old)
-        elif isinstance(old, nodes.CaseBlock):
+        if isinstance(old, nodes.CaseBlock):
             return self._make_replacement_for_case_block(old)
 
         raise TypeError(type(old))

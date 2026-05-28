@@ -31,7 +31,7 @@ class BaseSnowFlakeConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_SNOWFLAKE_AD
 
         if sf_auth_provider.is_refresh_token_expired():
             raise SnowflakeRefreshTokenInvalid()
-        elif sf_auth_provider.should_notify_refresh_token_to_expire_soon():
+        if sf_auth_provider.should_notify_refresh_token_to_expire_soon():
             reporting_service = None
             if self._services_registry is not None:
                 try:

@@ -60,6 +60,8 @@ ignore = [
   "B904", # force `raise ... from err` or `raise ... from None`
   "B905", # `zip()` without an explicit `strict=` parameter
   "E501", # line length, should be checked and fixed by black
+  "RET503", # implicit return — usually a raise/abort path; adding explicit `return None` masks the actual control flow
+  "RET504", # unnecessary assign before return — review needed per site; intermediate names often aid debugging
   "UP007", # Use `X | Y` for type annotations
   "UP014", # Convert `RequestData` from `NamedTuple` functional to class syntax
   "UP026", # [*] `mock` is deprecated, use `unittest.mock`
@@ -78,6 +80,8 @@ select = [
   "F",
   # isort
   "I",
+  # flake8-return
+  "RET",
   # pyupgrade
   "UP",
 ]

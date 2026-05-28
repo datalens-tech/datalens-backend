@@ -95,9 +95,8 @@ class RequestContextInfo:
             ip_list = [ip.strip() for ip in forwarded_for.split(",")]
             if len(ip_list) > 1:
                 return ip_list[-2]
-            else:
-                # unlikely to happen
-                return ip_list[0]
+            # unlikely to happen
+            return ip_list[0]
         return None
 
     @property

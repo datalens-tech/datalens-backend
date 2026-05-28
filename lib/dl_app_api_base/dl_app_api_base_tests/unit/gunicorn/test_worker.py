@@ -92,7 +92,7 @@ class Callback:
 
         if self.side_effect == CallbackSideEffect.RAISE_EXCEPTION:
             raise RuntimeError("Test callback failure")
-        elif self.side_effect == CallbackSideEffect.INFINITE_LOOP:
+        if self.side_effect == CallbackSideEffect.INFINITE_LOOP:
             while True:
                 await asyncio.sleep(1)
         elif self.side_effect == CallbackSideEffect.NO_SIDE_EFFECT:

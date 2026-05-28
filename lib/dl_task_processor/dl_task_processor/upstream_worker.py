@@ -266,8 +266,7 @@ class Worker:
         if self.jobs_failed:
             failed_job_results = [r for r in await self.pool.all_job_results() if not r.success]
             raise FailedJobs(self.jobs_failed, failed_job_results)
-        else:
-            return self.jobs_complete
+        return self.jobs_complete
 
     @property
     def pool(self) -> ArqRedis:
@@ -295,11 +294,11 @@ class Worker:
             if self.burst:
                 if 0 <= self.max_burst_jobs <= self._jobs_started():
                     await asyncio.gather(*self.tasks.values())
-                    return None
+                    return
                 queued_jobs = await self.pool.zcard(self.queue_name)
                 if queued_jobs == 0:
                     await asyncio.gather(*self.tasks.values())
-                    return None
+                    return
 
     async def _poll_iteration(self) -> None:
         """
@@ -369,7 +368,7 @@ class Worker:
 
             if self.job_counter >= self.max_jobs:
                 self.sem.release()
-                return None
+                return
 
             self.job_counter = self.job_counter + 1
 

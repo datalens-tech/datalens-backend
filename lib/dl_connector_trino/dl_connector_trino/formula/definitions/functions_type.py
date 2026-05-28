@@ -141,7 +141,7 @@ class FuncDatetimeTZTrino(SingleVariantTranslationBase, base.FuncDatetimeTZ):
             assert value
             return value
 
-        elif value_type is DataType.DATETIME:
+        if value_type is DataType.DATETIME:
             dt = value
 
         elif value_type is DataType.STRING:

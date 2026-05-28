@@ -130,8 +130,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
     def bindparam_string(self, name, _extra_quoting=True, **kw):
         if _extra_quoting:
             return "'%s'" % (self.bindtemplate % {"name": name})
-        else:
-            return self.bindtemplate % {"name": name}
+        return self.bindtemplate % {"name": name}
 
     def render_literal_value(self, value, type_):
         if isinstance(type_, Unicode):
@@ -146,8 +145,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         processor = type_._cached_literal_processor(self.dialect)
         if processor:
             return processor(value)
-        else:
-            raise NotImplementedError("Don't know how to literal-quote value %r" % value)
+        raise NotImplementedError("Don't know how to literal-quote value %r" % value)
 
     def visit_bindparam(
         self,
@@ -281,10 +279,9 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
     def _get_clause_name(self, clause, **kwargs):
         if hasattr(clause, "name"):
             return clause.name
-        elif hasattr(clause, "clause") and hasattr(clause.clause, "name"):
+        if hasattr(clause, "clause") and hasattr(clause.clause, "name"):
             return clause.clause.name
-        else:
-            return clause._compiler_dispatch(self, **kwargs)
+        return clause._compiler_dispatch(self, **kwargs)
 
     def visit_sum_func(self, func, **kwargs):
         clauses = func.clause_expr.element.clauses
@@ -464,8 +461,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
     def visit_table(self, table, asfrom=False, ashint=False, **kwargs):
         if asfrom or ashint:
             return table.name
-        else:
-            return ""
+        return ""
 
     def visit_label(
         self,
@@ -507,16 +503,14 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                     return element
                 if hasattr(element, "clause"):
                     return _unwrap_to_column_clause(element.clause)
-                else:
-                    LOGGER.warning("Unable dispatch to ColumnClause")
-                    return None
+                LOGGER.warning("Unable dispatch to ColumnClause")
+                return None
 
             internal_column_clause = _unwrap_to_column_clause(label.element)
             self._labeled_columns_map[labelname] = (element_processed, internal_column_clause)
 
             return element_processed
-        else:
-            return label.element._compiler_dispatch(self, within_columns_clause=False, **kw)
+        return label.element._compiler_dispatch(self, within_columns_clause=False, **kw)
 
     def visit_asc_op_unary_modifier(self, unary, modifier, **kw):
         return unary.element._compiler_dispatch(self, **kw)

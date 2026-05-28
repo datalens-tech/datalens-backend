@@ -115,7 +115,7 @@ class CustomTrinoCompiler(TrinoSQLCompiler):
 
             if value.tzinfo is None:
                 return f"TIMESTAMP '{datetime_repr}'"
-            elif value.tzinfo == datetime.UTC:
+            if value.tzinfo == datetime.UTC:
                 timezone_repr = "UTC"
             elif hasattr(value.tzinfo, "zone"):
                 # This is a pytz timezone object

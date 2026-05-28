@@ -111,9 +111,8 @@ class RepositoryNavigator:
         if self.module_is_dir(module_name):
             module_path = self.make_dir_module_path(module_name)
             return self._collect_imports_from_dir(module_path)
-        else:
-            module_path = self.make_file_module_path(module_name)
-            return self._collect_imports_from_file(module_path)
+        module_path = self.make_file_module_path(module_name)
+        return self._collect_imports_from_file(module_path)
 
     def collect_import_bases_from_module(
         self,
@@ -157,8 +156,7 @@ class RepositoryNavigator:
     def _make_module_path(self, module_name: str) -> Path:
         if self.module_is_dir(module_name):
             return self.make_dir_module_path(module_name)
-        else:
-            return self.make_file_module_path(module_name)
+        return self.make_file_module_path(module_name)
 
     def _naive_path_to_module(self, path: Path) -> str:
         path_str = str(path)
@@ -180,16 +178,15 @@ class RepositoryNavigator:
                 package_entity_refs = {package_info.reg_entity_ref for package_info in package_info_list}
                 if to_ref_type == EntityReferenceType.package_type:
                     return package_entity_refs
-                else:
-                    result = set()
-                    for package_entity_ref in package_entity_refs:
-                        result.update(
-                            self.resolve_entity_to_type(
-                                entity_ref=package_entity_ref,
-                                to_ref_type=to_ref_type,
-                            )
+                result = set()
+                for package_entity_ref in package_entity_refs:
+                    result.update(
+                        self.resolve_entity_to_type(
+                            entity_ref=package_entity_ref,
+                            to_ref_type=to_ref_type,
                         )
-                    return result
+                    )
+                return result
 
             case EntityReferenceType.package_reg:
                 if to_ref_type == EntityReferenceType.package_reg:

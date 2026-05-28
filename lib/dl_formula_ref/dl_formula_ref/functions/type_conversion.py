@@ -289,10 +289,9 @@ FUNCTION_GEOPOLYGON = FunctionDocRegistryItem(
 def _make_type_macro_from_dtype_spec(data_type_spec: DataTypeSpec) -> str:
     if isinstance(data_type_spec, DataType):
         return f"{{type:{data_type_spec.name}}}"
-    elif isinstance(data_type_spec, tuple):
+    if isinstance(data_type_spec, tuple):
         return f'{{type:{"|".join([sub_data_type_spec.name for sub_data_type_spec in data_type_spec])}}}'
-    else:
-        raise TypeError(type(data_type_spec))
+    raise TypeError(type(data_type_spec))
 
 
 def _get_comment_for_type(dialect: DialectCombo, native_type_name: str) -> str | BaseTranslatable:

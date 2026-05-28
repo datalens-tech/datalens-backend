@@ -184,8 +184,7 @@ class FormulaItem(abc.ABC):
                     res += f"{item_indent}{prettify_child(item, item_indent)},\n"
                 res += _initial_indent + ")"
                 return res
-            else:
-                return repr(_child)
+            return repr(_child)
 
         lines = []
         lines.append("{}{}(".format(initial_indent if do_leading_indent else "", self.__class__.__name__))
@@ -572,9 +571,9 @@ def does_type_match(
             if not does_type_match(item, expected_type=expected_type.item_cls):
                 return False
         return True
-    elif isinstance(expected_type, tuple):
+    if isinstance(expected_type, tuple):
         return any(does_type_match(value, expected_type=sub_type) for sub_type in expected_type)
-    elif isinstance(expected_type, type):
+    if isinstance(expected_type, type):
         return isinstance(value, expected_type)
 
     raise TypeError(f"Unexpected type: {expected_type}")

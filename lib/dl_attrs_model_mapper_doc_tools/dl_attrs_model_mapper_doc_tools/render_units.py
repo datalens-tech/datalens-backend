@@ -57,10 +57,9 @@ class RenderContext:
     def localize(self, src: Union[str, MText, Sequence[Union[str, MText]]]) -> str:
         if isinstance(src, str):
             return src
-        elif isinstance(src, MText):
+        if isinstance(src, MText):
             return self.localized_m_text_strict(src)
-        else:
-            return "".join([self.localize(sub_src) for sub_src in src])
+        return "".join([self.localize(sub_src) for sub_src in src])
 
 
 class DocUnit(metaclass=abc.ABCMeta):
@@ -196,7 +195,7 @@ class MultiLineTableRow(DocUnit):
         for cell_lines in cell_lines_list:
             if len(cell_lines) > 1:
                 return None
-            elif len(cell_lines) == 1:
+            if len(cell_lines) == 1:
                 cell_single_line = cell_lines[0]
                 if "\n" in cell_single_line:
                     return None

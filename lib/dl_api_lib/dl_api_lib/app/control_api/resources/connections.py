@@ -80,9 +80,8 @@ USE_S2S_AUTH = os.getenv("USE_S2S_AUTH", "0") == "1"
 def _handle_conn_test_exc(exception: Exception) -> NoReturn:
     if isinstance(exception, DLBaseException):
         raise exception
-    else:
-        LOGGER.exception("Got unhandled exception")
-        raise DatabaseUnavailable() from exception
+    LOGGER.exception("Got unhandled exception")
+    raise DatabaseUnavailable() from exception
 
 
 @ns.route("/test_connection_params")

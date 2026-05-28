@@ -224,7 +224,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
     def normalize_sa_col_type(self, sa_col_type: TypeEngine) -> TypeEngine:
         if isinstance(sa_col_type, ch_types.Numeric):
             return sa.Float()
-        elif isinstance(sa_col_type, (ch_types.Enum8, ch_types.Enum16)):
+        if isinstance(sa_col_type, (ch_types.Enum8, ch_types.Enum16)):
             return sa.String()
 
         return super().normalize_sa_col_type(sa_col_type)

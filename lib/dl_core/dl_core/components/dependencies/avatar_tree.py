@@ -38,7 +38,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             for relation in self._ds_accessor.get_avatar_relation_list(left_avatar_id=avatar_id):
                 if relation.managed_by == ManagedBy.feature:
                     continue
-                elif relation.managed_by == ManagedBy.user:
+                if relation.managed_by == ManagedBy.user:
                     populate_recursively(avatar_id=relation.right_avatar_id, rank=rank + 1)
                 else:
                     raise ValueError(f"Unsupported managed_by value in relation: {relation.managed_by}")
@@ -82,11 +82,10 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
             if updated_required_avatar_ids == required_avatar_ids:
                 LOGGER.info(f"Finished resolving feature-managed avatars on iteration {iteration}")
                 break
-            else:
-                LOGGER.info(
-                    "Found additional avatars in required feature-managed relations: "
-                    f"{updated_required_avatar_ids - required_avatar_ids}"
-                )
+            LOGGER.info(
+                "Found additional avatars in required feature-managed relations: "
+                f"{updated_required_avatar_ids - required_avatar_ids}"
+            )
             required_avatar_ids = updated_required_avatar_ids
         else:
             # It means that for every iteration we are still getting new avatars

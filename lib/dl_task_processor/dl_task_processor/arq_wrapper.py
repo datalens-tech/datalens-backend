@@ -85,7 +85,7 @@ def create_arq_redis_settings(settings: _BIRedisSettings) -> ArqRedisSettings:
             database=settings.DB,
             ssl=settings.SSL or False,
         )
-    elif settings.MODE == RedisMode.sentinel:
+    if settings.MODE == RedisMode.sentinel:
         redis_targets = [(host, settings.PORT) for host in settings.HOSTS]
         return ArqRedisSettings(
             host=redis_targets,
@@ -95,8 +95,7 @@ def create_arq_redis_settings(settings: _BIRedisSettings) -> ArqRedisSettings:
             database=settings.DB,
             ssl=settings.SSL or False,
         )
-    else:
-        raise ValueError(f"Unknown redis mode {settings.MODE}")
+    raise ValueError(f"Unknown redis mode {settings.MODE}")
 
 
 @attr.s

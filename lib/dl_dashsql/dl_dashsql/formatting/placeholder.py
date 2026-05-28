@@ -88,8 +88,7 @@ class PlaceholderQueryFormatter(QueryFormatter):
             if self._unknown_param_policy == UnknownParameterPolicy.ignore:
                 # Do not perform any replacement
                 return original_text
-            else:
-                raise ValueError(self._unknown_param_policy)
+            raise ValueError(self._unknown_param_policy)
 
         new_param_name: str
         if orig_param_name in format_state.param_name_map:

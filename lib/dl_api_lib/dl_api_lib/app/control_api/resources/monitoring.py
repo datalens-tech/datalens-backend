@@ -35,9 +35,8 @@ ns = API.namespace("Monitoring", path="/", description="Monitoring endpoints")
 def _handle_monitoring_exc(exception: Exception) -> NoReturn:
     if isinstance(exception, DLBaseException):
         raise exception
-    else:
-        LOGGER.exception("Got unhandled monitoring exception")
-        raise DLBaseException("Service monitoring failed") from exception
+    LOGGER.exception("Got unhandled monitoring exception")
+    raise DLBaseException("Service monitoring failed") from exception
 
 
 class MonitoringResourceBase(BIResource):

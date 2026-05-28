@@ -653,9 +653,8 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
                         # mask points to nonexistent children
                         raise ValueError("Invalid node index")
 
-                    else:
-                        for child_node_idx, child, _ in autonomous_children:
-                            collect_recursively(child, child_node_idx)
+                    for child_node_idx, child, _ in autonomous_children:
+                        collect_recursively(child, child_node_idx)
 
             # If `prefix == mask`, then this node is blacklisted, skip it.
 

@@ -169,9 +169,8 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
         async with self._initialization_lock:
             if self._is_initialized:
                 return
-            else:
-                await self._initialize()
-                self._is_initialized = True
+            await self._initialize()
+            self._is_initialized = True
 
     @final
     async def _initialize(self) -> None:

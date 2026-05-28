@@ -75,8 +75,7 @@ class BaseApp:
                 if callback.exception:
                     self.logger.exception(message)
                     raise exceptions.StartupError(message) from e
-                else:
-                    self.logger.warning(message)
+                self.logger.warning(message)
             else:
                 self.logger.info(f"Successfully started StartupCallback({callback.name})")
 
@@ -98,8 +97,7 @@ class BaseApp:
                 if callback.exception:
                     self.logger.exception(message)
                     raise exceptions.ShutdownError(message) from e
-                else:
-                    self.logger.warning(message)
+                self.logger.warning(message)
             else:
                 self.logger.info(f"Successfully shutdown ShutdownCallback({callback.name})")
 

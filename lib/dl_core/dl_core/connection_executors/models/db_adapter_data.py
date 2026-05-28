@@ -57,8 +57,7 @@ class DBAdapterQuery:
     def get_effective_chunk_size(self, default_chunk_size: int) -> int:
         if self.chunk_size is None:
             return default_chunk_size
-        else:
-            return self.chunk_size
+        return self.chunk_size
 
     def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)

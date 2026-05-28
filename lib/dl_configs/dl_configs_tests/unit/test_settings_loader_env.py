@@ -379,10 +379,9 @@ def test_fallback_factory_static_method():
         def a_default(env):
             if isinstance(env, Fallback1):
                 return env.fb_1_only
-            elif isinstance(env, Fallback2):
+            if isinstance(env, Fallback2):
                 return env.fb_2_only
-            else:
-                raise ValueError("Unexpected fallback type")
+            raise ValueError("Unexpected fallback type")
 
         a: str = s_attrib("a", fallback_factory=a_default)
 

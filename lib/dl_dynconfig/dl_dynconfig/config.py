@@ -83,9 +83,8 @@ class DynConfig(dl_pydantic.BaseModel):
         except Exception as e:
             if force:
                 raise FetchError("Failed to fetch data from source") from e
-            else:
-                LOGGER.exception("Failed to fetch data from source")
-                return
+            LOGGER.exception("Failed to fetch data from source")
+            return
 
         node = data
         for key in self._path:

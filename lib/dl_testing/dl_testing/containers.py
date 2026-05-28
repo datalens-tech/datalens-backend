@@ -56,15 +56,13 @@ def get_test_container_hostport(
         if fallback_port is not None:
             return HostPort(host=localhost, port=fallback_port)
         raise FileNotFoundError("Docker compose file not found")
-    else:
-        try:
-            with open(file_path) as dcyml:
-                docker_compose_yml = yaml.safe_load(dcyml)
-        except FileNotFoundError:
-            if fallback_port is not None:
-                return HostPort(host=localhost, port=fallback_port)
-            else:
-                raise
+    try:
+        with open(file_path) as dcyml:
+            docker_compose_yml = yaml.safe_load(dcyml)
+    except FileNotFoundError:
+        if fallback_port is not None:
+            return HostPort(host=localhost, port=fallback_port)
+        raise
 
     ports = docker_compose_yml["services"][service_key]["ports"]
     if original_port is not None:

@@ -45,6 +45,6 @@ class GenericExcSchema(OneOfSchema):
     def get_obj_type(self, obj: Any) -> str:
         if isinstance(obj, DLBaseException):
             return "dl_exc"
-        elif isinstance(obj, Exception):
+        if isinstance(obj, Exception):
             return "other_exc"
         raise TypeError("Can not serialize non-exception")

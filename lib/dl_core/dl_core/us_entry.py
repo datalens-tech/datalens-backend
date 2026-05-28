@@ -189,7 +189,7 @@ class USEntry:
                 raise TypeError(f"Expected data with type dict, but got type {type(data)}")
 
             return DotDict(data)
-        elif issubclass(self.DataModel, BaseAttrsDataModel):
+        if issubclass(self.DataModel, BaseAttrsDataModel):
             if isinstance(data, self.DataModel):
                 return data
 
@@ -204,8 +204,7 @@ class USEntry:
 
             data = schema.load(data)
             return data  # type: ignore  # TODO: fix
-        else:
-            raise TypeError(f"Unexpected data type ({type(self.DataModel)}) for entry class {type(self)}")
+        raise TypeError(f"Unexpected data type ({type(self.DataModel)}) for entry class {type(self)}")
 
     def has_data(self) -> bool:
         return self._data is not None

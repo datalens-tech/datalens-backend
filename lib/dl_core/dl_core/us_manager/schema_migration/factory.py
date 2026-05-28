@@ -30,8 +30,7 @@ class DefaultEntrySchemaMigrationFactory(EntrySchemaMigrationFactoryBase):
     ) -> BaseEntrySchemaMigration:
         if entry_scope == "dataset":
             return DatasetSchemaMigration(services_registry=service_registry)
-        elif entry_scope == "connection":
+        if entry_scope == "connection":
             schema_migration_cls = get_schema_migration_cls(conn_type_name=entry_type)
             return schema_migration_cls(services_registry=service_registry)
-        else:
-            return BaseEntrySchemaMigration(services_registry=service_registry)
+        return BaseEntrySchemaMigration(services_registry=service_registry)

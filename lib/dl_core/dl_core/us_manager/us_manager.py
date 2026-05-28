@@ -230,7 +230,7 @@ class USManagerBase:
             if us_scope == "dataset":
                 return Dataset
 
-            elif us_scope == "connection":
+            if us_scope == "connection":
                 conn_type: ConnectionType
                 try:
                     conn_type = ConnectionType(us_type)
@@ -660,7 +660,7 @@ class USManagerBase:
             }
 
             return linked_entries_refs
-        elif isinstance(entry, ConnectionBase):
+        if isinstance(entry, ConnectionBase):
             pass
         return set()
 

@@ -22,8 +22,7 @@ class ClickHouseLiteralizer(Literalizer):
         if tzinfo:
             tzname = getattr(tzinfo, "zone", tzinfo.tzname(value))
             return sa.func.toDateTime(value.isoformat(), tzname)
-        else:
-            return sa.func.toDateTime(value.isoformat())
+        return sa.func.toDateTime(value.isoformat())
 
     def literal_date(self, value: datetime.date, dialect: DialectCombo) -> Literal:
         if dialect & D.and_above(D.CLICKHOUSE_22_10):

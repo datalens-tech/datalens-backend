@@ -28,8 +28,7 @@ class LoggingMiddleware:
 
         if elapsed_seconds < 1:
             return f"{elapsed_seconds * 1000:.3f} ms"
-        else:
-            return f"{elapsed_seconds:.3f} s"
+        return f"{elapsed_seconds:.3f} s"
 
     @aiohttp.web.middleware
     async def process(

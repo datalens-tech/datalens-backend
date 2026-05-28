@@ -62,25 +62,23 @@ def _array_index_of(array: ClauseElement, value: ClauseElement) -> ClauseElement
 def _array_contains(array: ClauseElement, value: ClauseElement) -> ClauseElement:
     if isinstance(value, Null):
         return array != sa.func.array_remove(array, None)
-    elif is_literal(value):
+    if is_literal(value):
         return value == sa.func.ANY(array)
-    else:
-        return n.func.IF(
-            n.func.ISNULL(value.self_group()), array != sa.func.array_remove(array, None), value == sa.func.ANY(array)
-        )
+    return n.func.IF(
+        n.func.ISNULL(value.self_group()), array != sa.func.array_remove(array, None), value == sa.func.ANY(array)
+    )
 
 
 def _array_notcontains(array: ClauseElement, value: ClauseElement) -> ClauseElement:
     if isinstance(value, Null):
         return array == sa.func.array_remove(array, None)
-    elif is_literal(value):
+    if is_literal(value):
         return value != sa.func.ALL(sa.func.array_remove(array, None))
-    else:
-        return n.func.IF(
-            n.func.ISNULL(value.self_group()),
-            array == sa.func.array_remove(array, None),
-            value != sa.func.ALL(sa.func.array_remove(array, None)),
-        )
+    return n.func.IF(
+        n.func.ISNULL(value.self_group()),
+        array == sa.func.array_remove(array, None),
+        value != sa.func.ALL(sa.func.array_remove(array, None)),
+    )
 
 
 DEFINITIONS_ARRAY = [

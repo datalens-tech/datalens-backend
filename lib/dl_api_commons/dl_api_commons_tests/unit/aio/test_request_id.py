@@ -134,8 +134,7 @@ async def test_uncommitted_committed_rci(app_factory: _AppFactory) -> None:
         assert dl_request is not None
         if dl_request.is_rci_committed():
             return web.json_response({}, status=500, reason="RCI is committed but it was not expected")
-        else:
-            return web.json_response({"request_id": dl_request.temp_rci.request_id})
+        return web.json_response({"request_id": dl_request.temp_rci.request_id})
 
     app = await app_factory(
         _AppConfig(

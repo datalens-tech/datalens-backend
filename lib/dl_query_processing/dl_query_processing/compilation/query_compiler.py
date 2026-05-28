@@ -89,7 +89,7 @@ class QueryCompiler:
     def _get_override_alias(self, select_wrapper: SelectWrapperSpec) -> Optional[str]:
         if select_wrapper.type == SelectValueType.min:
             return "min_value"
-        elif select_wrapper.type == SelectValueType.max:
+        if select_wrapper.type == SelectValueType.max:
             return "max_value"
         return None
 

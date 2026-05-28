@@ -123,10 +123,9 @@ class YTBooleanTypeCaster(BooleanTypeCaster):
     def _cast_for_output(self, value: Any) -> Optional[bool]:
         if value == "0":
             return False
-        elif value == "1":
+        if value == "1":
             return True
-        else:
-            return super()._cast_for_output(value)
+        return super()._cast_for_output(value)
 
 
 class StringTypeCaster(TypeCaster):
@@ -173,12 +172,12 @@ class UnsupportedCaster(TypeCaster):
 
     def _cast_for_input(self, value: Any) -> None:
         if value is None:
-            return None
+            return
         raise exc.TypeCastUnsupported("Asked `cast_for_input` for an Unsupported type for a non-null")
 
     def _cast_for_output(self, value: Any) -> None:
         if value is None:
-            return None
+            return
         raise exc.TypeCastUnsupported("Asked `cast_for_output` for an Unsupported type for a non-null")
 
 

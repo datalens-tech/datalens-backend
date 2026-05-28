@@ -182,7 +182,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
                 result[key] = value
                 continue
 
-            elif isinstance(value, dict):
+            if isinstance(value, dict):
                 if type_key in value:
                     raise ValueError(f"Data must not contain '{type_key}' key, dict key is already used as type")
                 value[type_key] = key

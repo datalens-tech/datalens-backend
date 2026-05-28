@@ -280,17 +280,16 @@ class CompositeExtractor(SDictExtractor):
                 self._ensure_no_missing_fields(map_field_name_missing_exc=map_field_name_missing_fields)
             return None
 
-        elif default_value is NOT_SET or default_value is None:
+        if default_value is NOT_SET or default_value is None:
             if map_field_name_missing_fields:
                 self._ensure_no_missing_fields(map_field_name_missing_exc=map_field_name_missing_fields)
             return self.run_composition_factory_with_validation(fields)
 
-        else:
-            updated_default_value = attr.evolve(self.default, **fields)
-            self._ensure_no_missing_fields(
-                obj=updated_default_value, map_field_name_missing_exc=map_field_name_missing_fields
-            )
-            return updated_default_value
+        updated_default_value = attr.evolve(self.default, **fields)
+        self._ensure_no_missing_fields(
+            obj=updated_default_value, map_field_name_missing_exc=map_field_name_missing_fields
+        )
+        return updated_default_value
 
 
 @attr.s
@@ -346,14 +345,14 @@ class EnvSettingsLoader:
                 converter=meta.env_var_converter,
                 default=default,
             )
-        elif effective_type in simple_type_converters:
+        if effective_type in simple_type_converters:
             return ScalarExtractor(
                 expected_type=field_type,
                 key=env_var_name,
                 converter=simple_type_converters[effective_type],
                 default=default,
             )
-        elif typing.get_origin(effective_type) == dict:
+        if typing.get_origin(effective_type) == dict:
             key_type, value_type = typing.get_args(effective_type)
             assert key_type == str
             value_converter: Optional[Callable[[str], Any]]
@@ -369,8 +368,7 @@ class EnvSettingsLoader:
                 value_converter=value_converter,
                 default=default,
             )
-        else:
-            raise TypeError(f"Unsupported field type: {field_type!r} while extracting {env_var_name}")
+        raise TypeError(f"Unsupported field type: {field_type!r} while extracting {env_var_name}")
 
     @staticmethod
     def unwrap_union(the_type: type, ignore_none: bool) -> frozenset[type]:
@@ -564,8 +562,7 @@ class EnvSettingsLoader:
                 f"Settings class {get_type_full_name(settings_type)}"
                 f" has more than one app_type attributes: {candidates}"
             )
-        else:
-            return next(iter(candidates)) if candidates else None
+        return next(iter(candidates)) if candidates else None
 
     @classmethod
     def get_app_cfg_type_value_from_env(cls, settings_type: type[SettingsBase], s_dict: SDict) -> Any:

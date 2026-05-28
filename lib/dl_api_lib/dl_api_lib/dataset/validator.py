@@ -231,7 +231,7 @@ def validate_cache_invalidation_source_fields_fill_by_mode(
 
     if mode == CacheInvalidationMode.sql:
         return validate_cache_invalidation_sql_mode(cache_invalidation_source)
-    elif mode == CacheInvalidationMode.formula:
+    if mode == CacheInvalidationMode.formula:
         error = _validate_cache_invalidation_formula_field_required(cache_invalidation_source)
         if error:
             return error
@@ -1353,22 +1353,21 @@ class DatasetValidator(DatasetBaseWrapper):
                     if not schema_info.schema:  # TODO: remove when get_schema starts raising errors
                         raise common_exc.DLBaseException(message="Failed to load table schema")
                     return schema_info
-                elif origin_dsrc.spec.manual is True:
+                if origin_dsrc.spec.manual is True:
                     # Manual sources are user-provided: skip raising SourceDoesNotExist when
                     # the source can't be discovered through the connector listing.
                     return None
-                else:
-                    params = dict()
-                    if isinstance(origin_dsrc, BaseSQLDataSource):
-                        table_def = origin_dsrc.get_table_definition()
-                        params["table_definition"] = str(table_def)
+                params = dict()
+                if isinstance(origin_dsrc, BaseSQLDataSource):
+                    table_def = origin_dsrc.get_table_definition()
+                    params["table_definition"] = str(table_def)
 
-                    raise common_exc.SourceDoesNotExist(
-                        db_message="",
-                        query="",
-                        inspector_query="",
-                        params=params,
-                    )
+                raise common_exc.SourceDoesNotExist(
+                    db_message="",
+                    query="",
+                    inspector_query="",
+                    params=params,
+                )
             return None
 
         exists = get_source_exists()
@@ -1706,8 +1705,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     operator=BinaryJoinOperator.eq,
                 )
             ]
-        else:
-            return []
+        return []
 
     @generic_profiler("validator-apply-relation-action")
     def apply_avatar_relation_action(

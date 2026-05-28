@@ -119,8 +119,7 @@ async def test_error_handling_middleware(
                     response_body={},
                     http_reason=err.reason,
                 )
-            else:
-                raise ValueError("Can not format exception")
+            raise ValueError("Can not format exception")
 
     async def info(request: web.Request) -> web.Response:
         raise MyException("info_exc", "info", 400)

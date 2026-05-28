@@ -160,11 +160,10 @@ class USEntryCrawler:
     ) -> None:
         if self._dry_run:
             return
-        else:
-            await usm.update(
-                entry=entry,
-                original_entry=original_entry,
-            )
+        await usm.update(
+            entry=entry,
+            original_entry=original_entry,
+        )
 
     async def run(self) -> None:
         if self._run_fired:
@@ -358,8 +357,7 @@ class USEntryCrawler:
                         usm=usm,
                     )
                     return EntryHandlingResult.SUCCESS
-                else:
-                    return EntryHandlingResult.SKIPPED
+                return EntryHandlingResult.SKIPPED
 
             except Exception:
                 entry_handling_extra.update(us_entry_crawler_exc_stage="entry_save")

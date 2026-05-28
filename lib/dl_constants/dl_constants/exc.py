@@ -59,8 +59,7 @@ class DLBaseException(Exception):
             and frozenset(self.params.keys()) in self.formatting_messages.keys()
         ):
             return self.formatting_messages[frozenset(self.params.keys())].format(**self.params)
-        else:
-            return self._message
+        return self._message
 
     def __str__(self) -> str:
         return self.message or super().__str__()

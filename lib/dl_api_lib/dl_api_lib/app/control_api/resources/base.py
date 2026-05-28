@@ -99,12 +99,11 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
         if attr_name in attrs:
             # attribute is redefined in new class
             return attrs[attr_name]
-        else:
-            # attribute is inherited from one of the base classes
-            # (i.e. the first one in `bases` with this attribute)
-            for base in bases:
-                if hasattr(base, attr_name):
-                    return getattr(base, attr_name)
+        # attribute is inherited from one of the base classes
+        # (i.e. the first one in `bases` with this attribute)
+        for base in bases:
+            if hasattr(base, attr_name):
+                return getattr(base, attr_name)
 
     def __new__(mcs, name, bases, attrs):  # type: ignore  # TODO: fix
         profile_methods = mcs._get_future_class_attr(bases, attrs, "profile_methods")

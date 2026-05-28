@@ -33,15 +33,13 @@ class USEntryBuffer:
             if isinstance(entry.reference, DefaultConnectionRef):
                 if entry.error_kind == BrokenUSLinkErrorKind.NOT_FOUND:
                     raise exc.ReferencedUSEntryNotFound(f"Referenced connection {entry.reference.conn_id} was deleted")
-                elif entry.error_kind == BrokenUSLinkErrorKind.ACCESS_DENIED:
+                if entry.error_kind == BrokenUSLinkErrorKind.ACCESS_DENIED:
                     raise exc.ReferencedUSEntryAccessDenied(
                         f"Referenced connection {entry.reference.conn_id} cannot be loaded: access denied",
                         details=dict(scope="connection", entry_id=entry.reference.conn_id),
                     )
-                else:
-                    raise ValueError(f"Referenced connection {entry.reference} cannot be loaded: {entry.error_kind}")
-            else:
-                raise ValueError(f"Requested referenced US entry {entry_id} is broken: {entry}", entry)
+                raise ValueError(f"Referenced connection {entry.reference} cannot be loaded: {entry.error_kind}")
+            raise ValueError(f"Requested referenced US entry {entry_id} is broken: {entry}", entry)
 
         if entry is None:
             raise ValueError(f"Connection {entry_id} is not loaded")

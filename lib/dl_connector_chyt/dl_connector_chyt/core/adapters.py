@@ -125,8 +125,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
                 unique=resp_js["$attributes"]["unique_keys"],
                 kind=IndexKind.table_sorting,
             )
-        else:
-            return None
+        return None
 
     @abc.abstractmethod
     async def _get_yt_table_index_info(

@@ -28,7 +28,7 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
                 response_body=dict(message=err.reason),
                 level=ErrorLevel.info,
             )
-        elif isinstance(
+        if isinstance(
             err,
             (client_exceptions.ClientResponseError, client_exceptions.ClientConnectorCertificateError),
         ):
@@ -37,13 +37,13 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
                 response_body=dict(message=str(err)),
                 level=ErrorLevel.info,
             )
-        elif isinstance(err, MValidationError):
+        if isinstance(err, MValidationError):
             return ErrorData(
                 status_code=HTTPStatus.BAD_REQUEST,
                 response_body=dict(message=str(err)),
                 level=ErrorLevel.info,
             )
-        elif isinstance(err, exc.DLAuthAPIBaseError):
+        if isinstance(err, exc.DLAuthAPIBaseError):
             status_code = STATUS_CODES.get(err.__class__, HTTPStatus.INTERNAL_SERVER_ERROR)
             body = dict(
                 message=err.message,
@@ -56,5 +56,4 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
                 response_body=body,
                 level=ErrorLevel.info,
             )
-        else:
-            return DEFAULT_INTERNAL_SERVER_ERROR_DATA
+        return DEFAULT_INTERNAL_SERVER_ERROR_DATA

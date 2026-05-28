@@ -110,13 +110,12 @@ def adapter_factory(
             sync_adapter=sync_dba,
         )
 
-    elif issubclass(dba_cls, AsyncDirectDBAdapter):
+    if issubclass(dba_cls, AsyncDirectDBAdapter):
         return dba_cls.create(
             target_dto=target_conn_dto, req_ctx_info=req_ctx_info, default_chunk_size=default_chunk_size
         )
 
-    else:
-        raise ValueError(f"DBA class {dba_cls} is not supported in EQQ")
+    raise ValueError(f"DBA class {dba_cls} is not supported in EQQ")
 
 
 class PingView(BaseView):
@@ -212,29 +211,28 @@ class ActionHandlingView(BaseView):
             await dba.test()
             return None
 
-        elif isinstance(action, act.ActionGetDBVersion):
+        if isinstance(action, act.ActionGetDBVersion):
             return await dba.get_db_version(db_ident=action.db_ident)
 
-        elif isinstance(action, act.ActionGetSchemaNames):
+        if isinstance(action, act.ActionGetSchemaNames):
             return await dba.get_schema_names(db_ident=action.db_ident)
 
-        elif isinstance(action, act.ActionGetTables):
+        if isinstance(action, act.ActionGetTables):
             return await dba.get_tables(schema_ident=action.schema_ident, page_ident=action.page_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
 
-        elif isinstance(action, act.ActionGetTableInfo):
+        if isinstance(action, act.ActionGetTableInfo):
             return await dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)
 
-        elif isinstance(action, act.ActionIsTableExists):
+        if isinstance(action, act.ActionIsTableExists):
             return await dba.is_table_exists(table_ident=action.table_ident)
 
-        elif isinstance(action, act.ActionExecuteTypedQuery):
+        if isinstance(action, act.ActionExecuteTypedQuery):
             return await self._handle_execute_typed_query_action(dba=dba, action=action)
 
-        elif isinstance(action, act.ActionExecuteTypedQueryRaw):
+        if isinstance(action, act.ActionExecuteTypedQueryRaw):
             return await self._handle_execute_typed_query_raw_action(dba=dba, action=action)
 
-        else:
-            raise NotImplementedError(f"Action {action} is not implemented in QE")
+        raise NotImplementedError(f"Action {action} is not implemented in QE")
 
     async def _handle_execute_typed_query_action(
         self,

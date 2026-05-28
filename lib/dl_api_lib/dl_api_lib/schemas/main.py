@@ -60,24 +60,23 @@ def get_api_model(
                 as_list=_field.many,
                 required=_field.required,
             )
-        elif isinstance(_field, ma_fields.Enum):
+        if isinstance(_field, ma_fields.Enum):
             return fields.String(required=_field.required, enum=[x.name for x in list(_field.enum)])
-        elif isinstance(_field, ma_fields.List):
+        if isinstance(_field, ma_fields.List):
             return fields.List(
                 _translate_field(_field.inner),
                 required=_field.required,
             )
-        elif isinstance(_field, ma_fields.DateTime):
+        if isinstance(_field, ma_fields.DateTime):
             return fields.DateTime(
                 example=datetime.datetime(2018, 1, 1).strftime(_field.format or _field.DEFAULT_FORMAT),
             )
-        elif isinstance(_field, ma_fields.Date):
+        if isinstance(_field, ma_fields.Date):
             return fields.Date(
                 example=datetime.date(2018, 1, 1).strftime(_field.format or _field.DEFAULT_FORMAT),
             )
-        else:
-            api_field_type = fields_map.get(type(_field), fields.String)
-            return api_field_type(required=_field.required)
+        api_field_type = fields_map.get(type(_field), fields.String)
+        return api_field_type(required=_field.required)
 
     api_model_dict = {}
     if schema_fields is not None:

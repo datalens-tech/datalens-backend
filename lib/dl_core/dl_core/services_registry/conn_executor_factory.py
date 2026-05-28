@@ -111,8 +111,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
                 hosts = hosts[: self.MAX_HOST_RETRY_ATTEMPTS]
 
             return tuple(hosts)
-        else:
-            return ()
+        return ()
 
     def _get_async_conn_executor_recipe(
         self,
@@ -171,8 +170,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
                 services_registry=self._services_registry_ref.ref,  # Do not use. To be deprecated. Somehow.
                 ca_data=recipe.ca_data,
             )
-        else:
-            raise CEFactoryError(f"Can not instantiate {executor_cls}")
+        raise CEFactoryError(f"Can not instantiate {executor_cls}")
 
     def _get_exec_mode_and_rqe_attrs(
         self, conn: ConnectionBase, executor_cls: type[AsyncConnExecutorBase]

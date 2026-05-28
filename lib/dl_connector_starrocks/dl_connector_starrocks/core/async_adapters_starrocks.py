@@ -148,8 +148,7 @@ class AsyncStarRocksAdapter(
                 LOGGER.info("Using SSL for async StarRocks connection")
                 create_engine_using_ssl = partial(self._create_engine, force_ssl=True)
                 return await self._engines.get("", generator=create_engine_using_ssl)
-            else:
-                raise
+            raise
 
     @contextlib.asynccontextmanager
     async def _get_connection(self, db_name_from_query: str | None) -> AsyncIterator[aiomysql.sa.SAConnection]:

@@ -49,8 +49,7 @@ def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
         else:
             if res == [(0.5,)]:
                 return
-            else:
-                raise Exception("Unexpected result", res)
+            raise Exception("Unexpected result", res)
 
 
 def is_docker_host_ssh() -> bool:

@@ -23,11 +23,10 @@ class RQEErrorHandler(AIOHTTPErrorHandler):
                 response_body=ActionSerializer().serialize_exc(err),
                 level=ErrorLevel.info,
             )
-        else:
-            LOGGER.exception("RQE-async handler error: %r", err)
-            return ErrorData(
-                500,
-                http_reason="Internal server error",
-                response_body=ActionSerializer().serialize_exc(err),
-                level=ErrorLevel.error,
-            )
+        LOGGER.exception("RQE-async handler error: %r", err)
+        return ErrorData(
+            500,
+            http_reason="Internal server error",
+            response_body=ActionSerializer().serialize_exc(err),
+            level=ErrorLevel.error,
+        )

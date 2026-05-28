@@ -105,26 +105,25 @@ class ActionHandlingView(flask.views.View):
         if isinstance(action, act.ActionTest):
             return dba.test()
 
-        elif isinstance(action, act.ActionGetDBVersion):
+        if isinstance(action, act.ActionGetDBVersion):
             return dba.get_db_version(db_ident=action.db_ident)
 
-        elif isinstance(action, act.ActionGetSchemaNames):
+        if isinstance(action, act.ActionGetSchemaNames):
             return dba.get_schema_names(db_ident=action.db_ident)
 
-        elif isinstance(action, act.ActionGetTables):
+        if isinstance(action, act.ActionGetTables):
             return dba.get_tables(schema_ident=action.schema_ident, page_ident=action.page_ident)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "list[TableIdent]", expected "RawSchemaInfo | list[str] | str | bool | int | None")  [return-value]
 
-        elif isinstance(action, act.ActionGetTableInfo):
+        if isinstance(action, act.ActionGetTableInfo):
             return dba.get_table_info(table_def=action.table_def, fetch_idx_info=action.fetch_idx_info)
 
-        elif isinstance(action, act.ActionIsTableExists):
+        if isinstance(action, act.ActionIsTableExists):
             return dba.is_table_exists(table_ident=action.table_ident)
 
-        elif isinstance(action, act.ActionExecuteTypedQuery):
+        if isinstance(action, act.ActionExecuteTypedQuery):
             return self._handle_execute_typed_query_action(dba=dba, action=action)
 
-        else:
-            raise NotImplementedError(f"Action {action} is not implemented in QE")
+        raise NotImplementedError(f"Action {action} is not implemented in QE")
 
     def _handle_execute_typed_query_action(
         self,
@@ -290,8 +289,7 @@ def _handle_exception(err: Exception) -> tuple[flask.Response, int]:
     LOGGER.exception("Exception occurred in sync RQE")
     if isinstance(err, HTTPException):
         return flask.jsonify(ActionSerializer().serialize_exc(err)), err.code or 500
-    else:
-        return flask.jsonify(ActionSerializer().serialize_exc(err)), 500
+    return flask.jsonify(ActionSerializer().serialize_exc(err)), 500
 
 
 def create_sync_app(

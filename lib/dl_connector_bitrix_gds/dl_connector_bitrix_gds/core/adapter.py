@@ -204,8 +204,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     def _table_schema(self, table: str) -> BitrixGDSTable:
         if table.startswith(SMART_PROCESS_TABLE_PREFIX):
             return CRM_DYNAMIC_ITEMS_TABLE
-        else:
-            return BITRIX_TABLES_MAP[table]
+        return BITRIX_TABLES_MAP[table]
 
     def _build_request_payload(self, dba_query: DBAdapterQuery) -> BitrixRequestPayload:
         table = self._extract_table_name(dba_query.query)
