@@ -1,7 +1,6 @@
 import inspect
 import os
 import re
-from typing import Optional
 
 import attr
 import yaml
@@ -19,7 +18,7 @@ class HostPort:
         return f"{self.host}:{self.port}"
 
 
-def _get_docker_compose_file_path(filename: Optional[str] = None) -> str | None:
+def _get_docker_compose_file_path(filename: str | None = None) -> str | None:
     filename = filename or "docker-compose.yml"
     assert filename is not None
     base_filename: str
@@ -40,9 +39,9 @@ def _get_docker_compose_file_path(filename: Optional[str] = None) -> str | None:
 
 def get_test_container_hostport(
     service_key: str,
-    original_port: Optional[int] = None,
-    fallback_port: Optional[int] = None,  # likely redundant
-    dc_filename: Optional[str] = None,
+    original_port: int | None = None,
+    fallback_port: int | None = None,  # likely redundant
+    dc_filename: str | None = None,
     use_localhost_instead_of_loopback_ip: bool = False,
 ) -> HostPort:
     localhost = "localhost" if use_localhost_instead_of_loopback_ip else "127.0.0.1"

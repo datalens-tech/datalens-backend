@@ -1,7 +1,6 @@
 import datetime
 from http import HTTPStatus
 import re
-from typing import Optional
 
 from dl_api_client.dsmaker.primitives import WhereClause
 from dl_api_client.dsmaker.shortcuts.dataset import (
@@ -463,7 +462,7 @@ class TestBasicLookupFunctions(DefaultApiTestBase, DefaultBasicLookupFunctionTes
         gte_date_s = (min_date + datetime.timedelta(days=day_offset)).isoformat()
 
         def get_data_rows_with_filter(
-            filters: Optional[list[WhereClause]] = None,
+            filters: list[WhereClause] | None = None,
         ) -> list[list]:
             result_resp = data_api.get_result(
                 dataset=ds,

@@ -4,9 +4,7 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     NamedTuple,
-    Optional,
     Sequence,
-    Union,
 )
 
 import sqlalchemy as sa
@@ -659,13 +657,13 @@ class DbCastArgTypes(ArgTypeSequence):
         return set(DataType)
 
 
-DataTypeSpec = Union[DataType, tuple[DataType, ...]]
+DataTypeSpec = DataType | tuple[DataType, ...]
 
 
 class WhitelistTypeSpec(NamedTuple):
     name: str
     sa_type: type[TypeEngine]
-    nested_sa_type: Optional[type[TypeEngine]] = None
+    nested_sa_type: type[TypeEngine] | None = None
     arg_types: tuple[DataTypeSpec, ...] = ()
 
 

@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -58,7 +57,7 @@ ARRAY_LEN_OPS = {
 
 @attr.s(frozen=True)
 class FilterDefinition:
-    arg_cnt: Optional[int] = attr.ib(kw_only=True)
+    arg_cnt: int | None = attr.ib(kw_only=True)
     callable: Callable[..., formula_nodes.FormulaItem] = attr.ib(kw_only=True)
 
 
@@ -74,7 +73,7 @@ class FilterParams:
     data_type: DataType
     field_cast_type: DataType
     arg_cast_type: DataType
-    filter_args: Optional[list] = None
+    filter_args: list | None = None
 
     def clone(self, **updates: Any) -> Self:
         """Convenience method so that callers don't need to know about `attr`"""
@@ -147,8 +146,8 @@ class FilterFormulaCompiler:
         self,
         field: BIField,
         operation: WhereClauseOperation,
-        filter_args: Optional[list] = None,
-        original_field_id: Optional[str] = None,
+        filter_args: list | None = None,
+        original_field_id: str | None = None,
         anonymous: bool = False,
     ) -> CompiledFormulaInfo:
         field_formula_obj = self._formula_compiler.compile_field_formula(field, collect_errors=False).formula_obj
@@ -243,7 +242,7 @@ class FilterFormulaCompiler:
     def compile_filter_formula(
         self,
         filter_spec: FilterFieldSpec,
-        original_field_id: Optional[str] = None,
+        original_field_id: str | None = None,
     ) -> CompiledFormulaInfo:
         """
         Prepare a filter expression for given ``field_id`` using given filter ``operation``.
@@ -266,7 +265,7 @@ class FilterFormulaCompiler:
     def compile_source_column_filter_formula(
         self,
         source_column_filter_spec: FilterSourceColumnSpec,
-        original_field_id: Optional[str] = None,
+        original_field_id: str | None = None,
     ) -> CompiledFormulaInfo:
         """
         Prepare a formula based on a source column filter spec

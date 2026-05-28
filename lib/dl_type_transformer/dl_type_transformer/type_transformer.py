@@ -13,7 +13,6 @@ from typing import (
     ClassVar,
     Generator,
     Iterable,
-    Optional,
     final,
 )
 
@@ -44,7 +43,7 @@ def _if_not_none[INN_TV](value: INN_TV, func: Callable[[INN_TV], Any]) -> Any:
     return None
 
 
-def make_date(value: Any) -> Optional[datetime.date]:
+def make_date(value: Any) -> datetime.date | None:
     if isinstance(value, datetime.datetime):
         return value.date()
     if isinstance(value, datetime.date):
@@ -54,7 +53,7 @@ def make_date(value: Any) -> Optional[datetime.date]:
     return None
 
 
-def make_datetime(value: Any) -> Optional[datetime.datetime]:
+def make_datetime(value: Any) -> datetime.datetime | None:
     if isinstance(value, datetime.datetime):
         return value
     if isinstance(value, datetime.date):
@@ -64,7 +63,7 @@ def make_datetime(value: Any) -> Optional[datetime.datetime]:
     return None
 
 
-def make_int(value: Any) -> Optional[int]:
+def make_int(value: Any) -> int | None:
     if value is None:
         return None
     if isinstance(value, float) and (math.isinf(value) or math.isnan(value)):
@@ -120,7 +119,7 @@ class BooleanTypeCaster(TypeCaster):
 
 
 class YTBooleanTypeCaster(BooleanTypeCaster):
-    def _cast_for_output(self, value: Any) -> Optional[bool]:
+    def _cast_for_output(self, value: Any) -> bool | None:
         if value == "0":
             return False
         if value == "1":
@@ -149,7 +148,7 @@ class GenericDatetimeTypeCaster(TypeCaster):
 
 
 class UTCDatetimeTypeCaster(TypeCaster):
-    def _cast_for_input(self, value: Any) -> Optional[datetime.datetime]:
+    def _cast_for_input(self, value: Any) -> datetime.datetime | None:
         result = super()._cast_for_output(value)
         if isinstance(result, datetime.datetime) and result.tzinfo is not None:
             result = result.astimezone(datetime.UTC).replace(tzinfo=None)
@@ -157,7 +156,7 @@ class UTCDatetimeTypeCaster(TypeCaster):
 
 
 class UTCTimezoneDatetimeTypeCaster(TypeCaster):
-    def _cast_for_input(self, value: Any) -> Optional[datetime.datetime]:
+    def _cast_for_input(self, value: Any) -> datetime.datetime | None:
         result = super()._cast_for_output(value)
         if isinstance(result, datetime.datetime) and result.tzinfo is None:
             result = result.replace(tzinfo=pytz.UTC)
@@ -181,7 +180,7 @@ class UnsupportedCaster(TypeCaster):
         raise exc.TypeCastUnsupported("Asked `cast_for_output` for an Unsupported type for a non-null")
 
 
-def _cast_array[INN_TV](value: Optional[Iterable[INN_TV]], f: Callable[[INN_TV], Any]) -> Optional[tuple]:
+def _cast_array[INN_TV](value: Iterable[INN_TV] | None, f: Callable[[INN_TV], Any]) -> tuple | None:
     if value is None:
         return None
     return tuple(map(f, value))
@@ -199,7 +198,7 @@ class ArrayStrTypeCaster(TypeCaster):
     cast_func = partial(_cast_array, f=StringTypeCaster.cast_func)
 
 
-def _make_lowercase(value: Optional[str]) -> Optional[str]:
+def _make_lowercase(value: str | None) -> str | None:
     if not value:
         return value
     return value.lower()
@@ -235,7 +234,7 @@ class TypeTransformer:
     def type_native_to_user(
         self,
         native_t: GenericNativeType,
-        user_t: Optional[UserDataType] = None,
+        user_t: UserDataType | None = None,
     ) -> UserDataType:
         if user_t is not None:
             # original UT is given, try to validate against NT.
@@ -249,9 +248,7 @@ class TypeTransformer:
         except KeyError as e:
             raise exc.UnsupportedNativeTypeError(native_t) from e
 
-    def type_user_to_native(
-        self, user_t: UserDataType, native_t: Optional[GenericNativeType] = None
-    ) -> GenericNativeType:
+    def type_user_to_native(self, user_t: UserDataType, native_t: GenericNativeType | None = None) -> GenericNativeType:
         if native_t is not None:
             # original NT is given, try to do a direct conversion
             if user_t == self.native_to_user_map.get(native_t) or user_t == self.native_to_user_map.get(
@@ -277,7 +274,7 @@ class TypeTransformer:
         return cls.casters[user_t].cast_for_input(value=value)
 
     @classmethod
-    def cast_for_output(cls, value: Any, user_t: Optional[UserDataType] = None) -> Any:
+    def cast_for_output(cls, value: Any, user_t: UserDataType | None = None) -> Any:
         """Convert value from DB to Python value conforming to given ``user_t``"""
         if user_t is None:
             return value

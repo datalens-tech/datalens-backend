@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 
 from dl_formula_ref.i18n.registry import FormulaRefTranslatable
@@ -22,7 +20,7 @@ class ParameterizedText:
         return bool(self.text)
 
     @classmethod
-    def from_str(cls, text: str, params: Optional[dict[str, str]] = None) -> ParameterizedText:
+    def from_str(cls, text: str, params: dict[str, str] | None = None) -> ParameterizedText:
         resources = SimpleAliasedResourceRegistry(
             resources={key: AliasedTextResource(body=value) for key, value in (params or {}).items()},
         )

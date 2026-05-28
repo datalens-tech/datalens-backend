@@ -3,7 +3,6 @@ from typing import (
     Any,
     ClassVar,
     Literal,
-    Optional,
 )
 
 import attr
@@ -45,8 +44,8 @@ from dl_utils.utils import make_url
 
 @attr.s(frozen=True)
 class CachesTTLSettings(SettingsBase):
-    MATERIALIZED: Optional[int] = s_attrib("SEC_MATERIALIZED_DATASET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int | None")  [assignment]
-    OTHER: Optional[int] = s_attrib("SEC_OTHER")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int | None")  [assignment]
+    MATERIALIZED: int | None = s_attrib("SEC_MATERIALIZED_DATASET")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int | None")  [assignment]
+    OTHER: int | None = s_attrib("SEC_OTHER")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "int | None")  [assignment]
 
 
 def _list_to_tuple(value: Any) -> Any:
@@ -64,7 +63,7 @@ class DeprecatedAppSettings:
     )
 
     SENTRY_ENABLED: bool = s_attrib("DL_SENTRY_ENABLED", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
-    SENTRY_DSN: Optional[str] = s_attrib("DL_SENTRY_DSN", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    SENTRY_DSN: str | None = s_attrib("DL_SENTRY_DSN", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
 
     CRYPTO_KEYS_CONFIG: CryptoKeysConfig = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "CryptoKeysConfig")  [assignment]
         "DL_CRY",
@@ -72,7 +71,7 @@ class DeprecatedAppSettings:
         sensitive=True,
     )
     US_BASE_URL: str = s_attrib("US_HOST", fallback_cfg_key="US_BASE_URL")  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str")  [assignment]
-    US_MASTER_TOKEN: Optional[str] = s_attrib("US_MASTER_TOKEN", sensitive=True, missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    US_MASTER_TOKEN: str | None = s_attrib("US_MASTER_TOKEN", sensitive=True, missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
 
     RQE_FORCE_OFF: bool = s_attrib("RQE_FORCE_OFF", missing=False)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
     RQE_CONFIG: RQEConfig = s_attrib("RQE", fallback_factory=RQEConfig.get_default)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RQEConfig")  [assignment]
@@ -120,7 +119,7 @@ class DeprecatedAppSettings:
         ),
         missing=None,
     )
-    RATE_LIMITER_CONFIG: Optional[RateLimiterConfig] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
+    RATE_LIMITER_CONFIG: RateLimiterConfig | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "RateLimiterConfig")  [assignment]
         "RATE_LIMITER",
         fallback_factory=lambda cfg: RateLimiterConfig.from_json(cfg.get("RATE_LIMITER")),
         missing=None,
@@ -130,9 +129,9 @@ class DeprecatedAppSettings:
     )
 
     BI_COMPENG_PG_ON: bool = s_attrib("BI_COMPENG_PG_ON", missing=True)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "bool")  [assignment]
-    BI_COMPENG_PG_URL: Optional[str] = s_attrib("BI_COMPENG_PG_URL", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    BI_COMPENG_PG_URL: str | None = s_attrib("BI_COMPENG_PG_URL", missing=None)  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
 
-    FORMULA_PARSER_TYPE: Optional[ParserType] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "ParserType | None")  [assignment]
+    FORMULA_PARSER_TYPE: ParserType | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "ParserType | None")  [assignment]
         "BI_FORMULA_PARSER_TYPE",
         env_var_converter=lambda s: ParserType[s.lower()],
         missing=ParserType.antlr_py,
@@ -143,13 +142,13 @@ class DeprecatedAppSettings:
         missing=("stable",),
     )
 
-    BI_API_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "list[str] | None")  [assignment]
+    BI_API_CONNECTOR_WHITELIST: list[str] | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "list[str] | None")  [assignment]
         "BI_API_CONNECTOR_WHITELIST",
         env_var_converter=lambda s: list(split_by_comma(s)),
         fallback_cfg_key="BI_API_CONNECTOR_WHITELIST",
         missing=None,
     )
-    CORE_CONNECTOR_WHITELIST: Optional[list[str]] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "list[str] | None")  [assignment]
+    CORE_CONNECTOR_WHITELIST: list[str] | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "list[str] | None")  [assignment]
         "CORE_CONNECTOR_WHITELIST",
         env_var_converter=lambda s: list(split_by_comma(s)),
         fallback_cfg_key="CORE_CONNECTOR_WHITELIST",
@@ -164,18 +163,18 @@ class DeprecatedAppSettings:
 
     REDIS_ARQ: dl_configs.RedisSettings | None = None
 
-    FILE_UPLOADER_BASE_URL: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    FILE_UPLOADER_BASE_URL: str | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "FILE_UPLOADER_BASE_URL",
         fallback_cfg_key="DATALENS_API_LB_UPLOADS_BASE_URL",
         missing=None,
     )
-    FILE_UPLOADER_MASTER_TOKEN: Optional[str] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
+    FILE_UPLOADER_MASTER_TOKEN: str | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")  [assignment]
         "FILE_UPLOADER_MASTER_TOKEN",
         sensitive=True,
         missing=None,
     )
 
-    DEFAULT_LOCALE: Optional[str] = "en"
+    DEFAULT_LOCALE: str | None = "en"
 
     QUERY_PROCESSING_MODE: QueryProcessingMode = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "QueryProcessingMode")  [assignment]
         "QUERY_PROCESSING_MODE",
@@ -194,7 +193,7 @@ class DeprecatedAppSettings:
         missing_factory=tuple,
     )
 
-    PIVOT_ENGINE_TYPE: Optional[DataPivotEngineType] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "DataPivotEngineType | None")  [assignment]
+    PIVOT_ENGINE_TYPE: DataPivotEngineType | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "DataPivotEngineType | None")  [assignment]
         "PIVOT_ENGINE_TYPE",
         fallback_factory=lambda s: (
             DataPivotEngineType[s.PIVOT_ENGINE_TYPE.lower()]
@@ -204,7 +203,7 @@ class DeprecatedAppSettings:
         env_var_converter=lambda s: (DataPivotEngineType[s.lower()] if s is not None else PIVOT_ENGINE_TYPE_PANDAS),
         missing=PIVOT_ENGINE_TYPE_PANDAS,  # TODO: Switch to another default
     )
-    EXPORTS_HISTORY_URL_PATH: Optional[str] = s_attrib("EXPORTS_HISTORY_URL_PATH", missing=None)  # type: ignore  # 2025-08-12 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")
+    EXPORTS_HISTORY_URL_PATH: str | None = s_attrib("EXPORTS_HISTORY_URL_PATH", missing=None)  # type: ignore  # 2025-08-12 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "str | None")
 
 
 @attr.s(frozen=True)
@@ -287,7 +286,7 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
         ),
         missing=None,
     )
-    CACHES_TTL_SETTINGS: Optional[CachesTTLSettings] = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "CachesTTLSettings | None")  [assignment]
+    CACHES_TTL_SETTINGS: CachesTTLSettings | None = s_attrib(  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "CachesTTLSettings | None")  [assignment]
         "CACHES_TTL",
         fallback_factory=lambda: CachesTTLSettings(  # type: ignore  # 2024-01-30 # TODO: Argument "fallback_factory" to "s_attrib" has incompatible type "Callable[[], CachesTTLSettings]"; expected "Callable[[Any, Any], Any] | Callable[[Any], Any] | None"  [arg-type]
             MATERIALIZED=3600,
@@ -318,9 +317,9 @@ class DeprecatedDataApiAppSettings(DeprecatedAppSettings):
 
 @attr.s(frozen=True, kw_only=True)
 class ControlApiAppTestingsSettings:
-    us_auth_mode_override: Optional[USAuthMode] = attr.ib(default=None)
-    fake_tenant: Optional[dl_api_commons.TenantDef] = attr.ib(default=None)
-    fake_auth_data: Optional[dl_auth.AuthData] = attr.ib(default=None)
+    us_auth_mode_override: USAuthMode | None = attr.ib(default=None)
+    fake_tenant: dl_api_commons.TenantDef | None = attr.ib(default=None)
+    fake_auth_data: dl_auth.AuthData | None = attr.ib(default=None)
 
 
 @attr.s(frozen=True)

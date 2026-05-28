@@ -1,5 +1,4 @@
 import abc
-from typing import Optional
 
 import attr
 
@@ -32,7 +31,7 @@ class AsyncAdapterAction(abc.ABC):  # noqa: B024
 @attr.s(frozen=True)
 class AsyncDBVersionAdapterAction(AsyncAdapterAction):
     @abc.abstractmethod
-    async def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    async def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         raise NotImplementedError
 
 
@@ -92,7 +91,7 @@ class AsyncTypedQueryRawAdapterAction(AsyncAdapterAction):
 
 @attr.s(frozen=True)
 class AsyncDBVersionAdapterActionNotImplemented(AsyncDBVersionAdapterAction):
-    async def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    async def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         raise NotImplementedError
 
 

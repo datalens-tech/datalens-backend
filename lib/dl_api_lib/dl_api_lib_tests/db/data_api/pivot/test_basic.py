@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from typing import Optional
 
 from dl_api_client.dsmaker.pivot_utils import (
     check_pivot_response,
@@ -79,7 +78,7 @@ class TestBasicPivot(DefaultApiTestBase):
                 break
         assert sorting_row_idx is not None
 
-        def _get_value(value: Optional[tuple]) -> float:
+        def _get_value(value: tuple | None) -> float:
             if value is None:
                 return float("-inf")
             return float(value[0][0])
@@ -148,7 +147,7 @@ class TestBasicPivot(DefaultApiTestBase):
             },
         )
 
-        def get_pivot(pivot_pagination: Optional[PivotPagination] = None):
+        def get_pivot(pivot_pagination: PivotPagination | None = None):
             pivot_resp = get_pivot_response(
                 dataset=ds,
                 data_api=data_api,

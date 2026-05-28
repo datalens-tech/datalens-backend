@@ -21,7 +21,7 @@ class ConnOptionsMutatorsFactory:
     def add_mutator(self, func: _T_CONN_OPTIONS_MUTATOR) -> None:
         self.mutators.append(func)
 
-    def __call__(self, conn: ConnectionBase) -> Optional[ConnectOptions]:
+    def __call__(self, conn: ConnectionBase) -> ConnectOptions | None:
         any_mutated = False
         conn_opts = conn.get_conn_options()
         for func in self.mutators:

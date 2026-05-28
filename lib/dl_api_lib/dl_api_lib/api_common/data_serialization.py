@@ -1,7 +1,6 @@
 import logging
 from typing import (
     Any,
-    Optional,
     Sequence,
 )
 
@@ -90,9 +89,9 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         cls,
         data_export_info: DataExportInfo,
         merged_stream: MergedQueryDataStream,
-        totals: Optional[Sequence] = None,
-        totals_query: Optional[str] = None,
-        fields_data: Optional[list[dict[str, Any]]] = None,
+        totals: Sequence | None = None,
+        totals_query: str | None = None,
+        fields_data: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         legend_item_ids = merged_stream.legend_item_ids
         assert legend_item_ids is not None  # in v1 there is only one stream
@@ -133,7 +132,7 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         cls,
         data_export_info: DataExportInfo,
         merged_stream: MergedQueryDataStream,
-        reporting_registry: Optional[ReportingRegistry] = None,
+        reporting_registry: ReportingRegistry | None = None,
     ) -> dict[str, Any]:
         data: dict[str, Any] = {}
 
@@ -208,7 +207,7 @@ class PivotDataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         data_export_info: DataExportInfo,
         merged_stream: MergedQueryDataStream,
         pivot_table: PivotTable,
-        reporting_registry: Optional[ReportingRegistry] = None,
+        reporting_registry: ReportingRegistry | None = None,
     ) -> dict:
         legend_data = LegendSchema().dump(merged_stream.legend)
         pivot_spec_data = {
@@ -217,7 +216,7 @@ class PivotDataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         # TODO: Dump pivot_table.pivot_legend
         block_meta_list = cls.make_data_response_v2_block_meta(merged_stream=merged_stream)
 
-        def _serialize_cell_vector(value_vector: Optional[DataCellVector]) -> Optional[list[list[Any]]]:
+        def _serialize_cell_vector(value_vector: DataCellVector | None) -> list[list[Any]] | None:
             if value_vector is None:
                 return None
 

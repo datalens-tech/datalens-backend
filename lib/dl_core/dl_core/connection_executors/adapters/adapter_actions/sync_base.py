@@ -1,5 +1,4 @@
 import abc
-from typing import Optional
 
 import attr
 
@@ -30,7 +29,7 @@ class SyncAdapterAction(abc.ABC):  # noqa: B024
 @attr.s(frozen=True)
 class SyncDBVersionAdapterAction(SyncAdapterAction):
     @abc.abstractmethod
-    def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         raise NotImplementedError
 
 
@@ -83,7 +82,7 @@ class SyncTypedQueryAdapterAction(SyncAdapterAction):
 
 @attr.s(frozen=True)
 class SyncDBVersionAdapterActionNotImplemented(SyncDBVersionAdapterAction):
-    def run_db_version_action(self, db_ident: DBIdent) -> Optional[str]:
+    def run_db_version_action(self, db_ident: DBIdent) -> str | None:
         raise NotImplementedError
 
 

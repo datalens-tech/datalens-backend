@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -30,7 +29,7 @@ class PromQLConnection(ClassicConnectionSQL):
 
     @attr.s(kw_only=True)
     class DataModel(ClassicConnectionSQL.DataModel):
-        path: Optional[str] = attr.ib(default=None)
+        path: str | None = attr.ib(default=None)
         secure: bool = attr.ib(default=False)
         auth_type: PromQLAuthType = attr.ib()
         auth_header: str | None = attr.ib(repr=secrepr, default=None)
@@ -72,8 +71,8 @@ class PromQLConnection(ClassicConnectionSQL):
     async def validate_new_data(
         self,
         services_registry: ServicesRegistry,
-        changes: Optional[dict] = None,
-        original_version: Optional[ConnectionBase] = None,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
     ) -> None:
         if original_version is None or original_version and original_version.data.auth_type != self.data.auth_type:
             if self.data.auth_type == PromQLAuthType.header:

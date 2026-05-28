@@ -2,8 +2,6 @@ import abc
 from typing import (
     Any,
     ClassVar,
-    Optional,
-    Union,
 )
 
 import pytest
@@ -18,14 +16,14 @@ SAMPLE_DATA_ARRAYS_LENGTH = 4
 
 
 class DefaultArrayFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
-    make_decimal_cast: ClassVar[Optional[str]] = None
-    make_float_cast: ClassVar[Optional[str]] = None
-    make_float_array_cast: ClassVar[Optional[str]] = None
-    make_str_array_cast: ClassVar[Optional[str]] = None
+    make_decimal_cast: ClassVar[str | None] = None
+    make_float_cast: ClassVar[str | None] = None
+    make_float_array_cast: ClassVar[str | None] = None
+    make_str_array_cast: ClassVar[str | None] = None
 
     def test_create_array(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
-        sample_array: tuple[Union[str, int, float, None], ...]
-        expected: tuple[Union[str, int, float, None], ...]
+        sample_array: tuple[str | int | float | None, ...]
+        expected: tuple[str | int | float | None, ...]
         item: Any
         exp: Any
         for sample_array in (

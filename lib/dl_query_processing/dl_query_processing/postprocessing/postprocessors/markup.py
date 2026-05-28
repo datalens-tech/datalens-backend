@@ -5,16 +5,16 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Optional,
+    TypeAlias,
     TypeVar,
-    Union,
 )
 
 from dl_formula.core.exc import ValidationError
 
 _NODE_TV = TypeVar("_NODE_TV")
-NodeActual = Union[_NODE_TV, str]  # what can act as a node
-NodeInput = Union[_NODE_TV, str]  # what can be passed to node-builders
+# PEP 695 conversion would require restructuring the TypeVar binding shared with `MarkupProcessingBase[_NODE_TV]`
+NodeActual: TypeAlias = _NODE_TV | str  # noqa: UP040  # what can act as a node
+NodeInput: TypeAlias = _NODE_TV | str  # noqa: UP040  # what can be passed to node-builders
 
 
 class MarkupProcessingBase(Generic[_NODE_TV]):
@@ -92,7 +92,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     def n_concat(self, *children: NodeInput) -> _NODE_TV:
         return self._make_node(self.node_concat, *(self._proc_arg(child) for child in children))
 
-    def n_url(self, addr: str, title: Optional[NodeInput] = None) -> _NODE_TV:
+    def n_url(self, addr: str, title: NodeInput | None = None) -> _NODE_TV:
         return self._make_node(self.node_url, str(addr), self._proc_arg(title or addr))
 
     def n_i(self, child: NodeInput) -> _NODE_TV:
@@ -116,7 +116,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     def n_img(self, src: str, width: int, height: int, alt: str) -> _NODE_TV:
         return self._make_node(self.node_image, src, width, height, alt)
 
-    def n_tooltip(self, text: NodeInput, tooltip: NodeInput, placement: Optional[str] = "") -> _NODE_TV:
+    def n_tooltip(self, text: NodeInput, tooltip: NodeInput, placement: str | None = "") -> _NODE_TV:
         if placement:
             return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip), str(placement))
         return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip))
@@ -161,7 +161,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     def _is_at(self, data: str, pos: int, substr: str) -> bool:
         return self._get_at(data, pos, len(substr)) == substr
 
-    def _find_next(self, data: str, substr: str, start: int, end: Optional[int] = None) -> Optional[int]:
+    def _find_next(self, data: str, substr: str, start: int, end: int | None = None) -> int | None:
         try:
             return data.index(substr, start, end)
         except ValueError:
@@ -241,7 +241,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
         raise self.ParseError("Unexpected data", data, pos)
 
-    def parse(self, data: Optional[str]) -> _NODE_TV:
+    def parse(self, data: str | None) -> _NODE_TV:
         if data is None:
             return None  # type: ignore  # TODO: fix
         if not data.startswith(self.lpar) or not data.endswith(self.rpar):
@@ -351,7 +351,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
         raise self.DumpError("Unknown func", node)
 
-    def verbalize(self, node: Optional[_NODE_TV]) -> Any:
+    def verbalize(self, node: _NODE_TV | None) -> Any:
         """A kind-of the other way from dump: more verbose serializable structure. Still a dump."""
         if node is None:
             return None
@@ -364,7 +364,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
 
 _TNode = tuple
-_TNodeActual = Union[_TNode, str]
+_TNodeActual: TypeAlias = _TNode | str  # noqa: UP040
 
 
 class MarkupProcessing(MarkupProcessingBase[_TNode]):
@@ -385,7 +385,7 @@ class DCNode:
 
 
 _DCNode = DCNode
-_DCNodeActual = Union[_DCNode, str]
+_DCNodeActual = _DCNode | str
 
 
 class MarkupProcessingDC(MarkupProcessingBase[_DCNode]):

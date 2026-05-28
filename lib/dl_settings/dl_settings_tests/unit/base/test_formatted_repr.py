@@ -1,7 +1,6 @@
 import enum
 from typing import (
     Any,
-    Optional,
 )
 
 import frozendict
@@ -45,7 +44,7 @@ def test_bool() -> None:
 
 def test_none() -> None:
     class Settings(dl_settings.BaseRootSettings):
-        value: Optional[str] = None
+        value: str | None = None
 
     assert Settings().model_formatted_repr() == "Settings(...)\n  value: None"
 

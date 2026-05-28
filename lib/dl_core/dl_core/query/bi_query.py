@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from itertools import chain
 from typing import (
-    Optional,
     Sequence,
-    Union,
 )
 
 import attr
@@ -20,7 +18,7 @@ from dl_core.query.expression import (
     OrderByExpressionCtx,
 )
 
-SqlSourceType = Union[FromClause, TextClause]
+SqlSourceType = FromClause | TextClause
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -31,8 +29,8 @@ class BIQuery:
     dimension_filters: Sequence[ExpressionCtx] = attr.ib(factory=tuple)
     measure_filters: Sequence[ExpressionCtx] = attr.ib(factory=tuple)
     distinct: bool = False
-    limit: Optional[int] = None
-    offset: Optional[int] = None
+    limit: int | None = None
+    offset: int | None = None
 
     def get_names(self) -> list[str]:
         names: list[str] = []

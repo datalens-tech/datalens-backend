@@ -4,10 +4,8 @@ import decimal
 from typing import (
     Callable,
     ClassVar,
-    Optional,
     Sequence,
     TypeVar,
-    Union,
 )
 
 import pytest
@@ -16,7 +14,7 @@ import sqlalchemy as sa
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 
-NUMERIC = Union[decimal.Decimal, int, float]
+NUMERIC = decimal.Decimal | int | float
 
 
 def approx(value):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
@@ -279,8 +277,8 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
             values: Sequence[VALUE_TV],
             idx: int,
             offset: int = 1,
-            default: Optional[VALUE_TV] = None,
-        ) -> Optional[VALUE_TV]:
+            default: VALUE_TV | None = None,
+        ) -> VALUE_TV | None:
             offset_idx = idx - offset
             if offset_idx < 0 or offset_idx >= len(values):
                 return default

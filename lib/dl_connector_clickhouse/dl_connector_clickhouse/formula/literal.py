@@ -1,5 +1,4 @@
 import datetime
-from typing import Union
 
 import sqlalchemy as sa
 
@@ -32,5 +31,5 @@ class ClickHouseLiteralizer(Literalizer):
     def literal_bool(self, value: bool, dialect: DialectCombo) -> Literal:
         return sa.literal(int(value))
 
-    def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+    def literal_array(self, value: tuple | list, dialect: DialectCombo) -> Literal:
         return sa.func.array(*value)

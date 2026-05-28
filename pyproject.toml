@@ -62,7 +62,6 @@ ignore = [
   "E501", # line length, should be checked and fixed by black
   "RET503", # implicit return — usually a raise/abort path; adding explicit `return None` masks the actual control flow
   "RET504", # unnecessary assign before return — review needed per site; intermediate names often aid debugging
-  "UP007", # Use `X | Y` for type annotations
   "UP014", # Convert `RequestData` from `NamedTuple` functional to class syntax
   "UP026", # [*] `mock` is deprecated, use `unittest.mock`
   "UP028", # Replace `yield` over `for` loop with `yield from`
@@ -70,7 +69,6 @@ ignore = [
   "UP031", # Use format specifiers instead of percent format
   "UP035", # Import from `collections.abc`
   "UP042", # Class inherits from both `str` and `enum.Enum`
-  "UP045", # Use `X | None` for type annotations (autofix of UP007 successor)
   "UP046", # Non-PEP 695 generic class — needs manual conversion for attrs+cross-module TypeVar bounds
 ]
 select = [

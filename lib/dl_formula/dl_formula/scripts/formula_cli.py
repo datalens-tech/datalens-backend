@@ -8,8 +8,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Generator,
-    Optional,
-    Union,
 )
 
 from dl_formula.core import exc
@@ -52,7 +50,7 @@ if TYPE_CHECKING:
 formula_parser = get_parser()
 
 
-def dialect_type(s: Union[str, DialectCombo]) -> Union[DialectCombo, int]:
+def dialect_type(s: str | DialectCombo) -> DialectCombo | int:
     if isinstance(s, str):
         res = D.EMPTY
         for it in s.split(","):
@@ -145,7 +143,7 @@ class FormulaCliTool:
 
     @classmethod
     def parse(
-        cls, text: str, pretty: bool, suppress_errors: bool, pos: Optional[int] = None, with_meta: bool = False
+        cls, text: str, pretty: bool, suppress_errors: bool, pos: int | None = None, with_meta: bool = False
     ) -> None:
         if not text:
             # bulk mode, read from STDIN
@@ -203,7 +201,7 @@ class FormulaCliTool:
 
     @classmethod
     def translate(
-        cls, text: str, tablename: Optional[str], dialect: DialectCombo, unknown_funcs: bool, suppress_errors: bool
+        cls, text: str, tablename: str | None, dialect: DialectCombo, unknown_funcs: bool, suppress_errors: bool
     ) -> None:
         if not text:
             # bulk mode, read from STDIN
@@ -254,7 +252,7 @@ class FormulaCliTool:
         )
 
     @staticmethod
-    def _get_func_base_class(name: str) -> Optional[type]:  # type: ignore  # TODO: fix
+    def _get_func_base_class(name: str) -> type | None:  # type: ignore  # TODO: fix
         """Find the first (base) class for the given function"""
         name = name.lower()
         for _i, definition in OPERATION_REGISTRY.items():
@@ -332,7 +330,7 @@ class FormulaCliTool:
             assert filename is not None
             items_by_module[filename].append(item)
 
-        prev_name: Optional[str]
+        prev_name: str | None
         for filename, item_list in sorted(items_by_module.items()):
             print(f"{filename}:")
             prev_name = None

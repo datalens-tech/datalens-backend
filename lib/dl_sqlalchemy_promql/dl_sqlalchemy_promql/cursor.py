@@ -2,7 +2,6 @@ import itertools
 import logging
 from typing import (
     NamedTuple,
-    Optional,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -12,11 +11,11 @@ class DescriptionColumn(NamedTuple):
     # https://www.python.org/dev/peps/pep-0249/#description
     name: str
     type_code: str
-    display_size: Optional[int] = None
-    internal_size: Optional[int] = None
-    precision: Optional[int] = None
-    scale: Optional[int] = None
-    null_ok: Optional[bool] = None
+    display_size: int | None = None
+    internal_size: int | None = None
+    precision: int | None = None
+    scale: int | None = None
+    null_ok: bool | None = None
 
 
 class Cursor:

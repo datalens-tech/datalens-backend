@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 from pprint import pprint
 import sys
-from typing import Optional
 
 import attr
 
@@ -352,7 +351,7 @@ class DlRepManagerTool(CliToolBase):
     def check_requirements(
         self,
         package_name: str,
-        ignore_prefix: Optional[str] = None,
+        ignore_prefix: str | None = None,
         tests: bool = False,
     ) -> None:
         """Compares imports and requirements of a package"""

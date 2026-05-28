@@ -7,7 +7,6 @@ from typing import (
     Callable,
     ClassVar,
     Mapping,
-    Optional,
     overload,
 )
 
@@ -29,9 +28,9 @@ class RegulatedTestFunctionMeta:
 
 @attr.s(frozen=True)
 class RegulatedTestParams:
-    mark_tests_skipped: Optional[Mapping[Callable, Optional[str]]] = attr.ib(kw_only=True, default=None)
-    mark_tests_failed: Optional[Mapping[Callable, Optional[str]]] = attr.ib(kw_only=True, default=None)
-    mark_features_skipped: Optional[Mapping[Feature, Optional[str]]] = attr.ib(kw_only=True, default=None)
+    mark_tests_skipped: Mapping[Callable, str | None] | None = attr.ib(kw_only=True, default=None)
+    mark_tests_failed: Mapping[Callable, str | None] | None = attr.ib(kw_only=True, default=None)
+    mark_features_skipped: Mapping[Feature, str | None] | None = attr.ib(kw_only=True, default=None)
 
 
 def _is_test_func(func: Callable) -> bool:
@@ -40,7 +39,7 @@ def _is_test_func(func: Callable) -> bool:
 
 def _is_test_func_for_features_with_reason(
     func: Callable,
-    features: Mapping[Feature, Optional[str]],
+    features: Mapping[Feature, str | None],
 ) -> tuple[bool, str]:
     func_meta = getattr(func, _FUNC_META_ATTR, RegulatedTestFunctionMeta())
     found_features = func_meta.features & frozenset(features)
@@ -56,7 +55,7 @@ def _mark_as_test_func(func: Callable) -> Callable:
     return func
 
 
-def _mark_skipped(func: Callable, reason: Optional[str]) -> Callable:
+def _mark_skipped(func: Callable, reason: str | None) -> Callable:
     assert _is_test_func(func)
 
     @wraps(func)
@@ -67,15 +66,15 @@ def _mark_skipped(func: Callable, reason: Optional[str]) -> Callable:
     return func_replacement
 
 
-def _mark_failed(func: Callable, reason: Optional[str]) -> Callable:
+def _mark_failed(func: Callable, reason: str | None) -> Callable:
     assert _is_test_func(func)
     func_replacement = pytest.mark.xfail(reason=reason or "", strict=True)(func)
     return func_replacement
 
 
 def _mark_functions(
-    funcs: Mapping[Callable, Optional[str]],
-    marker: Callable[[Callable, Optional[str]], Callable],
+    funcs: Mapping[Callable, str | None],
+    marker: Callable[[Callable, str | None], Callable],
 ) -> Mapping[str, Callable]:
     result: dict[str, Callable] = {}
     for func, reason in funcs.items():
@@ -90,7 +89,7 @@ def _resolve_test_funcs(bases: tuple[Any, ...]) -> Mapping[str, Callable]:
 
 def _patch_attrs_for_regulated_test_class(
     bases: tuple[Any, ...],
-    new_attrs: Optional[Mapping],
+    new_attrs: Mapping | None,
     test_params: RegulatedTestParams,
 ) -> dict[str, Any]:
     new_attrs = dict(new_attrs or {})
@@ -116,7 +115,7 @@ def _make_regulated_test_class(
     name: str,
     bases: tuple[Any, ...],
     test_params: RegulatedTestParams,
-    attrs: Optional[Mapping] = None,
+    attrs: Mapping | None = None,
 ) -> type:
     # Mark all test functions as such
     attrs = attrs or {}

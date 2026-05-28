@@ -19,8 +19,6 @@ print_result_data(response_json)
 
 from typing import (
     Iterable,
-    Optional,
-    Union,
 )
 
 import tabulate
@@ -69,7 +67,7 @@ def get_ds_view(
     dataset: Dataset,
     us_manager: USManagerBase,
     block_spec: BlockSpec,
-    rci: Optional[RequestContextInfo] = None,
+    rci: RequestContextInfo | None = None,
 ) -> DatasetView:
     ds_view = DatasetView(
         ds=dataset,
@@ -81,7 +79,7 @@ def get_ds_view(
 
 
 def make_query_spec_union(
-    select: Union[list[str], dict[str, int]],
+    select: list[str] | dict[str, int],
     disable_rls: bool = True,
 ) -> RawQuerySpecUnion:
     if not isinstance(select, dict):
@@ -150,7 +148,7 @@ async def get_merged_data_stream(
     us_manager: USManagerBase,
     raw_query_spec_union: RawQuerySpecUnion,
     allow_query_cache_usage: bool = True,
-    reporting_registry: Optional[ReportingRegistry] = None,
+    reporting_registry: ReportingRegistry | None = None,
 ) -> MergedQueryDataStream:
     profiler_prefix = "maintenance-result"
 

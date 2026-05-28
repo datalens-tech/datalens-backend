@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -19,8 +18,8 @@ from dl_api_commons.headers import (
 
 
 def rci_headers_middleware(
-    rci_extra_plain_headers: Optional[Sequence[str]] = None,
-    rci_extra_secret_headers: Optional[Sequence[str]] = None,
+    rci_extra_plain_headers: Sequence[str] | None = None,
+    rci_extra_secret_headers: Sequence[str] | None = None,
 ) -> Middleware:
     plain_headers_to_rci = append_extra_headers_and_normalize(DEFAULT_RCI_PLAIN_HEADERS, rci_extra_plain_headers or ())
     secret_headers_to_rci = append_extra_headers_and_normalize(

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from aiohttp import web
 import attr
 
@@ -17,7 +15,7 @@ from dl_api_lib.error_handling import (
 )
 
 
-def bi_error_to_error_data(bi_error: BIError, public_mode: bool, reason: Optional[str] = None) -> ErrorData:
+def bi_error_to_error_data(bi_error: BIError, public_mode: bool, reason: str | None = None) -> ErrorData:
     bi_error_schema = PublicAPIErrorSchema() if public_mode else RegularAPIErrorSchema()
 
     http_response_code = 500 if bi_error.http_code is None else bi_error.http_code
@@ -34,7 +32,7 @@ class DatasetAPIErrorHandler(AIOHTTPErrorHandler):
 
     def _classify_error(self, err: Exception, request: web.Request) -> ErrorData:
         bi_error: BIError
-        reason: Optional[str]
+        reason: str | None
 
         if isinstance(err, web.HTTPException):
             bi_error = BIError(

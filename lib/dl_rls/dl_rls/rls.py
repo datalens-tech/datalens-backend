@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from typing import (
     NamedTuple,
-    Optional,
     cast,
 )
 
@@ -70,7 +69,7 @@ class RLS:
             return FieldRestrictions(allow_all_values=True, allow_userid=False, allowed_values=[])
 
         # Pick out userid-entry, if any
-        userid_entry: Optional[RLSEntry] = None
+        userid_entry: RLSEntry | None = None
         for rls_entry in rls_entries:
             if rls_entry.pattern_type != RLSPatternType.userid:
                 continue

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
@@ -17,7 +15,7 @@ class TestYDBConnection(YDBConnectionTestBase, DefaultConnectorConnectionTestSui
         self,
         control_api_sync_client: SyncHttpClientBase,
         saved_connection_id: str,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
         sync_us_manager: SyncUSManager,
         control_api_app_settings: ControlApiAppSettings,
     ) -> None:

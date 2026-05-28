@@ -3,9 +3,7 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    Optional,
     Sequence,
-    Union,
 )
 
 import attr
@@ -60,7 +58,7 @@ class PdPivotTransformer(PivotTransformer):
 
         fake_measure_piid_str = str(self._pivot_legend.get_unused_pivot_item_id())
 
-        data: dict[str, list[Optional[DataCellVector]]] = defaultdict(list)
+        data: dict[str, list[DataCellVector | None]] = defaultdict(list)
         for dim_vectors, value_vector in transp_stream:
             for dim_vector in dim_vectors:
                 base_dim_cell = dim_vector.cells[0]
@@ -79,13 +77,13 @@ class PdPivotTransformer(PivotTransformer):
         column_ids = [str(item.pivot_item_id) for item in self._pivot_legend.list_for_role(PivotRole.pivot_column)]
         row_ids = [str(item.pivot_item_id) for item in self._pivot_legend.list_for_role(PivotRole.pivot_row)]
 
-        pd_pivot_res: Union[pd.DataFrame, pd.Series]
+        pd_pivot_res: pd.DataFrame | pd.Series
         facade: TableDataFacade
 
         pd_series: pd.Series
         pd_df: pd.DataFrame
 
-        def wrapped_pivot(columns: Sequence[str], index: Sequence[str]) -> Union[pd.Series, pd.DataFrame]:
+        def wrapped_pivot(columns: Sequence[str], index: Sequence[str]) -> pd.Series | pd.DataFrame:
             try:
                 return raw_pd_df.pivot(columns=columns, index=index)
             except ValueError as err:

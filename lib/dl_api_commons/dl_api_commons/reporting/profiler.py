@@ -6,9 +6,7 @@ import time
 import traceback
 from typing import (
     TYPE_CHECKING,
-    Optional,
     TypeVar,
-    Union,
 )
 
 import attr
@@ -74,7 +72,7 @@ class DefaultReportingProfiler(ReportingProfiler):
         self,
         records: tuple[ReportingRecord, ...],
         rtype: type[_RECORD_TV],
-    ) -> Optional[_RECORD_TV]:
+    ) -> _RECORD_TV | None:
         return next((r for r in records if isinstance(r, rtype)), None)
 
     def get_selector_records_for_query(self, query_id: str) -> tuple[QueryExecutionReportingRecord, ...]:
@@ -115,7 +113,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             if cache_record is not None
         )
 
-        error: Optional[BaseException] = None
+        error: BaseException | None = None
         end_record = end_data_proc_record if end_data_proc_record is not None else end_selector_record
         if end_record is not None:
             error = end_record.exception
@@ -123,14 +121,14 @@ class DefaultReportingProfiler(ReportingProfiler):
         else:
             end_timestamp = time.time()
 
-        error_text: Optional[str]
+        error_text: str | None
         if error is None:
             error_text = None
         else:
             error_text = traceback.format_exception_only(type(error), error)[-1]
 
         x_dl_context = self.rci.x_dl_context
-        extra: dict[str, Union[str, int, float, None]] = dict(
+        extra: dict[str, str | int | float | None] = dict(
             event_code="profile_db_request",
             dataset_id=start_record.dataset_id,
             # auto: request_id

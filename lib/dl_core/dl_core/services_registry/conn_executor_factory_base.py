@@ -9,7 +9,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
-    Optional,
     Sequence,
     TypeVar,
 )
@@ -110,7 +109,7 @@ class ConnExecutorRecipe:
     conn_dto: ConnDTO
     connect_options: ConnectOptions
     exec_mode: ExecutionMode
-    rqe_data: Optional[RemoteQueryExecutorData]
+    rqe_data: RemoteQueryExecutorData | None
     conn_hosts_pool: Sequence[str] = attr.ib(kw_only=True, converter=tuple)
     ca_data: bytes
 
@@ -128,13 +127,13 @@ class BaseClosableExecutorFactory(ConnExecutorFactory, metaclass=abc.ABCMeta):
     @attr.s(frozen=True, auto_attribs=True)
     class _CECreationResult:
         async_ce: AsyncConnExecutorBase
-        sync_wrapper: Optional[SyncWrapperForAsyncConnExecutor]
+        sync_wrapper: SyncWrapperForAsyncConnExecutor | None
 
     _map_recipe_created_ce_pair: dict[ConnExecutorRecipe, list[_CECreationResult]] = attr.ib(init=False, factory=dict)
 
     _async_env: bool = attr.ib()
     _services_registry_ref: FutureRef[ServicesRegistry] = attr.ib()
-    _entity_usage_checker: Optional[EntityUsageChecker] = attr.ib(default=None, kw_only=True)
+    _entity_usage_checker: EntityUsageChecker | None = attr.ib(default=None, kw_only=True)
 
     @property
     def req_ctx_info(self) -> RequestContextInfo:

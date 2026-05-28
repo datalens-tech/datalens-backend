@@ -11,7 +11,6 @@ The data API then refuses to run queries against such a dataset at execution tim
 from http import HTTPStatus
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import pytest
@@ -52,7 +51,7 @@ def _assert_source_error(dataset: Dataset, expected_code: str) -> None:
 
 
 class _BaseClickHouseQuerySettingsApiTest(ClickHouseDataApiTestBase):
-    raw_sql_level: ClassVar[Optional[RawSQLLevel]] = RawSQLLevel.subselect
+    raw_sql_level: ClassVar[RawSQLLevel | None] = RawSQLLevel.subselect
     expected_query_settings_enabled: ClassVar[bool] = True
 
     @pytest.fixture(scope="class")
@@ -161,7 +160,7 @@ class TestClickHouseQuerySettingsInvalidWhenFeatureOff(_BaseSaveRecordsInvalidAn
     """Default raw_sql_level=off and default connector settings → settings are recorded as invalid
     (QUERY_SETTINGS.NOT_SUPPORTED), data API refuses."""
 
-    raw_sql_level: ClassVar[Optional[RawSQLLevel]] = RawSQLLevel.off
+    raw_sql_level: ClassVar[RawSQLLevel | None] = RawSQLLevel.off
     expected_query_settings_enabled = False
 
     invalid_query_settings = {"max_threads": "4"}
@@ -195,7 +194,7 @@ class TestClickHouseQuerySettingsTemplating(_BaseClickHouseQuerySettingsApiTest)
 
     # `is_datasource_template_allowed` needs `RawSQLLevel.template` (or `dashsql`) on the
     # connection; `subselect` allows subselect sources but not templating.
-    raw_sql_level: ClassVar[Optional[RawSQLLevel]] = RawSQLLevel.template
+    raw_sql_level: ClassVar[RawSQLLevel | None] = RawSQLLevel.template
 
     @pytest.fixture(scope="class")
     def connectors_settings(

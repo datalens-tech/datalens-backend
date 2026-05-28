@@ -4,7 +4,6 @@ from os import environ
 from typing import (
     Any,
     Mapping,
-    Optional,
 )
 
 import attr
@@ -74,7 +73,7 @@ class _CryptoKeysConfigOnlySettings(SettingsBase):
     cry: CryptoKeysConfig = s_attrib("DL_CRY", json_converter=CryptoKeysConfig.from_json, sensitive=True)  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "Attribute[Any]", variable has type "CryptoKeysConfig")  [assignment]
 
 
-def get_crypto_keys_config_from_env(config_source: Optional[Mapping[str, str]] = None) -> CryptoKeysConfig:
+def get_crypto_keys_config_from_env(config_source: Mapping[str, str] | None = None) -> CryptoKeysConfig:
     if config_source is None:
         config_source = environ
 

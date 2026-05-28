@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 import sqlalchemy as sa
 
@@ -29,7 +27,7 @@ class SnowFlakeEngineWrapper(EngineWrapperBase):
         assert isinstance(name, str)
         return name
 
-    def get_version(self) -> Optional[str]:
+    def get_version(self) -> str | None:
         return self.name
 
     def drop_table(self, db_name: str, table: sa.Table) -> None:

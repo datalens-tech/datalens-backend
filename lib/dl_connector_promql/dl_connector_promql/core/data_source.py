@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    Optional,
 )
 
 from dl_core.data_source.sql import PseudoSQLDataSource
@@ -17,5 +16,5 @@ class PromQLDataSource(PseudoSQLDataSource):
     conn_type = CONNECTION_TYPE_PROMQL
 
     @property
-    def db_name(self) -> Optional[str]:
+    def db_name(self) -> str | None:
         return ""

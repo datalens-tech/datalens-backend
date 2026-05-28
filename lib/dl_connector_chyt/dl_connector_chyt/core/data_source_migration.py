@@ -1,6 +1,5 @@
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -30,22 +29,22 @@ from dl_connector_chyt.core.data_source_spec import (
 
 @attr.s(frozen=True)
 class CHYTTableListDSMI(DataSourceMigrationInterface):
-    table_names: Optional[str] = attr.ib(kw_only=True, default=None)
+    table_names: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
 class CHYTTableRangeDSMI(DataSourceMigrationInterface):
-    directory_path: Optional[str] = attr.ib(kw_only=True, default=None)
-    range_from: Optional[str] = attr.ib(kw_only=True, default=None)
-    range_to: Optional[str] = attr.ib(kw_only=True, default=None)
+    directory_path: str | None = attr.ib(kw_only=True, default=None)
+    range_from: str | None = attr.ib(kw_only=True, default=None)
+    range_to: str | None = attr.ib(kw_only=True, default=None)
 
 
 class BaseCHYTDataSourceMigrator(DefaultSQLDataSourceMigrator):
-    table_list_source_type: ClassVar[Optional[DataSourceType]]
-    table_list_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]]
+    table_list_source_type: ClassVar[DataSourceType | None]
+    table_list_dsrc_spec_cls: ClassVar[type[DataSourceSpec] | None]
 
-    table_range_source_type: ClassVar[Optional[DataSourceType]]
-    table_range_dsrc_spec_cls: ClassVar[Optional[type[DataSourceSpec]]]
+    table_range_source_type: ClassVar[DataSourceType | None]
+    table_range_dsrc_spec_cls: ClassVar[type[DataSourceSpec] | None]
 
     def get_migration_specs(self) -> list[MigrationSpec]:
         result = super().get_migration_specs()

@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import opentracing
 
 
-def get_current_tracing_headers(tracer: Optional[opentracing.Tracer] = None) -> dict[str, str]:
+def get_current_tracing_headers(tracer: opentracing.Tracer | None = None) -> dict[str, str]:
     actual_tracer = opentracing.global_tracer() if tracer is None else tracer
     tracing_headers: dict[str, str] = {}
     active_span = actual_tracer.active_span

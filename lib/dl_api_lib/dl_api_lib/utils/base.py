@@ -11,7 +11,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Iterator,
-    Optional,
 )
 import uuid
 
@@ -34,9 +33,9 @@ LOGGER = logging.getLogger(__name__)
 @contextmanager
 def query_execution_context(
     log_error: bool = True,
-    dataset_id: Optional[str] = None,
-    version: Optional[str] = None,
-    body: Optional[dict] = None,
+    dataset_id: str | None = None,
+    version: str | None = None,
+    body: dict | None = None,
 ) -> Iterator[None]:
     try:
         yield  # execute query here
@@ -55,7 +54,7 @@ def query_execution_context(
 
 
 @contextmanager
-def profile_stats(stats_dir: Optional[str] = None) -> Iterator[None]:
+def profile_stats(stats_dir: str | None = None) -> Iterator[None]:
     """Save profiler stats to file"""
     stats_dir = stats_dir or "./cprofiler"
     if not os.path.exists(stats_dir):

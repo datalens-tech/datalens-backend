@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import aiopg.sa
 import attr
 
@@ -15,7 +13,7 @@ from dl_compeng_pg.compeng_pg_base.pool_base import (
 
 @attr.s
 class AiopgPoolWrapper(BasePgPoolWrapper):
-    _pool: Optional[aiopg.sa.Engine] = attr.ib()
+    _pool: aiopg.sa.Engine | None = attr.ib()
 
     @classmethod
     async def connect(

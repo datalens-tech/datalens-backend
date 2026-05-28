@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Collection,
     Iterator,
-    Optional,
 )
 
 import attr
@@ -19,7 +18,7 @@ class FieldRegistry:
     _fields_by_id: dict[str, BIField] = attr.ib(init=False, factory=dict)
     _fields_by_title: dict[str, BIField] = attr.ib(init=False, factory=dict)
 
-    def get(self, id: Optional[str] = None, title: Optional[str] = None) -> BIField:
+    def get(self, id: str | None = None, title: str | None = None) -> BIField:
         if id is not None and title is not None:
             raise ValueError("Cannot specify both id and title")
 

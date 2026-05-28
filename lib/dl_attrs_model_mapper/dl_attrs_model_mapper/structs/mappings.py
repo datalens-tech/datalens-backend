@@ -6,12 +6,11 @@ from collections.abc import (
 )
 from typing import (
     TypeVar,
-    Union,
 )
 
 
-class FrozenMappingStrToStrOrStrSeq(Mapping[str, Union[str, Sequence[str]]], Hashable):
-    _dict: dict[str, Union[str, Sequence[str]]]
+class FrozenMappingStrToStrOrStrSeq(Mapping[str, str | Sequence[str]], Hashable):
+    _dict: dict[str, str | Sequence[str]]
 
     @staticmethod
     def ensure_tuple_of_str(seq: Sequence[str]) -> tuple[str, ...]:
@@ -19,10 +18,10 @@ class FrozenMappingStrToStrOrStrSeq(Mapping[str, Union[str, Sequence[str]]], Has
             assert isinstance(item, str), f"Item {idx=} is not a string"
         return tuple(seq)
 
-    def __init__(self, mapping: Mapping[str, Union[str, Sequence[str]]]) -> None:
+    def __init__(self, mapping: Mapping[str, str | Sequence[str]]) -> None:
         self._dict = {k: v if isinstance(v, str) else self.ensure_tuple_of_str(v) for k, v in mapping.items()}
 
-    def __getitem__(self, k: str) -> Union[str, Sequence[str]]:
+    def __getitem__(self, k: str) -> str | Sequence[str]:
         return self._dict.__getitem__(k)
 
     def __len__(self) -> int:

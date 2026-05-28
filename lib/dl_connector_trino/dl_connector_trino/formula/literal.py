@@ -1,6 +1,5 @@
 import datetime
 from typing import (
-    Union,
     cast,
 )
 
@@ -55,5 +54,5 @@ class TrinoLiteralizer(Literalizer):
             tsa.TIMESTAMP(timezone=True, precision=precision),
         )
 
-    def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+    def literal_array(self, value: tuple | list, dialect: DialectCombo) -> Literal:
         return cast(Literal, TrinoArray(*value))

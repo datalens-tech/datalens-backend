@@ -5,9 +5,7 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Optional,
     Sequence,
-    Union,
 )
 
 from dl_formula.core.message_ctx import (
@@ -47,10 +45,10 @@ class FormulaError(Exception):
 
     def __init__(
         self,
-        *errors: Union[str, FormulaErrorCtx],
-        position: Optional[Position] = None,
-        token: Optional[str] = None,
-        code: Optional[Sequence[str]] = None,
+        *errors: str | FormulaErrorCtx,
+        position: Position | None = None,
+        token: str | None = None,
+        code: Sequence[str] | None = None,
     ):
         super().__init__()
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Union,
 )
 
 from marshmallow import fields
@@ -37,7 +36,7 @@ class DBAdapterActionBaseSchema(BaseQEAPISchema):
     def dump_dba_cls(self, act: dba_actions.ActionExecuteQuery) -> str:
         return f"{act.dba_cls.__module__}.{act.dba_cls.__qualname__}"
 
-    def load_dba_cls(self, value: str) -> Union[type[CommonBaseDirectAdapter]]:
+    def load_dba_cls(self, value: str) -> type[CommonBaseDirectAdapter]:
         mod_name, cls_name = value.rsplit(".", 1) if "." in value else (None, value)
         candidate = next(
             filter(

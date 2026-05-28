@@ -1,5 +1,4 @@
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -20,8 +19,8 @@ class CHYTEngineWrapperBase(EngineWrapperBase):
         self,
         columns: Sequence[sa.Column],
         *,
-        schema: Optional[str] = None,
-        table_name: Optional[str] = None,
+        schema: str | None = None,
+        table_name: str | None = None,
     ) -> sa.Table:
         assert table_name is not None, "Table name is required"
         table = CHTable(table_name, sa.MetaData(), *columns)

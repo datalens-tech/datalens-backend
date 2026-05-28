@@ -6,7 +6,6 @@ from typing import (
     Callable,
     ClassVar,
     Generic,
-    Optional,
     TypeVar,
     cast,
 )
@@ -49,7 +48,7 @@ class BaseConnectionTestClass(
     Generic[_CONN_TV],
     metaclass=abc.ABCMeta,
 ):
-    raw_sql_level: ClassVar[Optional[RawSQLLevel]] = None
+    raw_sql_level: ClassVar[RawSQLLevel | None] = None
 
     @pytest.fixture(scope="function")
     def sync_us_manager(self, conn_default_sync_us_manager: SyncUSManager) -> SyncUSManager:
@@ -98,7 +97,7 @@ class BaseConnectionTestClass(
         return factory
 
     @pytest.fixture(scope="class")
-    def sample_table_schema(self) -> Optional[str]:
+    def sample_table_schema(self) -> str | None:
         return None
 
     @pytest.fixture(scope="class")
@@ -108,7 +107,7 @@ class BaseConnectionTestClass(
     @pytest.fixture(scope="class")
     def sample_table(
         self,
-        sample_table_schema: Optional[str],
+        sample_table_schema: str | None,
         sample_table_spec: FixtureTableSpec,
         db: Db,
     ) -> DbTable:

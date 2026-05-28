@@ -8,7 +8,6 @@ from typing import (
     ClassVar,
     Generic,
     TypeVar,
-    Union,
 )
 
 import attr
@@ -65,12 +64,12 @@ class BooleanValue(BIValue[bool]):
 
 
 @attr.s(frozen=True)
-class GeoPointValue(BIValue[list[Union[int, float]]]):
+class GeoPointValue(BIValue[list[int | float]]):
     type: ClassVar[UserDataType] = UserDataType.geopoint
 
 
 @attr.s(frozen=True)
-class GeoPolygonValue(BIValue[list[list[list[Union[int, float]]]]]):
+class GeoPolygonValue(BIValue[list[list[list[int | float]]]]):
     type: ClassVar[UserDataType] = UserDataType.geopolygon
 
 

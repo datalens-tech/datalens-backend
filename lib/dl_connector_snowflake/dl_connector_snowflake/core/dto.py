@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
 
 import attr
 
@@ -17,12 +16,12 @@ class SnowFlakeConnDTO(ConnDTO):
 
     account_name: str = attr.ib()
     user_name: str = attr.ib()
-    user_role: Optional[str] = attr.ib()
+    user_role: str | None = attr.ib()
     client_id: str = attr.ib()
     client_secret: str = attr.ib(repr=secrepr)
 
     refresh_token: str = attr.ib(repr=secrepr)
-    refresh_token_expire_time: Optional[datetime] = attr.ib()
+    refresh_token_expire_time: datetime | None = attr.ib()
 
     schema: str = attr.ib()
     db_name: str = attr.ib()

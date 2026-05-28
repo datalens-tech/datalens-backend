@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
 )
 
 from dl_api_connector.api_schema.top_level import (
@@ -14,9 +13,9 @@ from dl_core.us_manager.us_manager import USManagerBase
 
 
 def prepare_schema_context(
-    usm: Optional[USManagerBase] = None,
-    op_mode: Optional[OperationsMode] = None,
-    editable_object: Optional[Any] = None,
+    usm: USManagerBase | None = None,
+    op_mode: OperationsMode | None = None,
+    editable_object: Any | None = None,
 ) -> dict[Any, Any]:
     return {
         BaseTopLevelSchema.CTX_KEY_EDITABLE_OBJECT: editable_object,

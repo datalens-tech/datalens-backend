@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import (
     Hashable,
-    Optional,
 )
 
 from sqlalchemy.sql import ClauseElement
@@ -24,15 +23,15 @@ class CompiledExpression(nodes.BaseLiteral):
         cls,
         value: ClauseElement | TranslationCtx,
         *,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> CompiledExpression:
         return super().make(value=value, meta=meta)
 
     @classmethod
-    def validate_literal_value(cls, literal_value: Optional[Hashable]) -> None:
+    def validate_literal_value(cls, literal_value: Hashable | None) -> None:
         assert isinstance(literal_value, (ClauseElement, TranslationCtx))
 
-    def _make_extract(self) -> Optional[NodeExtract]:
+    def _make_extract(self) -> NodeExtract | None:
         if isinstance(self.value, TranslationCtx):
             return self.value.extract
 

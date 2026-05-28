@@ -5,7 +5,6 @@ from typing import (
     ClassVar,
     Collection,
     TypeVar,
-    Union,
 )
 
 import pytest
@@ -137,7 +136,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
 
         VALUE_TV = TypeVar("VALUE_TV")
 
-        def median(values: Collection[Union[VALUE_TV]]) -> VALUE_TV:
+        def median(values: Collection[VALUE_TV]) -> VALUE_TV:
             values = sorted(values)  # type: ignore  # 2024-01-30 # TODO: Value of type variable "SupportsRichComparisonT" of "sorted" cannot be "VALUE_TV"  [type-var]
             upper_middle = len(values) // 2 + 1
             return values[upper_middle]

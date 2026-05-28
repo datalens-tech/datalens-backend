@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import flask
 
 from dl_api_commons.sentry_config import (
@@ -29,7 +27,7 @@ from dl_core.logging_config import hook_configure_logging
 def create_app(
     app_settings: ControlApiAppSettingsOS,
     connectors_settings: dict[str, ConnectorSettings],
-    testing_app_settings: Optional[ControlApiAppTestingsSettings] = None,
+    testing_app_settings: ControlApiAppTestingsSettings | None = None,
     close_loop_after_request: bool = True,
 ) -> flask.Flask:
     mng_app_factory = StandaloneControlApiAppFactory(settings=app_settings)
@@ -50,7 +48,7 @@ def create_uwsgi_app() -> flask.Flask:
     connectors_settings = settings.CONNECTORS
     uwsgi_app = create_app(settings, connectors_settings)
 
-    actual_sentry_dsn: Optional[str] = settings.SENTRY_DSN if settings.SENTRY_ENABLED else None
+    actual_sentry_dsn: str | None = settings.SENTRY_DSN if settings.SENTRY_ENABLED else None
 
     hook_configure_logging(
         uwsgi_app,

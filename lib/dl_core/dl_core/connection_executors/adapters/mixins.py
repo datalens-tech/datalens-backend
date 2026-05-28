@@ -6,7 +6,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 from sqlalchemy.sql.type_api import TypeEngine
@@ -27,7 +26,7 @@ class SAColumnTypeNormalizer:
 
 
 class SATypeTransformer(SAColumnTypeNormalizer):
-    _type_code_to_sa: Optional[dict[Any, SATypeSpec]] = None
+    _type_code_to_sa: dict[Any, SATypeSpec] | None = None
     conn_type: ClassVar[ConnectionType]
 
     @staticmethod
@@ -41,7 +40,7 @@ class SATypeTransformer(SAColumnTypeNormalizer):
     def _cursor_column_to_name(self, cursor_col: tuple[Any, ...], dialect: Any = None) -> str:
         return cursor_col[0]
 
-    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> Optional[SATypeSpec]:
+    def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> SATypeSpec | None:
         type_code_to_sa = self._type_code_to_sa
         if not type_code_to_sa:
             if not require:
@@ -52,14 +51,14 @@ class SATypeTransformer(SAColumnTypeNormalizer):
         sa_type = type_code_to_sa.get(type_code)
         return sa_type
 
-    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> Optional[bool]:
+    def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> bool | None:
         # No known `nullable=False` cases for subselects in PG and MySQL and
         # Oracle. But that might change.
         return True
 
     def _cursor_column_to_native_type(
         self, cursor_col: tuple[Any, ...], require: bool = True
-    ) -> Optional[CommonNativeType]:
+    ) -> CommonNativeType | None:
         sa_type = self._cursor_column_to_sa(cursor_col, require=require)
         if sa_type is None:
             if not require:
@@ -104,10 +103,10 @@ class WithDatabaseNameOverride:
     warn_on_default_db_name_override: ClassVar[bool] = True
 
     @abc.abstractmethod
-    def get_default_db_name(self) -> Optional[str]:
+    def get_default_db_name(self) -> str | None:
         pass
 
-    def get_db_name_for_query(self, db_name_from_query: Optional[str]) -> str:
+    def get_db_name_for_query(self, db_name_from_query: str | None) -> str:
         return self._get_db_name_for_query(
             default=self.get_default_db_name(),
             from_query=db_name_from_query,
@@ -115,7 +114,7 @@ class WithDatabaseNameOverride:
         )
 
     @staticmethod
-    def _get_db_name_for_query(default: Optional[str], from_query: Optional[str], warn_override: bool) -> str:
+    def _get_db_name_for_query(default: str | None, from_query: str | None, warn_override: bool) -> str:
         if default is not None and from_query is not None:
             if default != from_query and warn_override:
                 LOGGER.warning(f"Divergence in DB names: default='{default}' from_query='{from_query}'")
@@ -128,5 +127,5 @@ class WithDatabaseNameOverride:
 
 
 class WithNoneRowConverters:
-    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Optional[Callable[[Any], Any]], ...]:
+    def _get_row_converters(self, cursor_info: ExecutionStepCursorInfo) -> tuple[Callable[[Any], Any] | None, ...]:
         return tuple(None for _ in cursor_info.raw_cursor_description)

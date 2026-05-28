@@ -12,7 +12,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Sequence,
-    Union,
 )
 
 import aiodns
@@ -147,7 +146,7 @@ class ActionHandlingView(BaseView):
         self,
         dba: AsyncDBAdapter,
         dba_query: DBAdapterQuery,
-    ) -> Union[web.StreamResponse, web.Response]:
+    ) -> web.StreamResponse | web.Response:
         try:
             result = await dba.execute(dba_query)
         except Exception:
@@ -258,7 +257,7 @@ class ActionHandlingView(BaseView):
         tq_result_str = tq_result_serializer.serialize(tq_result)
         return tq_result_str
 
-    async def post(self) -> Union[web.Response, web.StreamResponse]:
+    async def post(self) -> web.Response | web.StreamResponse:
         action = await self.get_action()
         LOGGER.info("Got QE action request: %s", action)
 

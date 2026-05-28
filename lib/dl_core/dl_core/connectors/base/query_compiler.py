@@ -7,7 +7,6 @@ from enum import (
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
     Sequence,
 )
 
@@ -153,7 +152,7 @@ class QueryCompiler:
 
         return expr
 
-    def compile_select(self, bi_query: BIQuery, sql_source: Optional[SqlSourceType]) -> Select:
+    def compile_select(self, bi_query: BIQuery, sql_source: SqlSourceType | None) -> Select:
         """Compile a ``BIQuery`` object into an SQLAlchemy ``Select``"""
 
         def _unwrap_expressions(ex_list: Sequence) -> list[ClauseElement]:

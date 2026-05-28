@@ -4,7 +4,6 @@ from typing import (
     Any,
     Iterable,
     NamedTuple,
-    Optional,
     Sequence,
 )
 
@@ -19,14 +18,14 @@ from dl_query_processing.postprocessing.primitives import PostprocessedRow
 class MergedQueryBlockMetaInfo:
     block_id: int = attr.ib(kw_only=True)
     query_type: QueryType = attr.ib(kw_only=True)
-    debug_query: Optional[str] = attr.ib(kw_only=True)
+    debug_query: str | None = attr.ib(kw_only=True)
 
 
 @attr.s(frozen=True)
 class MergedQueryMetaInfo:
     blocks: list[MergedQueryBlockMetaInfo] = attr.ib(kw_only=True)
-    offset: Optional[int] = attr.ib(kw_only=True, default=None)
-    limit: Optional[int] = attr.ib(kw_only=True, default=None)
+    offset: int | None = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True, default=None)
     target_connection_ids: set[str] = attr.ib(kw_only=True, factory=set)
 
 
@@ -44,7 +43,7 @@ MergedQueryDataRowIterable = Iterable[MergedQueryDataRow]
 class MergedQueryDataStream:
     rows: MergedQueryDataRowIterable = attr.ib(kw_only=True)
     legend: Legend = attr.ib(kw_only=True)
-    legend_item_ids: Optional[Sequence[int]] = attr.ib(kw_only=True)  # in case there is only one stream, for v1
+    legend_item_ids: Sequence[int] | None = attr.ib(kw_only=True)  # in case there is only one stream, for v1
     meta: MergedQueryMetaInfo = attr.ib(kw_only=True)
 
     def clone(self, **updates: Any) -> MergedQueryDataStream:

@@ -22,7 +22,7 @@ import dl_sqlalchemy_ydb.dialect as ydb_dialect
 
 class YqlListType(ydb_sa.types.ListType):
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
-        def process(value: typing.Optional[list]) -> typing.Optional[list]:
+        def process(value: list | None) -> list | None:
             if value is None:
                 return None
 
@@ -54,7 +54,7 @@ class YqlTimestamp(sa.types.DateTime):
     __visit_name__ = "Timestamp"
 
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
-        def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[datetime.datetime]:
+        def process(value: datetime.datetime | None) -> datetime.datetime | None:
             if value is None:
                 return None
             if not self.timezone:
@@ -82,7 +82,7 @@ class YqlDateTime(YqlTimestamp, sa.types.DateTime):
     __visit_name__ = "Datetime"
 
     def bind_processor(self, dialect: sa.engine.Dialect) -> typing.Any:
-        def process(value: typing.Optional[datetime.datetime]) -> typing.Optional[int]:
+        def process(value: datetime.datetime | None) -> int | None:
             if value is None:
                 return None
             if not self.timezone:
@@ -110,7 +110,7 @@ class YqlInterval(sa.types.Interval):
     __visit_name__ = "Interval"
 
     def result_processor(self, dialect: sa.engine.Dialect, coltype: typing.Any) -> typing.Any:
-        def process(value: typing.Optional[datetime.timedelta] | int) -> typing.Optional[int]:
+        def process(value: datetime.timedelta | None | int) -> int | None:
             if value is None:
                 return None
             if isinstance(value, datetime.timedelta):
@@ -346,7 +346,7 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
 
     def get_ydb_type(
         self, type_: sa.types.TypeEngine, is_optional: bool
-    ) -> typing.Union[ydb_sa.ydb.PrimitiveType, ydb_sa.ydb.AbstractTypeBuilder]:
+    ) -> ydb_sa.ydb.PrimitiveType | ydb_sa.ydb.AbstractTypeBuilder:
         if isinstance(type_, sa.TypeDecorator):
             type_ = type_.impl
 

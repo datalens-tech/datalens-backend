@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
-    Union,
 )
 
 import clickhouse_sqlalchemy.types as ch_types
@@ -42,7 +41,7 @@ def _datetrunc2_ch_impl_19_3_3(
 def _datetrunc3_ch_impl_19_3_3(
     date_ctx: TranslationCtx,
     unit_ctx: TranslationCtx,
-    num_ctx: Union[TranslationCtx, int],
+    num_ctx: TranslationCtx | int,
 ) -> ClauseElement:
     date_expr = date_ctx.expression
     unit = base.norm_datetrunc_unit(unit_ctx.expression)

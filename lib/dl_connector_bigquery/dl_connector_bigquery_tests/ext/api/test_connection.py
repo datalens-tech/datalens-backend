@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 from dl_api_lib_testing.connector.connection_suite import DefaultConnectorConnectionTestSuite
@@ -21,7 +19,7 @@ class ErrorHandlingTestBase(BigQueryConnectionTestBase, ConnectionTestBase, Regu
         self,
         control_api_sync_client: SyncHttpClientBase,
         saved_connection_id: str,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
     ) -> None:
         resp = control_api_sync_client.get(
             url=f"/api/v1/connections/{saved_connection_id}/info/sources",

@@ -1,7 +1,6 @@
 from typing import (
     AbstractSet,
     Any,
-    Union,
 )
 
 import sqlalchemy as sa
@@ -9,7 +8,7 @@ from sqlalchemy.engine import Dialect
 
 
 def compile_pg_query(
-    query: Union[str, sa.sql.ClauseElement],
+    query: str | sa.sql.ClauseElement,
     dialect: Dialect,
     exclude_types: AbstractSet[Any] = frozenset(),
     add_types: bool = True,

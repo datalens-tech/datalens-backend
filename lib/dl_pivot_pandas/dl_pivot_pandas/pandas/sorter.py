@@ -5,9 +5,7 @@ from itertools import count
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Optional,
     Sequence,
-    Union,
     cast,
 )
 
@@ -49,7 +47,7 @@ class PdPivotSorterBase(PivotSorter):
     """
 
     @abc.abstractmethod
-    def _get_pd_obj(self) -> Union[pd.DataFrame, pd.Series]:
+    def _get_pd_obj(self) -> pd.DataFrame | pd.Series:
         raise NotImplementedError
 
     def _resolve_axis_order(self) -> dict[SortAxis, list[OrderDirection]]:
@@ -78,7 +76,7 @@ class PdPivotSorterBase(PivotSorter):
 
     def _single_axis_sort(self, axis: SortAxis, directions: Sequence[OrderDirection]) -> None:
         ascending_list = [direction == OrderDirection.asc for direction in directions]
-        ascending: Union[bool, list[bool]] = ascending_list  # Separate var to avoid typing errors
+        ascending: bool | list[bool] = ascending_list  # Separate var to avoid typing errors
         if len(ascending_list) == 1:
             # If there is only one dimension, then it must be a scalar
             ascending = ascending_list[0]
@@ -117,7 +115,7 @@ class PdPivotSorterBase(PivotSorter):
         )
 
     def _sort_by_measure(self, axis: SortAxis, sorting_piid: int, settings: PivotMeasureSortingSettings) -> None:
-        sorting_idx: Optional[int] = None
+        sorting_idx: int | None = None
 
         for idx, header in enumerate(self._pivot_dframe.iter_axis_headers(axis)):
             if header.compare_sorting_settings(settings):

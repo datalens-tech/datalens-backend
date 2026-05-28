@@ -1,7 +1,6 @@
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -34,19 +33,19 @@ class RowItem(SerializableConfig):
 
 @attr.s(kw_only=True, frozen=True)
 class PlaceholderMixin(SerializableConfig):
-    placeholder: Optional[str] = attr.ib(default=None, metadata=skip_if_null())
+    placeholder: str | None = attr.ib(default=None, metadata=skip_if_null())
 
 
 @attr.s(kw_only=True, frozen=True)
 class DefaultValueMixin(SerializableConfig):
     # comma separated if multiple=true
-    default_value: Optional[str | bool] = attr.ib(default=None, metadata=remap_skip_if_null("defaultValue"))
+    default_value: str | bool | None = attr.ib(default=None, metadata=remap_skip_if_null("defaultValue"))
 
 
 @attr.s(kw_only=True, frozen=True)
 class ControlRowItem(RowItem, FormFieldMixin, DisplayConditionsMixin, InnerFieldMixin, DefaultValueMixin, WidthMixin):
-    fake_value: Optional[str] = attr.ib(default=None, metadata=remap_skip_if_null("fakeValue"))
-    hint_text: Optional[MarkdownStr] = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
+    fake_value: str | None = attr.ib(default=None, metadata=remap_skip_if_null("fakeValue"))
+    hint_text: MarkdownStr | None = attr.ib(default=None, metadata=remap_skip_if_null("hintText"))
 
 
 @attr.s(kw_only=True, frozen=True)

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    Optional,
-    Union,
 )
 
 from marshmallow import Schema
@@ -16,7 +14,7 @@ from dl_core.connection_executors.qe_serializer import (
     schemas_exc,
 )
 
-ResponseTypes = Union[RawSchemaInfo, list[str], Optional[str], None, bool, int]
+ResponseTypes = RawSchemaInfo | list[str] | str | None | None | bool | int
 
 
 class ActionSerializer:

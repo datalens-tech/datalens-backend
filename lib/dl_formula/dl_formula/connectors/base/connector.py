@@ -1,7 +1,6 @@
 from typing import (
     ClassVar,
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -29,7 +28,7 @@ from dl_formula.definitions.base import NodeTranslation
 class FormulaConnector:
     dialect_ns_cls: ClassVar[type[DialectNamespace]] = StandardDialect
     dialects: ClassVar[DialectCombo]
-    default_dialect: ClassVar[Optional[DialectCombo]] = None
+    default_dialect: ClassVar[DialectCombo | None] = None
     op_definitions: ClassVar[Iterable[NodeTranslation]] = []
     literalizer_cls: ClassVar[type[Literalizer]] = Literalizer
     column_renderer_cls: ClassVar[type[ColumnRenderer]] = DefaultColumnRenderer

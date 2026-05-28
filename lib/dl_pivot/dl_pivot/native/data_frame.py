@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Generator,
     NamedTuple,
-    Optional,
     TypeVar,
 )
 
@@ -61,7 +60,7 @@ class NativePivotDataFrame(PivotDataFrame):
 
     def iter_values_along_axis(
         self, axis: SortAxis, dim_values: tuple[DataCellVector, ...]
-    ) -> Generator[Optional[DataCellVector], None, None]:
+    ) -> Generator[DataCellVector | None, None, None]:
         if axis == SortAxis.columns:
             # iterate over columns with fixed row
             row_key = FlatPivotDataKey(values=dim_values)

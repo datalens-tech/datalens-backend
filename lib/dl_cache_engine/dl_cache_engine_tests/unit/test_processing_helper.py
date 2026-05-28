@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 import pytest
 
@@ -87,7 +85,7 @@ async def test_run_with_cache_disabled(
 ) -> None:
     """Should handle disabled cache case"""
 
-    async def generate_func() -> Optional[TJSONExtChunkStream]:
+    async def generate_func() -> TJSONExtChunkStream | None:
         return AsyncChunked.from_chunked_iterable([[1, 2, 3]])
 
     situation, result = await cache_helper.run_with_cache(
@@ -108,7 +106,7 @@ async def test_run_with_cache_error_handling(
 ) -> None:
     """Should handle errors during generation"""
 
-    async def generate_func() -> Optional[TJSONExtChunkStream]:
+    async def generate_func() -> TJSONExtChunkStream | None:
         raise ValueError("test error")
 
     with pytest.raises(ValueError, match="test error"):
@@ -125,7 +123,7 @@ async def test_run_with_cache_none_result(
 ) -> None:
     """Should handle None result from generate_func"""
 
-    async def generate_func() -> Optional[TJSONExtChunkStream]:
+    async def generate_func() -> TJSONExtChunkStream | None:
         return None
 
     situation, result = await cache_helper.run_with_cache(
@@ -144,7 +142,7 @@ async def test_run_with_cache_locked(
 ) -> None:
     """Should handle locked cache case"""
 
-    async def generate_func() -> Optional[TJSONExtChunkStream]:
+    async def generate_func() -> TJSONExtChunkStream | None:
         return AsyncChunked.from_chunked_iterable([[1, 2, 3]])
 
     situation, result = await cache_helper.run_with_cache(
@@ -166,7 +164,7 @@ async def test_run_with_cache_no_read(
 ) -> None:
     """Should handle case when cache read is not allowed"""
 
-    async def generate_func() -> Optional[TJSONExtChunkStream]:
+    async def generate_func() -> TJSONExtChunkStream | None:
         return AsyncChunked.from_chunked_iterable([[1, 2, 3]])
 
     situation, result = await cache_helper.run_with_cache(

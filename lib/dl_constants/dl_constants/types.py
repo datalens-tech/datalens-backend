@@ -7,76 +7,52 @@ from typing import (
     AsyncGenerator,
     AsyncIterable,
     Sequence,
-    Union,
 )
 import uuid
 
-TJSONScalar = Union[str, float, int, bool, None]
-TBIDataValue = Union[
-    # All the python types that connection executors are known to spit out.
-    # (does not include e.g. `memoryview` which should always be processed in the executor).
-    datetime.date,
-    datetime.datetime,
-    datetime.time,
-    datetime.timedelta,
-    decimal.Decimal,
-    uuid.UUID,
-    bytes,
-    TJSONScalar,
-    # ip addresses in ClickHouse, cidr and inet in PostgreSQL, etc
-    ipaddress.IPv4Address,
-    ipaddress.IPv6Address,
-    ipaddress.IPv4Network,
-    ipaddress.IPv6Network,
-    ipaddress.IPv4Interface,
-    ipaddress.IPv6Interface,
-]
+TJSONScalar = str | float | int | bool | None
+TBIDataValue = (
+    datetime.date
+    | datetime.datetime
+    | datetime.time
+    | datetime.timedelta
+    | decimal.Decimal
+    | uuid.UUID
+    | bytes
+    | TJSONScalar
+    | ipaddress.IPv4Address
+    | ipaddress.IPv6Address
+    | ipaddress.IPv4Network
+    | ipaddress.IPv6Network
+    | ipaddress.IPv4Interface
+    | ipaddress.IPv6Interface
+)
 
 
 # Allowing `tuple` as it is "jsonable"
 # # Recursive (not supported by mypy):
-# TJSONLike = Union[
-#     TJSONScalar,
-#     dict[str, 'TJSONLike'],
-#     list['TJSONLike'],
-#     tuple['TJSONLike', ...],
-# ]
+# TJSONLike = (
+#     TJSONScalar
+#     | dict[str, 'TJSONLike']
+#     | list['TJSONLike']
+#     | tuple['TJSONLike', ...]
+# )
 # # Limited recursion:
-TJSONLikeUnchecked = Union[
-    dict,
-    list,
-    tuple,
-    TJSONScalar,
-]
-TJSONLike = Union[
-    dict[str, TJSONLikeUnchecked],
-    list[TJSONLikeUnchecked],
-    tuple[TJSONLikeUnchecked, ...],
-    TJSONScalar,
-]
+TJSONLikeUnchecked = dict | list | tuple | TJSONScalar
+TJSONLike = dict[str, TJSONLikeUnchecked] | list[TJSONLikeUnchecked] | tuple[TJSONLikeUnchecked, ...] | TJSONScalar
 
 
 # Types supported by the extended JSON serializer (`bi_core.serialization`)
 # # Recursive (not supported by mypy):
-# TJSONExt = Union[
-#     dict[str, 'TJSONExt'],
-#     list['TJSONExt']
-#     tuple['TJSONExt', ...],
-#     TBIDataValue,
-# ]
+# TJSONExt = (
+#     dict[str, 'TJSONExt']
+#     | list['TJSONExt']
+#     | tuple['TJSONExt', ...]
+#     | TBIDataValue
+# )
 # # Limited recursion:
-TJSONExtUnchecked = Union[
-    dict,
-    list,
-    tuple,
-    TBIDataValue,
-]
-TJSONExt = Union[
-    dict[str, TJSONExtUnchecked],
-    list[TJSONExtUnchecked],
-    tuple[TJSONExtUnchecked, ...],
-    TBIDataValue,
-]
+TJSONExtUnchecked = dict | list | tuple | TBIDataValue
+TJSONExt = dict[str, TJSONExtUnchecked] | list[TJSONExtUnchecked] | tuple[TJSONExtUnchecked, ...] | TBIDataValue
 
 
 # More convenience shortcuts

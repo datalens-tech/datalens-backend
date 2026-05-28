@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Optional
 
 import attr
 
@@ -12,7 +11,7 @@ import dl_formula.core.exc as exc
 @attr.s
 class ErrInfo:
     is_error: bool = attr.ib(default=False)
-    exception: Optional[exc.ValidationError] = attr.ib(default=None)
+    exception: exc.ValidationError | None = attr.ib(default=None)
 
 
 @attr.s

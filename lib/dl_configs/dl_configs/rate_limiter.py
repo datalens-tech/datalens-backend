@@ -16,7 +16,7 @@ from dl_configs.utils import (
 @attr.s(frozen=True)
 class RequestEventKeyTemplateHeader(SettingsBase):
     key: str = s_attrib("KEY")  # type: ignore
-    regex: typing.Optional[str] = s_attrib("REGEX", missing=None)  # type: ignore
+    regex: str | None = s_attrib("REGEX", missing=None)  # type: ignore
 
     @classmethod
     def from_json(cls, json_value: typing.Any) -> typing_extensions.Self:
@@ -77,7 +77,7 @@ class RateLimiterConfig(SettingsBase):
     )
 
     @classmethod
-    def from_json(cls, json_value: typing.Any) -> typing.Optional[typing_extensions.Self]:
+    def from_json(cls, json_value: typing.Any) -> typing_extensions.Self | None:
         if json_value is None:
             return None
 

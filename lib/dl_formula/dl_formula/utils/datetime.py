@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import Union
 
 import ciso8601
 import pytz
@@ -52,7 +51,7 @@ def parse_dt_string(value: str) -> datetime.datetime:
     return result
 
 
-DTSourcesT = Union[None, str, int, float, datetime.date, datetime.datetime]
+DTSourcesT = None | str | int | float | datetime.date | datetime.datetime
 
 
 def make_datetime_value_base(value: DTSourcesT) -> datetime.datetime:

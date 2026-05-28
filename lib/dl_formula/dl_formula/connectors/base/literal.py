@@ -4,7 +4,6 @@ import datetime
 from functools import singledispatchmethod
 from typing import (
     Any,
-    Union,
 )
 
 import sqlalchemy as sa
@@ -42,15 +41,7 @@ class TypeDefiningCast(Cast):
         return self.clause.value
 
 
-Literal = Union[
-    BaseLiteral,  # unwrapped formula node
-    # various SA wrappers and types:
-    BindParameter,
-    TypeDefiningCast,
-    sa.sql.functions.Function,  # CH cast via toDatTime
-    Null,
-    sa_postgresql.array,
-]
+Literal = BaseLiteral | BindParameter | TypeDefiningCast | sa.sql.functions.Function | Null | sa_postgresql.array
 
 
 class Literalizer:
@@ -86,7 +77,7 @@ class Literalizer:
 
     @_literal.register(list)
     @_literal.register(tuple)
-    def _literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+    def _literal_array(self, value: tuple | list, dialect: DialectCombo) -> Literal:
         return self.literal_array(value, dialect=dialect)
 
     def literal_int(self, value: int, dialect: DialectCombo) -> Literal:
@@ -107,7 +98,7 @@ class Literalizer:
     def literal_str(self, value: str, dialect: DialectCombo) -> Literal:
         return sa.literal(value)
 
-    def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+    def literal_array(self, value: tuple | list, dialect: DialectCombo) -> Literal:
         return sa.literal(value)
 
     def literal(self, value: Any, dialect: DialectCombo) -> Literal:

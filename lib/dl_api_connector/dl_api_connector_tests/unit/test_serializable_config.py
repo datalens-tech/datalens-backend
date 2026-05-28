@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Optional
 
 import attr
 
@@ -24,7 +23,7 @@ class SomeItemConfig(SerializableConfig):
 class SomeConfig(SerializableConfig):
     basic_field: str = attr.ib()
     enum_field: MyEnum = attr.ib()
-    undefined: Optional[int] = attr.ib(default=None, metadata=skip_if_null())
+    undefined: int | None = attr.ib(default=None, metadata=skip_if_null())
     remapped: str = attr.ib(default="orig_value", metadata=remap("remapped_2"))
     list_field: list[SomeItemConfig] = attr.ib()
     dict_field: dict[MyEnum, list[SomeItemConfig]] = attr.ib()

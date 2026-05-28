@@ -10,9 +10,7 @@ from typing import (
     Callable,
     Generic,
     Literal,
-    Optional,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -73,7 +71,7 @@ class DLRequestBase:
         return dl_request
 
     @classmethod
-    def get_for_request(cls, request: web.Request) -> Optional[DLRequestBase]:
+    def get_for_request(cls, request: web.Request) -> DLRequestBase | None:
         if cls.KEY_DL_REQUEST in request:
             return request[cls.KEY_DL_REQUEST]
         return None
@@ -95,7 +93,7 @@ class DLRequestBase:
 
     # TODO FIX: Check that is not used and remove
     @property
-    def request_id(self) -> Optional[str]:
+    def request_id(self) -> str | None:
         return self.rci.request_id
 
     # TODO FIX: Check that is not used and remove
@@ -152,7 +150,7 @@ class DLRequestBase:
         raise RCINotSet("RequestContextInfo is not committed for this request")
 
     @property
-    def last_resort_rci(self) -> Optional[RequestContextInfo]:
+    def last_resort_rci(self) -> RequestContextInfo | None:
         """
         :return: Returns committed RCI if exists
         """
@@ -165,7 +163,7 @@ class DLRequestBase:
                 return None
 
     @property
-    def log_ctx_controller(self) -> Optional[RequestLoggingContextController]:
+    def log_ctx_controller(self) -> RequestLoggingContextController | None:
         return self.request.get(self.KEY_LOG_CTX_CONTROLLER)
 
     @property
@@ -186,15 +184,15 @@ class DLRequestBase:
         self._set_attr_once(self.KEY_REPORTING_PROFILER, value)
 
     @overload
-    def get_single_header(self, header: Union[DLHeaders, str]) -> Optional[str]:
+    def get_single_header(self, header: DLHeaders | str) -> str | None:
         pass
 
     @overload  # noqa
-    def get_single_header(self, header: Union[DLHeaders, str], required: Literal[False]) -> Optional[str]:
+    def get_single_header(self, header: DLHeaders | str, required: Literal[False]) -> str | None:
         pass
 
     @overload  # noqa
-    def get_single_header(self, header: Union[DLHeaders, str], required: Literal[True]) -> str:
+    def get_single_header(self, header: DLHeaders | str, required: Literal[True]) -> str:
         pass
 
     def get_single_header(self, header, required=False):  # type: ignore  # TODO: fix  # noqa
@@ -210,7 +208,7 @@ class DLRequestBase:
 
         return header_value_list[0]
 
-    def get_single_json_header(self, header: DLHeaders) -> Union[bool, int, float, list, dict, None]:
+    def get_single_json_header(self, header: DLHeaders) -> bool | int | float | list | dict | None:
         raw_header = self.request.headers.get(header.value)
         if raw_header is None:
             return None

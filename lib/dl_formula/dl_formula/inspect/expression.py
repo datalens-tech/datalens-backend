@@ -5,7 +5,6 @@ from typing import (
     Callable,
     Generator,
     Iterable,
-    Optional,
 )
 
 from dl_formula.collections import NodeSet
@@ -39,13 +38,13 @@ def validate_not_compiled_expressions(node: nodes.FormulaItem) -> None:
 
 def is_constant_expression(
     node: nodes.FormulaItem,
-    env: Optional[dl_formula.inspect.env.InspectionEnvironment] = None,
+    env: dl_formula.inspect.env.InspectionEnvironment | None = None,
 ) -> bool:
     """
     Check whether the given formula node (subtree) defines a constant expression.
     Return ``True`` is it does, otherwise ``False``.
     """
-    result: Optional[bool] = None
+    result: bool | None = None
     if env is not None:
         result = env.cache_is_const_expr.get(node)
     if result is None:
@@ -118,8 +117,8 @@ def is_aggregate_expression(
 
 def is_aggregated_above_sub_node(
     node: nodes.FormulaItem,
-    index: Optional[NodeHierarchyIndex] = None,
-    sub_node: Optional[nodes.FormulaItem] = None,
+    index: NodeHierarchyIndex | None = None,
+    sub_node: nodes.FormulaItem | None = None,
 ) -> bool:
     """
     Check whether the given formula node (subtree) wraps
@@ -354,8 +353,8 @@ def collect_tags(node: nodes.FormulaItem) -> AbstractSet[LevelTag]:
 def get_wrapping_level(
     node: nodes.FormulaItem,
     qualify_node_cb: Callable[[nodes.FormulaItem], bool],
-    stop_at_node_cb: Optional[Callable[[nodes.FormulaItem], bool]] = None,
-    stop_at_level: Optional[int] = None,
+    stop_at_node_cb: Callable[[nodes.FormulaItem], bool] | None = None,
+    stop_at_level: int | None = None,
 ) -> int:
     """
     Calculate wrapping level for node.

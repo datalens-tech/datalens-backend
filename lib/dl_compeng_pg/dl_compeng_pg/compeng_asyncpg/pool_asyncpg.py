@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Optional
 
 import asyncpg
 import attr
@@ -16,7 +15,7 @@ from dl_compeng_pg.compeng_pg_base.pool_base import (
 
 @attr.s
 class AsyncpgPoolWrapper(BasePgPoolWrapper):
-    _pool: Optional[asyncpg.pool.Pool] = attr.ib()
+    _pool: asyncpg.pool.Pool | None = attr.ib()
 
     @classmethod
     async def connect(

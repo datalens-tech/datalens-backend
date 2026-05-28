@@ -5,7 +5,6 @@ from typing import (
     Any,
     Callable,
     ClassVar,
-    Optional,
 )
 
 from dl_formula.core.dialect import DialectCombo
@@ -192,7 +191,7 @@ class OptimizeAndOrComparisonMutation(OptimizeZeroOneComparisonMutation):
 
 
 class OptimizeUnaryBoolFunctions(FormulaMutation):
-    _opt_ops: dict[str, dict[Optional[DialectCombo], Callable[[Any], bool]]] = {
+    _opt_ops: dict[str, dict[DialectCombo | None, Callable[[Any], bool]]] = {
         "isnull": {None: lambda node: node is None},
     }
 

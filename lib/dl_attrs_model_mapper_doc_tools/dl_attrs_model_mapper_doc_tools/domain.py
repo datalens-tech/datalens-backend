@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Optional,
     Sequence,
 )
 
@@ -12,8 +11,8 @@ from dl_attrs_model_mapper.utils import MText
 
 @attr.s(kw_only=True, auto_attribs=True)
 class AmmOperationExample:
-    title: Optional[MText] = None
-    description: Optional[MText] = None
+    title: MText | None = None
+    description: MText | None = None
     rq: dict[str, Any]
     rs: dict[str, Any]
 

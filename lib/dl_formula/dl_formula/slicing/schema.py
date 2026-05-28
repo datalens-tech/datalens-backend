@@ -4,7 +4,6 @@ import abc
 from enum import Enum
 from typing import (
     Callable,
-    Optional,
 )
 import uuid
 
@@ -28,7 +27,7 @@ class BoundaryCheckResult(Enum):
 @attr.s
 class LevelBoundary(abc.ABC):
     name: str = attr.ib()
-    name_gen: Optional[Callable[[nodes.FormulaItem, str], str]] = attr.ib(default=None)
+    name_gen: Callable[[nodes.FormulaItem, str], str] | None = attr.ib(default=None)
 
     def _default_name_gen(self, node: nodes.FormulaItem) -> str:
         """Default name generator for sliced nodes"""
@@ -173,7 +172,7 @@ class NestedLevelTaggedBoundary(LevelBoundary):
             T({A, B, C}, 0)
     """
 
-    tag: Optional[LevelTag] = attr.ib(default=None)
+    tag: LevelTag | None = attr.ib(default=None)
     constants_neutral: bool = attr.ib(default=True)
 
     def check_tag(self, is_own_tag: bool, level_tag: LevelTag) -> BoundaryCheckResult:
@@ -186,7 +185,7 @@ class NestedLevelTaggedBoundary(LevelBoundary):
         self,
         node: nodes.FormulaItem,
         parent_stack: tuple[nodes.FormulaItem, ...],
-    ) -> tuple[bool, Optional[LevelTag]]:
+    ) -> tuple[bool, LevelTag | None]:
         # For QueryForks the node itself is tagged
         if isinstance(node, fork_nodes.QueryFork):
             return True, node.level_tag

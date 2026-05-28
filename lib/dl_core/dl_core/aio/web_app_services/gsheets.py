@@ -4,8 +4,6 @@ import enum
 import logging
 from typing import (
     ClassVar,
-    Optional,
-    Union,
 )
 
 from aiohttp import web
@@ -40,7 +38,7 @@ class NumberFormatType(str, enum.Enum):
 
 @attr.s(auto_attribs=True)
 class Cell:
-    value: Optional[Union[str, int, float, bool]]
+    value: str | int | float | bool | None
     number_format_type: NumberFormatType = NumberFormatType.NUMBER_FORMAT_TYPE_UNSPECIFIED
     empty: bool = False  # means this is an actually unfilled cell, not just clear
 
@@ -76,7 +74,7 @@ class Sheet:
     row_count: int
     column_count: int
     batch_size_rows: int = 50
-    data: Optional[list[list[Cell]]] = None
+    data: list[list[Cell]] | None = None
 
     def col_is_time(self, idx: int, has_header: bool) -> bool:
         """

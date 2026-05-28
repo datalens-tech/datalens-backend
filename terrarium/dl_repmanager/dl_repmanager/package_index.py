@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 import attr
 from frozendict import frozendict
@@ -44,7 +43,7 @@ class PackageIndex:
         assert self._is_built()
         return self._package_infos_by_test_name[test_dir_name]
 
-    def list_package_infos(self, package_type: Optional[str] = None) -> list[PackageInfo]:
+    def list_package_infos(self, package_type: str | None = None) -> list[PackageInfo]:
         return [
             package_info
             for package_info in self._package_infos_by_path.values()
@@ -64,7 +63,7 @@ class PackageIndexBuilder:
 
     def _load_package_info_from_package_dir(
         self, abs_package_dir_path: Path, default_package_type: str
-    ) -> Optional[PackageInfo]:
+    ) -> PackageInfo | None:
         # TODO: Move to a separate class
         toml_path = abs_package_dir_path / "pyproject.toml"
 

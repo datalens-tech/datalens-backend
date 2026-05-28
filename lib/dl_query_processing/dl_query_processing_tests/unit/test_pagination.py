@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dl_constants.enums import (
     FieldRole,
     FieldType,
@@ -40,10 +38,10 @@ def _make_legend() -> Legend:
 
 
 def _make_block_legend(
-    block_limit: Optional[int] = None,
-    block_offset: Optional[int] = None,
-    glob_limit: Optional[int] = None,
-    glob_offset: Optional[int] = None,
+    block_limit: int | None = None,
+    block_offset: int | None = None,
+    glob_limit: int | None = None,
+    glob_offset: int | None = None,
 ) -> BlockLegend:
     legend = _make_legend()
     block_legend = BlockLegend(

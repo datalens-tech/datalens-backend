@@ -2,7 +2,6 @@ import contextlib
 from functools import reduce
 from typing import (
     Generator,
-    Optional,
 )
 
 import pytest
@@ -41,7 +40,7 @@ class ArrayFunctionYDBTestSuite(DefaultArrayFunctionFormulaConnectorTestSuite):
 
 class YQLViewTableTestBase(YQLTestBase):
     @contextlib.contextmanager
-    def make_data_table(self, dbe: DbEvaluator, table_schema_name: Optional[str]) -> Generator[sa.Table, None, None]:
+    def make_data_table(self, dbe: DbEvaluator, table_schema_name: str | None) -> Generator[sa.Table, None, None]:
         sample_data = generate_sample_data(add_arrays=True)
 
         table_spec = self.generate_table_spec(table_name_prefix="test_view")

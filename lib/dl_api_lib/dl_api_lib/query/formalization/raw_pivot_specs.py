@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -30,21 +29,21 @@ class RawDimensionPivotRoleSpec(RawPivotRoleSpec):
 
 @attr.s(frozen=True)
 class RawAnnotationPivotRoleSpec(RawPivotRoleSpec):
-    target_legend_item_ids: Optional[list[int]] = attr.ib(kw_only=True, default=None)
+    target_legend_item_ids: list[int] | None = attr.ib(kw_only=True, default=None)
     annotation_type: str = attr.ib(kw_only=True, default="")
 
 
 @attr.s(frozen=True)
 class RawPivotMeasureRoleSpec(RawPivotRoleSpec):
-    sorting: Optional[PivotMeasureSorting] = attr.ib(kw_only=True, default=None)
+    sorting: PivotMeasureSorting | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s(frozen=True)
 class RawPivotLegendItem:
-    pivot_item_id: Optional[int] = attr.ib(kw_only=True, default=None)
+    pivot_item_id: int | None = attr.ib(kw_only=True, default=None)
     legend_item_ids: list[int] = attr.ib(kw_only=True)
     role_spec: RawPivotRoleSpec = attr.ib(kw_only=True)
-    title: Optional[str] = attr.ib(kw_only=True, default=None)
+    title: str | None = attr.ib(kw_only=True, default=None)
 
     def clone(self, **updates: Any) -> RawPivotLegendItem:
         return attr.evolve(self, **updates)
@@ -66,8 +65,8 @@ class RawPivotTotalsSpec:
 
 @attr.s(frozen=True)
 class PivotPaginationSpec:
-    offset_rows: Optional[int] = attr.ib(kw_only=True, default=None)
-    limit_rows: Optional[int] = attr.ib(kw_only=True, default=None)
+    offset_rows: int | None = attr.ib(kw_only=True, default=None)
+    limit_rows: int | None = attr.ib(kw_only=True, default=None)
 
     @property
     def non_default(self) -> bool:
@@ -78,8 +77,8 @@ class PivotPaginationSpec:
 class RawPivotSpec:
     pagination: PivotPaginationSpec = attr.ib(kw_only=True, factory=PivotPaginationSpec)
     structure: list[RawPivotLegendItem] = attr.ib(kw_only=True, factory=list)
-    with_totals: Optional[bool] = attr.ib(kw_only=True, default=False)
-    totals: Optional[RawPivotTotalsSpec] = attr.ib(kw_only=True, factory=RawPivotTotalsSpec)
+    with_totals: bool | None = attr.ib(kw_only=True, default=False)
+    totals: RawPivotTotalsSpec | None = attr.ib(kw_only=True, factory=RawPivotTotalsSpec)
 
     def clone(self, **updates: Any) -> RawPivotSpec:
         return attr.evolve(self, **updates)

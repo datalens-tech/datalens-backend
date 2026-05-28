@@ -7,9 +7,7 @@ from typing import (
     Awaitable,
     Callable,
     ClassVar,
-    Optional,
     Sequence,
-    Union,
 )
 
 import aiopg.sa
@@ -41,11 +39,11 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
     _conn: aiopg.sa.SAConnection = attr.ib()
     _log: ClassVar[logging.Logger] = LOGGER
 
-    async def _execute(self, query: Union[str, Executable]) -> None:
+    async def _execute(self, query: str | Executable) -> None:
         """Execute query without fetching data"""
         await self._conn.execute(query)
 
-    async def _execute_ddl(self, query: Union[str, Executable]) -> None:
+    async def _execute_ddl(self, query: str | Executable) -> None:
         """Execute a DDL statement"""
         await self._execute(query)
 
@@ -55,11 +53,11 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
         query: Select | str,
         user_types: Sequence[UserDataType],
         chunk_size: int,
-        joint_dsrc_info: Optional[PreparedFromInfo] = None,
+        joint_dsrc_info: PreparedFromInfo | None = None,
         query_id: str,
         ctx: OpExecutionContext,
         data_key: LocalKeyRepresentation,
-        preparation_callback: Optional[Callable[[], Awaitable[None]]],
+        preparation_callback: Callable[[], Awaitable[None]] | None,
     ) -> AsyncChunkedBase[Sequence[TBIDataValue]]:
         if preparation_callback is not None:
             await preparation_callback()

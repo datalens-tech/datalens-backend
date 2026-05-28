@@ -4,7 +4,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
     Sequence,
-    Union,
 )
 
 from dl_formula.core.datatype import (
@@ -38,7 +37,7 @@ class Fixed(TypeStrategy):
 class FromArgs(TypeStrategy):
     __slots__ = ("_indices",)
 
-    def __init__(self, *indices: Union[int, slice]):
+    def __init__(self, *indices: int | slice):
         self._indices = indices or [slice(0, None)]
 
     def get_from_args(self, arg_types: list[DataType]) -> DataType:
@@ -47,7 +46,7 @@ class FromArgs(TypeStrategy):
     @staticmethod
     def _get_from_args_and_indices(
         arg_types: list[DataType],
-        indices: Sequence[Union[int, slice]],
+        indices: Sequence[int | slice],
     ) -> DataType:
         use_arg_types = []
         for ind in indices:
@@ -64,7 +63,7 @@ class FromArgs(TypeStrategy):
 class DynamicIndexStrategy(FromArgs):
     __slots__ = ()
 
-    def get_indices(self, arg_cnt: int) -> list[Union[int, slice]]:
+    def get_indices(self, arg_cnt: int) -> list[int | slice]:
         return list(range(arg_cnt))
 
     def get_from_args(self, arg_types: list[DataType]) -> DataType:
@@ -98,7 +97,7 @@ class Combined(TypeStrategy):
 class CaseTypeStrategy(DynamicIndexStrategy):
     __slots__ = ()
 
-    def get_indices(self, arg_cnt: int) -> list[Union[int, slice]]:
+    def get_indices(self, arg_cnt: int) -> list[int | slice]:
         if arg_cnt < 2 or arg_cnt % 2 != 0:
             raise exc.TranslationError(f"Invalid number of arguments for CASE: {arg_cnt}")
         num_of_whens = (arg_cnt - 1) // 2  # 1 for main CASE value arg, 2 for each WHEN part
@@ -108,7 +107,7 @@ class CaseTypeStrategy(DynamicIndexStrategy):
 class IfTypeStrategy(DynamicIndexStrategy):
     __slots__ = ()
 
-    def get_indices(self, arg_cnt: int) -> list[Union[int, slice]]:
+    def get_indices(self, arg_cnt: int) -> list[int | slice]:
         if arg_cnt < 3 or arg_cnt % 2 != 1:
             raise exc.TranslationError(f"Invalid number of arguments for IF: {arg_cnt}")
         num_of_if_parts = arg_cnt // 2

@@ -1,6 +1,5 @@
 from collections.abc import Sequence
 import functools
-from typing import Optional
 
 from aiomysql.sa.result import (
     ResultMetaData,
@@ -118,7 +117,7 @@ class TestStarRocksSyncConnectionExecutor(
         self,
         request: pytest.FixtureRequest,
         db: Db,
-        sample_table_schema: Optional[str],
+        sample_table_schema: str | None,
         sync_connection_executor: SyncConnExecutorBase,
     ) -> None:
         for type_schema in self.get_schemas_for_type_recognition().values():

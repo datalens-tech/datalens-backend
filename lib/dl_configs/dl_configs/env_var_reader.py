@@ -6,9 +6,7 @@ from typing import (
     Generic,
     Literal,
     NamedTuple,
-    Optional,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -25,7 +23,7 @@ class SecretStr(str):
 
 
 class Required(NamedTuple):
-    message: Optional[str] = None
+    message: str | None = None
 
 
 class Factory(Generic[_FACTORY_RET_TV]):
@@ -41,7 +39,7 @@ class EnvError(Exception):
 
 
 @overload
-def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: Literal[None]) -> Optional[RET_TV]:
+def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: Literal[None]) -> RET_TV | None:
     pass
 
 
@@ -51,9 +49,7 @@ def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], defau
 
 
 @overload  # noqa
-def get_from_env[RET_TV](
-    env_key: str, converter: Callable[[str], RET_TV], default: Union[RET_TV, Factory[RET_TV]]
-) -> RET_TV:
+def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: RET_TV | Factory[RET_TV]) -> RET_TV:
     pass
 
 
@@ -65,8 +61,8 @@ def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV]) -> RE
 def get_from_env(  # noqa
     env_key: str,
     converter: Callable[[str], _RET_TV],
-    default: Union[_RET_TV, Factory[_RET_TV], Required, None] = Required(),  # noqa: B008
-) -> Optional[_RET_TV]:
+    default: _RET_TV | Factory[_RET_TV] | Required | None = Required(),  # noqa: B008
+) -> _RET_TV | None:
     if env_key in os.environ:
         try:
             return converter(os.environ[env_key])

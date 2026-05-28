@@ -3,8 +3,6 @@ from __future__ import annotations
 from typing import (
     AbstractSet,
     Any,
-    Optional,
-    Union,
 )
 
 import attr
@@ -22,7 +20,7 @@ from dl_core.components.ids import (
 from dl_query_processing.compilation.query_meta import QueryMetaInfo
 from dl_query_processing.enums import SelectValueType
 
-FilterArgType = Union[str, int, float, None]
+FilterArgType = str | int | float | None
 
 
 @attr.s(frozen=True)
@@ -139,8 +137,8 @@ class QuerySpec:
     relation_specs: list[RelationSpec] = attr.ib(kw_only=True)
     source_column_filter_specs: list[FilterSourceColumnSpec] = attr.ib(kw_only=True)
     parameter_value_specs: list[ParameterValueSpec] = attr.ib(kw_only=True)
-    limit: Optional[int] = attr.ib(kw_only=True)
-    offset: Optional[int] = attr.ib(kw_only=True)
-    root_avatar_id: Optional[AvatarId] = attr.ib(kw_only=True, default=None)
+    limit: int | None = attr.ib(kw_only=True)
+    offset: int | None = attr.ib(kw_only=True)
+    root_avatar_id: AvatarId | None = attr.ib(kw_only=True, default=None)
     required_avatar_ids: AbstractSet[AvatarId] = attr.ib(kw_only=True, factory=frozenset)
     meta: QueryMetaInfo = attr.ib(kw_only=True, factory=QueryMetaInfo)

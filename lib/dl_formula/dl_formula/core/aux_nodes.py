@@ -6,7 +6,6 @@ from __future__ import annotations
 
 from typing import (
     Hashable,
-    Optional,
     Sequence,
     cast,
 )
@@ -34,7 +33,7 @@ class ErrorNode(nodes.Null):
         *,
         err_code: tuple[str, ...],
         message: str,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> ErrorNode:
         children = ()
         internal_value = (err_code, message)
@@ -45,7 +44,7 @@ class ErrorNode(nodes.Null):
         assert not children
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert len(internal_value) == 2
         assert isinstance(internal_value[0], tuple)
         assert isinstance(internal_value[1], str)

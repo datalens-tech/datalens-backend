@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Union
 
 import opentracing
 import sqlalchemy as sa
@@ -99,7 +98,7 @@ def compile_query_with_literal_binds_if_possible(
         return query
 
 
-def make_debug_query(query: str, params: Union[list, dict]) -> str:
+def make_debug_query(query: str, params: list | dict) -> str:
     return f"{query} {params!r}"
 
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import (
-    Optional,
     TypeVar,
 )
 
@@ -55,7 +54,7 @@ class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE
             )
         return dto_pool
 
-    def mutate_for_dashsql(self, db_params: Optional[dict[str, str]] = None) -> Self:
+    def mutate_for_dashsql(self, db_params: dict[str, str] | None = None) -> Self:
         if db_params:  # TODO.
             raise Exception("`db_params` are not supported at the moment")
         return self.clone(

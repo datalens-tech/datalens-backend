@@ -7,7 +7,6 @@ from typing import (
     Generic,
     Sequence,
     TypeVar,
-    Union,
 )
 
 import attr
@@ -49,10 +48,10 @@ class PostgreSQLExecAdapterAsync(Generic[_CONN_TV], ProcessorDbExecAdapterBase, 
         return PGDialect_psycopg2()
 
     @abc.abstractmethod
-    async def _execute(self, query: Union[str, Executable]) -> None:
+    async def _execute(self, query: str | Executable) -> None:
         """Execute query without (necessarily) fetching data"""
 
-    async def _execute_ddl(self, query: Union[str, Executable]) -> None:
+    async def _execute_ddl(self, query: str | Executable) -> None:
         """Execute a DDL statement"""
         await self._execute(query)
 

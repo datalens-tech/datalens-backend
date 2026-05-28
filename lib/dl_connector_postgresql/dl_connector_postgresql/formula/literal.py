@@ -1,6 +1,5 @@
 from typing import (
     Any,
-    Union,
 )
 
 import attr
@@ -35,7 +34,7 @@ def integer_to_pg_sa_type(value: int) -> type[Integer]:
 class BasePostgreSQLLiteralizer(Literalizer):
     __slots__ = ()
 
-    def literal_array(self, value: Union[tuple, list], dialect: DialectCombo) -> Literal:
+    def literal_array(self, value: tuple | list, dialect: DialectCombo) -> Literal:
         return sa_postgresql.array(value)
 
 

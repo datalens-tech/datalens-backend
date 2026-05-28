@@ -3,7 +3,6 @@ from __future__ import annotations
 import abc
 from typing import (
     Collection,
-    Optional,
 )
 
 from dl_core.components.ids import (
@@ -30,7 +29,7 @@ class AvatarTreeResolverBase(abc.ABC):
     @abc.abstractmethod
     def expand_required_avatar_ids(
         self, required_avatar_ids: Collection[str]
-    ) -> tuple[Optional[AvatarId], set[AvatarId], set[RelationId]]:
+    ) -> tuple[AvatarId | None, set[AvatarId], set[RelationId]]:
         """
         Complement required avatars wit ones that are required to apply JOINs of the given avatars
 

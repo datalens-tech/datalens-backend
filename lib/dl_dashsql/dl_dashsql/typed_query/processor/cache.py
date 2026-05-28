@@ -1,7 +1,6 @@
 import abc
 from typing import (
     Iterable,
-    Optional,
     Sequence,
 )
 
@@ -66,7 +65,7 @@ class CachedTypedQueryProcessor(TypedQueryProcessorBase):
     async def process_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         tq_result_serializer = get_typed_query_result_serializer(query_type=typed_query.query_type)
 
-        async def generate_func() -> Optional[AsyncChunkedBase[TJSONExt]]:
+        async def generate_func() -> AsyncChunkedBase[TJSONExt] | None:
             source_typed_query_result = await self._main_processor.process_typed_query(typed_query=typed_query)
             # Pack everything into a single string value and wrap that into a stream
             dumped_serialized_data = tq_result_serializer.serialize(source_typed_query_result)

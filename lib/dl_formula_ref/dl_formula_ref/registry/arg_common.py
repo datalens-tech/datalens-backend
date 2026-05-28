@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     NamedTuple,
-    Optional,
     Sequence,
-    Union,
     cast,
 )
 
@@ -31,7 +29,7 @@ if TYPE_CHECKING:
 
 class TypeInfo(NamedTuple):
     ret_type_str: ParameterizedText
-    arg_note: Optional[ParameterizedText]
+    arg_note: ParameterizedText | None
 
 
 def type_macro(*types: DataType) -> str:
@@ -48,7 +46,7 @@ class TypeStrategyInspector:
         ct_args = []
         if isinstance(ret_type_strat, FromArgs):
             # in this case the return type is determined from types of arguments
-            use_arg_indices: Sequence[Union[int, slice]]
+            use_arg_indices: Sequence[int | slice]
             if isinstance(ret_type_strat, DynamicIndexStrategy):
                 use_arg_indices = ret_type_strat.get_indices(len(args))
             else:

@@ -1,7 +1,6 @@
 # TODO: Remove the `ll_` prefix
 
 from itertools import chain
-from typing import Union
 
 import attr
 
@@ -63,7 +62,7 @@ def populate_translation_registry() -> None:
         DEFINITIONS_NATIVE,
         DEFINITIONS_HASH,
     )
-    def_item: Union[NodeTranslation, type[NodeTranslation]]
+    def_item: NodeTranslation | type[NodeTranslation]
     # TODO: Load defs from connectors here
     for def_item in definitions:
         if isinstance(def_item, type):

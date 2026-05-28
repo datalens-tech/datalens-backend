@@ -19,10 +19,8 @@ from typing import (
     Any,
     AsyncIterable,
     Generic,
-    Optional,
     Sequence,
     TypeVar,
-    Union,
 )
 
 import attr
@@ -117,7 +115,7 @@ class RawIntegerCollector(RawValueCollector[int]):
         self,
         parts: int,
         return_values: Sequence[int],
-    ) -> dict[str, Union[int, float]]:
+    ) -> dict[str, int | float]:
         results = statistics.quantiles(self._values, n=parts, method="inclusive")
         return {f"q{parts}_{ret_idx}": results[ret_idx - 1] for ret_idx in return_values}
 
@@ -190,7 +188,7 @@ class DatasetMetricCollector(USEntryCrawler):
         return self.usm.get_raw_collection(entry_scope="dataset", all_tenants=crawl_all_tenants)
 
     async def process_entry_get_save_flag(
-        self, entry: USEntry, logging_extra: dict[str, Any], usm: Optional[AsyncUSManager] = None
+        self, entry: USEntry, logging_extra: dict[str, Any], usm: AsyncUSManager | None = None
     ) -> tuple[bool, str]:
         data = entry.data
         self._stats_collector.int_collector(M.ds_cnt_field_all).add_value(len(data["result_schema"]))

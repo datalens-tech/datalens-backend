@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import unique
-from typing import Optional
 
 import attr
 
@@ -207,8 +206,8 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettings],
-        tenant: Optional[TenantDef],
+        connector_settings: ConnectorSettings | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         rc = PromQLRowConstructor(localizer=self._localizer)
 

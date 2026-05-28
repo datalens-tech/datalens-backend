@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from aiohttp import web
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
@@ -36,7 +34,7 @@ def add_logging_ctx_controller(request: web.Request, ctrl: RequestLoggingContext
 _endpoint_code_attr_name = "endpoint_code"
 
 
-def get_endpoint_code(request: web.Request) -> Optional[str]:
+def get_endpoint_code(request: web.Request) -> str | None:
     final_handler = request.match_info.handler
 
     if hasattr(final_handler, _endpoint_code_attr_name):

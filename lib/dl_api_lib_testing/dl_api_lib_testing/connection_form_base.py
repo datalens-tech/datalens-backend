@@ -3,7 +3,6 @@ import os
 import typing
 from typing import (
     ClassVar,
-    Optional,
     final,
 )
 
@@ -43,7 +42,7 @@ class ConnectionFormTestBase:
         return Settings()
 
     @pytest.fixture
-    def connectors_settings(self) -> Optional[ConnectorSettings]:
+    def connectors_settings(self) -> ConnectorSettings | None:
         """Parametrize if a form has extra settings"""
 
         return None
@@ -68,7 +67,7 @@ class ConnectionFormTestBase:
     @pytest.fixture
     def form_config(
         self,
-        connectors_settings: Optional[ConnectorSettings],
+        connectors_settings: ConnectorSettings | None,
         tenant: TenantDef,
         mode: ConnectionFormMode,
         service_registry: ApiServiceRegistry,
@@ -96,7 +95,7 @@ class ConnectionFormTestBase:
     def fixture_expected_form_config_file(
         self,
         config_dir: str,
-        connectors_settings: Optional[ConnectorSettings],
+        connectors_settings: ConnectorSettings | None,
         tenant: TenantDef,
         mode: ConnectionFormMode,
     ) -> str:

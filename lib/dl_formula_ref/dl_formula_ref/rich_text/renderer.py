@@ -4,7 +4,6 @@ import abc
 from functools import singledispatchmethod
 from typing import (
     Mapping,
-    Optional,
 )
 
 import attr
@@ -32,12 +31,12 @@ class RichTextRenderEnvironment:
 
 class RichTextRenderer(abc.ABC):
     @abc.abstractmethod
-    def render(self, rtext: RichText, env: Optional[RichTextRenderEnvironment] = None) -> str:
+    def render(self, rtext: RichText, env: RichTextRenderEnvironment | None = None) -> str:
         raise NotImplementedError
 
 
 class MdRichTextRenderer(RichTextRenderer):
-    def render(self, rtext: RichText, env: Optional[RichTextRenderEnvironment] = None) -> str:
+    def render(self, rtext: RichText, env: RichTextRenderEnvironment | None = None) -> str:
         if env is None:
             env = RichTextRenderEnvironment()
         assert env is not None

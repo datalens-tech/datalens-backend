@@ -1,7 +1,6 @@
 from typing import (
     AbstractSet,
     Sequence,
-    Union,
 )
 
 from dl_formula.core.datatype import DataType
@@ -24,7 +23,7 @@ class ArgTypeMatcher:
 class ArgTypeSequence(ArgTypeMatcher):
     __slots__ = ("_exp_arg_types",)
 
-    def __init__(self, arg_types: Sequence[Union[DataType, AbstractSet[DataType]]]):
+    def __init__(self, arg_types: Sequence[DataType | AbstractSet[DataType]]):
         self._exp_arg_types = arg_types
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
@@ -53,8 +52,8 @@ class ArgTypeForAll(ArgTypeMatcher):
 
     def __init__(
         self,
-        expected_types: Union[DataType, AbstractSet[DataType]],
-        require_type_match: Union[DataType, AbstractSet[DataType]] | None = None,
+        expected_types: DataType | AbstractSet[DataType],
+        require_type_match: DataType | AbstractSet[DataType] | None = None,
     ):
         self._exp_arg_types = {expected_types} if isinstance(expected_types, DataType) else expected_types
         self._require_type_match = (
@@ -82,9 +81,9 @@ class ArgTypeSequenceThenForAll(ArgTypeMatcher):
 
     def __init__(
         self,
-        fixed_arg_types: Sequence[Union[DataType, AbstractSet[DataType]]],
-        for_all_types: Union[DataType, AbstractSet[DataType]],
-        for_all_require_type_match: Union[DataType, AbstractSet[DataType]] | None = None,
+        fixed_arg_types: Sequence[DataType | AbstractSet[DataType]],
+        for_all_types: DataType | AbstractSet[DataType],
+        for_all_require_type_match: DataType | AbstractSet[DataType] | None = None,
     ):
         self._fixed_arg_num = len(fixed_arg_types)
 

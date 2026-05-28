@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     AsyncGenerator,
-    Optional,
 )
 
 from aiohttp import ClientResponseError
@@ -151,7 +150,7 @@ class TestUSManager(DefaultCoreTestClass):
         loaded_connection_ref_set = set(usm._loaded_entries.keys())
         manually_collected_related_conn_set = set()
 
-        def add_connection_from_data_source(dsrc: Optional[DataSource]) -> None:
+        def add_connection_from_data_source(dsrc: DataSource | None) -> None:
             if dsrc is not None and dsrc.connection is not None:
                 manually_collected_related_conn_set.add(dsrc.connection.conn_ref)
 

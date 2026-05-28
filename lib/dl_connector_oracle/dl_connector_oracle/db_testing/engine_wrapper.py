@@ -1,7 +1,6 @@
 import re
 from typing import (
     Any,
-    Optional,
     Sequence,
 )
 
@@ -50,5 +49,5 @@ class OracleEngineWrapper(EngineWrapperBase):
         self.execute(f"CREATE USER {self.quote(schema_name)} IDENTIFIED BY qwerty")
         self.execute(f"GRANT ALL PRIVILEGES TO {self.quote(schema_name)}")
 
-    def get_version(self) -> Optional[str]:
+    def get_version(self) -> str | None:
         return self.execute("SELECT * FROM V$VERSION").scalar()

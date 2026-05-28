@@ -6,7 +6,6 @@ import itertools
 import logging
 from typing import (
     Any,
-    Optional,
 )
 
 import attr
@@ -110,7 +109,7 @@ class BIError:
      Is used for metrics collection and forming API error responses.
     """
 
-    http_code: Optional[int]
+    http_code: int | None
     application_code_stack: tuple[str, ...]
     forward_for_anonymous: bool
 
@@ -122,8 +121,8 @@ class BIError:
 
     @staticmethod
     def get_default_error_code(
-        err: Exception, exc_code_mapping: Optional[dict[type[Exception], int]] = None
-    ) -> Optional[int]:
+        err: Exception, exc_code_mapping: dict[type[Exception], int] | None = None
+    ) -> int | None:
         """
         :param err: Exception to map to HTTP status code
         :param exc_code_mapping: Override for default `EXCEPTION_CODES` exception to HTTP status code mapping
@@ -143,8 +142,8 @@ class BIError:
     def from_exception(
         cls,
         ex: Exception,
-        default_message: Optional[str] = None,
-        exc_code_mapping: Optional[dict[type[Exception], int]] = None,
+        default_message: str | None = None,
+        exc_code_mapping: dict[type[Exception], int] | None = None,
     ) -> BIError:
         """
         Creates BIError from exception
@@ -161,7 +160,7 @@ class BIError:
         debug: dict[str, Any] = {}
         application_code_stack: tuple[str, ...] = ()
         forward_for_anonymous = False
-        http_code: Optional[int] = cls.get_default_error_code(ex, exc_code_mapping)
+        http_code: int | None = cls.get_default_error_code(ex, exc_code_mapping)
 
         if isinstance(ex, common_exc.DLBaseException):
             message = ex.message

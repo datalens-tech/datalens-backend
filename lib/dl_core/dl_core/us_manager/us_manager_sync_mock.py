@@ -8,7 +8,6 @@ from datetime import (
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 from cryptography import fernet
@@ -45,8 +44,8 @@ class MockedUStorageClient(UStorageClient):
         host: str,
         auth_ctx: USAuthContextBase,
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-        prefix: Optional[str] = None,
-        context_request_id: Optional[str] = None,
+        prefix: str | None = None,
+        context_request_id: str | None = None,
     ):
         super().__init__(
             host=host,
@@ -68,8 +67,8 @@ class MockedUStorageClient(UStorageClient):
     def _request(
         self,
         request_data: UStorageClientBase.RequestData,
-        retry_policy_name: Optional[str] = None,
-        context_name: Optional[str] = None,
+        retry_policy_name: str | None = None,
+        context_name: str | None = None,
     ) -> dict[str, Any]:
         raise NotImplementedError("This is dummy US client")
 
@@ -77,13 +76,13 @@ class MockedUStorageClient(UStorageClient):
         self,
         key: EntryLocation,
         scope: str,
-        meta: Optional[dict[str, str]] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        data: Optional[dict[str, Any]] = None,
-        unversioned_data: Optional[dict[str, Any]] = None,
-        type_: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        links: Optional[dict[str, Any]] = None,
+        meta: dict[str, str] | None = None,
+        annotation: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+        unversioned_data: dict[str, Any] | None = None,
+        type_: str | None = None,
+        hidden: bool | None = None,
+        links: dict[str, Any] | None = None,
         mode: USEntryMode = USEntryMode.publish,
         **kwargs: Any,
     ) -> dict[str, Any]:
@@ -121,14 +120,14 @@ class MockedUStorageClient(UStorageClient):
     def update_entry(
         self,
         entry_id: str,
-        data: Optional[dict[str, Any]] = None,
-        unversioned_data: Optional[dict[str, Any]] = None,
-        meta: Optional[dict[str, str]] = None,
-        annotation: Optional[dict[str, Any]] = None,
-        lock: Optional[str] = None,
-        hidden: Optional[bool] = None,
-        links: Optional[dict[str, Any]] = None,
-        update_revision: Optional[bool] = None,
+        data: dict[str, Any] | None = None,
+        unversioned_data: dict[str, Any] | None = None,
+        meta: dict[str, str] | None = None,
+        annotation: dict[str, Any] | None = None,
+        lock: str | None = None,
+        hidden: bool | None = None,
+        links: dict[str, Any] | None = None,
+        update_revision: bool | None = None,
         mode: USEntryMode = USEntryMode.publish,
     ) -> dict[str, Any]:
         previous_resp = self._saved_entries[entry_id]
@@ -153,11 +152,11 @@ class MockedUStorageClient(UStorageClient):
     def get_entry(
         self,
         entry_id: str,
-        params: Optional[dict[str, Any]] = None,
+        params: dict[str, Any] | None = None,
         include_permissions: bool = True,
         include_links: bool = True,
         include_favorite: bool = True,
-        context_name: Optional[str] = None,
+        context_name: str | None = None,
         branch: USEntryBranch = USEntryBranch.published,
     ) -> dict[str, Any]:
         assert params is None
@@ -179,9 +178,9 @@ class MockedSyncUSManager(SyncUSManager):
     def __init__(
         self,
         bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008
-        crypto_keys_config: Optional[CryptoKeysConfig] = None,
+        crypto_keys_config: CryptoKeysConfig | None = None,
         services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),  # noqa: B008
-        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
+        lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
     ):
         super().__init__(
             bi_context=bi_context,

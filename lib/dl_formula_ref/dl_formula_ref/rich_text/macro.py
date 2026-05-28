@@ -1,5 +1,3 @@
-from typing import Optional
-
 import attr
 
 
@@ -15,7 +13,7 @@ class SingleArgMacro(BaseMacro):
 
 @attr.s
 class DoubleArgMacro(SingleArgMacro):
-    second_arg: Optional[str] = attr.ib(kw_only=True, default=None)
+    second_arg: str | None = attr.ib(kw_only=True, default=None)
 
 
 @attr.s
@@ -24,7 +22,7 @@ class ListMacro(BaseMacro):
 
 
 class RefMacro(DoubleArgMacro):
-    category_name: Optional[str] = None
+    category_name: str | None = None
 
 
 class LinkMacro(DoubleArgMacro):
@@ -60,7 +58,7 @@ class ExtMacroMacro(SingleArgMacro):
 
 
 class CategoryMacro(DoubleArgMacro):
-    anchor_name: Optional[str] = None
+    anchor_name: str | None = None
 
 
 SINGLE_ARG_MACROS = {

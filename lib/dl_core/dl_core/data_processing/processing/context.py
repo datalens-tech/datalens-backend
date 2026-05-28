@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Collection,
-    Optional,
 )
 
 from dl_core.data_processing.processing.operation import (
@@ -47,7 +46,7 @@ class OpExecutionContext:
     def processing_id(self) -> str:
         return self._processing_id
 
-    def get_stream(self, stream_id: str) -> Optional[AbstractStream]:
+    def get_stream(self, stream_id: str) -> AbstractStream | None:
         return self._streams.get(stream_id)
 
     def add_stream(self, stream: AbstractStream) -> None:

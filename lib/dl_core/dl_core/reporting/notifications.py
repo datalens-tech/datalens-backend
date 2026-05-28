@@ -2,7 +2,6 @@ import time
 from typing import (
     Any,
     Callable,
-    Optional,
 )
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
@@ -71,9 +70,7 @@ class CacheInvalidationQueryFailedNotification(BaseNotification):
         return f"{self.type.value}__{int(time.time())}"
 
 
-def get_notification_record(
-    notification_type: NotificationType, **kwargs: Any
-) -> Optional[NotificationReportingRecord]:
+def get_notification_record(notification_type: NotificationType, **kwargs: Any) -> NotificationReportingRecord | None:
     ntf_cls = _NOTIFICATIONS.get(notification_type)
     if ntf_cls is None:
         return None

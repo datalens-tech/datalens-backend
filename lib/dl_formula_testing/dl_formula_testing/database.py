@@ -4,10 +4,6 @@ import datetime
 from functools import partial
 import logging
 import time
-from typing import (
-    Optional,
-    Union,
-)
 
 import attr
 import pytz
@@ -28,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 @attr.s(frozen=True)
 class FormulaDbConfig(DbConfig):
     dialect: DialectCombo = attr.ib(kw_only=True)
-    _tzinfo: Optional[datetime.tzinfo] = attr.ib(kw_only=True, default=None)
+    _tzinfo: datetime.tzinfo | None = attr.ib(kw_only=True, default=None)
 
     @property
     def tzinfo(self) -> datetime.tzinfo:
@@ -48,7 +44,7 @@ class Db(DbBase[FormulaDbConfig]):
         return self.config.tzinfo
 
 
-def make_db_config(dialect: DialectCombo, url: str, tzinfo: Optional[datetime.tzinfo] = None) -> FormulaDbConfig:
+def make_db_config(dialect: DialectCombo, url: str, tzinfo: datetime.tzinfo | None = None) -> FormulaDbConfig:
     db_eng_config_cls = get_engine_wrapper_cls_for_url(url).CONFIG_CLS
     db_eng_config = db_eng_config_cls(url=url)
     db_config = FormulaDbConfig(
@@ -67,11 +63,11 @@ def make_db_from_config(db_config: FormulaDbConfig) -> Db:
 
 @attr.s
 class FormulaDbDispenser(DbDispenserBase[FormulaDbConfig, Db]):
-    global_timeout: Union[int, float] = attr.ib(kw_only=True, default=180.0)
-    poll_pause: Union[int, float] = attr.ib(kw_only=True, default=0.7)
+    global_timeout: int | float = attr.ib(kw_only=True, default=180.0)
+    poll_pause: int | float = attr.ib(kw_only=True, default=0.7)
     # internal
     db_is_up: dict[FormulaDbConfig, Db] = attr.ib(init=False, factory=dict)
-    first_call_time: Optional[float] = attr.ib(init=False, default=None)
+    first_call_time: float | None = attr.ib(init=False, default=None)
 
     def ensure_db_is_up(self, db: Db) -> tuple[bool, str]:
         check_value_in = 123

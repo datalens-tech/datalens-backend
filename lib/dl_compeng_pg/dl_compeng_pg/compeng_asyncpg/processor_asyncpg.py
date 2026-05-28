@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from contextlib import AsyncExitStack
-from typing import Optional
 
 import asyncpg
 import attr
@@ -13,7 +12,7 @@ from dl_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProc
 
 @attr.s
 class AsyncpgOperationProcessor(PostgreSQLOperationProcessor[AsyncpgPoolWrapper, asyncpg.pool.PoolConnectionProxy]):
-    _cmstack: Optional[AsyncExitStack] = attr.ib(init=False, default=None)
+    _cmstack: AsyncExitStack | None = attr.ib(init=False, default=None)
     _timeout = 1.5
 
     async def start(self) -> None:

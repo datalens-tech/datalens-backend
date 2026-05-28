@@ -7,8 +7,6 @@ from enum import (
 from typing import (
     Any,
     Literal,
-    Optional,
-    Union,
     final,
 )
 
@@ -18,13 +16,13 @@ from dl_dynamic_enum import DynamicEnum
 
 Align = Literal["start", "center", "end"]
 WidthVariant = Literal["s", "m", "l", "auto"]
-Width = Union[WidthVariant, int, float]
+Width = WidthVariant | int | float
 
 
 class MarkdownString(str): ...
 
 
-MarkdownStr = Union[MarkdownString, str]  # marker type to show if a field supports markdown or not
+MarkdownStr = MarkdownString | str  # marker type to show if a field supports markdown or not
 
 
 @unique
@@ -87,7 +85,7 @@ class InnerFieldName(Enum):
     """
 
 
-TFieldName = Union[FormFieldName, TopLevelFieldName, InnerFieldName]
+TFieldName = FormFieldName | TopLevelFieldName | InnerFieldName
 
 
 @unique
@@ -103,7 +101,7 @@ class CFGMeta:
         default=False
     )  # whether it is a service field involved only in inner logic and which needs to be skipped
     skip_if_null: bool = attr.ib(default=False)  # sometimes it is more convenient for the UI to receive undefined
-    key: Optional[str] = attr.ib(default=None)  # remap key
+    key: str | None = attr.ib(default=None)  # remap key
 
     def attr_meta(self) -> dict[str, CFGMeta]:
         return {self.METADATA_KEY: self}

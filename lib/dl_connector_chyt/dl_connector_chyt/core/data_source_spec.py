@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import attr
 
 from dl_core.data_source_spec.sql import (
@@ -26,15 +24,15 @@ class CHYTSubselectDataSourceSpec(CHYTDataSourceSpecMixin, SubselectDataSourceSp
 @attr.s
 class CHYTTableListDataSourceSpec(CHYTDataSourceSpecMixin, SQLDataSourceSpecBase):
     # stored as a single `\n` separated string
-    table_names: Optional[str] = attr.ib(kw_only=True, default=None)
+    table_names: str | None = attr.ib(kw_only=True, default=None)
 
 
-def _zero_to_none[VAL_TV](value: VAL_TV) -> Optional[VAL_TV]:
+def _zero_to_none[VAL_TV](value: VAL_TV) -> VAL_TV | None:
     return value or None
 
 
 @attr.s
 class CHYTTableRangeDataSourceSpec(CHYTDataSourceSpecMixin, SQLDataSourceSpecBase):
-    directory_path: Optional[str] = attr.ib(kw_only=True, default=None)
-    range_from: Optional[str] = attr.ib(kw_only=True, default=None, converter=_zero_to_none)
-    range_to: Optional[str] = attr.ib(kw_only=True, default=None, converter=_zero_to_none)
+    directory_path: str | None = attr.ib(kw_only=True, default=None)
+    range_from: str | None = attr.ib(kw_only=True, default=None, converter=_zero_to_none)
+    range_to: str | None = attr.ib(kw_only=True, default=None, converter=_zero_to_none)

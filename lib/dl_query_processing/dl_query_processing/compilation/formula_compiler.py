@@ -14,10 +14,8 @@ from typing import (
     Collection,
     Generator,
     Iterable,
-    Optional,
     Protocol,
     Sequence,
-    Union,
     overload,
 )
 import uuid
@@ -141,7 +139,7 @@ class FieldProcessingStageManager:
         self._inspect_env = inspect_env
 
         self._errors: dict[str, dict[ProcessingStage, list[FormulaErrorCtx]]] = defaultdict(lambda: defaultdict(list))
-        self._exprs: dict[str, dict[ProcessingStage, Optional[formula_nodes.Formula]]] = defaultdict(
+        self._exprs: dict[str, dict[ProcessingStage, formula_nodes.Formula | None]] = defaultdict(
             lambda: defaultdict(lambda: None)
         )
         self._data_types: dict[str, dict[ProcessingStage, DataType]] = defaultdict(
@@ -170,7 +168,7 @@ class FieldProcessingStageManager:
     def get_errors(
         self,
         field: BIField,
-        stage: Union[ProcessingStage, Iterable[ProcessingStage], None] = None,
+        stage: ProcessingStage | Iterable[ProcessingStage] | None = None,
     ) -> list[FormulaErrorCtx]:
         """Return errors from cache for the given field (and type)."""
 
@@ -193,7 +191,7 @@ class FieldProcessingStageManager:
         if stage in self.save_type_stages:
             self._data_types[field.guid][stage] = self._get_formula_obj_data_type(formula_obj)
 
-    def get_result(self, field: BIField, stage: ProcessingStage) -> Optional[formula_nodes.Formula]:
+    def get_result(self, field: BIField, stage: ProcessingStage) -> formula_nodes.Formula | None:
         return self._exprs[field.guid][stage]
 
     def get_data_type(self, field: BIField, stage: ProcessingStage) -> DataType:
@@ -209,7 +207,7 @@ class FieldProcessingStageManager:
         if errors:
             raise dl_query_processing.exc.FormulaHandlingError(*errors, stage=stage, field=field)
 
-    def clear(self, field: BIField, stage: Optional[ProcessingStage] = None) -> None:
+    def clear(self, field: BIField, stage: ProcessingStage | None = None) -> None:
         """Clear error cache for the given field (and type)."""
 
         if stage is not None:
@@ -368,11 +366,11 @@ class FormulaCompiler:
         filter_ids: Collection[str] = (),
         order_by_specs: Sequence[OrderByFieldSpec] = (),
         mock_among_dimensions: bool = False,  # mock dimensions for AMONG clauses (in validation mode)
-        inspect_env: Optional[InspectionEnvironment] = None,
+        inspect_env: InspectionEnvironment | None = None,
         suppress_double_aggregations: bool = True,
         allow_nested_window_functions: bool = False,
         parameter_value_specs: Sequence[ParameterValueSpec] = (),
-        field_wrappers: Optional[dict[str, SelectWrapperSpec]] = None,
+        field_wrappers: dict[str, SelectWrapperSpec] | None = None,
         validate_aggregations: bool = True,
     ):
         self._fields = FieldRegistry()
@@ -519,7 +517,7 @@ class FormulaCompiler:
         self,
         field: BIField,
         collect_errors: bool = False,
-    ) -> tuple[Optional[formula_nodes.Formula], list[FormulaErrorCtx]]:
+    ) -> tuple[formula_nodes.Formula | None, list[FormulaErrorCtx]]:
         """Attempt to parse formula. If `collect_errors`"""
 
         formula = field.formula
@@ -825,7 +823,7 @@ class FormulaCompiler:
         self,
         formula_obj: formula_nodes.Formula,
         current_dtype: DataType,
-        cast: Optional[UserDataType],
+        cast: UserDataType | None,
     ) -> formula_nodes.Formula:
         """Apply a type cast to given expression"""
 
@@ -839,7 +837,7 @@ class FormulaCompiler:
         self,
         formula_obj: formula_nodes.Formula,
         current_dtype: DataType,
-        cast: Optional[UserDataType],
+        cast: UserDataType | None,
     ) -> formula_nodes.Formula:
         return self._apply_cast(formula_obj=formula_obj, current_dtype=current_dtype, cast=cast)
 
@@ -965,12 +963,12 @@ class FormulaCompiler:
         """Return boolean flag indicating whether the field is valid."""
         return not self.get_field_errors(field)
 
-    def get_field_initial_data_type(self, field: BIField) -> Optional[UserDataType]:
+    def get_field_initial_data_type(self, field: BIField) -> UserDataType | None:
         """Return automatically determined data type of given field before cast and aggregation"""
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_user_type(field=field, stage=ProcessingStage.substitution)
 
-    def get_field_final_data_type(self, field: BIField) -> Optional[UserDataType]:
+    def get_field_final_data_type(self, field: BIField) -> UserDataType | None:
         """
         Return automatically determined user data type (``UserDataType``)
         of given field after cast and aggregation
@@ -978,7 +976,7 @@ class FormulaCompiler:
         self._require_field_formula_preparation(field)
         return self._stage_manager.get_user_type(field=field, stage=ProcessingStage.aggregation)
 
-    def get_field_final_formula_data_type(self, field: BIField) -> Optional[DataType]:
+    def get_field_final_formula_data_type(self, field: BIField) -> DataType | None:
         """
         Return automatically determined formula data type (``DataType``)
         of given field after cast and aggregation
@@ -1076,7 +1074,7 @@ class FormulaCompiler:
             result = formula_nodes.Binary.make(name="and", left=result, right=compile_condition(condition=condition))
         formula_obj = formula_nodes.Formula.make(expr=result)
 
-        left_avatar_id: Optional[AvatarId] = relation.left_avatar_id
+        left_avatar_id: AvatarId | None = relation.left_avatar_id
         if relation.managed_by == ManagedBy.feature:
             left_avatar_id = None
 
@@ -1095,7 +1093,7 @@ class FormulaCompiler:
         self,
         field: BIField,
         collect_errors: bool = False,
-        original_field_id: Optional[str] = None,
+        original_field_id: str | None = None,
     ) -> CompiledFormulaInfo:
         formula_obj = self._compile_field_formula(field=field, collect_errors=collect_errors)
         formula_info = CompiledFormulaInfo(

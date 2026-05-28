@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Optional,
     Type,
     TypeVar,
 )
@@ -77,7 +76,7 @@ class ActionTest(NonStreamAction[None]):
 
 
 @attr.s(frozen=True)
-class ActionGetDBVersion(NonStreamAction[Optional[str]]):
+class ActionGetDBVersion(NonStreamAction[str | None]):
     db_ident: DBIdent = attr.ib()
 
     class ResultSchema(PrimitivesResponseSchema):

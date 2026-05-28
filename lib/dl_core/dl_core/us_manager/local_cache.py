@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    Union,
 )
 
 import attr
@@ -24,7 +23,7 @@ if TYPE_CHECKING:
 
 @attr.s
 class USEntryBuffer:
-    _data: dict[ConnectionRef, Union[USEntry, BrokenUSLink]] = attr.ib(factory=dict)
+    _data: dict[ConnectionRef, USEntry | BrokenUSLink] = attr.ib(factory=dict)
 
     def get_entry(self, entry_id: ConnectionRef) -> USEntry:
         entry = self._data.get(entry_id)
@@ -46,13 +45,13 @@ class USEntryBuffer:
 
         return entry
 
-    def set_entry(self, entry_id: ConnectionRef, entry: Union[USEntry, BrokenUSLink]) -> None:
+    def set_entry(self, entry_id: ConnectionRef, entry: USEntry | BrokenUSLink) -> None:
         self._data[entry_id] = entry
 
     def __getitem__(self, entry_id: ConnectionRef) -> USEntry:
         return self.get_entry(entry_id)
 
-    def __setitem__(self, entry_id: ConnectionRef, entry: Union[USEntry, BrokenUSLink]) -> None:
+    def __setitem__(self, entry_id: ConnectionRef, entry: USEntry | BrokenUSLink) -> None:
         self.set_entry(entry_id, entry)
 
     def __contains__(self, entry_id: ConnectionRef) -> bool:

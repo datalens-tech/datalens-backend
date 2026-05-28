@@ -4,7 +4,6 @@ from datetime import (
     datetime,
     timedelta,
 )
-from typing import Optional
 from urllib import parse
 
 import attr
@@ -41,7 +40,7 @@ class SFAuthProvider:
     client_id: str = attr.ib()
     client_secret: str = attr.ib()
     refresh_token: str = attr.ib()
-    refresh_token_expire_time: Optional[datetime] = attr.ib(default=None)
+    refresh_token_expire_time: datetime | None = attr.ib(default=None)
 
     _SNOWFLAKE_DOMAIN = "snowflakecomputing.com"
     _NOTIFICATION_DAYS_BEFORE_TOKEN_EXPIRE = 7
@@ -69,7 +68,7 @@ class SFAuthProvider:
             basic_auth=(self.client_id, parse.quote(self.client_secret)),
         )
 
-    def _store_access_token(self, access_token: str, ttl: Optional[int] = None) -> None:
+    def _store_access_token(self, access_token: str, ttl: int | None = None) -> None:
         pass
 
     async def async_get_access_token(self) -> str:

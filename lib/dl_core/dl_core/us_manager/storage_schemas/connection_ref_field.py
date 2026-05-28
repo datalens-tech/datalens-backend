@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     Mapping,
-    Optional,
 )
 
 from marshmallow.fields import Field
@@ -15,7 +14,7 @@ from dl_core.base_models import (
 
 
 class ConnectionRefField(Field):
-    def _serialize(self, value: Optional[ConnectionRef], attr: Optional[str], obj: Any, **kwargs: Any) -> Optional[str]:
+    def _serialize(self, value: ConnectionRef | None, attr: str | None, obj: Any, **kwargs: Any) -> str | None:
         if value is None:
             raise ValueError("Can not serialize data source without connection reference")
         if isinstance(value, DefaultConnectionRef):
@@ -23,7 +22,7 @@ class ConnectionRefField(Field):
         return None
 
     def _deserialize(
-        self, value: Optional[str], attr: Optional[str], data: Optional[Mapping[str, Any]], **kwargs: Any
+        self, value: str | None, attr: str | None, data: Mapping[str, Any] | None, **kwargs: Any
     ) -> ConnectionRef:
         """
         Wraps connection ID with ConnRef object

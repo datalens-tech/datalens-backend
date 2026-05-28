@@ -5,7 +5,6 @@ from typing import (
     Any,
     Callable,
     Iterable,
-    Optional,
 )
 
 import attr
@@ -61,7 +60,7 @@ class DatasetTestWrapper:
     """
 
     _dataset: Dataset = attr.ib()
-    _us_manager: Optional[USManagerBase] = attr.ib(kw_only=True, default=None)  # FIXME: Legacy; remove
+    _us_manager: USManagerBase | None = attr.ib(kw_only=True, default=None)  # FIXME: Legacy; remove
     _us_entry_buffer: USEntryBuffer = attr.ib(kw_only=True)
 
     _ds_accessor: DatasetComponentAccessor = attr.ib(init=False)
@@ -90,22 +89,22 @@ class DatasetTestWrapper:
     def dsrc_coll_factory(self) -> DataSourceCollectionFactory:
         return self._dsrc_coll_factory
 
-    def get_root_avatar_opt(self) -> Optional[SourceAvatar]:
+    def get_root_avatar_opt(self) -> SourceAvatar | None:
         return self._ds_accessor.get_root_avatar_opt()
 
     def get_root_avatar_strict(self) -> SourceAvatar:
         return self._ds_accessor.get_root_avatar_strict()
 
-    def get_avatar_list(self, source_id: Optional[str] = None) -> list[SourceAvatar]:
+    def get_avatar_list(self, source_id: str | None = None) -> list[SourceAvatar]:
         return self._ds_accessor.get_avatar_list(source_id=source_id)
 
-    def get_avatar_opt(self, avatar_id: str) -> Optional[SourceAvatar]:
+    def get_avatar_opt(self, avatar_id: str) -> SourceAvatar | None:
         return self._ds_accessor.get_avatar_opt(avatar_id=avatar_id)
 
     def get_avatar_strict(self, avatar_id: str) -> SourceAvatar:
         return self._ds_accessor.get_avatar_strict(avatar_id=avatar_id)
 
-    def get_data_source_coll_spec_opt(self, source_id: str) -> Optional[DataSourceCollectionSpec]:
+    def get_data_source_coll_spec_opt(self, source_id: str) -> DataSourceCollectionSpec | None:
         return self._ds_accessor.get_data_source_coll_spec_opt(source_id=source_id)
 
     def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpec:
@@ -114,7 +113,7 @@ class DatasetTestWrapper:
     def get_data_source_coll_list(self) -> list[DataSourceCollection]:
         return [self.get_data_source_coll_strict(source_id=source_id) for source_id in self.get_data_source_id_list()]
 
-    def get_data_source_coll_opt(self, source_id: str) -> Optional[DataSourceCollection]:
+    def get_data_source_coll_opt(self, source_id: str) -> DataSourceCollection | None:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
         dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
             spec=dsrc_coll_spec,
@@ -136,7 +135,7 @@ class DatasetTestWrapper:
             self.get_data_source_strict(source_id=source_id, role=role) for source_id in self.get_data_source_id_list()
         ]
 
-    def get_data_source_opt(self, source_id: str, role: DataSourceRole) -> Optional[DataSource]:
+    def get_data_source_opt(self, source_id: str, role: DataSourceRole) -> DataSource | None:
         assert role is not None
         dsrc_coll = self.get_data_source_coll_strict(source_id=source_id)
         dsrc = dsrc_coll.get_opt(role=role)
@@ -154,7 +153,7 @@ class DatasetTestWrapper:
         return dsrc
 
     def get_avatar_relation_list(
-        self, left_avatar_id: Optional[str] = None, right_avatar_id: Optional[str] = None
+        self, left_avatar_id: str | None = None, right_avatar_id: str | None = None
     ) -> list[AvatarRelation]:
         return self._ds_accessor.get_avatar_relation_list(
             left_avatar_id=left_avatar_id,
@@ -163,9 +162,9 @@ class DatasetTestWrapper:
 
     def get_avatar_relation_strict(
         self,
-        relation_id: Optional[str] = None,
-        left_avatar_id: Optional[str] = None,
-        right_avatar_id: Optional[str] = None,
+        relation_id: str | None = None,
+        left_avatar_id: str | None = None,
+        right_avatar_id: str | None = None,
     ) -> AvatarRelation:
         return self._ds_accessor.get_avatar_relation_strict(
             relation_id=relation_id,
@@ -178,15 +177,15 @@ class DatasetTestWrapper:
 
     def get_obligatory_filter_opt(
         self,
-        obfilter_id: Optional[str] = None,
-        field_guid: Optional[str] = None,
-    ) -> Optional[ObligatoryFilter]:
+        obfilter_id: str | None = None,
+        field_guid: str | None = None,
+    ) -> ObligatoryFilter | None:
         return self._ds_accessor.get_obligatory_filter_opt(obfilter_id=obfilter_id, field_guid=field_guid)
 
     def get_obligatory_filter_strict(
         self,
-        obfilter_id: Optional[str] = None,
-        field_guid: Optional[str] = None,
+        obfilter_id: str | None = None,
+        field_guid: str | None = None,
     ) -> ObligatoryFilter:
         return self._ds_accessor.get_obligatory_filter_strict(obfilter_id=obfilter_id, field_guid=field_guid)
 
@@ -241,8 +240,8 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def update_data_source_collection(
         self,
         source_id: str,
-        title: Optional[str] = None,
-        valid: Optional[bool] = None,
+        title: str | None = None,
+        valid: bool | None = None,
     ) -> None:
         self._ds_editor.update_data_source_collection(source_id=source_id, title=title, valid=valid)
 
@@ -255,12 +254,12 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         source_id: str,
         role: DataSourceRole = DataSourceRole.origin,
         created_from: DataSourceType,
-        connection_id: Optional[str] = None,
-        title: Optional[str] = None,
-        raw_schema: Optional[list[SchemaColumn]] = None,
+        connection_id: str | None = None,
+        title: str | None = None,
+        raw_schema: list[SchemaColumn] | None = None,
         index_info_set: frozenset[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
-        managed_by: Optional[ManagedBy] = None,
-        parameters: Optional[dict[str, Any]] = None,
+        managed_by: ManagedBy | None = None,
+        parameters: dict[str, Any] | None = None,
     ) -> None:
         self._ds_editor.add_data_source(
             source_id=source_id,
@@ -277,10 +276,10 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def update_data_source(
         self,
         source_id: str,
-        role: Optional[DataSourceRole] = None,
-        connection_id: Optional[str] = None,
-        created_from: Optional[DataSourceType] = None,
-        raw_schema: Optional[list] = None,
+        role: DataSourceRole | None = None,
+        connection_id: str | None = None,
+        created_from: DataSourceType | None = None,
+        raw_schema: list | None = None,
         index_info_set: frozenset[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
         **parameters: Any,
     ) -> None:
@@ -302,7 +301,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         avatar_id: str,
         source_id: str,
         title: str,
-        managed_by: Optional[ManagedBy] = None,
+        managed_by: ManagedBy | None = None,
         valid: bool = True,
     ) -> None:
         return self._ds_editor.add_avatar(
@@ -316,9 +315,9 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def update_avatar(
         self,
         avatar_id: str,
-        source_id: Optional[str] = None,
-        title: Optional[str] = None,
-        valid: Optional[bool] = None,
+        source_id: str | None = None,
+        title: str | None = None,
+        valid: bool | None = None,
     ) -> None:
         return self._ds_editor.update_avatar(
             avatar_id=avatar_id,
@@ -355,9 +354,9 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def update_avatar_relation(
         self,
         relation_id: str,
-        conditions: Optional[list[BinaryCondition]] = None,
-        join_type: Optional[JoinType] = None,
-        valid: Optional[bool] = None,
+        conditions: list[BinaryCondition] | None = None,
+        join_type: JoinType | None = None,
+        valid: bool | None = None,
     ) -> None:
         self._ds_editor.update_avatar_relation(
             relation_id=relation_id,
@@ -374,7 +373,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         obfilter_id: str,
         field_guid: str,
         default_filters: list[DefaultWhereClause],
-        managed_by: Optional[ManagedBy] = None,
+        managed_by: ManagedBy | None = None,
         valid: bool = True,
     ) -> None:
         self._ds_editor.add_obligatory_filter(
@@ -388,8 +387,8 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
     def update_obligatory_filter(
         self,
         obfilter_id: str,
-        default_filters: Optional[list[DefaultWhereClause]] = None,
-        valid: Optional[bool] = None,
+        default_filters: list[DefaultWhereClause] | None = None,
+        valid: bool | None = None,
     ) -> None:
         self._ds_editor.update_obligatory_filter(
             obfilter_id=obfilter_id,

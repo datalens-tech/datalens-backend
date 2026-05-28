@@ -8,9 +8,7 @@ from typing import (
     AsyncGenerator,
     AsyncIterable,
     Iterable,
-    Optional,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -70,10 +68,10 @@ class AsyncUSManager(USManagerBase):
         bi_context: RequestContextInfo,
         services_registry: ServicesRegistry,
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
-        crypto_keys_config: Optional[CryptoKeysConfig] = None,
-        us_api_prefix: Optional[str] = None,
-        lifecycle_manager_factory: Optional[EntryLifecycleManagerFactoryBase] = None,
-        schema_migration_factory: Optional[EntrySchemaMigrationFactoryBase] = None,
+        crypto_keys_config: CryptoKeysConfig | None = None,
+        us_api_prefix: str | None = None,
+        lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
+        schema_migration_factory: EntrySchemaMigrationFactoryBase | None = None,
     ):
         self._us_client = UStorageClientAIO(
             host=us_base_url,
@@ -135,8 +133,8 @@ class AsyncUSManager(USManagerBase):
         self,
         entry_id: str,
         expected_type: None = None,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
         branch: USEntryBranch = USEntryBranch.published,
     ) -> USEntry:
         pass
@@ -145,9 +143,9 @@ class AsyncUSManager(USManagerBase):
     async def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[type[_ENTRY_TV]] = None,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        expected_type: type[_ENTRY_TV] | None = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
         branch: USEntryBranch = USEntryBranch.published,
     ) -> _ENTRY_TV:
         pass
@@ -156,9 +154,9 @@ class AsyncUSManager(USManagerBase):
     async def get_by_id(
         self,
         entry_id: str,
-        expected_type: Optional[type[USEntry]] = None,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        expected_type: type[USEntry] | None = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
         branch: USEntryBranch = USEntryBranch.published,
     ) -> USEntry:
         with self._enrich_us_exception(
@@ -181,8 +179,8 @@ class AsyncUSManager(USManagerBase):
     async def get_by_id_raw(
         self,
         entry_id: str,
-        expected_type: Optional[type[USEntry]] = None,
-        params: Optional[dict[str, str]] = None,
+        expected_type: type[USEntry] | None = None,
+        params: dict[str, str] | None = None,
     ) -> dict[str, Any]:
         """Get raw `us_resp` from response without deserialization"""
 
@@ -198,7 +196,7 @@ class AsyncUSManager(USManagerBase):
     async def deserialize_us_resp(
         self,
         us_resp: dict[str, Any],
-        expected_type: Optional[type[USEntry]] = None,
+        expected_type: type[USEntry] | None = None,
     ) -> USEntry:
         """Used on result of `get_by_id_raw()` call for proper deserialization flow"""
 
@@ -211,8 +209,8 @@ class AsyncUSManager(USManagerBase):
     async def get_migrated_entry(
         self,
         entry_id: str,
-        params: Optional[dict[str, str]] = None,
-        context_name: Optional[str] = None,
+        params: dict[str, str] | None = None,
+        context_name: str | None = None,
         branch: USEntryBranch = USEntryBranch.published,
     ) -> dict[str, Any]:
         us_resp = await self._us_client.get_entry(
@@ -362,9 +360,9 @@ class AsyncUSManager(USManagerBase):
         wait_timeout_sec: int = 30,
         duration_sec: int = 300,
         force: bool = False,
-        context_name: Optional[str] = None,
+        context_name: str | None = None,
     ) -> AsyncGenerator[_ENTRY_TV, None]:
-        entry: Optional[_ENTRY_TV] = None
+        entry: _ENTRY_TV | None = None
         lock_token = await self._us_client.acquire_lock(
             entry_id,
             wait_timeout=wait_timeout_sec,
@@ -415,7 +413,7 @@ class AsyncUSManager(USManagerBase):
         conn_ref: ConnectionRef,
         connection_type: ConnectionType | None = None,
     ) -> ConnectionBase | None:
-        conn: Union[USEntry, BrokenUSLink]
+        conn: USEntry | BrokenUSLink
         if conn_ref in self._loaded_entries:
             conn = self._loaded_entries[conn_ref]
         else:
@@ -498,9 +496,9 @@ class AsyncUSManager(USManagerBase):
     def get_raw_collection(
         self,
         entry_scope: str,
-        entry_type: Optional[str] = None,
+        entry_type: str | None = None,
         all_tenants: bool = False,
-        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        creation_time: dict[str, str | int | None] | None = None,
     ) -> AsyncIterable[dict]:
         return self._us_client.entries_iterator(
             scope=entry_scope,
@@ -513,14 +511,14 @@ class AsyncUSManager(USManagerBase):
 
     async def get_collection(
         self,
-        entry_cls: Optional[type[_ENTRY_TV]],
-        entry_type: Optional[str] = None,
-        entry_scope: Optional[str] = None,
-        meta: Optional[dict[str, Union[str, int, None]]] = None,
+        entry_cls: type[_ENTRY_TV] | None,
+        entry_type: str | None = None,
+        entry_scope: str | None = None,
+        meta: dict[str, str | int | None] | None = None,
         all_tenants: bool = False,
         include_data: bool = True,
-        ids: Optional[Iterable[str]] = None,
-        creation_time: Optional[dict[str, Union[str, int, None]]] = None,
+        ids: Iterable[str] | None = None,
+        creation_time: dict[str, str | int | None] | None = None,
         raise_on_broken_entry: bool = False,
     ) -> AsyncGenerator[_ENTRY_TV, None]:
         if all_tenants and include_data:

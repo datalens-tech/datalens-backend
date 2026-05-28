@@ -7,7 +7,6 @@ from __future__ import annotations
 from enum import Enum
 from typing import (
     Hashable,
-    Optional,
     Sequence,
     cast,
 )
@@ -27,7 +26,7 @@ class JoinConditionBase(nodes.FormulaItem):
     autonomous = False
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert not internal_value
 
 
@@ -47,7 +46,7 @@ class SelfEqualityJoinCondition(JoinConditionBase):
         assert len(children) == 1
 
     @classmethod
-    def make(cls, expr: nodes.FormulaItem, *, meta: Optional[nodes.NodeMeta] = None) -> SelfEqualityJoinCondition:
+    def make(cls, expr: nodes.FormulaItem, *, meta: nodes.NodeMeta | None = None) -> SelfEqualityJoinCondition:
         children = (expr,)
         return cls(*children, meta=meta)
 
@@ -74,7 +73,7 @@ class BinaryJoinCondition(JoinConditionBase):
         expr: nodes.FormulaItem,
         fork_expr: nodes.FormulaItem,
         *,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> BinaryJoinCondition:
         children = (expr, fork_expr)
         return cls(*children, meta=meta)
@@ -105,13 +104,13 @@ class QueryForkJoiningWithList(QueryForkJoiningBase):
         cls,
         condition_list: list[JoinConditionBase],
         *,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> QueryForkJoiningWithList:
         children = condition_list
         return cls(*children, meta=meta)
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert not internal_value
 
     @property
@@ -134,7 +133,7 @@ class BfbFilterMutationSpec(nodes.FormulaItem):
         original: nodes.FormulaItem,
         replacement: nodes.FormulaItem,
         *,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> BfbFilterMutationSpec:
         children = (original, replacement)
         return cls(*children, meta=meta)
@@ -151,7 +150,7 @@ class BfbFilterMutationCollectionSpec(nodes.FormulaItem):
     def make(
         cls,
         *mutations: BfbFilterMutationSpec,
-        meta: Optional[nodes.NodeMeta] = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> BfbFilterMutationCollectionSpec:
         children = mutations
         return cls(*children, meta=meta)
@@ -180,10 +179,10 @@ class QueryFork(nodes.FormulaItem):
         join_type: JoinType,
         joining: QueryForkJoiningBase,
         result_expr: nodes.FormulaItem,
-        before_filter_by: Optional[nodes.BeforeFilterBy] = None,
-        lod: Optional[nodes.LodSpecifier] = None,
-        bfb_filter_mutations: Optional[BfbFilterMutationCollectionSpec] = None,
-        meta: Optional[nodes.NodeMeta] = None,
+        before_filter_by: nodes.BeforeFilterBy | None = None,
+        lod: nodes.LodSpecifier | None = None,
+        bfb_filter_mutations: BfbFilterMutationCollectionSpec | None = None,
+        meta: nodes.NodeMeta | None = None,
     ) -> QueryFork:
         if before_filter_by is None:
             before_filter_by = nodes.BeforeFilterBy.make()
@@ -201,7 +200,7 @@ class QueryFork(nodes.FormulaItem):
         assert len(children) == 5
 
     @classmethod
-    def validate_internal_value(cls, internal_value: tuple[Optional[Hashable], ...]) -> None:
+    def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
         assert len(internal_value) == 1
         assert isinstance(internal_value[0], JoinType)
 

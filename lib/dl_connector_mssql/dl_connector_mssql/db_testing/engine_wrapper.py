@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
 import urllib.parse
 
 from sqlalchemy.engine.url import URL
@@ -38,5 +37,5 @@ class MSSQLEngineWrapper(EngineWrapperBase):
         finally:
             cur.close()
 
-    def get_version(self) -> Optional[str]:
+    def get_version(self) -> str | None:
         return self.execute("SELECT @@VERSION").scalar()

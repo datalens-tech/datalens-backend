@@ -10,10 +10,8 @@ from typing import (
     ClassVar,
     Generic,
     Iterable,
-    Optional,
     Sequence,
     TypeVar,
-    Union,
     final,
 )
 
@@ -62,14 +60,14 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
     def __init__(
         self,
         *,
-        only: Optional[Sequence[str]] = None,
+        only: Sequence[str] | None = None,
         exclude: Sequence[str] = (),
         many: bool = False,
-        context: Optional[dict] = None,
+        context: dict | None = None,
         load_only: Sequence[str] = (),
         dump_only: Sequence[str] = (),
-        partial: Union[Sequence[str], bool] = False,
-        unknown: Optional[str] = None,
+        partial: Sequence[str] | bool = False,
+        unknown: str | None = None,
     ) -> None:
         refined_kwargs = self._refine_init_kwargs(
             dict(
@@ -86,11 +84,11 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         super().__init__(many=many, context=context, unknown=unknown, **refined_kwargs)
 
     @staticmethod
-    def get_field_extra(f: ma_fields.Field) -> Optional[FieldExtra]:
+    def get_field_extra(f: ma_fields.Field) -> FieldExtra | None:
         return f.metadata.get("bi_extra", None)
 
     @property
-    def operations_mode(self) -> Optional[CreateMode | ImportMode]:
+    def operations_mode(self) -> CreateMode | ImportMode | None:
         return self.context.get(self.CTX_KEY_OPERATIONS_MODE)
 
     @classmethod
@@ -104,7 +102,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
             if extra is not None:
                 yield field_name, field, extra
 
-    def _refine_init_kwargs(self, kw_args: SchemaKWArgs, operations_mode: Optional[OperationsMode]) -> SchemaKWArgs:
+    def _refine_init_kwargs(self, kw_args: SchemaKWArgs, operations_mode: OperationsMode | None) -> SchemaKWArgs:
         if operations_mode is None:
             return kw_args
 
@@ -158,7 +156,7 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
         raise NotImplementedError()
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict[str, Any], **_: Any) -> Union[_TARGET_OBJECT_TV, dict]:
+    def post_load(self, data: dict[str, Any], **_: Any) -> _TARGET_OBJECT_TV | dict:
         if isinstance(self.operations_mode, EditMode):
             editable_object = self.context.get(self.CTX_KEY_EDITABLE_OBJECT)
             if editable_object is None:
@@ -419,9 +417,9 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin
 def resolve_entry_loc_from_api_req_body(
     *,
     name: str,
-    dir_path: Optional[str],
-    collection_id: Optional[str],
-    workbook_id: Optional[str],
+    dir_path: str | None,
+    collection_id: str | None,
+    workbook_id: str | None,
 ) -> EntryLocation:
     assert name is not None, "name can not be None"
 

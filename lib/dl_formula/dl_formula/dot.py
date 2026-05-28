@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from functools import singledispatchmethod
 import textwrap
-from typing import Union
 import uuid
 
 import graphviz
@@ -99,9 +98,7 @@ class DotTranslator:
 
     @_translate_node.register(nodes.FuncCall)
     @_translate_node.register(nodes.WindowFuncCall)
-    def _translate_node_func_call(
-        self, node: Union[nodes.FuncCall, nodes.WindowFuncCall], dot: graphviz.Digraph
-    ) -> str:
+    def _translate_node_func_call(self, node: nodes.FuncCall | nodes.WindowFuncCall, dot: graphviz.Digraph) -> str:
         node_name = make_name()
         args_names = [f"ARG{i}" for i in range(len(node.args))]
         dot.node(
@@ -175,7 +172,7 @@ class DotTranslator:
     @_translate_node.register(nodes.WindowGroupingWithin)
     @_translate_node.register(nodes.WindowGroupingAmong)
     def _translate_node_window_grouping_with_dimensions(
-        self, node: Union[nodes.WindowGroupingWithin, nodes.WindowGroupingAmong], dot: graphviz.Digraph
+        self, node: nodes.WindowGroupingWithin | nodes.WindowGroupingAmong, dot: graphviz.Digraph
     ) -> str:
         node_name = make_name()
         keyword = {

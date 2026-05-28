@@ -1,6 +1,5 @@
 import abc
 import logging
-from typing import Optional
 
 import attr
 
@@ -22,7 +21,7 @@ class USEntryMutationCacheFactory(metaclass=abc.ABCMeta):
         self,
         usm: USManagerBase,
         engine: GenericCacheEngine,
-        ttl: Optional[float] = None,
+        ttl: float | None = None,
     ) -> USEntryMutationCache:
         pass
 
@@ -33,7 +32,7 @@ class DefaultUSEntryMutationCacheFactory(USEntryMutationCacheFactory):
         self,
         usm: USManagerBase,
         engine: GenericCacheEngine,
-        ttl: Optional[float] = None,
+        ttl: float | None = None,
     ) -> USEntryMutationCache:
         if ttl is None:
             ttl = self.default_ttl

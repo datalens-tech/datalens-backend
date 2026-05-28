@@ -4,9 +4,7 @@ from typing import (
     Any,
     Collection,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 import attr
@@ -23,14 +21,14 @@ _INDENT = " " * 4
 
 def pretty_repr(
     model: Any,
-    preferred_cls_name_prefixes: Union[Mapping[Any, Optional[str]], Sequence[Any], None] = None,
+    preferred_cls_name_prefixes: Mapping[Any, str | None] | Sequence[Any] | None = None,
 ) -> str:
     """
     Generates string with prettily-formatted executable code that will create model passed in `model`.
     Classes that are declared as module-level vars in `preferred_cls_name_prefixes` will be prefixed with module name.
     Order matters. First appearance takes precedence. Take into account that imports are treated as module-level vars.
     """
-    effective_preferred_cls_name_prefixes: Mapping[Any, Optional[str]]
+    effective_preferred_cls_name_prefixes: Mapping[Any, str | None]
 
     if isinstance(preferred_cls_name_prefixes, dict):
         effective_preferred_cls_name_prefixes = preferred_cls_name_prefixes
@@ -51,7 +49,7 @@ class _DictItem:
 
 @attr.s()
 class Renderer:
-    _preferred_cls_name_prefixes: Mapping[Any, Optional[str]] = attr.ib()
+    _preferred_cls_name_prefixes: Mapping[Any, str | None] = attr.ib()
     _map_cls_cls_prefix: dict[type, str] = attr.ib(init=False, factory=dict)
 
     def __attrs_post_init__(self) -> None:
@@ -92,7 +90,7 @@ class Renderer:
     @_get_lines_internal.register(str)
     @_get_lines_internal.register(type(None))
     @_get_lines_internal.register(SingleOrMultiString)
-    def _get_lines_internal_primitive(self, model: Union[int, float, str, None]) -> list[str]:
+    def _get_lines_internal_primitive(self, model: int | float | str | None) -> list[str]:
         return [repr(model)]
 
     @_get_lines_internal.register
@@ -179,7 +177,7 @@ class Renderer:
         start: str,
         end: str,
         trailing_comma_required: bool = False,
-        empty_override: Optional[str] = None,
+        empty_override: str | None = None,
         inline_single_element: bool = True,
     ) -> list[str]:
         if len(model) == 0:

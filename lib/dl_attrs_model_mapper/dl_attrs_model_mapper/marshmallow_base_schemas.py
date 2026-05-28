@@ -6,10 +6,8 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Optional,
     OrderedDict,
     TypeVar,
-    Union,
 )
 
 import marshmallow
@@ -52,7 +50,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
             raise
 
     @post_dump(pass_many=False)
-    def post_dump(self, data: Union[dict[str, Any], OrderedDict[str, Any]], **_: Any) -> dict[str, Any]:
+    def post_dump(self, data: dict[str, Any] | OrderedDict[str, Any], **_: Any) -> dict[str, Any]:
         # If Meta.ordered == False MA does not respect keys order at all
         # But ordered dict will break some contracts
         # So we use that in Py>3.7 any dict is ordered to do not break contracts
@@ -75,7 +73,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
         cls,
         generate_for: type[_TARGET_OBJECT_GENERATED_TV],
         field_map: dict[str, fields.Field],
-        fields_to_skip_on_none: Optional[set[str]] = None,
+        fields_to_skip_on_none: set[str] | None = None,
     ) -> type[BaseSchema[_TARGET_OBJECT_GENERATED_TV]]:
         # TODO FIX: Generate mnemonic class name
         class ResultingSchema(

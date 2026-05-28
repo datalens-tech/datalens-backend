@@ -1,5 +1,4 @@
 import datetime
-from typing import Union
 
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect
@@ -7,7 +6,7 @@ from sqlalchemy.sql.elements import ClauseElement
 
 
 def compile_mysql_query(
-    query: Union[str, ClauseElement],
+    query: str | ClauseElement,
     dialect: Dialect,
     escape_percent: bool,
 ) -> tuple[str, dict]:

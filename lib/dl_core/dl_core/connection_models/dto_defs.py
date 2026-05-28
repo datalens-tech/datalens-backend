@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -16,7 +15,7 @@ from dl_constants.enums import ConnectionType
 class ConnDTO:
     conn_type: ClassVar[ConnectionType]
 
-    conn_id: Optional[str] = attr.ib(kw_only=True)
+    conn_id: str | None = attr.ib(kw_only=True)
 
     def conn_reporting_data(self) -> dict:
         return dict(

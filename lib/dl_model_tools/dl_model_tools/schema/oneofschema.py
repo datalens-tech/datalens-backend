@@ -5,9 +5,7 @@ from typing import (
     Any,
     Iterable,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 from marshmallow.decorators import (
@@ -30,8 +28,8 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
     """
 
     def dump(
-        self, obj: Any, *, many: Optional[bool] = None, **kwargs: Any
-    ) -> Union[Mapping[str, Any], Iterable[Mapping[str, Any]]]:
+        self, obj: Any, *, many: bool | None = None, **kwargs: Any
+    ) -> Mapping[str, Any] | Iterable[Mapping[str, Any]]:
         many = self.many if many is None else bool(many)
 
         if self._has_processors(PRE_DUMP):
@@ -48,11 +46,11 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
 
     def load(
         self,
-        data: Union[Mapping[str, Any], Iterable[Mapping[str, Any]]],
+        data: Mapping[str, Any] | Iterable[Mapping[str, Any]],
         *,
-        many: Optional[bool] = None,
-        partial: Optional[Union[bool, Sequence[str], AbstractSet[str]]] = None,
-        unknown: Optional[str] = None,
+        many: bool | None = None,
+        partial: bool | Sequence[str] | AbstractSet[str] | None = None,
+        unknown: str | None = None,
         **kwargs: Any,
     ) -> Any:
         error_store = ErrorStore()

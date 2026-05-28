@@ -5,7 +5,6 @@ from enum import (
     unique,
 )
 from typing import (
-    Optional,
     Sequence,
 )
 
@@ -88,7 +87,7 @@ class YDBRowConstructor(RowConstructor):
         )
 
     def password_row(
-        self, mode: ConnectionFormMode, display_conditions: Optional[TDisplayConditions] = None
+        self, mode: ConnectionFormMode, display_conditions: TDisplayConditions | None = None
     ) -> C.CustomizableRow:
         label_text = self._localizer.translate(Translatable("field_password"))
         return C.CustomizableRow(
@@ -195,7 +194,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         check_api_schema: FormActionApiSchema,
         rc: RowConstructor,
         ydb_rc: YDBRowConstructor,
-        connector_settings: Optional[ConnectorSettings],
+        connector_settings: ConnectorSettings | None,
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
 
@@ -296,8 +295,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
 
     def get_form_config(
         self,
-        connector_settings: Optional[ConnectorSettings],
-        tenant: Optional[TenantDef],
+        connector_settings: ConnectorSettings | None,
+        tenant: TenantDef | None,
     ) -> ConnectionForm:
         assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)

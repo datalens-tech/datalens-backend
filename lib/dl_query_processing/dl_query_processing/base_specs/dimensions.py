@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from typing import Union
-
 import attr
 
 from dl_constants.types import TBIDataValue
 
-CellValue = Union[TBIDataValue, dict]
+CellValue = TBIDataValue | dict
 
 
 @attr.s(frozen=True)

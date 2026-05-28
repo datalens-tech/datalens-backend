@@ -140,14 +140,14 @@ class FlatQueryTranslator:
 
     def _get_detailed_types(
         self, compiled_flat_query: CompiledQuery, translated_select: list[ExpressionCtxExt]
-    ) -> Optional[list[Optional[DetailedType]]]:
+    ) -> list[DetailedType | None] | None:
         field_order = compiled_flat_query.meta.field_order
         if field_order is None:
             return None
 
-        result: list[Optional[DetailedType]] = []
+        result: list[DetailedType | None] = []
         for field_idx, field_id in field_order:
-            detailed_type: Optional[DetailedType]
+            detailed_type: DetailedType | None
             if field_id is None:
                 detailed_type = None
             else:

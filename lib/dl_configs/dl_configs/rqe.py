@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import enum
 import os
-from typing import Optional
 
 import attr
 
@@ -62,7 +61,7 @@ class RQEConfig(SettingsBase):
         return attr.evolve(self, **kwargs)
 
 
-def rqe_config_from_env(env: Optional[SDict] = None, add_dummy_hmac_if_missing: bool = False) -> RQEConfig:
+def rqe_config_from_env(env: SDict | None = None, add_dummy_hmac_if_missing: bool = False) -> RQEConfig:
     """
     :return: RQE config (default with overrides from environment variables)
     """

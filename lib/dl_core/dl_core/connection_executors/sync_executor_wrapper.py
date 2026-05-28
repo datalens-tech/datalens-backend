@@ -93,7 +93,7 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
         self._await_sync(self._async_conn_executor.close())
 
     @overload
-    def _extract_sync_sa_adapter(self, raise_on_not_exists: Literal[False]) -> Optional[SyncDirectDBAdapter]:
+    def _extract_sync_sa_adapter(self, raise_on_not_exists: Literal[False]) -> SyncDirectDBAdapter | None:
         pass
 
     @overload  # noqa
@@ -182,7 +182,7 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
         return self._await_sync(self._async_conn_executor.test())
 
     @init_required
-    def get_db_version(self, db_ident: DBIdent) -> Optional[str]:
+    def get_db_version(self, db_ident: DBIdent) -> str | None:
         sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=False)
         if sa_adapter is not None:
             return sa_adapter.get_db_version(db_ident)
@@ -226,5 +226,5 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
     def __enter__(self) -> SyncWrapperForAsyncConnExecutor:
         return self
 
-    def __exit__(self, exc_type: Optional[type[Exception]], exc_val: Optional[Exception], exc_tb: Any) -> None:
+    def __exit__(self, exc_type: type[Exception] | None, exc_val: Exception | None, exc_tb: Any) -> None:
         self.close()

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     NoReturn,
-    Optional,
 )
 
 from dl_core.united_storage_client import (
@@ -29,7 +28,7 @@ class FakeUSClient(UStorageClient):
     def _request(
         self,
         request_data: UStorageClientBase.RequestData,
-        retry_policy_name: Optional[str] = None,
-        context_name: Optional[str] = None,
+        retry_policy_name: str | None = None,
+        context_name: str | None = None,
     ) -> NoReturn:
         raise NotImplementedError("US entries created by async manager can not communicate with US directly")

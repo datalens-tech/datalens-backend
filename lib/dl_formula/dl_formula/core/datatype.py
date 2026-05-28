@@ -7,7 +7,6 @@ from enum import (
 )
 from typing import (
     Hashable,
-    Optional,
 )
 
 import attr
@@ -98,10 +97,10 @@ class DataType(Enum):
 class DataTypeParams:
     """Mix of all possible parameters for parametrized data types"""
 
-    timezone: Optional[str] = attr.ib(default=None)
+    timezone: str | None = attr.ib(default=None)
     # Other possible cases: decimal precision, datetime sub-second precision, nullable, enum values.
 
-    def as_primitive(self) -> tuple[Optional[Hashable]]:
+    def as_primitive(self) -> tuple[Hashable | None]:
         return (self.timezone,)
 
 

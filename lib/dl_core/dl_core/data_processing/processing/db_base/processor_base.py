@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import (
     ClassVar,
-    Optional,
 )
 
 import attr
@@ -35,7 +34,7 @@ class ExecutorBasedOperationProcessor(OperationProcessorAsyncBase):
         UploadOp: UploadOpExecutorAsync,
     }
 
-    async def ping(self) -> Optional[int]:
+    async def ping(self) -> int | None:
         return 1
 
     async def start(self) -> None:

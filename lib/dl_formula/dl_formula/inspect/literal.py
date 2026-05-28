@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Union
-
 from dl_formula.core.datatype import DataType
 import dl_formula.core.nodes as nodes
 
@@ -25,7 +23,7 @@ _TYPE_BY_CLS = {
 }
 
 
-def get_data_type(node: Union[nodes.BaseLiteral, nodes.Null]) -> DataType:
+def get_data_type(node: nodes.BaseLiteral | nodes.Null) -> DataType:
     if not isinstance(node, (nodes.BaseLiteral, nodes.Null)):
         raise TypeError(type(node))
 

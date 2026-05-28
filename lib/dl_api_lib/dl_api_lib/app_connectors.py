@@ -1,6 +1,5 @@
 from typing import (
     Collection,
-    Optional,
 )
 
 import attr
@@ -23,7 +22,7 @@ class ApiConnectorEntrypointManager(EntrypointClassManager[ApiConnector]):
     entrypoint_group_name = attr.ib(init=False, default=_CONNECTOR_EP_GROUP)
 
 
-def register_all_connectors(connector_ep_names: Optional[Collection[str]] = None) -> None:
+def register_all_connectors(connector_ep_names: Collection[str] | None = None) -> None:
     connectors = ApiConnectorEntrypointManager().get_all_ep_classes(connector_ep_names)
     for _ep_name, connector_cls in sorted(connectors.items()):
         CONN_REG_BI_API.register_connector(connector_cls)

@@ -5,7 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Optional,
 )
 
 from aiohttp import web
@@ -107,8 +106,8 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str],
-        totals: Optional[PostprocessedRow],
+        totals_query: str | None,
+        totals: PostprocessedRow | None,
     ) -> dict[str, Any]:
         raise NotImplementedError()
 
@@ -117,7 +116,7 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
         *,
         raw_query_spec_union: RawQuerySpecUnion,
         legend: Legend,
-    ) -> tuple[Optional[str], Optional[PostprocessedRow]]:
+    ) -> tuple[str | None, PostprocessedRow | None]:
         block_id = 0
         assert all(item.block_id is None or item.block_id == block_id for item in legend.items)
         streamable_items = legend.list_streamable_items()
@@ -158,7 +157,7 @@ class DatasetResultView(DatasetDataBaseView, abc.ABC):
             possible_data_lengths=(0, 1),
         )
 
-        first_item: Optional[PostprocessedRow] = None
+        first_item: PostprocessedRow | None = None
         if postprocessed_query.postprocessed_data:
             first_item = postprocessed_query.postprocessed_data[0]
 
@@ -182,8 +181,8 @@ class DatasetResultViewV1(DatasetResultView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str],
-        totals: Optional[PostprocessedRow],
+        totals_query: str | None,
+        totals: PostprocessedRow | None,
     ) -> dict[str, Any]:
         return self._make_response_v1(
             req_model=req_model,
@@ -208,8 +207,8 @@ class DatasetResultViewV1_5(DatasetResultView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str],
-        totals: Optional[PostprocessedRow],
+        totals_query: str | None,
+        totals: PostprocessedRow | None,
     ) -> dict[str, Any]:
         return self._make_response_v1(
             req_model=req_model,
@@ -233,7 +232,7 @@ class DatasetResultViewV2(DatasetResultView):
         self,
         req_model: DataRequestModel,
         merged_stream: MergedQueryDataStream,
-        totals_query: Optional[str],
-        totals: Optional[PostprocessedRow],
+        totals_query: str | None,
+        totals: PostprocessedRow | None,
     ) -> dict[str, Any]:
         return self._make_response_v2(merged_stream=merged_stream)

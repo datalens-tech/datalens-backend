@@ -5,9 +5,7 @@ from typing import (
     Any,
     Iterable,
     Mapping,
-    Optional,
     Sequence,
-    Union,
 )
 
 from marshmallow import (
@@ -38,11 +36,11 @@ class DataSourceSchema(OneOfSchema):
 class DataSourceStrictSchema(DataSourceSchema):
     def load(
         self,
-        data: Union[Mapping[str, Any], Iterable[Mapping[str, Any]]],
+        data: Mapping[str, Any] | Iterable[Mapping[str, Any]],
         *,
-        many: Optional[bool] = None,
-        partial: Optional[Union[bool, Sequence[str], AbstractSet[str]]] = None,
-        unknown: Optional[str] = None,
+        many: bool | None = None,
+        partial: bool | Sequence[str] | AbstractSet[str] | None = None,
+        unknown: str | None = None,
         **kwargs: Any,
     ) -> Any:
         assert isinstance(data, (dict, list))

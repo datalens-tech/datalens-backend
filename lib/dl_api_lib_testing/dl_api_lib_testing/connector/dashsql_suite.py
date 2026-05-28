@@ -1,5 +1,4 @@
 import abc
-from typing import Optional
 
 from aiohttp.test_utils import TestClient
 import pytest
@@ -20,7 +19,7 @@ class DefaultDashSQLTestSuite(DashSQLTestBase, RegulatedTestCase, metaclass=abc.
         data_api_lowlevel_aiohttp_client: TestClient,
         saved_connection_id: str,
         dashsql_basic_query: str,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
     ) -> None:
         resp = await self.get_dashsql_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,
@@ -41,7 +40,7 @@ class DefaultDashSQLTestSuite(DashSQLTestBase, RegulatedTestCase, metaclass=abc.
         data_api_lowlevel_aiohttp_client: TestClient,
         saved_connection_id: str,
         dashsql_basic_query: str,
-        bi_headers: Optional[dict[str, str]],
+        bi_headers: dict[str, str] | None,
     ) -> None:
         resp = await self.get_dashsql_response(
             data_api_aio=data_api_lowlevel_aiohttp_client,

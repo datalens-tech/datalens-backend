@@ -1,7 +1,6 @@
 from http import HTTPStatus
 from typing import (
     Any,
-    Union,
 )
 
 from dl_api_client.dsmaker.api.data_api import (
@@ -23,7 +22,7 @@ def get_data_rows(response: HttpDataApiResponse) -> list[list[Any]]:
 
 def get_regular_result_data(
     ds: Dataset,
-    data_api: Union[SyncHttpDataApiV1, SyncHttpDataApiV2],
+    data_api: SyncHttpDataApiV1 | SyncHttpDataApiV2,
     field_names: list[str],
 ) -> dict[str, list[str]]:
     field_names = sorted(set(field_names))  # Deduplicate fields
