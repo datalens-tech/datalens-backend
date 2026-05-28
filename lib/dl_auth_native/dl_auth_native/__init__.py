@@ -1,5 +1,8 @@
 from .middlewares import (
     AioHTTPMiddleware,
+    AuthData,
+    AuthResult,
+    BaseMiddleware,
     FlaskMiddleware,
     MiddlewareSettings,
 )
@@ -13,6 +16,9 @@ from .token import (
 
 __all__ = [
     "AioHTTPMiddleware",
+    "AuthData",
+    "AuthResult",
+    "BaseMiddleware",
     "DecodeError",
     "Decoder",
     "DecoderProtocol",
