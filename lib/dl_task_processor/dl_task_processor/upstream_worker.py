@@ -28,18 +28,13 @@ until the release including this pull request https://github.com/samuelcolvin/ar
 
 import asyncio
 import contextlib
-import logging
-import signal
 from datetime import datetime, timedelta, timezone
 from functools import partial
+import logging
+import signal
 from signal import Signals
 from time import time
 from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Union
-
-from redis.exceptions import ResponseError, WatchError
-
-from arq.cron import CronJob
-from arq.jobs import Deserializer, SerializationError, Serializer, deserialize_job_raw, serialize_result
 
 from arq.connections import ArqRedis, RedisSettings, create_pool, log_redis_info
 from arq.constants import (
@@ -54,6 +49,8 @@ from arq.constants import (
     result_key_prefix,
     retry_key_prefix,
 )
+from arq.cron import CronJob
+from arq.jobs import Deserializer, SerializationError, Serializer, deserialize_job_raw, serialize_result
 from arq.utils import (
     args_to_string,
     ms_to_datetime,
@@ -64,7 +61,8 @@ from arq.utils import (
     to_unix_ms,
     truncate,
 )
-from arq.worker import func, FailedJobs, JobExecutionFailed, Retry, RetryJob, Function
+from arq.worker import FailedJobs, Function, JobExecutionFailed, Retry, RetryJob, func
+from redis.exceptions import ResponseError, WatchError
 
 if TYPE_CHECKING:
     from arq.typing import SecondsTimedelta, StartupShutdown, WorkerCoroutine  # noqa F401

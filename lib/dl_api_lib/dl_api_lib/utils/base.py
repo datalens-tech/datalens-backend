@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import cProfile
 from contextlib import contextmanager
+import cProfile
 import datetime
 import logging
 import os

@@ -6,9 +6,9 @@ import json
 from typing import (
     Any,
     Callable,
+    Sequence,
 )
 from typing import OrderedDict as OrderedDictTyping
-from typing import Sequence
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1

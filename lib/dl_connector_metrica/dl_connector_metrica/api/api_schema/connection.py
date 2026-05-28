@@ -3,9 +3,8 @@ from typing import (
     Optional,
 )
 
-from marshmallow import ValidationError
+from marshmallow import ValidationError, validates_schema
 from marshmallow import fields as ma_fields
-from marshmallow import validates_schema
 
 from dl_api_connector.api_schema.connection_base import ConnectionSchema
 from dl_api_connector.api_schema.connection_base_fields import secret_string_field

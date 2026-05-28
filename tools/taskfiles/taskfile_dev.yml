@@ -295,18 +295,6 @@ tasks:
       FIX: '{{.FIX | default "false"}}'
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
 
-  isort:
-    desc: Run isort
-    dir: "{{.USER_WORKING_DIR}}"
-    cmds:
-      - echo "Running isort..."
-      - task: venv-python
-        vars:
-          CLI_ARGS: 'isort --settings-path {{.LINTERS_PYPROJECT_TOML_PATH}} {{if ne .FIX "true"}}--check-only{{end}} {{.LINT_PATH}}'
-    vars:
-      FIX: '{{.FIX | default "false"}}'
-      LINT_PATH: '{{.CLI_ARGS | default "."}}'
-
   ruff:
     desc: Run ruff
     dir: "{{.USER_WORKING_DIR}}"
@@ -347,8 +335,6 @@ tasks:
     cmds:
       - task: black
 
-      - task: isort
-
       - task: ruff
 
       - task: sort-all
@@ -366,10 +352,6 @@ tasks:
     dir: "{{.USER_WORKING_DIR}}"
     cmds:
       - task: black
-        vars:
-          FIX: 'true'
-
-      - task: isort
         vars:
           FIX: 'true'
 

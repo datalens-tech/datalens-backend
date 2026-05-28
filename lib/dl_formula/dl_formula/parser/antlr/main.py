@@ -3,8 +3,8 @@ from __future__ import annotations
 from functools import _CacheInfo
 
 import antlr4
-from antlr4.Token import Token
 from antlr4.error.Errors import ParseCancellationException
+from antlr4.Token import Token
 
 import dl_formula.core.exc as exc
 import dl_formula.core.nodes as nodes

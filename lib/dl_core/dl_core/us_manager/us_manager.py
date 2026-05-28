@@ -5,14 +5,12 @@ from contextlib import contextmanager
 import copy
 import logging
 from typing import (
+    TYPE_CHECKING,
+    Any,
     ClassVar,
     Optional,
     TypeVar,
     Union,
-)
-from typing import (
-    TYPE_CHECKING,
-    Any,
 )
 from typing import ChainMap as ChainMapGeneric
 

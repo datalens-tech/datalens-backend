@@ -8,10 +8,10 @@ from typing import (
 )
 
 from arq import (
+    ArqRedis,
     create_pool,
     cron,
 )
-from arq import ArqRedis
 from arq import Retry as ArqRetry
 from arq.connections import RedisSettings as ArqRedisSettings
 from arq.cron import CronJob as _CronJob

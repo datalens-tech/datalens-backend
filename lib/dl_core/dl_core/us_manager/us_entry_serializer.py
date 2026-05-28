@@ -5,12 +5,10 @@ from collections import ChainMap
 from functools import reduce
 import logging
 from typing import (
-    ClassVar,
-    Union,
-)
-from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
+    Union,
 )
 from typing import ChainMap as ChainMapGeneric
 

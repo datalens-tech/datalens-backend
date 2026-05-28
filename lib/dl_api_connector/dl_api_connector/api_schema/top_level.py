@@ -19,12 +19,12 @@ from typing import (
 
 import marshmallow
 from marshmallow import (
+    Schema,
     missing,
     post_dump,
     post_load,
     pre_load,
 )
-from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.extras import (

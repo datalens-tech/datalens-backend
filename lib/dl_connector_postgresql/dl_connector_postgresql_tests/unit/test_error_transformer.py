@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from _socket import gaierror
+
 import psycopg2
 
 from dl_core.exc import SourceHostNotKnownError

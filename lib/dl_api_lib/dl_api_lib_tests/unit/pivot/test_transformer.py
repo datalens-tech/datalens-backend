@@ -15,9 +15,8 @@ from dl_pivot.pivot_legend import (
 )
 from dl_pivot.primitives import DataCell as DC
 from dl_pivot.primitives import DataCellVector as DV
-from dl_pivot.primitives import DataRow
+from dl_pivot.primitives import DataRow, PivotHeader
 from dl_pivot.primitives import MeasureNameValue as MNV
-from dl_pivot.primitives import PivotHeader
 from dl_pivot_pandas.pandas.transformer import PdPivotTransformer
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,

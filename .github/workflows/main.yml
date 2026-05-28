@@ -584,7 +584,6 @@ jobs:
           fetch-depth: 1
       - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
       - run: task --silent dev:black
-      - run: task --silent dev:isort
       - run: task --silent dev:ruff
       - run: task --silent dev:sort-all
       - run: task --silent dev:toml-sort

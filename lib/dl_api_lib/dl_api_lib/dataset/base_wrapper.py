@@ -43,9 +43,8 @@ from dl_core.exc import (
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.utils import shorten_uuid
-from dl_formula.core.dialect import DialectCombo
+from dl_formula.core.dialect import DialectCombo, from_name_and_version
 from dl_formula.core.dialect import StandardDialect as D
-from dl_formula.core.dialect import from_name_and_version
 import dl_formula.core.exc as formula_exc
 from dl_formula.definitions.scope import Scope
 from dl_formula.inspect.env import InspectionEnvironment

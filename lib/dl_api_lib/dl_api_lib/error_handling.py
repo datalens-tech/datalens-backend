@@ -10,9 +10,8 @@ from typing import (
 )
 
 import attr
-from marshmallow import Schema
+from marshmallow import Schema, fields
 from marshmallow import ValidationError as MValidationError
-from marshmallow import fields
 
 from dl_api_commons import exc as api_commons_exc
 from dl_api_lib import exc
