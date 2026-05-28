@@ -9,4 +9,4 @@ apt-get install --yes --fix-missing \
     unixodbc  \
     unixodbc-dev  \
     libtcmalloc-minimal4 \
-    libaio1
+    libaio1t64
