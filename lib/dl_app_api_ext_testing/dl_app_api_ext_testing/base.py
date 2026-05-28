@@ -20,6 +20,7 @@ class ExtTestSuiteSettings(dl_settings.BaseSettings):
     APP_VERSION: str
     EXPECTED_DYNCONFIG: dict[str, Any]
     READINESS_SUBSYSTEMS: list[ReadinessSubsystemSettings]
+    METRICS_PATH: str = "/system/metrics"
 
 
 class ExtTestSuiteBase(abc.ABC):

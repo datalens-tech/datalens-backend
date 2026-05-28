@@ -11,6 +11,7 @@ from .base import (
     ReadinessSubsystemSettings,
 )
 from .docs import DocsExtTestSuite
+from .metrics import MetricsExtTestSuite
 from .system import SystemExtTestSuite
 
 __all__ = [
@@ -18,6 +19,7 @@ __all__ = [
     "DocsExtTestSuite",
     "ExtTestSuiteBase",
     "ExtTestSuiteSettings",
+    "MetricsExtTestSuite",
     "ReadinessSubsystemSettings",
     "SystemExtTestSuite",
 ]

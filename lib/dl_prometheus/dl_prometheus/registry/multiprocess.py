@@ -10,6 +10,8 @@ from typing import (
 )
 
 import attrs
+import prometheus_client
+import prometheus_client.exposition
 import prometheus_client.metrics_core
 import prometheus_client.mmap_dict
 import prometheus_client.multiprocess
@@ -137,7 +139,7 @@ def PatchedMultiProcessValue(
 @attrs.define(kw_only=True, eq=False, slots=False)
 class MultiprocessMetricsRegistry(base.BaseMetricsRegistry):
     _metrics_dir: pathlib.Path
-    _collector: prometheus_client.multiprocess.MultiProcessCollector = attrs.field(init=False)
+    _collector_registry: prometheus_client.CollectorRegistry = attrs.field(init=False)
     _closed: bool = attrs.field(init=False, default=False)
 
     # Class-scoped refcount: the patch to prometheus_client.values.ValueClass
@@ -153,6 +155,8 @@ class MultiprocessMetricsRegistry(base.BaseMetricsRegistry):
     _patched_metrics_dir: ClassVar[pathlib.Path | None] = None
 
     def __attrs_post_init__(self) -> None:
+        self._metrics_dir.mkdir(parents=True, exist_ok=True)
+
         cls = MultiprocessMetricsRegistry
         with cls._instance_lock:
             if cls._instance_count == 0:
@@ -174,8 +178,9 @@ class MultiprocessMetricsRegistry(base.BaseMetricsRegistry):
 
         try:
             super().__attrs_post_init__()
-            self._collector = prometheus_client.multiprocess.MultiProcessCollector(
-                registry=None,
+            self._collector_registry = prometheus_client.CollectorRegistry()
+            prometheus_client.multiprocess.MultiProcessCollector(
+                registry=self._collector_registry,
                 path=str(self._metrics_dir),
             )
         except BaseException:
@@ -216,4 +221,12 @@ class MultiprocessMetricsRegistry(base.BaseMetricsRegistry):
     def iter_metrics(self) -> Iterator[prometheus_client.metrics_core.Metric]:
         if self._closed:
             raise RuntimeError("Registry is closed")
-        yield from self._collector.collect()
+        yield from self._collector_registry.collect()
+
+    def get_latest(self) -> base.Latest:
+        if self._closed:
+            raise RuntimeError("Registry is closed")
+        return base.Latest(
+            body=prometheus_client.exposition.generate_latest(self._collector_registry),
+            content_type=prometheus_client.exposition.CONTENT_TYPE_LATEST,
+        )

@@ -8,6 +8,7 @@ from .metrics import (
 )
 from .registry import (
     BaseMetricsRegistry,
+    Latest,
     MetricsRegistry,
     MetricsRegistryProtocol,
     MultiprocessMetricsRegistry,
@@ -18,6 +19,7 @@ __all__ = (
     "Counter",
     "Gauge",
     "Histogram",
+    "Latest",
     "MetricBase",
     "MetricsRegistry",
     "MetricsRegistryProtocol",

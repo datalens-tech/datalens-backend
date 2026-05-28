@@ -117,6 +117,26 @@ def test_empty_dir_returns_no_samples(tmp_path: pathlib.Path) -> None:
         assert registry.get_samples() == []
 
 
+def test_get_latest_returns_prometheus_text_exposition(tmp_path: pathlib.Path) -> None:
+    counter = dl_prometheus.Counter(name="events_total", documentation="event count")
+    with dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=tmp_path, metrics=(counter,)) as registry:
+        counter.inc(7.0)
+        latest = registry.get_latest()
+
+    assert isinstance(latest, dl_prometheus.Latest)
+    assert latest.content_type.startswith("text/plain")
+    body = latest.body.decode("utf-8")
+    assert "events_total 7.0" in body
+
+
+def test_metrics_dir_is_created_when_missing(tmp_path: pathlib.Path) -> None:
+    missing_dir = tmp_path / "deep" / "nested" / "metrics"
+    assert not missing_dir.exists()
+
+    with dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=missing_dir, metrics=()):
+        assert missing_dir.is_dir()
+
+
 def test_counter_aggregates_across_processes(tmp_path: pathlib.Path) -> None:
     _run_multiprocess_workers(
         target=_increment_counter,

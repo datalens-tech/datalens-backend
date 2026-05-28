@@ -5,10 +5,17 @@ from typing import (
 
 import attrs
 import prometheus_client
+import prometheus_client.exposition
 import prometheus_client.metrics_core
 import prometheus_client.samples
 
 import dl_prometheus.metrics as metrics
+
+
+@attrs.define(frozen=True, kw_only=True)
+class Latest:
+    body: bytes
+    content_type: str
 
 
 @attrs.define(kw_only=True, eq=False, slots=False)
@@ -36,3 +43,12 @@ class BaseMetricsRegistry:
 
     def get_samples(self) -> list[prometheus_client.samples.Sample]:
         return list(self.iter_samples())
+
+    def get_latest(self) -> Latest:
+        return Latest(
+            body=prometheus_client.exposition.generate_latest(self._inner),
+            content_type=prometheus_client.exposition.CONTENT_TYPE_LATEST,
+        )
+
+    def close(self) -> None:
+        pass

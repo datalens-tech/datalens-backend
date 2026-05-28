@@ -42,3 +42,16 @@ def test_multiple_metrics_in_one_registry() -> None:
         prometheus_client.samples.Sample(name="hits_total", labels={}, value=3.0),
         prometheus_client.samples.Sample(name="queue_depth", labels={}, value=5.0),
     ]
+
+
+def test_get_latest_returns_prometheus_text_exposition() -> None:
+    counter = dl_prometheus.Counter(name="events_total", documentation="event count")
+    metrics_registry = dl_prometheus.MetricsRegistry(metrics=(counter,))
+    counter.inc(4.0)
+
+    latest = metrics_registry.get_latest()
+
+    assert isinstance(latest, dl_prometheus.Latest)
+    assert latest.content_type.startswith("text/plain")
+    body = latest.body.decode("utf-8")
+    assert "events_total 4.0" in body

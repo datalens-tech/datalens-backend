@@ -59,6 +59,17 @@ from .health import (
     SubsystemStatuses,
     SubsystemStatusSchema,
 )
+from .metrics import (
+    HTTP_REQUEST_DURATION_SECONDS_DEFAULT_BUCKETS,
+    UNKNOWN_PATH_LABEL,
+    HttpRequestDurationSeconds,
+    HttpRequestDurationSecondsSettings,
+    HttpRequestsTotal,
+    HttpRequestsTotalSettings,
+    MetricsHandler,
+    MetricsMiddleware,
+    MetricsSettings,
+)
 from .middlewares import (
     LoggingContextMiddleware,
     LoggingMiddleware,
@@ -104,7 +115,12 @@ __all__ = [
     "ErrorHandlingMiddleware",
     "ErrorResponseSchema",
     "GunicornWorker",
+    "HTTP_REQUEST_DURATION_SECONDS_DEFAULT_BUCKETS",
     "HeadersRequestContextMixin",
+    "HttpRequestDurationSeconds",
+    "HttpRequestDurationSecondsSettings",
+    "HttpRequestsTotal",
+    "HttpRequestsTotalSettings",
     "HttpServerAppDynconfigMixin",
     "HttpServerAppFactoryMixin",
     "HttpServerAppMixin",
@@ -118,6 +134,9 @@ __all__ = [
     "LoggingContextMiddleware",
     "LoggingMiddleware",
     "MapErrorHandler",
+    "MetricsHandler",
+    "MetricsMiddleware",
+    "MetricsSettings",
     "OAuthChecker",
     "OAuthCheckerSettings",
     "OAuthResult",
@@ -144,6 +163,7 @@ __all__ = [
     "SubsystemReadinessSyncCallback",
     "SubsystemStatusSchema",
     "SubsystemStatuses",
+    "UNKNOWN_PATH_LABEL",
     "UserAuthProviderFactory",
     "UserAuthProviderFactoryError",
 ]

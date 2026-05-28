@@ -17,12 +17,14 @@ import dl_app_api_base.error_handling as error_handling
 import dl_app_api_base.handlers as handlers
 import dl_app_api_base.headers as headers
 import dl_app_api_base.health as health
+import dl_app_api_base.metrics as metrics
 import dl_app_api_base.middlewares as middlewares
 import dl_app_api_base.openapi as openapi
 import dl_app_api_base.request_context as request_context
 import dl_app_base
 import dl_auth
 import dl_dynconfig
+import dl_prometheus
 import dl_settings
 
 
@@ -44,6 +46,7 @@ class HttpServerAppSettingsMixin(dl_app_base.BaseAppSettings):
         default_factory=dl_dynconfig.NullSourceSettings
     )
     APP_INFO: AppInfoSettings = pydantic.Field(default_factory=AppInfoSettings)
+    METRICS: metrics.MetricsSettings = pydantic.Field(default_factory=metrics.MetricsSettings)
 
 
 class HttpServerAppDynconfigMixin(dl_dynconfig.DynConfig): ...
@@ -121,6 +124,21 @@ class HttpServerAppFactoryMixin(
             aiohttp_app_host=self.settings.HTTP_SERVER.HOST,
             aiohttp_app_port=self.settings.HTTP_SERVER.PORT,
         )
+
+    @override
+    @dl_app_base.singleton_class_method_result
+    async def _get_shutdown_callbacks(
+        self,
+    ) -> list[dl_app_base.Callback]:
+        result = await super()._get_shutdown_callbacks()
+        metrics_registry = await self._get_metrics_registry()
+        result.append(
+            dl_app_base.Callback.from_sync_function(
+                function=metrics_registry.close,
+                name="metrics_registry.close",
+            )
+        )
+        return result
 
     @dl_app_base.singleton_class_method_result
     async def _get_aiohttp_app(
@@ -278,13 +296,67 @@ class HttpServerAppFactoryMixin(
             request_context_provider=request_context_provider,
         )
 
+        metrics_middleware = await self._get_metrics_middleware()
+
         return [
             request_context_middlewares.process,
             logging_context_middleware.process,
             logging_middleware.process,
+            metrics_middleware.process,
             error_handling_middleware.process,
             auth_middleware.process,
         ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_http_requests_total(
+        self,
+    ) -> metrics.HttpRequestsTotal:
+        return metrics.HttpRequestsTotal.from_settings(self.settings.METRICS.HTTP_REQUESTS_TOTAL)
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_http_request_duration_seconds(
+        self,
+    ) -> metrics.HttpRequestDurationSeconds:
+        return metrics.HttpRequestDurationSeconds.from_settings(self.settings.METRICS.HTTP_REQUEST_DURATION_SECONDS)
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_metrics(
+        self,
+    ) -> list[dl_prometheus.MetricBase]:
+        return [
+            await self._get_http_requests_total(),
+            await self._get_http_request_duration_seconds(),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_metrics_registry(
+        self,
+    ) -> dl_prometheus.MetricsRegistryProtocol:
+        metrics_list = await self._get_metrics()
+        multiproc_dir = self.settings.METRICS.MULTIPROC_DIR
+        if multiproc_dir is not None:
+            return dl_prometheus.MultiprocessMetricsRegistry(
+                metrics_dir=multiproc_dir,
+                metrics=metrics_list,
+            )
+        return dl_prometheus.MetricsRegistry(metrics=metrics_list)
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_metrics_middleware(
+        self,
+    ) -> metrics.MetricsMiddleware:
+        return metrics.MetricsMiddleware(
+            http_requests_total=await self._get_http_requests_total(),
+            http_request_duration_seconds=await self._get_http_request_duration_seconds(),
+        )
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_metrics_handler(
+        self,
+    ) -> metrics.MetricsHandler:
+        return metrics.MetricsHandler(
+            metrics_registry=await self._get_metrics_registry(),
+        )
 
     async def _setup_routes(self, app: aiohttp.web.Application) -> None:
         routes = await self._get_aiohttp_app_routes()
@@ -351,6 +423,14 @@ class HttpServerAppFactoryMixin(
                     dynconfig=await self._get_dynconfig(),
                     source_type=self.settings.DYNCONFIG_SOURCE.type,
                 ),
+            ),
+        )
+
+        result.append(
+            handlers.Route(
+                method="GET",
+                path=self.settings.METRICS.PATH,
+                handler=await self._get_metrics_handler(),
             ),
         )
 
