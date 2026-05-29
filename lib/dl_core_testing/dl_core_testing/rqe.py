@@ -1,8 +1,5 @@
+from collections.abc import Collection, Generator
 import contextlib
-from typing import (
-    Collection,
-    Generator,
-)
 
 import attr
 

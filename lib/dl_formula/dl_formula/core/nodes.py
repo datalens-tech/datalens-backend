@@ -1,19 +1,13 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Collection, Generator, Hashable, Iterable, Mapping, Sequence
 import copy
 import datetime
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Collection,
-    Generator,
     Generic,
-    Hashable,
-    Iterable,
-    Mapping,
-    Sequence,
     TypeVar,
     cast,
 )

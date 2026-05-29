@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generator,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_pivot.base.data_frame import PivotDataFrame
 

@@ -1,7 +1,7 @@
+from collections.abc import Mapping
 import logging
 import sys
 import time
-from typing import Mapping
 
 import attr
 import sqlalchemy as sa

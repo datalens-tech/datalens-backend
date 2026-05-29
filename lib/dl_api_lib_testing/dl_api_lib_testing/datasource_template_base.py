@@ -1,12 +1,11 @@
+from collections.abc import Generator, Sequence
 import copy
 import http
 import json
 from typing import (
     Any,
     ClassVar,
-    Generator,
     Protocol,
-    Sequence,
 )
 
 import pytest

@@ -1,5 +1,6 @@
+from typing import Self
+
 import attr
-from typing_extensions import Self
 
 from dl_constants.types import TJSONLike
 from dl_core.connection_executors.models.connection_target_dto_base import (

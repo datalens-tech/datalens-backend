@@ -1,12 +1,10 @@
+from collections.abc import Callable, Iterator, Sequence
 import logging
 import os
 import pathlib
 import threading
 from typing import (
-    Callable,
     ClassVar,
-    Iterator,
-    Sequence,
 )
 
 import attrs

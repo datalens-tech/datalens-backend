@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import (
     TYPE_CHECKING,
     Any,
-    Mapping,
 )
 
 from marshmallow import EXCLUDE, post_load

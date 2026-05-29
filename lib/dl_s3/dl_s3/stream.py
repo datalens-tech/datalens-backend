@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from abc import ABCMeta
+from collections.abc import AsyncIterator, Iterator
 from typing import (
-    AsyncIterator,
-    Iterator,
     TypeVar,
 )
 

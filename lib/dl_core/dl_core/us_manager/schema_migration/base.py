@@ -9,10 +9,10 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Protocol,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_app_tools.profiling_base import (
     generic_profiler,

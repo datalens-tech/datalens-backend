@@ -1,6 +1,7 @@
+from typing import Self
+
 import deepdiff
 import pydantic
-from typing_extensions import Self
 
 import dl_json
 

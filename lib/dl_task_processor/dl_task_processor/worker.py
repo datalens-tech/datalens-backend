@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import Sequence
 from datetime import (
     datetime,
     timedelta,
@@ -9,7 +10,6 @@ import time
 from typing import (
     Any,
     Protocol,
-    Sequence,
 )
 
 from arq.connections import RedisSettings

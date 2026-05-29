@@ -1,7 +1,7 @@
 import abc
+from collections.abc import Mapping
 from typing import (
     Any,
-    Mapping,
 )
 
 from aiohttp.test_utils import (

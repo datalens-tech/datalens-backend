@@ -1,11 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
-    Callable,
-    Generator,
-    Iterable,
-)
+from collections.abc import Callable, Generator, Iterable, Set
 
 from dl_formula.collections import NodeSet
 from dl_formula.core.datatype import DataType
@@ -341,7 +336,7 @@ def autonomous_children(
         yield child
 
 
-def collect_tags(node: nodes.FormulaItem) -> AbstractSet[LevelTag]:
+def collect_tags(node: nodes.FormulaItem) -> Set[LevelTag]:
     result: set[LevelTag] = set()
     for _, child in node.enumerate():
         level_tag = child.level_tag
@@ -379,14 +374,14 @@ def get_wrapping_level(
     return _get_level_recursively(node, 0)
 
 
-def _match_bfb_names(node: nodes.FormulaItem, bfb_names: AbstractSet[str]) -> bool:
+def _match_bfb_names(node: nodes.FormulaItem, bfb_names: Set[str]) -> bool:
     if isinstance(node, (nodes.FuncCall, fork_nodes.QueryFork)):
         return node.before_filter_by.field_names == bfb_names
     # Assume True if BFB is not supported
     return True
 
 
-def get_window_function_wrapping_level(node: nodes.FormulaItem, bfb_names: AbstractSet[str]) -> int:
+def get_window_function_wrapping_level(node: nodes.FormulaItem, bfb_names: Set[str]) -> int:
     return get_wrapping_level(
         node,
         qualify_node_cb=lambda _node: isinstance(_node, nodes.WindowFuncCall),
@@ -403,7 +398,7 @@ def is_double_aggregated_expression(node: nodes.FormulaItem) -> bool:
     return level == 2
 
 
-def get_qfork_wrapping_level_until_winfunc(node: nodes.FormulaItem, bfb_names: AbstractSet[str]) -> int:
+def get_qfork_wrapping_level_until_winfunc(node: nodes.FormulaItem, bfb_names: Set[str]) -> int:
     return get_wrapping_level(
         node,
         qualify_node_cb=lambda _node: isinstance(_node, fork_nodes.QueryFork),

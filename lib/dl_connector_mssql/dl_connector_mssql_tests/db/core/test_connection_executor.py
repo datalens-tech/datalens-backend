@@ -1,6 +1,4 @@
-from typing import (
-    Sequence,
-)
+from collections.abc import Sequence
 
 import pytest
 from sqlalchemy.dialects import mssql as mssql_types

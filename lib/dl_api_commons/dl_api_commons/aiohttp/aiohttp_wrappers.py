@@ -1,13 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 import enum
 import functools
 import inspect
 import json
 from typing import (
     Any,
-    Awaitable,
-    Callable,
     Generic,
     Literal,
     TypeVar,

@@ -1,9 +1,9 @@
+from collections.abc import Sequence
 import itertools
 from pathlib import Path
 import re
 import shutil
 import subprocess
-from typing import Sequence
 
 from dl_repmanager.metapkg_manager import MetaPackageManager
 from dl_repmanager.primitives import (

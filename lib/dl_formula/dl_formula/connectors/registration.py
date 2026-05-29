@@ -1,4 +1,4 @@
-from typing import Iterable
+from collections.abc import Iterable
 
 from dl_formula.connectors.base.connector import FormulaConnector
 from dl_formula.connectors.base.type_constructor import register_type_constructor

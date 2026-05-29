@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import collections
+from collections import OrderedDict
 import logging
 from typing import (
     Any,
     ClassVar,
     Generic,
-    OrderedDict,
     TypeVar,
 )
 

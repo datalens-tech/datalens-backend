@@ -1,9 +1,8 @@
 import asyncio
+from collections.abc import Awaitable, Callable
 import logging
 from typing import (
     Any,
-    Awaitable,
-    Callable,
 )
 
 from dl_cache_engine.cache_invalidation import exc as cache_invalidation_exceptions

@@ -1,8 +1,6 @@
+from collections.abc import Generator
 import contextlib
 import datetime
-from typing import (
-    Generator,
-)
 
 import pytest
 import sqlalchemy as sa

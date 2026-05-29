@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 import contextlib
 import logging
 from typing import (
     Any,
-    Generator,
 )
 
 from aiohttp import web

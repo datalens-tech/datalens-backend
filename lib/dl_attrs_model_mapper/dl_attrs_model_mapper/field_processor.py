@@ -1,9 +1,9 @@
 import abc
+from collections.abc import Sequence
 from typing import (
     Any,
     Generic,
     Optional,
-    Sequence,
     TypeVar,
     cast,
 )

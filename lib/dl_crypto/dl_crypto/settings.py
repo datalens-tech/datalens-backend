@@ -1,5 +1,6 @@
+from typing import Self
+
 import pydantic
-from typing_extensions import Self
 
 import dl_settings
 

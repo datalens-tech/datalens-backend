@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 from typing import (
     Any,
-    Collection,
 )
 
 from dl_core.data_processing.processing.operation import (

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 import decimal
 from typing import (
-    Callable,
     ClassVar,
-    Sequence,
     TypeVar,
 )
 

@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
+from collections.abc import Collection
 import logging
 import re
 from typing import (
     Any,
     ClassVar,
-    Collection,
     NamedTuple,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import (
     AggregationFunction,

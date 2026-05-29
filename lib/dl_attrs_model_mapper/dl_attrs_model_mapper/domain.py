@@ -1,9 +1,8 @@
 import abc
+from collections.abc import Collection, Sequence
 from typing import (
     Any,
     ClassVar,
-    Collection,
-    Sequence,
 )
 
 import attr

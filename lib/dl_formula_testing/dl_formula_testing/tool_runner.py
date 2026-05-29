@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import (
     contextmanager,
     redirect_stderr,
@@ -9,7 +10,6 @@ import io
 import sys
 from typing import (
     TYPE_CHECKING,
-    Generator,
     Protocol,
     TextIO,
 )

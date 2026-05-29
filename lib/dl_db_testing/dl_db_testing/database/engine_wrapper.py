@@ -1,11 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Sequence
 import contextlib
 from typing import (
     Any,
     ClassVar,
-    Generator,
-    Sequence,
 )
 import urllib.parse
 

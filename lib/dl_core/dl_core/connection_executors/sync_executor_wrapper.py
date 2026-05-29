@@ -1,20 +1,18 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Awaitable, Callable, Generator
 import functools
 from typing import (
     TYPE_CHECKING,
     Any,
-    Awaitable,
-    Callable,
-    Generator,
+    Literal,
     Optional,
     TypeVar,
     overload,
 )
 
 import attr
-from typing_extensions import Literal
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core.connection_executors import ConnExecutorQuery

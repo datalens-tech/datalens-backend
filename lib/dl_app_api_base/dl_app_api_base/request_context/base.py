@@ -1,15 +1,15 @@
+from collections.abc import Mapping
 import contextvars
 import logging
 from typing import (
     Generic,
-    Mapping,
     Protocol,
+    Self,
     TypeVar,
 )
 
 import aiohttp.web
 import attr
-from typing_extensions import Self
 
 LOGGER = logging.getLogger(__name__)
 

@@ -1,9 +1,6 @@
+from collections.abc import Awaitable, Callable
 import logging
 import time
-from typing import (
-    Awaitable,
-    Callable,
-)
 import uuid
 
 import attr

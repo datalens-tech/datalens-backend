@@ -1,8 +1,8 @@
 import logging
+from typing import override
 
 import attrs
 import pytest
-from typing_extensions import override
 
 import dl_app_base
 import dl_testing

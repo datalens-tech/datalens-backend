@@ -4,7 +4,7 @@ Exercises `ConnectionClickhouse.validate_query_settings` and the adapter end-to-
 against a real connection, under each connector-settings configuration that matters.
 """
 
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 

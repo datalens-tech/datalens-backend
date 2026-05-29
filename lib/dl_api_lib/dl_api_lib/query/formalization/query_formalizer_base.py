@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import abc
-import logging
-from typing import (
-    AbstractSet,
+from collections.abc import (
     Collection,
     Sequence,
+    Set,
 )
+import logging
 
 import attr
 
@@ -90,7 +90,7 @@ class QuerySpecFormalizerBase(abc.ABC):
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], AvatarId | None]:
+    ) -> tuple[list[RelationSpec], Set[AvatarId], AvatarId | None]:
         raise NotImplementedError
 
     @abc.abstractmethod

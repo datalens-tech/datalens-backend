@@ -2,20 +2,19 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from collections.abc import Callable, Sequence
 import functools
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
     Generic,
-    Sequence,
     TypeVar,
+    final,
 )
 
 import attr
-from typing_extensions import final
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import UserDataType

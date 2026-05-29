@@ -1,10 +1,9 @@
 import asyncio
+from collections.abc import Awaitable, Callable
 import logging
 import time
 from typing import (
     Any,
-    Awaitable,
-    Callable,
 )
 
 LOGGER = logging.getLogger(__name__)

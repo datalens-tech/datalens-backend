@@ -1,9 +1,4 @@
-from typing import (  # noqa: F401
-    Any,
-    ClassVar,
-    Optional,
-    Type,
-)
+from typing import ClassVar
 
 import attr
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Sequence
 from itertools import count
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Sequence,
     cast,
 )
 

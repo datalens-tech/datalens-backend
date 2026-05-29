@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from collections import OrderedDict
+from collections.abc import Hashable
 from enum import (
     Enum,
     unique,
-)
-from typing import (
-    Hashable,
 )
 
 import attr

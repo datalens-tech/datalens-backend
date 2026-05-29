@@ -1,11 +1,11 @@
 import collections
+from collections.abc import Sequence
 import types
 import typing
 from typing import (
     Any,
     Literal,
     Optional,
-    Sequence,
     Union,
 )
 

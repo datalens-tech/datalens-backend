@@ -1,10 +1,10 @@
+from collections.abc import Iterable
 import ipaddress
 import logging
 import re
 from typing import (
     Any,
     Generic,
-    Iterable,
     TypeVar,
 )
 from urllib.parse import urlparse

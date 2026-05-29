@@ -302,9 +302,10 @@ tasks:
       - echo "Running ruff..."
       - task: venv-python
         vars:
-          CLI_ARGS: 'ruff check {{if eq .FIX "true"}}--fix{{end}} {{.LINT_PATH}}'
+          CLI_ARGS: 'ruff check {{if eq .FIX "true"}}--fix{{end}} {{if eq .UNSAFE "true"}}--unsafe-fixes{{end}} {{.LINT_PATH}}'
     vars:
       FIX: '{{.FIX | default "false"}}'
+      UNSAFE: '{{.UNSAFE | default "false"}}'
       LINT_PATH: '{{.CLI_ARGS | default "."}}'
 
   sort-all:

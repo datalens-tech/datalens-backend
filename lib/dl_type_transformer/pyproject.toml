@@ -16,7 +16,6 @@ python = ">=3.12, <3.13"
 python-dateutil = "*"
 pytz = "*"
 sqlalchemy = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"

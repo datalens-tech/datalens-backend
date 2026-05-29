@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence
 import copy
 from copy import deepcopy
 import itertools
@@ -9,8 +10,6 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Iterable,
-    Sequence,
     TypeVar,
     final,
 )

@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Generator, Iterable
 import logging
-from typing import (
-    Generator,
-    Iterable,
-)
 
 from dl_api_lib import utils as bi_utils
 from dl_api_lib.enums import USPermissionKind

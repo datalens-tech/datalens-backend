@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 from typing import (
     Any,
-    Hashable,
     NamedTuple,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_core.constants import DataAPILimits
 from dl_query_processing.enums import (

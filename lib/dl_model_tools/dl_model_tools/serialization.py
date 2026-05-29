@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import abc
 import base64
+from collections.abc import Callable
 import datetime
 import decimal
 import ipaddress
@@ -15,7 +16,6 @@ import json
 import logging
 from typing import (
     Any,
-    Callable,
     ClassVar,
     Generic,
     TypeVar,

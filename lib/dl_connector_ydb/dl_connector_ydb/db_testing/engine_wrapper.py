@@ -1,11 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 import os
 from typing import (
     Any,
-    Callable,
     NamedTuple,
-    Sequence,
 )
 
 import shortuuid

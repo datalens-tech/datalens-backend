@@ -1,9 +1,7 @@
 import abc
+from collections.abc import Iterable, Mapping, Sequence
 from typing import (
     Any,
-    Iterable,
-    Mapping,
-    Sequence,
 )
 
 import attr

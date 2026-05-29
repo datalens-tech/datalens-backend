@@ -1,22 +1,19 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Generator, Mapping, Sequence
 import contextlib
 import enum
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Generator,
-    Mapping,
-    Sequence,
+    Self,
 )
 
 import attr
 from sqlalchemy.sql.elements import ClauseElement
-from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import UserDataType

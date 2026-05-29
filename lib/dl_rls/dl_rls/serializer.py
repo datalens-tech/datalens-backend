@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import itertools
 import logging
 import re
 from typing import (
     ClassVar,
-    Iterable,
     NamedTuple,
 )
 

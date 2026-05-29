@@ -1,8 +1,8 @@
+from collections.abc import Sequence
 import datetime
 import logging
 from typing import (
     ClassVar,
-    Sequence,
 )
 
 import attrs

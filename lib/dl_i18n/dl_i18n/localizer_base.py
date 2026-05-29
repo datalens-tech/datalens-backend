@@ -1,9 +1,7 @@
 from collections import defaultdict
+from collections.abc import Iterable
 import gettext
 import logging
-from typing import (
-    Iterable,
-)
 
 import attr
 

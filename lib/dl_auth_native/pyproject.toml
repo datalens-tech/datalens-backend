@@ -18,7 +18,6 @@ flask = {optional = true, version = "*"}
 pydantic = "*"
 pyjwt = "*"
 python = ">=3.12, <3.13"
-typing-extensions = "*"
 werkzeug = "*"
 
 [tool.poetry.group.tests.dependencies]

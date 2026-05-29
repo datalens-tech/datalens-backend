@@ -49,11 +49,11 @@ Description of the sections:
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from pathlib import Path
 import re
 from typing import (
     TYPE_CHECKING,
-    Iterable,
 )
 
 import attr

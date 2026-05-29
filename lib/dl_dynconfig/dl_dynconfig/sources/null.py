@@ -1,10 +1,10 @@
 from typing import (
     Any,
     Literal,
+    Self,
 )
 
 import pydantic
-from typing_extensions import Self
 
 import dl_dynconfig.sources.base as base
 

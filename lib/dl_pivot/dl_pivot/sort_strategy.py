@@ -6,6 +6,7 @@ This is independent from the specific pivot table implementations.
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable
 from enum import (
     Enum,
     auto,
@@ -15,7 +16,6 @@ from math import isnan
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
 )
 
 import attr

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Set
 from typing import (
     TYPE_CHECKING,
-    AbstractSet,
-    Callable,
     ClassVar,
 )
 
@@ -90,8 +89,8 @@ class CoreConnector(abc.ABC):
     sa_types: ClassVar[
         dict[tuple[SourceBackendType, GenericNativeType], Callable[[GenericNativeType], TypeEngine]] | None
     ] = None
-    rqe_adapter_classes: ClassVar[AbstractSet[type[CommonBaseDirectAdapter]]] = frozenset()
-    conn_security: ClassVar[AbstractSet[ConnSecuritySettings]] = frozenset()
+    rqe_adapter_classes: ClassVar[Set[type[CommonBaseDirectAdapter]]] = frozenset()
+    conn_security: ClassVar[Set[ConnSecuritySettings]] = frozenset()
     query_fail_exceptions: frozenset[type[Exception]] = frozenset()
     notification_classes: ClassVar[tuple[type[BaseNotification], ...]] = ()
 

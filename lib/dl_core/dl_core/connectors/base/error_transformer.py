@@ -1,10 +1,9 @@
 import abc
+from collections.abc import Callable, Iterable
 import re
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Iterable,
     TypedDict,
 )
 

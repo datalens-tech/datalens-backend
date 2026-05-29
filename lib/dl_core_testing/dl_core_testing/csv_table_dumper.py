@@ -1,12 +1,11 @@
+from collections.abc import Callable, Sequence
 import csv
 import datetime
 import io
 import random
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Sequence,
 )
 
 import attr

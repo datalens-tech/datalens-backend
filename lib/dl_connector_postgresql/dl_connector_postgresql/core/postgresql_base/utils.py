@@ -1,5 +1,5 @@
+from collections.abc import Set
 from typing import (
-    AbstractSet,
     Any,
 )
 
@@ -10,7 +10,7 @@ from sqlalchemy.engine import Dialect
 def compile_pg_query(
     query: str | sa.sql.ClauseElement,
     dialect: Dialect,
-    exclude_types: AbstractSet[Any] = frozenset(),
+    exclude_types: Set[Any] = frozenset(),
     add_types: bool = True,
 ) -> tuple[str, list]:
     """

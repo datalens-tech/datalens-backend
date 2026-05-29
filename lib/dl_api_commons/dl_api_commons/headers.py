@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 import json
 import logging
-from typing import Sequence
 
 from dl_constants.api_constants import DLHeadersCommon
 

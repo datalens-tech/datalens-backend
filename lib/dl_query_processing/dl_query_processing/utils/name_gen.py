@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Mapping
 from itertools import count
-from typing import Mapping
 
 import dl_formula.core.nodes as formula_nodes
 

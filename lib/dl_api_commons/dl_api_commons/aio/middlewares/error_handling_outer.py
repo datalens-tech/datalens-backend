@@ -8,12 +8,12 @@ from http import HTTPStatus
 import logging
 from typing import (
     Any,
+    final,
 )
 
 from aiohttp import web
 import attr
 import sentry_sdk
-from typing_extensions import final
 
 from dl_api_commons.logging import RequestLoggingContextController
 

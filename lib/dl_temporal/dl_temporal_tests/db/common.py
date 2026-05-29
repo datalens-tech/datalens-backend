@@ -1,7 +1,4 @@
-from typing import (
-    Awaitable,
-    Callable,
-)
+from collections.abc import Awaitable, Callable
 
 import dl_temporal
 import dl_utils

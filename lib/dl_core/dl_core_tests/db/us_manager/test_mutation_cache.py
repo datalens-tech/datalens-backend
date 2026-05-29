@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncGenerator
 import datetime
 from typing import (
     Any,
-    AsyncGenerator,
 )
 import uuid
 

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from itertools import chain
 import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Sequence,
 )
 
 from dl_api_lib.dataset.dialect import resolve_dialect_name

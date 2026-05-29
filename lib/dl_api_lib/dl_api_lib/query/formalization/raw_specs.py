@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Set,
+)
 from itertools import chain
 from typing import (
-    AbstractSet,
     Any,
     ClassVar,
-    Iterable,
     TypeVar,
 )
 
@@ -195,7 +197,7 @@ class RawQuerySpecUnion:
             self.parameter_value_specs,
         )
 
-    def get_unique_block_ids(self) -> AbstractSet[int]:
+    def get_unique_block_ids(self) -> Set[int]:
         return {spec.block_id for spec in self.iter_item_specs() if spec.block_id is not None}
 
 

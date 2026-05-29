@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from dl_dashsql.formatting.base import QueryIncomingParameter
 from dl_dashsql.formatting.values import DefaultValueQueryFormatterFactory

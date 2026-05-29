@@ -1,12 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Collection, Sequence, Set
 import logging
 import os
 from typing import (
     TYPE_CHECKING,
-    AbstractSet,
-    Collection,
-    Sequence,
 )
 
 import attr
@@ -270,7 +268,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], AvatarId | None]:
+    ) -> tuple[list[RelationSpec], Set[AvatarId], AvatarId | None]:
         return [], set(), None
 
     def make_parameter_value_specs(
@@ -483,7 +481,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
     def make_relation_and_avatar_specs(
         self,
         used_field_ids: Collection[FieldId],
-    ) -> tuple[list[RelationSpec], AbstractSet[AvatarId], AvatarId | None]:
+    ) -> tuple[list[RelationSpec], Set[AvatarId], AvatarId | None]:
         # Resolve avatars explicitly specified in fields
         deep_dep_mgr = self._dep_mgr_factory.get_field_deep_inter_dependency_manager()
         field_ava_dep_mgr = self._dep_mgr_factory.get_field_avatar_dependency_manager()

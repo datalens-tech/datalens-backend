@@ -1,12 +1,11 @@
 import abc
+from collections.abc import Generator, Sequence
 import contextlib
 import datetime
 import re
 from typing import (
     Any,
     ClassVar,
-    Generator,
-    Sequence,
 )
 import uuid
 

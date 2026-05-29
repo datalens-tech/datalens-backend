@@ -1,12 +1,11 @@
+from collections.abc import AsyncIterator, Iterator
 import contextlib
 from typing import (
-    AsyncIterator,
-    Iterator,
     Literal,
+    Self,
 )
 
 import pydantic
-from typing_extensions import Self
 
 import dl_httpx.rate_limiters.base as base
 

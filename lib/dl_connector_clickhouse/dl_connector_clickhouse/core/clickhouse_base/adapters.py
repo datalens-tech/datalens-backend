@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator, Callable, Generator, Sequence
 import contextlib
 import json
 import logging
@@ -7,12 +8,7 @@ import ssl
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncGenerator,
-    Callable,
     ClassVar,
-    ContextManager,
-    Generator,
-    Sequence,
     TypeVar,
 )
 
@@ -163,7 +159,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
 
     @contextlib.contextmanager
     def execution_context(self) -> Generator[None, None, None]:
-        contexts: list[ContextManager[None]] = [super().execution_context()]
+        contexts: list[contextlib.AbstractContextManager[None]] = [super().execution_context()]
 
         if self._target_dto.ssl_ca:
             contexts.append(self.ssl_cert_context(self._target_dto.ssl_ca))

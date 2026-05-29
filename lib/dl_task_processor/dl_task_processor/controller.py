@@ -1,8 +1,6 @@
 import argparse
+from collections.abc import Iterable
 import json
-from typing import (
-    Iterable,
-)
 
 import attr
 

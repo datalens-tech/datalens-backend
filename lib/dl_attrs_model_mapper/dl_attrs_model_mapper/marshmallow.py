@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import enum
 import json
 from typing import (
     Any,
-    Iterable,
     Optional,
 )
 

@@ -1,9 +1,9 @@
 import asyncio
 import logging
+from typing import override
 
 import attr
 import pytest
-from typing_extensions import override
 
 import dl_app_base
 

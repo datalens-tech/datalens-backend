@@ -2,17 +2,17 @@ from __future__ import annotations
 
 import abc
 from collections import defaultdict
+from collections.abc import Generator
 from copy import deepcopy
 from itertools import chain
 from operator import itemgetter
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generator,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import (
     FieldRole,

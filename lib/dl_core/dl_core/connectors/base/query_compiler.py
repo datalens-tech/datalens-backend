@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from enum import (
     Enum,
     unique,
@@ -7,7 +8,6 @@ from enum import (
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Sequence,
 )
 
 import attr

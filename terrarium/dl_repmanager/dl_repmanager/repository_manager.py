@@ -1,12 +1,8 @@
+from collections.abc import Callable, Mapping, Sequence
 import itertools
 import os
 from pathlib import Path
 import re
-from typing import (
-    Callable,
-    Mapping,
-    Sequence,
-)
 
 import attr
 

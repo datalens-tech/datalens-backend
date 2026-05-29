@@ -1,13 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator, Awaitable, Callable, Sequence
 import logging
 from typing import (
     TYPE_CHECKING,
-    AsyncGenerator,
-    Awaitable,
-    Callable,
     ClassVar,
-    Sequence,
 )
 
 import aiopg.sa

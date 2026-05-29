@@ -1,6 +1,4 @@
-from typing import (
-    Sequence,
-)
+from collections.abc import Sequence
 
 import attr
 from sqlalchemy.sql.selectable import Select

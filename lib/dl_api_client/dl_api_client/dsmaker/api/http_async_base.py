@@ -2,12 +2,10 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from collections.abc import Mapping
 from http import HTTPStatus
 import json
 import time
-from typing import (
-    Mapping,
-)
 
 import attr
 

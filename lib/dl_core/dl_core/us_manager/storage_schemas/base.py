@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
     Generic,
     TypeVar,
 )
@@ -52,10 +51,10 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
         return self.context[CtxKey.us_manager]
 
     # Lifecycle
-    def pre_process_input_data(self, data: Dict[str, Any]) -> Dict[str, Any]:  # noqa
+    def pre_process_input_data(self, data: dict[str, Any]) -> dict[str, Any]:
         return data
 
-    def post_process_output_data(self, data: Dict[str, Any]) -> Dict[str, Any]:  # noqa
+    def post_process_output_data(self, data: dict[str, Any]) -> dict[str, Any]:
         return data
 
     def push_ctx(self, data: dict) -> None:

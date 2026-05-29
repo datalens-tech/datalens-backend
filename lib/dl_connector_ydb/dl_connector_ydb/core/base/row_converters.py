@@ -1,7 +1,7 @@
+from collections.abc import Callable
 import datetime
 from typing import (
     Any,
-    Callable,
 )
 
 

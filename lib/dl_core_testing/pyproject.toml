@@ -35,7 +35,6 @@ requests = "*"
 shortuuid = "*"
 sqlalchemy = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = "*"
 uwsgi = "*"
 Werkzeug = "*"
 

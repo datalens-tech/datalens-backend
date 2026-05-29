@@ -1,10 +1,9 @@
 import abc
 from typing import (
     Generic,
+    Self,
     TypeVar,
 )
-
-from typing_extensions import Self
 
 from dl_auth_api_lib.settings import BaseOAuthClient
 

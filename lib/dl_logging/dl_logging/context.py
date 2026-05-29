@@ -1,12 +1,11 @@
 import collections
+from collections.abc import Mapping
 import contextvars
 import types
 from typing import (
     Any,
-    Mapping,
+    Self,
 )
-
-from typing_extensions import Self
 
 ContextItem = Any
 ContextItemCollection = list[ContextItem]

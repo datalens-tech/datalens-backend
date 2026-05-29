@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Awaitable, Callable, Collection, Sequence
 import logging
 from typing import (
     TYPE_CHECKING,
-    Awaitable,
-    Callable,
     ClassVar,
-    Collection,
-    Sequence,
 )
 
 import attr

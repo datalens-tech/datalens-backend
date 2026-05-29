@@ -1,10 +1,12 @@
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
-    ClassVar,
+from collections.abc import (
     Collection,
     Hashable,
+    Set,
+)
+from typing import (
+    ClassVar,
 )
 
 import attr
@@ -39,7 +41,7 @@ class SingleSourceOp(BaseOp):
 
 @attr.s(frozen=True)
 class MultiSourceOp(BaseOp):
-    source_stream_ids: AbstractSet[str] = attr.ib(kw_only=True)
+    source_stream_ids: Set[str] = attr.ib(kw_only=True)
 
 
 # Actual ops

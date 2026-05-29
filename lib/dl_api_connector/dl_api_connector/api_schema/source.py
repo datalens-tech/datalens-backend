@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
-    Any,
+from collections.abc import (
     Iterable,
     Mapping,
     Sequence,
+    Set,
+)
+from typing import (
+    Any,
 )
 
 from marshmallow import (
@@ -39,7 +41,7 @@ class DataSourceStrictSchema(DataSourceSchema):
         data: Mapping[str, Any] | Iterable[Mapping[str, Any]],
         *,
         many: bool | None = None,
-        partial: bool | Sequence[str] | AbstractSet[str] | None = None,
+        partial: bool | Sequence[str] | Set[str] | None = None,
         unknown: str | None = None,
         **kwargs: Any,
     ) -> Any:

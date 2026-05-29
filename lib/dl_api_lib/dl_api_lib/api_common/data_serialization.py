@@ -1,7 +1,7 @@
+from collections.abc import Sequence
 import logging
 from typing import (
     Any,
-    Sequence,
 )
 
 from dl_api_commons.reporting.models import NotificationReportingRecord

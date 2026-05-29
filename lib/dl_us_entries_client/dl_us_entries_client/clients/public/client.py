@@ -1,9 +1,8 @@
 import logging
-from typing import ClassVar
+from typing import ClassVar, Self
 
 import attrs
 import httpx
-from typing_extensions import Self
 
 import dl_auth
 import dl_httpx

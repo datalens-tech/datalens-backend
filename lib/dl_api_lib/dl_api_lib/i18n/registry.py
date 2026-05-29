@@ -1,4 +1,4 @@
-from typing import Iterable
+from collections.abc import Iterable
 
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIG
 from dl_api_lib.i18n.localizer import CONFIGS as BI_API_LIB_CONFIGS

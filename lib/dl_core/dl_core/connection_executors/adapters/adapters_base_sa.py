@@ -1,22 +1,21 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Generator
 import contextlib
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Generator,
     TypeVar,
+    final,
 )
 
 import attr
 import sqlalchemy as sa
 from sqlalchemy import event
 from sqlalchemy.engine.base import Engine
-from typing_extensions import final
 
 from dl_app_tools.profiling_base import (
     GenericProfiler,

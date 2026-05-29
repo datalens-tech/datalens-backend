@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 import time
 from typing import (
-    Awaitable,
-    Callable,
     ClassVar,
 )
 

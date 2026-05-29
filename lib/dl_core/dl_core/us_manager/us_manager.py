@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import ChainMap
+from collections import ChainMap as ChainMapGeneric
 from contextlib import contextmanager
 import copy
 import logging
@@ -10,7 +11,6 @@ from typing import (
     ClassVar,
     TypeVar,
 )
-from typing import ChainMap as ChainMapGeneric
 
 import attr
 import marshmallow

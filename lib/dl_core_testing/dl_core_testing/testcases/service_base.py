@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import AsyncGenerator, Callable
 import contextlib
 from typing import (
     Any,
-    AsyncGenerator,
-    Callable,
     ClassVar,
     NamedTuple,
 )

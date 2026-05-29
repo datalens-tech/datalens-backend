@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import MutableSet
 import time
-from typing import MutableSet
 
 import pytest
 

@@ -1,10 +1,9 @@
+from collections.abc import Callable, Coroutine
 import functools
 import inspect
 import logging
 from typing import (
     Any,
-    Callable,
-    Coroutine,
     cast,
 )
 

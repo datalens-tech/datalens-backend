@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Generator
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generator,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import PivotRole
 from dl_pivot.primitives import (

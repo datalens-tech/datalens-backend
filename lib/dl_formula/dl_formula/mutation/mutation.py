@@ -8,7 +8,7 @@ Can be used to prepare the formula for translation and also for optimization of 
 from __future__ import annotations
 
 import abc
-from typing import Sequence
+from collections.abc import Sequence
 
 import dl_formula.core.nodes as nodes
 

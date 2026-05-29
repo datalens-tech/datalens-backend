@@ -1,4 +1,5 @@
 import asyncio
+from collections.abc import AsyncGenerator, Generator
 import contextlib
 import enum
 import logging
@@ -6,16 +7,14 @@ import os
 import subprocess
 import tempfile
 from typing import (
-    AsyncGenerator,
     ClassVar,
-    Generator,
     Protocol,
+    override,
 )
 
 import aiohttp
 import attr
 import pytest
-from typing_extensions import override
 
 import dl_app_api_base
 import dl_app_base

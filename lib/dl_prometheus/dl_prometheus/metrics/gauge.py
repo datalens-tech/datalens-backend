@@ -1,5 +1,5 @@
+from collections.abc import Mapping
 import enum
-from typing import Mapping
 
 import attrs
 import prometheus_client

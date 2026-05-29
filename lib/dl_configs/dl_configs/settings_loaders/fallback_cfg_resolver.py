@@ -1,9 +1,8 @@
-from collections.abc import Mapping
+from collections.abc import Iterator, Mapping
 import logging
 from typing import (
     Any,
     ClassVar,
-    Iterator,
 )
 
 import attr

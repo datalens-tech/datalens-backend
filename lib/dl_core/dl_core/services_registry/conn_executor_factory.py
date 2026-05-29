@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from collections import ChainMap
+from collections.abc import MutableMapping, Sequence
 import logging
 import random
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    MutableMapping,
-    Sequence,
 )
 
 import attr

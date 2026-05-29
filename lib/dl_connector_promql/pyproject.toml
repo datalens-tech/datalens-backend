@@ -24,7 +24,6 @@ dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 python = ">=3.12, <3.13"
 sqlalchemy = "*"
-typing_extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-api-lib-testing = {path = "../dl_api_lib_testing"}

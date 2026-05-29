@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Iterator
 from copy import deepcopy
 import itertools
 import logging
 from typing import (
     Any,
-    Iterator,
 )
 
 import attr

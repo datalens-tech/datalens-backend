@@ -1,9 +1,5 @@
+from collections.abc import Awaitable, Callable, Collection
 import logging
-from typing import (
-    Awaitable,
-    Callable,
-    Collection,
-)
 
 import attr
 import shortuuid

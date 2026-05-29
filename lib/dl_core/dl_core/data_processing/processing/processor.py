@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Collection
 import logging
 import time
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
-    Collection,
+    Self,
 )
 
 import attr
 import shortuuid
-from typing_extensions import Self
 
 from dl_api_commons.reporting.models import (
     DataProcessingEndReportingRecord,

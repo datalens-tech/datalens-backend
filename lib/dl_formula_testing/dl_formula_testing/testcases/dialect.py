@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import (
     ClassVar,
-    Sequence,
 )
 
 from dl_formula.core.dialect import (

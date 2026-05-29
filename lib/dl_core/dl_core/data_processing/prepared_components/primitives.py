@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Collection, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
-    Collection,
-    Sequence,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.enums import (

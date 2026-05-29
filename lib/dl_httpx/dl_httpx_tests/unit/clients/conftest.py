@@ -1,10 +1,7 @@
+from collections.abc import AsyncIterator, Iterator
 import contextlib
 import ssl
 import threading
-from typing import (
-    AsyncIterator,
-    Iterator,
-)
 
 import pytest
 import pytest_mock

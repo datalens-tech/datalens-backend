@@ -1,8 +1,6 @@
+from collections.abc import Callable
 from functools import singledispatchmethod
 import re
-from typing import (
-    Callable,
-)
 
 import attr
 

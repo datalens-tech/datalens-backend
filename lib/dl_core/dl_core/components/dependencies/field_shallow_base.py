@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    AbstractSet,
+from collections.abc import (
     Collection,
+    Set,
 )
 
 from dl_core.components.ids import FieldId
@@ -15,5 +15,5 @@ class FieldShallowInterDependencyManagerBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_field_direct_references(self, dep_field_id: FieldId) -> AbstractSet[FieldId]:
+    def get_field_direct_references(self, dep_field_id: FieldId) -> Set[FieldId]:
         raise NotImplementedError

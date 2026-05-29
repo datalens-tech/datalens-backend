@@ -1,8 +1,7 @@
+from collections.abc import AsyncIterable, Mapping
 import logging
 from typing import (
     Any,
-    AsyncIterable,
-    Mapping,
 )
 import uuid
 

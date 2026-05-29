@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Collection, Generator
 from contextlib import contextmanager
 import logging
-from typing import (
-    Collection,
-    Generator,
-)
 
 from sqlalchemy.engine import Engine
 import sqlalchemy.exc

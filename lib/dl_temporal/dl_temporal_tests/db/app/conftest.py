@@ -1,7 +1,7 @@
+from collections.abc import AsyncGenerator
 import logging
 import os
 from typing import (
-    AsyncGenerator,
     ClassVar,
     override,
 )

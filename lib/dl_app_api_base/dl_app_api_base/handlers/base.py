@@ -4,6 +4,7 @@ import logging
 from typing import (
     Any,
     ClassVar,
+    Self,
 )
 
 import aiohttp.typedefs as aiohttp_typedefs
@@ -11,7 +12,6 @@ import aiohttp.web
 import aiohttp.web as aiohttp_web
 import attrs
 import pydantic
-from typing_extensions import Self
 
 import dl_json
 import dl_pydantic

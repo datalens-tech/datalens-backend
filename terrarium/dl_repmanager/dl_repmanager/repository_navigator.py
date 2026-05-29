@@ -1,12 +1,11 @@
 import ast
+from collections.abc import Collection, Generator
 import os
 from pathlib import Path
 import re
 import sys
 from typing import (
     ClassVar,
-    Collection,
-    Generator,
 )
 
 import attr

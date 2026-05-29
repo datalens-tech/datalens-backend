@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable
 from enum import Enum
-from typing import (
-    Callable,
-)
 import uuid
 
 import attr

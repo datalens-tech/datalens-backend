@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import logging
 import re
+from re import Pattern
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Pattern,
 )
 
 import attr

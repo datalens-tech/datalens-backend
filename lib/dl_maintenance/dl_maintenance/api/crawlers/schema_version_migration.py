@@ -1,6 +1,6 @@
+from collections.abc import AsyncIterable
 from typing import (
     Any,
-    AsyncIterable,
 )
 
 import attr

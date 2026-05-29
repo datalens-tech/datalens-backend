@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 import itertools
-from typing import Generator
 
 import attr
 

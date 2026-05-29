@@ -3,12 +3,12 @@ from __future__ import annotations
 import abc
 import asyncio
 from asyncio import AbstractEventLoop
+from collections.abc import Generator
 from concurrent.futures.thread import ThreadPoolExecutor
 import enum
 import logging
 import threading
 from typing import (
-    Generator,
     Generic,
     TypeVar,
 )

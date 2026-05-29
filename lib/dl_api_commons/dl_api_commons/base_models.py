@@ -1,12 +1,11 @@
 import abc
-from typing import Any
+from typing import Any, Self
 
 import attr
 from multidict import (
     CIMultiDict,
     CIMultiDictProxy,
 )
-from typing_extensions import Self
 
 import dl_auth
 import dl_constants

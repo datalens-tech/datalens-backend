@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Sequence
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
     Generic,
-    Sequence,
     TypeVar,
+    final,
 )
 
 from arq.connections import RedisSettings as ArqRedisSettings
 import attr
-from typing_extensions import final
 
 from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_configs.enums import RequiredService

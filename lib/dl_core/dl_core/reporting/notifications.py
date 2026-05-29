@@ -1,7 +1,7 @@
+from collections.abc import Callable
 import time
 from typing import (
     Any,
-    Callable,
 )
 
 from dl_api_commons.reporting.models import NotificationReportingRecord

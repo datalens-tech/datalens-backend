@@ -17,9 +17,7 @@ print_result_data(response_json)
 
 """
 
-from typing import (
-    Iterable,
-)
+from collections.abc import Iterable
 
 import tabulate
 

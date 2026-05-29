@@ -1,8 +1,8 @@
 import asyncio
+from collections.abc import Mapping
 import datetime
 import logging
 from typing import (
-    Mapping,
     Self,
 )
 

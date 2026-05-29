@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Callable, Collection, Generator, Iterable, Sequence, Set
 from contextlib import contextmanager
 from functools import (
     partial,
@@ -9,13 +10,7 @@ from functools import (
 from itertools import chain
 import logging
 from typing import (
-    AbstractSet,
-    Callable,
-    Collection,
-    Generator,
-    Iterable,
     Protocol,
-    Sequence,
     overload,
 )
 import uuid
@@ -426,7 +421,7 @@ class FormulaCompiler:
                 self.uncache_field(field=field)
         self._columns.unregister_avatar(avatar_id=avatar_id)
 
-    def uncache_field(self, field: BIField, visited_guids: AbstractSet[str] = frozenset()) -> None:
+    def uncache_field(self, field: BIField, visited_guids: Set[str] = frozenset()) -> None:
         """Clear all field-related caches and caches of dependent fields too"""
 
         if field.guid in visited_guids:
@@ -540,7 +535,7 @@ class FormulaCompiler:
     def _is_field_recursive(self, field: BIField) -> bool:
         """Check whether field is recursive or not"""
 
-        def _has_recursion(for_guid: str, visited_guids: AbstractSet[str] = frozenset()) -> bool:
+        def _has_recursion(for_guid: str, visited_guids: Set[str] = frozenset()) -> bool:
             if for_guid in visited_guids:
                 return True
             visited_guids |= frozenset([for_guid])

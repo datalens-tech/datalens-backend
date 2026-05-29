@@ -1,6 +1,6 @@
+from collections.abc import Mapping
 import http
 from typing import (
-    Mapping,
     Protocol,
 )
 

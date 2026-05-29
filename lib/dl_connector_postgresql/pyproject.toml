@@ -28,7 +28,6 @@ psycopg2-binary = "*"
 python = ">=3.12, <3.13"
 python-dateutil = "*"
 sqlalchemy = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 aiohttp = "*"

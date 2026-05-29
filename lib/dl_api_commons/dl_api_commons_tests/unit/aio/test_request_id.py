@@ -1,11 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable, Sequence
 import logging
-from typing import (
-    Awaitable,
-    Callable,
-    Sequence,
-)
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient

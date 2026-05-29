@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import (
-    Sequence,
+    Self,
     TypeVar,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.async_sa_executors import DefaultSqlAlchemyConnExecutor

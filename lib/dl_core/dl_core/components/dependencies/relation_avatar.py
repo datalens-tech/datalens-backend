@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import AbstractSet
+from collections.abc import Set
 
 import attr
 
@@ -34,7 +34,7 @@ class RelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
         self,
         default_avatar_id: AvatarId,
         part: ConditionPart,
-    ) -> AbstractSet[AvatarId]:
+    ) -> Set[AvatarId]:
         if isinstance(part, ConditionPartDirect):
             return {default_avatar_id}
         if isinstance(part, ConditionPartResultField):
@@ -45,7 +45,7 @@ class RelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
         self,
         relation: AvatarRelation,
         condition: BinaryCondition,
-    ) -> AbstractSet[AvatarId]:
+    ) -> Set[AvatarId]:
         return self._get_condition_part_avatar_ids(
             part=condition.left_part,
             default_avatar_id=relation.left_avatar_id,
@@ -54,7 +54,7 @@ class RelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
             default_avatar_id=relation.right_avatar_id,
         )
 
-    def get_relation_avatar_references(self, relation_id: RelationId) -> AbstractSet[AvatarId]:
+    def get_relation_avatar_references(self, relation_id: RelationId) -> Set[AvatarId]:
         relation = self._get_relation(relation_id)
         avatar_refs: set[AvatarId] = set()
         for condition in relation.conditions:

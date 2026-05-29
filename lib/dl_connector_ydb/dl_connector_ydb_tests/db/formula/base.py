@@ -1,8 +1,6 @@
+from collections.abc import Generator
 import contextlib
 import datetime
-from typing import (
-    Generator,
-)
 
 from frozendict import frozendict
 import pytest

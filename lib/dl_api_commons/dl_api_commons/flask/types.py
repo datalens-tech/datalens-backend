@@ -1,7 +1,6 @@
+from collections.abc import Callable, Iterable
 from typing import (
     Any,
-    Callable,
-    Iterable,
 )
 
 WSGIEnviron = dict[str, Any]

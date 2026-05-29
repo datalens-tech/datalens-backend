@@ -6,7 +6,6 @@ from typing import (
     Any,
     ClassVar,
     Generic,
-    Type,
     TypeVar,
 )
 
@@ -54,7 +53,7 @@ _RES_SCHEMA_TV = TypeVar("_RES_SCHEMA_TV")
 
 
 class NonStreamAction(Generic[_RES_SCHEMA_TV], RemoteDBAdapterAction, metaclass=abc.ABCMeta):
-    ResultSchema = ClassVar[Type[BaseQEAPISchema]]  # noqa: UP006
+    ResultSchema = ClassVar[type[BaseQEAPISchema]]
 
     def serialize_response(self, val: _RES_SCHEMA_TV) -> dict:
         return self.ResultSchema().dump(val)  # type: ignore  # TODO: fix

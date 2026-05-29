@@ -1,4 +1,5 @@
-import mock
+from unittest import mock
+
 import sqlalchemy
 import sqlalchemy.dialects.postgresql.psycopg2 as sqlalchemy_dialect_psycopg2
 import sqlalchemy.orm as sqlalchemy_orm

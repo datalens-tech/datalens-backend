@@ -1,12 +1,11 @@
 import abc
+from collections.abc import Awaitable, Callable
 import dataclasses
 import enum
 import functools
 import logging
 from typing import (
     Any,
-    Awaitable,
-    Callable,
     ClassVar,
     Generic,
     Protocol,

@@ -1,6 +1,6 @@
 from collections import ChainMap
+from collections import ChainMap as ChainMapGeneric
 from typing import Any
-from typing import ChainMap as ChainMapGeneric
 
 import attr
 import marshmallow

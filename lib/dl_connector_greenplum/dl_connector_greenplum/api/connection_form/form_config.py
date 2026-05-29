@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Sequence,
-)
+from collections.abc import Sequence
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (

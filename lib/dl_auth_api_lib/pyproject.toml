@@ -19,7 +19,6 @@ marshmallow = "*"
 pydantic = "*"
 pydantic-settings = "*"
 python = ">=3.12, <3.13"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-auth = {path = "../dl_auth"}

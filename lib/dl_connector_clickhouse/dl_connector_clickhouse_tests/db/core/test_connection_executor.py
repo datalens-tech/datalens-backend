@@ -1,8 +1,6 @@
 import asyncio
+from collections.abc import Sequence
 import enum
-from typing import (
-    Sequence,
-)
 
 import attr
 from clickhouse_sqlalchemy import types as ch_types

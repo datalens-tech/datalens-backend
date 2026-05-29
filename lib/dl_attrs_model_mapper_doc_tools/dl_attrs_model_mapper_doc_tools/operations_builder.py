@@ -1,8 +1,8 @@
+from collections.abc import Sequence
 import enum
 from typing import (
     Any,
     Generic,
-    Sequence,
     TypeVar,
 )
 

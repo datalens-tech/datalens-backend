@@ -1,9 +1,9 @@
+from collections.abc import Callable
 import datetime
 import logging
 import math
 from typing import (
     Any,
-    Callable,
 )
 
 from aiohttp import web

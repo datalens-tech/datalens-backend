@@ -1,18 +1,18 @@
+from collections.abc import AsyncGenerator
 import contextlib
 import datetime
 import logging
 from typing import (
     Any,
-    AsyncGenerator,
     Literal,
     Protocol,
+    Self,
     TypeVar,
 )
 
 import aiobotocore.session
 import attrs
 import pydantic
-from typing_extensions import Self
 import yaml
 
 import dl_dynconfig.sources.base as base

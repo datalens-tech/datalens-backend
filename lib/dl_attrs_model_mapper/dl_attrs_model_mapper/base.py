@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Sequence
 import enum
 import inspect
 from typing import (
     Any,
     ClassVar,
-    Sequence,
     TypeVar,
     final,
 )

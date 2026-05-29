@@ -15,11 +15,9 @@ opentracing = "*"
 pydantic = "*"
 python = ">=3.12, <3.13"
 statcommons = {path = "../statcommons"}
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-json = {path = "../dl_json"}
-mock = "*"
 pytest = "*"
 
 [tool.mypy]

@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import (
     Any,
     ClassVar,
+    Self,
 )
 
 import attr
 from sqlalchemy.types import TypeEngine
-from typing_extensions import Self
 
 SATypeSpec = type[TypeEngine] | TypeEngine | str | None
 

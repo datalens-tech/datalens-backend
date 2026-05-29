@@ -1,8 +1,8 @@
 import asyncio
+from collections.abc import Generator
 import datetime
 from typing import (
     Any,
-    Generator,
 )
 
 import pytest

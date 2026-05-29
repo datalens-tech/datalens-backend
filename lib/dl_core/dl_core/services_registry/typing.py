@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Callable,
-)
+from collections.abc import Callable
 
 from dl_core.connection_models import ConnectOptions
 from dl_core.us_connection_base import ConnectionBase

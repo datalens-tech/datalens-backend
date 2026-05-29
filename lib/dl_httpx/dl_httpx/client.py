@@ -1,5 +1,6 @@
 import abc
 import asyncio
+from collections.abc import AsyncGenerator, Iterator
 import contextlib
 import logging
 import ssl
@@ -7,9 +8,7 @@ import time
 import types
 from typing import (
     Any,
-    AsyncGenerator,
     Generic,
-    Iterator,
     Protocol,
     TypeVar,
 )

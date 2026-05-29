@@ -1,11 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence, Sized
 import json
-from typing import (
-    Iterable,
-    Sequence,
-    Sized,
-)
 
 from aiohttp import web
 import attr

@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Iterable, Sequence, Set
 from typing import (
-    AbstractSet,
     Any,
-    Iterable,
     NamedTuple,
-    Sequence,
+    Self,
     TypeVar,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import UserDataType
 from dl_core.components.ids import (
@@ -176,7 +174,7 @@ class TranslatedMultiQueryBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_base_root_from_ids(self) -> AbstractSet[str]:
+    def get_base_root_from_ids(self) -> Set[str]:
         raise NotImplementedError
 
     def clone(self, **updates: Any) -> Self:
@@ -225,7 +223,7 @@ class TranslatedMultiQuery(TranslatedMultiQueryBase):
     def is_empty(self) -> bool:
         return not self.queries
 
-    def get_base_root_from_ids(self) -> AbstractSet[str]:
+    def get_base_root_from_ids(self) -> Set[str]:
         result: set[str] = set()
         for query in self.queries:
             root_from_id = query.joined_from.root_from_id

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 import itertools
-from typing import (
-    Sequence,
-)
 
 import sqlalchemy as sa
 

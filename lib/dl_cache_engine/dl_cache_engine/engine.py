@@ -70,6 +70,7 @@ from __future__ import annotations
 
 import asyncio
 import collections
+from collections.abc import AsyncGenerator
 import contextlib
 import enum
 import gzip
@@ -77,14 +78,13 @@ import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncGenerator,
+    Self,
 )
 
 import attr
 import lz4.frame
 from redis_cache_lock.main import RedisCacheLock
 from redis_cache_lock.utils import HistoryHolder
-from typing_extensions import Self
 
 from dl_app_tools.profiling_base import (
     GenericProfiler,

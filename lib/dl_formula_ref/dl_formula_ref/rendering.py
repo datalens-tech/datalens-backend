@@ -5,11 +5,10 @@ Generate structures used for creating documentation
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Collection, Mapping
 import os.path
 from typing import (
     TYPE_CHECKING,
-    Collection,
-    Mapping,
 )
 
 import attr

@@ -1,8 +1,6 @@
+from collections.abc import Generator
 import contextlib
 from functools import reduce
-from typing import (
-    Generator,
-)
 
 import pytest
 import sqlalchemy as sa

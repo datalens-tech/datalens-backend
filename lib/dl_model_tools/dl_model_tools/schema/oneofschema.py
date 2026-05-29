@@ -1,11 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Mapping, Sequence, Set
 from typing import (
-    AbstractSet,
     Any,
-    Iterable,
-    Mapping,
-    Sequence,
 )
 
 from marshmallow.decorators import (
@@ -49,7 +46,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
         data: Mapping[str, Any] | Iterable[Mapping[str, Any]],
         *,
         many: bool | None = None,
-        partial: bool | Sequence[str] | AbstractSet[str] | None = None,
+        partial: bool | Sequence[str] | Set[str] | None = None,
         unknown: str | None = None,
         **kwargs: Any,
     ) -> Any:
@@ -65,7 +62,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
         if self._has_processors(PRE_LOAD):
             try:
                 processed_data = self._invoke_load_processors(
-                    PRE_LOAD, data, many=many, original_data=data, partial=partial  # type: ignore  # 2024-01-24 # TODO: Argument "partial" to "_invoke_load_processors" of "Schema" has incompatible type "bool | Sequence[str] | AbstractSet[str]"; expected "bool | Sequence[str] | set[str]"  [arg-type]
+                    PRE_LOAD, data, many=many, original_data=data, partial=partial  # type: ignore  # 2024-01-24 # TODO: Argument "partial" to "_invoke_load_processors" of "Schema" has incompatible type "bool | Sequence[str] | Set[str]"; expected "bool | Sequence[str] | set[str]"  [arg-type]
                 )
             except ValidationError as err:
                 errors = err.normalized_messages()
@@ -86,7 +83,7 @@ class OneOfSchemaWithDumpLoadHooks(OneOfSchema):
                         result,
                         many=many,
                         original_data=data,
-                        partial=partial,  # type: ignore  # 2024-01-24 # TODO: Argument "partial" to "_invoke_load_processors" of "Schema" has incompatible type "bool | Sequence[str] | AbstractSet[str]"; expected "bool | Sequence[str] | set[str]"  [arg-type]
+                        partial=partial,  # type: ignore  # 2024-01-24 # TODO: Argument "partial" to "_invoke_load_processors" of "Schema" has incompatible type "bool | Sequence[str] | Set[str]"; expected "bool | Sequence[str] | set[str]"  [arg-type]
                     )
                 except ValidationError as err:
                     errors = err.normalized_messages()

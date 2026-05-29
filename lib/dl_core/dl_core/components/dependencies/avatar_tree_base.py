@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    Collection,
-)
+from collections.abc import Collection
 
 from dl_core.components.ids import (
     AvatarId,

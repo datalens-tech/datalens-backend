@@ -1,18 +1,17 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Iterable
 import contextlib
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generator,
-    Iterable,
+    Self,
     TypeVar,
     overload,
 )
 
 import typing_extensions
-from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler

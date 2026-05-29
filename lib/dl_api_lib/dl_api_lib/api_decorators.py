@@ -1,10 +1,8 @@
+from collections.abc import Callable
 from functools import wraps
 import json
 import logging
 import sys
-from typing import (
-    Callable,
-)
 
 import flask
 from flask import request

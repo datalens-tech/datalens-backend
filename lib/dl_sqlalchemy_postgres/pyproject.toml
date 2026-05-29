@@ -16,7 +16,6 @@ sqlalchemy = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-testing = {path = "../dl_testing"}
-mock = "*"
 pytest = "*"
 pytz = "*"
 

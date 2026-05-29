@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import AbstractSet
+from collections.abc import Set
 
 import attr
 
@@ -18,7 +18,7 @@ from dl_core.query.expression import ExpressionCtx
 class LegacyRelationAvatarDependencyManager(RelationAvatarDependencyManagerBase):
     _relation_expressions: dict[RelationId, ExpressionCtx] = attr.ib(kw_only=True)
 
-    def get_relation_avatar_references(self, relation_id: RelationId) -> AbstractSet[AvatarId]:
+    def get_relation_avatar_references(self, relation_id: RelationId) -> Set[AvatarId]:
         """
         Return a set of all avatars referenced directly or indirectly by the given relation.
         """

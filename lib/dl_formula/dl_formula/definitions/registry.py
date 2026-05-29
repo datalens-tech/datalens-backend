@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Generator, Sequence
 from typing import (
-    Generator,
     NamedTuple,
-    Sequence,
 )
 
 from dl_formula.core.datatype import DataType

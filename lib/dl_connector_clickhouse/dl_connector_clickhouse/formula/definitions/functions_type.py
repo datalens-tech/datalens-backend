@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 import clickhouse_sqlalchemy.types as ch_types
 import sqlalchemy as sa

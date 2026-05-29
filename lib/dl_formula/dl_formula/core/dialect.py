@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Collection, Generator
 from functools import reduce
 import inspect
 from itertools import chain
@@ -10,8 +11,6 @@ from operator import ior
 import re
 from typing import (
     Any,
-    Collection,
-    Generator,
     NamedTuple,
 )
 

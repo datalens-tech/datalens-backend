@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 import sqlalchemy as sa
 import sqlalchemy.sql.expression as sa_expr

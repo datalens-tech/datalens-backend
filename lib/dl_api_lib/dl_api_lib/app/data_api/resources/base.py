@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Coroutine
 import enum
 import functools
 import inspect
@@ -9,8 +10,6 @@ import itertools
 import typing
 from typing import (
     Any,
-    Callable,
-    Coroutine,
 )
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import (

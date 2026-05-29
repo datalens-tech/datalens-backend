@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncGenerator, Sequence
 import json
 import logging
 import os
@@ -9,8 +10,6 @@ import typing
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncGenerator,
-    Sequence,
     TypeVar,
 )
 

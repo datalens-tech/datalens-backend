@@ -1,6 +1,4 @@
-from typing import (
-    Sequence,
-)
+from collections.abc import Sequence
 
 from clickhouse_sqlalchemy import Table as CHTable
 import sqlalchemy as sa

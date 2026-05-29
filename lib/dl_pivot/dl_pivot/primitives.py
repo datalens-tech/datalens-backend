@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 from enum import (
     Enum,
     auto,
     unique,
 )
 from typing import (
-    Hashable,
     NamedTuple,
 )
 

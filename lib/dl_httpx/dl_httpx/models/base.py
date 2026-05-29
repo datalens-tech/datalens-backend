@@ -2,11 +2,11 @@ import logging
 from typing import (
     Any,
     Protocol,
+    Self,
 )
 
 import attrs
 import pydantic
-from typing_extensions import Self
 
 import dl_auth
 import dl_constants

@@ -1,9 +1,9 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 import gzip
 import logging
 from typing import (
     Any,
-    AsyncGenerator,
 )
 
 import attr

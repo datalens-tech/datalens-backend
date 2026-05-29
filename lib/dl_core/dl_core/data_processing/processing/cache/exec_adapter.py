@@ -1,11 +1,6 @@
+from collections.abc import Awaitable, Callable, Collection, Sequence
 import time
 import typing
-from typing import (
-    Awaitable,
-    Callable,
-    Collection,
-    Sequence,
-)
 
 import attr
 from sqlalchemy.sql.selectable import Select

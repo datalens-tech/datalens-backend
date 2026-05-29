@@ -4,10 +4,10 @@ from base64 import (
     b64decode,
     b64encode,
 )
+from collections.abc import Sequence
 import json
 from typing import (
     Any,
-    Sequence,
 )
 
 from marshmallow import fields

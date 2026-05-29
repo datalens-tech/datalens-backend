@@ -1,6 +1,4 @@
-from typing import (
-    Collection,
-)
+from collections.abc import Collection
 
 from dl_core.connectors.base.connector import CoreConnector
 from dl_core.connectors.base.registrator import CONN_REG_CORE

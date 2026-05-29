@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Collection
 from itertools import chain
 import logging
 from typing import (
     Any,
     ClassVar,
-    Collection,
     NamedTuple,
 )
 

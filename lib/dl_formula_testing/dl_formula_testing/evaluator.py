@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 import copy
 import datetime
 import re
 import time
 from typing import (
     Any,
-    Collection,
 )
 
 import attr

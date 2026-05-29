@@ -1,15 +1,14 @@
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
-    Mapping,
-    Sequence,
+    Self,
 )
 
 import attr
 from sqlalchemy.sql.elements import ClauseElement
-from typing_extensions import Self
 
 if TYPE_CHECKING:
     from dl_constants.enums import IndexKind

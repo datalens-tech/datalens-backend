@@ -1,9 +1,9 @@
 import abc
+from collections.abc import Callable
 from functools import cached_property
 import operator
 from typing import (
     Any,
-    Callable,
     ClassVar,
 )
 

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Set
 from itertools import chain
 from typing import (
-    AbstractSet,
     Any,
-    Generator,
 )
 
 import attr
@@ -45,8 +44,8 @@ class ResultRawDataRow:
 @attr.s(frozen=True)
 class ResultRowSplitter:
     _field_legend: FieldLegend = attr.ib(kw_only=True)
-    _dimension_liids: AbstractSet[int] = attr.ib(kw_only=True)
-    _measure_liids: AbstractSet[int] = attr.ib(kw_only=True)
+    _dimension_liids: Set[int] = attr.ib(kw_only=True)
+    _measure_liids: Set[int] = attr.ib(kw_only=True)
 
     @_measure_liids.default
     def _make_measure_liids(self) -> set[int]:
@@ -59,7 +58,7 @@ class ResultRowSplitter:
     def _make_and_filter_cells(
         self,
         raw_row: ResultRawDataRow,
-        legend_item_ids: AbstractSet[int],
+        legend_item_ids: Set[int],
     ) -> Generator[tuple[DataCell, int], None, None]:
         for liid, value in zip(raw_row.legend, raw_row.data, strict=True):
             if liid in legend_item_ids:

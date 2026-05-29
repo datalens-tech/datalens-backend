@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 import random
 from typing import (
     Any,
-    Sequence,
 )
 
 import attr

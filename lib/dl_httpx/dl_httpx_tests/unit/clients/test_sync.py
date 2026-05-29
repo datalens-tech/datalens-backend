@@ -1,16 +1,16 @@
+from collections.abc import Generator
 import json
 import logging
 import ssl
-from typing import Generator
+from typing import Self
+from unittest import mock
 import unittest.mock
 
 import attrs
 import httpx
-import mock
 import pytest
 import pytest_mock
 import respx
-from typing_extensions import Self
 
 import dl_auth
 import dl_constants

@@ -1,6 +1,6 @@
+from collections.abc import Iterator
 import datetime
 import http
-from typing import Iterator
 
 import attr
 

@@ -1,7 +1,7 @@
+from collections.abc import Sequence
 import re
 from typing import (
     Any,
-    Sequence,
 )
 
 import sqlalchemy as sa

@@ -1,6 +1,6 @@
+from collections.abc import Callable
 import re
 import time
-from typing import Callable
 
 import flaky
 import pytest

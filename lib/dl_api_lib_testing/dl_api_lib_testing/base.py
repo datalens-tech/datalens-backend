@@ -1,9 +1,9 @@
 import abc
 from asyncio import AbstractEventLoop
+from collections.abc import Generator
 from typing import (
     Any,
     ClassVar,
-    Generator,
 )
 
 from flask.app import Flask

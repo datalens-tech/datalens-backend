@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncGenerator
 import contextlib
 import logging
 from typing import (
     Any,
-    AsyncGenerator,
 )
 
 from aiohttp import web

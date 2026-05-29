@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    Generator,
-)
+from collections.abc import Generator
 
 import attr
 import pandas as pd

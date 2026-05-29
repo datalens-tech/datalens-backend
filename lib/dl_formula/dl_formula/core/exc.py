@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import (
     Any,
     ClassVar,
-    Sequence,
 )
 
 from dl_formula.core.message_ctx import (

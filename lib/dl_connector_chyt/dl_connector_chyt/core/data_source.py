@@ -1,7 +1,7 @@
 import abc
 import collections
+from collections.abc import Callable
 import logging
-from typing import Callable
 import urllib.parse
 
 import attr

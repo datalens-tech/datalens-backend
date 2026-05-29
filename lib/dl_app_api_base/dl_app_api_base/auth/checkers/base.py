@@ -1,8 +1,8 @@
 import abc
+from collections.abc import Sequence
 import logging
 from typing import (
     Protocol,
-    Sequence,
 )
 
 import attr

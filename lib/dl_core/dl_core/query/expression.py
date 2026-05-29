@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
-    Sequence,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import OrderDirection
 

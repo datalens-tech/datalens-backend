@@ -27,7 +27,6 @@ python = ">=3.12, <3.13"
 requests = "*"
 sqlalchemy = "*"
 trino = {extras = ["sqlalchemy"], version = "*"}
-typing_extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 aiohttp = "*"

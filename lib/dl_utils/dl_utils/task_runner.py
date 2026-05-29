@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from collections.abc import Awaitable, Iterable
 from typing import (
     Any,
-    Awaitable,
-    Iterable,
 )
 
 

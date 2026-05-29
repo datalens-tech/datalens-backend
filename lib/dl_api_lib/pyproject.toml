@@ -45,7 +45,6 @@ pydantic_settings = "*"
 python = ">=3.12, <3.13"
 requests = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = "*"
 werkzeug = "*"
 
 [tool.poetry.group.tests.dependencies]

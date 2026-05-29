@@ -1,9 +1,7 @@
 from collections import defaultdict
+from collections.abc import Set
 from http import HTTPStatus
 from itertools import chain
-from typing import (
-    AbstractSet,
-)
 
 from dl_api_client.dsmaker.api.data_api import (
     HttpDataApiResponse,
@@ -351,7 +349,7 @@ def check_pivot_response(
     # remove them from the result mapper
     if annotations:
 
-        def apply_anno_tag(dims: DataCellTuple, data_item: DataItem) -> AbstractSet[DataItemTag]:
+        def apply_anno_tag(dims: DataCellTuple, data_item: DataItem) -> Set[DataItemTag]:
             if data_item.cell.title in anno_only:
                 return data_item.meta.tags | {DataItemTag.annotation}
             return data_item.meta.tags

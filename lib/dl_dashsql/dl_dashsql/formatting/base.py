@@ -1,10 +1,7 @@
 import abc
+from collections.abc import Mapping, Sequence
 from enum import Enum
 import re
-from typing import (
-    Mapping,
-    Sequence,
-)
 
 import attr
 

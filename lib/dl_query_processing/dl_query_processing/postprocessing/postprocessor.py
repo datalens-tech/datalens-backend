@@ -1,14 +1,12 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Generator, Iterable, Sequence
 import logging
 import re
 from typing import (
     Any,
     ClassVar,
-    Generator,
-    Iterable,
-    Sequence,
 )
 
 import attr

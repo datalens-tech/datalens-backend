@@ -1,10 +1,10 @@
 import asyncio
+from collections.abc import Coroutine
 import logging
 import os
 import sys
 from typing import (
     Any,
-    Coroutine,
 )
 
 import dl_app_base.exceptions

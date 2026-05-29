@@ -3,10 +3,10 @@ from __future__ import annotations
 import enum
 from typing import (
     ClassVar,
+    Literal,
 )
 
 import attr
-from typing_extensions import Literal
 
 from dl_constants.enums import (
     ConnectionType,

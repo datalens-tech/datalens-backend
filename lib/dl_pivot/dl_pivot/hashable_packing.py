@@ -1,8 +1,8 @@
 import abc
+from collections.abc import Hashable
 import json
 from typing import (
     Any,
-    Hashable,
     NamedTuple,
     get_args,
 )

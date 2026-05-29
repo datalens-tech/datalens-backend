@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 import datetime
 from typing import (
     ClassVar,
-    Collection,
     TypeVar,
 )
 

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 import datetime
-from typing import (
-    Iterable,
-)
 
 import antlr4
 from antlr4.Token import Token

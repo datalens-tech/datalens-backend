@@ -3,6 +3,7 @@ Modifications of `ylog`.
 """
 
 from collections import OrderedDict
+from collections.abc import Callable
 import datetime
 import json
 import logging
@@ -10,7 +11,6 @@ import logging.handlers
 import traceback
 from typing import (
     Any,
-    Callable,
 )
 
 # Minor note:

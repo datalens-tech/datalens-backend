@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from enum import Enum
 import os
 from typing import (
     Any,
-    Mapping,
     NamedTuple,
 )
 

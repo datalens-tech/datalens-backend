@@ -1,5 +1,6 @@
+from typing import Self
+
 import attrs
-from typing_extensions import Self
 
 import dl_httpx
 import dl_httpx_tests.unit.error_transformers.conftest as conftest

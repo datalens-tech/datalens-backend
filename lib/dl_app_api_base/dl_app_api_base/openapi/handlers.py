@@ -1,11 +1,10 @@
 import copy
 import os
-from typing import Any
+from typing import Any, Self
 
 import aiohttp.web
 import attrs
 import jinja2
-from typing_extensions import Self
 
 import dl_app_api_base.handlers.base as base
 

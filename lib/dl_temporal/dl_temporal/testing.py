@@ -1,7 +1,7 @@
 import asyncio
+from collections.abc import AsyncGenerator
 import contextlib
 import logging
-from typing import AsyncGenerator
 
 import temporalio.worker
 

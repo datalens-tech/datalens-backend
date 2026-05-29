@@ -1,7 +1,6 @@
+from collections.abc import AsyncIterator, Iterator
 import contextlib
 from typing import (
-    AsyncIterator,
-    Iterator,
     Literal,
 )
 

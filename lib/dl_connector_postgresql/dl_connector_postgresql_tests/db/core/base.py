@@ -1,6 +1,6 @@
 import asyncio
+from collections.abc import Generator
 import os
-from typing import Generator
 
 import pytest
 import requests

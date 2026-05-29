@@ -4,10 +4,9 @@ Auxiliary nodes specific to the forked subquery joining mechanism.
 
 from __future__ import annotations
 
+from collections.abc import Hashable, Sequence
 from enum import Enum
 from typing import (
-    Hashable,
-    Sequence,
     cast,
 )
 

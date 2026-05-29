@@ -1,18 +1,18 @@
+from collections.abc import AsyncGenerator
 import enum
 import http
 import logging
 import os
 import re
 from typing import (
-    AsyncGenerator,
     ClassVar,
+    override,
 )
 
 import aiohttp.web
 import attr
 import pytest
 import pytest_asyncio
-from typing_extensions import override
 
 import dl_app_api_base
 import dl_app_base

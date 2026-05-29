@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Iterable
 import contextlib
 import logging
 from pathlib import Path
 from typing import (
     Any,
-    Generator,
-    Iterable,
 )
 
 import attr

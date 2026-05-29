@@ -1,10 +1,10 @@
 import asyncio
+from collections.abc import Iterable
 import logging
 import os
 import sys
 from typing import (
     Any,
-    Iterable,
 )
 
 import aiohttp.web

@@ -1,17 +1,14 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Generator, Iterable, Sequence, Set
 from typing import (
-    AbstractSet,
     Any,
     ClassVar,
-    Generator,
-    Iterable,
-    Sequence,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import (
     JoinType,
@@ -375,7 +372,7 @@ class CompiledMultiQueryBase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_base_root_from_ids(self) -> AbstractSet[str]:
+    def get_base_root_from_ids(self) -> Set[str]:
         raise NotImplementedError
 
     def clone(self, **updates: Any) -> Self:
@@ -433,7 +430,7 @@ class CompiledMultiQuery(CompiledMultiQueryBase):
     def is_empty(self) -> bool:
         return not self.queries
 
-    def get_base_root_from_ids(self) -> AbstractSet[str]:
+    def get_base_root_from_ids(self) -> Set[str]:
         result: set[str] = set()
         for query in self.queries:
             root_from_id = query.joined_from.root_from_id

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator, AsyncIterable, Sequence
 import contextlib
 import copy
 import enum
@@ -7,10 +8,7 @@ import logging
 import time
 from typing import (
     Any,
-    AsyncGenerator,
-    AsyncIterable,
     ClassVar,
-    Sequence,
 )
 
 import attr

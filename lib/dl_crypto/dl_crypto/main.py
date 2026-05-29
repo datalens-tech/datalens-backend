@@ -1,11 +1,11 @@
 from typing import (
     Protocol,
+    Self,
     TypedDict,
 )
 
 import attr
 from cryptography import fernet
-from typing_extensions import Self
 
 
 class EncryptedData(TypedDict):

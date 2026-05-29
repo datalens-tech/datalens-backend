@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
 from functools import wraps
 import inspect
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Mapping,
     overload,
 )
 

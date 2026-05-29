@@ -1,8 +1,5 @@
+from collections.abc import Callable, Sequence
 import re
-from typing import (
-    Callable,
-    Sequence,
-)
 
 from dl_attrs_model_mapper_doc_tools.render_units import DocLink
 

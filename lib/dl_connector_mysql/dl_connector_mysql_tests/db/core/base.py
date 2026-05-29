@@ -1,6 +1,6 @@
 import asyncio
+from collections.abc import Generator
 import ssl
-from typing import Generator
 
 from frozendict import frozendict
 import pytest

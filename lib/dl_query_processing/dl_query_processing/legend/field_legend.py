@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Collection, Iterator, Sequence
 from typing import (
     Any,
-    Collection,
-    Iterator,
-    Sequence,
 )
 
 import attr

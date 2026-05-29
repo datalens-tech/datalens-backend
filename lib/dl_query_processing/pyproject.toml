@@ -17,7 +17,6 @@ dl-formula = {path = "../dl_formula"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.12, <3.13"
 pytz = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "*"

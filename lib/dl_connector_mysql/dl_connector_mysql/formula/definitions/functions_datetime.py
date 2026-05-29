@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Iterable, Mapping
 from enum import Enum
 from typing import (
-    Callable,
     ClassVar,
-    Iterable,
-    Mapping,
 )
 
 import attr

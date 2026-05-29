@@ -1,8 +1,8 @@
-from typing import Sequence
+from collections.abc import Sequence
+from typing import Self
 
 import attr
 import pydantic
-from typing_extensions import Self
 
 import dl_app_api_base.auth.checkers.base as auth_checkers_base
 import dl_app_api_base.auth.exc as auth_exc

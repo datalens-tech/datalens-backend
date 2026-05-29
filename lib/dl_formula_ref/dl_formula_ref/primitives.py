@@ -4,12 +4,7 @@ Generate structures used for creating documentation
 
 from __future__ import annotations
 
-from typing import (
-    Callable,
-    Collection,
-    Iterable,
-    Sequence,
-)
+from collections.abc import Callable, Collection, Iterable, Sequence
 
 import attr
 

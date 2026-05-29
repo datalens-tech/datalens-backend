@@ -1,8 +1,8 @@
 import abc
+from collections.abc import Callable
 from functools import wraps
 import logging
 from typing import (
-    Callable,
     ClassVar,
 )
 

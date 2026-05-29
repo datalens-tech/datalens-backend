@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Collection
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Collection,
 )
 
 from aiohttp import web

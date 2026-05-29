@@ -1,9 +1,9 @@
 from collections import defaultdict
+from collections.abc import Iterable
 import datetime
 from http import HTTPStatus
 from typing import (
     Any,
-    Iterable,
 )
 
 import pytest

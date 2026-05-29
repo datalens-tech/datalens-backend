@@ -1,13 +1,13 @@
 import asyncio
+from collections.abc import Callable
 from typing import (
     Any,
-    Callable,
     Generic,
+    Self,
     TypeVar,
 )
 
 import attrs
-from typing_extensions import Self
 
 
 @attrs.define(kw_only=True)

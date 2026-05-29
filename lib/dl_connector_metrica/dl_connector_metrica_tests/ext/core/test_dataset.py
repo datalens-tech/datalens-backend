@@ -1,6 +1,4 @@
-from typing import (
-    AbstractSet,
-)
+from collections.abc import Set
 
 import pytest
 import sqlalchemy as sa
@@ -253,10 +251,10 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
         finally:
             sync_us_manager.delete(testing_conn)
 
-    def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
+    def _check_supported_join_types(self, supp_join_types: Set[JoinType]) -> None:
         assert not supp_join_types
 
-    def _check_compatible_source_types(self, compat_source_types: AbstractSet[DataSourceType]) -> None:
+    def _check_compatible_source_types(self, compat_source_types: Set[DataSourceType]) -> None:
         assert not compat_source_types
 
     def _allow_adding_sources(self, dataset: Dataset) -> bool:
@@ -275,10 +273,10 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
         },
     )
 
-    def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
+    def _check_supported_join_types(self, supp_join_types: Set[JoinType]) -> None:
         assert not supp_join_types
 
-    def _check_compatible_source_types(self, compat_source_types: AbstractSet[DataSourceType]) -> None:
+    def _check_compatible_source_types(self, compat_source_types: Set[DataSourceType]) -> None:
         assert not compat_source_types
 
     def _allow_adding_sources(self, dataset: Dataset) -> bool:

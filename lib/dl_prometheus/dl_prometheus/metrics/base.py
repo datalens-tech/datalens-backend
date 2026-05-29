@@ -28,9 +28,9 @@
 # patch before delegating to BaseMetricsRegistry.__attrs_post_init__, which
 # is where metric.register() is called).
 
+from collections.abc import Mapping
 from typing import (
     Generic,
-    Mapping,
     TypeVar,
 )
 

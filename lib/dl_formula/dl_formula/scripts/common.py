@@ -1,10 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 import os
 import tempfile
-from typing import (
-    Callable,
-)
 import uuid
 
 from graphviz.dot import Dot

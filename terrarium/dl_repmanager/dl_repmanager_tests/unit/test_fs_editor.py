@@ -1,7 +1,7 @@
+from collections.abc import Generator
 from pathlib import Path
 import shutil
 import tempfile
-from typing import Generator
 
 import attr
 import pytest

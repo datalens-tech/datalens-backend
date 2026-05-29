@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Hashable
 import hashlib
 from typing import (
     Any,
-    Hashable,
     NamedTuple,
 )
 

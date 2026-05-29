@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import argparse
 from collections import defaultdict
+from collections.abc import Generator
 import inspect
 import os
 import sys
 from typing import (
     TYPE_CHECKING,
-    Generator,
 )
 
 from dl_formula.core import exc

@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Iterable
 from contextlib import contextmanager
-from typing import (
-    Iterable,
-)
 
 import dl_formula.core.exc as exc
 from dl_formula.core.message_ctx import FormulaErrorCtx

@@ -5,13 +5,13 @@ Should be placed after ContextVarMiddleware
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 import contextlib
 import functools
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Sequence,
 )
 
 import attr

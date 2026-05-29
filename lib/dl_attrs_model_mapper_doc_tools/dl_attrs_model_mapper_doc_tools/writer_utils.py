@@ -1,7 +1,7 @@
+from collections.abc import Iterator
 import contextlib
 import os
 from typing import (
-    Iterator,
     TextIO,
 )
 

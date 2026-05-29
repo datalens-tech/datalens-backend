@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Collection
 from itertools import chain
 import logging
 from typing import (
-    Callable,
-    Collection,
     NamedTuple,
 )
 

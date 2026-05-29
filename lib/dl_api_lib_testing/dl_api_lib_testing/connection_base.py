@@ -1,10 +1,10 @@
 import abc
+from collections.abc import Generator
 import contextlib
 import json
 from typing import (
     Any,
     ClassVar,
-    Generator,
 )
 import uuid
 

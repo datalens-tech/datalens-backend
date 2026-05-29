@@ -11,13 +11,11 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-)
-
-import attr
-from typing_extensions import (
     Self,
     final,
 )
+
+import attr
 
 from dl_core.utils import secrepr
 

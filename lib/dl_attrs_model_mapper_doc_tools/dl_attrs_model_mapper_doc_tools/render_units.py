@@ -1,9 +1,9 @@
 import abc
+from collections.abc import Sequence
 import os.path
 from typing import (
     Any,
     ClassVar,
-    Sequence,
 )
 from urllib.parse import urlparse
 

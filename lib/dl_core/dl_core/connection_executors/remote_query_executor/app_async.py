@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+from collections.abc import Sequence
 import ipaddress
 import logging
 import pickle
@@ -11,7 +12,6 @@ import sys
 from typing import (
     TYPE_CHECKING,
     Any,
-    Sequence,
 )
 
 import aiodns

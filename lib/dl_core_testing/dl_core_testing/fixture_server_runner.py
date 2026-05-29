@@ -9,11 +9,11 @@ import subprocess
 import sys
 import time
 from types import TracebackType
+from typing import Self
 
 import attr
 import requests
 from statcommons.log_config import deconfigure_logging
-from typing_extensions import Self
 
 LOGGER = logging.getLogger()
 

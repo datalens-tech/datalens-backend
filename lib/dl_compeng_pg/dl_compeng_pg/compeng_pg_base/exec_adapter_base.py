@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Sequence
 import logging
 from typing import (
     ClassVar,
     Generic,
-    Sequence,
     TypeVar,
 )
 

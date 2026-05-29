@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable
 import functools
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
     Generic,
     NamedTuple,

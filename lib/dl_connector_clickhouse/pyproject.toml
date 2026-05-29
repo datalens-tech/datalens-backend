@@ -36,7 +36,6 @@ pytz = "*"
 requests = "*"
 shortuuid = "*"
 sqlalchemy = "*"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 dl-api-client = {path = "../dl_api_client"}

@@ -1,9 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from itertools import chain
-from typing import (
-    Sequence,
-)
 
 import attr
 from sqlalchemy.sql.elements import TextClause

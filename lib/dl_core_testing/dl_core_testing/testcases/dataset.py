@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Set
 from typing import (
-    AbstractSet,
     ClassVar,
     Generic,
     TypeVar,
@@ -212,13 +212,13 @@ class DefaultDatasetTestSuite(RegulatedTestCase, BaseDatasetTestClass[_CONN_TV],
 
         assert found_template
 
-    def _check_compatible_source_types(self, compat_source_types: AbstractSet[DataSourceType]) -> None:
+    def _check_compatible_source_types(self, compat_source_types: Set[DataSourceType]) -> None:
         assert self.source_type in compat_source_types
 
-    def _check_compatible_connection_types(self, compat_conn_types: AbstractSet[ConnectionType]) -> None:
+    def _check_compatible_connection_types(self, compat_conn_types: Set[ConnectionType]) -> None:
         assert not compat_conn_types, "Multiple connections are not supported"
 
-    def _check_supported_join_types(self, supp_join_types: AbstractSet[JoinType]) -> None:
+    def _check_supported_join_types(self, supp_join_types: Set[JoinType]) -> None:
         assert set(supp_join_types).issuperset({JoinType.inner, JoinType.left})
 
     def _allow_adding_sources(self, dataset: Dataset) -> bool:

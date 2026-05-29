@@ -1,10 +1,8 @@
+from collections.abc import Callable, Mapping, Sequence
 import logging
 import os
 from typing import (
     Any,
-    Callable,
-    Mapping,
-    Sequence,
 )
 
 import jaeger_client

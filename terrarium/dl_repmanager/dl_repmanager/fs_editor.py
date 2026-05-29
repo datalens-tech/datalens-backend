@@ -1,4 +1,5 @@
 import abc
+from collections.abc import Callable, Collection, Generator
 from contextlib import contextmanager
 import io
 import os
@@ -7,9 +8,6 @@ import re
 import shutil
 import subprocess
 from typing import (
-    Callable,
-    Collection,
-    Generator,
     TextIO,
     cast,
     final,

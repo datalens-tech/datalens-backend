@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import builtins
+from collections.abc import Sequence
 import datetime as datetime_mod
 from functools import wraps
 from typing import (
     Any,
-    Sequence,
 )
 import uuid as uuid_mod
 

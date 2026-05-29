@@ -1,5 +1,5 @@
+from collections.abc import Sequence
 import logging
-from typing import Sequence
 
 import attr
 

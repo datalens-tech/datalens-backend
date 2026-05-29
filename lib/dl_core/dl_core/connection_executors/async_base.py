@@ -1,19 +1,16 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import AsyncIterable, Awaitable, Callable, Sequence
 import functools
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncIterable,
-    Awaitable,
-    Callable,
-    Sequence,
+    final,
 )
 
 import attr
-from typing_extensions import final
 
 from dl_core.connection_executors.common_base import (
     ConnExecutorBase,

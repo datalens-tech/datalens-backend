@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Set
 from typing import (
-    AbstractSet,
     Any,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import (
     OrderDirection,
@@ -140,5 +140,5 @@ class QuerySpec:
     limit: int | None = attr.ib(kw_only=True)
     offset: int | None = attr.ib(kw_only=True)
     root_avatar_id: AvatarId | None = attr.ib(kw_only=True, default=None)
-    required_avatar_ids: AbstractSet[AvatarId] = attr.ib(kw_only=True, factory=frozenset)
+    required_avatar_ids: Set[AvatarId] = attr.ib(kw_only=True, factory=frozenset)
     meta: QueryMetaInfo = attr.ib(kw_only=True, factory=QueryMetaInfo)

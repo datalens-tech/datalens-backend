@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import AbstractSet
+from collections.abc import Set
 
 import attr
 
@@ -13,10 +13,10 @@ from dl_core.components.ids import FieldId
 class FieldDeepInterDependencyManager(FieldDeepInterDependencyManagerBase):
     _shallow: FieldShallowInterDependencyManagerBase = attr.ib(kw_only=True)
 
-    def get_field_deep_references(self, dep_field_id: FieldId) -> AbstractSet[FieldId]:
+    def get_field_deep_references(self, dep_field_id: FieldId) -> Set[FieldId]:
         refs: set[FieldId] = set()
 
-        def _populate_refs_recursively(field_id: FieldId) -> AbstractSet[FieldId]:  # type: ignore  # TODO: fix
+        def _populate_refs_recursively(field_id: FieldId) -> Set[FieldId]:  # type: ignore  # TODO: fix
             if field_id in refs:
                 return set()
             refs.add(field_id)

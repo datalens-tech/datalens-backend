@@ -1,6 +1,6 @@
+from collections.abc import AsyncGenerator
 import datetime
 import logging
-from typing import AsyncGenerator
 
 import pytest
 import pytest_asyncio

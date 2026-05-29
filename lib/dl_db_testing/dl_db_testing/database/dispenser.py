@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import abc
 from collections import defaultdict
+from collections.abc import Callable
 from typing import (
-    Callable,
     Generic,
     TypeVar,
 )

@@ -1,4 +1,4 @@
-from typing import Collection
+from collections.abc import Collection
 
 from dl_constants.enums import (
     ConnectionType,

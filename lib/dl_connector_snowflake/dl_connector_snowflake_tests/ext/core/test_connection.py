@@ -1,6 +1,6 @@
 import asyncio
+from unittest.mock import MagicMock
 
-from mock import MagicMock
 import pytest
 
 from dl_core.connection_executors.common_base import ConnExecutorQuery

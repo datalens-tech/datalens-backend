@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import abc
 from collections import defaultdict
+from collections.abc import Generator
 from contextlib import contextmanager
 from functools import _CacheInfo
 import os
 import statistics
 import time
 from typing import (
-    Generator,
     NamedTuple,
 )
 

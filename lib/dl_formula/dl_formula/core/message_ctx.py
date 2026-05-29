@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from enum import (
     Enum,
     unique,
 )
 from typing import (
     NamedTuple,
-    Sequence,
 )
 
 from dl_formula.core.position import Position

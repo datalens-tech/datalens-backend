@@ -1,6 +1,6 @@
 import abc
 import argparse
-from typing import Sequence
+from collections.abc import Sequence
 
 import attr
 

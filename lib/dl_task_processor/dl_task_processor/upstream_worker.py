@@ -27,6 +27,7 @@ until the release including this pull request https://github.com/samuelcolvin/ar
 """
 
 import asyncio
+from collections.abc import Callable, Sequence
 import contextlib
 from datetime import datetime, timedelta, timezone
 from functools import partial
@@ -34,7 +35,7 @@ import logging
 import signal
 from signal import Signals
 from time import time
-from typing import TYPE_CHECKING, Any, Callable, Optional, Sequence, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from arq.connections import ArqRedis, RedisSettings, create_pool, log_redis_info
 from arq.constants import (

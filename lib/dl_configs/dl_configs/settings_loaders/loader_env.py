@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 import inspect
 import json
 import logging
@@ -9,7 +10,6 @@ from types import MappingProxyType
 import typing
 from typing import (
     Any,
-    Callable,
     ClassVar,
     TypeVar,
     Union,

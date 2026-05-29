@@ -13,7 +13,6 @@ dl-constants = {path = "../dl_constants"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.12, <3.13"
-typing-extensions = "*"
 
 [tool.poetry.plugins."dl_pivot.pivot_engine_plugins"]
 native = "dl_pivot.native.plugin:NativePivotEnginePlugin"

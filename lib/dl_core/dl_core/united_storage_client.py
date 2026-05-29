@@ -1,4 +1,5 @@
 import abc
+from collections.abc import Generator, Iterable
 from contextlib import contextmanager
 from datetime import (
     datetime,
@@ -11,8 +12,6 @@ import time
 from typing import (
     Any,
     ClassVar,
-    Generator,
-    Iterable,
     NamedTuple,
     cast,
 )

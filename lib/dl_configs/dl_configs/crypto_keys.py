@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from os import environ
 from typing import (
     Any,
-    Mapping,
 )
 
 import attr

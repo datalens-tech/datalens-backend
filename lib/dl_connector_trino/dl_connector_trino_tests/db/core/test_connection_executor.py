@@ -1,9 +1,5 @@
-from collections.abc import Sequence
+from collections.abc import Callable, Generator, Sequence
 import datetime
-from typing import (
-    Callable,
-    Generator,
-)
 
 import pytest
 import sqlalchemy as sa

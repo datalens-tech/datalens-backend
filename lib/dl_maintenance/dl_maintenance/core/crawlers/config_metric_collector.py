@@ -8,6 +8,7 @@ crawler.print_stats()  # chars=False)
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import AsyncIterable, Sequence
 from enum import (
     Enum,
     auto,
@@ -17,9 +18,7 @@ import json
 import statistics
 from typing import (
     Any,
-    AsyncIterable,
     Generic,
-    Sequence,
     TypeVar,
 )
 

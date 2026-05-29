@@ -1,7 +1,7 @@
 import abc
+from collections.abc import Collection
 from importlib import metadata
 from typing import (
-    Collection,
     Generic,
     TypeVar,
 )

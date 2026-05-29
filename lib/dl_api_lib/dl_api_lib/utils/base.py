@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
 import cProfile
 import datetime
@@ -10,7 +11,6 @@ import os
 from typing import (
     TYPE_CHECKING,
     Any,
-    Iterator,
 )
 import uuid
 

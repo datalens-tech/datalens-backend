@@ -1,9 +1,9 @@
 from collections import defaultdict
+from collections.abc import Iterable
 from copy import deepcopy
 import logging
 from typing import (
     Any,
-    Iterable,
 )
 
 import attr

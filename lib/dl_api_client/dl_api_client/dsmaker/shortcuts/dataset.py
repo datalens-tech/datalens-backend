@@ -1,8 +1,8 @@
+from collections.abc import Callable
 from http import HTTPStatus
 import typing
 from typing import (
     Any,
-    Callable,
 )
 
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1

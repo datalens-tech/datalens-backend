@@ -1,9 +1,9 @@
+from collections.abc import Iterator
 import contextlib
 import json
 import logging
 from typing import (
     Any,
-    Iterator,
     NoReturn,
 )
 

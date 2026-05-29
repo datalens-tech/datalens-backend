@@ -1,13 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator, AsyncIterable, Sequence
 import datetime
 import decimal
 import ipaddress
-from typing import (
-    AsyncGenerator,
-    AsyncIterable,
-    Sequence,
-)
 import uuid
 
 TJSONScalar = str | float | int | bool | None

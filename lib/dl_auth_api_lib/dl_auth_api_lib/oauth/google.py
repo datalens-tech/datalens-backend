@@ -1,10 +1,9 @@
-from typing import Any
+from typing import Any, Self
 import urllib.parse
 
 import aiohttp
 import attr
 import pydantic
-from typing_extensions import Self
 
 from dl_auth_api_lib.oauth.base import BaseOAuth
 from dl_auth_api_lib.settings import BaseOAuthClient

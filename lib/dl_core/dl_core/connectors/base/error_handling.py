@@ -1,9 +1,8 @@
+from collections.abc import Callable, Generator
 import contextlib
 import logging
 from typing import (
-    Callable,
     ClassVar,
-    Generator,
 )
 
 from sqlalchemy import exc as sa_exc

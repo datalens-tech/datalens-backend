@@ -1,10 +1,10 @@
 import asyncio
-import logging
-from typing import (
-    AbstractSet,
+from collections.abc import (
     Callable,
     Collection,
+    Set,
 )
+import logging
 
 import attr
 
@@ -176,7 +176,7 @@ class QueryExecutor:
         else:
             result_to_stream_id_map = {result_id: stream.id for result_id, stream in streams_by_result_id.items()}
 
-        required_avatar_ids: AbstractSet[str]
+        required_avatar_ids: Set[str]
 
         # 2. Make operations for queries.
         # These can have many levels

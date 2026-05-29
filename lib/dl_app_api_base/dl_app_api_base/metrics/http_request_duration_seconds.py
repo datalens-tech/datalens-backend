@@ -1,6 +1,5 @@
-from typing import Sequence
-
-from typing_extensions import Self
+from collections.abc import Sequence
+from typing import Self
 
 import dl_prometheus
 import dl_settings

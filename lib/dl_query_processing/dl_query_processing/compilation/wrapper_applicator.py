@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Sequence
+from collections.abc import Sequence
 
 import dl_formula.core.nodes as formula_nodes
 from dl_query_processing.compilation.specs import (

@@ -1,5 +1,5 @@
 import abc
-from typing import Callable
+from collections.abc import Callable
 
 import attr
 import sqlalchemy as sa

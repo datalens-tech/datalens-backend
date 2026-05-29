@@ -1,6 +1,6 @@
+from collections.abc import Iterable
 from typing import (
     ClassVar,
-    Iterable,
 )
 
 from frozendict import frozendict

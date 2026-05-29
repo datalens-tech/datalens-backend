@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 import datetime
 import math
 import random
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     NamedTuple,
-    Sequence,
 )
 import uuid
 

@@ -1,9 +1,8 @@
 from collections import defaultdict
+from collections.abc import Iterable, Sequence
 import logging
 from typing import (
     TYPE_CHECKING,
-    Iterable,
-    Sequence,
 )
 
 import attr

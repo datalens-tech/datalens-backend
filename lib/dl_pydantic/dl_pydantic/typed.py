@@ -1,9 +1,10 @@
+import builtins
 import logging
 from typing import (
     TYPE_CHECKING,
     Annotated,
     Any,
-    Type,
+    Self,
     TypeVar,
     cast,
 )
@@ -11,7 +12,6 @@ from typing import (
 import pydantic
 import pydantic._internal._model_construction as pydantic_model_construction
 import pydantic_core
-from typing_extensions import Self
 
 import dl_pydantic.base as base
 import dl_pydantic.exceptions as exceptions
@@ -71,7 +71,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     type: str
 
     @classmethod
-    def register(cls, name: str, class_: Type) -> None:  # noqa: UP006
+    def register(cls, name: str, class_: builtins.type) -> None:
         if name in cls._classes:
             if cls._classes[name] is class_:
                 LOGGER.warning("Class %s(type=%s) already registered: %s", cls.__name__, name, class_)
@@ -86,7 +86,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         LOGGER.debug("Registered %s(type=%s): %s", cls.__name__, name, class_)
 
     @classmethod
-    def register_unknown(cls, class_: Type) -> None:  # noqa: UP006
+    def register_unknown(cls, class_: builtins.type) -> None:
         if cls._unknown_class is not None:
             raise ValueError("Unknown class already registered")
 
@@ -97,7 +97,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
         LOGGER.debug("Registered unknown for %s: %s", cls.__name__, class_)
 
     @classmethod
-    def register_unset(cls, class_: Type) -> None:  # noqa: UP006
+    def register_unset(cls, class_: builtins.type) -> None:
         if cls._unset_class is not None:
             raise ValueError("Unset class already registered")
 

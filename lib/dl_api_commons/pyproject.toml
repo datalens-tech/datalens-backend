@@ -23,7 +23,6 @@ opentracing = "*"
 python = ">=3.12, <3.13"
 requests = "*"
 sentry-sdk = {extras = ["flask"], version = "*"}
-typing-extensions = "*"
 werkzeug = "*"
 
 [tool.poetry.group.tests.dependencies]

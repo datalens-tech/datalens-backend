@@ -4,9 +4,7 @@ Extended formula nodes
 
 from __future__ import annotations
 
-from typing import (
-    Hashable,
-)
+from collections.abc import Hashable
 
 from sqlalchemy.sql import ClauseElement
 

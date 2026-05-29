@@ -3,12 +3,12 @@ from typing import (
     Any,
     ClassVar,
     Literal,
+    Self,
 )
 
 import attr
 import pydantic
 import pydantic_settings
-from typing_extensions import Self
 
 import dl_api_commons
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig

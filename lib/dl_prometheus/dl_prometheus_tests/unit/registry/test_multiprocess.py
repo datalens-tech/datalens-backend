@@ -1,11 +1,8 @@
+from collections.abc import Callable, Sequence
 import multiprocessing
 import os
 import pathlib
 import threading
-from typing import (
-    Callable,
-    Sequence,
-)
 
 import prometheus_client.samples
 import prometheus_client.values

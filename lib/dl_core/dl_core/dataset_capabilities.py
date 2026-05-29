@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 from functools import lru_cache
 from itertools import chain
 import logging
 from typing import (
     TYPE_CHECKING,
-    Collection,
 )
 
 import attr

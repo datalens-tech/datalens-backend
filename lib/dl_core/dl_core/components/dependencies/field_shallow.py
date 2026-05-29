@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import (
-    AbstractSet,
+from collections.abc import (
     Collection,
+    Set,
 )
 
 import attr
@@ -46,7 +46,7 @@ class FieldShallowInterDependencyManager(FieldShallowInterDependencyManagerBase)
         if item is not None:
             self._direct_dependencies.remove(item)
 
-    def get_field_direct_references(self, dep_field_id: FieldId) -> AbstractSet[FieldId]:
+    def get_field_direct_references(self, dep_field_id: FieldId) -> Set[FieldId]:
         item = self._get_item_for_field(dep_field_id=dep_field_id)
         if item is not None:
             ref_field_ids = item.ref_field_ids

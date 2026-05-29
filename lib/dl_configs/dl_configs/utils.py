@@ -1,12 +1,9 @@
+from collections.abc import Callable, Container
 import json
 import logging
 import os
 import ssl
 import typing
-from typing import (
-    Callable,
-    Container,
-)
 
 import typing_extensions
 

@@ -1,3 +1,4 @@
+from typing import Self
 from unittest.mock import (
     AsyncMock,
     MagicMock,
@@ -5,7 +6,6 @@ from unittest.mock import (
 
 import attr
 import pytest
-from typing_extensions import Self
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants.enums import ConnectionType

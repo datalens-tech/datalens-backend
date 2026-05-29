@@ -1,7 +1,7 @@
 import abc
+from collections.abc import Mapping
 import datetime
 import logging
-from typing import Mapping
 
 import attrs
 

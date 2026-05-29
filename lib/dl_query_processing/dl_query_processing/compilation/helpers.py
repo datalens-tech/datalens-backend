@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 import datetime
 import json
 import logging
 from typing import (
     Any,
-    Collection,
 )
 
 from dl_core.components.accessor import DatasetComponentAccessor

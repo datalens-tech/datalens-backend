@@ -3,10 +3,10 @@ from collections import (
     defaultdict,
     deque,
 )
+from collections.abc import Iterator
 import json
 import os
 from pathlib import Path
-from typing import Iterator
 
 import attr
 

@@ -1,6 +1,6 @@
 import logging
+from unittest import mock
 
-import mock
 import pytest
 
 import dl_json

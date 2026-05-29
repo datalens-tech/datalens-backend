@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Callable, Sequence
 from typing import (
-    Callable,
     ClassVar,
-    Sequence,
     TypeVar,
 )
 

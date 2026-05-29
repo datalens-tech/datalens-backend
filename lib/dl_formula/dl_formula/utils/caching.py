@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from functools import (
     _CacheInfo,
     lru_cache,
@@ -8,7 +9,6 @@ from functools import (
 import threading
 from typing import (
     Any,
-    Callable,
     Generic,
     TypeVar,
 )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncIterator, Callable, Iterable
 import contextlib
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -8,10 +9,7 @@ import logging
 import typing
 from typing import (
     Any,
-    AsyncIterator,
-    Callable,
     ClassVar,
-    Iterable,
     TypeVar,
 )
 import uuid

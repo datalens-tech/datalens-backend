@@ -1,7 +1,5 @@
+from collections.abc import Sequence
 import os
-from typing import (
-    Sequence,
-)
 import urllib.parse
 
 import attr

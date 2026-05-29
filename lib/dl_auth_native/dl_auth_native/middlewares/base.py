@@ -1,7 +1,7 @@
 import hmac
+from typing import Self
 
 import attr
-from typing_extensions import Self
 
 import dl_api_commons
 import dl_auth

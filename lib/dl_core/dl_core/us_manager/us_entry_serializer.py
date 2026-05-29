@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 from collections import ChainMap
+from collections import ChainMap as ChainMapGeneric
 from functools import reduce
 import logging
 from typing import (
@@ -10,7 +11,6 @@ from typing import (
     ClassVar,
     Union,
 )
-from typing import ChainMap as ChainMapGeneric
 
 import attr
 import marshmallow

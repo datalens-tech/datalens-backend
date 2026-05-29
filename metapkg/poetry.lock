@@ -1748,7 +1748,6 @@ multidict = "*"
 opentracing = "*"
 requests = "*"
 sentry-sdk = {version = "*", extras = ["flask"]}
-typing-extensions = "*"
 werkzeug = "*"
 
 [package.source]
@@ -1828,7 +1827,6 @@ pydantic = "*"
 pydantic_settings = "*"
 requests = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = "*"
 werkzeug = "*"
 
 [package.source]
@@ -1943,7 +1941,6 @@ attrs = "*"
 dl-configs = {path = "../dl_configs"}
 dl-settings = {path = "../dl_settings"}
 pydantic = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2020,7 +2017,6 @@ dl-constants = {path = "../dl_constants"}
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-settings = {path = "../dl_settings"}
 pydantic = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2046,7 +2042,6 @@ dl-settings = {path = "../dl_settings"}
 marshmallow = "*"
 pydantic = "*"
 pydantic-settings = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2071,7 +2066,6 @@ dl-pydantic = {path = "../dl_pydantic"}
 flask = {version = "*", optional = true}
 pydantic = "*"
 pyjwt = "*"
-typing-extensions = "*"
 werkzeug = "*"
 
 [package.extras]
@@ -2295,7 +2289,6 @@ pytz = "*"
 requests = "*"
 shortuuid = "*"
 sqlalchemy = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2479,7 +2472,6 @@ marshmallow = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
 sqlalchemy = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2510,7 +2502,6 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 marshmallow = "*"
 sqlalchemy = "*"
-typing_extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2611,7 +2602,6 @@ marshmallow = "*"
 requests = "*"
 sqlalchemy = "*"
 trino = {version = "*", extras = ["sqlalchemy"]}
-typing_extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2665,7 +2655,6 @@ develop = true
 
 [package.dependencies]
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2808,7 +2797,6 @@ requests = "*"
 shortuuid = "*"
 sqlalchemy = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = "*"
 uwsgi = "*"
 Werkzeug = "*"
 
@@ -2830,7 +2818,6 @@ attrs = "*"
 cryptography = "*"
 dl-settings = {path = "../dl_settings"}
 pydantic = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2954,7 +2941,6 @@ dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 pydantic = "*"
 pyyaml = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3020,7 +3006,6 @@ dl-utils = {path = "../dl_utils"}
 jinja2 = "*"
 sqlalchemy = "*"
 tabulate = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3127,7 +3112,6 @@ jaeger-client = "*"
 opentracing = "*"
 pydantic = "*"
 statcommons = {path = "../statcommons"}
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3216,7 +3200,6 @@ attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-utils = {path = "../dl_utils"}
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3274,7 +3257,6 @@ dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-json = {path = "../dl_json"}
 pydantic = "*"
 pydantic-core = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3298,7 +3280,6 @@ dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
 dl-utils = {path = "../dl_utils"}
 pytz = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3715,7 +3696,6 @@ marshmallow-oneofschema = "*"
 python-dateutil = "*"
 pytz = "*"
 sqlalchemy = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -3757,7 +3737,6 @@ dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 httpx = "*"
 pydantic = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"

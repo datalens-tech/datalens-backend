@@ -1,13 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Iterable, Iterator, Sequence
 import logging
 from typing import (
     TYPE_CHECKING,
-    Generator,
-    Iterable,
-    Iterator,
     NamedTuple,
-    Sequence,
 )
 
 import attr

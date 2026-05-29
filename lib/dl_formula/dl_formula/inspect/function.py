@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
 from functools import lru_cache
-from typing import Sequence
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import DialectCombo

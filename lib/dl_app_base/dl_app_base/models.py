@@ -1,12 +1,11 @@
 import asyncio
+from collections.abc import Callable, Coroutine
 from typing import (
     Any,
-    Callable,
-    Coroutine,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 
 @attr.define(frozen=True, kw_only=True)

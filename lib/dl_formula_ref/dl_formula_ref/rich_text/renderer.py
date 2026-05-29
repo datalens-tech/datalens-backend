@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Mapping
 from functools import singledispatchmethod
-from typing import (
-    Mapping,
-)
 
 import attr
 import tabulate

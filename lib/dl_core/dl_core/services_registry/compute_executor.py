@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from collections.abc import Callable
 from typing import (
-    Callable,
     TypeVar,
 )
 

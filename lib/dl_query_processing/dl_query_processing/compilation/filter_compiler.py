@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 import datetime
 import logging
 from typing import (
     Any,
-    Callable,
     ClassVar,
+    Self,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_constants.enums import WhereClauseOperation
 from dl_core.fields import BIField

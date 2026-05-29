@@ -1,9 +1,8 @@
 import abc
-from typing import Protocol
+from typing import Protocol, Self
 
 import attrs
 import pydantic
-from typing_extensions import Self
 
 import dl_auth.data as data
 import dl_constants

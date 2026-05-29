@@ -2,19 +2,18 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from collections.abc import Callable, Sequence
 import functools
 import itertools
 import logging
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Sequence,
     TypeVar,
+    final,
 )
 
 import attr
-from typing_extensions import final
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_core.connection_executors import (

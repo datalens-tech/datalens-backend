@@ -1,19 +1,18 @@
 import abc
 import asyncio
+from collections.abc import AsyncGenerator, Iterator
 import contextlib
 import datetime
 import enum
 import logging
 from typing import (
-    AsyncGenerator,
     ClassVar,
     Generic,
-    Iterator,
+    Self,
     TypeVar,
 )
 
 import attr
-from typing_extensions import Self
 
 import dl_app_base.exceptions as exceptions
 import dl_app_base.models as models

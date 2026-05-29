@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import AbstractSet
+from collections.abc import Set
 
 from dl_core.components.ids import (
     AvatarId,
@@ -11,7 +11,7 @@ from dl_core.components.ids import (
 
 class FieldAvatarDependencyManagerBase:
     @abc.abstractmethod
-    def get_field_avatar_references(self, dep_field_id: FieldId) -> AbstractSet[AvatarId]:
+    def get_field_avatar_references(self, dep_field_id: FieldId) -> Set[AvatarId]:
         """
         Return a set of all avatars referenced directly or indirectly by the given field.
         """

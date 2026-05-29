@@ -1,8 +1,8 @@
+from collections.abc import Callable
 import logging
 import time
 from typing import (
     Any,
-    Callable,
 )
 
 import attr

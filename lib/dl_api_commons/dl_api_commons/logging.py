@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Iterable, Sequence
 from http.cookies import SimpleCookie
 import logging
 import os
 import re
+from re import Pattern
 from typing import (
     Any,
     ClassVar,
-    Iterable,
-    Pattern,
-    Sequence,
 )
 
 import attr

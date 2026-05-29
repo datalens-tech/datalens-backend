@@ -1,12 +1,12 @@
 # Commented due to attr.resolve_types() does not work with classes declared in non-global context
 # from __future__ import annotations
+from collections.abc import Callable
 import enum
 import json
 from os import path
 import tempfile
 from typing import (
     Any,
-    Callable,
 )
 
 import attr

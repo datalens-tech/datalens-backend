@@ -1,4 +1,4 @@
-from typing import Callable
+from collections.abc import Callable
 
 from dl_constants.enums import DataSourceType
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase

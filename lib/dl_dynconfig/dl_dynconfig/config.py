@@ -1,11 +1,11 @@
+from collections.abc import Mapping
 import logging
 from typing import (
     Any,
-    Mapping,
+    Self,
 )
 
 import pydantic
-from typing_extensions import Self
 
 import dl_dynconfig.sources.base as base
 import dl_pydantic

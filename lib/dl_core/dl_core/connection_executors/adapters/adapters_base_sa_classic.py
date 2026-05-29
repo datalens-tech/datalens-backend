@@ -1,10 +1,10 @@
 import abc
+from collections.abc import Sequence
 import logging
 from typing import (
     Any,
     ClassVar,
     Generic,
-    Sequence,
     TypeVar,
 )
 from urllib.parse import (

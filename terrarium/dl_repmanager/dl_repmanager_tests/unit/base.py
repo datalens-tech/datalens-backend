@@ -1,12 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 import shutil
 import tempfile
-from typing import (
-    Generator,
-)
 import uuid
 
 import attr

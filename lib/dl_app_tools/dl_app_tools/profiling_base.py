@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable, Iterable
 from contextvars import ContextVar
 import functools
 import inspect
@@ -9,9 +10,6 @@ import time
 import traceback
 from typing import (
     Any,
-    Awaitable,
-    Callable,
-    Iterable,
     TypeVar,
     cast,
 )

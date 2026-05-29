@@ -2,20 +2,18 @@ from __future__ import annotations
 
 import abc
 import asyncio
+from collections.abc import AsyncIterable, Awaitable, Callable
 import logging
 from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncIterable,
-    Awaitable,
-    Callable,
     Generic,
+    Self,
     TypeVar,
 )
 
 import attr
-from typing_extensions import Self
 
 from dl_core.connection_executors.adapters.adapter_actions.async_base import (
     AsyncDBVersionAdapterAction,

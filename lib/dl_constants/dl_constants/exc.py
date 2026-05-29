@@ -1,9 +1,8 @@
 from typing import (
     Any,
     ClassVar,
+    final,
 )
-
-from typing_extensions import final
 
 from dl_constants.types import TJSONLike
 

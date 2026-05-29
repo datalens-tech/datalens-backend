@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Set
 import logging
 from typing import (
-    AbstractSet,
     ClassVar,
 )
 
@@ -56,7 +56,7 @@ class ConnectionSafetyChecker(metaclass=abc.ABCMeta):
     _DTO_TYPES: ClassVar[set[type[ConnDTO]]]
 
     @classmethod
-    def register_dto_types(cls, dto_classes: AbstractSet[type[ConnDTO]]) -> None:
+    def register_dto_types(cls, dto_classes: Set[type[ConnDTO]]) -> None:
         cls._DTO_TYPES.update(dto_classes)
 
     @abc.abstractmethod
@@ -108,4 +108,4 @@ class InsecureConnectionSecurityManager(GenericConnectionSecurityManager):
 @attr.s(frozen=True)
 class ConnSecuritySettings:
     security_checker_cls: type[ConnectionSafetyChecker] = attr.ib()
-    dtos: AbstractSet[type[ConnDTO]] = attr.ib()
+    dtos: Set[type[ConnDTO]] = attr.ib()

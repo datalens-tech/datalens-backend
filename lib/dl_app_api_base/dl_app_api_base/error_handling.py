@@ -1,7 +1,7 @@
+from collections.abc import Mapping
 import http
 import logging
 from typing import (
-    Mapping,
     Protocol,
 )
 

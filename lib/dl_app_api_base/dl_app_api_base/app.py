@@ -1,16 +1,15 @@
+from collections.abc import Iterator, Mapping
 import re
 from typing import (
     Generic,
-    Iterator,
-    Mapping,
     TypeVar,
+    override,
 )
 
 import aiohttp.typedefs
 import aiohttp.web
 import attr
 import pydantic
-from typing_extensions import override
 
 import dl_app_api_base.auth as auth
 import dl_app_api_base.error_handling as error_handling

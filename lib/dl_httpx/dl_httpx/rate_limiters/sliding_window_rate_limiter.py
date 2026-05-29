@@ -1,17 +1,16 @@
 import collections
+from collections.abc import AsyncIterator, Iterator
 import contextlib
 import threading
 import time
 from typing import (
-    AsyncIterator,
-    Iterator,
     Literal,
     Protocol,
+    Self,
 )
 
 import attrs
 import pydantic
-from typing_extensions import Self
 
 import dl_httpx.rate_limiters.base as base
 import dl_httpx.utils.attrs as attrs_utils

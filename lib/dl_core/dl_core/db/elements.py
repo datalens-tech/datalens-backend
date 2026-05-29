@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from collections import namedtuple
+from collections.abc import Sequence
 from typing import (
     Any,
-    Sequence,
 )
 
 import attr

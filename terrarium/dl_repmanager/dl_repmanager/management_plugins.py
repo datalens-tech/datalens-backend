@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Generator
 import contextlib
 import os
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Generator,
 )
 
 import attr

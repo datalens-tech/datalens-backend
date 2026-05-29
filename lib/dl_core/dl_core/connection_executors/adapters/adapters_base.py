@@ -1,17 +1,15 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Generator, Iterable, Sequence
 import logging
 from typing import (
     TYPE_CHECKING,
-    Generator,
-    Iterable,
-    Sequence,
     TypeVar,
+    final,
 )
 
 import attr
-from typing_extensions import final
 
 from dl_core.connection_executors.adapters.adapter_actions.sync_base import (
     SyncDBVersionAdapterAction,

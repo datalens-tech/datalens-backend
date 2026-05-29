@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncIterator
 import contextlib
 from functools import partial
 import logging
 from typing import (
     Any,
-    AsyncIterator,
     TypeVar,
 )
 

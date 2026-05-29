@@ -1,9 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Collection
 import logging
-from typing import (
-    Collection,
-)
 
 import attr
 

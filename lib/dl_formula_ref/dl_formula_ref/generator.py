@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Collection, Iterable, Sequence
 from contextlib import redirect_stdout
 import inspect
 import json
 import os
 from typing import (
     Any,
-    Collection,
-    Iterable,
-    Sequence,
 )
 
 import attr
