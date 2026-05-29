@@ -35,7 +35,7 @@ jobs:
 
     steps:
       - name: Log in to the Container registry
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -43,7 +43,7 @@ jobs:
 
       - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
 
       - id: build_image
@@ -72,7 +72,7 @@ jobs:
     steps:
     - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
     - name: Checkout code
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         fetch-depth: 0
     - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
@@ -149,7 +149,7 @@ jobs:
     steps:
       - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
       - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
@@ -194,7 +194,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -252,7 +252,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -311,7 +311,7 @@ jobs:
     steps:
       - run: echo "Running py tests for $TEST_NAME"
       - name: Log in to the Container registry
-        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
         with:
           registry: "ghcr.io"
           username: ${{ github.actor }}
@@ -373,7 +373,7 @@ jobs:
     steps:
       - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
       - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
@@ -424,7 +424,7 @@ jobs:
     steps:
       - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
       - name: Checkout code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
       - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
