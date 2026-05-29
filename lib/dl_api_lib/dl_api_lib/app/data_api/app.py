@@ -89,6 +89,7 @@ from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
     SecretKeeper,
     create_base_obfuscators,
+    get_secret_strings,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -275,8 +276,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
 
         if self._settings.OBFUSCATION_ENABLED:
             global_keeper = SecretKeeper()
-            if self._settings.US_MASTER_TOKEN:
-                global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+            global_keeper.add_secrets(get_secret_strings(self._settings))
             app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
                 global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),

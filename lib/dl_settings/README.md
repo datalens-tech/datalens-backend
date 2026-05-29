@@ -47,6 +47,16 @@ class AppSettings(dl_settings.BaseRootSettings):
 
 Subclassing keeps the type accurate (so env-var resolution, validation, and downstream type checks all see the real shape), makes the override discoverable, and composes cleanly with further subclassing. Lambdas hide the shape behind an opaque factory.
 
+### `repr=False` is a security marker
+
+`Field(repr=False)` on a settings field is **not cosmetic** — it's how we tell log/Sentry/trace obfuscation that the value is a secret. At app startup we walk the whole settings tree, collect every str/bytes leaf under a `repr=False` subtree, and feed them into the global `SecretKeeper` so they get redacted from outbound payloads.
+
+- **Always set `repr=False` on every secret field.** Anything missing it leaks to logs (and very short secrets may still be skipped by `SecretKeeper`'s minimum-length filter).
+- **Never set `repr=False` for cosmetic reasons** (e.g. to hide a noisy field from `__repr__`) — it inflates the secret registry and causes spurious global redaction.
+- **Propagation is downward.** Once `repr=False` is set on a parent, every descendant string/bytes leaf is treated as secret regardless of children's `repr` flags. Put the marker exactly at the level where secrecy actually starts.
+
+See [`dl_obfuscator/README.md`](../dl_obfuscator/README.md) for the full contract, including the propagation rule and the walker's supported container shapes.
+
 ## Usage
 
 Idea is to provide a simple way to migrate from dl_configs to pydantic_settings in gradual way. For this purpose several fallbacks are provided.

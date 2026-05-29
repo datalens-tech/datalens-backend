@@ -70,7 +70,9 @@ import dl_logging
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    SecretKeeper,
     create_base_obfuscators,
+    get_secret_strings,
 )
 from dl_utils.aio import ContextVarExecutor
 
@@ -314,6 +316,7 @@ def create_async_qe_app(
     forbid_private_addr: bool = False,
     obfuscation_enabled: bool = False,
     obfuscation_extra_patterns: tuple[str, ...] = (),
+    secret_keeper: SecretKeeper | None = None,
 ) -> web.Application:
     req_id_service = aio_middlewares.RequestId(
         header_name=HEADER_REQUEST_ID,
@@ -340,6 +343,7 @@ def create_async_qe_app(
 
     if obfuscation_enabled:
         app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+            global_keeper=secret_keeper,
             extra_regex_patterns=obfuscation_extra_patterns,
         )
 
@@ -374,11 +378,17 @@ def get_configured_qe_app(
     if hmac_keys is None:
         raise Exception("No `hmac_keys` set.")
 
+    secret_keeper: SecretKeeper | None = None
+    if settings.OBFUSCATION_ENABLED:
+        secret_keeper = SecretKeeper()
+        secret_keeper.add_secrets(get_secret_strings(settings))
+
     return create_async_qe_app(
         hmac_keys=tuple(hmac_key.encode() for hmac_key in hmac_keys),
         forbid_private_addr=settings.FORBID_PRIVATE_ADDRESSES,
         obfuscation_enabled=settings.OBFUSCATION_ENABLED,
         obfuscation_extra_patterns=obfuscation_extra_patterns,
+        secret_keeper=secret_keeper,
     )
 
 

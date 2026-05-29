@@ -3382,6 +3382,7 @@ files = []
 develop = true
 
 [package.dependencies]
+attrs = "*"
 dl-pydantic = {path = "../dl_pydantic"}
 pydantic = "*"
 pydantic-settings = {version = "*", extras = ["yaml"]}

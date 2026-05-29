@@ -352,7 +352,7 @@ BaseAuthSettingsOS.register("ZITADEL", ZitadelAuthSettingsOS)
 
 
 class NativeAuthSettingsOS(BaseAuthSettingsOS):
-    JWT_KEY: Annotated[str, dl_settings.decode_multiline_validator]
+    JWT_KEY: Annotated[str, dl_settings.decode_multiline_validator] = pydantic.Field(repr=False)
     JWT_ALGORITHM: str
 
 

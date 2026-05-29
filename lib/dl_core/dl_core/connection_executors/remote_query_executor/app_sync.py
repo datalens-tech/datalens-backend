@@ -55,7 +55,9 @@ from dl_dashsql.typed_query.result_serialization import get_typed_query_result_s
 from dl_model_tools.msgpack import DLSafeMessagePackSerializer
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    SecretKeeper,
     create_base_obfuscators,
+    get_secret_strings,
 )
 
 if TYPE_CHECKING:
@@ -321,7 +323,10 @@ def create_sync_app(
     flask_middlewares.RCIHeadersMiddleware().set_up(app)
 
     if settings.OBFUSCATION_ENABLED:
+        global_keeper = SecretKeeper()
+        global_keeper.add_secrets(get_secret_strings(settings))
         app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+            global_keeper=global_keeper,
             extra_regex_patterns=obfuscation_extra_patterns,
         )
         flask_middlewares.setup_obfuscation_context_middleware(app)

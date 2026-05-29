@@ -32,6 +32,16 @@ class SecretKeeper:
         else:
             LOGGER.warning("Param %r is too short (len=%d), skipping", name, len(param))
 
+    def add_secrets(self, secrets: dict[str, str]) -> None:
+        """secrets: dict[name: secret_value]"""
+        for name, secret in secrets.items():
+            self.add_secret(secret, name)
+
+    def add_params(self, params: dict[str, str]) -> None:
+        """params: dict[name: param_value]"""
+        for name, param in params.items():
+            self.add_param(param, name)
+
     @property
     def secrets(self) -> dict[str, str]:
         return self._secrets

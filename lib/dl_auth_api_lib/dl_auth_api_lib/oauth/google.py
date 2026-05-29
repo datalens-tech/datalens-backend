@@ -19,7 +19,7 @@ class GoogleOAuthClient(BaseOAuthClient):
     type: str = pydantic.Field(alias="auth_type", default="google")
 
     client_id: str
-    client_secret: str
+    client_secret: str = pydantic.Field(repr=False)
     redirect_uri: str
     scope: str
     auth_url: str = pydantic.Field(default=_AUTH_URL)

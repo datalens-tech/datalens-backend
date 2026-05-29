@@ -17,6 +17,7 @@ from dl_obfuscator.request_context import (
     set_request_obfuscation_engine,
 )
 from dl_obfuscator.secret_keeper import SecretKeeper
+from dl_obfuscator.secret_walker import get_secret_strings
 
 OBFUSCATION_BASE_OBFUSCATORS_KEY = "OBFUSCATION_BASE_OBFUSCATORS"
 
@@ -34,5 +35,6 @@ __all__ = [
     "create_base_obfuscators",
     "create_request_engine",
     "get_request_obfuscation_engine",
+    "get_secret_strings",
     "set_request_obfuscation_engine",
 ]

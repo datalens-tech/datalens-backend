@@ -41,6 +41,7 @@ from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
     SecretKeeper,
     create_base_obfuscators,
+    get_secret_strings,
 )
 import dl_retrier
 
@@ -149,9 +150,7 @@ class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], ab
 
         if self._settings.OBFUSCATION_ENABLED:
             global_keeper = SecretKeeper()
-            if self._settings.US_MASTER_TOKEN:
-                # just for example for now. More secrets will be added in BI-6492
-                global_keeper.add_secret(self._settings.US_MASTER_TOKEN, "us_master_token")
+            global_keeper.add_secrets(get_secret_strings(self._settings))
             app.config[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
                 global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),

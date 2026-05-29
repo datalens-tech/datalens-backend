@@ -31,7 +31,9 @@ from dl_auth_api_lib.views import yandex as yandex_views
 from dl_core.aio.ping_view import PingView
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
+    SecretKeeper,
     create_base_obfuscators,
+    get_secret_strings,
 )
 
 _TSettings = TypeVar("_TSettings", bound=AuthAPISettings)
@@ -84,7 +86,10 @@ class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
         )
 
         if self._settings.obfuscation_enabled:
+            global_keeper = SecretKeeper()
+            global_keeper.add_secrets(get_secret_strings(self._settings))
             app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(
+                global_keeper=global_keeper,
                 extra_regex_patterns=self._get_extra_regex_patterns(),
             )
 

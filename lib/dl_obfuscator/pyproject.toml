@@ -9,9 +9,11 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 attrs = "*"
+pydantic = "*"
 python = ">=3.12, <3.13"
 
 [tool.poetry.group.tests.dependencies]
+dl-settings = {path = "../dl_settings"}
 flaky = "*"
 pytest = "*"
 pytest-asyncio = "*"
