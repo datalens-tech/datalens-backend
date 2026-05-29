@@ -141,7 +141,7 @@ class DataSourceTemplateResponseField(ma_fields.Field):
         assert isinstance(value, dict)
         allowed_keys = self._allowed_keys
         value = {key: val for key, val in value.items() if key in allowed_keys}
-        st = value.get("source_type", None)
+        st = value.get("source_type")
         if st is not None:
             value["source_type"] = st.name
         return value

@@ -172,9 +172,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
                 driver = connection.connection._driver  # type: ignore  # 2024-01-24 # TODO: "DBAPIConnection" has no attribute "_driver"  [attr-defined]
                 assert driver
 
-                if table_def.db_name is None:
-                    table_path = table_def.table_name
-                elif table_def.table_name.startswith("/"):
+                if table_def.db_name is None or table_def.table_name.startswith("/"):
                     table_path = table_def.table_name
                 else:
                     table_path = table_def.db_name.rstrip("/") + "/" + table_def.table_name

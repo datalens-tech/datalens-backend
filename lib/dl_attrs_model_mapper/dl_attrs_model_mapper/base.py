@@ -172,9 +172,7 @@ class ModelDescriptor(BaseClassDescriptor):
 
             type_discriminator_candidate = getattr(cls, children_type_discriminator_attr_name)
 
-            if isinstance(type_discriminator_candidate, enum.Enum):
-                self._effective_type_discriminator = type_discriminator_candidate.name
-            elif isinstance(type_discriminator_candidate, DynamicEnum):
+            if isinstance(type_discriminator_candidate, (enum.Enum, DynamicEnum)):
                 self._effective_type_discriminator = type_discriminator_candidate.name
             elif isinstance(type_discriminator_candidate, str):
                 self._effective_type_discriminator = type_discriminator_candidate

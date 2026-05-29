@@ -110,6 +110,21 @@ ignore = [
   "RUF059", # unused-unpacked-variable — manual; rename to _ per site
   "RUF061", # legacy-form-pytest-raises — manual pytest.raises rewrite
   "RUF100", # unused-noqa — would strip noqa codes for rules not yet enabled by this migration; revisit (BI-7437)
+  "SIM101", # duplicate-isinstance-call — manual; merge isinstance checks per site
+  "SIM102", # collapsible-if — manual; nested-if flattening hurts readability in some cases
+  "SIM103", # needless-bool — manual; explicit if/return often clearer
+  "SIM105", # suppressible-exception — contextlib.suppress changes traceback semantics; per-site review
+  "SIM108", # if-else-block-instead-of-if-exp — ternary not always clearer; per-site review
+  "SIM110", # reimplemented-builtin — any()/all() rewrite; per-site review
+  "SIM112", # uncapitalized-environment-variables — manual rename
+  "SIM113", # enumerate-for-loop — manual index-counter rewrite
+  "SIM115", # open-file-with-context-handler — needs restructuring to `with`; per-site review
+  "SIM117", # multiple-with-statements — combining `with` hurts readability/diffs; only partially autofixable
+  "SIM118", # in-dict-keys — only partially autofixable; manual remainder
+  "SIM201", # negate-equal-op — manual; `not a == b` -> `a != b` per site
+  "SIM210", # if-expr-with-true-false — manual bool() simplification
+  "SIM300", # yoda-conditions — autofix yoda-fies `settings.MODE == Enum.member` (treats `.MODE` attr as the constant); we keep variable-on-left
+  "SIM401", # if-else-block-instead-of-dict-get — manual dict.get rewrite
   "UP031", # Use format specifiers instead of percent format
   "UP042", # Class inherits from both `str` and `enum.Enum`
   "UP046", # Non-PEP 695 generic class — needs manual conversion for attrs+cross-module TypeVar bounds
@@ -123,6 +138,8 @@ select = [
   "RET",
   # Ruff-specific
   "RUF",
+  # flake8-simplify
+  "SIM",
   # pyupgrade
   "UP",
 ]

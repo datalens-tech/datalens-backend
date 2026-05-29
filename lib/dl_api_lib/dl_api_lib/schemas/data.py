@@ -437,9 +437,7 @@ class _FlattenRefMixin(BaseSchema):
                 ref_data["id"] = data.get("id")
             elif ref_type == QueryItemRefType.title:
                 ref_data["title"] = data.get("title")
-            elif ref_type == QueryItemRefType.measure_name:
-                pass
-            elif ref_type == QueryItemRefType.placeholder:
+            elif ref_type in (QueryItemRefType.measure_name, QueryItemRefType.placeholder):
                 pass
             data["ref"] = ref_data
         return data

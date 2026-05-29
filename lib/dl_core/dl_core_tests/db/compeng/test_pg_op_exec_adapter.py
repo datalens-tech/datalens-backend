@@ -24,11 +24,23 @@ from dl_utils.streaming import AsyncChunked
 
 
 async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> list[dict[str, Any]]:
-    columns = """
-    datid datname pid usesysid usename application_name
-    client_addr client_hostname client_port
-    backend_start xact_start query_start
-    state_change state query""".split()
+    columns = [
+        "datid",
+        "datname",
+        "pid",
+        "usesysid",
+        "usename",
+        "application_name",
+        "client_addr",
+        "client_hostname",
+        "client_port",
+        "backend_start",
+        "xact_start",
+        "query_start",
+        "state_change",
+        "state",
+        "query",
+    ]
     ctx = OpExecutionContext(processing_id="", streams=[], operations=[])
     # Get the PID of our connection to filter only our queries
     connection_pid = await pg_adapter.scalar(

@@ -377,9 +377,7 @@ class DatasetExportItem(DatasetResource):
         )
 
         dl_loc = ds.entry_key
-        if isinstance(dl_loc, WorkbookEntryLocation):
-            ds_dict["dataset"]["name"] = dl_loc.entry_name
-        elif isinstance(dl_loc, CollectionEntryLocation):
+        if isinstance(dl_loc, (WorkbookEntryLocation, CollectionEntryLocation)):
             ds_dict["dataset"]["name"] = dl_loc.entry_name
 
         ds_dict["dataset"]["revision_id"] = None

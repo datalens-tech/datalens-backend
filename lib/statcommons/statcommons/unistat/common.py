@@ -26,7 +26,7 @@ def get_fqdn():
 
 
 # http://man7.org/linux/man-pages/man5/proc.5.html
-STATM_COLS = "size resident shared text lib data dt".split()
+STATM_COLS = ["size", "resident", "shared", "text", "lib", "data", "dt"]
 
 
 def get_sys_memstatus(pid):

@@ -205,7 +205,7 @@ class ConnectorForm(BIResource):
 
         localizer = self.get_service_registry().get_localizer()
 
-        conn_id = query.get("conn_id", None)
+        conn_id = query.get("conn_id")
         exports_history_url_path = self.get_service_registry().get_exports_history_url_path()
         user_id = self.get_current_rci().user_id
         feature_flags = self.get_service_registry().get_feature_flags()

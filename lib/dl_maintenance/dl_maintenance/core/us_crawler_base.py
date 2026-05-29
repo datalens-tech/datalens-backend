@@ -262,7 +262,7 @@ class USEntryCrawler:
             crawler_run_extra,
             us_entry_id=entry_id,
             us_entry_key=raw_entry["key"],
-            us_entry_tenant_id=raw_entry.get("tenantId", None),
+            us_entry_tenant_id=raw_entry.get("tenantId"),
             us_entry_type=raw_entry["type"],
             us_entry_scope=raw_entry["scope"],
             us_entry_crawler_idx=entry_idx,

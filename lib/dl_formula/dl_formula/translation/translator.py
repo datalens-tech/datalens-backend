@@ -193,9 +193,12 @@ class SqlAlchemyTranslator:
             pass  # coercion to BOOL results in extra ' = 1', so don't do it
         elif ctx.data_type in (DataType.CONST_DATE, DataType.DATE):
             ctx.set_expression(sa.type_coerce(ctx.expression, sa.Date))
-        elif ctx.data_type in (DataType.CONST_DATETIME, DataType.DATETIME):
-            ctx.set_expression(sa.type_coerce(ctx.expression, sa.DateTime))
-        elif ctx.data_type in (DataType.CONST_GENERICDATETIME, DataType.GENERICDATETIME):
+        elif ctx.data_type in (
+            DataType.CONST_DATETIME,
+            DataType.DATETIME,
+            DataType.CONST_GENERICDATETIME,
+            DataType.GENERICDATETIME,
+        ):
             ctx.set_expression(sa.type_coerce(ctx.expression, sa.DateTime))
 
     def translate_node(self, node: nodes.FormulaItem, ctx: TranslationCtx, postprocess: bool = True) -> TranslationCtx:
