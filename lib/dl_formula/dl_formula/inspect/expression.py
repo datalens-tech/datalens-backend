@@ -462,8 +462,7 @@ def resolve_dimensions(
     # Generate dimension list recursively
     for node in node_stack:  # from top level to the node in question
         if not (
-            isinstance(node, nodes.FuncCall)
-            and dl_formula.inspect.node.is_aggregate_function(node)
+            (isinstance(node, nodes.FuncCall) and dl_formula.inspect.node.is_aggregate_function(node))
             or isinstance(node, fork_nodes.QueryFork)
         ):
             continue

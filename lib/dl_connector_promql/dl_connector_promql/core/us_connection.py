@@ -72,7 +72,7 @@ class PromQLConnection(ClassicConnectionSQL):
         changes: dict | None = None,
         original_version: ConnectionBase | None = None,
     ) -> None:
-        if original_version is None or original_version and original_version.data.auth_type != self.data.auth_type:
+        if original_version is None or (original_version and original_version.data.auth_type != self.data.auth_type):
             if self.data.auth_type == PromQLAuthType.header:
                 self.data.username = None
                 self.data.password = None

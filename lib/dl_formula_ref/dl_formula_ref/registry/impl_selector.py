@@ -89,7 +89,7 @@ class ArgAwareImplementationSelector(ImplementationSelectorBase):
                         pos=pos, total=impl.arg_cnt or INFINITE_ARG_COUNT
                     )
             for pos, arg_types in self.exp_arg_types.items():
-                if pos not in actual_arg_types or pos in actual_arg_types and not (actual_arg_types[pos] & arg_types):
+                if pos not in actual_arg_types or (pos in actual_arg_types and not (actual_arg_types[pos] & arg_types)):
                     break
             else:
                 result.append(impl)

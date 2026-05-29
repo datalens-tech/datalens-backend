@@ -28,7 +28,7 @@ from dl_formula.core.tag import LevelTag
 
 
 class NodeMeta:
-    __slots__ = ("position", "original_text", "level_tag")
+    __slots__ = ("level_tag", "original_text", "position")
 
     def __init__(
         self,
@@ -63,7 +63,7 @@ _FORMULA_ITEM_TV = TypeVar("_FORMULA_ITEM_TV", bound="FormulaItem")
 class FormulaItem(abc.ABC):
     """Abstract class. Base class for all formula building blocks."""
 
-    __slots__ = ("__children", "__internal_value", "__meta", "__extract")
+    __slots__ = ("__children", "__extract", "__internal_value", "__meta")
     show_names: tuple[str, ...] = ()
     autonomous: ClassVar[bool] = True
     # If True, then the node can represent a standalone expression.

@@ -70,7 +70,7 @@ class ValueVariant(Generic[_VARIANT_OF_TV]):
     Method ``.match(dialect)`` should be called to check whether this value can be used for given dialect
     """
 
-    __slots__ = ("dialects", "_value")
+    __slots__ = ("_value", "dialects")
 
     def __init__(self, dialects: DialectCombo, value: _VARIANT_OF_TV):
         self.dialects: DialectCombo = dialects
@@ -466,7 +466,7 @@ _MULTI_NODE_TRANS_TV = TypeVar("_MULTI_NODE_TRANS_TV", bound="MultiVariantTransl
 
 
 class MultiVariantTranslation(NodeTranslation):
-    __slots__ = ("_inst_variants", "_inst_arg_transformer")
+    __slots__ = ("_inst_arg_transformer", "_inst_variants")
 
     variants: ClassVar[list[TranslationVariant]] = []
     argument_types: ClassVar[list[ArgTypeMatcher] | None] = None

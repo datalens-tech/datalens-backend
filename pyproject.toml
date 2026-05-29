@@ -92,6 +92,24 @@ ignore = [
   "E501", # line length, should be checked and fixed by black
   "RET503", # implicit return — usually a raise/abort path; adding explicit `return None` masks the actual control flow
   "RET504", # unnecessary assign before return — review needed per site; intermediate names often aid debugging
+  "RUF001", # ambiguous-unicode-character-string — Cyrillic look-alikes are intentional in our user-facing strings
+  "RUF002", # ambiguous-unicode-character-docstring — same intentional Cyrillic
+  "RUF003", # ambiguous-unicode-character-comment — same intentional Cyrillic
+  "RUF005", # collection-literal-concatenation — manual; iterable-unpacking rewrites need per-site review
+  "RUF006", # asyncio-dangling-task — needs holding a reference to the created task; per-site review
+  "RUF008", # mutable-dataclass-default — manual; needs field(default_factory=...)
+  "RUF009", # function-call-in-dataclass-default-argument — attrs/dataclass factory pattern, per-site review
+  "RUF012", # mutable-class-default — 1k+ sites; needs ClassVar annotations, separate task
+  "RUF013", # implicit-optional — PEP 484 implicit Optional; per-site annotation review
+  "RUF015", # unnecessary-iterable-allocation-for-first-element — manual next(iter(...)) rewrites
+  "RUF017", # quadratic-list-summation — manual perf rewrite
+  "RUF018", # assignment-in-assert — assert side-effects; per-site review
+  "RUF022", # unsorted-dunder-all — already enforced by the standalone sort-all linter; avoid autofix conflict
+  "RUF043", # pytest-raises-ambiguous-pattern — manual; needs anchored regex
+  "RUF046", # unnecessary-cast-to-int — per-site review
+  "RUF059", # unused-unpacked-variable — manual; rename to _ per site
+  "RUF061", # legacy-form-pytest-raises — manual pytest.raises rewrite
+  "RUF100", # unused-noqa — would strip noqa codes for rules not yet enabled by this migration; revisit (BI-7437)
   "UP031", # Use format specifiers instead of percent format
   "UP042", # Class inherits from both `str` and `enum.Enum`
   "UP046", # Non-PEP 695 generic class — needs manual conversion for attrs+cross-module TypeVar bounds
@@ -103,6 +121,8 @@ select = [
   "F",
   # flake8-return
   "RET",
+  # Ruff-specific
+  "RUF",
   # pyupgrade
   "UP",
 ]

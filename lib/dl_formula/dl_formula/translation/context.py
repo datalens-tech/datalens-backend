@@ -24,15 +24,15 @@ ContextFlags = int  # bitwise combination of ContextFlag values
 
 class TranslationCtx:
     __slots__ = (
-        "collect_errors",
+        "_messages",
         "base_token",
         "children",
-        "_messages",
-        "forked",
+        "collect_errors",
         "data_type",
         "data_type_params",
         "expression",
         "flags",
+        "forked",
         "node",
         "required_scopes",
     )

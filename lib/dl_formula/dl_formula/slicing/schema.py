@@ -174,7 +174,7 @@ class NestedLevelTaggedBoundary(LevelBoundary):
     constants_neutral: bool = attr.ib(default=True)
 
     def check_tag(self, is_own_tag: bool, level_tag: LevelTag) -> BoundaryCheckResult:
-        if self.tag is None or (level_tag < self.tag or is_own_tag and level_tag <= self.tag):
+        if self.tag is None or (level_tag < self.tag or (is_own_tag and level_tag <= self.tag)):
             # For non-own tags use strict <
             return BoundaryCheckResult.raise_level
         return BoundaryCheckResult.maintain_level

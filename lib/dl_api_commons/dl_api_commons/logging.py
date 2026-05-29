@@ -314,7 +314,7 @@ def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwarg
 
     for extra_name, label in map_extra_name_label.items():
         if extra_name in extra:
-            parts.append(f"{label}={repr(extra[extra_name])}")
+            parts.append(f"{label}={extra[extra_name]!r}")
         else:
             parts.append(f"{label}=N/A")
             LOGGER.warning(

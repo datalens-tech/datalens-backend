@@ -148,7 +148,7 @@ class SerializableConfig:
                 )
             meta = field.metadata[CFGMeta.METADATA_KEY]
             assert isinstance(meta, CFGMeta), f"Unexpected meta class, {CFGMeta.__name__} expected"
-            if meta.inner or meta.skip_if_null and value is None:
+            if meta.inner or (meta.skip_if_null and value is None):
                 return cls._SKIP_SENTINEL
             if meta.key is not None:
                 inst._remap_keys_buffer[field.name] = meta.key

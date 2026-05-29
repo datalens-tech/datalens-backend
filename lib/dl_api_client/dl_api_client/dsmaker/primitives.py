@@ -1050,7 +1050,7 @@ class Dataset(ApiProxyObject):
     def prepare(self) -> None:
         super().prepare()
         if self.name is None:
-            self.name = f"My Dataset {str(uuid.uuid4())}"
+            self.name = f"My Dataset {uuid.uuid4()!s}"
 
     @staticmethod
     def source(**kwargs: Any) -> DataSource:

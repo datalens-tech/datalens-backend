@@ -92,7 +92,7 @@ class BaseSortValueNormalizer(SortValueNormalizer):
 
     def normalize_vector_value(self, vector: DataCellVector | float | None) -> Any:
         # the case of NaN values (in pandas they represent missing cells)
-        if vector is None or isinstance(vector, float) and isnan(vector):
+        if vector is None or (isinstance(vector, float) and isnan(vector)):
             return NORMAL_LEAST_NULL_VALUE
 
         assert isinstance(vector, DataCellVector)

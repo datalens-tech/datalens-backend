@@ -67,7 +67,7 @@ VALIDATION_OK_MESSAGE = "Validation was successful"
 class DatasetCollection(DatasetResource):
     @classmethod
     def generate_dataset_location(cls, body: dict) -> EntryLocation:
-        name = body.get("name", f"Dataset {str(uuid.uuid4())}")
+        name = body.get("name", f"Dataset {uuid.uuid4()!s}")
         return resolve_entry_loc_from_api_req_body(
             name=name,
             collection_id=body.get("collection_id"),
@@ -411,7 +411,7 @@ class DatasetImportCollection(DatasetResource):
 
     @classmethod
     def generate_dataset_location(cls, body: dict) -> EntryLocation:
-        name = body.get("name", f"Dataset {str(uuid.uuid4())}")
+        name = body.get("name", f"Dataset {uuid.uuid4()!s}")
         return resolve_entry_loc_from_api_req_body(
             name=name,
             collection_id=body.get("collection_id"),

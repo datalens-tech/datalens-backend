@@ -55,8 +55,8 @@ async def test_fields_masking(aiohttp_client, caplog, root_certificates):
     except StopIteration as err:
         raise AssertionError() from err
 
-    assert non_secret_value in rec.message, f"Expected non-secret {repr(secret_value)} not found in logs: {repr(rec)}"
-    assert secret_value not in rec.message, f"Secret {repr(secret_value)} found in logs: {repr(rec)}"
+    assert non_secret_value in rec.message, f"Expected non-secret {secret_value!r} not found in logs: {rec!r}"
+    assert secret_value not in rec.message, f"Secret {secret_value!r} found in logs: {rec!r}"
 
 
 @responses.activate

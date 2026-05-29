@@ -71,7 +71,7 @@ class DynamicIndexStrategy(FromArgs):
 
 
 class Combined(TypeStrategy):
-    __slots__ = ("_substrats", "_replace_types")
+    __slots__ = ("_replace_types", "_substrats")
 
     def __init__(self, *substrats: TypeStrategy, replace_types=None):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         self._substrats = []

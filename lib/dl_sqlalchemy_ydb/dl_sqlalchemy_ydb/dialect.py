@@ -160,7 +160,7 @@ class YqlUuid(sa.types.TEXT):
             if not isinstance(value, uuid.UUID):
                 value = uuid.UUID(value)
 
-            return f'UUID("{str(value)}")'
+            return f'UUID("{value!s}")'
 
         return process
 

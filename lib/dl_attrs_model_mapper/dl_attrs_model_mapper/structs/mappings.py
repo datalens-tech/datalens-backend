@@ -32,7 +32,7 @@ class FrozenMappingStrToStrOrStrSeq(Mapping[str, str | Sequence[str]], Hashable)
         return hash(tuple(sorted(self.items())))
 
     def __repr__(self) -> str:
-        return f"FrozenMappingStrToStrOrStrSeq({repr(self._dict)})"
+        return f"FrozenMappingStrToStrOrStrSeq({self._dict!r})"
 
 
 _FM_VAL_T = TypeVar("_FM_VAL_T")
@@ -60,4 +60,4 @@ class FrozenStrMapping(Mapping[str, _FM_VAL_T], Hashable):
         return hash(tuple(sorted(self.items())))
 
     def __repr__(self) -> str:
-        return f"FrozenStrMapping({repr(self._dict)})"
+        return f"FrozenStrMapping({self._dict!r})"

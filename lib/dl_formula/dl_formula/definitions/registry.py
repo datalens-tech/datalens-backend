@@ -77,7 +77,7 @@ class OperationRegistry:
     ) -> op_base.NodeTranslation:
         """Find translation that matches given name and arguments"""
 
-        if dialect is not None and for_any_dialect or dialect is None and not for_any_dialect:
+        if (dialect is not None and for_any_dialect) or (dialect is None and not for_any_dialect):
             raise ValueError(
                 "Either dialect should be provided or for_any_dialect be set to True. Cannot provide both."
             )

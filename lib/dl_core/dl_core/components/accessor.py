@@ -120,10 +120,8 @@ class DatasetComponentAccessor:
         right_avatar_id: str | None = None,
     ) -> AvatarRelation | None:
         for relation in self._dataset.data.avatar_relations:
-            if (
-                relation_id is not None
-                and relation.id == relation_id
-                or (relation.left_avatar_id == left_avatar_id and relation.right_avatar_id == right_avatar_id)
+            if (relation_id is not None and relation.id == relation_id) or (
+                relation.left_avatar_id == left_avatar_id and relation.right_avatar_id == right_avatar_id
             ):
                 return relation
         return None

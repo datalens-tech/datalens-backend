@@ -171,7 +171,7 @@ class BaseSAAdapter(
         )
 
         # Use literal binds for all queries or for dashsql queries only
-        if self.use_literal_binds or self.use_literal_binds_for_dashsql and db_adapter_query.is_dashsql_query:
+        if self.use_literal_binds or (self.use_literal_binds_for_dashsql and db_adapter_query.is_dashsql_query):
             query = compile_query_with_literal_binds_if_possible(query, engine.dialect)
 
         with (

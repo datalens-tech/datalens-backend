@@ -81,7 +81,7 @@ def make_dataset(
     schema_name = schema_name or (db_table.schema if db_table else None)
     db_name = db_name or (db.name if db else None)
 
-    name = f"Dataset {str(uuid.uuid4())}"
+    name = f"Dataset {uuid.uuid4()!s}"
     created_from = created_from or (get_created_from(db) if db is not None else None)
     dataset = Dataset.create_from_dict(
         Dataset.DataModel(name=name, **ds_info),

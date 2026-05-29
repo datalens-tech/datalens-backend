@@ -40,7 +40,7 @@ class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
     def filter(self, category: str | None = None, name: str | None = None) -> list[RawMultiAudienceFunc]:
         result = []
         for func in self._funcs_by_key.values():
-            if category is not None and func.category.name != category or name is not None and func.name != name:
+            if (category is not None and func.category.name != category) or (name is not None and func.name != name):
                 continue
             result.append(func)
         return result

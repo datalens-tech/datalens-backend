@@ -1039,7 +1039,7 @@ class FormulaCompiler:
                 raise ValueError(f"Invalid part calc_mode {part.calc_mode}")
 
             # JOINs over aggregated fields are not supported yet
-            if new_field and field.has_auto_aggregation or not new_field and field.type == FieldType.MEASURE:
+            if (new_field and field.has_auto_aggregation) or (not new_field and field.type == FieldType.MEASURE):
                 raise dl_query_processing.exc.DatasetError("Joining over aggregated expressions is not supported")
 
             return field

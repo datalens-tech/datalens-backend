@@ -400,8 +400,7 @@ class BIField(NamedTuple):  # TODO: Convert to attr.s
         return (
             self.has_auto_aggregation
             # TODO: Remove this second condition after dataset migration #11 is applied
-            or self.type == FieldType.MEASURE
-            and self.aggregation == AggregationFunction.none
+            or (self.type == FieldType.MEASURE and self.aggregation == AggregationFunction.none)
         )
 
     @property

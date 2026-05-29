@@ -133,7 +133,7 @@ class C:
         UserDataType.boolean: lambda rn, **kwargs: bool(int(rn) % 2),
         UserDataType.uuid: lambda rn, **kwargs: str(uuid.UUID(int=rn)),
         UserDataType.array_int: lambda rn, **kwargs: [rn * idx for idx in range(5)],
-        UserDataType.array_str: lambda rn, **kwargs: [f"str_{str(rn * idx)}" for idx in range(5)],
+        UserDataType.array_str: lambda rn, **kwargs: [f"str_{rn * idx!s}" for idx in range(5)],
         UserDataType.array_float: lambda rn, **kwargs: [float(rn * idx) * 1.1 for idx in range(5)],
     }
 

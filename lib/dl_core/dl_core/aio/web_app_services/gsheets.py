@@ -79,7 +79,7 @@ class Sheet:
         Check if column with given idx contains only TIME values (or TIME and nulls)
         """
 
-        if not self.data or has_header and len(self.data) < 2:
+        if not self.data or (has_header and len(self.data) < 2):
             return False
         data_iter = iter(self.data)
         if has_header:

@@ -215,7 +215,7 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
                 expected_native_type = expected_col.get_expected_native_type(self.conn_type)
                 assert (
                     detected_col.native_type == expected_native_type
-                ), f"Incorrect native type detected for schema {schema_name} col #{col_idx}: expected {repr(expected_native_type)}, got {repr(detected_col.native_type)}"
+                ), f"Incorrect native type detected for schema {schema_name} col #{col_idx}: expected {expected_native_type!r}, got {detected_col.native_type!r}"
 
     def test_simple_select(self, sync_connection_executor: SyncConnExecutorBase) -> None:
         query = ConnExecutorQuery(query=sa.select([sa.literal(1)]))

@@ -45,7 +45,7 @@ class DataSourceStrictSchema(DataSourceSchema):
     ) -> Any:
         assert isinstance(data, (dict, list))
         many = many if many is not None else isinstance(data, list)
-        if many and any("managed_by" not in source for source in data) or not many and "managed_by" not in data:
+        if (many and any("managed_by" not in source for source in data)) or (not many and "managed_by" not in data):
             raise ValidationError("Missing `managed_by`")
         return super().load(data, many=many, partial=partial, unknown=unknown, **kwargs)
 

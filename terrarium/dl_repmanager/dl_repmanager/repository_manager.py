@@ -278,8 +278,8 @@ class RepositoryManager:
                 old_path_base = locales_path / locale_dir.name / "LC_MESSAGES" / old_domain_spec.domain_name
                 new_path_base = locales_path / locale_dir.name / "LC_MESSAGES" / new_domain_spec.domain_name
                 for ext in ("po", "mo"):
-                    old_path = Path(f"{str(old_path_base)}.{ext}")
-                    new_path = Path(f"{str(new_path_base)}.{ext}")
+                    old_path = Path(f"{old_path_base!s}.{ext}")
+                    new_path = Path(f"{new_path_base!s}.{ext}")
                     self.fs_editor.move_path(old_path=old_path, new_path=new_path)
 
     def _rename_in_dependent_meta_files(self, old_package_info: PackageInfo, new_package_info: PackageInfo) -> None:

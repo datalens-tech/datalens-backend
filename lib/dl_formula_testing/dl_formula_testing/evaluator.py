@@ -128,7 +128,7 @@ class DbEvaluator:
     @staticmethod
     def print_as_example(formula: str | Formula, result: Any) -> None:
         if isinstance(result, datetime.date):
-            result_str = f"#{str(result)}#"
+            result_str = f"#{result!s}#"
         elif isinstance(result, bool):
             result_str = str(result).upper()
         else:

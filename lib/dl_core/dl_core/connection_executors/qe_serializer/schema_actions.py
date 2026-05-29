@@ -38,7 +38,7 @@ class DBAdapterActionBaseSchema(BaseQEAPISchema):
         mod_name, cls_name = value.rsplit(".", 1) if "." in value else (None, value)
         candidate = next(
             filter(
-                lambda clz: clz.__module__ == mod_name and clz.__qualname__ == cls_name or clz.__qualname__ == value,
+                lambda clz: (clz.__module__ == mod_name and clz.__qualname__ == cls_name) or clz.__qualname__ == value,
                 self.allowed_dba_classes,
             ),  # TODO clz.__qualname__ == value method is deprecated, to be removed someday
             None,

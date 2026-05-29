@@ -994,11 +994,8 @@ class DatasetValidator(DatasetBaseWrapper):
 
             # It has the same type as the original field if both have aggregations or both don't
             same_type_as_original = (
-                from_field.aggregation != AggregationFunction.none
-                and aggregation != AggregationFunction.none
-                or from_field.aggregation == AggregationFunction.none
-                and aggregation == AggregationFunction.none
-            )
+                from_field.aggregation != AggregationFunction.none and aggregation != AggregationFunction.none
+            ) or (from_field.aggregation == AggregationFunction.none and aggregation == AggregationFunction.none)
 
             add_field_data = dict(
                 guid=field_id,

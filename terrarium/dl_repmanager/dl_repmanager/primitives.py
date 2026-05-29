@@ -71,7 +71,7 @@ class PypiReqPackageSpec(ReqPackageSpec):
 
     def get_exact_version(self) -> str:
         if not self.is_exact_version():
-            raise ValueError(f"{str(self)} does not have an exact version")
+            raise ValueError(f"{self!s} does not have an exact version")
         assert self.version is not None
         return self.version[2:]
 

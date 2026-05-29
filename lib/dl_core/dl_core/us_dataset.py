@@ -123,7 +123,7 @@ class Dataset(USEntry):
 
     def get_own_materialized_tables(self, source_id: str | None = None) -> Generator[str, None, None]:
         for dsrc_coll_spec in self.data.source_collections or ():
-            if not dsrc_coll_spec or source_id and dsrc_coll_spec.id != source_id:
+            if not dsrc_coll_spec or (source_id and dsrc_coll_spec.id != source_id):
                 continue
             if not isinstance(dsrc_coll_spec, DataSourceCollectionSpec):
                 continue

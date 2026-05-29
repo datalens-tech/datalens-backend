@@ -44,6 +44,6 @@ class PyPrjEditor:
                 log.debug(f"Checking {pi.abs_path}")
                 pmw.update_mypy_common(data)
 
-            log.debug(f"pyproject-fmt {str(pi.toml_path)}")
-            subprocess.run(f"pyproject-fmt {str(pi.abs_path)}", shell=True)
+            log.debug(f"pyproject-fmt {pi.toml_path!s}")
+            subprocess.run(f"pyproject-fmt {pi.abs_path!s}", shell=True)
             (pi.abs_path / "mypy.ini").unlink(missing_ok=True)

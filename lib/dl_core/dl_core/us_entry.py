@@ -78,8 +78,7 @@ class USEntry:
 
         if not (
             # dict
-            isinstance(data_dict, dict)
-            and cls.DataModel is None
+            (isinstance(data_dict, dict) and cls.DataModel is None)
             # otherwise types must match
             or type(data_dict) is cls.DataModel
         ):

@@ -53,8 +53,8 @@ def pkg_to_targets_ref(pkg_dir: Path, doc: TOMLDocument, sections: list[str] | N
 
 
 def run_pytest_one(t: Target) -> int:
-    print(f"Running pytest for {t.name} in {str(t.root_dir)} for {t.target_path or '.'}")
-    report_name = f"{str(t.root_dir)}-{t.target_path or '.'}-{uuid.uuid4().hex}.xml".replace("/", "_")
+    print(f"Running pytest for {t.name} in {t.root_dir!s} for {t.target_path or '.'}")
+    report_name = f"{t.root_dir!s}-{t.target_path or '.'}-{uuid.uuid4().hex}.xml".replace("/", "_")
     run_args: list[str] = [
         "/venv/bin/python",
         "-m",

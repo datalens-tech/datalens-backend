@@ -24,11 +24,9 @@ def are_raw_schemas_same(first: list[SchemaColumn] | None, second: list[SchemaCo
             # main attrs are different
             data_1 != data_2
             # or exactly one of the two native types is None
-            or not ntypes_arent_none
-            and col_1.native_type != col_2.native_type
+            or (not ntypes_arent_none and col_1.native_type != col_2.native_type)
             # or native types have different names (only for different db (conn) types)
-            or ntypes_arent_none
-            and col_1.native_type.name != col_2.native_type.name
+            or (ntypes_arent_none and col_1.native_type.name != col_2.native_type.name)
         ):
             return False
 

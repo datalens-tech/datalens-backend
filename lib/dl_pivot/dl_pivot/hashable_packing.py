@@ -67,7 +67,7 @@ class HashableWrapper:
     so using just a plain slotted object.
     """
 
-    __slots__ = ("value", "hashable")
+    __slots__ = ("hashable", "value")
 
     def __init__(self, value: Any, hashable: Hashable):
         self.value = value
