@@ -9,11 +9,6 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      run_for_all_packages:
-        type: boolean
-        default: false
-        description: "Run for all packages"
 
 jobs:
   gh_build_image:
@@ -61,74 +56,19 @@ jobs:
 
   router:
     runs-on: ubuntu-22.04
-    needs: gh_build_image
-    container:
-      image: ${{ needs.gh_build_image.outputs.IMAGE }}
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      changed-packages: ${{ steps.changed-packages.outputs.changed-packages }}
+      changed-packages: ${{ steps.list-packages.outputs.packages }}
     steps:
-    - uses: datalens-tech/cleanup-folder-action@2320ecc9839e80e006f214a31eeba3bca55aed0c
-    - name: Checkout code
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      with:
-        fetch-depth: 0
-    - uses: datalens-tech/fix-dubious-ownership-action@472fb7b325799350f1b5327b90ade3e5cd15bd67
-    - run: git fetch origin main
-    - name: Extract base commit
-      run: |
-        result="${{ github.event.before }}"
-        if [ -z "$result" ]; then
-            result=$(git rev-parse origin/main)
-        fi
-        echo "result=$result" >> $GITHUB_OUTPUT
-      id: extract_base_commit
-    - name: Extract head commit
-      run: |
-        echo "result=${{ github.sha }}" >> $GITHUB_OUTPUT
-      id: extract_head_commit
-
-    - uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62
-      id: changed-files-base
-      if: ${{ steps.extract_base_commit.outputs.result != steps.extract_head_commit.outputs.result }}
-      with:
-        base_sha: ${{ steps.extract_base_commit.outputs.result }}
-        sha: ${{ steps.extract_head_commit.outputs.result }}
-        write_output_files: true
-        separator: "\n"
-    # if base and head commit are the same tj-actions/changed-files action raises an error, so we need to handle it
-    # https://github.com/tj-actions/changed-files/issues/2708
-    - name: Get changed files
-      id: changed-files
-      run: |
-        if [ "$base_sha" != "$sha" ]; then
-          {
-            echo "all_changed_files<<EOF"
-            echo "${changed_files_base}"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-        fi
-      env:
-        sha: ${{ steps.extract_head_commit.outputs.result }}
-        base_sha: ${{ steps.extract_base_commit.outputs.result }}
-        changed_files_base: ${{ steps.changed-files-base.outputs.all_changed_files }}
-    - name: Get changed packages
-      uses: ovsds/get-changed-packages-action@5778e0b46458f5645c881586765e771f6507c4c7
-      id: changed-packages
-      with:
-        changed-files: ${{ steps.changed-files.outputs.all_changed_files }}
-        all-packages: |
-          ./lib/*
-          ./app/*
-        package-dependencies-resolution-method: >-
-          ${{ github.event.inputs.run_for_all_packages == 'true' && 'poetry-all' || 'poetry-path' }}
-        poetry-path-dependencies-groups: |
-          tool.poetry.dependencies
-          tool.poetry.group.tests.dependencies
-        changed-packages-format: json
-        changed-packages-relative-path: true
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 1
+      - name: List all packages
+        id: list-packages
+        run: |
+          packages=$(find lib app -mindepth 2 -maxdepth 2 -name pyproject.toml -printf '%h\n' | sort | jq -R . | jq -sc .)
+          echo "packages=$packages"
+          echo "packages=$packages" >> "$GITHUB_OUTPUT"
 
   pytest_split:
     name: Split pytest into jobs for each test type

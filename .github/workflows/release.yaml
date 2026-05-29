@@ -77,7 +77,6 @@ jobs:
 
     - name: Create release
       id: create_release
-      working-directory: .github/.scripts
       run: |
         gh release create \
           --repo $REPOSITORY_NAME \
