@@ -1,9 +1,10 @@
 from collections import defaultdict
-from collections.abc import Iterable, Sequence
-import logging
-from typing import (
-    TYPE_CHECKING,
+from collections.abc import (
+    Iterable,
+    Sequence,
 )
+import logging
+from typing import TYPE_CHECKING
 
 import attr
 import pandas as pd

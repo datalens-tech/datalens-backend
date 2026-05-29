@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    NoReturn,
-)
+from typing import NoReturn
 
 from dl_core.united_storage_client import (
     USAuthContextNoAuth,

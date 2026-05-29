@@ -1,4 +1,8 @@
-from collections.abc import Callable, Generator, Sequence
+from collections.abc import (
+    Callable,
+    Generator,
+    Sequence,
+)
 import datetime
 
 import pytest

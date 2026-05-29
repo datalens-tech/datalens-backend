@@ -4,11 +4,12 @@ Auxiliary nodes specific to the forked subquery joining mechanism.
 
 from __future__ import annotations
 
-from collections.abc import Hashable, Sequence
-from enum import Enum
-from typing import (
-    cast,
+from collections.abc import (
+    Hashable,
+    Sequence,
 )
+from enum import Enum
+from typing import cast
 
 import dl_formula.core.nodes as nodes
 

@@ -1,8 +1,6 @@
 from collections.abc import Sequence
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
 from dl_api_commons.reporting.registry import ReportingRegistry

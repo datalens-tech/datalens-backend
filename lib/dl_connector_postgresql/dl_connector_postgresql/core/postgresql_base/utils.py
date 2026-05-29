@@ -1,7 +1,5 @@
 from collections.abc import Set
-from typing import (
-    Any,
-)
+from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy.engine import Dialect

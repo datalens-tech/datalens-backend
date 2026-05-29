@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence, Sized
+from collections.abc import (
+    Iterable,
+    Sequence,
+    Sized,
+)
 import json
 
 from aiohttp import web

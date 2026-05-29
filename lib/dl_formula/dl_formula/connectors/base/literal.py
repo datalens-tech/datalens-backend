@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import datetime
 from functools import singledispatchmethod
-from typing import (
-    Any,
-)
+from typing import Any
 
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql

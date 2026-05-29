@@ -1,4 +1,7 @@
-from collections.abc import Callable, Sequence
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 import multiprocessing
 import os
 import pathlib

@@ -6,9 +6,7 @@ from collections.abc import (
     Sequence,
     Set,
 )
-from typing import (
-    Any,
-)
+from typing import Any
 
 from marshmallow import (
     EXCLUDE,

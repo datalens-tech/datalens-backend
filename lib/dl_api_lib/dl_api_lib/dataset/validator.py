@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from collections.abc import Collection, Generator, Sequence
+from collections.abc import (
+    Collection,
+    Generator,
+    Sequence,
+)
 from contextlib import contextmanager
 import logging
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 import uuid
 
 import attr

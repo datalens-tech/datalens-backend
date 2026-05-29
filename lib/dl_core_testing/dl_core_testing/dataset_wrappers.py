@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable
-from itertools import chain
-from typing import (
-    Any,
+from collections.abc import (
+    Callable,
+    Iterable,
 )
+from itertools import chain
+from typing import Any
 
 import attr
 

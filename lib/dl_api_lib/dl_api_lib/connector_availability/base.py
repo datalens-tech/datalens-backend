@@ -5,9 +5,7 @@ from collections.abc import Iterator
 from copy import deepcopy
 import itertools
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

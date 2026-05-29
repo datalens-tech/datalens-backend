@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Generator, Sequence
-from typing import (
-    NamedTuple,
+from collections.abc import (
+    Generator,
+    Sequence,
 )
+from typing import NamedTuple
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import DialectCombo

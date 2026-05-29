@@ -1,5 +1,8 @@
 import abc
-from collections.abc import Awaitable, Callable
+from collections.abc import (
+    Awaitable,
+    Callable,
+)
 import dataclasses
 import enum
 import functools

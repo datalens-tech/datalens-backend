@@ -1,4 +1,7 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 from typing import (
     Any,
     TypeVar,

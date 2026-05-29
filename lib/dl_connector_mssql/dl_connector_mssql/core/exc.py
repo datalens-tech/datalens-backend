@@ -1,7 +1,5 @@
 import re
-from typing import (
-    Any,
-)
+from typing import Any
 
 import dl_core.exc as exc
 

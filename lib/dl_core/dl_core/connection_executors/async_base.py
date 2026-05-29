@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import AsyncIterable, Awaitable, Callable, Sequence
+from collections.abc import (
+    AsyncIterable,
+    Awaitable,
+    Callable,
+    Sequence,
+)
 import functools
 import logging
 from typing import (

@@ -4,9 +4,7 @@ from collections.abc import Collection
 import datetime
 import json
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_formula.core.datatype import DataType

@@ -6,9 +6,7 @@ from enum import (
     auto,
     unique,
 )
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 import attr
 

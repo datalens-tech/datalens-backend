@@ -1,10 +1,11 @@
 import abc
-from collections.abc import AsyncIterable, Sequence
+from collections.abc import (
+    AsyncIterable,
+    Sequence,
+)
 import enum
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

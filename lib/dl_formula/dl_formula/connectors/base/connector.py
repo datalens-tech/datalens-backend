@@ -1,7 +1,8 @@
-from collections.abc import Iterable, Sequence
-from typing import (
-    ClassVar,
+from collections.abc import (
+    Iterable,
+    Sequence,
 )
+from typing import ClassVar
 
 from sqlalchemy.engine.default import DefaultDialect
 

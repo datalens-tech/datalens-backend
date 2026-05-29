@@ -1,24 +1,26 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Collection, Iterable, Sequence
+from collections.abc import (
+    Collection,
+    Iterable,
+    Sequence,
+)
 from contextlib import redirect_stdout
 import inspect
 import json
 import os
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import jinja2
 from tabulate import tabulate
 
 from dl_formula.core.dialect import (
-    DialectCombo,
     get_all_basic_dialects,
     get_dialect_from_str,
 )
+from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
 import dl_formula.core.exc as exc
 from dl_formula.definitions.base import MultiVariantTranslation

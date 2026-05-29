@@ -5,12 +5,12 @@ from typing import Any
 import uuid
 
 from marshmallow import (
-    ValidationError,
     post_dump,
     post_load,
     pre_load,
     validates_schema,
 )
+from marshmallow import ValidationError
 from marshmallow import fields as ma_fields
 from marshmallow_oneofschema import OneOfSchema
 

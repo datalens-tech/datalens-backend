@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping, Sequence, Set
-from typing import (
-    Any,
+from collections.abc import (
+    Iterable,
+    Mapping,
+    Sequence,
+    Set,
 )
+from typing import Any
 
 from marshmallow.decorators import (
     POST_DUMP,

@@ -2,9 +2,7 @@ import abc
 from collections.abc import Callable
 from functools import wraps
 import logging
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 import sqlalchemy as sa

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Collection
+from collections.abc import (
+    Callable,
+    Collection,
+)
 from functools import partial
 
 from clickhouse_sqlalchemy import types as ch_types

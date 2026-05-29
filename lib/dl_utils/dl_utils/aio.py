@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterable, Awaitable, Callable, Iterable
+from collections.abc import (
+    AsyncIterable,
+    Awaitable,
+    Callable,
+    Iterable,
+)
 from concurrent.futures import ThreadPoolExecutor
 import contextvars
 from functools import partial

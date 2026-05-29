@@ -4,9 +4,7 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
-from typing import (
-    TypeVar,
-)
+from typing import TypeVar
 
 
 class FrozenMappingStrToStrOrStrSeq(Mapping[str, str | Sequence[str]], Hashable):

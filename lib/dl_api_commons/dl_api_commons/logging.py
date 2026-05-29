@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Iterable, Sequence
+from collections.abc import (
+    Iterable,
+    Sequence,
+)
 from http.cookies import SimpleCookie
 import logging
 import os

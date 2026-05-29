@@ -1,5 +1,8 @@
 import collections
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import (
+    AsyncIterator,
+    Iterator,
+)
 import contextlib
 import threading
 import time

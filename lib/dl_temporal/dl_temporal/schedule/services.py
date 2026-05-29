@@ -1,9 +1,7 @@
 from collections.abc import Sequence
 import datetime
 import logging
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attrs
 import temporalio.client

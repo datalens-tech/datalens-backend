@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    TypeVar,
-)
+from typing import TypeVar
 
 import attr
 

@@ -1,13 +1,15 @@
 import asyncio
-from collections.abc import AsyncGenerator, Callable, Generator
+from collections.abc import (
+    AsyncGenerator,
+    Callable,
+    Generator,
+)
 from concurrent.futures.thread import ThreadPoolExecutor
 import logging
 import random
 import threading
 import time
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import pytest

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Generator, Iterable, Sequence
+from collections.abc import (
+    Generator,
+    Iterable,
+    Sequence,
+)
 import logging
 from typing import (
     TYPE_CHECKING,

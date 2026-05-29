@@ -1,7 +1,5 @@
 import enum
-from typing import (
-    overload,
-)
+from typing import overload
 
 
 class AuthFailureError(Exception):

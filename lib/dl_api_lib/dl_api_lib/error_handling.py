@@ -4,13 +4,12 @@ import http
 import inspect
 import itertools
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
-from marshmallow import Schema, fields
+from marshmallow import Schema
 from marshmallow import ValidationError as MValidationError
+from marshmallow import fields
 
 from dl_api_commons import exc as api_commons_exc
 from dl_api_lib import exc

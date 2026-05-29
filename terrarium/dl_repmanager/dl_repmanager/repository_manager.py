@@ -1,4 +1,8 @@
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import (
+    Callable,
+    Mapping,
+    Sequence,
+)
 import itertools
 import os
 from pathlib import Path

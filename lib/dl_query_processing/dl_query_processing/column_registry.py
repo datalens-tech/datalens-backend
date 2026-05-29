@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Collection
+from collections.abc import (
+    Callable,
+    Collection,
+)
 from itertools import chain
 import logging
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 from dl_core.components.ids import (
     AvatarId,

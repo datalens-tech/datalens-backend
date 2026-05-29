@@ -2,9 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 import gzip
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import redis.asyncio

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Generator, Iterable
+from collections.abc import (
+    Generator,
+    Iterable,
+)
 import contextlib
 import logging
 from typing import (

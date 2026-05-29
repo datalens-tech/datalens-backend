@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import base64
-from collections.abc import Iterable, Mapping
-from typing import (
-    Any,
+from collections.abc import (
+    Iterable,
+    Mapping,
 )
+from typing import Any
 
 from marshmallow import fields
 import marshmallow.utils as ma_utils

@@ -1,8 +1,9 @@
-from collections.abc import AsyncIterable, Mapping
-import logging
-from typing import (
-    Any,
+from collections.abc import (
+    AsyncIterable,
+    Mapping,
 )
+import logging
+from typing import Any
 import uuid
 
 import aiohttp

@@ -1,8 +1,6 @@
 from collections.abc import Callable
 import datetime
-from typing import (
-    Any,
-)
+from typing import Any
 
 
 def read_date(s: str) -> datetime.date:

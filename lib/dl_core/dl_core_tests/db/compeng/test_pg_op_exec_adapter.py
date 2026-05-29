@@ -3,9 +3,7 @@ from __future__ import annotations
 import abc
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import (
-    Any,
-)
+from typing import Any
 import uuid
 
 import aiopg.sa

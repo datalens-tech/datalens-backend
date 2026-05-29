@@ -1,8 +1,6 @@
 import itertools
 import logging
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 LOGGER = logging.getLogger(__name__)
 

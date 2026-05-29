@@ -5,9 +5,7 @@ from http import HTTPStatus
 import json
 import logging
 import time
-from typing import (
-    Any,
-)
+from typing import Any
 
 from aiohttp import web
 from aiohttp.typedefs import Handler

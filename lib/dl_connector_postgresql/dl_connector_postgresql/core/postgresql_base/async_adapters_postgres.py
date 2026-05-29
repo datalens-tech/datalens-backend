@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncIterator, Callable, Iterable
+from collections.abc import (
+    AsyncIterator,
+    Callable,
+    Iterable,
+)
 import contextlib
 from contextlib import asynccontextmanager
 from datetime import datetime

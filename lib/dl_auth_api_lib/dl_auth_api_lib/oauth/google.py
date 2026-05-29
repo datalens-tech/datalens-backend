@@ -1,4 +1,7 @@
-from typing import Any, Self
+from typing import (
+    Any,
+    Self,
+)
 import urllib.parse
 
 import aiohttp

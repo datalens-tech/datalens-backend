@@ -1,8 +1,9 @@
-from collections.abc import AsyncIterator, Iterator
-import contextlib
-from typing import (
-    Literal,
+from collections.abc import (
+    AsyncIterator,
+    Iterator,
 )
+import contextlib
+from typing import Literal
 
 import httpx
 import pydantic

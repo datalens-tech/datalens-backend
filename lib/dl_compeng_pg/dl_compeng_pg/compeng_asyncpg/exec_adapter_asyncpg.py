@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import AsyncGenerator, Awaitable, Callable, Generator, Sequence
+from collections.abc import (
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    Generator,
+    Sequence,
+)
 from contextlib import contextmanager
 import logging
 from typing import (

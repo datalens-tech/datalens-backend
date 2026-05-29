@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import (
-    no_type_check,
-)
+from typing import no_type_check
 
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import (

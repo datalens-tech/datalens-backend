@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from collections.abc import Collection, Sequence, Set
+from collections.abc import (
+    Collection,
+    Sequence,
+    Set,
+)
 import logging
 import os
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 import attr
 

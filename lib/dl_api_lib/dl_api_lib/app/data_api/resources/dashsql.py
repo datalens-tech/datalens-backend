@@ -2,9 +2,7 @@ from collections.abc import Callable
 import datetime
 import logging
 import math
-from typing import (
-    Any,
-)
+from typing import Any
 
 from aiohttp import web
 

@@ -1,5 +1,8 @@
 import abc
-from collections.abc import Iterable, Sequence
+from collections.abc import (
+    Iterable,
+    Sequence,
+)
 
 import attr
 

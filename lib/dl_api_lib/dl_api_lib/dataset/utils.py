@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Generator, Iterable
+from collections.abc import (
+    Generator,
+    Iterable,
+)
 import logging
 
 from dl_api_lib import utils as bi_utils

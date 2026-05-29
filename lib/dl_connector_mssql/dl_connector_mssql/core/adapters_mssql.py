@@ -4,9 +4,7 @@ import datetime
 import decimal
 import logging
 import re
-from typing import (
-    Any,
-)
+from typing import Any
 from urllib.parse import quote_plus
 
 import pyodbc

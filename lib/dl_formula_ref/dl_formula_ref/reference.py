@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Collection
-from typing import (
-    Any,
-)
+from typing import Any
 
 from dl_formula.core.dialect import (
     DialectCombo,

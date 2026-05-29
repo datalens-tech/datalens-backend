@@ -6,17 +6,15 @@ from collections.abc import Generator
 import inspect
 import os
 import sys
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 from dl_formula.core import exc
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import (
-    DialectCombo,
     get_all_basic_dialects,
     get_dialect_from_str,
 )
+from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
 from dl_formula.definitions.base import (
     MultiVariantTranslation,

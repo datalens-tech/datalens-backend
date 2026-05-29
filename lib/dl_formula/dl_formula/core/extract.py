@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Hashable
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 
 class NodeExtract(NamedTuple):

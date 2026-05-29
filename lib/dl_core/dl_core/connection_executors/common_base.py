@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Generator, Mapping, Sequence
+from collections.abc import (
+    Callable,
+    Generator,
+    Mapping,
+    Sequence,
+)
 import contextlib
 import enum
 import logging

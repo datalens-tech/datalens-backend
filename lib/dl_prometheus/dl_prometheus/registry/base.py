@@ -1,4 +1,7 @@
-from collections.abc import Iterator, Sequence
+from collections.abc import (
+    Iterator,
+    Sequence,
+)
 
 import attrs
 import prometheus_client

@@ -1,5 +1,9 @@
 import abc
-from collections.abc import Callable, Collection, Generator
+from collections.abc import (
+    Callable,
+    Collection,
+    Generator,
+)
 from contextlib import contextmanager
 import io
 import os

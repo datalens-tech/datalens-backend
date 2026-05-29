@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Generator
+from collections.abc import (
+    Callable,
+    Generator,
+)
 import contextlib
 import logging
 from typing import (

@@ -1,4 +1,9 @@
-from collections.abc import Awaitable, Callable, Collection, Sequence
+from collections.abc import (
+    Awaitable,
+    Callable,
+    Collection,
+    Sequence,
+)
 import time
 import typing
 

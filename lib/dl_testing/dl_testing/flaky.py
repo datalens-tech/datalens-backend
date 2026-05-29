@@ -1,8 +1,6 @@
 from collections.abc import Callable
 import time
-from typing import (
-    Any,
-)
+from typing import Any
 
 
 def delay_rerun_filter(delay_seconds: int = 10) -> Callable[..., bool]:

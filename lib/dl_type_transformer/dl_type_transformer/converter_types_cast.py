@@ -3,9 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 import datetime
 import re
-from typing import (
-    Any,
-)
+from typing import Any
 
 import dateutil.parser
 

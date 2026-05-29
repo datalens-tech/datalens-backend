@@ -3,9 +3,7 @@ from collections.abc import Coroutine
 import logging
 import os
 import sys
-from typing import (
-    Any,
-)
+from typing import Any
 
 import dl_app_base.exceptions
 

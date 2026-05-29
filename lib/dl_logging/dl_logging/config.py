@@ -1,9 +1,11 @@
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import (
+    Callable,
+    Mapping,
+    Sequence,
+)
 import logging
 import os
-from typing import (
-    Any,
-)
+from typing import Any
 
 import jaeger_client
 from opentracing.scope_managers.contextvars import ContextVarsScopeManager

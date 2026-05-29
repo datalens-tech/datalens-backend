@@ -5,9 +5,7 @@ from collections.abc import (
     Hashable,
     Set,
 )
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 

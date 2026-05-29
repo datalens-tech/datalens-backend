@@ -1,7 +1,15 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Collection, Generator, Hashable, Iterable, Mapping, Sequence
+from collections.abc import (
+    Callable,
+    Collection,
+    Generator,
+    Hashable,
+    Iterable,
+    Mapping,
+    Sequence,
+)
 import copy
 import datetime
 from typing import (

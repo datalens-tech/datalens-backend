@@ -4,9 +4,7 @@ import asyncio
 from collections.abc import AsyncGenerator
 import contextlib
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 from aiohttp import web
 from aiohttp.typedefs import (

@@ -1,5 +1,8 @@
 import abc
-from typing import Any, Self
+from typing import (
+    Any,
+    Self,
+)
 
 import attr
 from multidict import (

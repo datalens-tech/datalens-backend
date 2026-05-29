@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import abc
 from collections import ChainMap
-from collections.abc import ItemsView, Iterable, MutableMapping
+from collections.abc import (
+    ItemsView,
+    Iterable,
+    MutableMapping,
+)
 from typing import (
     Any,
     Self,

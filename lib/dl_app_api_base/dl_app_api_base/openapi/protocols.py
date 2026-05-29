@@ -1,8 +1,6 @@
 from collections.abc import Mapping
 import http
-from typing import (
-    Protocol,
-)
+from typing import Protocol
 
 import dl_pydantic
 

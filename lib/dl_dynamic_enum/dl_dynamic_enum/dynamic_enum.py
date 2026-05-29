@@ -41,7 +41,11 @@ See tests for more specifics.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Generator, Sequence
+from collections.abc import (
+    Callable,
+    Generator,
+    Sequence,
+)
 from types import MappingProxyType
 from typing import (
     Any,

@@ -1,7 +1,5 @@
 import abc
-from typing import (
-    Any,
-)
+from typing import Any
 
 from aiohttp.test_utils import (
     ClientResponse,

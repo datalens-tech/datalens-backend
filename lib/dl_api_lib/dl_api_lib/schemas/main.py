@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import (
-    Any,
-)
+from typing import Any
 
 from flask_restx import (
     Namespace,

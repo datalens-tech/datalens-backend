@@ -5,9 +5,7 @@ import copy
 import datetime
 import re
 import time
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import sqlalchemy as sa

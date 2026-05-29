@@ -1,9 +1,11 @@
-from collections.abc import Collection, Mapping, Sequence
+from collections.abc import (
+    Collection,
+    Mapping,
+    Sequence,
+)
 import enum
 import functools
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

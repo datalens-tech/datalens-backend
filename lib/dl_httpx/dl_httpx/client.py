@@ -1,6 +1,9 @@
 import abc
 import asyncio
-from collections.abc import AsyncGenerator, Iterator
+from collections.abc import (
+    AsyncGenerator,
+    Iterator,
+)
 import contextlib
 import logging
 import ssl

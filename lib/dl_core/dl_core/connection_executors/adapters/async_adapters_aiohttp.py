@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import abc
 import asyncio
-from collections.abc import Generator, Sequence
+from collections.abc import (
+    Generator,
+    Sequence,
+)
 import contextlib
 import ssl
 from typing import (

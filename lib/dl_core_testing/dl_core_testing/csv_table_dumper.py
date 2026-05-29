@@ -1,4 +1,7 @@
-from collections.abc import Callable, Sequence
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 import csv
 import datetime
 import io

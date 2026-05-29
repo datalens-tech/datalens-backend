@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

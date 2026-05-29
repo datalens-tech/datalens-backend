@@ -1,7 +1,14 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import Callable, Collection, Generator, Iterable, Sequence, Set
+from collections.abc import (
+    Callable,
+    Collection,
+    Generator,
+    Iterable,
+    Sequence,
+    Set,
+)
 from contextlib import contextmanager
 from functools import (
     partial,

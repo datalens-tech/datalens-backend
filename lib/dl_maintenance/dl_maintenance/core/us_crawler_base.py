@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import AsyncGenerator, AsyncIterable, Sequence
+from collections.abc import (
+    AsyncGenerator,
+    AsyncIterable,
+    Sequence,
+)
 import contextlib
 import copy
 import enum

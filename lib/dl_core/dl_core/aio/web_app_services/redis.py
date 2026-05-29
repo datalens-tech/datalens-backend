@@ -3,9 +3,7 @@ from __future__ import annotations
 import abc
 from collections.abc import Sequence
 import logging
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from aiohttp import web
 import attr

@@ -1,4 +1,8 @@
-from collections.abc import Awaitable, Callable, Collection
+from collections.abc import (
+    Awaitable,
+    Callable,
+    Collection,
+)
 import logging
 
 import attr

@@ -20,9 +20,7 @@ error_mgr.print_component_refs(phantom_refs)
 """
 
 from collections import defaultdict
-from typing import (
-    Any,
-)
+from typing import Any
 import uuid
 
 import attr

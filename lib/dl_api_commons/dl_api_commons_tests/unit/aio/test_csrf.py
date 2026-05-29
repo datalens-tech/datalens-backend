@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
-import time
-from typing import (
-    ClassVar,
+from collections.abc import (
+    Awaitable,
+    Callable,
 )
+import time
+from typing import ClassVar
 
 from aiohttp import web
 from aiohttp.test_utils import TestClient

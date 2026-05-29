@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Collection, Generator
+from collections.abc import (
+    Collection,
+    Generator,
+)
 from functools import reduce
 import inspect
 from itertools import chain

@@ -5,6 +5,8 @@ from dl_formula_ref.rich_text.elements import (
     ExtMacroTextElement,
     LinkTextElement,
     ListTextElement,
+)
+from dl_formula_ref.rich_text.elements import (
     NoteBlock,
     RichText,
     TableTextElement,

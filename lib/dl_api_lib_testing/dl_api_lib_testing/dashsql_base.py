@@ -1,8 +1,6 @@
 import abc
 from collections.abc import Mapping
-from typing import (
-    Any,
-)
+from typing import Any
 
 from aiohttp.test_utils import (
     ClientResponse,

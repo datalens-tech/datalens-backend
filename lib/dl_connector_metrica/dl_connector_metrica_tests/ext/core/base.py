@@ -1,8 +1,6 @@
 import asyncio
 from collections.abc import Generator
-from typing import (
-    TypeVar,
-)
+from typing import TypeVar
 
 import pytest
 

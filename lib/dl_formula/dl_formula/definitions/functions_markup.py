@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from enum import Enum
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D

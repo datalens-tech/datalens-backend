@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Iterable, Mapping
-from enum import Enum
-from typing import (
-    ClassVar,
+from collections.abc import (
+    Callable,
+    Iterable,
+    Mapping,
 )
+from enum import Enum
+from typing import ClassVar
 
 import attr
 import sqlalchemy as sa

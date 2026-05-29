@@ -1,8 +1,6 @@
 import abc
 from collections.abc import Collection
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 

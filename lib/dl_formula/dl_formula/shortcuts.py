@@ -4,9 +4,7 @@ import builtins
 from collections.abc import Sequence
 import datetime as datetime_mod
 from functools import wraps
-from typing import (
-    Any,
-)
+from typing import Any
 import uuid as uuid_mod
 
 from sqlalchemy.sql.elements import ClauseElement

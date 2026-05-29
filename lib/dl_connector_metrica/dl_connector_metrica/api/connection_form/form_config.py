@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from dl_api_commons.base_models import TenantDef
 from dl_api_connector.form_config.models.api_schema import (

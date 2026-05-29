@@ -1,9 +1,10 @@
 import asyncio
-from collections.abc import Awaitable, Callable
-import logging
-from typing import (
-    Any,
+from collections.abc import (
+    Awaitable,
+    Callable,
 )
+import logging
+from typing import Any
 
 from dl_cache_engine.cache_invalidation import exc as cache_invalidation_exceptions
 from dl_cache_engine.cache_invalidation.engine import TCacheInvalidationGenerateFunc

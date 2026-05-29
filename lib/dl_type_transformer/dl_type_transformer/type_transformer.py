@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Generator, Iterable
+from collections.abc import (
+    Callable,
+    Generator,
+    Iterable,
+)
 from contextlib import contextmanager
 import datetime
 from functools import (

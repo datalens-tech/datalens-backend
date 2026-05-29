@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections import ChainMap
-from collections.abc import MutableMapping, Sequence
+from collections.abc import (
+    MutableMapping,
+    Sequence,
+)
 import logging
 import random
 from typing import (

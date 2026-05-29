@@ -1,5 +1,8 @@
 import abc
-from typing import Protocol, Self
+from typing import (
+    Protocol,
+    Self,
+)
 
 import attrs
 import pydantic

@@ -9,9 +9,7 @@ import json
 import logging
 import logging.handlers
 import traceback
-from typing import (
-    Any,
-)
+from typing import Any
 
 # Minor note:
 # `context` in the formatter is a wrong approach.

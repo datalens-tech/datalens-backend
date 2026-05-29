@@ -1,9 +1,7 @@
 from collections.abc import Mapping
 import http
 import logging
-from typing import (
-    Protocol,
-)
+from typing import Protocol
 
 import aiohttp.typedefs
 import aiohttp.web

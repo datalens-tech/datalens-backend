@@ -1,7 +1,5 @@
 from collections.abc import Sequence
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 import attr
 

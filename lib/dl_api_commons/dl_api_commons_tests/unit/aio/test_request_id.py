@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable, Sequence
+from collections.abc import (
+    Awaitable,
+    Callable,
+    Sequence,
+)
 import logging
 
 from aiohttp import web

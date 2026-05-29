@@ -1,5 +1,8 @@
 import asyncio
-from collections.abc import AsyncGenerator, Generator
+from collections.abc import (
+    AsyncGenerator,
+    Generator,
+)
 from typing import (
     ClassVar,
     Generic,

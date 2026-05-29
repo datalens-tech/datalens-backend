@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable, Collection, Iterable, Sequence
+from collections.abc import (
+    Awaitable,
+    Callable,
+    Collection,
+    Iterable,
+    Sequence,
+)
 from typing import (
     TYPE_CHECKING,
     Any,

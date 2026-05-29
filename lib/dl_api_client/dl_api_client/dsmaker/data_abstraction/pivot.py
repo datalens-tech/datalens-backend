@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Generator, Iterable
-from itertools import chain
-from typing import (
-    Any,
+from collections.abc import (
+    Generator,
+    Iterable,
 )
+from itertools import chain
+from typing import Any
 
 import attr
 

@@ -7,6 +7,8 @@ from trino.exceptions import (
 from dl_core.connectors.base.error_transformer import (
     ChainedDbErrorTransformer,
     DBExcKWArgs,
+)
+from dl_core.connectors.base.error_transformer import (
     ExcMatchCondition,
     default_error_transformer_rules,
 )

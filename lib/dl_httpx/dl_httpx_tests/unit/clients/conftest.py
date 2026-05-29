@@ -1,4 +1,7 @@
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import (
+    AsyncIterator,
+    Iterator,
+)
 import contextlib
 import ssl
 import threading

@@ -1,8 +1,9 @@
 import abc
-from collections.abc import Callable, Sequence
-from typing import (
-    Any,
+from collections.abc import (
+    Callable,
+    Sequence,
 )
+from typing import Any
 
 import attr
 

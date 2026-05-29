@@ -1,9 +1,7 @@
 from collections.abc import Iterator
 import contextlib
 import os
-from typing import (
-    TextIO,
-)
+from typing import TextIO
 
 import attr
 

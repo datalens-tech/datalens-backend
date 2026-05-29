@@ -1,8 +1,6 @@
 from collections.abc import Sequence
 import logging
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 

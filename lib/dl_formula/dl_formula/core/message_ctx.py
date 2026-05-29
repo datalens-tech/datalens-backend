@@ -5,9 +5,7 @@ from enum import (
     Enum,
     unique,
 )
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 from dl_formula.core.position import Position
 

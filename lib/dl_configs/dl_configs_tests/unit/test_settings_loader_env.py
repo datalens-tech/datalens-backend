@@ -5,9 +5,7 @@ import enum
 import json
 from os import path
 import tempfile
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import pytest

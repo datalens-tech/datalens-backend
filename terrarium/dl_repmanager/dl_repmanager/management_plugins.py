@@ -5,9 +5,7 @@ from collections.abc import Generator
 import contextlib
 import os
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 import attr
 import tomlkit

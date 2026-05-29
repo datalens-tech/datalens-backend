@@ -1,4 +1,8 @@
-from collections.abc import Generator, Iterable, Iterator
+from collections.abc import (
+    Generator,
+    Iterable,
+    Iterator,
+)
 
 from dl_query_processing.merging.primitives import (
     MergedQueryDataRow,

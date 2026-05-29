@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    cast,
-)
+from typing import cast
 import uuid
 
 from dl_constants.enums import ConnectionType

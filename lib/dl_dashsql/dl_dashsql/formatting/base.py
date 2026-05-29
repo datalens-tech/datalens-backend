@@ -1,5 +1,8 @@
 import abc
-from collections.abc import Mapping, Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 from enum import Enum
 import re
 

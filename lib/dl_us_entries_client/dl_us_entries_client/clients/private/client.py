@@ -1,5 +1,8 @@
 import logging
-from typing import ClassVar, Self
+from typing import (
+    ClassVar,
+    Self,
+)
 
 import attrs
 import httpx

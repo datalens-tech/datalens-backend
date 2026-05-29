@@ -8,9 +8,7 @@ from functools import _CacheInfo
 import os
 import statistics
 import time
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 import attr
 

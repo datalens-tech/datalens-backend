@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 import re
-from typing import (
-    Any,
-)
+from typing import Any
 
 from marshmallow import ValidationError
 from marshmallow import fields as ma_fields

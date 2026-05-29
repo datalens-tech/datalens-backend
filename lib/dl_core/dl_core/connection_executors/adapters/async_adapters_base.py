@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import abc
 import asyncio
-from collections.abc import AsyncIterable, Awaitable, Callable
+from collections.abc import (
+    AsyncIterable,
+    Awaitable,
+    Callable,
+)
 import logging
 from types import TracebackType
 from typing import (

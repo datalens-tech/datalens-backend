@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import AsyncGenerator, AsyncIterable, Iterable
+from collections.abc import (
+    AsyncGenerator,
+    AsyncIterable,
+    Iterable,
+)
 from contextlib import asynccontextmanager
 import logging
 from typing import (

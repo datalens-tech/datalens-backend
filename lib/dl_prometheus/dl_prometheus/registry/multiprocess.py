@@ -1,11 +1,13 @@
-from collections.abc import Callable, Iterator, Sequence
+from collections.abc import (
+    Callable,
+    Iterator,
+    Sequence,
+)
 import logging
 import os
 import pathlib
 import threading
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attrs
 import prometheus_client

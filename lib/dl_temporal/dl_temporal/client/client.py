@@ -2,9 +2,7 @@ import asyncio
 from collections.abc import Mapping
 import datetime
 import logging
-from typing import (
-    Self,
-)
+from typing import Self
 
 import attrs
 import temporalio.api

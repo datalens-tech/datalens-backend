@@ -1,7 +1,5 @@
 from collections.abc import Iterable
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from frozendict import frozendict
 import pytest

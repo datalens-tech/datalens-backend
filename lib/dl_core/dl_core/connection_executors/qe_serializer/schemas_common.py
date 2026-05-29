@@ -6,9 +6,7 @@ from base64 import (
 )
 from collections.abc import Sequence
 import json
-from typing import (
-    Any,
-)
+from typing import Any
 
 from marshmallow import fields
 from marshmallow_oneofschema import OneOfSchema

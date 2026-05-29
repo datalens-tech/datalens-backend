@@ -1,4 +1,7 @@
-from collections.abc import Callable, Container
+from collections.abc import (
+    Callable,
+    Container,
+)
 import json
 import logging
 import os

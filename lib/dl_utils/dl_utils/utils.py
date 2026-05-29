@@ -3,9 +3,7 @@ from enum import Enum
 import functools
 from itertools import islice
 import operator
-from typing import (
-    Any,
-)
+from typing import Any
 import uuid
 
 import attr

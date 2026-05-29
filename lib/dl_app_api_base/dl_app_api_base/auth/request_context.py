@@ -1,8 +1,6 @@
 from collections.abc import Sequence
 import logging
-from typing import (
-    Protocol,
-)
+from typing import Protocol
 
 import attr
 import attrs

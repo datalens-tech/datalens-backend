@@ -1,7 +1,5 @@
 from collections.abc import Mapping
-from typing import (
-    Any,
-)
+from typing import Any
 
 from marshmallow import ValidationError
 from marshmallow import fields as ma_fields

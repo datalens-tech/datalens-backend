@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Set
+from collections.abc import (
+    Callable,
+    Set,
+)
 from typing import (
     TYPE_CHECKING,
     ClassVar,

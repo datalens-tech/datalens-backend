@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import (
+    Callable,
+    Iterable,
+    Sequence,
+)
 import json
 from typing import (
     TYPE_CHECKING,

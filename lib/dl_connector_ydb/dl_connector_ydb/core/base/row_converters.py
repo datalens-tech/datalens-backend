@@ -1,8 +1,6 @@
 from collections.abc import Callable
 import datetime
-from typing import (
-    Any,
-)
+from typing import Any
 
 
 def convert_list_of_string(value: list[bytes | None]) -> list[str | None]:

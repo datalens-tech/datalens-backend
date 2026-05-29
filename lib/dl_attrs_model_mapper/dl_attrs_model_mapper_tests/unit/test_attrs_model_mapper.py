@@ -1,9 +1,7 @@
 import abc
 from copy import deepcopy
 import enum
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 import marshmallow

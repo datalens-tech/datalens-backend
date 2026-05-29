@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 from dl_api_lib.api_common.dataset_loader import (
     DatasetApiLoader,

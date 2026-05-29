@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import AsyncIterable, Callable, Collection, Coroutine
+from collections.abc import (
+    AsyncIterable,
+    Callable,
+    Collection,
+    Coroutine,
+)
 from contextlib import (
     AsyncExitStack,
     asynccontextmanager,

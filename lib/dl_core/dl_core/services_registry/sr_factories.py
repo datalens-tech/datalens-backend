@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Sequence
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 import logging
 from typing import (
     TYPE_CHECKING,

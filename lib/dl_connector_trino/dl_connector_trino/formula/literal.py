@@ -1,7 +1,5 @@
 import datetime
-from typing import (
-    cast,
-)
+from typing import cast
 
 import sqlalchemy as sa
 import trino.sqlalchemy.datatype as tsa

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
-import difflib
-from typing import (
-    Any,
+from collections.abc import (
+    Iterable,
+    Sequence,
 )
+import difflib
+from typing import Any
 
 import attr
 import yaml

@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import abc
 import asyncio
-from collections.abc import Callable, Sequence
+from collections.abc import (
+    Callable,
+    Sequence,
+)
 import functools
 import logging
 from typing import (

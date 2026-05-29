@@ -1,5 +1,8 @@
 import abc
-from collections.abc import Generator, Iterable
+from collections.abc import (
+    Generator,
+    Iterable,
+)
 from contextlib import contextmanager
 from datetime import (
     datetime,

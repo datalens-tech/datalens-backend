@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 from dl_pivot.base.paginator import PivotPaginator
 from dl_pivot.empty.data_frame import EmptyPivotDataFrame

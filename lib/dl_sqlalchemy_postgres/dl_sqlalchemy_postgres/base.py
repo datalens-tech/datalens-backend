@@ -3,9 +3,7 @@ from __future__ import annotations
 import datetime
 import logging
 import typing
-from typing import (
-    Any,
-)
+from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2 as UPSTREAM

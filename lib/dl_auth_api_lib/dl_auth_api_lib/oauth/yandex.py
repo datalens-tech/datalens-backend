@@ -1,5 +1,8 @@
 from base64 import b64encode
-from typing import Any, Self
+from typing import (
+    Any,
+    Self,
+)
 import urllib.parse
 
 import aiohttp

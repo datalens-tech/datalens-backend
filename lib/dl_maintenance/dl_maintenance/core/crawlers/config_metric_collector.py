@@ -8,7 +8,10 @@ crawler.print_stats()  # chars=False)
 from __future__ import annotations
 
 from collections import defaultdict
-from collections.abc import AsyncIterable, Sequence
+from collections.abc import (
+    AsyncIterable,
+    Sequence,
+)
 from enum import (
     Enum,
     auto,

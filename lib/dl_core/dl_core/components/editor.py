@@ -2,9 +2,7 @@ from collections import defaultdict
 from collections.abc import Iterable
 from copy import deepcopy
 import logging
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

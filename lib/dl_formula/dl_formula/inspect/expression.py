@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from collections.abc import Callable, Generator, Iterable, Set
+from collections.abc import (
+    Callable,
+    Generator,
+    Iterable,
+    Set,
+)
 
 from dl_formula.collections import NodeSet
 from dl_formula.core.datatype import DataType

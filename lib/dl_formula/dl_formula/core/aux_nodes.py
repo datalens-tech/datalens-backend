@@ -4,10 +4,11 @@ Non-"natural" nodes that can be used to facilitate translation, validation, slic
 
 from __future__ import annotations
 
-from collections.abc import Hashable, Sequence
-from typing import (
-    cast,
+from collections.abc import (
+    Hashable,
+    Sequence,
 )
+from typing import cast
 
 import dl_formula.core.nodes as nodes
 

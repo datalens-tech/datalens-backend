@@ -3,10 +3,10 @@ import sqlalchemy
 
 import dl_core.connectors.base.error_transformer as error_transformer
 from dl_core.connectors.base.error_transformer import (
-    DbErrorTransformer,
     ExcMatchCondition,
     wrapper_exc_is_and_matches_re,
 )
+from dl_core.connectors.base.error_transformer import DbErrorTransformer
 from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Rule
 import dl_core.exc as exc
 

@@ -3,9 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Generator
 import logging
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 import weakref
 
 import attr

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncGenerator, Iterable
+from collections.abc import (
+    AsyncGenerator,
+    Iterable,
+)
 from datetime import (
     datetime,
     timedelta,
@@ -9,9 +12,7 @@ from datetime import (
 import json
 import logging
 import time
-from typing import (
-    Any,
-)
+from typing import Any
 
 import aiohttp
 

@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from itertools import chain
 from itertools import count as it_count
-from typing import (
-    TypeVar,
-)
+from typing import TypeVar
 
 import attr
 

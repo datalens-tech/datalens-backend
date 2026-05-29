@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from asyncio import AbstractEventLoop
 import json
-from typing import (
-    Any,
-)
+from typing import Any
 
 import aiohttp.test_utils
 import attr

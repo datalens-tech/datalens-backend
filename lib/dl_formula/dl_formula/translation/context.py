@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import copy
-from typing import (
-    Any,
-)
+from typing import Any
 
 from sqlalchemy.sql.elements import ClauseElement
 

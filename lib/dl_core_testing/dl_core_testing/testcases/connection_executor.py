@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncGenerator, Callable, Generator, Sequence
+from collections.abc import (
+    AsyncGenerator,
+    Callable,
+    Generator,
+    Sequence,
+)
 import contextlib
 import functools
 from typing import (

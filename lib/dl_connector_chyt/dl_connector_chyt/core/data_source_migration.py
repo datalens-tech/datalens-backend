@@ -1,6 +1,4 @@
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 

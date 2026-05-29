@@ -1,4 +1,7 @@
-from collections.abc import Collection, Generator
+from collections.abc import (
+    Collection,
+    Generator,
+)
 import contextlib
 
 import attr

@@ -1,7 +1,5 @@
 from http import HTTPStatus
-from typing import (
-    Any,
-)
+from typing import Any
 
 from dl_api_client.dsmaker.api.data_api import (
     HttpDataApiResponse,

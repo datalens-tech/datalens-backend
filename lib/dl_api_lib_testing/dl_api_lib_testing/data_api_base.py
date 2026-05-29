@@ -1,6 +1,9 @@
 import abc
 import asyncio
-from collections.abc import Generator, Iterable
+from collections.abc import (
+    Generator,
+    Iterable,
+)
 from http import HTTPStatus
 from typing import (
     ClassVar,

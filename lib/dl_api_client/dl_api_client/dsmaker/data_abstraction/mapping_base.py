@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable, Iterable, Set
+from collections.abc import (
+    Callable,
+    Iterable,
+    Set,
+)
 from itertools import chain
 
 import attr

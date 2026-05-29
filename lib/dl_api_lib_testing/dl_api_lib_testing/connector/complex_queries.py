@@ -2,9 +2,7 @@ from collections import defaultdict
 from collections.abc import Iterable
 import functools
 from http import HTTPStatus
-from typing import (
-    Any,
-)
+from typing import Any
 
 import pytest
 import sqlalchemy as sa

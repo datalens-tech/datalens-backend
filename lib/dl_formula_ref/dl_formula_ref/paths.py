@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import os.path
-from typing import (
-    NamedTuple,
-)
+from typing import NamedTuple
 
 import attr
 

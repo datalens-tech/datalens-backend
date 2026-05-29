@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Iterable, Sequence, Set
+from collections.abc import (
+    Iterable,
+    Sequence,
+    Set,
+)
 from typing import (
     Any,
     NamedTuple,

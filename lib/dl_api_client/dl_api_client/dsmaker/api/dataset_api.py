@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import (
+    Iterable,
+    Sequence,
+)
 from http import HTTPStatus
 from itertools import chain
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 

@@ -1,9 +1,7 @@
 import hmac
 import logging
 import time
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 from aiohttp import web
 from aiohttp.typedefs import Handler

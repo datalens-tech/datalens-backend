@@ -1,6 +1,9 @@
 import copy
 import os
-from typing import Any, Self
+from typing import (
+    Any,
+    Self,
+)
 
 import aiohttp.web
 import attrs

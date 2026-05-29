@@ -13,10 +13,7 @@ from dl_pivot.pivot_legend import (
     PivotLegendItem,
     PivotMeasureRoleSpec,
 )
-from dl_pivot.primitives import DataCell as DC
-from dl_pivot.primitives import DataCellVector as DV
 from dl_pivot.primitives import (
-    DataRow,
     PivotHeader,
     PivotHeaderInfo,
     PivotHeaderRoleSpec,
@@ -24,6 +21,9 @@ from dl_pivot.primitives import (
     PivotMeasureSorting,
     PivotMeasureSortingSettings,
 )
+from dl_pivot.primitives import DataCell as DC
+from dl_pivot.primitives import DataCellVector as DV
+from dl_pivot.primitives import DataRow
 from dl_pivot.primitives import MeasureNameValue as MNV
 from dl_pivot_pandas.pandas.transformer import PdPivotTransformer
 from dl_query_processing.legend.field_legend import (

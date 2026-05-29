@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from abc import ABCMeta
-from collections.abc import AsyncIterator, Iterator
-from typing import (
-    TypeVar,
+from collections.abc import (
+    AsyncIterator,
+    Iterator,
 )
+from typing import TypeVar
 
 _ITER_TV = TypeVar("_ITER_TV")
 

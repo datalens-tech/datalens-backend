@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Collection, Generator
+from collections.abc import (
+    Collection,
+    Generator,
+)
 from datetime import (
     date,
     datetime,

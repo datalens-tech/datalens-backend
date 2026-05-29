@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import aiohttp
 from aiohttp import (

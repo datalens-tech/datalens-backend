@@ -1,8 +1,6 @@
 from collections.abc import Callable
 import time
-from typing import (
-    Any,
-)
+from typing import Any
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
 from dl_constants.enums import (

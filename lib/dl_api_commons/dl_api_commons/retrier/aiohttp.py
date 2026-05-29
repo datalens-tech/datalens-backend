@@ -1,9 +1,10 @@
 import asyncio
-from collections.abc import Awaitable, Callable
-import logging
-from typing import (
-    Any,
+from collections.abc import (
+    Awaitable,
+    Callable,
 )
+import logging
+from typing import Any
 
 import aiohttp
 import aiohttp.client_exceptions

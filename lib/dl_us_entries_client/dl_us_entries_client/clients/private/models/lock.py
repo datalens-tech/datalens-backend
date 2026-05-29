@@ -5,9 +5,7 @@ import attrs
 import dl_httpx
 import dl_json
 from dl_us_entries_client.models.base import BaseRequest
-from dl_us_entries_client.models.entry import (
-    EntryId,
-)
+from dl_us_entries_client.models.entry import EntryId
 from dl_us_entries_client.models.lock import (
     Lock,
     LockToken,

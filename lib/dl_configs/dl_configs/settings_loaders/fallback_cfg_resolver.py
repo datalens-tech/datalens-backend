@@ -1,4 +1,7 @@
-from collections.abc import Iterator, Mapping
+from collections.abc import (
+    Iterator,
+    Mapping,
+)
 import logging
 from typing import (
     Any,

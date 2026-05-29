@@ -52,9 +52,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from pathlib import Path
 import re
-from typing import (
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING
 
 import attr
 import yaml

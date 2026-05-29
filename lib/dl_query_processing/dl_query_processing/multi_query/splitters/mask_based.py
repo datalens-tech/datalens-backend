@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Collection, Sequence
+from collections.abc import (
+    Collection,
+    Sequence,
+)
 from enum import Enum
 import itertools
 from typing import (

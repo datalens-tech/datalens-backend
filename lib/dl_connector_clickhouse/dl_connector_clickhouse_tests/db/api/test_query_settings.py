@@ -9,9 +9,7 @@ The data API then refuses to run queries against such a dataset at execution tim
 """
 
 from http import HTTPStatus
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import pytest
 

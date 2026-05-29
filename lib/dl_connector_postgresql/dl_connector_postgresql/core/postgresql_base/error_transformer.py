@@ -4,6 +4,8 @@ import psycopg2.errors
 from dl_core.connectors.base.error_transformer import (
     ChainedDbErrorTransformer,
     DbErrorTransformer,
+)
+from dl_core.connectors.base.error_transformer import (
     make_default_transformer_with_custom_rules,
     make_rule_from_descr,
     orig_exc_is,

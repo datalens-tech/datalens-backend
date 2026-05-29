@@ -1,8 +1,6 @@
 from collections.abc import Callable
 import functools
-from typing import (
-    Any,
-)
+from typing import Any
 import weakref
 
 

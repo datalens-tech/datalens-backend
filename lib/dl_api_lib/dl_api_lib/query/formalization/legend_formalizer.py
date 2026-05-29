@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import abc
 import json
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 

@@ -1,4 +1,7 @@
-from collections.abc import Callable, Coroutine
+from collections.abc import (
+    Callable,
+    Coroutine,
+)
 import functools
 import inspect
 import logging

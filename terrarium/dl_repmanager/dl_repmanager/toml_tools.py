@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from collections.abc import Generator, Iterable, Sequence
+from collections.abc import (
+    Generator,
+    Iterable,
+    Sequence,
+)
 import contextlib
 from pathlib import Path
-from typing import (
-    Any,
-)
+from typing import Any
 
 import attr
 import tomlkit

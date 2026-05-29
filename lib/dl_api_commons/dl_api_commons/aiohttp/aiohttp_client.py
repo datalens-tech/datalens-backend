@@ -5,14 +5,16 @@ from abc import (
     abstractmethod,
 )
 import asyncio
-from collections.abc import AsyncGenerator, Awaitable, Callable
+from collections.abc import (
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+)
 from contextlib import asynccontextmanager
 import logging
 import ssl
 from types import TracebackType
-from typing import (
-    Any,
-)
+from typing import Any
 
 import aiohttp
 import aiohttp.web

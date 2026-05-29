@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import abc
 from collections.abc import Sequence
-from typing import (
-    ClassVar,
-)
+from typing import ClassVar
 
 import attr
 
