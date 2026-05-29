@@ -164,6 +164,7 @@ def get_fields_data_raw(
             "title": fld.title,
             "guid": fld.guid,
             "data_type": fld.data_type,
+            "cast": fld.cast,
             "calc_mode": fld.calc_mode,
             **(
                 {

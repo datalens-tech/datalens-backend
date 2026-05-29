@@ -32,6 +32,7 @@ def _make_user_field(
     aggregation: AggregationFunction = AggregationFunction.none,
     description: str = "",
     managed_by: ManagedBy = ManagedBy.user,
+    cast: UserDataType = UserDataType.string,
 ):
     if calc_spec is None:
         calc_spec = DirectCalculationSpec(source=title, avatar_id=None)
@@ -44,7 +45,7 @@ def _make_user_field(
         type=FieldType.DIMENSION,
         hidden=False,
         description=description,
-        cast=UserDataType.string,
+        cast=cast,
         initial_data_type=UserDataType.string,
         data_type=UserDataType.string,
         valid=True,
@@ -53,7 +54,7 @@ def _make_user_field(
     )
 
 
-_BASE_KEYS = {"title", "guid", "data_type", "calc_mode", "hidden", "type", "ui_settings"}
+_BASE_KEYS = {"title", "guid", "data_type", "cast", "calc_mode", "hidden", "type", "ui_settings"}
 _DETAIL_KEYS = {"description", "formula", "aggregation"}
 
 
@@ -85,7 +86,7 @@ def test_for_result_strips_ui_attributes():
 
     fields = get_fields_data_raw(dataset, for_result=True)
 
-    assert set(fields[0].keys()) == {"title", "guid", "data_type", "calc_mode"}
+    assert set(fields[0].keys()) == {"title", "guid", "data_type", "cast", "calc_mode"}
 
 
 def test_include_details_adds_exactly_three_keys():
@@ -129,6 +130,17 @@ def test_include_details_handles_empty_values():
     assert fields[0]["description"] == ""
     assert fields[0]["formula"] == ""
     assert fields[0]["aggregation"] is AggregationFunction.none
+
+
+def test_cast_present_in_raw_and_serializable():
+    field = _make_user_field(guid="g", title="Direct", cast=UserDataType.integer)
+    dataset = _make_dataset(field)
+
+    raw = get_fields_data_raw(dataset)
+    assert raw[0]["cast"] is UserDataType.integer
+
+    serializable = get_fields_data_serializable(dataset)
+    assert serializable[0]["cast"] == UserDataType.integer.name
 
 
 def test_managed_by_filter_unaffected_by_include_details():

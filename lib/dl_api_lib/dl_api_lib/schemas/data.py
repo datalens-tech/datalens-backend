@@ -126,6 +126,7 @@ class FieldsResponseFieldSchema(BaseSchema):
     title = ma_fields.String()
     guid = ma_fields.String()
     data_type = ma_fields.Enum(UserDataType)
+    cast = ma_fields.Enum(UserDataType)
     hidden = ma_fields.Boolean()
     type = ma_fields.Enum(FieldType)
     calc_mode = ma_fields.Enum(CalcMode)
