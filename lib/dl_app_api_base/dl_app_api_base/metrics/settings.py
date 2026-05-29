@@ -2,6 +2,7 @@ import pathlib
 
 import pydantic
 
+import dl_app_api_base.health as health
 import dl_app_api_base.metrics.http_request_duration_seconds as http_request_duration_seconds
 import dl_app_api_base.metrics.http_requests_total as http_requests_total
 import dl_settings
@@ -15,4 +16,7 @@ class MetricsSettings(dl_settings.BaseSettings):
     )
     HTTP_REQUEST_DURATION_SECONDS: http_request_duration_seconds.HttpRequestDurationSecondsSettings = pydantic.Field(
         default_factory=http_request_duration_seconds.HttpRequestDurationSecondsSettings,
+    )
+    READINESS_SUBSYSTEM_STATUS: health.ReadinessSubsystemStatusSettings = pydantic.Field(
+        default_factory=health.ReadinessSubsystemStatusSettings,
     )

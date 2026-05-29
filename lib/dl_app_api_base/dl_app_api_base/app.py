@@ -319,12 +319,19 @@ class HttpServerAppFactoryMixin(
         return metrics.HttpRequestDurationSeconds.from_settings(self.settings.METRICS.HTTP_REQUEST_DURATION_SECONDS)
 
     @dl_app_base.singleton_class_method_result
+    async def _get_readiness_subsystem_status(
+        self,
+    ) -> health.ReadinessSubsystemStatus:
+        return health.ReadinessSubsystemStatus.from_settings(self.settings.METRICS.READINESS_SUBSYSTEM_STATUS)
+
+    @dl_app_base.singleton_class_method_result
     async def _get_metrics(
         self,
     ) -> list[dl_prometheus.MetricBase]:
         return [
             await self._get_http_requests_total(),
             await self._get_http_request_duration_seconds(),
+            await self._get_readiness_subsystem_status(),
         ]
 
     @dl_app_base.singleton_class_method_result
@@ -480,6 +487,7 @@ class HttpServerAppFactoryMixin(
     ) -> health.ReadinessService:
         return health.ReadinessService(
             subsystems=await self._get_aiohttp_subsystem_readiness_callbacks(),
+            readiness_subsystem_status=await self._get_readiness_subsystem_status(),
         )
 
     async def _setup_openapi(self, app: aiohttp.web.Application) -> None:
