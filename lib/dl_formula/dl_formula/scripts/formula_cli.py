@@ -191,7 +191,7 @@ class FormulaCliTool:
 
         _mark_positions(formula)
         for num, line in enumerate(chars):
-            print("{0:>2}: {1}".format(num, "".join(line)))
+            print("{:>2}: {}".format(num, "".join(line)))
 
     @staticmethod
     def graph(text: str, render_to: str, view: bool) -> None:
@@ -312,7 +312,7 @@ class FormulaCliTool:
                 char_table.insert(0, char_line)
 
             for i, char_line in reversed(list(enumerate(char_table))):
-                print("{0:<15}{1}".format(levels[i], "".join(char_line)))
+                print("{:<15}{}".format(levels[i], "".join(char_line)))
             print()
 
         else:

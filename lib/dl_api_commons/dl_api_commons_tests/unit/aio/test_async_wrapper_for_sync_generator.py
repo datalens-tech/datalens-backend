@@ -75,8 +75,7 @@ async def test_simple_finite_generator(
     count = int(1e3)
 
     def test_generator() -> Generator[Any, None, None]:
-        for i in range(count):
-            yield i
+        yield from range(count)
 
     job = wrapper_factory(test_generator)
 

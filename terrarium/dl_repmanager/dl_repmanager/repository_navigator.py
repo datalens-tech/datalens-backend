@@ -34,8 +34,7 @@ class RepositoryNavigator:
         if dir_path.is_file() and str(dir_path).rsplit(".", 1)[1] == "py":
             yield dir_path
 
-        for full_fn in dir_path.rglob("*.py"):
-            yield full_fn
+        yield from dir_path.rglob("*.py")
 
     def _file_contains_imports(self, file_path: Path, import_name: str) -> bool:
         import_specs = self._collect_imports_from_file(file_path)

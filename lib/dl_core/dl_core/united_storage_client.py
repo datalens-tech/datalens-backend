@@ -273,15 +273,11 @@ class UStorageClientBase:
         (530, None, exc.USPermissionCheckError),
     ]
 
-    RequestData = NamedTuple(
-        "RequestData",
-        [
-            ("method", str),
-            ("relative_url", str),
-            ("params", dict[str, str] | None),
-            ("json", dict | None),
-        ],
-    )
+    class RequestData(NamedTuple):
+        method: str
+        relative_url: str
+        params: dict[str, str] | None
+        json: dict | None
 
     def __init__(
         self,

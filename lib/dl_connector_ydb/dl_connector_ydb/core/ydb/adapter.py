@@ -141,8 +141,7 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
         driver_excs = self.EXTRA_EXC_CLS
         try:
             result = self._list_table_names_i(db_name=db_name, show_dot=show_dot)
-            for item in result:
-                yield item
+            yield from result
         except driver_excs as err:
             query = "list_directory()"
             raise exc.DatabaseQueryError(db_message=str(err), query=query, inspector_query=query) from None

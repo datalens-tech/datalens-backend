@@ -62,9 +62,6 @@ ignore = [
   "E501", # line length, should be checked and fixed by black
   "RET503", # implicit return — usually a raise/abort path; adding explicit `return None` masks the actual control flow
   "RET504", # unnecessary assign before return — review needed per site; intermediate names often aid debugging
-  "UP014", # Convert `RequestData` from `NamedTuple` functional to class syntax
-  "UP028", # Replace `yield` over `for` loop with `yield from`
-  "UP030", # Use implicit references for positional format fields
   "UP031", # Use format specifiers instead of percent format
   "UP042", # Class inherits from both `str` and `enum.Enum`
   "UP046", # Non-PEP 695 generic class — needs manual conversion for attrs+cross-module TypeVar bounds
