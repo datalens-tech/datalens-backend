@@ -7,12 +7,22 @@ from .entry import (
     PrivateEntryUnversionedDataPostRequest,
     PrivateEntryUnversionedDataPostResponse,
 )
+from .lock import (
+    PrivateEntryLockDeleteRequest,
+    PrivateEntryLockDeleteResponse,
+    PrivateEntryLockPostRequest,
+    PrivateEntryLockPostResponse,
+)
 
 __all__ = [
     "PingRequest",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
     "PrivateEntryGetResponse",
+    "PrivateEntryLockDeleteRequest",
+    "PrivateEntryLockDeleteResponse",
+    "PrivateEntryLockPostRequest",
+    "PrivateEntryLockPostResponse",
     "PrivateEntryPostRequest",
     "PrivateEntryPostResponse",
     "PrivateEntryUnversionedDataPostRequest",

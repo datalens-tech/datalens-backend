@@ -6,6 +6,10 @@ from .entry import (
     EntryPermissions,
     EntryScope,
 )
+from .lock import (
+    Lock,
+    LockToken,
+)
 from .ping import PingRequest
 
 __all__ = [

@@ -14,11 +14,12 @@ from dl_us_entries_client.models.entry import (
 
 @attrs.define(kw_only=True, frozen=True)
 class PrivateEntryGetRequest(BaseRequest):
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={404: exceptions.NotFoundError.from_httpx_exception},
+    )
+
     entry_id: EntryId
     include_permissions_info: bool = False
-    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
-        status_map={404: exceptions.EntryNotFoundError.from_httpx_exception},
-    )
     component: str | None = "backend"
 
     @property
@@ -71,6 +72,13 @@ class PrivateEntryPostResponse(Entry, dl_httpx.BaseResponseSchema): ...
 
 @attrs.define(kw_only=True, frozen=True)
 class PrivateEntryDeleteRequest(BaseRequest):
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={
+            404: exceptions.NotFoundError.from_httpx_exception,
+            423: exceptions.EntryLockedError.from_httpx_exception,
+        },
+    )
+
     entry_id: EntryId
     lock_token: str | None = None
 
@@ -83,17 +91,24 @@ class PrivateEntryDeleteRequest(BaseRequest):
         return "DELETE"
 
     @property
-    def body(self) -> dl_json.JsonSerializableMapping:
-        body: dict[str, dl_json.JsonSerializable] = {}
+    def query_params(self) -> dict[str, str]:
+        params = super().query_params
 
         if self.lock_token is not None:
-            body["lockToken"] = self.lock_token
+            params["lockToken"] = self.lock_token
 
-        return body
+        return params
 
 
 @attrs.define(kw_only=True, frozen=True)
 class PrivateEntryUnversionedDataPostRequest(BaseRequest):
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={
+            404: exceptions.NotFoundError.from_httpx_exception,
+            423: exceptions.EntryLockedError.from_httpx_exception,
+        },
+    )
+
     entry_id: EntryId
     unversioned_data: dl_json.JsonSerializableMapping
     lock_token: str | None = None

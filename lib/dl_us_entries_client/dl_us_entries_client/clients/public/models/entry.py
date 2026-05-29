@@ -17,7 +17,7 @@ class EntryGetRequest(BaseRequest):
     entry_id: EntryId
     include_permissions_info: bool = False
     error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
-        status_map={404: exceptions.EntryNotFoundError.from_httpx_exception},
+        status_map={404: exceptions.NotFoundError.from_httpx_exception},
     )
     component: str | None = "backend"
 

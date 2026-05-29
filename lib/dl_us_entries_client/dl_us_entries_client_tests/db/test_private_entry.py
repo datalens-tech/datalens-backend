@@ -56,7 +56,7 @@ async def test_delete_entry(
         dl_us_entries_client.PrivateEntryDeleteRequest(entry_id=entry_in_us.entry_id),
     )
 
-    with pytest.raises(dl_us_entries_client.EntryNotFoundError):
+    with pytest.raises(dl_us_entries_client.NotFoundError):
         await us_entries_private_client.get_entry(
             dl_us_entries_client.PrivateEntryGetRequest(entry_id=entry_in_us.entry_id),
         )

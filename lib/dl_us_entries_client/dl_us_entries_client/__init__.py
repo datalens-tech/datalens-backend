@@ -9,6 +9,10 @@ from .clients import (
     PrivateEntryDeleteRequest,
     PrivateEntryGetRequest,
     PrivateEntryGetResponse,
+    PrivateEntryLockDeleteRequest,
+    PrivateEntryLockDeleteResponse,
+    PrivateEntryLockPostRequest,
+    PrivateEntryLockPostResponse,
     PrivateEntryPostRequest,
     PrivateEntryPostResponse,
     PrivateEntryUnversionedDataPostRequest,
@@ -21,7 +25,9 @@ from .clients import (
     USEntriesPrivateClientSettings,
 )
 from .exceptions import (
-    EntryNotFoundError,
+    BadRequest,
+    EntryLockedError,
+    NotFoundError,
     UsEntriesClientException,
 )
 from .models import (
@@ -31,11 +37,14 @@ from .models import (
     EntryId,
     EntryPermissions,
     EntryScope,
+    Lock,
+    LockToken,
     PingRequest,
 )
 from .protocols import TenantProtocol
 
 __all__ = [
+    "BadRequest",
     "BaseRequest",
     "Entry",
     "EntryData",
@@ -43,17 +52,22 @@ __all__ = [
     "EntryGetRequest",
     "EntryGetResponse",
     "EntryId",
-    "EntryNotFoundError",
+    "EntryLockedError",
     "EntryPermissions",
     "EntryPostRequest",
     "EntryPostResponse",
     "EntryScope",
     "Lock",
     "LockToken",
+    "NotFoundError",
     "PingRequest",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
     "PrivateEntryGetResponse",
+    "PrivateEntryLockDeleteRequest",
+    "PrivateEntryLockDeleteResponse",
+    "PrivateEntryLockPostRequest",
+    "PrivateEntryLockPostResponse",
     "PrivateEntryPostRequest",
     "PrivateEntryPostResponse",
     "PrivateEntryUnversionedDataPostRequest",

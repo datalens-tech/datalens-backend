@@ -1,6 +1,6 @@
 # United Storage with predefined env
 # TODO(BI-7425): Unpin version
-FROM ghcr.io/datalens-tech/datalens-us:1.137.0
+FROM ghcr.io/datalens-tech/datalens-us:1.143.0
 
 ENV DEV_MODE="true"
 ENV SQL_DEBUG="true"

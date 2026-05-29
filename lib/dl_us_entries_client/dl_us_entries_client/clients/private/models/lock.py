@@ -4,6 +4,7 @@ import attrs
 
 import dl_httpx
 import dl_json
+import dl_us_entries_client.exceptions as exceptions
 from dl_us_entries_client.models.base import BaseRequest
 from dl_us_entries_client.models.entry import EntryId
 from dl_us_entries_client.models.lock import (
@@ -17,6 +18,13 @@ class PrivateEntryLockPostRequest(BaseRequest):
     entry_id: EntryId
     duration: datetime.timedelta | None = None
     force: bool | None = None
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={
+            423: exceptions.EntryLockedError.from_httpx_exception,
+            404: exceptions.NotFoundError.from_httpx_exception,
+            400: exceptions.BadRequest.from_httpx_exception,
+        },
+    )
 
     @property
     def path(self) -> str:
@@ -47,6 +55,12 @@ class PrivateEntryLockDeleteRequest(BaseRequest):
     entry_id: EntryId
     lock_token: str | None = None
     force: bool | None = None
+    error_transformer: dl_httpx.ErrorTransformerProtocol = dl_httpx.StatusMapTransformer(
+        status_map={
+            423: exceptions.EntryLockedError.from_httpx_exception,
+            404: exceptions.NotFoundError.from_httpx_exception,
+        },
+    )
 
     @property
     def path(self) -> str:
@@ -54,7 +68,7 @@ class PrivateEntryLockDeleteRequest(BaseRequest):
 
     @property
     def method(self) -> str:
-        return "POST"
+        return "DELETE"
 
     @property
     def query_params(self) -> dict[str, str]:
