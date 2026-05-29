@@ -1,4 +1,5 @@
 import logging
+import ssl
 from typing import (
     ClassVar,
     Self,
@@ -8,7 +9,9 @@ import attrs
 import httpx
 
 import dl_auth
+import dl_configs
 import dl_httpx
+import dl_retrier
 import dl_settings
 import dl_us_entries_client.clients.public.models as public_models
 import dl_us_entries_client.exceptions as exceptions
@@ -25,13 +28,24 @@ class USEntriesClientSettings(dl_settings.BaseSettings):
     USER_AUTH_PROVIDER: dl_settings.TypedAnnotation[dl_auth.AuthProviderSettings]
 
 
+@attrs.define(kw_only=True, frozen=True)
+class USEntriesClientDependencies:
+    base_url: str
+    base_cookies: dict[str, str] = attrs.field(factory=dict)
+    base_headers: dict[str, str] = attrs.field(factory=dict)
+    ssl_context: ssl.SSLContext = attrs.field(factory=dl_configs.get_default_ssl_context)
+    retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attrs.field(factory=dl_retrier.DefaultRetryPolicyFactory)
+    auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
+    debug_logging: bool = attrs.field(default=False)
+
+
 @attrs.define(kw_only=True)
 class USEntriesAsyncClient:
     AUTH_TARGET: ClassVar[dl_auth.AuthTarget] = US_ENTRIES_AUTH_TARGET
     _base_client: dl_httpx.HttpxAsyncClient
 
     @classmethod
-    def from_dependencies(cls, dependencies: dl_httpx.HttpxClientDependencies) -> Self:
+    def from_dependencies(cls, dependencies: USEntriesClientDependencies) -> Self:
         return cls(
             base_client=dl_httpx.HttpxAsyncClient.from_dependencies(
                 dependencies=dl_httpx.HttpxClientDependencies(
@@ -43,6 +57,7 @@ class USEntriesAsyncClient:
                     auth_provider=dependencies.auth_provider,
                     logger=LOGGER,
                     debug_logging=dependencies.debug_logging,
+                    client_name=cls.__name__,
                 ),
             ),
         )

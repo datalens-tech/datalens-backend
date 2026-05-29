@@ -37,6 +37,7 @@ async def test_get_request(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -63,6 +64,7 @@ async def test_post_request(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -95,6 +97,7 @@ async def test_custom_headers(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             base_headers=headers,
             ssl_context=ssl_context,
@@ -120,6 +123,7 @@ async def test_error_handling(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -149,6 +153,7 @@ async def test_request_with_params(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -174,6 +179,7 @@ async def test_cookies_handling(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             base_cookies=cookies,
             ssl_context=ssl_context,
@@ -203,6 +209,7 @@ async def test_binary_response(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -221,6 +228,7 @@ async def fixture_client_with_mocks(
     mock_retry_policy_factory: unittest.mock.Mock,
 ) -> AsyncGenerator[dl_httpx.HttpxAsyncClient, None]:
     async with dl_httpx.HttpxAsyncClient(
+        client_name="HttpxAsyncClient",
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
@@ -354,6 +362,7 @@ async def test_auth_provider(
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             auth_provider=mock_auth_provider,
@@ -398,6 +407,7 @@ async def test_retry_mutates_request_id(
 
     async with HttpxAsyncTestClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(retry_policy_factory_settings),
@@ -434,6 +444,7 @@ async def test_request_with_auth_provider(
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             auth_provider=mock_auth_provider,
@@ -464,6 +475,7 @@ async def test_prepare_raw_request(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             auth_provider=auth_provider,
@@ -488,6 +500,7 @@ async def test_rate_limit_propagates_from_send_async(
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             retry_policy_factory=factory,
@@ -511,6 +524,7 @@ async def test_rate_limit_retries_exhausted_not_wrapped_async(
 ) -> None:
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     async with dl_httpx.HttpxAsyncClient(
+        client_name="HttpxAsyncClient",
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
@@ -541,6 +555,7 @@ async def test_rate_limit_retries_then_succeeds_async(
         json={"ok": True},
     )
     async with dl_httpx.HttpxAsyncClient(
+        client_name="HttpxAsyncClient",
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
@@ -573,6 +588,7 @@ async def test_send_sets_level1_logging_context(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -610,6 +626,7 @@ async def test_send_sets_level2_attempt_request_id(
 
     async with HttpxAsyncTestClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
@@ -655,6 +672,7 @@ async def test_async_no_transformer_raises_original_http_status_exception(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -676,6 +694,7 @@ async def test_async_class_level_transformer_applied(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -701,6 +720,7 @@ async def test_async_method_level_transformer_applied(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -731,6 +751,7 @@ async def test_async_method_level_wins_over_class_level(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -762,6 +783,7 @@ async def test_async_class_level_used_when_method_level_returns_none(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -791,6 +813,7 @@ async def test_async_both_return_none_raises_original(
 
     async with dl_httpx.HttpxAsyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxAsyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -804,3 +827,29 @@ async def test_async_both_return_none_raises_original(
     assert excinfo.value.response.status_code == 500
     method_level_transformer.transform.assert_called_once()
     mock_error_transformer.transform.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_client_name_appears_in_logs(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    respx_mock.get("https://example.com/api/data").respond(status_code=200)
+
+    async with dl_httpx.HttpxAsyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            client_name="CustomWrapperClient",
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            logger=LOGGER,
+        ),
+    ) as client:
+        request = await client.prepare_raw_request("GET", "/api/data")
+        with caplog.at_level(logging.DEBUG, logger=LOGGER.name):
+            async with client.send(request):
+                pass
+
+    sending_messages = [record.getMessage() for record in caplog.records if "sending Attempt" in record.getMessage()]
+    assert sending_messages
+    assert all(message.startswith("CustomWrapperClient sending") for message in sending_messages)

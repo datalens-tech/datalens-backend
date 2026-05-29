@@ -10,10 +10,12 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-auth = {path = "../dl_auth"}
+dl-configs = {path = "../dl_configs"}
 dl-constants = {path = "../dl_constants"}
 dl-httpx = {path = "../dl_httpx"}
 dl-json = {path = "../dl_json"}
 dl-pydantic = {path = "../dl_pydantic"}
+dl-retrier = {path = "../dl_retrier"}
 dl-settings = {path = "../dl_settings"}
 httpx = "*"
 pydantic = "*"
@@ -21,7 +23,6 @@ python = ">=3.12, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 dl-core-testing = {path = "../dl_core_testing"}
-dl-retrier = {path = "../dl_retrier"}
 dl-testing = {path = "../dl_testing"}
 pytest = "*"
 pytest-asyncio = ">=0.23"

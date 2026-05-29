@@ -35,6 +35,7 @@ def test_get_request(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -60,6 +61,7 @@ def test_post_request(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -91,6 +93,7 @@ def test_custom_headers(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             base_headers=headers,
             ssl_context=ssl_context,
@@ -115,6 +118,7 @@ def test_error_handling(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -143,6 +147,7 @@ def test_request_with_params(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -167,6 +172,7 @@ def test_cookies_handling(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             base_cookies=cookies,
             ssl_context=ssl_context,
@@ -195,6 +201,7 @@ def test_binary_response(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -213,6 +220,7 @@ def fixture_client_with_mocks(
     mock_retry_policy_factory: unittest.mock.Mock,
 ) -> Generator[dl_httpx.HttpxSyncClient, None, None]:
     with dl_httpx.HttpxSyncClient(
+        client_name="HttpxSyncClient",
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
@@ -341,6 +349,7 @@ def test_auth_provider(
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             auth_provider=mock_auth_provider,
@@ -384,6 +393,7 @@ def test_retry_mutates_request_id(
 
     with HttpxSyncTestClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(retry_policy_factory_settings),
@@ -419,6 +429,7 @@ def test_request_with_auth_provider(
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             auth_provider=mock_auth_provider,
@@ -455,6 +466,7 @@ def test_rate_limit_propagates_from_send_sync(
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             retry_policy_factory=factory,
@@ -477,6 +489,7 @@ def test_rate_limit_retries_exhausted_not_wrapped_sync(
 ) -> None:
     mock_route = respx_mock.get("https://example.com/api/data").respond(status_code=200)
     with dl_httpx.HttpxSyncClient(
+        client_name="HttpxSyncClient",
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
@@ -506,6 +519,7 @@ def test_rate_limit_retries_then_succeeds_sync(
         json={"ok": True},
     )
     with dl_httpx.HttpxSyncClient(
+        client_name="HttpxSyncClient",
         base_url="https://example.com",
         base_cookies={},
         base_headers={},
@@ -537,6 +551,7 @@ def test_send_sets_level1_logging_context(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -573,6 +588,7 @@ def test_send_sets_level2_attempt_request_id(
 
     with HttpxSyncTestClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
@@ -618,6 +634,7 @@ def test_sync_no_transformer_raises_original_http_status_exception(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -639,6 +656,7 @@ def test_sync_class_level_transformer_applied(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -664,6 +682,7 @@ def test_sync_method_level_transformer_applied(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
         ),
@@ -694,6 +713,7 @@ def test_sync_method_level_wins_over_class_level(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -725,6 +745,7 @@ def test_sync_class_level_used_when_method_level_returns_none(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -754,6 +775,7 @@ def test_sync_both_return_none_raises_original(
 
     with dl_httpx.HttpxSyncClient.from_dependencies(
         dl_httpx.HttpxClientDependencies(
+            client_name="HttpxSyncClient",
             base_url="https://example.com",
             ssl_context=ssl_context,
             error_transformer=mock_error_transformer,
@@ -767,3 +789,28 @@ def test_sync_both_return_none_raises_original(
     assert excinfo.value.response.status_code == 500
     method_level_transformer.transform.assert_called_once()
     mock_error_transformer.transform.assert_called_once()
+
+
+def test_client_name_appears_in_logs(
+    respx_mock: respx.MockRouter,
+    ssl_context: ssl.SSLContext,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    respx_mock.get("https://example.com/api/data").respond(status_code=200)
+
+    with dl_httpx.HttpxSyncClient.from_dependencies(
+        dl_httpx.HttpxClientDependencies(
+            client_name="CustomWrapperClient",
+            base_url="https://example.com",
+            ssl_context=ssl_context,
+            logger=LOGGER,
+        ),
+    ) as client:
+        request = client.prepare_raw_request("GET", "/api/data")
+        with caplog.at_level(logging.DEBUG, logger=LOGGER.name):
+            with client.send(request):
+                pass
+
+    sending_messages = [record.getMessage() for record in caplog.records if "sending Attempt" in record.getMessage()]
+    assert sending_messages
+    assert all(message.startswith("CustomWrapperClient sending") for message in sending_messages)

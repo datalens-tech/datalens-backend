@@ -8,6 +8,7 @@ from .private import (
     PrivateEntryUnversionedDataPostRequest,
     PrivateEntryUnversionedDataPostResponse,
     USEntriesPrivateAsyncClient,
+    USEntriesPrivateClientDependencies,
     USEntriesPrivateClientSettings,
 )
 from .public import (
@@ -18,6 +19,7 @@ from .public import (
     EntryPostRequest,
     EntryPostResponse,
     USEntriesAsyncClient,
+    USEntriesClientDependencies,
     USEntriesClientSettings,
 )
 
@@ -35,8 +37,10 @@ __all__ = [
     "PrivateEntryUnversionedDataPostRequest",
     "PrivateEntryUnversionedDataPostResponse",
     "USEntriesAsyncClient",
+    "USEntriesClientDependencies",
     "USEntriesClientSettings",
     "USEntriesPrivateAsyncClient",
+    "USEntriesPrivateClientDependencies",
     "USEntriesPrivateClientSettings",
     "US_ENTRIES_AUTH_TARGET",
     "US_ENTRIES_PRIVATE_AUTH_TARGET",

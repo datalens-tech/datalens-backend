@@ -90,6 +90,7 @@ class HttpxClientDependencies:
     error_transformer: error_transformers.ErrorTransformerProtocol = attrs.field(
         default=error_transformers.NULL_ERROR_TRANSFORMER,
     )
+    client_name: str
     logger: logging.Logger = attrs.field(default=LOGGER)
     debug_logging: bool = attrs.field(default=False)
 
@@ -112,6 +113,7 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
     _error_transformer: error_transformers.ErrorTransformerProtocol = attrs.field(
         default=error_transformers.NULL_ERROR_TRANSFORMER,
     )
+    _client_name: str
 
     _transport: THttpxTransport
 
@@ -128,6 +130,7 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
             rate_limiter=dependencies.rate_limiter,
             transport_adapter=dependencies.transport_adapter,
             error_transformer=dependencies.error_transformer,
+            client_name=dependencies.client_name,
             transport=cls._get_transport(
                 ssl_context=dependencies.ssl_context,
             ),
@@ -136,10 +139,6 @@ class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
     @classmethod
     @abc.abstractmethod
     def _get_transport(cls, ssl_context: ssl.SSLContext) -> THttpxTransport: ...
-
-    @property
-    def _client_name(self) -> str:
-        return self.__class__.__name__
 
     @property
     def _mutators(self) -> list[RetryRequestMutator]:

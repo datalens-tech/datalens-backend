@@ -4,7 +4,6 @@ import pytest
 
 import dl_auth
 import dl_core_testing
-import dl_httpx
 import dl_retrier
 import dl_testing
 import dl_us_entries_client
@@ -45,7 +44,7 @@ def fixture_us_entries_client(
     ssl_context: ssl.SSLContext,
 ) -> dl_us_entries_client.USEntriesAsyncClient:
     return dl_us_entries_client.USEntriesAsyncClient.from_dependencies(
-        dependencies=dl_httpx.HttpxClientDependencies(
+        dependencies=dl_us_entries_client.USEntriesClientDependencies(
             base_url=f"http://{us_host_port.as_pair()}",
             ssl_context=ssl_context,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(
@@ -66,7 +65,7 @@ def fixture_us_entries_private_client(
     ssl_context: ssl.SSLContext,
 ) -> dl_us_entries_client.USEntriesPrivateAsyncClient:
     return dl_us_entries_client.USEntriesPrivateAsyncClient.from_dependencies(
-        dependencies=dl_httpx.HttpxClientDependencies(
+        dependencies=dl_us_entries_client.USEntriesPrivateClientDependencies(
             base_url=f"http://{us_host_port.as_pair()}",
             ssl_context=ssl_context,
             retry_policy_factory=dl_retrier.RetryPolicyFactory.from_settings(

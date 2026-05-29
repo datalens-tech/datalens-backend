@@ -1,7 +1,6 @@
 import pytest
 import respx
 
-import dl_httpx
 import dl_us_entries_client
 
 
@@ -19,7 +18,7 @@ async def test_get_entry_raises_when_no_permissions_in_response(
         },
     )
     client = dl_us_entries_client.USEntriesAsyncClient.from_dependencies(
-        dl_httpx.HttpxClientDependencies(
+        dl_us_entries_client.USEntriesClientDependencies(
             base_url="http://us.example.com",
         ),
     )

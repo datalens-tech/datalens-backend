@@ -14,8 +14,10 @@ from .clients import (
     PrivateEntryUnversionedDataPostRequest,
     PrivateEntryUnversionedDataPostResponse,
     USEntriesAsyncClient,
+    USEntriesClientDependencies,
     USEntriesClientSettings,
     USEntriesPrivateAsyncClient,
+    USEntriesPrivateClientDependencies,
     USEntriesPrivateClientSettings,
 )
 from .exceptions import (
@@ -58,8 +60,10 @@ __all__ = [
     "PrivateEntryUnversionedDataPostResponse",
     "TenantProtocol",
     "USEntriesAsyncClient",
+    "USEntriesClientDependencies",
     "USEntriesClientSettings",
     "USEntriesPrivateAsyncClient",
+    "USEntriesPrivateClientDependencies",
     "USEntriesPrivateClientSettings",
     "US_ENTRIES_AUTH_TARGET",
     "US_ENTRIES_PRIVATE_AUTH_TARGET",
