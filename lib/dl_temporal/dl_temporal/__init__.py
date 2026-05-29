@@ -30,6 +30,17 @@ from .client import (
     TemporalClientError,
     TemporalClientSettings,
 )
+from .interceptor import TemporalInterceptor
+from .middlewares import (
+    ActivityHandler,
+    ActivityMiddleware,
+    LoggingActivityMiddleware,
+    LoggingWorkflowMiddleware,
+    ParentContextWorkflowMiddleware,
+    SearchAttributesWorkflowMiddleware,
+    WorkflowHandler,
+    WorkflowMiddleware,
+)
 from .temporal import (
     SyncSchedulesFromDynconfigActivity,
     SyncSchedulesFromDynconfigActivityParams,
@@ -41,6 +52,8 @@ from .temporal import (
 from .worker import create_worker
 
 __all__ = [
+    "ActivityHandler",
+    "ActivityMiddleware",
     "ActivityProtocol",
     "AlreadyExists",
     "BaseActivity",
@@ -54,14 +67,18 @@ __all__ = [
     "BaseWorkflowResult",
     "EmptyMetadataProvider",
     "EmptyMetadataProviderSettings",
+    "LoggingActivityMiddleware",
     "LoggingExcluded",
+    "LoggingWorkflowMiddleware",
     "MetadataProvider",
     "MetadataProviderSettings",
     "NotFound",
     "ParentContext",
+    "ParentContextWorkflowMiddleware",
     "PermissionDenied",
     "ResultType",
     "SearchAttribute",
+    "SearchAttributesWorkflowMiddleware",
     "SyncSchedulesFromDynconfigActivity",
     "SyncSchedulesFromDynconfigActivityParams",
     "SyncSchedulesFromDynconfigActivityResult",
@@ -72,6 +89,9 @@ __all__ = [
     "TemporalClientDependencies",
     "TemporalClientError",
     "TemporalClientSettings",
+    "TemporalInterceptor",
+    "WorkflowHandler",
+    "WorkflowMiddleware",
     "WorkflowProtocol",
     "create_worker",
     "define_activity",

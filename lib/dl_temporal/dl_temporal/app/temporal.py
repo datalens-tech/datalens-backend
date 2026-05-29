@@ -12,6 +12,7 @@ import dl_app_base
 import dl_settings
 import dl_temporal.base as base
 import dl_temporal.client as client
+import dl_temporal.middlewares as middlewares
 import dl_temporal.worker as worker
 
 
@@ -87,6 +88,8 @@ class TemporalWorkerAppFactoryMixin(
             client=await self._get_temporal_client(),
             workflows=await self._get_temporal_workflows(),
             activities=await self._get_temporal_activities(),
+            workflow_middlewares=tuple(await self._get_temporal_workflow_middlewares()),
+            activity_middlewares=tuple(await self._get_temporal_activity_middlewares()),
         )
 
     @dl_app_base.singleton_class_method_result
@@ -100,6 +103,22 @@ class TemporalWorkerAppFactoryMixin(
         self,
     ) -> list[base.ActivityProtocol]:
         return []
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_temporal_workflow_middlewares(
+        self,
+    ) -> list[middlewares.WorkflowMiddleware]:
+        return [
+            middlewares.ParentContextWorkflowMiddleware(),
+            middlewares.SearchAttributesWorkflowMiddleware(),
+            middlewares.LoggingWorkflowMiddleware(),
+        ]
+
+    @dl_app_base.singleton_class_method_result
+    async def _get_temporal_activity_middlewares(
+        self,
+    ) -> list[middlewares.ActivityMiddleware]:
+        return [middlewares.LoggingActivityMiddleware()]
 
     @abc.abstractmethod
     @dl_app_base.singleton_class_method_result

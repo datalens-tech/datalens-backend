@@ -105,6 +105,41 @@ async def test_error(
 
 
 @pytest.mark.asyncio
+async def test_parent_context_middleware_fills_request_id_when_unset(
+    temporal_client: dl_temporal.TemporalClient,
+    temporal_task_queue: str,
+) -> None:
+    # ParentContext has no request_id — ParentContextWorkflowMiddleware fills it
+    # from temporalio.workflow.info().run_id before the workflow body runs. The
+    # activity asserts `params.parent_context.request_id is not None`; reaching
+    # here without WorkflowError proves the middleware fired through the
+    # TemporalInterceptor.
+    params = workflows.Workflow.Params(
+        workflow_int_param=1,
+        workflow_str_param="test",
+        workflow_bool_param=True,
+        workflow_list_param=[1],
+        workflow_dict_param={"k": 1},
+        workflow_timedelta_param=dl_pydantic.JsonableTimedelta(seconds=1),
+        workflow_uuid_param=dl_pydantic.JsonableUUID(str(uuid.uuid4())),
+        workflow_date_param=dl_pydantic.JsonableDate.today(),
+        workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.UTC),
+        workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.UTC),
+        workflow_nested_param=common.NestedModel(test_int=1),
+        parent_context=dl_temporal.ParentContext(),
+        return_error=False,
+    )
+    workflow_handler = await temporal_client.start_workflow(
+        workflows.Workflow,
+        params,
+        id=str(uuid.uuid4()),
+        task_queue=temporal_task_queue,
+    )
+    result = await workflow_handler.result()
+    assert isinstance(result, workflows.WorkflowResult)
+
+
+@pytest.mark.asyncio
 async def test_list_schedule_executions(
     temporal_client: dl_temporal.TemporalClient,
     temporal_task_queue: str,
