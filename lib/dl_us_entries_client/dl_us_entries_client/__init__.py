@@ -32,20 +32,29 @@ from .exceptions import (
 )
 from .models import (
     BaseRequest,
+    Data,
+    DatasetData,
+    DatasetUnversionedData,
     Entry,
     EntryData,
     EntryId,
     EntryPermissions,
     EntryScope,
+    ExtractProperties,
     Lock,
     LockToken,
     PingRequest,
+    UnversionedData,
+    UnversionedExtractProperties,
 )
 from .protocols import TenantProtocol
 
 __all__ = [
     "BadRequest",
     "BaseRequest",
+    "Data",
+    "DatasetData",
+    "DatasetUnversionedData",
     "Entry",
     "EntryData",
     "EntryDeleteRequest",
@@ -57,6 +66,7 @@ __all__ = [
     "EntryPostRequest",
     "EntryPostResponse",
     "EntryScope",
+    "ExtractProperties",
     "Lock",
     "LockToken",
     "NotFoundError",
@@ -81,5 +91,7 @@ __all__ = [
     "USEntriesPrivateClientSettings",
     "US_ENTRIES_AUTH_TARGET",
     "US_ENTRIES_PRIVATE_AUTH_TARGET",
+    "UnversionedData",
+    "UnversionedExtractProperties",
     "UsEntriesClientException",
 ]

@@ -15,6 +15,7 @@ async def test_get_entry_raises_when_no_permissions_in_response(
             "type": "",
             "key": "test/key",
             "entryId": "dummyid",
+            "revId": "revision",
         },
     )
     client = dl_us_entries_client.USEntriesPrivateAsyncClient.from_dependencies(

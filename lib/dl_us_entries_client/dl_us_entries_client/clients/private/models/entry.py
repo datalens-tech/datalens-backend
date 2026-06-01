@@ -1,8 +1,10 @@
 import attrs
+import pydantic
 
 import dl_constants
 import dl_httpx
 import dl_json
+import dl_pydantic
 import dl_us_entries_client.exceptions as exceptions
 from dl_us_entries_client.models.base import BaseRequest
 from dl_us_entries_client.models.entry import (
@@ -133,4 +135,9 @@ class PrivateEntryUnversionedDataPostRequest(BaseRequest):
         return body
 
 
-class PrivateEntryUnversionedDataPostResponse(Entry, dl_httpx.BaseResponseSchema): ...
+class PrivateEntryUnversionedDataPostResponse(dl_httpx.BaseResponseSchema):
+    entry_id: EntryId = pydantic.Field(alias="entryId")
+    unversioned_data: dl_pydantic.JsonableDict | None = pydantic.Field(
+        default=None,
+        alias="unversionedData",
+    )

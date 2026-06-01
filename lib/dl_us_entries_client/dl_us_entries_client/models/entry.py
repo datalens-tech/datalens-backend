@@ -21,11 +21,18 @@ class EntryPermissions(dl_httpx.BaseResponseSchema):
     admin: bool
 
 
+class Data(dl_pydantic.BaseSchema): ...
+
+
+class UnversionedData(dl_pydantic.BaseSchema): ...
+
+
 class EntryData(dl_pydantic.BaseSchema):
     scope: EntryScope
     type: str = ""
     key: str
     permissions: EntryPermissions | None = None
+
     data: dl_pydantic.JsonableDict | None = None
     unversioned_data: dl_pydantic.JsonableDict | None = pydantic.Field(
         default=None,
@@ -41,3 +48,4 @@ class EntryData(dl_pydantic.BaseSchema):
 
 class Entry(EntryData):
     entry_id: EntryId = pydantic.Field(alias="entryId")
+    rev_id: str = pydantic.Field(alias="revId")
