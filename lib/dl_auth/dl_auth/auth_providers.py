@@ -81,6 +81,28 @@ class OauthAuthProvider(BaseAuthProvider):
         return {}
 
 
+class BearerAuthProviderSettings(AuthProviderSettings):
+    TOKEN: str = pydantic.Field(repr=False)
+
+
+AuthProviderSettings.register("BEARER", BearerAuthProviderSettings)
+
+
+@attrs.define(kw_only=True)
+class BearerAuthProvider(BaseAuthProvider):
+    token: str
+
+    @classmethod
+    def from_settings(cls, settings: BearerAuthProviderSettings) -> Self:
+        return cls(token=settings.TOKEN)
+
+    def get_headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self.token}"}
+
+    def get_cookies(self) -> dict[str, str]:
+        return {}
+
+
 class USMasterTokenAuthProviderSettings(AuthProviderSettings):
     TOKEN: str = pydantic.Field(repr=False)
 
