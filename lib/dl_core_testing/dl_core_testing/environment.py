@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from importlib.resources import files
 import logging
 import os
 import time
@@ -7,10 +8,20 @@ from typing import TYPE_CHECKING
 
 import requests
 
+from dl_constants.api_constants import DLHeadersCommon
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core_testing.configuration import UnitedStorageConfiguration
 from dl_db_testing.loader import load_db_testing_lib
 import dl_logging
 from dl_utils.wait import wait_for
+
+try:
+    _TEST_DYNAMIC_AUTH_PRIVATE_KEY: str | None = (
+        files("dl_core_testing") / "keys" / "dynamic_us_master_token_private_key.pem"
+    ).read_text()
+except (FileNotFoundError, OSError):
+    _TEST_DYNAMIC_AUTH_PRIVATE_KEY = None
+
 
 if TYPE_CHECKING:
     from docker import DockerClient
@@ -92,10 +103,27 @@ def restart_container_by_label(label: str, compose_project: str) -> None:
     container.restart()
 
 
+def _get_dynamic_us_auth_headers(us_master_token: str | None = None) -> dict[str, str]:
+    headers: dict[str, str] = {}
+    if _TEST_DYNAMIC_AUTH_PRIVATE_KEY is not None:
+        factory = DynamicUSMasterTokenFactory(
+            private_key=_TEST_DYNAMIC_AUTH_PRIVATE_KEY,
+            token_lifetime_sec=3600,
+            min_ttl_sec=900.0,
+        )
+        ctx = factory.get_auth_context(us_master_token=us_master_token)
+        headers[DLHeadersCommon.US_DYNAMIC_MASTER_TOKEN.value] = ctx.us_dynamic_master_token
+        if ctx.us_master_token is not None:
+            headers[DLHeadersCommon.US_MASTER_TOKEN.value] = ctx.us_master_token
+    elif us_master_token is not None:
+        headers[DLHeadersCommon.US_MASTER_TOKEN.value] = us_master_token
+    return headers
+
+
 def prepare_united_storage(
     *,
     us_host: str,
-    us_master_token: str,
+    us_master_token: str | None = None,
     tenant_id: str = "common",
     us_pg_dsn: str | None = None,
     force: bool = False,
@@ -108,15 +136,15 @@ def prepare_united_storage(
         LOGGER.debug("prepare_united_storage: wait for pg-us to be up...")
         _wait_for_pg(us_pg_dsn)
 
-    headers = {
-        "X-US-Master-Token": us_master_token,
+    headers: dict[str, str] = {
         "X-DL-TenantId": tenant_id,
+        **_get_dynamic_us_auth_headers(us_master_token),
     }
 
     def _wait_for_us() -> tuple[bool, str]:
         try:
-            with requests.Session() as reqr:
-                resp = reqr.get(f"{us_host}/ping-db", headers=headers)
+            with requests.Session() as session:
+                resp = session.get(f"{us_host}/ping-db", headers=headers)
                 resp.raise_for_status()
 
                 return True, ""

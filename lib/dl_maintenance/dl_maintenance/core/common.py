@@ -9,7 +9,12 @@ import attr
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.utils import get_root_certificates
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.united_storage_client import (
+    USAuthContextMaster,
+    USAuthContextPrivateBase,
+)
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
+from dl_core.us_manager.settings import USClientSettings
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 import dl_retrier
@@ -22,6 +27,23 @@ if TYPE_CHECKING:
 class UsConfig:
     base_url: str = attr.ib(kw_only=True)
     master_token: str = attr.ib(kw_only=True)
+
+
+def _build_master_auth_context(
+    us_master_token: str,
+    us_client_settings: USClientSettings,
+) -> USAuthContextPrivateBase:
+    if us_client_settings.DYNAMIC_AUTH_PRIVATE_KEY is None:
+        return USAuthContextMaster(us_master_token=us_master_token)
+
+    factory = DynamicUSMasterTokenFactory(
+        private_key=us_client_settings.DYNAMIC_AUTH_PRIVATE_KEY,
+        token_lifetime_sec=us_client_settings.DYNAMIC_AUTH_TOKEN_LIFETIME_SEC,
+        min_ttl_sec=us_client_settings.DYNAMIC_AUTH_MIN_TTL_SEC,
+    )
+    if us_client_settings.MASTER_TOKEN_AUTHORIZATION_ENABLED:
+        return factory.get_auth_context(us_master_token=us_master_token)
+    return factory.get_auth_context()
 
 
 class MaintenanceEnvironmentManagerBase:
@@ -48,6 +70,7 @@ class MaintenanceEnvironmentManagerBase:
 
     def get_usm_from_env(self, use_sr_factory: bool = True, is_async_env: bool = True) -> SyncUSManager:
         us_config = self.get_us_config()
+        us_client_settings = self.get_app_settings().US_CLIENT
         ca_data = self.get_ca_data()
         rci = RequestContextInfo.create_empty()
         sr_factory = self.get_sr_factory(is_async_env=is_async_env, ca_data=ca_data) if use_sr_factory else None
@@ -55,7 +78,7 @@ class MaintenanceEnvironmentManagerBase:
 
         return SyncUSManager(
             us_base_url=us_config.base_url,
-            us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
+            us_auth_context=_build_master_auth_context(us_config.master_token, us_client_settings),
             bi_context=rci,
             services_registry=service_registry,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             retry_policy_factory=self.get_retry_policy_factory(),
@@ -63,6 +86,7 @@ class MaintenanceEnvironmentManagerBase:
 
     def get_async_usm_from_env(self, use_sr_factory: bool = True) -> AsyncUSManager:
         us_config = self.get_us_config()
+        us_client_settings = self.get_app_settings().US_CLIENT
         ca_data = self.get_ca_data()
         rci = RequestContextInfo.create_empty()
         sr_factory = self.get_sr_factory(is_async_env=True, ca_data=ca_data) if use_sr_factory else None
@@ -70,7 +94,7 @@ class MaintenanceEnvironmentManagerBase:
 
         return AsyncUSManager(
             us_base_url=us_config.base_url,
-            us_auth_context=USAuthContextMaster(us_master_token=us_config.master_token),
+            us_auth_context=_build_master_auth_context(us_config.master_token, us_client_settings),
             bi_context=rci,
             services_registry=service_registry,  # type: ignore[arg-type]  # 26.05.2026 mypy bump 1.20.2
             ca_data=ca_data,

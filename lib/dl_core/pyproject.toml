@@ -41,6 +41,7 @@ marshmallow-oneofschema = "*"
 multidict = "*"
 opentracing = "*"
 pydantic = "*"
+PyJWT = {extras = ["crypto"], version = "*"}
 python = ">=3.12, <3.13"
 redis = "*"
 requests = "*"

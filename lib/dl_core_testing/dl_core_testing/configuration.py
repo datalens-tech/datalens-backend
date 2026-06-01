@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 @attr.s(frozen=True)
 class UnitedStorageConfiguration:
     us_host: str = attr.ib(kw_only=True)
-    us_master_token: str = attr.ib(kw_only=True)
+    us_master_token: str | None = attr.ib(kw_only=True, default=None)
     us_pg_dsn: str = attr.ib(kw_only=True)
     force: bool = attr.ib(kw_only=True, default=True)
 
@@ -71,7 +71,7 @@ class CoreTestEnvironmentConfiguration:
     port_us_http: int = attr.ib(kw_only=True)
     host_us_pg: str = attr.ib(kw_only=True)
     port_us_pg_5432: int = attr.ib(kw_only=True)
-    us_master_token: str = attr.ib(kw_only=True)
+    us_master_token: str | None = attr.ib(kw_only=True, default=None)
     fernet_key: str = attr.ib(kw_only=True, default=DEFAULT_FERNET_KEY)
 
     core_connector_ep_names: Collection[str] | None = attr.ib(kw_only=True, default=None)

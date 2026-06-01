@@ -1,3 +1,4 @@
+from importlib.resources import files
 from typing import Annotated
 
 import pydantic
@@ -8,7 +9,21 @@ from dl_api_lib.app_settings import (
     DataApiAppSettings,
 )
 from dl_core.connectors.settings.base import ConnectorSettings
+from dl_core.us_manager.settings import USClientSettings
 import dl_settings
+
+
+def _default_test_us_client_settings() -> USClientSettings:
+    # MASTER_TOKEN_AUTHORIZATION_ENABLED=True: test apps emit BOTH the JWT and the legacy
+    # X-US-Master-Token header. OSS US containers (configured with BI_MASTER_TOKEN_PUBLIC_KEY_PRIMARY)
+    # verify via JWT; private/EAS US containers accept the static token.
+    dynamic_auth_private_key = (
+        files("dl_core_testing") / "keys" / "dynamic_us_master_token_private_key.pem"
+    ).read_text()
+    return USClientSettings(
+        DYNAMIC_AUTH_PRIVATE_KEY=dynamic_auth_private_key,
+        MASTER_TOKEN_AUTHORIZATION_ENABLED=True,
+    )
 
 
 def testing_postload_connectors_settings(value: dict[str, ConnectorSettings]) -> dict[str, ConnectorSettings]:
@@ -23,7 +38,9 @@ class TestingConnectorsSettingsMixin(AppSettings):
     ] = pydantic.Field(default_factory=dict)
 
 
-class TestingControlApiAppSettings(TestingConnectorsSettingsMixin, ControlApiAppSettings): ...
+class TestingControlApiAppSettings(TestingConnectorsSettingsMixin, ControlApiAppSettings):
+    US_CLIENT: USClientSettings = pydantic.Field(default_factory=_default_test_us_client_settings)
 
 
-class TestingDataApiAppSettings(TestingConnectorsSettingsMixin, DataApiAppSettings): ...
+class TestingDataApiAppSettings(TestingConnectorsSettingsMixin, DataApiAppSettings):
+    US_CLIENT: USClientSettings = pydantic.Field(default_factory=_default_test_us_client_settings)

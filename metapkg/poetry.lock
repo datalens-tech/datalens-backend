@@ -2747,6 +2747,7 @@ marshmallow-oneofschema = "*"
 multidict = "*"
 opentracing = "*"
 pydantic = "*"
+PyJWT = {version = "*", extras = ["crypto"]}
 redis = "*"
 requests = "*"
 shortuuid = "*"
@@ -6941,6 +6942,9 @@ files = [
     {file = "PyJWT-2.4.0-py3-none-any.whl", hash = "sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf"},
     {file = "PyJWT-2.4.0.tar.gz", hash = "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba"},
 ]
+
+[package.dependencies]
+cryptography = {version = ">=3.3.1", optional = true, markers = "extra == \"crypto\""}
 
 [package.extras]
 crypto = ["cryptography (>=3.3.1)"]

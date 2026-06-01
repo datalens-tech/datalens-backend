@@ -1,22 +1,30 @@
 from __future__ import annotations
 
+from importlib.resources import files
+
 import pytest
 import pytest_asyncio
 import shortuuid
 
 from dl_core.base_models import PathEntryLocation
 from dl_core.exc import USLockUnacquiredException
-from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.united_storage_client_aio import UStorageClientAIO
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 import dl_retrier
 
 
 @pytest_asyncio.fixture(scope="function")
 async def us_client(loop, core_test_config, root_certificates) -> UStorageClientAIO:
     us_config = core_test_config.get_us_config()
+    private_key = (files("dl_core_testing") / "keys" / "dynamic_us_master_token_private_key.pem").read_text()
+    dynamic_token_factory = DynamicUSMasterTokenFactory(
+        private_key=private_key,
+        token_lifetime_sec=3600,
+        min_ttl_sec=900.0,
+    )
     client = UStorageClientAIO(
         host=us_config.us_host,
-        auth_ctx=USAuthContextMaster(us_master_token=us_config.us_master_token),
+        auth_ctx=dynamic_token_factory.get_auth_context(us_master_token=us_config.us_master_token),
         prefix=None,
         ca_data=root_certificates,
         retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),

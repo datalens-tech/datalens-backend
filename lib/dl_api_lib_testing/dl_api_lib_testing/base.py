@@ -1,6 +1,7 @@
 import abc
 from asyncio import AbstractEventLoop
 from collections.abc import Generator
+from importlib.resources import files
 from typing import (
     Any,
     ClassVar,
@@ -34,7 +35,7 @@ from dl_constants.enums import (
 )
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.united_storage_client import USAuthContextMaster
+from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 from dl_core_testing.flask_utils import (
     FlaskTestClient,
@@ -242,6 +243,13 @@ class ApiTestBase(abc.ABC):
         bi_context = dl_api_commons.RequestContextInfo.create_empty()
         us_config = core_test_config.get_us_config()
 
+        private_key = (files("dl_core_testing") / "keys" / "dynamic_us_master_token_private_key.pem").read_text()
+        dynamic_token_factory = DynamicUSMasterTokenFactory(
+            private_key=private_key,
+            token_lifetime_sec=3600,
+            min_ttl_sec=900.0,
+        )
+
         us_manager = SyncUSManager(
             bi_context=bi_context,
             services_registry=control_api_app_factory.get_sr_factory(
@@ -251,7 +259,9 @@ class ApiTestBase(abc.ABC):
                 ca_data=ca_data,
             ).make_service_registry(request_context_info=bi_context),
             us_base_url=us_config.us_host,
-            us_auth_context=USAuthContextMaster(us_master_token=us_config.us_master_token),
+            us_auth_context=dynamic_token_factory.get_auth_context(
+                us_master_token=us_config.us_master_token,
+            ),
             crypto_keys_config=core_test_config.get_crypto_keys_config(),
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
