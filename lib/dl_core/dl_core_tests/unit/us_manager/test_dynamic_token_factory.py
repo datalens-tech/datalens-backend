@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 import jwt
 import pytest
 
+import dl_auth
 import dl_core.united_storage_client as united_storage_client
 from dl_core.united_storage_client import USAuthContextMaster
 import dl_core.us_manager.dynamic_token_factory as dynamic_token_factory
@@ -76,7 +77,7 @@ def test_refreshes_when_close_to_expiry(test_private_key: str, monkeypatch: pyte
             return self.t
 
     fake = _FakeClock(1000.0)
-    monkeypatch.setattr(dynamic_token_factory, "time", fake)
+    monkeypatch.setattr(dl_auth.dynamic_token, "time", fake)
 
     factory = dynamic_token_factory.DynamicUSMasterTokenFactory(
         private_key=test_private_key,

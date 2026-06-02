@@ -1,5 +1,6 @@
 import abc
 from typing import (
+    Annotated,
     Protocol,
     Self,
 )
@@ -8,6 +9,7 @@ import attrs
 import pydantic
 
 import dl_auth.data as data
+import dl_auth.dynamic_token as dynamic_token
 import dl_constants
 import dl_settings
 
@@ -141,3 +143,35 @@ class AuthDataAuthProvider(BaseAuthProvider):
 
     def get_cookies(self) -> dict[str, str]:
         return {k.value: v for k, v in self.auth_data.get_cookies(self.target).items()}
+
+
+class USDynamicMasterTokenAuthProviderSettings(AuthProviderSettings):
+    PRIVATE_KEY: Annotated[str, dl_settings.decode_multiline_validator] = pydantic.Field(repr=False)
+    TOKEN_LIFETIME_SEC: int = 3600
+    MIN_TTL_SEC: float = 900.0
+
+
+AuthProviderSettings.register("US_DYNAMIC_MASTER_TOKEN", USDynamicMasterTokenAuthProviderSettings)
+
+
+@attrs.define(kw_only=True)
+class USDynamicMasterTokenAuthProvider(BaseAuthProvider):
+    _generator: dynamic_token.DynamicMasterTokenGenerator
+
+    @classmethod
+    def from_settings(cls, settings: USDynamicMasterTokenAuthProviderSettings) -> Self:
+        return cls(
+            generator=dynamic_token.DynamicMasterTokenGenerator(
+                private_key=settings.PRIVATE_KEY,
+                token_lifetime_sec=settings.TOKEN_LIFETIME_SEC,
+                min_ttl_sec=settings.MIN_TTL_SEC,
+            ),
+        )
+
+    def get_headers(self) -> dict[str, str]:
+        return {
+            dl_constants.DLHeadersCommon.US_DYNAMIC_MASTER_TOKEN.value: self._generator.get_token(),
+        }
+
+    def get_cookies(self) -> dict[str, str]:
+        return {}
