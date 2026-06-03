@@ -3765,7 +3765,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "dl-version"
-version = "0.2720.0"
+version = "0.2721.0"
 description = ""
 optional = false
 python-versions = ">=3.12, <3.13"
