@@ -31,11 +31,12 @@ class EntryData(dl_pydantic.BaseSchema):
     scope: EntryScope
     type: str = ""
     key: str
+    hidden: bool = False
     permissions: EntryPermissions | None = None
 
     data: dl_pydantic.JsonableDict | None = None
     unversioned_data: dl_pydantic.JsonableDict | None = pydantic.Field(
-        default=None,
+        default_factory=dict,
         alias="unversionedData",
     )
 

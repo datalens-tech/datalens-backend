@@ -193,7 +193,12 @@ class SyncUSManager(USManagerBase):
         else:
             save_params["update_revision"] = update_revision
             assert entry.uuid is not None
-            resp = self._us_client.update_entry(entry.uuid, lock=entry.lock, **save_params)
+            resp = self._us_client.update_entry(
+                entry_id=entry.uuid,
+                lock=entry.lock,
+                mode=mode,
+                **save_params,
+            )
 
         entry._us_resp = resp
 
