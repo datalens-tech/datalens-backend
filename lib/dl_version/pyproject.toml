@@ -5,7 +5,7 @@ license = "Apache 2.0"
 name = "dl-version"
 packages = [{include = "dl_version"}]
 readme = "README.md"
-version = "0.2723.0"
+version = "0.2724.0"
 
 [tool.poetry.dependencies]
 python = ">=3.12, <3.13"
