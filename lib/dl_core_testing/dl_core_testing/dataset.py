@@ -50,7 +50,11 @@ def add_dataset_source(
         parameters=dsrc_params,
         title=title,
     )
-    sync_usm.load_dependencies(dataset)
+
+    sync_usm.load_dataset_dependencies(
+        dataset,
+        respect_sources=True,
+    )
     dsrc = editable_dataset_wrapper.get_data_source_strict(source_id=source_id, role=DataSourceRole.origin)
     editable_dataset_wrapper.update_data_source(
         source_id=source_id,

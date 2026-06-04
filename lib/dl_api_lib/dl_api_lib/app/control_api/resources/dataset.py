@@ -291,7 +291,10 @@ class DatasetVersionItem(DatasetResource):
 
         with us_manager.get_locked_entry_cm(Dataset, dataset_id, wait_timeout=DEFAULT_DATASET_LOCK_WAIT_TIMEOUT) as ds:
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
-            us_manager.load_dependencies(ds)
+            us_manager.load_dataset_dependencies(
+                ds,
+                respect_sources=True,
+            )
 
             result_schema = body["dataset"].get("result_schema", [])
             constraints = self.get_service_registry().get_constraints()

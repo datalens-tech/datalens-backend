@@ -159,7 +159,10 @@ class DatasetBuilder:
         dsrc_creation_spec = self.dsrc_generator.generate_source_params()
         connection_id = dsrc_creation_spec.connection.uuid
         assert connection_id is not None
-        self.sync_us_manager.ensure_connection_preloaded(DefaultConnectionRef(conn_id=connection_id))
+        self.sync_us_manager.ensure_connection_preloaded(
+            conn_ref=DefaultConnectionRef(conn_id=connection_id),
+            referrer=None,
+        )
         self.ds_wrapper.add_data_source(
             source_id=source_id,
             role=role,

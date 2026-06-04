@@ -262,7 +262,10 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         if conn_id is None:
             raise CacheInvalidationTestQueryError(message="Could not determine connection for data source")
 
-        await self.dl_request.us_manager.ensure_connection_preloaded(DefaultConnectionRef(conn_id=conn_id))
+        await self.dl_request.us_manager.ensure_connection_preloaded(
+            conn_ref=DefaultConnectionRef(conn_id=conn_id),
+            referrer=None,
+        )
         connection = self.dl_request.us_manager.get_loaded_us_connection(conn_id)
 
         if require_connection_view and not check_permission_on_entry(connection, USPermissionKind.read):

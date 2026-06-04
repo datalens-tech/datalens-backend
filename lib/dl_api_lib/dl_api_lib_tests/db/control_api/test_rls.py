@@ -128,7 +128,10 @@ class TestRLS(DefaultApiTestBase):
         control_api.save_dataset(saved_dataset, fail_ok=False)
 
         ds = sync_us_manager.get_by_id(saved_dataset.id)
-        sync_us_manager.load_dependencies(ds)
+        sync_us_manager.load_dataset_dependencies(
+            ds,
+            respect_sources=True,
+        )
 
         rci = RequestContextInfo(user_id="user1")
         raw_query_spec_union = RawQuerySpecUnion(

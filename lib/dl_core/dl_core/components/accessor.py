@@ -1,11 +1,17 @@
+import logging
+
 import attr
 
 from dl_constants.enums import (
     CalcMode,
+    DataSourceType,
     ExtractMode,
     ExtractStatus,
 )
-from dl_core.base_models import ObligatoryFilter
+from dl_core.base_models import (
+    ConnectionRef,
+    ObligatoryFilter,
+)
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 import dl_core.exc as exc
 from dl_core.fields import (
@@ -20,6 +26,8 @@ from dl_core.us_dataset import Dataset
 from dl_core.us_extract import ExtractProperties
 from dl_model_tools.typed_values import BIValue
 from dl_query_processing.compilation.specs import ParameterValueSpec
+
+LOGGER = logging.getLogger(__name__)
 
 
 @attr.s(frozen=True)
@@ -65,6 +73,64 @@ class DatasetComponentAccessor:
 
     def get_data_source_id_list(self) -> list[str]:
         return [dsrc_coll_spec.id for dsrc_coll_spec in self.get_data_source_coll_spec_list()]
+
+    def collect_data_source_types(
+        self,
+    ) -> dict[ConnectionRef, DataSourceType | None]:
+        """
+        Collect Dataset's sources with types.
+
+        In case of type conflict (same connection ref has two or more types),
+        this source's type is ignored.
+
+        Returns dict mapping ``ConnectionRef`` to ``DataSourceType`` or to
+        ``None`` if there is a type conflict.
+        """
+
+        dataset_sources: dict[ConnectionRef, DataSourceType | None] = {}
+
+        # Collect refs with source types from dataset sources
+        bad_source_refs = set()
+
+        for dsrc_coll_spec in self.get_data_source_coll_spec_list():
+            if dsrc_coll_spec.origin is None:
+                LOGGER.warning(
+                    "Dataset %s source collection %s has no origin source spec",
+                    self._dataset.uuid,
+                    dsrc_coll_spec.id,
+                )
+                continue
+
+            if dsrc_coll_spec.origin.connection_ref is None:
+                LOGGER.warning(
+                    "Dataset %s source collection %s has no origin connection_ref",
+                    self._dataset.uuid,
+                    dsrc_coll_spec.id,
+                )
+                continue
+
+            # Check duplicate with different type to remove them later
+            existing_source_type = dataset_sources.get(dsrc_coll_spec.origin.connection_ref)
+            if existing_source_type is not None:
+                if existing_source_type != dsrc_coll_spec.origin.source_type:
+                    bad_source_refs.add(dsrc_coll_spec.origin.connection_ref)
+
+                    LOGGER.warning(
+                        "Dataset %s has connection %s with different source types (%s != %s)",
+                        self._dataset.uuid,
+                        dsrc_coll_spec.origin.connection_ref,
+                        existing_source_type,
+                        dsrc_coll_spec.origin.source_type,
+                    )
+                    continue
+
+            dataset_sources[dsrc_coll_spec.origin.connection_ref] = dsrc_coll_spec.origin.source_type
+
+        # Remove bad sources and load them without type
+        for bad_source_ref in bad_source_refs:
+            dataset_sources[bad_source_ref] = None
+
+        return dataset_sources
 
     def get_data_source_coll_spec_list(self) -> list[DataSourceCollectionSpec]:
         return [dsrc_coll_spec for dsrc_coll_spec in self._dataset.data.source_collections]

@@ -142,7 +142,10 @@ class TestUSManager(DefaultCoreTestClass):
     ) -> None:
         usm = async_us_manager
         dataset = await usm.get_by_id(saved_dataset.uuid, Dataset)
-        await usm.load_dependencies(dataset)
+        await usm.load_dataset_dependencies(
+            dataset,
+            respect_sources=True,
+        )
         ds_wrapper = DatasetTestWrapper(dataset=dataset, us_manager=usm)
 
         loaded_connection_ref_set = set(usm._loaded_entries.keys())
@@ -182,7 +185,10 @@ class TestUSManager(DefaultCoreTestClass):
         await us_manager._us_client.delete_entry(referenced_conn_id)
 
         loaded_dataset = await us_manager.get_by_id(dataset.uuid, Dataset)
-        await us_manager.load_dependencies(loaded_dataset)
+        await us_manager.load_dataset_dependencies(
+            loaded_dataset,
+            respect_sources=True,
+        )
 
         with pytest.raises(exc.ReferencedUSEntryNotFound, match=f".+ {referenced_conn_id} .+"):
             us_manager.get_loaded_us_connection(referenced_conn_id)

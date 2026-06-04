@@ -1471,8 +1471,9 @@ class DatasetValidator(DatasetBaseWrapper):
             source_type = source_data.get("source_type")
 
             self._sync_us_manager.ensure_source_preloaded(
-                connection_ref,
+                conn_ref=connection_ref,
                 source_type=source_type,
+                referrer=None,
             )
 
             self._ds_editor.add_data_source(
@@ -1814,6 +1815,7 @@ class DatasetValidator(DatasetBaseWrapper):
             self._sync_us_manager.ensure_source_preloaded(
                 conn_ref=old_connection_ref,
                 source_type=self._ds.find_source_type(connection_data.id),
+                referrer=None,
             )
             old_connection = self._sync_us_manager.get_loaded_us_connection(old_connection_ref)
         except (common_exc.ReferencedUSEntryNotFound, common_exc.ReferencedUSEntryAccessDenied) as e:
@@ -1822,7 +1824,10 @@ class DatasetValidator(DatasetBaseWrapper):
 
         new_connection_ref = DefaultConnectionRef(conn_id=connection_data.new_id)
         # TODO(BI-7375): Support replace_connection for virtual connections
-        self._sync_us_manager.ensure_connection_preloaded(new_connection_ref)
+        self._sync_us_manager.ensure_connection_preloaded(
+            conn_ref=new_connection_ref,
+            referrer=None,
+        )
         new_connection = self._sync_us_manager.get_loaded_us_connection(new_connection_ref)
         utils.need_permission_on_entry(new_connection, USPermissionKind.read)
 
@@ -2213,8 +2218,9 @@ class DatasetValidator(DatasetBaseWrapper):
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             try:
                 self._sync_us_manager.ensure_connection_preloaded(
-                    dsrc.connection_ref,
+                    conn_ref=dsrc.connection_ref,
                     connection_type=dsrc.conn_type,
+                    referrer=None,
                 )
             except common_exc.ReferencedUSEntryNotFound:
                 self._ds.error_registry.add_error(

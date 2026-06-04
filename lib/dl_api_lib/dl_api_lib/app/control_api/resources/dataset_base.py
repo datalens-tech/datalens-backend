@@ -113,7 +113,10 @@ class DatasetResource(BIResource):
             )
 
         if load_dependencies:
-            us_manager.load_dependencies(dataset)
+            us_manager.load_dataset_dependencies(
+                dataset,
+                respect_sources=True,
+            )
 
         dataset_edit_allowed = cls.is_dataset_edit_allowed(dataset)
 

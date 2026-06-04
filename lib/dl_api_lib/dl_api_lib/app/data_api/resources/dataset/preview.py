@@ -164,6 +164,7 @@ class DatasetPreviewView(DatasetDataBaseView, abc.ABC):
             await us_manager.ensure_source_preloaded(
                 conn_ref=DefaultConnectionRef(conn_id=connection_id),
                 source_type=source_type,
+                referrer=None,
             )
             connection = us_manager.get_loaded_us_connection(connection_id)
             if connection.permissions is None or not check_permission_on_entry(connection, USPermissionKind.read):

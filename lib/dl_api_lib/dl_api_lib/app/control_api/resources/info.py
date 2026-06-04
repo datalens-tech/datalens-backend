@@ -107,7 +107,10 @@ class DatasetsPublicityChecker(BIResource):
 
         for ds in us_manager.get_collection(Dataset, raise_on_broken_entry=True, include_data=True, ids=ds_ids):
             try:
-                us_manager.load_dependencies(ds)
+                us_manager.load_dataset_dependencies(
+                    ds,
+                    respect_sources=True,
+                )
                 localizer = self.get_service_registry().get_localizer()
                 public_usage_checker.ensure_dataset_can_be_used(
                     rci=self.get_current_rci(),

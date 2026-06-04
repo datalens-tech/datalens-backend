@@ -1,4 +1,7 @@
-from typing import Self
+from typing import (
+    ClassVar,
+    Self,
+)
 from unittest.mock import (
     AsyncMock,
     MagicMock,
@@ -8,11 +11,19 @@ import attr
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import ConnectionType
+from dl_constants.enums import (
+    ConnectionType,
+    DataSourceType,
+)
 from dl_core.base_models import DefaultConnectionRef
+from dl_core.data_source.sql import StandardSQLDataSource
+from dl_core.data_source.type_mapping import _DSRC_TYPES
+from dl_core.data_source_spec.base import DataSourceSpec
+from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.united_storage_client import USAuthContextMaster
 from dl_core.us_connection import CONNECTION_TYPES
 from dl_core.us_connection_base import ConnectionBase
+from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_core.us_manager.us_manager_async import AsyncUSManager
 from dl_core.us_manager.us_manager_sync_mock import MockedSyncUSManager
@@ -165,7 +176,11 @@ def test_sync_virtual_uses_create_virtual_and_skips_us(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-vc-1")
 
-    sync_us_manager.ensure_connection_preloaded(conn_ref, connection_type=virtual_conn_type)
+    sync_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=virtual_conn_type,
+        referrer=None,
+    )
 
     # Virtual constructor used
     FakeVirtualConn.sync_create_virtual.assert_called_once()
@@ -184,8 +199,16 @@ def test_sync_virtual_is_cached(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-vc-cache")
 
-    sync_us_manager.ensure_connection_preloaded(conn_ref, connection_type=virtual_conn_type)
-    sync_us_manager.ensure_connection_preloaded(conn_ref, connection_type=virtual_conn_type)
+    sync_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=virtual_conn_type,
+        referrer=None,
+    )
+    sync_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=virtual_conn_type,
+        referrer=None,
+    )
 
     # Double load should call virtual constructor only once
     FakeVirtualConn.sync_create_virtual.assert_called_once()
@@ -201,7 +224,10 @@ def test_sync_without_connection_type_falls_through_to_us(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-no-type")
 
-    sync_us_manager.ensure_connection_preloaded(conn_ref)
+    sync_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        referrer=None,
+    )
 
     # Virtual constructor not used
     FakeVirtualConn.sync_create_virtual.assert_not_called()
@@ -218,7 +244,11 @@ def test_sync_non_virtual_falls_through_to_us(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-non-virtual")
 
-    sync_us_manager.ensure_connection_preloaded(conn_ref, connection_type=non_virtual_conn_type)
+    sync_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=non_virtual_conn_type,
+        referrer=None,
+    )
 
     # Virtual constructor not used because connection is not virtual
     FakeNonVirtualConn.sync_create_virtual.assert_not_called()
@@ -235,7 +265,11 @@ async def test_async_virtual_uses_create_virtual_and_skips_us(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-vc-async-1")
 
-    await async_us_manager.ensure_connection_preloaded(conn_ref, connection_type=virtual_conn_type)
+    await async_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=virtual_conn_type,
+        referrer=None,
+    )
 
     # Virtual constructor used
     FakeVirtualConn.async_create_virtual.assert_awaited_once()
@@ -255,8 +289,16 @@ async def test_async_virtual_is_cached(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-vc-async-cache")
 
-    await async_us_manager.ensure_connection_preloaded(conn_ref, connection_type=virtual_conn_type)
-    await async_us_manager.ensure_connection_preloaded(conn_ref, connection_type=virtual_conn_type)
+    await async_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=virtual_conn_type,
+        referrer=None,
+    )
+    await async_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=virtual_conn_type,
+        referrer=None,
+    )
 
     # Double load should call virtual constructor only once
     FakeVirtualConn.async_create_virtual.assert_awaited_once()
@@ -273,7 +315,10 @@ async def test_async_without_connection_type_falls_through_to_us(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-async-no-type")
 
-    await async_us_manager.ensure_connection_preloaded(conn_ref)
+    await async_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        referrer=None,
+    )
 
     # Virtual constructor not used
     FakeVirtualConn.async_create_virtual.assert_not_awaited()
@@ -291,7 +336,11 @@ async def test_async_non_virtual_falls_through_to_us(
 ) -> None:
     conn_ref = DefaultConnectionRef(conn_id="conn-async-non-virtual")
 
-    await async_us_manager.ensure_connection_preloaded(conn_ref, connection_type=non_virtual_conn_type)
+    await async_us_manager.ensure_connection_preloaded(
+        conn_ref=conn_ref,
+        connection_type=non_virtual_conn_type,
+        referrer=None,
+    )
 
     # Virtual constructor not used because connection is not virtual
     FakeNonVirtualConn.async_create_virtual.assert_not_awaited()
@@ -299,3 +348,110 @@ async def test_async_non_virtual_falls_through_to_us(
     # US used
     async_us_manager.get_by_id.assert_awaited_once()
     assert async_us_manager.get_by_id.call_args.args[0] == "conn-async-non-virtual"
+
+
+@pytest.fixture
+def virtual_source_type(
+    virtual_conn_type: ConnectionType,
+    monkeypatch: pytest.MonkeyPatch,
+) -> DataSourceType:
+    """
+    Create a virtual datasource type class and register it. Returns registered type.
+    """
+
+    type_name = "test_virtual_source_type"
+    if not DataSourceType.is_declared(type_name):
+        DataSourceType.declare(type_name)
+    source_type = DataSourceType(type_name)
+
+    # Minimal datasource
+    class FakeVirtualDataSource(StandardSQLDataSource):
+        conn_type: ClassVar[ConnectionType] = virtual_conn_type
+
+    # Register this datasource
+    monkeypatch.setitem(_DSRC_TYPES, source_type, FakeVirtualDataSource)
+
+    return source_type
+
+
+def make_dataset_with_source(
+    us_manager: USManagerBase,
+    conn_id: str,
+    source_type: DataSourceType,
+) -> Dataset:
+    """
+    Create a dataset with a virtual source type
+    """
+
+    data = Dataset.DataModel(
+        name="test-ds",
+        source_collections=[
+            DataSourceCollectionSpec(
+                id="src-1",
+                origin=DataSourceSpec(
+                    source_type=source_type,
+                    connection_ref=DefaultConnectionRef(conn_id=conn_id),
+                ),
+            )
+        ],
+    )
+
+    return Dataset(
+        uuid="ds-1",
+        data=data,
+        type_=Dataset.scope,
+        us_manager=us_manager,
+        data_strict=False,
+    )
+
+
+def test_sync_load_dataset_dependencies_respects_virtual_source(
+    sync_us_manager: MockedSyncUSManager,
+    virtual_conn_type: ConnectionType,
+    virtual_source_type: DataSourceType,
+) -> None:
+    """
+    Test that loading dependencies with ``respect_sources=True`` will use
+    dataset's and virtual connections are loaded using ``create_virtual`` method.
+    """
+
+    conn_id = "conn-vc-ds"
+    dataset = make_dataset_with_source(sync_us_manager, conn_id, virtual_source_type)
+
+    sync_us_manager.load_dataset_dependencies(dataset, respect_sources=True)
+
+    # Virtual connection is created using create_virtual
+    FakeVirtualConn.sync_create_virtual.assert_called_once()
+    assert FakeVirtualConn.sync_create_virtual.call_args.kwargs["connection_id"] == conn_id
+
+    # US not used
+    sync_us_manager.get_by_id.assert_not_called()
+
+    # Virtual connection exists in cache
+    assert DefaultConnectionRef(conn_id=conn_id) in sync_us_manager._loaded_entries
+
+
+def test_sync_load_dataset_dependencies_without_respect_sources_falls_through_to_us(
+    sync_us_manager: MockedSyncUSManager,
+    virtual_conn_type: ConnectionType,
+    virtual_source_type: DataSourceType,
+) -> None:
+    """
+    Test that loading dependencies with ``respect_sources=False`` will use only
+    ```USEntry.links```. Virtual connections won't be loaded using
+    ``create_virtual``.
+    """
+
+    conn_id = "conn-vc-ds-no-respect"
+    dataset = make_dataset_with_source(sync_us_manager, conn_id, virtual_source_type)
+
+    sync_us_manager.load_dataset_dependencies(dataset, respect_sources=False)
+
+    # Virtual connection's create_virtual not used
+    FakeVirtualConn.sync_create_virtual.assert_not_called()
+
+    # US used
+    sync_us_manager.get_by_id.assert_called_once()
+
+    # Broken link is loaded in cache
+    assert sync_us_manager.get_by_id.call_args.args[0] == conn_id

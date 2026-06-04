@@ -28,6 +28,7 @@ from dl_core.base_models import (
     ConnectionRef,
     DefaultConnectionRef,
 )
+from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.type_mapping import get_connection_type_for_source_type
 from dl_core.enums import (
     USEntryBranch,
@@ -489,46 +490,60 @@ class SyncUSManager(USManagerBase):
     # Dependencies
     #
     def get_loaded_us_connection(self, identity: str | ConnectionRef) -> ConnectionBase:
-        # Temporary workaround to mitigate forgotten .load_dependencies()
+        # Temporary workaround to mitigate forgotten .load_dataset_dependencies()
         if isinstance(identity, str):
             identity = DefaultConnectionRef(conn_id=identity)
 
         if identity not in self._loaded_entries:
+            LOGGER.debug("Connection %s is not preloaded", identity)
             # TODO FIX: Uncomment after migration to dataset v7
             # _log.warning("SyncUSManager.get_loaded_us_connection() called without connection in cache")
-            self._ensure_conn_in_cache(None, identity)
+            self._ensure_conn_in_cache(
+                conn_ref=identity,
+                referrer=None,
+            )
         return super().get_loaded_us_connection(identity)
 
     def ensure_source_preloaded(
         self,
         conn_ref: ConnectionRef,
-        source_type: DataSourceType | None = None,
-    ) -> None:
+        referrer: USEntry | None,
+        source_type: DataSourceType | str | None = None,
+    ) -> ConnectionBase | None:
+        if isinstance(source_type, str):
+            if not DataSourceType.is_declared(source_type):
+                LOGGER.warning("Source type %s is not defined", source_type)
+                source_type = None
+            else:
+                source_type = DataSourceType(source_type)
+
         connection_type = get_connection_type_for_source_type(source_type)
 
         if source_type is not None and connection_type is None:
-            LOGGER.warning(f"Failed get connection_type for source_type {source_type}")
+            LOGGER.warning("Failed get connection_type for source_type %s", source_type)
 
-        self.ensure_connection_preloaded(
+        return self.ensure_connection_preloaded(
             conn_ref=conn_ref,
+            referrer=referrer,
             connection_type=connection_type,
         )
 
     def ensure_connection_preloaded(
         self,
         conn_ref: ConnectionRef,
+        referrer: USEntry | None,
         connection_type: ConnectionType | None = None,
-    ) -> None:
-        self._ensure_conn_in_cache(
-            None,
-            conn_ref,
+    ) -> ConnectionBase | None:
+        return self._ensure_conn_in_cache(
+            referrer=referrer,
+            conn_ref=conn_ref,
             connection_type=connection_type,
         )
 
     def _ensure_conn_in_cache(
         self,
-        referrer: USEntry | None,
         conn_ref: ConnectionRef,
+        referrer: USEntry | None,
         connection_type: ConnectionType | None = None,
     ) -> ConnectionBase | None:
         conn: USEntry | BrokenUSLink
@@ -584,32 +599,61 @@ class SyncUSManager(USManagerBase):
 
     # TODO FIX: Think about cache control
     @generic_profiler("us-load-dependencies")
-    def load_dependencies(self, entry: USEntry) -> None:
-        if not isinstance(entry, Dataset):
-            raise NotImplementedError("Links loading is supported only for dataset")
+    def load_dataset_dependencies(
+        self,
+        dataset: Dataset,
+        respect_sources: bool = False,
+    ) -> None:
+        """
+        Load Dataset dependencies from US.
 
-        processed_refs: set[ConnectionRef] = set()
+        When ``respect_sources`` is ``False``, this method loads dependencies using ``USEntry.links`` dict of ``key-id``
+        pairs without guessing types.
+
+        When ``respect_sources`` is ``True``, this method collects ids and types from dataset sources and then adds the
+        rest from ``USEntry.links`` without types. This allows loading connections with type enforcing from sources.
+        """
+
+        # Collect refs from dataset sources
+        if respect_sources:
+            ds_accessor = DatasetComponentAccessor(dataset=dataset)
+            sources_to_load = ds_accessor.collect_data_source_types()
+        else:
+            sources_to_load = {}
+
         # TODO FIX: Find a way to track direct source of link
-        refs_to_load_queue = self._get_entry_links(
-            entry,
-        )
+        # Collect refs from USEntry links
+        for entry_ref in self._get_entry_links(dataset):
 
-        while refs_to_load_queue:
-            ref = refs_to_load_queue.pop()
-            processed_refs.add(ref)
+            # Dataset's sources have priority over USEntry links
+            if entry_ref not in sources_to_load:
+                sources_to_load[entry_ref] = None
+
+        processed_sources: dict[ConnectionRef, DataSourceType | None] = {}
+
+        while sources_to_load:
+            ref, source_type = sources_to_load.popitem()
+            processed_sources[ref] = source_type
+
             try:
-                # TODO(DLPROJECTS-749): Support type detection to preload virtual connections that are not stored in US
-                resolved_ref = self._ensure_conn_in_cache(referrer=entry, conn_ref=ref)
+                resolved_ref = self.ensure_source_preloaded(
+                    conn_ref=ref,
+                    referrer=dataset,
+                    source_type=source_type,
+                )
             except Exception:
-                LOGGER.exception("Can not load linked US entry %s for entry %s", ref, entry.uuid)
+                LOGGER.exception("Can not load linked US entry %s for entry %s", ref, dataset.uuid)
                 raise
 
-            refs_to_load_queue.update(
-                self._get_entry_links(
-                    resolved_ref,
-                )
-                - processed_refs
-            )
+            # Preload entries for loaded entry
+            new_links = self._get_entry_links(resolved_ref)
+
+            # Add new entries to queue
+            for connection_ref in new_links:
+
+                # Ignore already processed and already queued
+                if (connection_ref not in processed_sources) and (connection_ref not in sources_to_load):
+                    sources_to_load[connection_ref] = None
 
     def load_get_entries_at_path(self, us_path: str) -> list[dict[str, Any]]:
         return self._us_client.get_entries_info_in_path(us_path)

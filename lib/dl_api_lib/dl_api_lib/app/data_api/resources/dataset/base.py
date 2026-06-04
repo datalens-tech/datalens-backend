@@ -242,7 +242,10 @@ class DatasetDataBaseView(BaseView):
             except USObjectNotFoundException as e:
                 raise web.HTTPNotFound(reason="Entity not found") from e
 
-            await us_manager.load_dependencies(dataset)
+            await us_manager.load_dataset_dependencies(
+                dataset,
+                respect_sources=True,
+            )
 
         self.dataset = dataset
         self.ds_accessor = DatasetComponentAccessor(dataset=dataset)
@@ -313,7 +316,10 @@ class DatasetDataBaseView(BaseView):
             # Empty dataset, possibly can't be in cache
             self.dataset = dataset
 
-            await us_manager.load_dependencies(self.dataset)
+            await us_manager.load_dataset_dependencies(
+                self.dataset,
+                respect_sources=True,
+            )
 
             self.ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
 
@@ -390,7 +396,10 @@ class DatasetDataBaseView(BaseView):
 
                 self.dataset = dataset
 
-            await us_manager.load_dependencies(self.dataset)
+            await us_manager.load_dataset_dependencies(
+                self.dataset,
+                respect_sources=True,
+            )
 
             self.ds_accessor = DatasetComponentAccessor(dataset=self.dataset)
 
@@ -600,7 +609,10 @@ class DatasetDataBaseView(BaseView):
                 await self.check_for_notifications(services_registry, us_manager)
                 return update_info
 
-            await us_manager.load_dependencies(self.dataset)
+            await us_manager.load_dataset_dependencies(
+                self.dataset,
+                respect_sources=True,
+            )
 
             services_registry = self.dl_request.services_registry
             assert isinstance(services_registry, ApiServiceRegistry)
