@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import abc
+from collections.abc import Iterable
 import functools
 import logging.config
 from typing import (
@@ -155,6 +156,15 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
     def _get_extra_regex_patterns(self) -> tuple[str, ...] | None:
         return None
 
+    def _get_extra_routes(self) -> Iterable[tuple[str, str, type[web.View]]]:
+        """Override in subclasses to register additional HTTP routes.
+
+        Each tuple is (method, path, view_class). Routes are added after the
+        factory's built-in routes; subclasses can shadow paths only by intent.
+        Default: no extra routes.
+        """
+        return ()
+
     def set_up_routes(self, app: web.Application) -> None:
         app.router.add_route("get", "/ping", PingView)
         app.router.add_route("get", "/ping_ready", PingReadyView)
@@ -219,6 +229,9 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
                 "/api/data/v2/datasets/{ds_id}/cache_invalidation_last_result",
                 DatasetCacheInvalidationLastResultView,
             )
+
+        for method, path, view_cls in self._get_extra_routes():
+            app.router.add_route(method, path, view_cls)
 
     def set_up_sentry(self) -> None:
         configure_sentry_for_aiohttp(
@@ -382,6 +395,7 @@ class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
         # TODO: don't use it again!
         # special hack for gettings bleeding edge users in dashsql
         app["BLEEDING_EDGE_USERS"] = self._settings.BLEEDING_EDGE_USERS
+        app["DIRECTSQL_TIMEOUT_SEC"] = self._settings.DIRECTSQL_TIMEOUT_SEC
 
         self.set_up_routes(app=app)
 

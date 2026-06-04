@@ -470,6 +470,7 @@ class DataApiAppSettings(AppSettings, ConnectorsSettingsMixin):
     US_CLIENT: USClientSettings = pydantic.Field(default_factory=USClientSettings)
     OBFUSCATION_ENABLED: bool = False
     LOG_FORMAT_PROFILING_ENABLED: bool = False
+    DIRECTSQL_TIMEOUT_SEC: int = 80
 
     CACHE_INVALIDATION: CacheInvalidationSettings = pydantic.Field(default_factory=CacheInvalidationSettings)
 
