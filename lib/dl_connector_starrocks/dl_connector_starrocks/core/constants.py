@@ -22,6 +22,7 @@ class ListingSources(DynamicEnum):
 STARROCKS_SYSTEM_CATALOGS = (
     "information_schema",
     "_statistics_",
+    "sys",
 )
 
 # StarRocks doesn't provide a way to query the catalog list with a SELECT statement

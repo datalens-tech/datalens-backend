@@ -13,7 +13,7 @@ from dl_core_testing.fixtures.primitives import FixtureTableSpec
 
 @attr.s
 class DbCsvTableDispenser:
-    _tables: dict[DbConfig, dict[FixtureTableSpec, DbTable]] = attr.ib(init=False, factory=dict)
+    _tables: dict[DbConfig, dict[tuple[FixtureTableSpec, str | None], DbTable]] = attr.ib(init=False, factory=dict)
     _table_name_prefix: str | None = attr.ib(default=None)
     _chunk_size: int | None = attr.ib(default=False)
 
@@ -34,11 +34,11 @@ class DbCsvTableDispenser:
         )
         if db.config not in self._tables:
             self._tables[db.config] = {}
-        self._tables[db.config][spec] = db_table
+        self._tables[db.config][(spec, schema_name)] = db_table
         return db_table
 
     def get_csv_table(self, db: Db, spec: FixtureTableSpec, schema_name: str | None = None) -> DbTable:
         try:
-            return self._tables[db.config][spec]
+            return self._tables[db.config][(spec, schema_name)]
         except KeyError:
             return self._make_new_csv_table(db=db, spec=spec, schema_name=schema_name)

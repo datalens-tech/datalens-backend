@@ -9,6 +9,7 @@ from dl_core.us_connection_base import (
     ConnectionBase,
     DataSourceTemplate,
 )
+from dl_core_testing.database import DbTable
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
 
 from dl_connector_starrocks.core.constants import STARROCKS_SYSTEM_CATALOGS
@@ -41,9 +42,27 @@ class TestStarRocksConnection(
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
+            assert dsrc_tmpl.parameters.get("schema_name") not in STARROCKS_SYSTEM_CATALOGS
+
+    def test_connection_get_data_source_templates(
+        self,
+        saved_connection: ConnectionStarRocks,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        sample_table: DbTable,
+    ) -> None:
+        # StarRocks lists real tables as data source templates, so the listing is non-empty
+        # only when a user table exists. Seed one synchronously via `sample_table` instead of
+        # depending on test ordering or on the compose-init seed table.
+        super().test_connection_get_data_source_templates(
+            saved_connection=saved_connection,
+            sync_conn_executor_factory=sync_conn_executor_factory,
+        )
 
     def test_get_db_names_and_tables(
-        self, saved_connection: ConnectionStarRocks, sync_conn_executor_factory: Callable[[], SyncConnExecutorBase]
+        self,
+        saved_connection: ConnectionStarRocks,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        sample_table: DbTable,  # unused directly; injected for its side effect of seeding a user table
     ) -> None:
         conn = saved_connection
 
@@ -56,9 +75,16 @@ class TestStarRocksConnection(
 
         tables = conn.get_tables(sync_conn_executor_factory_for_conn, db_name=CoreConnectionSettings.CATALOG)
         assert tables
+        schema_names = {table.schema_name for table in tables}
+        assert schema_names.isdisjoint(
+            STARROCKS_SYSTEM_CATALOGS
+        ), f"system schemas leaked into listing: {schema_names & set(STARROCKS_SYSTEM_CATALOGS)}"
 
     def test_get_parameter_combinations(
-        self, saved_connection: ConnectionStarRocks, sync_conn_executor_factory: Callable[[], SyncConnExecutorBase]
+        self,
+        saved_connection: ConnectionStarRocks,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        sample_table: DbTable,  # unused directly; injected for its side effect of seeding a user table
     ) -> None:
         conn = saved_connection
         catalog = CoreConnectionSettings.CATALOG
@@ -123,6 +149,21 @@ class TestSslStarRocksConnection(
         assert dsrc_templates
         for dsrc_tmpl in dsrc_templates:
             assert dsrc_tmpl.title
+            assert dsrc_tmpl.parameters.get("schema_name") not in STARROCKS_SYSTEM_CATALOGS
+
+    def test_connection_get_data_source_templates(
+        self,
+        saved_connection: ConnectionStarRocks,
+        sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
+        sample_table: DbTable,
+    ) -> None:
+        # StarRocks lists real tables as data source templates, so the listing is non-empty
+        # only when a user table exists. Seed one synchronously via `sample_table` instead of
+        # depending on test ordering or on the compose-init seed table.
+        super().test_connection_get_data_source_templates(
+            saved_connection=saved_connection,
+            sync_conn_executor_factory=sync_conn_executor_factory,
+        )
 
     @pytest.mark.parametrize(
         "ssl_ca_filename",
