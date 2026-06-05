@@ -1,6 +1,7 @@
 import copy
 import json
 
+from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 
@@ -83,3 +84,46 @@ class TestControlApiRevisionHistory(DefaultApiTestBase):
 
         old_conn = resp.json
         assert old_conn["username"] == username
+
+    def test_create_dataset_returns_us_revision_fields(self, control_api, saved_connection_id, dataset_params):
+        ds = Dataset()
+        ds.sources["s"] = ds.source(connection_id=saved_connection_id, **dataset_params)
+        ds.source_avatars["a"] = ds.sources["s"].avatar()
+        ds = control_api.apply_updates(dataset=ds).dataset
+
+        resp = control_api.save_dataset(dataset=ds, fail_ok=True)
+        assert resp.status_code == 200
+        assert "revId" in resp.json
+        assert "savedId" in resp.json
+        assert "publishedId" in resp.json
+
+        control_api.delete_dataset(dataset_id=resp.json["id"], fail_ok=False)
+
+    def test_get_dataset_returns_us_revision_fields(self, control_api, saved_dataset):
+        get_resp = control_api.client.get(f"/api/v1/datasets/{saved_dataset.id}/versions/draft")
+        assert get_resp.status_code == 200
+        assert "revId" in get_resp.json
+        assert "savedId" in get_resp.json
+        assert "publishedId" in get_resp.json
+
+    def test_update_dataset_returns_us_revision_fields(self, control_api, saved_dataset):
+        get_resp = control_api.client.get(f"/api/v1/datasets/{saved_dataset.id}/versions/draft")
+        assert get_resp.status_code == 200
+        result_schema = copy.deepcopy(get_resp.json["dataset"]["result_schema"])
+
+        put_resp = control_api.client.put(
+            f"/api/v1/datasets/{saved_dataset.id}/versions/draft",
+            data=json.dumps({"dataset": {"result_schema": result_schema}}),
+            content_type="application/json",
+        )
+        assert put_resp.status_code == 200
+        assert "revId" in put_resp.json
+        assert "savedId" in put_resp.json
+        assert "publishedId" in put_resp.json
+
+    def test_validate_dataset_returns_us_revision_fields(self, control_api, saved_dataset):
+        resp = control_api.apply_updates(dataset=saved_dataset)
+        assert resp.status_code == 200
+        assert "revId" in resp.json
+        assert "savedId" in resp.json
+        assert "publishedId" in resp.json

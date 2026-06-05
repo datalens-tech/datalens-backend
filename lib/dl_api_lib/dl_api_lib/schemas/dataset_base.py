@@ -360,3 +360,6 @@ class DatasetContentInternalSchema(BaseSchema, USEntryAnnotationMixin):
 
 class DatasetContentSchema(OptionsMixin):
     dataset = ma_fields.Nested(DatasetContentInternalSchema, required=True)
+    rev_id = ma_fields.String(data_key="revId", allow_none=True, dump_default=None, load_default=None)
+    saved_id = ma_fields.String(data_key="savedId", allow_none=True, dump_default=None, load_default=None)
+    published_id = ma_fields.String(data_key="publishedId", allow_none=True, dump_default=None, load_default=None)

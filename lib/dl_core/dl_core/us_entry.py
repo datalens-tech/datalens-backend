@@ -284,6 +284,18 @@ class USEntry:
         return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
 
     @property
+    def rev_id(self) -> str | None:
+        return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
+
+    @property
+    def saved_id(self) -> str | None:
+        return self._us_resp.get("savedId") if isinstance(self._us_resp, dict) else None
+
+    @property
+    def published_id(self) -> str | None:
+        return self._us_resp.get("publishedId") if isinstance(self._us_resp, dict) else None
+
+    @property
     def operation(self) -> dict | None:
         return self._us_resp.get("operation") if isinstance(self._us_resp, dict) else None
 

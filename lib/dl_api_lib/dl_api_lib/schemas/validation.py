@@ -41,6 +41,9 @@ class DatasetValidationResponseSchema(OptionsMixin):
     message = ma_fields.String()
     code = ma_fields.String()
     dataset_errors = ma_fields.List(ma_fields.String())  # TODO: Remove
+    rev_id = ma_fields.String(data_key="revId", allow_none=True, dump_default=None, load_default=None)
+    saved_id = ma_fields.String(data_key="savedId", allow_none=True, dump_default=None, load_default=None)
+    published_id = ma_fields.String(data_key="publishedId", allow_none=True, dump_default=None, load_default=None)
 
 
 class FieldValidationSchema(BaseSchema):

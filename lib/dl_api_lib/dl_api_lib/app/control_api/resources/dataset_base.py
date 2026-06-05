@@ -544,4 +544,8 @@ class DatasetResource(BIResource):
         if dataset.operation is not None:
             ds_dict["operation"] = dataset.operation
 
+        ds_dict["rev_id"] = dataset.rev_id
+        ds_dict["saved_id"] = dataset.saved_id
+        ds_dict["published_id"] = dataset.published_id
+
         return ds_dict
