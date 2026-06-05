@@ -5,6 +5,24 @@ services:
       - "59030:9030"  # MySQL protocol port
       - "58030:8030"  # HTTP port
     container_name: starrocks-test
+    # Relax StarRocks disk watermarks before launch. The defaults reserve 100GB of free
+    # space (storage_*_reserve_bytes); CI runners don't have that, so the BE is flagged
+    # "not enough disk space" and CREATE TABLE fails with "No alive nodes".
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        {
+          echo ""
+          echo "storage_flood_stage_left_capacity_bytes=2147483648"
+          echo "storage_flood_stage_usage_percent=99"
+        } >> /data/deploy/starrocks/be/conf/be.conf
+        {
+          echo ""
+          echo "storage_usage_hard_limit_reserve_bytes=2147483648"
+          echo "storage_usage_hard_limit_percent=99"
+        } >> /data/deploy/starrocks/fe/conf/fe.conf
+        exec /data/deploy/entrypoint.sh
     healthcheck:
       test: ["CMD-SHELL", "mysql -h 127.0.0.1 -P 9030 -u root -e 'SELECT 1'"]
       interval: 15s
