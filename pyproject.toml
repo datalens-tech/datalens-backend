@@ -103,7 +103,6 @@ ignore = [
   "RUF008", # Later: mutable-dataclass-default
   "RUF009", # Later: function-call-in-dataclass-default-argument
   "RUF012", # Later: mutable-class-default
-  "RUF013", # Later: implicit-optional
   "RUF015", # Later: unnecessary-iterable-allocation-for-first-element
   "RUF017", # Later: quadratic-list-summation
   "RUF018", # Later: assignment-in-assert

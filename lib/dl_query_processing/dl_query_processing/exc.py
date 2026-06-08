@@ -253,7 +253,7 @@ class DLFormulaError(DLBaseException):
         self,
         message: str | None = None,
         details: dict | None = None,
-        orig: Exception = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "orig" (default has type "None", argument has type "Exception")  [assignment]
+        orig: Exception | None = None,
         field: BIField | None = None,
         formula_errors: Sequence[FormulaErrorCtx] | None = None,
     ):

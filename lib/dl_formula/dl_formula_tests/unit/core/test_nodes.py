@@ -100,7 +100,7 @@ def test_copy():
 def test_light_copy():
     def _check_node_copy(
         src: nodes.FormulaItem,
-        to_replace_map: dict[int, nodes.FormulaItem] = None,
+        to_replace_map: dict[int, nodes.FormulaItem] | None = None,
         expected: nodes.FormulaItem = None,
     ):
         assert src.light_copy(src.children) == src

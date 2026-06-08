@@ -42,7 +42,7 @@ class AsyncHttpApiBase(ApiBase):
         method: str,
         data: dict | None = None,
         headers: dict | None = None,
-        lock_timeout: int = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "lock_timeout" (default has type "None", argument has type "int")  [assignment]
+        lock_timeout: int | None = None,
     ) -> ClientResponse:
         data_str: str | None = None
         content_type: str | None = None

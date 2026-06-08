@@ -156,7 +156,7 @@ def schematic_request(  # type: ignore  # TODO: fix
     return decorator
 
 
-def with_profiler_stats(stats_dir: str, condition_check: Callable = None):  # type: ignore  # TODO: fix
+def with_profiler_stats(stats_dir: str, condition_check: Callable | None = None):  # type: ignore  # TODO: fix
     """Run function with cProfiler and save stats to file"""
 
     def decorator(func):  # type: ignore  # TODO: fix

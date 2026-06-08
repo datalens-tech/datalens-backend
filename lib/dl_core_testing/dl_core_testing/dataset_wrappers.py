@@ -257,7 +257,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         connection_id: str | None = None,
         title: str | None = None,
         raw_schema: list[SchemaColumn] | None = None,
-        index_info_set: frozenset[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
+        index_info_set: frozenset[IndexInfo] | None = None,
         managed_by: ManagedBy | None = None,
         parameters: dict[str, Any] | None = None,
     ) -> None:
@@ -280,7 +280,7 @@ class EditableDatasetTestWrapper(DatasetTestWrapper):
         connection_id: str | None = None,
         created_from: DataSourceType | None = None,
         raw_schema: list | None = None,
-        index_info_set: frozenset[IndexInfo] = None,  # type: ignore  # 2024-01-29 # TODO: Incompatible default for argument "index_info_set" (default has type "None", argument has type "frozenset[IndexInfo]")  [assignment]
+        index_info_set: frozenset[IndexInfo] | None = None,
         **parameters: Any,
     ) -> None:
         self._ds_editor.update_data_source(

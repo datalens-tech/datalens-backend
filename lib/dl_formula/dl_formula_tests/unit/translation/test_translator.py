@@ -49,8 +49,8 @@ def T(
     x,
     dialect=D.DUMMY,
     restrict_funcs=False,
-    field_types: dict[str, DataType] = None,
-    table_name: str = None,
+    field_types: dict[str, DataType] | None = None,
+    table_name: str | None = None,
     env: TranslationEnvironment | None = None,
 ):
     field_types = field_types or FIELD_TYPES

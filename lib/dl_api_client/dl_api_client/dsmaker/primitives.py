@@ -262,7 +262,7 @@ class SourceAvatar(ApiProxyObject):
     def join(
         self,
         other: SourceAvatar,
-        conditions: list[JoinCondition] = None,  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "conditions" (default has type "None", argument has type "list[JoinCondition]")  [assignment]
+        conditions: list[JoinCondition] | None = None,
         join_type: JoinType = JoinType.inner,
     ) -> AvatarRelation:
         return AvatarRelation(
