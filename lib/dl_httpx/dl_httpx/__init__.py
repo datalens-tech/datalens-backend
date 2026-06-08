@@ -57,6 +57,7 @@ from .transport_adapters import (
 )
 
 __all__ = [
+    "NULL_ERROR_TRANSFORMER",
     "BaseHttpxClientException",
     "BaseRequest",
     "BaseResponseSchema",
@@ -76,7 +77,6 @@ __all__ = [
     "HttpxSyncClient",
     "MaxParallelRateLimiter",
     "MaxParallelRateLimiterSettings",
-    "NULL_ERROR_TRANSFORMER",
     "NoRateLimiter",
     "NoRateLimiterSettings",
     "NoRetriesHttpxClientException",

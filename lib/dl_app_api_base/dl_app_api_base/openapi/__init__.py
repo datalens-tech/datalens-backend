@@ -13,13 +13,13 @@ from .protocols import (
 from .settings import OpenApiSettings
 
 __all__ = [
+    "SWAGGER_STATIC_DIR",
+    "SWAGGER_TEMPLATE_DIR",
     "OpenApiHandler",
     "OpenApiHandlerProtocol",
     "OpenApiRouteProtocol",
     "OpenApiSettings",
     "OpenApiSpec",
-    "SWAGGER_STATIC_DIR",
-    "SWAGGER_TEMPLATE_DIR",
     "SwaggerHandler",
     "SwaggerHandlerDependencies",
 ]

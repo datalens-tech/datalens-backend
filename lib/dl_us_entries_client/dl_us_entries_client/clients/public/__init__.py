@@ -13,6 +13,7 @@ from .models import (
 )
 
 __all__ = [
+    "US_ENTRIES_AUTH_TARGET",
     "EntryDeleteRequest",
     "EntryGetRequest",
     "EntryGetResponse",
@@ -21,5 +22,4 @@ __all__ = [
     "USEntriesAsyncClient",
     "USEntriesClientDependencies",
     "USEntriesClientSettings",
-    "US_ENTRIES_AUTH_TARGET",
 ]

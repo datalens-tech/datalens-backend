@@ -11,11 +11,11 @@ from .null import (
 from .status_map import StatusMapTransformer
 
 __all__ = [
+    "NULL_ERROR_TRANSFORMER",
     "ChainTransformer",
     "CodeMapTransformer",
     "ErrorTransformerProtocol",
     "ExceptionFactoryProtocol",
-    "NULL_ERROR_TRANSFORMER",
     "NullErrorTransformer",
     "StatusMapTransformer",
 ]

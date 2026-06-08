@@ -95,6 +95,8 @@ from .request_context import (
 )
 
 __all__ = [
+    "HTTP_REQUEST_DURATION_SECONDS_DEFAULT_BUCKETS",
+    "UNKNOWN_PATH_LABEL",
     "AlwaysAllowAuthChecker",
     "AlwaysAllowAuthResult",
     "AlwaysDenyAuthChecker",
@@ -118,7 +120,6 @@ __all__ = [
     "ErrorHandlingMiddleware",
     "ErrorResponseSchema",
     "GunicornWorker",
-    "HTTP_REQUEST_DURATION_SECONDS_DEFAULT_BUCKETS",
     "HeadersRequestContextMixin",
     "HttpRequestDurationSeconds",
     "HttpRequestDurationSecondsSettings",
@@ -169,7 +170,6 @@ __all__ = [
     "SubsystemStatus",
     "SubsystemStatusSchema",
     "SubsystemStatuses",
-    "UNKNOWN_PATH_LABEL",
     "UserAuthProviderFactory",
     "UserAuthProviderFactoryError",
 ]

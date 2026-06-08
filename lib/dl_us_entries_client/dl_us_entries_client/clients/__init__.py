@@ -28,6 +28,8 @@ from .public import (
 )
 
 __all__ = [
+    "US_ENTRIES_AUTH_TARGET",
+    "US_ENTRIES_PRIVATE_AUTH_TARGET",
     "EntryDeleteRequest",
     "EntryGetRequest",
     "EntryGetResponse",
@@ -50,6 +52,4 @@ __all__ = [
     "USEntriesPrivateAsyncClient",
     "USEntriesPrivateClientDependencies",
     "USEntriesPrivateClientSettings",
-    "US_ENTRIES_AUTH_TARGET",
-    "US_ENTRIES_PRIVATE_AUTH_TARGET",
 ]

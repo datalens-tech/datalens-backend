@@ -40,10 +40,6 @@ includes:
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
       EXCLUDE_TOML_SORT: |
         {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
-      EXCLUDE_SORT_ALL: |
-        {{.ROOT_DIR}}/tools/cookiecutter/templates/.*
-        {{.ROOT_DIR}}/metapkg/.*
-        {{.ROOT_DIR}}/terrarium/dl_repmanager/.venv/.*
       PARENT_BRANCH: '{{.PARENT_BRANCH | default "main"}}'
 
   cc:

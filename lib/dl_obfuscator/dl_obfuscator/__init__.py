@@ -22,8 +22,8 @@ from dl_obfuscator.secret_walker import get_secret_strings
 OBFUSCATION_BASE_OBFUSCATORS_KEY = "OBFUSCATION_BASE_OBFUSCATORS"
 
 __all__ = [
-    "BaseObfuscator",
     "OBFUSCATION_BASE_OBFUSCATORS_KEY",
+    "BaseObfuscator",
     "ObfuscatableData",
     "ObfuscationContext",
     "ObfuscationEngine",

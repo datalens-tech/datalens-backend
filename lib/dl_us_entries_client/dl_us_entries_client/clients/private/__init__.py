@@ -19,6 +19,7 @@ from .models import (
 )
 
 __all__ = [
+    "US_ENTRIES_PRIVATE_AUTH_TARGET",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
     "PrivateEntryGetResponse",
@@ -33,5 +34,4 @@ __all__ = [
     "USEntriesPrivateAsyncClient",
     "USEntriesPrivateClientDependencies",
     "USEntriesPrivateClientSettings",
-    "US_ENTRIES_PRIVATE_AUTH_TARGET",
 ]

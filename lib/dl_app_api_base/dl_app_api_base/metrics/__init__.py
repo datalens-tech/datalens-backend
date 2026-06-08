@@ -16,6 +16,7 @@ from .settings import MetricsSettings
 
 __all__ = [
     "HTTP_REQUEST_DURATION_SECONDS_DEFAULT_BUCKETS",
+    "UNKNOWN_PATH_LABEL",
     "HttpRequestDurationSeconds",
     "HttpRequestDurationSecondsSettings",
     "HttpRequestsTotal",
@@ -23,5 +24,4 @@ __all__ = [
     "MetricsHandler",
     "MetricsMiddleware",
     "MetricsSettings",
-    "UNKNOWN_PATH_LABEL",
 ]

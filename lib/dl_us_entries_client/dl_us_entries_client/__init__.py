@@ -50,6 +50,8 @@ from .models import (
 from .protocols import TenantProtocol
 
 __all__ = [
+    "US_ENTRIES_AUTH_TARGET",
+    "US_ENTRIES_PRIVATE_AUTH_TARGET",
     "BadRequest",
     "BaseRequest",
     "Data",
@@ -89,8 +91,6 @@ __all__ = [
     "USEntriesPrivateAsyncClient",
     "USEntriesPrivateClientDependencies",
     "USEntriesPrivateClientSettings",
-    "US_ENTRIES_AUTH_TARGET",
-    "US_ENTRIES_PRIVATE_AUTH_TARGET",
     "UnversionedData",
     "UnversionedExtractProperties",
     "UsEntriesClientException",

@@ -28,11 +28,12 @@ from .utils import (
 )
 
 __all__ = [
+    "RLS",
+    "RLS_FAILED_USER_NAME_PREFIX",
     "BaseSubjectResolver",
     "FieldRLSSerializer",
     "FieldRestrictions",
     "NotFoundSubjectResolver",
-    "RLS",
     "RLS2ConfigEntry",
     "RLS2Subject",
     "RLSConfigItem",
@@ -41,7 +42,6 @@ __all__ = [
     "RLSError",
     "RLSSubject",
     "RLSSubjectNotFound",
-    "RLS_FAILED_USER_NAME_PREFIX",
     "is_slug",
     "rls_uses_real_group_ids",
 ]
