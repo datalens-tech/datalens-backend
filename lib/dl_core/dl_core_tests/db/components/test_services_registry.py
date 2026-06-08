@@ -65,7 +65,7 @@ class TestServicesRegistry(DefaultCoreTestClass):
         # test ensure_data_connection_can_be_used
         assert ce_factory.get_async_conn_executor(saved_connection) is not None
         LocalEntityUsageChecker.IS_DASHSQL_ALLOWED = False
-        with pytest.raises(EntityUsageNotAllowed, match="^DashSQL should be allowed!$"):
+        with pytest.raises(EntityUsageNotAllowed, match=r"^DashSQL should be allowed!$"):
             ce_factory.get_async_conn_executor(saved_connection)
 
         # test ensure_dataset_can_be_used; can only be tested directly
@@ -75,5 +75,5 @@ class TestServicesRegistry(DefaultCoreTestClass):
         empty_saved_dataset.data.load_preview_by_default = False
         empty_saved_dataset.data.template_enabled = False
         empty_saved_dataset.data.data_export_forbidden = False
-        with pytest.raises(EntityUsageNotAllowed, match="^Preview should be enabled by default!$"):
+        with pytest.raises(EntityUsageNotAllowed, match=r"^Preview should be enabled by default!$"):
             checker.ensure_dataset_can_be_used(rci, empty_saved_dataset, sync_us_manager)
