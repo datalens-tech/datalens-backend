@@ -142,7 +142,7 @@ class CursorLogger:
             username=engine_url.username,
             query_id=str(getattr(cursor, "_query_id", None)),
             # missing: folder_id
-            execution_time=int(round(execution_time_seconds * 1000)),
+            execution_time=round(execution_time_seconds * 1000),
             database=engine_url.database,
             host=engine_url.host,
             drivername=engine_url.drivername,

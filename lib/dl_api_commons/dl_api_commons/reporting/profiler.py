@@ -134,7 +134,7 @@ class DefaultReportingProfiler(ReportingProfiler):
             # auto: request_id
             **self.rci.get_reporting_extra(),
             connection_type=start_record.connection_type.name,
-            execution_time=int(round((end_timestamp - start_record.timestamp) * 1000)),
+            execution_time=round((end_timestamp - start_record.timestamp) * 1000),
             query=self._obfuscate_query(start_record.query),
             status="success" if error is None else "error",
             error=error_text,

@@ -201,7 +201,7 @@ class GenericProfiler:
             stage=self.stage,
             stage_stack=list(self.get_current_stages_stack()),
             stage_stack_str=self.get_current_stages_stack_str(),
-            execution_time=int(round(time_diff * 1e7)),  # TODO: drop this weird stuff
+            execution_time=round(time_diff * 1e7),  # TODO: drop this weird stuff
             success=exc_type is None,
             exc_type=exc_type.__name__ if exc_type else None,
             exc_info_text=exc_info_text,

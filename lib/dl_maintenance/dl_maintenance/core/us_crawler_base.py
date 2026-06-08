@@ -200,7 +200,7 @@ class USEntryCrawler:
                 extra=extra_with_evt_code(EVT_CODE_RUN_END, crawler_run_extra),
             )
         else:
-            time_elapsed = int(round(time.monotonic() - started_ts))
+            time_elapsed = round(time.monotonic() - started_ts)
             # TODO FIX: Add availability to define post-run hook in subclass
             counters = {key: len(val) for key, val in map_handling_status_entry_id.items()}
 

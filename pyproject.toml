@@ -106,7 +106,6 @@ ignore = [
   "RUF015", # Later: unnecessary-iterable-allocation-for-first-element
   "RUF017", # Later: quadratic-list-summation
   "RUF043", # Later: pytest-raises-ambiguous-pattern
-  "RUF046", # Later: unnecessary-cast-to-int
   "RUF059", # Later: unused-unpacked-variable
   "RUF061", # Later: legacy-form-pytest-raises
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
