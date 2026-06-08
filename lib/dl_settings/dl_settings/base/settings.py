@@ -62,9 +62,9 @@ def _warn_extra_fields(cls: type[pydantic.BaseModel], data: dict) -> None:
         )
 
 
-class BaseSettings(dl_pydantic.BaseModel):
+class _SettingsMixin(pydantic.BaseModel):
     """
-    Base settings class that should be used for sub-models and mixins.
+    Common configuration and validators shared by `BaseSettings` and `BaseRootSettings`.
     """
 
     MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = True
@@ -78,7 +78,15 @@ class BaseSettings(dl_pydantic.BaseModel):
         return data
 
 
-class BaseRootSettings(pydantic_settings.BaseSettings):
+class BaseSettings(_SettingsMixin, dl_pydantic.BaseModel):
+    """
+    Base settings class that should be used for sub-models and mixins.
+    """
+
+    model_config = pydantic.ConfigDict(validate_default=True)
+
+
+class BaseRootSettings(_SettingsMixin, pydantic_settings.BaseSettings):
     """
     Base settings class that should be used for the root settings model.
     """
@@ -89,15 +97,6 @@ class BaseRootSettings(pydantic_settings.BaseSettings):
         case_sensitive=True,
         hide_input_in_errors=True,
     )
-    MODEL_ENABLE_EXTRA_FIELDS_WARNING: ClassVar[bool] = True
-
-    @pydantic.model_validator(mode="before")
-    @classmethod
-    def _warn_extra_fields(cls, data: dict) -> dict:
-        if isinstance(data, dict) and cls.MODEL_ENABLE_EXTRA_FIELDS_WARNING:
-            _warn_extra_fields(cls, data)
-
-        return data
 
     @classmethod
     def _get_yaml_source_paths(cls) -> list[str]:

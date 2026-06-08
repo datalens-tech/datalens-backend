@@ -519,3 +519,23 @@ def test_dict_with_type_key_factory_skips_unknown_types(caplog: pytest.LogCaptur
     )
 
     assert result == {}
+
+
+def test_typed_settings_not_implemented_field(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class Base(dl_settings.TypedBaseSettings): ...
+
+    class Child(Base):
+        FIELD_2: str = NotImplemented
+
+    Base.register("child", Child)
+
+    class Root(dl_settings.BaseRootSettings):
+        CHILD: dl_settings.TypedAnnotation[Base] = NotImplemented
+
+    with tmp_configs_utils.TmpConfigs() as tmp_configs:
+        config_path = tmp_configs.add({"CHILD": {"TYPE": "child"}})
+        monkeypatch.setenv("CONFIG_PATH", str(config_path))
+        with pytest.raises(pydantic.ValidationError):
+            Root()

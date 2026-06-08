@@ -16,6 +16,17 @@ def test_raise_no_value() -> None:
         Settings()
 
 
+def test_base_settings_raise_no_value() -> None:
+    class Nested(dl_settings.BaseSettings):
+        field: str = NotImplemented
+
+    class Settings(dl_settings.BaseRootSettings):
+        NESTED: Nested = pydantic.Field(default_factory=Nested)
+
+    with pytest.raises(pydantic.ValidationError):
+        Settings()
+
+
 def test_envs(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
