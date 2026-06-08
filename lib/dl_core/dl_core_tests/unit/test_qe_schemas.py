@@ -159,3 +159,15 @@ def test_db_adapter_query_schema(db_adapter_query: DBAdapterQuery):
     reloaded_db_adapter_query = schema.load(dumped_db_adapter_query)
 
     assert reloaded_db_adapter_query == db_adapter_query
+
+
+def test_db_adapter_query_schema_ignores_unknown_field():
+    # Forward-compatibility: a newer producer may send fields that an older consumer (RQE)
+    # does not know yet. Deserialization must drop them, not 500.
+    schema = DBAdapterQueryStrSchema()
+    dumped_db_adapter_query = schema.dump(DBAdapterQuery(query=""))
+    dumped_db_adapter_query["some_field_from_the_future"] = {"foo": "bar"}
+
+    reloaded_db_adapter_query = schema.load(dumped_db_adapter_query)
+
+    assert reloaded_db_adapter_query == DBAdapterQuery(query="")
