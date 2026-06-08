@@ -105,7 +105,6 @@ ignore = [
   "RUF012", # Later: mutable-class-default
   "RUF015", # Later: unnecessary-iterable-allocation-for-first-element
   "RUF017", # Later: quadratic-list-summation
-  "RUF018", # Later: assignment-in-assert
   "RUF043", # Later: pytest-raises-ambiguous-pattern
   "RUF046", # Later: unnecessary-cast-to-int
   "RUF059", # Later: unused-unpacked-variable
