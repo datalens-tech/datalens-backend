@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+import itertools
 
 from dl_sqlalchemy_metrica_api.api_info.metrika.advertising import advertising_fields
 from dl_sqlalchemy_metrica_api.api_info.metrika.hits import hits_fields
@@ -26,7 +27,7 @@ fields_by_namespace = {
 }
 
 
-fields_by_name = {f["name"]: f for f in sum(fields_by_namespace.values(), [])}
+fields_by_name = {field["name"]: field for field in itertools.chain.from_iterable(fields_by_namespace.values())}
 
 
 metrics_by_namespace = {
