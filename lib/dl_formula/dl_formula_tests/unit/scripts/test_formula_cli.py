@@ -81,7 +81,7 @@ def test_translate(tool):
 
 
 def test_split(tool):
-    stdout, stderr = tool.run(["split", "--diff", "45 BETWEEN [n2] = 123 AND 456"])
+    stdout, _stderr = tool.run(["split", "--diff", "45 BETWEEN [n2] = 123 AND 456"])
     assert stdout == (
         " 0: ▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫▫\n"
         " 1: ▫▫ BETWEEN ▫▫▫▫▫▫▫▫▫▫ AND ▫▫▫\n"
@@ -122,7 +122,7 @@ def test_goto(tool):
 
 
 def test_slice(tool):
-    stdout, stderr = tool.run(
+    stdout, _stderr = tool.run(
         [
             "slice",
             "--diff",

@@ -75,7 +75,7 @@ class CachedTypedQueryProcessor(TypedQueryProcessorBase):
 
         cache_helper = CacheProcessingHelper(cache_engine=self._cache_engine)
         cache_options = self.get_cache_options(typed_query=typed_query)
-        cache_situation, chunked_stream = await cache_helper.run_with_cache(
+        _cache_situation, chunked_stream = await cache_helper.run_with_cache(
             generate_func=generate_func,
             cache_options=cache_options,
             allow_cache_read=True,

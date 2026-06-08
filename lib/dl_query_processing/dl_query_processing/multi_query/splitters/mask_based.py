@@ -483,7 +483,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         for subquery_mask in split_masks:
             formula_split_masks += subquery_mask.formula_split_masks
 
-        base_subquery_mask, other_subquery_masks = self._separate_base_and_other_masks(split_masks)
+        base_subquery_mask, _other_subquery_masks = self._separate_base_and_other_masks(split_masks)
         base_gb_alias_by_extract = {
             dim.expr.extract_not_none: dim.alias for dim in base_subquery_mask.add_formulas if dim.is_group_by
         }

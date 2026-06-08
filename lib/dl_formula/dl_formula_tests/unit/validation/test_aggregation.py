@@ -306,7 +306,7 @@ def test_window_sum_is_not_aggregation():
 
 def test_inconsistent_aggregation():
     dims = get_dims()
-    dim1, dim2 = dims
+    dim1, _dim2 = dims
     env = ValidationEnvironment()
 
     with pytest.raises(exc.ValidationError) as exc_info:

@@ -73,7 +73,7 @@ class RankPercentileTranslationImplementation(FuncTranslationImplementationBase)
         def translation_rank(value: Any, *args: Any) -> SAFunction:
             return sa.func.RANK(value)
 
-        args, kwargs = self._handle_args(
+        args, _kwargs = self._handle_args(
             raw_args,
             translation_func=translation_rank,
             translation_ctx=translation_ctx,

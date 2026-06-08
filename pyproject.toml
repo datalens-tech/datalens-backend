@@ -105,7 +105,6 @@ ignore = [
   "RUF012", # Later: mutable-class-default
   "RUF017", # Later: quadratic-list-summation
   "RUF043", # Later: pytest-raises-ambiguous-pattern
-  "RUF059", # Later: unused-unpacked-variable
   "RUF061", # Later: legacy-form-pytest-raises
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
   "SIM101", # Later: duplicate-isinstance-call

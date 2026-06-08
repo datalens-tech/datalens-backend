@@ -42,7 +42,7 @@ def validate_window_functions(
 
 
 def test_no_errors():
-    dim1, dim2 = get_dims()
+    _dim1, dim2 = get_dims()
     env = ValidationEnvironment()
 
     # no window function

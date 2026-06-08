@@ -74,7 +74,7 @@ def test_versions(tool):
 
 def test_doc_full_dir(tool, example_data_patch):
     tmpdir = tempfile.mkdtemp()
-    stdout, stderr = tool.run(["generate", tmpdir])
+    _stdout, stderr = tool.run(["generate", tmpdir])
     assert stderr == ""
     assert os.path.exists(os.path.join(tmpdir, "function-ref", "CONCAT.md"))
     assert os.path.exists(os.path.join(tmpdir, "function-ref", "all.md"))
