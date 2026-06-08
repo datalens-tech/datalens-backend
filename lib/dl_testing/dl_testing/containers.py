@@ -65,7 +65,7 @@ def get_test_container_hostport(
 
     ports = docker_compose_yml["services"][service_key]["ports"]
     if original_port is not None:
-        port_pair = [pp.split(":") for pp in ports if int(pp.split(":")[1]) == original_port][0]
+        port_pair = next(pp.split(":") for pp in ports if int(pp.split(":")[1]) == original_port)
     else:
         port_pair = ports[0].split(":")
 

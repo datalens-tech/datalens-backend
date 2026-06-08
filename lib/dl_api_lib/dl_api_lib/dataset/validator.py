@@ -825,8 +825,8 @@ class DatasetValidator(DatasetBaseWrapper):
         dsrc_coll = self._get_data_source_coll_strict(source_id=avatar.source_id)
         raw_schema = dsrc_coll.get_cached_raw_schema()
         try:
-            return [c for c in raw_schema if c.name == field.source][0]  # type: ignore  # TODO: fix
-        except IndexError:
+            return next(c for c in raw_schema if c.name == field.source)  # type: ignore  # TODO: fix
+        except StopIteration:
             LOGGER.warning("No field with source %s found in raw_schema", field.source)
             return None
 

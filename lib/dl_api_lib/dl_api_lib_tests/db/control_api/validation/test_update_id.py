@@ -79,7 +79,7 @@ class TestUpdateId(DefaultApiTestBase):
 
     def test_update_id_field_with_component_errors(self, control_api, saved_dataset):
         ds = saved_dataset
-        a_field = [f for f in ds.result_schema if f.cast == UserDataType.float][0]
+        a_field = next(f for f in ds.result_schema if f.cast == UserDataType.float)
         ds_resp = control_api.apply_updates(
             dataset=ds,
             updates=[
@@ -96,7 +96,7 @@ class TestUpdateId(DefaultApiTestBase):
         assert ds_resp.status_code == HTTPStatus.OK
         ds = ds_resp.dataset
 
-        b_field = [f for f in ds.result_schema if f.title == f"Doubled {a_field.title}"][0]
+        b_field = next(f for f in ds.result_schema if f.title == f"Doubled {a_field.title}")
         ds_resp = control_api.apply_updates(
             dataset=ds,
             updates=[

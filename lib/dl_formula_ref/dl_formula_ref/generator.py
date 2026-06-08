@@ -273,13 +273,13 @@ class ReferenceDocGenerator:
         doc_config = self._gen_config.func_doc_configs[FuncDocConfigVersion.overview_shortcut]
         raw_funcs = self._func_ref.filter(category=category)
         rend_funcs = self._render_funcs(raw_funcs=raw_funcs, doc_config=doc_config)
-        rend_first_func = [
+        rend_first_func = next(
             # Some funcs have double categories, so find one whose primary category is the one we need
             # TODO: refactor this
             func
             for func in rend_funcs
             if func.category_name == category
-        ][0]
+        )
         title = human_category(category=category, locale=self._locale)
         self._generate_doc_list(
             context_path=context_path,

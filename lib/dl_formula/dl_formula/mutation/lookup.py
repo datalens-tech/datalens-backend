@@ -108,11 +108,11 @@ class AgoLookupFunctionMutator(DateLookupFunctionMutatorBase):
         if len(func_args) > 2:  # default unit is "day", so we're not interested
             unit_name = "day"
             try:
-                string_arg: nodes.LiteralString = [
+                string_arg: nodes.LiteralString = next(
                     arg for arg in func_args[2:] if isinstance(arg, nodes.LiteralString)
-                ][0]
+                )
                 unit_name = string_arg.value.lower()
-            except IndexError:
+            except StopIteration:
                 pass
 
             if unit_name in _MONTH_BASED_UNITS:

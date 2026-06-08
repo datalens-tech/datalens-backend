@@ -103,7 +103,6 @@ ignore = [
   "RUF008", # Later: mutable-dataclass-default
   "RUF009", # Later: function-call-in-dataclass-default-argument
   "RUF012", # Later: mutable-class-default
-  "RUF015", # Later: unnecessary-iterable-allocation-for-first-element
   "RUF017", # Later: quadratic-list-summation
   "RUF043", # Later: pytest-raises-ambiguous-pattern
   "RUF059", # Later: unused-unpacked-variable

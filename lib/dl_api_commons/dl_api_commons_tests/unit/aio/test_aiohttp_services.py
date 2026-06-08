@@ -160,26 +160,26 @@ async def test_error_handling_middleware(
 
     caplog.clear()
     assert await get_status_and_body("/info") == (400, {"msg": "info_exc"})
-    log_rec = [r for r in caplog.records if r.message == "Regular exception fired" and r.name == log_name][0]
+    log_rec = next(r for r in caplog.records if r.message == "Regular exception fired" and r.name == log_name)
     assert log_rec.levelname == "INFO"
     assert log_rec.exc_info
 
     caplog.clear()
     assert await get_status_and_body("/warn") == (400, {"msg": "warn_exc"})
-    log_rec = [r for r in caplog.records if r.levelname == "WARNING" and r.name == log_name][0]
+    log_rec = next(r for r in caplog.records if r.levelname == "WARNING" and r.name == log_name)
     assert log_rec.message == "Warning exception fired"
     assert log_rec.exc_info
 
     caplog.clear()
     assert await get_status_and_body("/error") == (500, {"msg": "err_exc"})
-    log_rec = [r for r in caplog.records if r.levelname == "ERROR" and r.name == log_name][0]
+    log_rec = next(r for r in caplog.records if r.levelname == "ERROR" and r.name == log_name)
     assert log_rec.message == "Caught an exception in request handler"
     assert log_rec.exc_info
 
     caplog.clear()
     assert await get_status_and_body("/fmt_error") == (500, {"message": "Internal Server Error"})
-    fmt_log_rec = [r for r in caplog.records if r.levelname == "CRITICAL" and r.name == log_name][0]
-    cause_log_rec = [r for r in caplog.records if r.levelname == "ERROR" and r.name == log_name][0]
+    fmt_log_rec = next(r for r in caplog.records if r.levelname == "CRITICAL" and r.name == log_name)
+    cause_log_rec = next(r for r in caplog.records if r.levelname == "ERROR" and r.name == log_name)
 
     assert fmt_log_rec.message == "Error handler raised an error during creating error response"
     assert fmt_log_rec.exc_info
@@ -193,6 +193,6 @@ async def test_error_handling_middleware(
     resp_json = await resp.json()
     assert resp_json == {}
     assert resp.reason == "Not Found"
-    log_rec = [r for r in caplog.records if r.message == "Regular exception fired" and r.name == log_name][0]
+    log_rec = next(r for r in caplog.records if r.message == "Regular exception fired" and r.name == log_name)
     assert log_rec.levelname == "INFO"
     assert log_rec.exc_info
