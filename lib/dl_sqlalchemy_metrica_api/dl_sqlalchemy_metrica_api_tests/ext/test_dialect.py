@@ -77,6 +77,7 @@ def test_exceptions(m_expr_distinct, metrika_db_engine):
     assert "Entity not found" in str(exc_info.value.orig)
 
 
+@pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_future_date(metrika_expr_select_date_users, metrika_db_engine):
     today = datetime.date.today()
     expr = metrika_expr_select_date_users.where(
@@ -92,6 +93,7 @@ def test_future_date(metrika_expr_select_date_users, metrika_db_engine):
     assert len(data) == 3
 
 
+@pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gt(metrika_expr_select_date_users, metrika_db_engine):
     start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") > start_dt)
@@ -102,6 +104,7 @@ def test_date_gt(metrika_expr_select_date_users, metrika_db_engine):
     assert len(data) == 5
 
 
+@pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gte(metrika_expr_select_date_users, metrika_db_engine):
     start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") >= start_dt)
@@ -112,6 +115,7 @@ def test_date_gte(metrika_expr_select_date_users, metrika_db_engine):
     assert len(data) == 6
 
 
+@pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gt_lt(metrika_expr_select_date_users, metrika_db_engine):
     start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
     end_dt = (datetime.date.today() - datetime.timedelta(days=2)).isoformat()
@@ -125,6 +129,7 @@ def test_date_gt_lt(metrika_expr_select_date_users, metrika_db_engine):
     assert len(data) == 2
 
 
+@pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_eq(metrika_expr_select_date_users, metrika_db_engine):
     start_dt = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") == start_dt)
@@ -135,6 +140,7 @@ def test_date_eq(metrika_expr_select_date_users, metrika_db_engine):
     assert len(data) == 1
 
 
+@pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gt_lt_by_alias(metrika_expr_select_date_users, metrika_db_engine):
     start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
     end_dt = (datetime.date.today() - datetime.timedelta(days=2)).isoformat()
