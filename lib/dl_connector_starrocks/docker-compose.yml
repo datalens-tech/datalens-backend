@@ -4,7 +4,6 @@ services:
     ports:
       - "59030:9030"  # MySQL protocol port
       - "58030:8030"  # HTTP port
-    container_name: starrocks-test
     # Relax StarRocks disk watermarks before launch. The defaults reserve 100GB of free
     # space (storage_*_reserve_bytes); CI runners don't have that, so the BE is flagged
     # "not enough disk space" and CREATE TABLE fails with "No alive nodes".
