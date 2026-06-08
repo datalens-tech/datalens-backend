@@ -103,7 +103,6 @@ ignore = [
   "RUF008", # Later: mutable-dataclass-default
   "RUF009", # Later: function-call-in-dataclass-default-argument
   "RUF012", # Later: mutable-class-default
-  "RUF061", # Later: legacy-form-pytest-raises
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
   "SIM101", # Later: duplicate-isinstance-call
   "SIM102", # Later: collapsible-if

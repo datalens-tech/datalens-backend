@@ -30,18 +30,23 @@ def test_cached_with_errors():
     assert counter == 5
 
     # cached exception
-    assert pytest.raises(TypeError, my_func, None, None)
+    with pytest.raises(TypeError):
+        my_func(None, None)
     assert counter == 6
-    assert pytest.raises(TypeError, my_func, None, None)
+    with pytest.raises(TypeError):
+        my_func(None, None)
     assert counter == 6
     # noncached exception
-    assert pytest.raises(ZeroDivisionError, my_func, 2, 0)
+    with pytest.raises(ZeroDivisionError):
+        my_func(2, 0)
     assert counter == 7
-    assert pytest.raises(ZeroDivisionError, my_func, 2, 0)
+    with pytest.raises(ZeroDivisionError):
+        my_func(2, 0)
     assert counter == 8
 
     my_func.cache_clear()
-    assert pytest.raises(TypeError, my_func, None, None)
+    with pytest.raises(TypeError):
+        my_func(None, None)
     assert counter == 9
 
 
