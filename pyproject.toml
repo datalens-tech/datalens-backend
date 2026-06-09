@@ -112,7 +112,6 @@ ignore = [
   "SIM117", # Later: multiple-with-statements
   "SIM118", # Later: in-dict-keys
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
-  "UP031", # Later: printf-string-formatting
   "UP042", # Later: replace-str-enum
   "UP046", # Later: non-pep695-generic-class
 ]

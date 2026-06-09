@@ -84,7 +84,7 @@ def format_frame_locals(frame, max_length=512, infix="...", prefix_tpl="      %s
             suffix = suffix_tpl % (len(result),)
             length = 80 - len(prefix) - len(infix) - len(suffix)
             result = result[: (length + 1) // 2] + infix + result[-(length // 2) :] + suffix
-        ret.append("%s%s\n" % (prefix, result))
+        ret.append(f"{prefix}{result}\n")
     return ret
 
 
@@ -139,9 +139,9 @@ def get_record_exc_repr(record, fmt=FILE_FORMAT, datefmt=DT_FORMAT, full=False, 
     if full:
         req = getattr(record, "request", None)
         if req is not None:
-            lines.append("Path: %s" % req.path)
-            lines.append("GET: %s" % req.GET)
-            lines.append("POST: %s" % format_post(req))
+            lines.append(f"Path: {req.path}")
+            lines.append(f"GET: {req.GET}")
+            lines.append(f"POST: {format_post(req)}")
         exc_info = record.exc_info
         if exc_info is not None:
             if show_locals:
@@ -163,7 +163,7 @@ def get_record_exc_repr(record, fmt=FILE_FORMAT, datefmt=DT_FORMAT, full=False, 
         f_globals = inner.tb_frame.f_globals
         module_name = f_globals.get("__name__", "<unknown>")
 
-        record.message = "%-20s %s:%s %s" % (exception.__name__, module_name, lineno, exception_str(value))
+        record.message = f"{exception.__name__:<20} {module_name}:{lineno} {exception_str(value)}"
         lines[0] = fmt % record.__dict__
 
     return "\n".join([smart_str(line) for line in lines])

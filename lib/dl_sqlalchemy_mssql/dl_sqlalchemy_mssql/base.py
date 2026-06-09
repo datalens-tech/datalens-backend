@@ -63,18 +63,13 @@ class BIMSSQLDialectBasic(UPSTREAM):
                 return "0x" + value.encode("hex")
 
         if isinstance(value, datetime.datetime):
-            return "{ts '%04d-%02d-%02d %02d:%02d:%02d.%03d'}" % (
-                value.year,
-                value.month,
-                value.day,
-                value.hour,
-                value.minute,
-                value.second,
-                value.microsecond / 1000,
+            return (
+                f"{{ts '{value.year:04d}-{value.month:02d}-{value.day:02d} "
+                f"{value.hour:02d}:{value.minute:02d}:{value.second:02d}.{value.microsecond // 1000:03d}'}}"
             )
 
         if isinstance(value, datetime.date):
-            return "{d '%04d-%02d-%02d'}" % (value.year, value.month, value.day)
+            return f"{{d '{value.year:04d}-{value.month:02d}-{value.day:02d}'}}"
 
         if isinstance(value, tuple) and len(value) == 1:
             # Sometimes a result of a query will be provided as a filter to another query, but

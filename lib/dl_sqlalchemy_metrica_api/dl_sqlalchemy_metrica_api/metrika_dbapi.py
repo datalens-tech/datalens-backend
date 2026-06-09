@@ -113,7 +113,7 @@ class Connection:
         self._cli = MetrikaApiClient(oauth_token, **client_kwargs)
         if fields_namespace:
             if not hasattr(self.metrica_fields_namespaces_enum, fields_namespace):
-                raise MetrikaApiException("Unknown fields namespace: %s" % fields_namespace)
+                raise MetrikaApiException(f"Unknown fields namespace: {fields_namespace}")
             self.fields_namespace = self.metrica_fields_namespaces_enum[fields_namespace]
         self.accuracy = accuracy
 
@@ -207,7 +207,7 @@ class Cursor:
         if subst_params:
             for k, v in query_params.items():
                 if len(v) != 1:
-                    raise ProgrammingError("Unexpected multiple parameter %s values %s" % (k, v))
+                    raise ProgrammingError(f"Unexpected multiple parameter {k} values {v}")
                 v = v[0] % subst_params
                 query_params[k] = v
 

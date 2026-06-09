@@ -55,7 +55,7 @@ def get_context_data(require=True):
     env_vars = CONTEXT_ENV_VARS
     context_data = {key: (os.environ.get(src) or "").lower() for key, src in env_vars.items()}
     if require and not all(context_data.values()):
-        raise Exception("Not all context environment variables are set: %r -> %r" % (env_vars, context_data))
+        raise Exception(f"Not all context environment variables are set: {env_vars!r} -> {context_data!r}")
     return context_data
 
 

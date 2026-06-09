@@ -36,7 +36,7 @@ def compile_pg_query(
             input_sizes = {}
         items = sorted([(key, input_sizes.get(bindparam)) for bindparam, key in compiled.bind_names.items()])
         mapping = {
-            key: "$%d::%s" % (idx, typ) if typ else "$%d" % idx
+            key: f"${idx}::{typ}" if typ else f"${idx}"
             for idx, (key, typ) in enumerate(
                 ((key, pg_types.get(typ)) for key, typ in items),
                 1,

@@ -125,7 +125,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         return self._generate_generic_binary(binary, "==", **kw)  # "==" instead of "="
 
     def visit_inv_unary(self, element, operator_, **kw):
-        return "NOT(%s)" % self.process(element.element, **kw)
+        return f"NOT({self.process(element.element, **kw)})"
 
     def bindparam_string(self, name, _extra_quoting=True, **kw):
         if _extra_quoting:
@@ -140,12 +140,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             if self.dialect.identifier_preparer._double_percents:
                 value = value.replace("%", "%%")
 
-            return "'%s'" % value
+            return f"'{value}'"
 
         processor = type_._cached_literal_processor(self.dialect)
         if processor:
             return processor(value)
-        raise NotImplementedError("Don't know how to literal-quote value %r" % value)
+        raise NotImplementedError(f"Don't know how to literal-quote value {value!r}")
 
     def visit_bindparam(
         self,
@@ -159,7 +159,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         if literal_binds or (within_columns_clause and self.ansi_bind_rules):
             if bindparam.value is None and bindparam.callable is None:
                 raise exc.CompileError(
-                    "Bind parameter '%s' without a " "renderable value not allowed here." % bindparam.key
+                    f"Bind parameter '{bindparam.key}' without a " "renderable value not allowed here."
                 )
             return self.render_literal_bindparam(bindparam, within_columns_clause=True, **kwargs)
 
@@ -184,7 +184,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             value = escape(value)
 
         if _extra_quoting:
-            return "'%s'" % value
+            return f"'{value}'"
         return value
 
     def visit_between_op_binary(self, binary, operator, **kw):
@@ -215,12 +215,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def visit_contains_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = "*%s*" % binary.right.value
+        binary.right.value = f"*{binary.right.value}*"
         return self.visit_like_op_binary(binary, operator, **kw)
 
     def visit_not_contains_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = "*%s*" % binary.right.value
+        binary.right.value = f"*{binary.right.value}*"
         return self.visit_notlike_op_binary(binary, operator, **kw)
 
     def visit_notcontains_op_binary(self, binary, operator, **kw):
@@ -228,12 +228,12 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def visit_startswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = "%s*" % binary.right.value
+        binary.right.value = f"{binary.right.value}*"
         return self.visit_like_op_binary(binary, operator, **kw)
 
     def visit_not_startswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = "%s*" % binary.right.value
+        binary.right.value = f"{binary.right.value}*"
         return self.visit_notlike_op_binary(binary, operator, **kw)
 
     def visit_notstartsswith_op_binary(self, binary, operator, **kw):
@@ -241,31 +241,25 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
 
     def visit_endswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = "*%s" % binary.right.value
+        binary.right.value = f"*{binary.right.value}"
         return self.visit_like_op_binary(binary, operator, **kw)
 
     def visit_not_endswith_op_binary(self, binary, operator, **kw):
         binary = binary._clone()
-        binary.right.value = "*%s" % binary.right.value
+        binary.right.value = f"*{binary.right.value}"
         return self.visit_notlike_op_binary(binary, operator, **kw)
 
     def visit_notendswith_op_binary(self, binary, operator, **kw):
         return self.visit_not_endswith_op_binary(binary, operator, **kw)
 
     def visit_like_op_binary(self, binary, operator, **kw):
-        return "%s=*%s" % (
-            binary.left._compiler_dispatch(self, **kw),
-            binary.right._compiler_dispatch(self, **kw),
-        )
+        return f"{binary.left._compiler_dispatch(self, **kw)}=*{binary.right._compiler_dispatch(self, **kw)}"
 
     def visit_notlike_op_binary(self, binary, operator, **kw):
         return self.visit_not_like_op_binary(binary, operator, **kw)
 
     def visit_not_like_op_binary(self, binary, operator, **kw):
-        return "%s!*%s" % (
-            binary.left._compiler_dispatch(self, **kw),
-            binary.right._compiler_dispatch(self, **kw),
-        )
+        return f"{binary.left._compiler_dispatch(self, **kw)}!*{binary.right._compiler_dispatch(self, **kw)}"
 
     def visit_ilike_op_binary(self, binary, operator, **kw):
         raise NotSupportedError()
@@ -288,7 +282,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         for cla in clauses:
             cla_name = self._get_clause_name(cla, **kwargs)
             if cla_name in self.api_info.fields_by_name and self.api_info.fields_by_name[cla_name]["is_dim"]:
-                raise MetrikaApiDimensionInCalc('Not able to use dimensions in calculations: "%s"' % cla_name)
+                raise MetrikaApiDimensionInCalc(f'Not able to use dimensions in calculations: "{cla_name}"')
 
         return " + ".join([cla._compiler_dispatch(self, **kwargs) for cla in clauses])
 
@@ -313,7 +307,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             for cla in clauses:
                 cla_name = self._get_clause_name(cla, **kwargs)
                 if cla_name not in self.api_info.fields_by_name or not self.api_info.fields_by_name[cla_name]["is_dim"]:
-                    raise MetrikaApiGroupByNotSupported('Grouping by field "%s" is not possible' % cla_name)
+                    raise MetrikaApiGroupByNotSupported(f'Grouping by field "{cla_name}" is not possible')
 
             self._group_by_fields = [name for name in (self._get_clause_name(cla, **kwargs) for cla in clauses) if name]
         else:

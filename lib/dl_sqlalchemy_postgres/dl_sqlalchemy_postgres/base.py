@@ -33,7 +33,7 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
     def _add_collate(self, result):
         collate = self.dialect.enforce_collate
         if collate:
-            return "%s COLLATE %s" % (result, self.dialect.identifier_preparer.quote(collate))
+            return f"{result} COLLATE {self.dialect.identifier_preparer.quote(collate)}"
         return result
 
     def visit_ilike_op_binary(self, *args, **kwargs):
@@ -48,15 +48,12 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
         if add_grouping_collate:
             result = grouping.element._compiler_dispatch(self, **kwargs)
             result = self._add_collate(result)
-            return "(%s)" % (result,)
+            return f"({result})"
         return super().visit_grouping(grouping, asfrom=asfrom, **kwargs)
 
     def _func_with_collate(self, func, **kwargs):
         # See also: sqlalchemy.sql.compiler.SQLCompiler.visit_function
-        result = "%s%s" % (
-            func.name,
-            self.function_argspec(func, add_grouping_collate=True, **kwargs),
-        )
+        result = f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
         # To consider, instead of `visit_grouping`:
         # assert result.endswith(')')
         # return self._add_collate(result[:-1]) + ')'

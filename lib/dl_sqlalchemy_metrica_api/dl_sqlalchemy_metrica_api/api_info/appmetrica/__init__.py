@@ -53,8 +53,8 @@ namespace_by_prefix = {
 def get_namespace_by_name(name):
     name_parts = name.split(":", 2)
     if len(name_parts) != 3:
-        raise ValueError('Unexpected name format: "%s".' % name)
+        raise ValueError(f'Unexpected name format: "{name}".')
     prefix = ":".join(name_parts[:2])
     if prefix not in namespace_by_prefix:
-        raise ValueError('Unknown field prefix: "%s"' % prefix)
+        raise ValueError(f'Unknown field prefix: "{prefix}"')
     return namespace_by_prefix[prefix]

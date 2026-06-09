@@ -14,7 +14,7 @@ class DLMYSQLCompilerBasic(UPSTREAM.statement_compiler):
     def _add_collate(self, result):
         collate = self.dialect.enforce_collate
         if collate:
-            return "%s COLLATE %s" % (result, collate)
+            return f"{result} COLLATE {collate}"
         return result
 
     def visit_like_op_binary(self, binary, operator, **kw):
@@ -29,14 +29,11 @@ class DLMYSQLCompilerBasic(UPSTREAM.statement_compiler):
         if add_grouping_collate:
             result = grouping.element._compiler_dispatch(self, **kwargs)
             result = self._add_collate(result)
-            return "(%s)" % (result,)
+            return f"({result})"
         return super().visit_grouping(grouping, asfrom=asfrom, **kwargs)
 
     def _func_with_collate(self, func, **kwargs):
-        result = "%s%s" % (
-            func.name,
-            self.function_argspec(func, add_grouping_collate=True, **kwargs),
-        )
+        result = f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
         return result
 
     def visit_lower_func(self, func, **kwargs):
