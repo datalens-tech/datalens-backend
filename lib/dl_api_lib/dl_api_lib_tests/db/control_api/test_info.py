@@ -71,7 +71,7 @@ class TestInfo(DefaultApiTestBase):
         all_connectors = itertools.chain(
             uncategorized,
             itertools.chain.from_iterable(
-                connector["includes"] if "includes" in connector else (connector,)  # type: ignore
+                connector.get("includes", (connector,))
                 for connector in itertools.chain.from_iterable(section["connectors"] for section in sections)
             ),
         )
@@ -93,7 +93,7 @@ class TestInfo(DefaultApiTestBase):
         all_connectors = itertools.chain(
             uncategorized,
             itertools.chain.from_iterable(
-                connector["includes"] if "includes" in connector else (connector,)  # type: ignore
+                connector.get("includes", (connector,))
                 for connector in itertools.chain.from_iterable(section["connectors"] for section in sections)
             ),
         )

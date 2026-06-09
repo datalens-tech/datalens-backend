@@ -125,7 +125,7 @@ def get_log_record(caplog, predicate, single=False):  # type: ignore  # 2024-01-
 
 
 def guids_from_titles(result_schema: list[dict], titles: list[str]) -> list[str]:
-    fields = [f["field"] if "field" in f else f for f in result_schema]
+    fields = [f.get("field", f) for f in result_schema]
     guid_by_title = {f["title"]: f["guid"] for f in fields if f.get("title") in titles and f.get("guid")}
     return [guid_by_title[title] for title in titles]
 

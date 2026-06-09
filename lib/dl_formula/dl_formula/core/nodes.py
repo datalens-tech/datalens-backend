@@ -334,7 +334,7 @@ class FormulaItem(abc.ABC):
         if is_modified:
             children = cast(
                 list[FormulaItem],
-                [to_replace[idx] if idx in to_replace else child for idx, child in enumerate(self.__children)],
+                [to_replace.get(idx, child) for idx, child in enumerate(self.__children)],
             )
             return self.light_copy(children)
 
