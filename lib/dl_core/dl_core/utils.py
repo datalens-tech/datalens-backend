@@ -239,7 +239,7 @@ def secrepr(value: str | None) -> str:
     if not value:
         return repr(value)
     if not isinstance(value, str):
-        # Really shouldn't raise in a `repr`
+        LOGGER.warning("secrepr_db_url received a non-str value of type %r", type(value))
         return f"???{type(value)!r}???"
 
     side_size = SECREPR_SIDE_SIZE  # not a kwarg just to keep mypy happier
@@ -252,6 +252,31 @@ def secrepr_dict(d: dict[str, str | None]) -> str:
     if not d:
         return repr(d)
     return repr({key: secrepr(value) for key, value in d.items()})
+
+
+SECREPR_DB_URL_USER_MASK = "{user}"
+SECREPR_DB_URL_PASSWORD_MASK = "{password}"
+
+SECREPR_DB_URL_CREDENTIALS_RE = re.compile(r"(?<=://)[^:@/?#\s]+(:[^@/?#\s]*)?(?=@)")
+
+
+def _secrepr_db_url_mask(match: re.Match[str]) -> str:
+    if match.group(1) is None:  # no password
+        return SECREPR_DB_URL_USER_MASK
+    return f"{SECREPR_DB_URL_USER_MASK}:{SECREPR_DB_URL_PASSWORD_MASK}"
+
+
+def secrepr_db_url(value: str | None) -> str:  # TODO: add regex to obfuscator after BI-7483
+    """
+    ``postgresql://user:pass@host:5432/db`` -> ``'postgresql://{user}:{password}@host:5432/db'``
+    """
+    if not value:
+        return repr(value)
+    if not isinstance(value, str):
+        LOGGER.warning("secrepr_db_url received a non-str value of type %r", type(value))
+        return f"???{type(value)!r}???"
+
+    return repr(SECREPR_DB_URL_CREDENTIALS_RE.sub(_secrepr_db_url_mask, value))
 
 
 def _multidict_to_list(md: CIMultiDictProxy[str]) -> Iterable[tuple[str, str]]:
