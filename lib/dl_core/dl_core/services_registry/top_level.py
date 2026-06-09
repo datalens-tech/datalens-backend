@@ -157,6 +157,10 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
     def get_installation_specific_service_registry(self, issr_cls: type[_ISSR_T]) -> _ISSR_T:
         pass
 
+    @abc.abstractmethod
+    def get_installation_specific_service_registry_opt(self) -> InstallationSpecificServiceRegistry | None:
+        pass
+
 
 @attr.s(hash=False)
 class DefaultServicesRegistry(ServicesRegistry):
@@ -284,6 +288,9 @@ class DefaultServicesRegistry(ServicesRegistry):
             return self._inst_specific_sr
         raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
 
+    def get_installation_specific_service_registry_opt(self) -> InstallationSpecificServiceRegistry | None:
+        return self._inst_specific_sr
+
     def close(self) -> None:
         if self._conn_exec_factory is not None:
             self._conn_exec_factory.close_sync()
@@ -387,6 +394,9 @@ class DummyServiceRegistry(ServicesRegistry):
         if isinstance(self._inst_specific_sr, issr_cls):
             return self._inst_specific_sr
         raise ValueError(f"Invalid ISST type: expected {issr_cls}, got {type(self._inst_specific_sr)}")
+
+    def get_installation_specific_service_registry_opt(self) -> InstallationSpecificServiceRegistry | None:
+        return self._inst_specific_sr
 
     def close(self) -> None:
         pass
