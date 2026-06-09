@@ -440,7 +440,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                 value = query_params[date_param]
                 if isinstance(value, list):
                     value = value[0]
-                if not type(value) == datetime.date:
+                if type(value) != datetime.date:
                     if isinstance(value, datetime.datetime):
                         value = value.date()
                     else:

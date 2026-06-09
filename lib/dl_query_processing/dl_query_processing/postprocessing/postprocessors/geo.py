@@ -2,18 +2,19 @@ from __future__ import annotations
 
 from functools import lru_cache
 import json
+from typing import Any
 
 DUMMY_GEO_VALUE = "__DUMMY_GEO_VALUE__"
 
 
 @lru_cache(maxsize=2**10)
-def postprocess_geopoint(value) -> str | None:  # type: ignore  # TODO: fix
+def postprocess_geopoint(value: Any) -> str | None:
     value = str(value)
     if value == DUMMY_GEO_VALUE:
         return None
     try:
         geopoint = json.loads(value)
-        if not isinstance(geopoint, list) or not len(geopoint) == 2:
+        if not isinstance(geopoint, list) or len(geopoint) != 2:
             return None
         if not isinstance(geopoint[0], (int, float)) or not (-90 <= geopoint[0] <= 90):
             return None
@@ -44,7 +45,7 @@ def postprocess_geopoint(value) -> str | None:  # type: ignore  # TODO: fix
 
 
 @lru_cache(maxsize=2**10)
-def postprocess_geopolygon(value) -> str | None:  # type: ignore  # TODO: fix
+def postprocess_geopolygon(value: Any) -> str | None:
     value = str(value)
     if value == DUMMY_GEO_VALUE:
         return None
@@ -56,7 +57,7 @@ def postprocess_geopolygon(value) -> str | None:  # type: ignore  # TODO: fix
             if not isinstance(sub_polygon, list) or not sub_polygon:
                 return None
             for geopoint in sub_polygon:
-                if not isinstance(geopoint, list) or not len(geopoint) == 2:
+                if not isinstance(geopoint, list) or len(geopoint) != 2:
                     return None
                 if not isinstance(geopoint[0], (int, float)) or not (-90 <= geopoint[0] <= 90):
                     return None
