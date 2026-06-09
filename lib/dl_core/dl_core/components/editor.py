@@ -472,9 +472,8 @@ class DatasetComponentEditor:
         valid: bool | None = None,
     ) -> None:
         filter = self._ds_accessor.get_extract_filter(filter_id=filter_id)
-        if filter is not None:
-            if valid is not None:
-                filter.valid = valid
+        if filter is not None and valid is not None:
+            filter.valid = valid
 
     def update_extract_sort(
         self,
@@ -482,9 +481,8 @@ class DatasetComponentEditor:
         valid: bool | None = None,
     ) -> None:
         sort = self._ds_accessor.get_extract_sort(sort_id=sort_id)
-        if sort is not None:
-            if valid is not None:
-                sort.valid = valid
+        if sort is not None and valid is not None:
+            sort.valid = valid
 
     def update_extract_properties(
         self,

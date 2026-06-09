@@ -312,14 +312,13 @@ class Worker:
             if burst_jobs_remaining < 1:
                 return
             count = min(burst_jobs_remaining, count)
-        if self.allow_pick_jobs:
-            if self.job_counter < self.max_jobs:
-                now = timestamp_ms()
-                job_ids = await self.pool.zrangebyscore(
-                    self.queue_name, min=float("-inf"), start=self._queue_read_offset, num=count, max=now
-                )
+        if self.allow_pick_jobs and self.job_counter < self.max_jobs:
+            now = timestamp_ms()
+            job_ids = await self.pool.zrangebyscore(
+                self.queue_name, min=float("-inf"), start=self._queue_read_offset, num=count, max=now
+            )
 
-                await self.start_jobs(job_ids)
+            await self.start_jobs(job_ids)
 
         if self.allow_abort_jobs:
             await self._cancel_aborted_jobs()

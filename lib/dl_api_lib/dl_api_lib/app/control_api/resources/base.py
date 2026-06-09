@@ -52,9 +52,8 @@ def _profile_request_check(*args, **kwargs) -> bool:  # type: ignore  # TODO: fi
     Check whether request handler should be profiled with current settings:
     - ``PROFILE_PATH_RE``: limit profiling only to requests with path matching the given regex
     """
-    if PROFILE_REQ_PATH_RE:
-        if not re.match(PROFILE_REQ_PATH_RE, flask.request.path):
-            return False
+    if PROFILE_REQ_PATH_RE and not re.match(PROFILE_REQ_PATH_RE, flask.request.path):
+        return False
 
     return True
 

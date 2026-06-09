@@ -419,9 +419,8 @@ def make_attr_setter(key: str, value: Any, validate=False):
     """
 
     def attr_setter(record):
-        if validate:
-            if hasattr(record, key):
-                raise Exception("Record already has the attribute", key)
+        if validate and hasattr(record, key):
+            raise Exception("Record already has the attribute", key)
         setattr(record, key, value)
 
     return attr_setter

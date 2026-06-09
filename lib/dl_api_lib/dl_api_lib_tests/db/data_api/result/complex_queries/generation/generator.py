@@ -116,10 +116,9 @@ class LODTestAutoGenerator:
             lod_str = f" INCLUDE [{chosen_dim}]"
 
         bfb_str: str = ""
-        if bfb and recursion_state.available_filters:
-            if self._match_probability(self.settings.bfb_probability):
-                recursion_state, bfb_field = recursion_state.pop_bfb_field()
-                bfb_str = f" BEFORE FILTER BY [{bfb_field}]"
+        if bfb and recursion_state.available_filters and self._match_probability(self.settings.bfb_probability):
+            recursion_state, bfb_field = recursion_state.pop_bfb_field()
+            bfb_str = f" BEFORE FILTER BY [{bfb_field}]"
 
         add_args_str = (", " + ", ".join(add_args)) if add_args else ""
         formula_tmpl = FormulaTemplate(

@@ -35,9 +35,8 @@ class DbDispenserBase(abc.ABC, Generic[_DB_CONFIG_TV, _DB_TV]):
         wait_for(name=f"test_db_{db.config}", condition=db.test, timeout=reconnect_timeout)
 
     def initialize_db(self, db: _DB_TV) -> None:
-        if self._wait_on_init:
-            if not db.test():
-                self.wait_for_db(db=db)
+        if self._wait_on_init and not db.test():
+            self.wait_for_db(db=db)
 
     def get_database(self, db_config: _DB_CONFIG_TV) -> _DB_TV:
         db = self.make_database(db_config)

@@ -143,9 +143,12 @@ class ConnectionForm(SerializableConfig):
                 for row_item in row.items:
                     if isinstance(row_item, DisplayConditionsMixin) and row_item.display_conditions is not None:
                         fields_in_conditions |= set(row_item.display_conditions.keys())
-            elif isinstance(row, PreparedRow):
-                if isinstance(row, DisplayConditionsMixin) and row.display_conditions is not None:
-                    fields_in_conditions |= set(row.display_conditions.keys())
+            elif (
+                isinstance(row, PreparedRow)
+                and isinstance(row, DisplayConditionsMixin)
+                and row.display_conditions is not None
+            ):
+                fields_in_conditions |= set(row.display_conditions.keys())
 
         return fields_in_conditions
 

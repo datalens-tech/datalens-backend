@@ -725,9 +725,10 @@ class FormulaCompiler:
         func_list = used_func_calls(formula_obj)
         required_dims: list[formula_nodes.FormulaItem] = []
         for func in func_list:
-            if isinstance(func, formula_nodes.WindowFuncCall):
-                if isinstance(func.grouping, formula_nodes.WindowGroupingAmong):
-                    required_dims.extend(func.grouping.dim_list)
+            if isinstance(func, formula_nodes.WindowFuncCall) and isinstance(
+                func.grouping, formula_nodes.WindowGroupingAmong
+            ):
+                required_dims.extend(func.grouping.dim_list)
 
         return required_dims
 

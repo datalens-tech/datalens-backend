@@ -26,9 +26,8 @@ def read_pkg(path: Path) -> TOMLDocument:
 def pkg_to_targets_ref(pkg_dir: Path, doc: TOMLDocument, sections: list[str] | None = None) -> list[Target]:
     result = list()
     for k, v in doc.get("datalens", {}).get("pytest", {}).items():
-        if sections:
-            if k not in sections:
-                continue
+        if sections and k not in sections:
+            continue
 
         target_path = v.get("target_path", None)
         if target_path:

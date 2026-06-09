@@ -433,9 +433,8 @@ class DatasetApiLoader:
         schema_guids = set(field.guid for field in dataset.result_schema.fields)
 
         # Validate sorting fields
-        if extract.mode != ExtractMode.disabled:
-            if len(extract.sorting) == 0:
-                raise core_exc.ExtractSortingEmpty("Extract sorting is empty")
+        if extract.mode != ExtractMode.disabled and len(extract.sorting) == 0:
+            raise core_exc.ExtractSortingEmpty("Extract sorting is empty")
 
         for sort in extract.sorting:
             if sort.field_guid not in schema_guids:
@@ -511,9 +510,8 @@ class DatasetApiLoader:
             ds_editor.remove_data_source_collection(source_id=source_id)
 
         # additional tweaks
-        if root_avatar_id is not None:
-            if not ds_accessor.get_avatar_strict(root_avatar_id).is_root:
-                ds_editor.set_root_avatar(avatar_id=root_avatar_id, rebuild_relations=False)
+        if root_avatar_id is not None and not ds_accessor.get_avatar_strict(root_avatar_id).is_root:
+            ds_editor.set_root_avatar(avatar_id=root_avatar_id, rebuild_relations=False)
 
         # rls
         self._update_dataset_rls_from_body(dataset=dataset, body=body, allow_rls_change=allow_rls_change)

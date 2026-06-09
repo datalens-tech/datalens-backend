@@ -140,11 +140,10 @@ def process(
 
 
 def main() -> None:
-    if override := os.environ.get("TEST_TARGET_OVERRIDE", ""):
-        if override != "__ALL__":
-            overrides = override.strip().split(",")
-            print(f"affected={json.dumps(overrides)}")
-            return
+    if (override := os.environ.get("TEST_TARGET_OVERRIDE", "")) and override != "__ALL__":
+        overrides = override.strip().split(",")
+        print(f"affected={json.dumps(overrides)}")
+        return
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo")

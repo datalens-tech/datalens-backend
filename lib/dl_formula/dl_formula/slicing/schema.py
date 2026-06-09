@@ -93,9 +93,8 @@ class AggregateFunctionLevelBoundary(LevelBoundary):
         if dl_formula.inspect.node.is_aggregate_function(node):
             return BoundaryCheckResult.raise_level
 
-        if self.constants_neutral:
-            if dl_formula.inspect.expression.is_constant_expression(node, env=inspect_env):
-                return BoundaryCheckResult.neutral
+        if self.constants_neutral and dl_formula.inspect.expression.is_constant_expression(node, env=inspect_env):
+            return BoundaryCheckResult.neutral
 
         return BoundaryCheckResult.maintain_level
 
@@ -115,9 +114,8 @@ class WindowFunctionLevelBoundary(LevelBoundary):
         if isinstance(node, nodes.WindowFuncCall):
             return BoundaryCheckResult.raise_level
 
-        if self.constants_neutral:
-            if dl_formula.inspect.expression.is_constant_expression(node, env=inspect_env):
-                return BoundaryCheckResult.neutral
+        if self.constants_neutral and dl_formula.inspect.expression.is_constant_expression(node, env=inspect_env):
+            return BoundaryCheckResult.neutral
 
         return BoundaryCheckResult.maintain_level
 
@@ -222,9 +220,8 @@ class NestedLevelTaggedBoundary(LevelBoundary):
         if level_tag is not None:
             return self.check_tag(is_own_tag=is_own_tag, level_tag=level_tag)
 
-        if self.constants_neutral:
-            if dl_formula.inspect.expression.is_constant_expression(node, env=inspect_env):
-                return BoundaryCheckResult.neutral
+        if self.constants_neutral and dl_formula.inspect.expression.is_constant_expression(node, env=inspect_env):
+            return BoundaryCheckResult.neutral
 
         return BoundaryCheckResult.maintain_level
 

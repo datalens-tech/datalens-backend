@@ -111,18 +111,17 @@ class DatasetComponentAccessor:
 
             # Check duplicate with different type to remove them later
             existing_source_type = dataset_sources.get(dsrc_coll_spec.origin.connection_ref)
-            if existing_source_type is not None:
-                if existing_source_type != dsrc_coll_spec.origin.source_type:
-                    bad_source_refs.add(dsrc_coll_spec.origin.connection_ref)
+            if existing_source_type is not None and existing_source_type != dsrc_coll_spec.origin.source_type:
+                bad_source_refs.add(dsrc_coll_spec.origin.connection_ref)
 
-                    LOGGER.warning(
-                        "Dataset %s has connection %s with different source types (%s != %s)",
-                        self._dataset.uuid,
-                        dsrc_coll_spec.origin.connection_ref,
-                        existing_source_type,
-                        dsrc_coll_spec.origin.source_type,
-                    )
-                    continue
+                LOGGER.warning(
+                    "Dataset %s has connection %s with different source types (%s != %s)",
+                    self._dataset.uuid,
+                    dsrc_coll_spec.origin.connection_ref,
+                    existing_source_type,
+                    dsrc_coll_spec.origin.source_type,
+                )
+                continue
 
             dataset_sources[dsrc_coll_spec.origin.connection_ref] = dsrc_coll_spec.origin.source_type
 

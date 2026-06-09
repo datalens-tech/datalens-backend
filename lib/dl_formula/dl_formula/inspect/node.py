@@ -41,31 +41,36 @@ def is_window_function(node: nodes.FormulaItem) -> bool:
 
 def is_lookup_function(node: nodes.FormulaItem) -> bool:
     # FIXME: Add a separate function attribute for that
-    if isinstance(node, nodes.FuncCall) and not isinstance(node, nodes.WindowFuncCall):
-        if not can_be_aggregate(node.name) and supports_bfb(node.name, is_window=False):
-            return True
+    if (
+        isinstance(node, nodes.FuncCall)
+        and not isinstance(node, nodes.WindowFuncCall)
+        and not can_be_aggregate(node.name)
+        and supports_bfb(node.name, is_window=False)
+    ):
+        return True
 
     return False
 
 
 def has_non_default_lod_dimensions(node: nodes.FormulaItem) -> bool:
-    if isinstance(node, nodes.FuncCall):
-        if is_aggregate_function(node):
-            if not isinstance(node.lod, nodes.DefaultAggregationLodSpecifier):
-                # Aggregations with custom LODs
-                return True
+    if (
+        isinstance(node, nodes.FuncCall)
+        and is_aggregate_function(node)
+        and not isinstance(node.lod, nodes.DefaultAggregationLodSpecifier)
+    ):
+        # Aggregations with custom LODs
+        return True
 
     return False
 
 
 def is_extended_aggregation(node: nodes.FormulaItem) -> bool:
-    if isinstance(node, nodes.FuncCall):
-        if is_aggregate_function(node):
-            if not isinstance(node.lod, nodes.DefaultAggregationLodSpecifier):
-                # Aggregations with custom LODs
-                return True
-            if node.before_filter_by.field_names:
-                return True
+    if isinstance(node, nodes.FuncCall) and is_aggregate_function(node):
+        if not isinstance(node.lod, nodes.DefaultAggregationLodSpecifier):
+            # Aggregations with custom LODs
+            return True
+        if node.before_filter_by.field_names:
+            return True
 
     return False
 

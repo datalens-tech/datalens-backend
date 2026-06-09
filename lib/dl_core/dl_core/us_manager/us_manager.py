@@ -208,9 +208,8 @@ class USManagerBase:
     def get_us_entry_serializer(cls, entry_cls: type[USEntry]) -> USEntrySerializer:
         data_cls = entry_cls.DataModel
 
-        if data_cls is not None:
-            if issubclass(data_cls, BaseAttrsDataModel):
-                return USEntrySerializerMarshmallow()
+        if data_cls is not None and issubclass(data_cls, BaseAttrsDataModel):
+            return USEntrySerializerMarshmallow()
 
         raise ValueError(f"Unknown type for US entry data: {entry_cls.DataModel}")
 

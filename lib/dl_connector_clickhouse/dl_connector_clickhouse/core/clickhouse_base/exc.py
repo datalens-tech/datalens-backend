@@ -30,9 +30,8 @@ class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
             debug_info=debug_info,
             params=params,
         )
-        if self.db_message and (match := self.ERR_RE.match(self.db_message)):
-            if table := match.group("table"):
-                self.params["table_definition"] = table
+        if self.db_message and (match := self.ERR_RE.match(self.db_message)) and (table := match.group("table")):
+            self.params["table_definition"] = table
 
 
 class CannotInsertNullInOrdinaryColumn(exc.DatabaseQueryError):

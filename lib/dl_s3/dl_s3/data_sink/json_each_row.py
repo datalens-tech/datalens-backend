@@ -66,16 +66,15 @@ class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_T
     def finalize(self) -> None:
         LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
         assert self._upload_id is not None
-        if self._multipart_upload_started:
-            if self._part_tags:
-                self._s3.complete_multipart_upload(
-                    Bucket=self._bucket_name,
-                    Key=self._s3_key,
-                    UploadId=self._upload_id,
-                    MultipartUpload={"Parts": [{"ETag": etag, "PartNumber": pnum} for pnum, etag in self._part_tags]},
-                )
-                LOGGER.info("Multipart upload competed.")
-                self._multipart_upload_started = False
+        if self._multipart_upload_started and self._part_tags:
+            self._s3.complete_multipart_upload(
+                Bucket=self._bucket_name,
+                Key=self._s3_key,
+                UploadId=self._upload_id,
+                MultipartUpload={"Parts": [{"ETag": etag, "PartNumber": pnum} for pnum, etag in self._part_tags]},
+            )
+            LOGGER.info("Multipart upload competed.")
+            self._multipart_upload_started = False
 
     def cleanup(self) -> None:
         if self._multipart_upload_started:

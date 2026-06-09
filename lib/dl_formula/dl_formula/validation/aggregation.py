@@ -101,12 +101,11 @@ class AggregationChecker(Checker):
                             position=child.position,
                         )
 
-        if not self._allow_nested_agg and dl_formula.inspect.node.is_aggregate_function(node):
-            # function is an aggregation and some of its arguments are already aggregated -> double aggregation
-            if agg_children:
-                with validator.handle_error(node=node):
-                    raise exc.DoubleAggregationError(
-                        "Double aggregation is forbidden",
-                        token=dl_formula.inspect.node.get_token(node),
-                        position=node.position,
-                    )
+        # function is an aggregation and some of its arguments are already aggregated -> double aggregation
+        if not self._allow_nested_agg and dl_formula.inspect.node.is_aggregate_function(node) and agg_children:
+            with validator.handle_error(node=node):
+                raise exc.DoubleAggregationError(
+                    "Double aggregation is forbidden",
+                    token=dl_formula.inspect.node.get_token(node),
+                    position=node.position,
+                )

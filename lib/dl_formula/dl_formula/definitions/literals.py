@@ -80,11 +80,10 @@ def un_literal(sa_obj: Literal | None, value_ctx: TranslationCtx | None = None):
     if isinstance(sa_obj, sa.sql.functions.Function):
         clauses = sa_obj.clauses.clauses
         if all(isinstance(clause, (sa.sql.elements.BindParameter, Null)) for clause in clauses):
-            if sa_obj.name == "toDateTime":
-                # CH datetime un-wrap
-                if len(clauses) == 2:
-                    dt_str = un_literal(clauses[0])
-                    return make_datetime_value(dt_str)
+            # CH datetime un-wrap
+            if sa_obj.name == "toDateTime" and len(clauses) == 2:
+                dt_str = un_literal(clauses[0])
+                return make_datetime_value(dt_str)
             if sa_obj.name == "array":
                 return [un_literal(clause) for clause in clauses]
 

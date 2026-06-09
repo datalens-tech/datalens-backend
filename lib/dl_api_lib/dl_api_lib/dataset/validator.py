@@ -2036,15 +2036,14 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
 
         # Sorting can not be empty when extract is enabled
-        if current_mode != ExtractMode.disabled:
-            if len(sorting) == 0:
-                self._ds.error_registry.add_error(
-                    id=self._ds_accessor.get_extract_properties().id,
-                    type=ComponentType.extract_properties,
-                    message="Empty extract sorting",
-                    code=exc.ExtractValidationSortingEmpty.err_code,
-                    details={},
-                )
+        if current_mode != ExtractMode.disabled and len(sorting) == 0:
+            self._ds.error_registry.add_error(
+                id=self._ds_accessor.get_extract_properties().id,
+                type=ComponentType.extract_properties,
+                message="Empty extract sorting",
+                code=exc.ExtractValidationSortingEmpty.err_code,
+                details={},
+            )
 
     def validate_cache_invalidation_formula(
         self,
@@ -2193,10 +2192,11 @@ class DatasetValidator(DatasetBaseWrapper):
 
         else:
             formula_errors = self._get_formula_errors(formula, feature_errors=feature_errors)
-            if len(formula_errors) == 1:
-                # Hide error for empty formulas
-                if formula_errors[0].is_sub_error(code=formula_exc.ParseEmptyFormulaError.default_code):
-                    formula_errors = []
+            # Hide error for empty formulas
+            if len(formula_errors) == 1 and formula_errors[0].is_sub_error(
+                code=formula_exc.ParseEmptyFormulaError.default_code
+            ):
+                formula_errors = []
 
             errors = [
                 FormulaErrorInfo(  # type: ignore  # TODO: fix

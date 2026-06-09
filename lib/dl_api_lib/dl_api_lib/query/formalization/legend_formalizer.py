@@ -83,9 +83,8 @@ class LegendFormalizer(abc.ABC):
         if not self.SUPPORTS_MEASURE_NAME and isinstance(item.obj, MeasureNameObjSpec):
             raise dl_query_processing.exc.MeasureNameUnsupported()
 
-        if item.role_spec.role == FieldRole.tree:
-            if item.data_type not in DATA_TYPES_SUPPORTING_TREE:
-                raise dl_query_processing.exc.RoleDataTypeMismatch("Unsupported data type for tree role")
+        if item.role_spec.role == FieldRole.tree and item.data_type not in DATA_TYPES_SUPPORTING_TREE:
+            raise dl_query_processing.exc.RoleDataTypeMismatch("Unsupported data type for tree role")
 
     def validate_legend(self, legend: Legend) -> None:
         for item in legend:
@@ -283,10 +282,12 @@ class LegendFormalizer(abc.ABC):
         items: list[LegendItem] = []
         already_used_field_ids: set[str] = set()
         for item_spec in raw_query_spec_union.iter_item_specs():
-            if isinstance(item_spec, RawGroupByFieldSpec):
-                # Ignore group_by fields unless this field is not present in select
-                if self._field_resolver.field_id_from_spec(item_spec.ref) in already_used_field_ids:
-                    continue
+            # Ignore group_by fields unless this field is not present in select
+            if (
+                isinstance(item_spec, RawGroupByFieldSpec)
+                and self._field_resolver.field_id_from_spec(item_spec.ref) in already_used_field_ids
+            ):
+                continue
 
             item = self._resolve_item_spec(
                 legend_item_id=(

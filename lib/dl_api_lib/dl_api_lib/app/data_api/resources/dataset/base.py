@@ -447,9 +447,8 @@ class DatasetDataBaseView(BaseView):
         if revision_id is None:
             revision_id = ""
 
-        if dataset_id is not None:
-            if DatasetDataBaseView._updates_only_fields(updates):
-                return UpdateDatasetMutationKey.create(revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
+        if dataset_id is not None and DatasetDataBaseView._updates_only_fields(updates):
+            return UpdateDatasetMutationKey.create(revision_id, updates)  # type: ignore  # 2024-01-30 # TODO: Argument 2 to "create" of "UpdateDatasetMutationKey" has incompatible type "list[Action]"; expected "list[FieldAction]"  [arg-type]
         return None
 
     @generic_profiler("mutation-cache-init")

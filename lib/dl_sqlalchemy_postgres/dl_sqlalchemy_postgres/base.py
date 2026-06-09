@@ -73,22 +73,20 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
     def render_literal_value(self, value, type_):
         # The behavior of literal_binds=True select should match the behavior
         # of psycopg selects.
-        if isinstance(type_, sa.Date):
-            if isinstance(value, datetime.date):
-                return f"'{value.isoformat()}'::date"
+        if isinstance(type_, sa.Date) and isinstance(value, datetime.date):
+            return f"'{value.isoformat()}'::date"
 
-        if isinstance(type_, sa.DateTime):
-            if isinstance(value, datetime.datetime):
-                # This should've been `type_.timezone` but it didn't go well
+        if isinstance(type_, sa.DateTime) and isinstance(value, datetime.datetime):
+            # This should've been `type_.timezone` but it didn't go well
+            if value.tzinfo is not None:
+                type_name = "timestamp with time zone"
+                value = value.astimezone(datetime.UTC)
+                value = value.replace(tzinfo=None)
+            else:
+                type_name = "timestamp"
                 if value.tzinfo is not None:
-                    type_name = "timestamp with time zone"
-                    value = value.astimezone(datetime.UTC)
                     value = value.replace(tzinfo=None)
-                else:
-                    type_name = "timestamp"
-                    if value.tzinfo is not None:
-                        value = value.replace(tzinfo=None)
-                return f"'{value.isoformat()}'::{type_name}"
+            return f"'{value.isoformat()}'::{type_name}"
 
         return super().render_literal_value(value, type_)
 

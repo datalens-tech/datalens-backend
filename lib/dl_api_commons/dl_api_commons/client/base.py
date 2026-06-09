@@ -125,9 +125,8 @@ class DLCommonAPIClient:
         else:
             resp_json = None
 
-        if rq.require_ok:
-            if resp.status >= 400:
-                raise RequestExecutionException("Non-ok response", content, status=resp.status, request_id=req_id)
+        if rq.require_ok and resp.status >= 400:
+            raise RequestExecutionException("Non-ok response", content, status=resp.status, request_id=req_id)
 
         return Resp(
             req_id=req_id,

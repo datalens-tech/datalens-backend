@@ -177,9 +177,8 @@ class ResultSchemaSchema(ResultSchemaBase):
     def check_source_is_set_for_direct_and_aggregation_types(
         self, data: dict[str, Any], *args: Any, **kwargs: Any
     ) -> None:
-        if data["calc_spec"].mode == CalcMode.direct.name:
-            if not data["calc_spec"].source:
-                raise ValidationError("source is required for {}".format(data["title"]))
+        if data["calc_spec"].mode == CalcMode.direct.name and not data["calc_spec"].source:
+            raise ValidationError("source is required for {}".format(data["title"]))
 
 
 class CacheInvalidationErrorSchema(DefaultSchema[CacheInvalidationError]):

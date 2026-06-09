@@ -83,10 +83,9 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
             if do_processing:
                 return self._process_single_object(value, target_meta)
             effective_nested_type = target_meta.clz
-            if isinstance(effective_nested_type, type) and attr.has(effective_nested_type):
-                if value is not None:
-                    # Recursively call entry point for nested object
-                    return self.process(value)
+            if isinstance(effective_nested_type, type) and attr.has(effective_nested_type) and value is not None:
+                # Recursively call entry point for nested object
+                return self.process(value)
 
             return value
 

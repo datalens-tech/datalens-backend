@@ -273,9 +273,8 @@ class DataSource(metaclass=abc.ABCMeta):
     @property
     def cache_enabled(self) -> bool:
         conn = self._connection
-        if conn is not None:
-            if not conn.allow_cache:
-                return False
+        if conn is not None and not conn.allow_cache:
+            return False
         return self._cache_enabled
 
     def get_schema_info(self, conn_executor_factory: Callable[[], SyncConnExecutorBase]) -> SchemaInfo:

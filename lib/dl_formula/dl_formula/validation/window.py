@@ -44,14 +44,15 @@ class WindowFunctionChecker(Checker):
             # inspect args
             has_agg_children = False
             for child in node.args:
-                if not self._allow_nested:
-                    if dl_formula.inspect.expression.is_window_expression(child, env=self._inspect_env):
-                        with validator.handle_error(node=node):
-                            raise exc.NestedWindowFunctionError(
-                                "Nested window functions are not allowed",
-                                token=dl_formula.inspect.node.get_token(child),
-                                position=child.position,
-                            )
+                if not self._allow_nested and dl_formula.inspect.expression.is_window_expression(
+                    child, env=self._inspect_env
+                ):
+                    with validator.handle_error(node=node):
+                        raise exc.NestedWindowFunctionError(
+                            "Nested window functions are not allowed",
+                            token=dl_formula.inspect.node.get_token(child),
+                            position=child.position,
+                        )
 
                 if dl_formula.inspect.expression.is_aggregate_expression(child, env=self._inspect_env):
                     has_agg_children = True

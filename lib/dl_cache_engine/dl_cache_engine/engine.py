@@ -644,15 +644,14 @@ class EntityCacheEngineBase:
             )
             return None
 
-        if not allow_error_entry:
-            if cache_entry.is_error:
-                metadata = cache_entry.metadata
-                assert metadata is not None
-                self._log_cache_miss(
-                    reason="error_mark",
-                    details=dict(details, error=metadata["error"]),
-                )
-                return None
+        if not allow_error_entry and cache_entry.is_error:
+            metadata = cache_entry.metadata
+            assert metadata is not None
+            self._log_cache_miss(
+                reason="error_mark",
+                details=dict(details, error=metadata["error"]),
+            )
+            return None
 
         return cache_entry
 

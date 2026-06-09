@@ -31,6 +31,5 @@ class MysqlSourceDoesNotExistError(exc.SourceDoesNotExist):
 
         if self.orig and self.orig.args and len(self.orig.args) >= 2:
             message = self.orig.args[1]
-            if message and (match := self.ERR_RE.match(message)):
-                if table := match.group("table"):
-                    self.params["table_definition"] = table
+            if message and (match := self.ERR_RE.match(message)) and (table := match.group("table")):
+                self.params["table_definition"] = table

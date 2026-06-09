@@ -30,9 +30,8 @@ class PostgresSourceDoesNotExistError(exc.SourceDoesNotExist):
         )
         if self.db_message:
             message = self.db_message.replace("\n", "")
-            if message and (match := self.ERR_RE.match(message)):
-                if table := match.group("table"):
-                    self.params["table_definition"] = table
+            if message and (match := self.ERR_RE.match(message)) and (table := match.group("table")):
+                self.params["table_definition"] = table
 
 
 class PgDoublePrecisionRoundError(exc.UnknownFunction):

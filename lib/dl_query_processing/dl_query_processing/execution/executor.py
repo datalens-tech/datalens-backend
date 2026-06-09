@@ -87,9 +87,9 @@ class QueryExecutor:
         limit = translated_flat_query.limit
 
         # Limit query size if hard limit is set to minimize the amount of downloaded data
-        if is_top_level:  # only for queries that will be downloaded
-            if limit is None or limit > row_count_hard_limit:
-                limit = row_count_hard_limit + 1
+        # only for queries that will be downloaded
+        if is_top_level and (limit is None or limit > row_count_hard_limit):
+            limit = row_count_hard_limit + 1
 
         bi_query = BIQuery(
             select_expressions=translated_flat_query.select,

@@ -65,9 +65,8 @@ def get_query_type(connection: ConnectionBase, conn_sec_mgr: ConnectionSecurityM
     if connection.is_always_internal_source:
         return ReportingQueryType.internal
 
-    if isinstance(connection, ClassicConnectionSQL):
-        if conn_sec_mgr.is_internal_connection(connection.get_conn_dto()):
-            return ReportingQueryType.internal
+    if isinstance(connection, ClassicConnectionSQL) and conn_sec_mgr.is_internal_connection(connection.get_conn_dto()):
+        return ReportingQueryType.internal
 
     return ReportingQueryType.external
 

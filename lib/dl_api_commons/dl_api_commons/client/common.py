@@ -26,11 +26,10 @@ class CommonInternalAPIClient(DLCommonAPIClient):
     _read_only: bool = attr.ib(default=False)
 
     async def make_request(self, rq: Req) -> Resp:
-        if self._read_only:
-            if rq.method.lower() != "get":
-                raise AssertionError(
-                    f"Can not execute {rq.method!r} {rq.url!r} due to {type(self).__name__!r} is read-only"
-                )
+        if self._read_only and rq.method.lower() != "get":
+            raise AssertionError(
+                f"Can not execute {rq.method!r} {rq.url!r} due to {type(self).__name__!r} is read-only"
+            )
 
         return await super().make_request(rq)
 

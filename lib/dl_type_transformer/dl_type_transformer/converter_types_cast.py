@@ -11,9 +11,8 @@ spaces_in_numbers_re = re.compile(r"(?<=\d) (?=\d)")
 
 
 def _to_int(value: Any) -> int:
-    if isinstance(value, str):
-        if " " in value:
-            value = value.replace(" ", "")
+    if isinstance(value, str) and " " in value:
+        value = value.replace(" ", "")
     return int(value)
 
 

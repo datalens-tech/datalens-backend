@@ -86,15 +86,13 @@ class TypeCaster:
     custom_null_value: Any = None
 
     def _cast_for_input(self, value: Any) -> Any:
-        if self.custom_null_value is not None:
-            if value is None or value == self.custom_null_value:
-                return self.custom_null_value
+        if self.custom_null_value is not None and (value is None or value == self.custom_null_value):
+            return self.custom_null_value
         return self.__class__.cast_func(value)
 
     def _cast_for_output(self, value: Any) -> Any:
-        if self.custom_null_value is not None:
-            if value is None or value == self.custom_null_value:
-                return None
+        if self.custom_null_value is not None and (value is None or value == self.custom_null_value):
+            return None
         return self.__class__.cast_func(value)
 
     @final
@@ -238,12 +236,11 @@ class TypeTransformer:
         native_t: GenericNativeType,
         user_t: UserDataType | None = None,
     ) -> UserDataType:
-        if user_t is not None:
-            # original UT is given, try to validate against NT.
-            # read as 'native type might have been made from the provided user type'.
-            # Sample case: native 'uint8' might be a 'boolean' user type.
-            if native_t.as_generic == self.user_to_native_map[user_t].as_generic:
-                return user_t
+        # original UT is given, try to validate against NT.
+        # read as 'native type might have been made from the provided user type'.
+        # Sample case: native 'uint8' might be a 'boolean' user type.
+        if user_t is not None and native_t.as_generic == self.user_to_native_map[user_t].as_generic:
+            return user_t
 
         try:
             return self.native_to_user_map.get(native_t) or self.native_to_user_map[native_t.as_generic]
@@ -251,12 +248,12 @@ class TypeTransformer:
             raise exc.UnsupportedNativeTypeError(native_t) from e
 
     def type_user_to_native(self, user_t: UserDataType, native_t: GenericNativeType | None = None) -> GenericNativeType:
-        if native_t is not None:
-            # original NT is given, try to do a direct conversion
-            if user_t == self.native_to_user_map.get(native_t) or user_t == self.native_to_user_map.get(
-                native_t.as_generic
-            ):
-                return native_t
+        # original NT is given, try to do a direct conversion
+        if native_t is not None and (
+            user_t == self.native_to_user_map.get(native_t)
+            or user_t == self.native_to_user_map.get(native_t.as_generic)
+        ):
+            return native_t
 
         try:
             result = self.user_to_native_map[user_t]
