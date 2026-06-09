@@ -38,28 +38,33 @@ class LoggingWorkflowMiddleware:
         logging_context["parent_request_id"] = params.parent_context.request_id
 
         with dl_logging.LogContext(context=logging_context):
-            logger.info(
-                "TemporalWorkflow(name=%s).run: starting with params: %s",
-                name,
-                params.model_dump_for_logging(),
-            )
+            # Workflow code re-runs from the start on replay; guard log emission so the lines
+            # are not duplicated on every replay (worker restart, cache eviction, etc.).
+            if not temporalio.workflow.unsafe.is_replaying():
+                logger.info(
+                    "TemporalWorkflow(name=%s).run: starting with params: %s",
+                    name,
+                    params.model_dump_for_logging(),
+                )
             try:
                 result = await handler(params)
             except Exception:
-                logger.exception("TemporalWorkflow(name=%s).run: failed", name)
+                if not temporalio.workflow.unsafe.is_replaying():
+                    logger.exception("TemporalWorkflow(name=%s).run: failed", name)
                 raise
 
-            if result.is_error:
-                logger.error(
-                    "TemporalWorkflow(name=%s).run: finished with error: %s",
-                    name,
-                    result.model_dump_for_logging(),
-                )
-            else:
-                logger.info(
-                    "TemporalWorkflow(name=%s).run: completed with result: %s",
-                    name,
-                    result.model_dump_for_logging(),
-                )
+            if not temporalio.workflow.unsafe.is_replaying():
+                if result.is_error:
+                    logger.error(
+                        "TemporalWorkflow(name=%s).run: finished with error: %s",
+                        name,
+                        result.model_dump_for_logging(),
+                    )
+                else:
+                    logger.info(
+                        "TemporalWorkflow(name=%s).run: completed with result: %s",
+                        name,
+                        result.model_dump_for_logging(),
+                    )
 
             return result

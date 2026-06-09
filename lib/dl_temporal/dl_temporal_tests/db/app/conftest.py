@@ -39,6 +39,7 @@ class Factory(dl_temporal.app.BaseTemporalWorkerAppFactory[App]):
         return [
             *await super()._get_temporal_workflows(),
             workflows.Workflow,
+            workflows.RaisingWorkflow,
         ]
 
     @override

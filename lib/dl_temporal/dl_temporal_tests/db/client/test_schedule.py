@@ -5,7 +5,6 @@ import pytest
 import temporalio.client
 import temporalio.service
 
-import dl_pydantic
 import dl_temporal
 import dl_temporal_tests.db.common as common
 import dl_temporal_tests.db.workflows as workflows
@@ -18,20 +17,7 @@ def fixture_temporal_task_queue() -> str:
 
 @pytest.fixture(name="workflow_params")
 def fixture_workflow_params() -> workflows.WorkflowParams:
-    return workflows.WorkflowParams(
-        workflow_int_param=1,
-        workflow_str_param="test",
-        workflow_bool_param=True,
-        workflow_list_param=[1, 2, 3],
-        workflow_dict_param={"a": 1},
-        workflow_timedelta_param=dl_pydantic.JsonableTimedelta(seconds=1),
-        workflow_uuid_param=dl_pydantic.JsonableUUID(str(uuid.uuid4())),
-        workflow_date_param=dl_pydantic.JsonableDate.today(),
-        workflow_datetime_param=dl_pydantic.JsonableDatetime.now(tz=datetime.UTC),
-        workflow_datetime_with_timezone_param=dl_pydantic.JsonableDatetimeWithTimeZone.now(tz=datetime.UTC),
-        workflow_nested_param=common.NestedModel(test_int=1),
-        return_error=False,
-    )
+    return workflows.WorkflowParams.from_default()
 
 
 @pytest.fixture(name="schedule_spec")
