@@ -115,7 +115,6 @@ ignore = [
   "SIM117", # Later: multiple-with-statements
   "SIM118", # Later: in-dict-keys
   "SIM201", # Later: negate-equal-op
-  "SIM210", # Later: if-expr-with-true-false
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
   "SIM401", # Later: if-else-block-instead-of-dict-get
   "UP031", # Later: printf-string-formatting
