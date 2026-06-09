@@ -49,7 +49,7 @@ def is_constant_expression(
         result = env.cache_is_const_expr.get(node)
     if result is None:
         validate_not_compiled_expressions(node)
-        if isinstance(node, nodes.BaseLiteral) or isinstance(node, nodes.Null):
+        if isinstance(node, (nodes.BaseLiteral, nodes.Null)):
             result = True
         elif isinstance(node, nodes.ParenthesizedExpr):
             result = is_constant_expression(node.expr, env=env)

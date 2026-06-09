@@ -103,7 +103,6 @@ ignore = [
   "RUF009", # Later: function-call-in-dataclass-default-argument
   "RUF012", # Later: mutable-class-default
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
-  "SIM101", # Later: duplicate-isinstance-call
   "SIM102", # Later: collapsible-if
   "SIM103", # Later: needless-bool
   "SIM105", # Later: suppressible-exception (contextlib.suppress changes traceback semantics — adopt per-site)
