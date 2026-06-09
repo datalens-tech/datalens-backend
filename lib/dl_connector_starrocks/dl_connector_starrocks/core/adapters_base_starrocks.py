@@ -1,4 +1,5 @@
 import ssl
+from typing import ClassVar
 
 import attr
 import sqlalchemy as sa
@@ -113,7 +114,7 @@ class BaseStarRocksAdapter(StarRocksQueryConstructorMixin):
     # Integer keys are MySQL protocol field type codes from field_types.h:
     # https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
     # StarRocks types: https://docs.starrocks.io/docs/sql-reference/data-types/
-    _type_code_to_sa: dict[int, SATypeSpec] | None = {
+    _type_code_to_sa: ClassVar[dict[int, SATypeSpec] | None] = {
         1: sa_mysql.TINYINT,  #   MYSQL_TYPE_TINY        (BOOLEAN, TINYINT)
         2: sa_mysql.SMALLINT,  #  MYSQL_TYPE_SHORT       (SMALLINT)
         3: sa_mysql.INTEGER,  #   MYSQL_TYPE_LONG        (INT)

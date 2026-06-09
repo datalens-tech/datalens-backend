@@ -26,7 +26,7 @@ class SAColumnTypeNormalizer:
 
 
 class SATypeTransformer(SAColumnTypeNormalizer):
-    _type_code_to_sa: dict[Any, SATypeSpec] | None = None
+    _type_code_to_sa: ClassVar[dict[Any, SATypeSpec] | None] = None
     conn_type: ClassVar[ConnectionType]
 
     @staticmethod

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import ssl
-from typing import Any
+from typing import (
+    Any,
+    ClassVar,
+)
 
 import attr
 import sqlalchemy.dialects.mysql as sa_mysql
@@ -36,7 +39,7 @@ class BaseMySQLAdapter:
     # not in those sources but in SA: `binary`, `boolean`, `fixed`, `integer`,
     # `nchar`, `nvarchar`, `numeric`, `varbinary`.
 
-    _type_code_to_sa: dict[Any, SATypeSpec] | None = {
+    _type_code_to_sa: ClassVar[dict[Any, SATypeSpec] | None] = {
         1: sa_mysql.TINYINT,  # MYSQL_TYPE_TINY -> 'tinyint', 8-bit int  # untested
         2: sa_mysql.SMALLINT,  # MYSQL_TYPE_SHORT -> 'smallint', 16-bit int  # untested
         9: sa_mysql.MEDIUMINT,  # MYSQL_TYPE_INT24 -> 'mediumint', ?24-bit int?  # untested

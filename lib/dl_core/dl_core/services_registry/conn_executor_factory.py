@@ -68,9 +68,9 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     connect_options_mutator: ConnectOptionsMutator | None = attr.ib(default=None)
     force_non_rqe_mode: bool = attr.ib(default=False)
 
-    DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE: dict[type[ConnectionBase], type[ConnExecutorBase]] = {}
+    DEFAULT_MAP_CONN_TYPE_SYNC_CE_TYPE: ClassVar[dict[type[ConnectionBase], type[ConnExecutorBase]]] = {}
 
-    DEFAULT_MAP_CONN_TYPE_ASYNC_CE_TYPE: dict[type[ConnectionBase], type[AsyncConnExecutorBase]] = {}
+    DEFAULT_MAP_CONN_TYPE_ASYNC_CE_TYPE: ClassVar[dict[type[ConnectionBase], type[AsyncConnExecutorBase]]] = {}
 
     SINGLE_HOST_RETRY_ATTEMPTS: ClassVar[int] = 3
     MAX_HOST_RETRY_ATTEMPTS: ClassVar[int] = 3
