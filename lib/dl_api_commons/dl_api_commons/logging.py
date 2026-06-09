@@ -67,11 +67,7 @@ class RequestObfuscator:
         if header_name.lower() in self.SECRET_HEADERS:
             return True
 
-        for pattern in self.SECRET_HEADERS_PATTERNS:
-            if pattern.match(header_name):
-                return True
-
-        return False
+        return any(pattern.match(header_name) for pattern in self.SECRET_HEADERS_PATTERNS)
 
     def _obfuscate_value(self, secret_value: str) -> str:
         repl_str = "<hidden>"

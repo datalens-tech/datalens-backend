@@ -143,10 +143,7 @@ class IgnoreFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
         return True  # Apply to all
 
     def should_ignore_formula(self, formula: CompiledFormulaInfo, query_part: QueryPart) -> bool:
-        for checker in self._ignore_formula_checks:
-            if checker(formula.formula_obj, query_part):
-                return True
-        return False
+        return any(checker(formula.formula_obj, query_part) for checker in self._ignore_formula_checks)
 
     def mutate_formula_list(
         self,
@@ -170,10 +167,7 @@ class NullifyFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
         return True  # Apply to all
 
     def should_nullify_formula(self, formula: CompiledFormulaInfo, query_part: QueryPart) -> bool:
-        for checker in self._nullify_formula_checks:
-            if checker(formula.formula_obj, query_part):
-                return True
-        return False
+        return any(checker(formula.formula_obj, query_part) for checker in self._nullify_formula_checks)
 
     def nullify_formula(self, formula: _COMPILED_FLA_TV) -> _COMPILED_FLA_TV:
         return formula.clone(

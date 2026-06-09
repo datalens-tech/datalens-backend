@@ -83,11 +83,7 @@ def is_bound_only_to(node: nodes.FormulaItem, allow_nodes: NodeSet) -> bool:
     if isinstance(node, nodes.Field):
         return False
 
-    for child in autonomous_children(node):
-        if not is_bound_only_to(node=child, allow_nodes=allow_nodes):
-            return False
-
-    return True
+    return all(is_bound_only_to(node=child, allow_nodes=allow_nodes) for child in autonomous_children(node))
 
 
 def is_aggregate_expression(
@@ -416,11 +412,7 @@ def get_qfork_wrapping_level_until_winfunc(node: nodes.FormulaItem, bfb_names: S
 def contains_non_default_lod_dimensions(node: nodes.FormulaItem) -> bool:
     if dl_formula.inspect.node.has_non_default_lod_dimensions(node):
         return True
-    for child in autonomous_children(node):
-        if contains_non_default_lod_dimensions(child):
-            return True
-
-    return False
+    return any(contains_non_default_lod_dimensions(child) for child in autonomous_children(node))
 
 
 def contains_extended_aggregations(node: nodes.FormulaItem, include_double_agg: bool = False) -> bool:
@@ -439,11 +431,7 @@ def contains_extended_aggregations(node: nodes.FormulaItem, include_double_agg: 
 def contains_lookup_functions(node: nodes.FormulaItem) -> bool:
     if dl_formula.inspect.node.is_lookup_function(node):
         return True
-    for child in autonomous_children(node):
-        if contains_lookup_functions(child):
-            return True
-
-    return False
+    return any(contains_lookup_functions(child) for child in autonomous_children(node))
 
 
 def resolve_dimensions(

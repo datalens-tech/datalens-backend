@@ -35,10 +35,7 @@ def apply_mutations[NODE_TV: nodes.FormulaItem](tree: NODE_TV, mutations: Sequen
     """Apply multiple mutations to formula node tree"""
 
     def match_func(node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
-        for mutation in mutations:
-            if mutation.match_node(node, parent_stack=parent_stack):
-                return True
-        return False
+        return any(mutation.match_node(node, parent_stack=parent_stack) for mutation in mutations)
 
     def replace_func(node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> nodes.FormulaItem:
         replacement_made = False

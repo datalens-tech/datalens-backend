@@ -108,7 +108,6 @@ ignore = [
   "SIM103", # Later: needless-bool
   "SIM105", # Later: suppressible-exception (contextlib.suppress changes traceback semantics — adopt per-site)
   "SIM108", # Later: if-else-block-instead-of-if-exp
-  "SIM110", # Later: reimplemented-builtin
   "SIM112", # Later: uncapitalized-environment-variables
   "SIM113", # Later: enumerate-for-loop
   "SIM115", # Later: open-file-with-context-handler

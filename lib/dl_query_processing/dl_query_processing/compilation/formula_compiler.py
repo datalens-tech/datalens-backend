@@ -546,10 +546,7 @@ class FormulaCompiler:
             if for_guid in visited_guids:
                 return True
             visited_guids |= frozenset([for_guid])
-            for child in self._field_dependencies[for_guid]:
-                if _has_recursion(child, visited_guids):
-                    return True
-            return False
+            return any(_has_recursion(child, visited_guids) for child in self._field_dependencies[for_guid])
 
         return _has_recursion(field.guid)
 

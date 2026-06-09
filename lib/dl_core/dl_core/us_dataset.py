@@ -194,10 +194,7 @@ class Dataset(USEntry):
 
         def spec_matches_parameters(existing_spec: DataSourceSpec) -> bool:
             # FIXME: Refactor
-            for key, value in parameters.items():
-                if getattr(existing_spec, key, None) != value:
-                    return False
-            return True
+            return all(getattr(existing_spec, key, None) == value for key, value in parameters.items())
 
         connection_ref = connection_ref_from_id(connection_id=connection_id)
 

@@ -61,10 +61,7 @@ class AggregationChecker(Checker):
             return
 
         def _aggregation_in_stack(node_stack: Sequence[nodes.FormulaItem]) -> bool:
-            for wrapping_node in node_stack:
-                if dl_formula.inspect.node.is_aggregate_function(wrapping_node):
-                    return True
-            return False
+            return any(dl_formula.inspect.node.is_aggregate_function(wrapping_node) for wrapping_node in node_stack)
 
         not_agg_children = False
         agg_children = False

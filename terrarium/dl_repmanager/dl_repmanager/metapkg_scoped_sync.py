@@ -26,10 +26,7 @@ def sync_scoped_metapkg(
     use_target_lock: bool = False,
 ) -> None:
     def is_local_package_in_scope(dep_from_scoped_pkg: LocalReqPackageSpec) -> bool:
-        for package_dir in package_dirs_to_include:
-            if dep_from_scoped_pkg.path.is_relative_to(package_dir):
-                return True
-        return False
+        return any(dep_from_scoped_pkg.path.is_relative_to(package_dir) for package_dir in package_dirs_to_include)
 
     original_metapkg = MetaPackageManager(original_metapkg_path)
     scoped_metapkg = original_metapkg.as_new_location(scoped_metapkg_path)

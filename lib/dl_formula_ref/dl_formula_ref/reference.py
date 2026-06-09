@@ -52,10 +52,7 @@ class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
 def _is_deprecated(defn: type[MultiVariantTranslation]) -> bool:
     if not defn.return_flags:
         return False
-    for dialect in get_all_basic_dialects():
-        if defn._get_return_flags(dialect) & ContextFlag.DEPRECATED:
-            return True
-    return False
+    return any(defn._get_return_flags(dialect) & ContextFlag.DEPRECATED for dialect in get_all_basic_dialects())
 
 
 def _make_raw_func(item: FunctionDocRegistryItem, env: GenerationEnvironment) -> RawFunc:

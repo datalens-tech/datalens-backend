@@ -310,11 +310,8 @@ class OptimizeConstFuncMutation(FormulaMutation):
             assert node.name == "if"
             if len(node.args) % 2 == 0:
                 return False  # incorrect formula, skip
-            for cond_arg in node.args[:-1:2]:  # excluding the last one (the "else" part) with a step of 2
-                if isinstance(cond_arg, nodes.BaseLiteral):
-                    return True
-
-            return False
+            # `node.args[:-1:2]` excludes the last one (the "else" part) with a step of 2
+            return any(isinstance(cond_arg, nodes.BaseLiteral) for cond_arg in node.args[:-1:2])
 
         def optimize(self, node: nodes.FuncCall) -> nodes.FormulaItem:
             new_args: list[nodes.FormulaItem] = []

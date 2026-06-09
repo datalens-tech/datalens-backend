@@ -48,12 +48,8 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
             return False
         if not all(self.is_pre_filter(formula) for formula in query.filters):
             return False
-        for formula in query.select:
-            # Check whether formula is a simple field expression
-            if not isinstance(formula.formula_obj.expr, formula_nodes.Field):
-                return False
-
-        return True
+        # Each selected formula must be a simple field expression
+        return all(isinstance(formula.formula_obj.expr, formula_nodes.Field) for formula in query.select)
 
     def split_query(
         self,

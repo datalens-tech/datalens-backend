@@ -67,12 +67,7 @@ class LevelSlice:
         (every formula consists of a single child  that is a field referencing the previous slice).
         """
 
-        for _alias, node in self.aliased_nodes.items():
-            if not isinstance(node.expr, nodes.Field):
-                # there's something more going on
-                return False
-
-        return True
+        return all(isinstance(node.expr, nodes.Field) for _alias, node in self.aliased_nodes.items())
 
 
 @attr.s

@@ -50,10 +50,7 @@ class TracingMiddleware(FlaskWSGIMiddleware):
         return headers
 
     def should_create_root_span(self, http_path: str) -> bool:
-        for prefix in self.url_prefix_exclude:
-            if http_path.startswith(prefix):
-                return False
-        return True
+        return all(not http_path.startswith(prefix) for prefix in self.url_prefix_exclude)
 
     def wsgi_app(self, environ: WSGIEnviron, start_response: WSGIStartResponse) -> WSGIReturn:
         http_path = environ["PATH_INFO"]
