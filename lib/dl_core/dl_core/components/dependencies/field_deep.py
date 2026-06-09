@@ -16,9 +16,9 @@ class FieldDeepInterDependencyManager(FieldDeepInterDependencyManagerBase):
     def get_field_deep_references(self, dep_field_id: FieldId) -> Set[FieldId]:
         refs: set[FieldId] = set()
 
-        def _populate_refs_recursively(field_id: FieldId) -> Set[FieldId]:  # type: ignore  # TODO: fix
+        def _populate_refs_recursively(field_id: FieldId) -> None:
             if field_id in refs:
-                return set()
+                return
             refs.add(field_id)
             new_refs = self._shallow.get_field_direct_references(dep_field_id=field_id)
             for _id in new_refs:

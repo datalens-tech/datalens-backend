@@ -91,6 +91,7 @@ def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
             except Exception as ex:
                 LOGGER.info("Non-retriable dba exception %s: %s", type(ex), ex, exc_info=True)
                 raise
+        raise RuntimeError("DBA pool is empty")
 
     return method_wrapper
 

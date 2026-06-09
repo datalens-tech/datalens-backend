@@ -127,3 +127,4 @@ def read_one_of_objects(
         except s3_sync_cli.exceptions.NoSuchKey:
             if idx == len(files) - 1:
                 raise
+    return None

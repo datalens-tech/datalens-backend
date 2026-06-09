@@ -105,6 +105,7 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
         for base in bases:
             if hasattr(base, attr_name):
                 return getattr(base, attr_name)
+        return None
 
     def __new__(mcs, name, bases, attrs):  # type: ignore  # TODO: fix
         profile_methods = mcs._get_future_class_attr(bases, attrs, "profile_methods")

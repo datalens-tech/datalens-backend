@@ -75,6 +75,7 @@ exclude = [
   "dist",
   "lib/clickhouse-sqlalchemy/**",
   "lib/dl_formula/dl_formula/parser/antlr/gen/**",
+  "lib/dl_task_processor/dl_task_processor/upstream_worker.py",
   "lib/redis-cache-lock/**",
   "node_modules",
   "tools_venv",
@@ -93,7 +94,6 @@ ignore = [
   "B904", # Later: raise-without-from-inside-except
   "B905", # Later: zip-without-explicit-strict
   "E501", # Later: line-too-long (currently delegated to black formatting)
-  "RET503", # Later: implicit-return
   "RET504", # Later: unnecessary-assign-before-return
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
   "RUF002", # Later: ambiguous-unicode-character-docstring (same intentional Cyrillic)

@@ -931,10 +931,11 @@ class ComponentErrorPack:
 class ComponentErrorRegistry:
     items: list[ComponentErrorPack] = attr.ib(factory=list)
 
-    def get_pack(self, id: str) -> ComponentErrorPack | None:  # type: ignore  # TODO: fix
+    def get_pack(self, id: str) -> ComponentErrorPack | None:
         for item in self.items:
             if item.id == id:
                 return item
+        return None
 
 
 @attr.s

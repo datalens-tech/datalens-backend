@@ -250,7 +250,7 @@ class FormulaCliTool:
         )
 
     @staticmethod
-    def _get_func_base_class(name: str) -> type | None:  # type: ignore  # TODO: fix
+    def _get_func_base_class(name: str) -> type | None:
         """Find the first (base) class for the given function"""
         name = name.lower()
         for _i, definition in OPERATION_REGISTRY.items():
@@ -267,6 +267,7 @@ class FormulaCliTool:
                 and (earliest_super_cls.name or "").lower() == name
             ):
                 return earliest_super_cls
+        return None
 
     @classmethod
     def _get_func_source_info(cls, name: str) -> tuple[str, int]:

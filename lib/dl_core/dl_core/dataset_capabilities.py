@@ -104,13 +104,14 @@ class DatasetCapabilities:
 
         return None
 
-    def get_effective_connection_id(  # type: ignore  # TODO: fix
+    def get_effective_connection_id(
         self,
         ignore_source_ids: Collection[str] | None = None,
     ) -> str | None:
         dsrc_coll = self._get_first_dsrc_collection(ignore_source_ids=ignore_source_ids)
         if dsrc_coll is not None:
             return dsrc_coll.effective_connection_id
+        return None
 
     def get_supported_join_types(
         self,

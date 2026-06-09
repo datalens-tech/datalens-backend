@@ -20,10 +20,10 @@ class USWorkbookCommandClient(CommonInternalAPIClient):
         )
         resp = await self.make_request(req)
 
-        if resp.status == 200:
-            return resp.json["workbookId"]
+        if resp.status != 200:
+            self.raise_from_resp(resp, op_code=op_code)
 
-        self.raise_from_resp(resp, op_code=op_code)
+        return resp.json["workbookId"]
 
     async def delete_workbook(self, wb_id: str) -> None:
         op_code = OpCode.WB_DELETE

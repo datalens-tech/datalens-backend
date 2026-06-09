@@ -122,6 +122,7 @@ class StyledDialect(NamedTuple):
             item = item.name
         if isinstance(item, str):
             return getattr(self, item)
+        return None
 
 
 # These should be filled from plugins
