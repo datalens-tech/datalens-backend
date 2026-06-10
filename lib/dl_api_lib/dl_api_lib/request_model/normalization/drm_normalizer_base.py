@@ -13,6 +13,7 @@ class RequestPartSpecNormalizerBase[SPEC_TV](abc.ABC):
         id_gen = IdGenerator(used_ids=used_ids)
         return id_gen
 
+    @abc.abstractmethod
     def normalize_spec(
         self,
         spec: SPEC_TV,
@@ -29,5 +30,6 @@ class RequestModelNormalizerBase[DRM_TV: DataRequestModel](abc.ABC):
     legend items and pivot structure items).
     """
 
+    @abc.abstractmethod
     def normalize_drm(self, drm: DRM_TV) -> DRM_TV:
         return drm

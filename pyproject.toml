@@ -90,7 +90,6 @@ target-version = "py312"
 # Never — a deliberate, permanent choice; comment says what it is and why we keep ignoring it.
 # Later — we want it eventually; comment says what it is.
 ignore = [
-  "B024", # Later: abstract-base-class-without-abstract-method
   "B904", # Later: raise-without-from-inside-except
   "B905", # Later: zip-without-explicit-strict
   "E501", # Later: line-too-long (currently delegated to black formatting)

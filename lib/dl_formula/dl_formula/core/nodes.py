@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import abc
 from collections.abc import (
     Callable,
     Collection,
@@ -59,8 +58,8 @@ class NodeMeta:
 FORMULA_ITEM_TV = TypeVar("FORMULA_ITEM_TV", bound="FormulaItem")
 
 
-class FormulaItem(abc.ABC):
-    """Abstract class. Base class for all formula building blocks."""
+class FormulaItem:
+    """Base class for all formula building blocks."""
 
     __slots__ = ("__children", "__extract", "__internal_value", "__meta")
     show_names: tuple[str, ...] = ()

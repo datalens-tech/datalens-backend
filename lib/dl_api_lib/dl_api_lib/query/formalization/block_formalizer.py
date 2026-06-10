@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import abc
-
 import attr
 
 from dl_api_commons.reporting.registry import ReportingRegistry
@@ -49,7 +47,7 @@ def ifnull[VAL_TV](value: VAL_TV, null_value: VAL_TV) -> VAL_TV:
 
 
 @attr.s
-class BlockFormalizer(abc.ABC):
+class BlockFormalizer:
     _dataset: Dataset = attr.ib(kw_only=True)
     _reporting_registry: ReportingRegistry | None = attr.ib(kw_only=True, default=None)
     _field_resolver: FieldResolver = attr.ib(init=False)

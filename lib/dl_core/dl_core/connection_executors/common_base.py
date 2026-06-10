@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import abc
 from collections.abc import (
     Callable,
     Generator,
@@ -89,7 +88,7 @@ class ConnExecutorQuery:
 
 
 @attr.s(cmp=False, hash=False)
-class ConnExecutorBase(metaclass=abc.ABCMeta):
+class ConnExecutorBase:
     default_chunk_size: ClassVar[int] = 100
     supported_exec_mode: ClassVar[frozenset[ExecutionMode]] = frozenset(ExecutionMode)
 

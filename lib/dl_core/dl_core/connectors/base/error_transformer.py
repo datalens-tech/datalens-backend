@@ -1,4 +1,3 @@
-import abc
 from collections.abc import (
     Callable,
     Iterable,
@@ -25,7 +24,7 @@ class DBExcKWArgs(TypedDict, total=False):
     details: dict[str, Any]
 
 
-class DbErrorTransformer(abc.ABC):
+class DbErrorTransformer:
     _DEFAULT_EXC_CLS: ClassVar[type[exc.DatabaseQueryError]] = exc.DatabaseQueryError
 
     def make_bi_error_parameters(
@@ -61,7 +60,7 @@ ExcMatchCondition = Callable[[Exception], bool]
 
 
 @attr.s(frozen=True, kw_only=True)
-class ErrorTransformerRule(abc.ABC):
+class ErrorTransformerRule:
     """Definition of a rule for transforming exceptions raised by a connector
     to their BI-domain exception counterparts. See `ChainedDbErrorTransformer` for more details.
 

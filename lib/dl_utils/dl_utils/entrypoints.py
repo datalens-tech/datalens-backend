@@ -1,4 +1,3 @@
-import abc
 from collections.abc import Collection
 from importlib import metadata
 
@@ -6,7 +5,7 @@ import attr
 
 
 @attr.s
-class EntrypointClassManager[EP_CLS_TV](abc.ABC):
+class EntrypointClassManager[EP_CLS_TV]:
     """
     Loads classes registered as entrypoints of a given type
     """

@@ -76,7 +76,7 @@ class CoreConnectionDefinition(abc.ABC):
     allow_export: ClassVar[bool] = False
 
 
-class CoreBackendDefinition(abc.ABC):
+class CoreBackendDefinition:
     backend_type: ClassVar[SourceBackendType] = SourceBackendType.NONE
     compiler_cls: ClassVar[type[QueryCompiler]] = QueryCompiler
     query_cls: ClassVar[type[Query]] = Query
