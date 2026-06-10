@@ -10,10 +10,10 @@ COPY --from=src . .
 COPY --from=src_terrarium . .
 
 # Install repmanager to access metadata in pyproject.toml
-RUN pip install terrarium/dl_repmanager
+RUN . /venv/bin/activate && pip install terrarium/dl_repmanager
 
 # For each domain -> for each locale -> generate
-RUN for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \
+RUN . /venv/bin/activate && for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \
     # Read the <domain_name=scan_path> pair into vars
     export DOMAIN_NAME=$(echo $domain_pair | cut -d "=" -f 1) ; \
     # Do the rest

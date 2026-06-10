@@ -10,14 +10,14 @@ COPY --from=src . .
 COPY --from=src_terrarium . .
 
 # Install repmanager to access metadata in pyproject.toml
-RUN pip install terrarium/dl_repmanager
+RUN . /venv/bin/activate && pip install terrarium/dl_repmanager
 
 # Prepare a config file for babel. It's always the same, no ponit in storing in in packages
 RUN echo "[python: **.py]\n[jinja2: **.jinja]" > babel_.ini
-RUN pip install Babel pytz jinja2
+RUN . /venv/bin/activate && pip install Babel pytz jinja2
 
 # For each domain -> for each locale -> generate raw .po, merge it into the existing .po
-RUN for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \
+RUN . /venv/bin/activate && for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \
     # Read the <domain_name=scan_path> pair into vars
     export DOMAIN_NAME=$(echo $domain_pair | cut -d "=" -f 1) ; \
     export SCAN_PATHS="$(echo $domain_pair | cut -d "=" -f 2 | sed 's/;/ /g')" ; \
