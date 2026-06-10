@@ -4,8 +4,6 @@ import abc
 import logging.config
 from typing import (
     TYPE_CHECKING,
-    Generic,
-    TypeVar,
     final,
 )
 
@@ -68,10 +66,7 @@ class StandaloneServiceRegistryFactory(InstallationSpecificServiceRegistryFactor
         return StandaloneServiceRegistry(service_registry_ref=sr_ref)
 
 
-TSettings = TypeVar("TSettings", bound=AppSettings)
-
-
-class SRFactoryBuilder(Generic[TSettings], abc.ABC):
+class SRFactoryBuilder[TSettings: AppSettings](abc.ABC):
     @property
     @abc.abstractmethod
     def _is_async_env(self) -> bool:

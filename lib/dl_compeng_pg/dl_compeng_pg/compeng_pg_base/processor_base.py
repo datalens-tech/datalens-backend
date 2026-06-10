@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import attr
 
@@ -20,15 +16,14 @@ from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 
-_POOL_TV = TypeVar("_POOL_TV", bound=BasePgPoolWrapper)
-_CONN_TV = TypeVar("_CONN_TV")
-
 
 @attr.s
-class PostgreSQLOperationProcessor(ExecutorBasedOperationProcessor, Generic[_POOL_TV, _CONN_TV], metaclass=abc.ABCMeta):
-    _pg_pool: _POOL_TV = attr.ib()
+class PostgreSQLOperationProcessor[POOL_TV: BasePgPoolWrapper, CONN_TV](
+    ExecutorBasedOperationProcessor, metaclass=abc.ABCMeta
+):
+    _pg_pool: POOL_TV = attr.ib()
     _task_timeout: int | None = attr.ib(default=None)
-    _pg_conn: _CONN_TV | None = attr.ib(init=False, default=None)
+    _pg_conn: CONN_TV | None = attr.ib(init=False, default=None)
     _default_cache_ttl_config: CacheTTLConfig = attr.ib(factory=CacheTTLConfig)
 
     def _make_cache_options_builder(self) -> DatasetOptionsBuilder:

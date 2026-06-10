@@ -10,7 +10,6 @@ import inspect
 import json
 from typing import (
     Any,
-    Generic,
     Literal,
     TypeVar,
     overload,
@@ -268,14 +267,11 @@ class DLRequestBase:
         return wrapper  # type: ignore[return-value]  # TODO FIX: method-based middlewares are not covered by aiohttp typing
 
 
-_DL_REQUEST_TV = TypeVar("_DL_REQUEST_TV", bound=DLRequestBase)
-
-
-class DLRequestView(web.View, Generic[_DL_REQUEST_TV]):
-    dl_request_cls: type[_DL_REQUEST_TV] = DLRequestBase  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[DLRequestBase]", variable has type "type[_DL_REQUEST_TV]")  [assignment]
+class DLRequestView[DL_REQUEST_TV: DLRequestBase](web.View):
+    dl_request_cls: type[DL_REQUEST_TV] = DLRequestBase  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "type[DLRequestBase]", variable has type "type[DL_REQUEST_TV]")  [assignment]
 
     @property
-    def dl_request(self) -> _DL_REQUEST_TV:
+    def dl_request(self) -> DL_REQUEST_TV:
         dl_request = self.request[DLRequestBase.KEY_DL_REQUEST]
         if not isinstance(dl_request, self.dl_request_cls):
             raise TypeError(

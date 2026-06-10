@@ -3,7 +3,6 @@ from collections.abc import Iterable
 import enum
 from typing import (
     ClassVar,
-    Generic,
     NewType,
     TypeVar,
 )
@@ -86,10 +85,6 @@ class BaseTaskMeta(metaclass=abc.ABCMeta):
         ]
 
 
-_BASE_TASK_META_TV = TypeVar("_BASE_TASK_META_TV", bound=BaseTaskMeta)
-_BASE_TASK_CONTEXT_TV = TypeVar("_BASE_TASK_CONTEXT_TV", bound=BaseContext)
-
-
 @attr.s(frozen=True, eq=True)
 class TaskResult(metaclass=abc.ABCMeta):  # noqa: B024
     pass
@@ -112,10 +107,10 @@ class Retry(TaskResult):
 
 
 @attr.s
-class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metaclass=abc.ABCMeta):
-    cls_meta: ClassVar[type[_BASE_TASK_META_TV]]
-    meta: _BASE_TASK_META_TV = attr.ib()
-    _ctx: _BASE_TASK_CONTEXT_TV = attr.ib()
+class BaseExecutorTask[BASE_TASK_META_TV: BaseTaskMeta, BASE_TASK_CONTEXT_TV: BaseContext](metaclass=abc.ABCMeta):
+    cls_meta: ClassVar[type[BASE_TASK_META_TV]]
+    meta: BASE_TASK_META_TV = attr.ib()
+    _ctx: BASE_TASK_CONTEXT_TV = attr.ib()
     _instance_id: InstanceID = attr.ib()
     _run_id: RunID = attr.ib()
     _request_id: str | None = attr.ib(default=None)
@@ -125,10 +120,10 @@ class BaseExecutorTask(Generic[_BASE_TASK_META_TV, _BASE_TASK_CONTEXT_TV], metac
         cls,
         instance_id: InstanceID,
         run_id: RunID,
-        ctx: _BASE_TASK_CONTEXT_TV,
+        ctx: BASE_TASK_CONTEXT_TV,
         params: dict,
         request_id: str | None = None,
-    ) -> "BaseExecutorTask":
+    ) -> "BaseExecutorTask[BASE_TASK_META_TV, BASE_TASK_CONTEXT_TV]":
         return cls(
             meta=cls.cls_meta(**params),
             ctx=ctx,

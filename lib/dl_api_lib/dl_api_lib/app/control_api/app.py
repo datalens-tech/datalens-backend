@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 import abc
-from typing import (
-    TYPE_CHECKING,
-    Generic,
-    TypeVar,
-)
+from typing import TYPE_CHECKING
 
 import attr
 import flask
@@ -56,11 +52,10 @@ class EnvSetupResult:
     us_auth_mode: USAuthMode = attr.ib(kw_only=True)
 
 
-TControlApiAppSettings = TypeVar("TControlApiAppSettings", bound=ControlApiAppSettings)
-
-
 @attr.s(kw_only=True)
-class ControlApiAppFactory(SRFactoryBuilder, Generic[TControlApiAppSettings], abc.ABC):
+class ControlApiAppFactory[TControlApiAppSettings: ControlApiAppSettings](
+    SRFactoryBuilder[TControlApiAppSettings], abc.ABC
+):
     _settings: TControlApiAppSettings = attr.ib()
 
     @abc.abstractmethod

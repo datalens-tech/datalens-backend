@@ -10,7 +10,6 @@ import enum
 import logging
 from typing import (
     ClassVar,
-    Generic,
     Self,
     TypeVar,
 )
@@ -211,7 +210,7 @@ AppType = TypeVar("AppType", bound=BaseApp)
 
 
 @attr.define(kw_only=True, slots=False)
-class BaseAppFactory(Generic[AppType]):
+class BaseAppFactory[AppType: BaseApp]:
     settings: BaseAppSettings
     app_class: ClassVar[type[AppType]]
 

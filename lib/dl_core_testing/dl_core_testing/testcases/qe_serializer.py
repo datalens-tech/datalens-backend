@@ -1,8 +1,4 @@
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 import sqlalchemy as sa
 from sqlalchemy.sql.selectable import Select
@@ -20,10 +16,8 @@ from dl_core_testing.database import Db
 from dl_core_testing.executors import ExecutorFactoryBase
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
-
-class DefaultQESerializerTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultQESerializerTestSuite[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
     """Suite for `ActionSerializer` round-trip with a real connector executor factory.
 
     Connector subclasses must declare:

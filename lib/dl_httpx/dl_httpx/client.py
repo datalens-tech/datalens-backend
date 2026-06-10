@@ -11,7 +11,6 @@ import time
 import types
 from typing import (
     Any,
-    Generic,
     Protocol,
     TypeVar,
 )
@@ -69,9 +68,6 @@ class AsyncRequestFunction(Protocol):
     async def __call__(self, request: httpx.Request) -> httpx.Response: ...
 
 
-THttpxTransport = TypeVar("THttpxTransport", httpx.BaseTransport, httpx.AsyncBaseTransport)
-
-
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
 class HttpxClientDependencies:
     base_url: str
@@ -96,7 +92,7 @@ class HttpxClientDependencies:
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpxBaseClient(Generic[THttpxTransport], abc.ABC):
+class HttpxBaseClient[THttpxTransport: (httpx.BaseTransport, httpx.AsyncBaseTransport)](abc.ABC):
     _base_url: str = attrs.field()
     _base_cookies: dict[str, str]
     _base_headers: dict[str, str]

@@ -5,11 +5,7 @@ from collections.abc import (
     Sequence,
 )
 import contextlib
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 import attr
 import sqlalchemy as sa
@@ -26,13 +22,10 @@ class DbConfig:
     supports_executemany: bool = attr.ib(kw_only=True, default=True)
 
 
-_DB_CONFIG_TV = TypeVar("_DB_CONFIG_TV", bound=DbConfig)
-
-
 @attr.s
-class DbBase(Generic[_DB_CONFIG_TV]):
+class DbBase[DB_CONFIG_TV: DbConfig]:
     _engine_wrapper: ew.EngineWrapperBase = attr.ib(kw_only=True)
-    _config: _DB_CONFIG_TV = attr.ib(kw_only=True)
+    _config: DB_CONFIG_TV = attr.ib(kw_only=True)
 
     @property
     def engine(self) -> sqlalchemy.engine.Engine:
@@ -43,7 +36,7 @@ class DbBase(Generic[_DB_CONFIG_TV]):
         return self._engine_wrapper.config
 
     @property
-    def config(self) -> _DB_CONFIG_TV:
+    def config(self) -> DB_CONFIG_TV:
         return self._config
 
     @property

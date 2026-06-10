@@ -1,8 +1,4 @@
 import abc
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import pytest
 
@@ -15,8 +11,6 @@ from dl_dashsql.typed_query.primitives import (
     TypedQueryRawParameters,
     TypedQueryRawResult,
 )
-
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class TypedQueryRawChecker(abc.ABC):
@@ -45,7 +39,7 @@ class DefaultTypedQueryRawChecker(TypedQueryRawChecker):
         assert typed_query_raw_result.data.body
 
 
-class DefaultTypedQueryRawTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultTypedQueryRawTestSuite[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
     @pytest.fixture(scope="class")
     def typed_query_raw_checker(self) -> TypedQueryRawChecker:
         return DefaultTypedQueryRawChecker()

@@ -9,25 +9,19 @@ from enum import (
     auto,
     unique,
 )
-from typing import (
-    Generic,
-    TypeVar,
-    cast,
-)
+from typing import cast
 
 from dl_dynamic_enum import (
     AutoEnumValue,
     DynamicEnum,
 )
 
-_ENUM_TYPE = TypeVar("_ENUM_TYPE", bound=Enum)
 
-
-class _Normalizable(Generic[_ENUM_TYPE]):
+class _Normalizable[ENUM_TYPE: Enum]:
     @classmethod
-    def normalize(cls, value: _ENUM_TYPE | str | None) -> _ENUM_TYPE | None:
+    def normalize(cls, value: ENUM_TYPE | str | None) -> ENUM_TYPE | None:
         if isinstance(value, str):
-            value = cast(type[_ENUM_TYPE], cls)[value]
+            value = cast(type[ENUM_TYPE], cls)[value]
         return value
 
 

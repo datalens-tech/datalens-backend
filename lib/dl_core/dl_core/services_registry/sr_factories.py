@@ -10,7 +10,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Generic,
     TypeVar,
     final,
 )
@@ -56,7 +55,7 @@ LOGGER = logging.getLogger(__name__)
 SERVICE_REGISTRY_TV = TypeVar("SERVICE_REGISTRY_TV", bound=ServicesRegistry)
 
 
-class SRFactory(Generic[SERVICE_REGISTRY_TV], metaclass=abc.ABCMeta):
+class SRFactory[SERVICE_REGISTRY_TV: ServicesRegistry](metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def make_service_registry(
         self,

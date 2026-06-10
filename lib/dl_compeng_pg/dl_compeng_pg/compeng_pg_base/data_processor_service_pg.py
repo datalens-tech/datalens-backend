@@ -5,7 +5,6 @@ import abc
 import logging
 from typing import (
     ClassVar,
-    Generic,
     TypeVar,
 )
 
@@ -31,22 +30,21 @@ class CompEngPgConfig(DataProcessorConfig):
     url: str = attr.ib(kw_only=True)
 
 
-_POOL_TV = TypeVar("_POOL_TV", bound=BasePgPoolWrapper)
 _COMPENG_PR_SRV_TV = TypeVar("_COMPENG_PR_SRV_TV", bound="CompEngPgService")
 
 
 @attr.s
-class CompEngPgService(DataProcessorService, Generic[_POOL_TV], metaclass=abc.ABCMeta):
+class CompEngPgService[POOL_TV: BasePgPoolWrapper](DataProcessorService, metaclass=abc.ABCMeta):
     APP_KEY: ClassVar[str] = "compeng_service"
 
     _pg_url: str = attr.ib(repr=secrepr_db_url)  # DSN
     _pool_min_size: int = attr.ib(default=DEFAULT_POOL_MIN_SIZE)
     _pool_max_size: int = attr.ib(default=DEFAULT_POOL_MAX_SIZE)
     _operation_timeout: float = attr.ib(default=DEFAULT_OPERATION_TIMEOUT)
-    _pool: _POOL_TV | None = attr.ib(init=False, default=None)
+    _pool: POOL_TV | None = attr.ib(init=False, default=None)
 
     @property
-    def pool(self) -> _POOL_TV:
+    def pool(self) -> POOL_TV:
         if self._pool is None:
             raise ValueError("Pool was not created")
         return self._pool

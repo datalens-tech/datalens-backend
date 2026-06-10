@@ -1,5 +1,4 @@
 from typing import (
-    Generic,
     TypeVar,
     override,
 )
@@ -42,11 +41,10 @@ AppType = TypeVar("AppType", bound=BaseTemporalWorkerApp)
 
 
 @attr.define(kw_only=True, slots=False)
-class BaseTemporalWorkerAppFactory(
+class BaseTemporalWorkerAppFactory[AppType: BaseTemporalWorkerApp](
     temporal_app.TemporalWorkerAppFactoryMixin[AppType],
     dl_app_api_base.HttpServerAppFactoryMixin[AppType],
     dl_app_base.BaseAppFactory[AppType],
-    Generic[AppType],
 ):
     settings: BaseTemporalWorkerAppSettings
 

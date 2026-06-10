@@ -5,8 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Generic,
-    TypeVar,
 )
 
 from cryptography.fernet import Fernet
@@ -32,14 +30,11 @@ class CtxKey(enum.Enum):
     ds_conn_type = enum.auto()
 
 
-_TARGET_TV = TypeVar("_TARGET_TV")
-
-
-class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
-    TARGET_CLS: ClassVar[type[_TARGET_TV]]
+class BaseStorageSchema[TARGET_TV](Schema):
+    TARGET_CLS: ClassVar[type[TARGET_TV]]
 
     @classmethod
-    def get_target_cls(cls) -> type[_TARGET_TV]:
+    def get_target_cls(cls) -> type[TARGET_TV]:
         return cls.TARGET_CLS
 
     @property
@@ -65,7 +60,7 @@ class BaseStorageSchema(Schema, Generic[_TARGET_TV]):
         """Cleanup con"""
         pass
 
-    def to_object(self, data: dict) -> _TARGET_TV:
+    def to_object(self, data: dict) -> TARGET_TV:
         raise NotImplementedError("This schema is does not implement object deserialization")
 
     @pre_load(pass_many=False)
@@ -98,11 +93,11 @@ class RenderModule:
     loads = dl_json.loads_bytes
 
 
-class DefaultStorageSchema(BaseStorageSchema[_TARGET_TV], Generic[_TARGET_TV]):
+class DefaultStorageSchema[TARGET_TV](BaseStorageSchema[TARGET_TV]):
     class Meta:
         render_module = RenderModule
 
-    def to_object(self, data: dict) -> _TARGET_TV:
+    def to_object(self, data: dict) -> TARGET_TV:
         return self.get_target_cls()(**data)
 
 

@@ -2,9 +2,7 @@ import abc
 import datetime
 from typing import (
     Any,
-    Generic,
     Self,
-    TypeVar,
 )
 import uuid
 
@@ -15,10 +13,7 @@ JsonableTimedelta = datetime.timedelta
 JsonableUUID = uuid.UUID
 
 
-T = TypeVar("T")
-
-
-class StringJsonableTypeMixin(Generic[T]):
+class StringJsonableTypeMixin[T]:
     original_type: type[T]
 
     @classmethod

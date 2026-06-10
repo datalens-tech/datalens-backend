@@ -4,23 +4,17 @@ from datetime import (
     date,
     datetime,
 )
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 import attr
 
 from dl_constants.enums import UserDataType
 
-_INNER_TYPE = TypeVar("_INNER_TYPE")
-
 
 @attr.s(frozen=True)
-class BIValue(Generic[_INNER_TYPE]):
+class BIValue[INNER_TYPE]:
     type: ClassVar[UserDataType]
-    value: _INNER_TYPE = attr.ib()
+    value: INNER_TYPE = attr.ib()
 
 
 @attr.s(frozen=True)

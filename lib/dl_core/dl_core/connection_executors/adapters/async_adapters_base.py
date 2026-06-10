@@ -12,9 +12,7 @@ from types import TracebackType
 from typing import (
     TYPE_CHECKING,
     Any,
-    Generic,
     Self,
-    TypeVar,
 )
 
 import attr
@@ -82,21 +80,18 @@ class AsyncRawExecutionResult:
                 yield row
 
 
-_CACHE_TV = TypeVar("_CACHE_TV")
-
-
 @attr.s
-class AsyncCache(Generic[_CACHE_TV]):
-    _cache: dict[str, _CACHE_TV] = attr.ib(init=False, factory=dict)
+class AsyncCache[CACHE_TV]:
+    _cache: dict[str, CACHE_TV] = attr.ib(init=False, factory=dict)
     _lock: asyncio.Lock = attr.ib(init=False, factory=asyncio.Lock)
 
-    async def get(self, key: str, generator: Callable[[str], Awaitable[_CACHE_TV]]) -> _CACHE_TV:
+    async def get(self, key: str, generator: Callable[[str], Awaitable[CACHE_TV]]) -> CACHE_TV:
         async with self._lock:
             if key not in self._cache:
                 self._cache[key] = await generator(key)
             return self._cache[key]
 
-    async def clear(self, finalizer: Callable[[_CACHE_TV], Awaitable[None]]) -> None:
+    async def clear(self, finalizer: Callable[[CACHE_TV], Awaitable[None]]) -> None:
         async with self._lock:
             for elem in self._cache.values():
                 await finalizer(elem)

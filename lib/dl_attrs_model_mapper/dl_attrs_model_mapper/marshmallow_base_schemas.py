@@ -6,7 +6,6 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypeVar,
 )
 
@@ -23,12 +22,11 @@ from dl_attrs_model_mapper.base import MapperBaseModel
 
 LOGGER = logging.getLogger(__name__)
 
-_TARGET_OBJECT_BASE_TV = TypeVar("_TARGET_OBJECT_BASE_TV")
 _TARGET_OBJECT_GENERATED_TV = TypeVar("_TARGET_OBJECT_GENERATED_TV")
 
 
-class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
-    target_cls: ClassVar[type[_TARGET_OBJECT_BASE_TV]]
+class BaseSchema[TARGET_OBJECT_BASE_TV](marshmallow.Schema):
+    target_cls: ClassVar[type[TARGET_OBJECT_BASE_TV]]
     _fields_to_skip_on_none: ClassVar[set[str]]
 
     # TODO FIX: Make tests
@@ -42,7 +40,7 @@ class BaseSchema(marshmallow.Schema, Generic[_TARGET_OBJECT_BASE_TV]):
         return data
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict[str, Any], **_: Any) -> _TARGET_OBJECT_BASE_TV:
+    def post_load(self, data: dict[str, Any], **_: Any) -> TARGET_OBJECT_BASE_TV:
         try:
             return self.target_cls(**data)
         except Exception as exc:

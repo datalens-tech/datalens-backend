@@ -1,8 +1,4 @@
 import abc
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 from aiohttp import web
 from aiohttp.typedefs import Middleware
@@ -36,12 +32,10 @@ from dl_obfuscator import (
     get_secret_strings,
 )
 
-_TSettings = TypeVar("_TSettings", bound=AuthAPISettings)
-
 
 @attr.s(kw_only=True)
-class OAuthApiAppFactory(Generic[_TSettings], abc.ABC):
-    _settings: _TSettings = attr.ib()
+class OAuthApiAppFactory[TSettings: AuthAPISettings](abc.ABC):
+    _settings: TSettings = attr.ib()
 
     @abc.abstractmethod
     def get_auth_middlewares(self) -> list[Middleware]:

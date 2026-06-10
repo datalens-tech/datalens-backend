@@ -8,7 +8,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Generic,
     NamedTuple,
     Self,
     TypedDict,
@@ -989,7 +988,7 @@ def _get_connector_settings[CONNECTOR_SETTINGS_TV: ConnectorSettings](
     return connector_settings
 
 
-class ConnectionSettingsMixin(ConnectionBase, Generic[CONNECTOR_SETTINGS_TV], metaclass=abc.ABCMeta):
+class ConnectionSettingsMixin[CONNECTOR_SETTINGS_TV: ConnectorSettings](ConnectionBase, metaclass=abc.ABCMeta):
     """Connector type specific data is loaded from dl_configs.connectors_settings"""
 
     settings_type: type[CONNECTOR_SETTINGS_TV]
@@ -1009,9 +1008,8 @@ TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV = TypeVar(
 )
 
 
-class ConnectionTemplateNameMixin(
+class ConnectionTemplateNameMixin[TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV: TemplateNameSettingsMixin](
     ConnectionSettingsMixin[TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV],  # type: ignore[type-var]
-    Generic[TEMPLATE_NAMED_CONNECTOR_SETTINGS_TV],
 ):
     """Connection mixin for connectors whose settings include a TEMPLATE_NAME field."""
 

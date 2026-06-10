@@ -1,6 +1,5 @@
 import logging
 import ssl
-from typing import Generic
 
 import pydantic
 
@@ -23,9 +22,8 @@ class CertificatesAppSettingsMixin(base.BaseAppSettings):
 class CertificatesAppMixin(base.BaseApp): ...
 
 
-class CertificatesAppFactoryMixin(
-    base.BaseAppFactory[base.AppType],
-    Generic[base.AppType],
+class CertificatesAppFactoryMixin[AppType: base.BaseApp](
+    base.BaseAppFactory[AppType],
 ):
     settings: CertificatesAppSettingsMixin
 

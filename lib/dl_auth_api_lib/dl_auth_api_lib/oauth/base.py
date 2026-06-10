@@ -1,16 +1,10 @@
 import abc
-from typing import (
-    Generic,
-    Self,
-    TypeVar,
-)
+from typing import Self
 
 from dl_auth_api_lib.settings import BaseOAuthClient
 
-_TBaseOAuthClient = TypeVar("_TBaseOAuthClient", bound=BaseOAuthClient)
 
-
-class BaseOAuth(Generic[_TBaseOAuthClient], abc.ABC):
+class BaseOAuth[TBaseOAuthClient: BaseOAuthClient](abc.ABC):
     @abc.abstractmethod
     def get_auth_uri(self, origin: str | None = None) -> str:
         raise NotImplementedError
@@ -21,5 +15,5 @@ class BaseOAuth(Generic[_TBaseOAuthClient], abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def from_settings(cls, settings: _TBaseOAuthClient) -> Self:
+    def from_settings(cls, settings: TBaseOAuthClient) -> Self:
         raise NotImplementedError

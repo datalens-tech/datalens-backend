@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import Callable
 import os
 from typing import (
-    Generic,
     Literal,
     NamedTuple,
     TypeVar,
@@ -11,7 +10,6 @@ from typing import (
 )
 
 _RET_TV = TypeVar("_RET_TV")
-_FACTORY_RET_TV = TypeVar("_FACTORY_RET_TV")
 
 
 class SecretStr(str):
@@ -26,11 +24,11 @@ class Required(NamedTuple):
     message: str | None = None
 
 
-class Factory(Generic[_FACTORY_RET_TV]):
-    def __init__(self, factory: Callable[[], _FACTORY_RET_TV]):
+class Factory[FACTORY_RET_TV]:
+    def __init__(self, factory: Callable[[], FACTORY_RET_TV]):
         self._factory = factory
 
-    def build(self) -> _FACTORY_RET_TV:
+    def build(self) -> FACTORY_RET_TV:
         return self._factory()
 
 

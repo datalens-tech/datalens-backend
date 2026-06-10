@@ -1,8 +1,4 @@
 import abc
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import attr
 import marshmallow.fields as ma_fields
@@ -26,29 +22,27 @@ from dl_model_tools.schema.typed_values import (
     WithNestedValueSchema,
 )
 
-_TYPED_QUERY_TV = TypeVar("_TYPED_QUERY_TV", bound=TypedQueryBase)
 
-
-class TypedQuerySerializer(abc.ABC, Generic[_TYPED_QUERY_TV]):
+class TypedQuerySerializer[TYPED_QUERY_TV: TypedQueryBase](abc.ABC):
     @abc.abstractmethod
-    def serialize(self, typed_query: _TYPED_QUERY_TV) -> str:
+    def serialize(self, typed_query: TYPED_QUERY_TV) -> str:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def deserialize(self, typed_query_str: str) -> _TYPED_QUERY_TV:
+    def deserialize(self, typed_query_str: str) -> TYPED_QUERY_TV:
         raise NotImplementedError
 
 
 @attr.s
-class MarshmallowTypedQuerySerializer(TypedQuerySerializer[_TYPED_QUERY_TV], Generic[_TYPED_QUERY_TV]):
+class MarshmallowTypedQuerySerializer[TYPED_QUERY_TV: TypedQueryBase](TypedQuerySerializer[TYPED_QUERY_TV]):
     _schema_cls: type[Schema] = attr.ib(kw_only=True)
 
-    def serialize(self, typed_query: _TYPED_QUERY_TV) -> str:
+    def serialize(self, typed_query: TYPED_QUERY_TV) -> str:
         schema = self._schema_cls()
         typed_query_str = schema.dumps(typed_query)
         return typed_query_str
 
-    def deserialize(self, typed_query_str: str) -> _TYPED_QUERY_TV:
+    def deserialize(self, typed_query_str: str) -> TYPED_QUERY_TV:
         schema = self._schema_cls()
         typed_query = schema.loads(typed_query_str)
         return typed_query

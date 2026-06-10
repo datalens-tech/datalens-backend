@@ -5,7 +5,6 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Generic,
     Protocol,
     TypeVar,
 )
@@ -134,7 +133,7 @@ class ActivityProtocol(Protocol[ActivityParamsT, ActivityResultT]):
     async def run(self, params: ActivityParamsT) -> ActivityResultT: ...
 
 
-class BaseActivity(ActivityProtocol, Generic[ActivityParamsT, ActivityResultT]):
+class BaseActivity[ActivityParamsT: BaseActivityParams, ActivityResultT: BaseActivityResult](ActivityProtocol):
     name: ClassVar[str]
     logger: ClassVar[logging.Logger]
 
@@ -182,7 +181,9 @@ class WorkflowProtocol(Protocol[SelfType, WorkflowParamsT, WorkflowResultT]):
     async def run(self: SelfType, params: WorkflowParamsT) -> WorkflowResultT: ...
 
 
-class BaseWorkflow(WorkflowProtocol, Generic[SelfType, WorkflowParamsT, WorkflowResultT]):
+class BaseWorkflow[SelfType, WorkflowParamsT: BaseWorkflowParams, WorkflowResultT: BaseWorkflowResult](
+    WorkflowProtocol
+):
     name: ClassVar[str]
     logger: ClassVar[logging.Logger]
 

@@ -1,6 +1,5 @@
 import abc
 from typing import (
-    Generic,
     TypeVar,
     override,
 )
@@ -33,9 +32,8 @@ AppType = TypeVar("AppType", bound=TemporalWorkerAppMixin)
 
 
 @attr.define(kw_only=True, slots=False)
-class TemporalWorkerAppFactoryMixin(
+class TemporalWorkerAppFactoryMixin[AppType: TemporalWorkerAppMixin](
     dl_app_base.BaseAppFactory[AppType],
-    Generic[AppType],
 ):
     settings: TemporalWorkerAppSettingsMixin
 

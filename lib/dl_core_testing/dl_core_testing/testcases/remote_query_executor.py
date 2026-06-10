@@ -3,11 +3,7 @@ from collections.abc import (
     AsyncGenerator,
     Generator,
 )
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 from aiohttp.pytest_plugin import AiohttpClient
 from aiohttp.test_utils import TestClient
@@ -34,10 +30,8 @@ from dl_core_testing.rqe import RQEConfigurationMaker
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 from dl_utils.aio import alist
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
-
-class BaseRemoteQueryExecutorTestClass(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
     SYNC_ADAPTER_CLS: ClassVar[type[CommonBaseDirectAdapter]]
     ASYNC_ADAPTER_CLS: ClassVar[type[CommonBaseDirectAdapter]]
 

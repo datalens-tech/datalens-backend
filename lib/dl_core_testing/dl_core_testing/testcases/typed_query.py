@@ -1,8 +1,4 @@
 import abc
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import pytest
 
@@ -15,8 +11,6 @@ from dl_dashsql.typed_query.primitives import (
     TypedQuery,
     TypedQueryResult,
 )
-
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
 
 class TypedQueryChecker(abc.ABC):
@@ -41,7 +35,7 @@ class DefaultTypedQueryChecker(TypedQueryChecker):
         assert typed_query_result.data_rows[0] == (1, 2, "zxc")
 
 
-class DefaultTypedQueryTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultTypedQueryTestSuite[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
     @pytest.fixture(scope="class")
     def typed_query_checker(self) -> TypedQueryChecker:
         return DefaultTypedQueryChecker()

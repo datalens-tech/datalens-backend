@@ -1,14 +1,8 @@
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 import attr
 
 from dl_constants.exc import DLBaseException
-
-_EXC_DATA_TV = TypeVar("_EXC_DATA_TV")
 
 
 def format_response_body(obj: Any) -> str:
@@ -23,15 +17,15 @@ def format_response_body(obj: Any) -> str:
     return format_response_body(orig_repr)
 
 
-class ExceptionWithData(Generic[_EXC_DATA_TV], Exception):
-    _data: _EXC_DATA_TV
+class ExceptionWithData[EXC_DATA_TV](Exception):
+    _data: EXC_DATA_TV
 
-    def __init__(self, data: _EXC_DATA_TV):
+    def __init__(self, data: EXC_DATA_TV):
         super().__init__(data)
         self._data = data
 
     @property
-    def data(self) -> _EXC_DATA_TV:
+    def data(self) -> EXC_DATA_TV:
         return self._data
 
 

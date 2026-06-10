@@ -7,11 +7,7 @@ Shared between storage (dl_core.us_manager.storage_schemas) and RQE api.
 from __future__ import annotations
 
 import logging
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 from marshmallow import (
     EXCLUDE,
@@ -34,10 +30,7 @@ from dl_type_transformer.native_type import (
 LOGGER = logging.getLogger(__name__)
 
 
-_TARGET_TV = TypeVar("_TARGET_TV")
-
-
-class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
+class NativeTypeSchemaBase[TARGET_TV](Schema):
     """(Shared ((Native Type) Storage Schema)), common base class for NT schemas."""
 
     class Meta:
@@ -48,7 +41,7 @@ class NativeTypeSchemaBase(Schema, Generic[_TARGET_TV]):
         # TODO: Eventually datasets should be migrated so that this can be removed
         unknown = EXCLUDE
 
-    TARGET_CLS: ClassVar[type[_TARGET_TV]]
+    TARGET_CLS: ClassVar[type[TARGET_TV]]
 
     @post_load(pass_many=False)
     def to_object(self, data: dict, **_):  # type: ignore  # TODO: fix

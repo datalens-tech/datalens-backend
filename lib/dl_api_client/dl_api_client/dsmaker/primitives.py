@@ -13,7 +13,6 @@ import json
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypeVar,
 )
 import uuid
@@ -107,10 +106,7 @@ class UpdateAction:
     order_index: int = 0
 
 
-_ITEM_TV = TypeVar("_ITEM_TV", bound=ApiProxyObject)
-
-
-class Container(Generic[_ITEM_TV]):
+class Container[ITEM_TV: ApiProxyObject]:
     """
     A partially dict-like container for nested items where each item has its own string alias.
     Items can be fetched both by integer (by index) and string (by alias) keys.
@@ -118,7 +114,7 @@ class Container(Generic[_ITEM_TV]):
 
     def __init__(self, data: list | tuple | dict | Container = None):  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "data" (default has type "None", argument has type "list[Any] | tuple[Any, ...] | dict[Any, Any] | Container[Any]")  [assignment]
         self._item_ids: list[str] = []  # order list of object IDs
-        self._items: dict[str, _ITEM_TV] = {}  # objects by ID
+        self._items: dict[str, ITEM_TV] = {}  # objects by ID
         self._id_by_alias: dict[str, str] = {}  # alias -> ID
 
         if data:
@@ -130,7 +126,7 @@ class Container(Generic[_ITEM_TV]):
     def __str__(self) -> str:
         return self.__repr__()
 
-    def __iter__(self) -> Generator[_ITEM_TV, None, None]:
+    def __iter__(self) -> Generator[ITEM_TV, None, None]:
         """
         Iterate over items in container.
         Note that this is different from ``dict`` in that it yields values, not keys.
@@ -138,7 +134,7 @@ class Container(Generic[_ITEM_TV]):
         for id in self._item_ids:
             yield self._items[id]
 
-    def __setitem__(self, alias: str, item: _ITEM_TV):  # type: ignore  # TODO: fix
+    def __setitem__(self, alias: str, item: ITEM_TV):  # type: ignore  # TODO: fix
         """
         Add item to container under given alias.
         Item order is preserved.
@@ -152,7 +148,7 @@ class Container(Generic[_ITEM_TV]):
         if hasattr(item, "set_name"):
             item.set_name(alias)
 
-    def __getitem__(self, key: str | int) -> _ITEM_TV:
+    def __getitem__(self, key: str | int) -> ITEM_TV:
         """Return item either by index (if ``key`` is ``int``) or alias (``key`` is ``str``)"""
         if isinstance(key, str):
             # key is an alias
@@ -163,7 +159,7 @@ class Container(Generic[_ITEM_TV]):
 
         raise TypeError(f"Invalid key type for container: {type(key)}")
 
-    def items(self) -> Generator[tuple[str, _ITEM_TV], None, None]:
+    def items(self) -> Generator[tuple[str, ITEM_TV], None, None]:
         """Just like ``dict.items()`` - iterate over key-value tuples."""
         alias_by_id = {id: alias for alias, id in self._id_by_alias.items()}
         for id in self._item_ids:
@@ -371,13 +367,10 @@ class AvatarRelation(ApiProxyObject):
         return self
 
 
-_INNER_TYPE = TypeVar("_INNER_TYPE")
-
-
 @attr.s
-class ParameterValue(Generic[_INNER_TYPE]):
+class ParameterValue[INNER_TYPE]:
     type: UserDataType
-    value: _INNER_TYPE = attr.ib()
+    value: INNER_TYPE = attr.ib()
 
 
 @attr.s

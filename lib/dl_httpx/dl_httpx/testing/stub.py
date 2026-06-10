@@ -2,7 +2,6 @@ import asyncio
 from collections.abc import Callable
 from typing import (
     Any,
-    Generic,
     Self,
     TypeVar,
 )
@@ -21,7 +20,7 @@ CallableT = TypeVar("CallableT", bound=Callable)
 
 
 @attrs.define(kw_only=True)
-class TrackedCallable(Generic[CallableT]):
+class TrackedCallable[CallableT: Callable]:
     method: CallableT
 
     calls: list[Call] = attrs.field(factory=list, init=False)

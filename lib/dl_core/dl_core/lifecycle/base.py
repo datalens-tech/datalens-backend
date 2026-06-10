@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-import abc
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Generic,
-    TypeVar,
 )
 
 import attr
@@ -15,9 +12,6 @@ from dl_core.us_entry import USEntry
 if TYPE_CHECKING:
     from dl_core.services_registry.top_level import ServicesRegistry
     from dl_core.us_manager.us_manager import USManagerBase
-
-
-_US_ENTRY_TV = TypeVar("_US_ENTRY_TV", bound=USEntry)
 
 
 @attr.s
@@ -30,22 +24,22 @@ class PostSaveHookResult(HookResult):
 
 
 @attr.s
-class EntryLifecycleManager(abc.ABC, Generic[_US_ENTRY_TV]):
-    ENTRY_CLS: ClassVar[type[_US_ENTRY_TV]]
+class EntryLifecycleManager[US_ENTRY_TV: USEntry]:
+    ENTRY_CLS: ClassVar[type[US_ENTRY_TV]]
 
     # Old entry value used to handle changes in post_save and pre_save hooks.
-    _original_entry: _US_ENTRY_TV | None = attr.ib(kw_only=True, default=None)
-    _entry: _US_ENTRY_TV = attr.ib(kw_only=True)
+    _original_entry: US_ENTRY_TV | None = attr.ib(kw_only=True, default=None)
+    _entry: US_ENTRY_TV = attr.ib(kw_only=True)
     _us_manager: USManagerBase = attr.ib(kw_only=True)
     _service_registry: ServicesRegistry = attr.ib(kw_only=True)
 
     @property
-    def entry(self) -> _US_ENTRY_TV:
+    def entry(self) -> US_ENTRY_TV:
         assert isinstance(self._entry, self.ENTRY_CLS)
         return self._entry
 
     @property
-    def original_entry(self) -> _US_ENTRY_TV | None:
+    def original_entry(self) -> US_ENTRY_TV | None:
         if self._original_entry is None:
             return None
 

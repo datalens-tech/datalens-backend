@@ -2,11 +2,7 @@ from collections.abc import Iterable
 import ipaddress
 import logging
 import re
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 from urllib.parse import urlparse
 import uuid
 
@@ -124,26 +120,23 @@ def shorten_uuid(some_uuid: str) -> str:
     return shortuuid.encode(uuid.UUID(some_uuid))
 
 
-_FUTURE_REF_TV = TypeVar("_FUTURE_REF_TV")
-
-
 @attr.s(eq=False, hash=False, order=False)
-class FutureRef(Generic[_FUTURE_REF_TV]):
-    __ref: _FUTURE_REF_TV | None = attr.ib(init=False, default=None)
+class FutureRef[FUTURE_REF_TV]:
+    __ref: FUTURE_REF_TV | None = attr.ib(init=False, default=None)
 
     @property
-    def ref(self) -> "_FUTURE_REF_TV":
+    def ref(self) -> FUTURE_REF_TV:
         if self.__ref is None:
             raise ValueError("FutureRef was not fulfilled")
         return self.__ref
 
-    def fulfill(self, obj: _FUTURE_REF_TV) -> None:
+    def fulfill(self, obj: FUTURE_REF_TV) -> None:
         if self.__ref is not None:
             raise ValueError("FutureRef already fulfilled")
         self.__ref = obj
 
     @classmethod
-    def fulfilled(cls, obj: _FUTURE_REF_TV) -> "FutureRef[_FUTURE_REF_TV]":
+    def fulfilled(cls, obj: FUTURE_REF_TV) -> "FutureRef[FUTURE_REF_TV]":
         fr = cls()
         fr.fulfill(obj)
         return fr

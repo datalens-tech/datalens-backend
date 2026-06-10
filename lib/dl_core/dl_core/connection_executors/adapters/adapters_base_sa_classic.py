@@ -4,7 +4,6 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypeVar,
 )
 from urllib.parse import (
@@ -34,13 +33,12 @@ from dl_type_transformer.native_type import CommonNativeType
 
 LOGGER = logging.getLogger(__name__)
 
-
-_CONN_DTO_TV = TypeVar("_CONN_DTO_TV", bound=ConnTargetDTO)
+CONN_DTO_TV = TypeVar("CONN_DTO_TV", bound=ConnTargetDTO)
 
 
 @attr.s(cmp=False)
-class BaseConnLineConstructor(abc.ABC, Generic[_CONN_DTO_TV]):
-    _target_dto: _CONN_DTO_TV = attr.ib()
+class BaseConnLineConstructor[CONN_DTO_TV: ConnTargetDTO](abc.ABC):
+    _target_dto: CONN_DTO_TV = attr.ib()
     _dsn_template: str = attr.ib()
     _dialect_name: str = attr.ib()
 
@@ -70,13 +68,9 @@ class BaseConnLineConstructor(abc.ABC, Generic[_CONN_DTO_TV]):
         return conn_line
 
 
-_DBA_CLASSIC_SA_DTO_TV = TypeVar("_DBA_CLASSIC_SA_DTO_TV", bound="BaseSQLConnTargetDTO")
-
-
 @attr.s(cmp=False)
-class ClassicSQLConnLineConstructor(
-    BaseConnLineConstructor[_DBA_CLASSIC_SA_DTO_TV],
-    Generic[_DBA_CLASSIC_SA_DTO_TV],
+class ClassicSQLConnLineConstructor[DBA_CLASSIC_SA_DTO_TV: "BaseSQLConnTargetDTO"](
+    BaseConnLineConstructor[DBA_CLASSIC_SA_DTO_TV],
 ):
     def _get_dsn_params(
         self,
@@ -95,13 +89,13 @@ class ClassicSQLConnLineConstructor(
 
 
 @attr.s(cmp=False)
-class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[_CONN_DTO_TV]):
+class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[CONN_DTO_TV]):
     dsn_template: ClassVar[str] = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
     execution_options: ClassVar[dict[str, Any]] = {}
     conn_line_constructor_type: ClassVar[type[BaseConnLineConstructor]] = ClassicSQLConnLineConstructor
 
     # Instance attributes
-    _target_dto: _CONN_DTO_TV = attr.ib()
+    _target_dto: CONN_DTO_TV = attr.ib()
 
     def get_connect_args(self) -> dict:
         return {}

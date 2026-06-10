@@ -29,26 +29,20 @@
 # is where metric.register() is called).
 
 from collections.abc import Mapping
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import attrs
 import prometheus_client
 import prometheus_client.metrics
 
-_InnerMetricT = TypeVar("_InnerMetricT", bound=prometheus_client.metrics.MetricWrapperBase)
-
 
 @attrs.define(kw_only=True, eq=False, slots=False)
-class MetricBase(Generic[_InnerMetricT]):
+class MetricBase[InnerMetricT: prometheus_client.metrics.MetricWrapperBase]:
     _name: str
     _documentation: str
     _labelnames: tuple[str, ...] = ()
-    _inner: _InnerMetricT | None = attrs.field(init=False, default=None)
+    _inner: InnerMetricT | None = attrs.field(init=False, default=None)
 
-    def _build_inner(self) -> _InnerMetricT:
+    def _build_inner(self) -> InnerMetricT:
         raise NotImplementedError
 
     def register(self, collector_registry: prometheus_client.CollectorRegistry) -> None:
@@ -60,7 +54,7 @@ class MetricBase(Generic[_InnerMetricT]):
         self._inner = self._build_inner()
         collector_registry.register(self._inner)
 
-    def _select(self, labels: Mapping[str, str] | None) -> _InnerMetricT:
+    def _select(self, labels: Mapping[str, str] | None) -> InnerMetricT:
         if self._inner is None:
             raise RuntimeError(
                 f"metric {self._name!r} is not registered with a MetricsRegistry; "

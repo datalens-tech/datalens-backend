@@ -12,7 +12,6 @@ import os
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypeVar,
     final,
 )
@@ -50,10 +49,8 @@ from dl_core.us_manager.us_manager import USManagerBase
 
 LOGGER = logging.getLogger(__name__)
 
-_TARGET_OBJECT_TV = TypeVar("_TARGET_OBJECT_TV")
 
-
-class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
+class BaseTopLevelSchema[TARGET_OBJECT_TV](Schema):
     CTX_KEY_EDITABLE_OBJECT: ClassVar[str] = "editable_object"
     CTX_KEY_OPERATIONS_MODE: ClassVar[str] = "operations_mode"
 
@@ -151,14 +148,14 @@ class BaseTopLevelSchema(Schema, Generic[_TARGET_OBJECT_TV]):
 
         return ret
 
-    def create_object(self, data: dict[str, Any]) -> _TARGET_OBJECT_TV:
+    def create_object(self, data: dict[str, Any]) -> TARGET_OBJECT_TV:
         raise NotImplementedError()
 
-    def update_object(self, obj: _TARGET_OBJECT_TV, data: dict[str, Any]) -> _TARGET_OBJECT_TV:
+    def update_object(self, obj: TARGET_OBJECT_TV, data: dict[str, Any]) -> TARGET_OBJECT_TV:
         raise NotImplementedError()
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict[str, Any], **_: Any) -> _TARGET_OBJECT_TV | dict:
+    def post_load(self, data: dict[str, Any], **_: Any) -> TARGET_OBJECT_TV | dict:
         if isinstance(self.operations_mode, EditMode):
             editable_object = self.context.get(self.CTX_KEY_EDITABLE_OBJECT)
             if editable_object is None:

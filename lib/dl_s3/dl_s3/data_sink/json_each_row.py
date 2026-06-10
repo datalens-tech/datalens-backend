@@ -5,8 +5,6 @@ import logging
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Generic,
-    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -29,11 +27,7 @@ from dl_s3.stream import (
 LOGGER = logging.getLogger(__name__)
 
 
-_ITER_TV = TypeVar("_ITER_TV")
-_DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV", bound=DataStreamBase)
-
-
-class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_TV], metaclass=abc.ABCMeta):
+class S3FileDataSink[DATA_STREAM_TV: DataStreamBase, ITER_TV](DataSink[DATA_STREAM_TV], metaclass=abc.ABCMeta):
     batch_size_in_bytes: int = 30 * 1024**2
     max_batch_size: int | None = None
 
@@ -110,7 +104,7 @@ class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_T
         LOGGER.info(f"Copied: {self._rows_saved} rows ({progress}%%) to S3")
 
     @abc.abstractmethod
-    def _process_row(self, row_data: _ITER_TV) -> bytes:
+    def _process_row(self, row_data: ITER_TV) -> bytes:
         raise NotImplementedError
 
     def _should_dump_batch(self, batch: list[bytes], batch_size: int) -> bool:
@@ -119,7 +113,7 @@ class S3FileDataSink(DataSink[_DATA_STREAM_TV], Generic[_DATA_STREAM_TV, _ITER_T
             return False
         return batch_size >= self.batch_size_in_bytes
 
-    def dump_data_stream(self, data_stream: _DATA_STREAM_TV) -> None:
+    def dump_data_stream(self, data_stream: DATA_STREAM_TV) -> None:
         batch: list[bytes] = []
         batch_size = 0
         for row_data in data_stream:

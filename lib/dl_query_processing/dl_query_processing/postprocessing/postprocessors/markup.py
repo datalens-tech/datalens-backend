@@ -4,20 +4,20 @@ from dataclasses import dataclass
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypeAlias,
     TypeVar,
 )
 
 from dl_formula.core.exc import ValidationError
 
-_NODE_TV = TypeVar("_NODE_TV")
-# PEP 695 conversion would require restructuring the TypeVar binding shared with `MarkupProcessingBase[_NODE_TV]`
-NodeActual: TypeAlias = _NODE_TV | str  # noqa: UP040  # what can act as a node
-NodeInput: TypeAlias = _NODE_TV | str  # noqa: UP040  # what can be passed to node-builders
+NODE_TV = TypeVar("NODE_TV")
+
+# PEP 695 conversion would require restructuring the TypeVar binding shared with `MarkupProcessingBase[NODE_TV]`
+NodeActual: TypeAlias = NODE_TV | str  # noqa: UP040  # what can act as a node
+NodeInput: TypeAlias = NODE_TV | str  # noqa: UP040  # what can be passed to node-builders
 
 
-class MarkupProcessingBase(Generic[_NODE_TV]):
+class MarkupProcessingBase[NODE_TV]:
     quot: ClassVar[str] = '"'
     lpar: ClassVar[str] = "("
     rpar: ClassVar[str] = ")"
@@ -35,7 +35,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
     node_image: ClassVar[str] = "img"
     node_tooltip: ClassVar[str] = "tooltip"
 
-    _node_cls: ClassVar[type[_NODE_TV]]
+    _node_cls: ClassVar[type[NODE_TV]]
 
     _dbg: bool = False
 
@@ -46,10 +46,10 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
             return
         print("DBG:", msg % args)
 
-    def _make_node(self, funcname: str, *funcargs: NodeActual) -> _NODE_TV:
+    def _make_node(self, funcname: str, *funcargs: NodeActual) -> NODE_TV:
         raise NotImplementedError
 
-    def _unpack_node(self, node: _NODE_TV) -> tuple[str, tuple[NodeActual, ...]]:
+    def _unpack_node(self, node: NODE_TV) -> tuple[str, tuple[NodeActual, ...]]:
         raise NotImplementedError
 
     class DumpError(ValueError):
@@ -89,34 +89,34 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
     # Node-building
 
-    def n_concat(self, *children: NodeInput) -> _NODE_TV:
+    def n_concat(self, *children: NodeInput) -> NODE_TV:
         return self._make_node(self.node_concat, *(self._proc_arg(child) for child in children))
 
-    def n_url(self, addr: str, title: NodeInput | None = None) -> _NODE_TV:
+    def n_url(self, addr: str, title: NodeInput | None = None) -> NODE_TV:
         return self._make_node(self.node_url, str(addr), self._proc_arg(title or addr))
 
-    def n_i(self, child: NodeInput) -> _NODE_TV:
+    def n_i(self, child: NodeInput) -> NODE_TV:
         return self._make_node(self.node_i, self._proc_arg(child))
 
-    def n_b(self, child: NodeInput) -> _NODE_TV:
+    def n_b(self, child: NodeInput) -> NODE_TV:
         return self._make_node(self.node_b, self._proc_arg(child))
 
-    def n_sz(self, child: NodeInput, size: str) -> _NODE_TV:
+    def n_sz(self, child: NodeInput, size: str) -> NODE_TV:
         return self._make_node(self.node_sz, self._proc_arg(child), str(size))
 
-    def n_cl(self, child: NodeInput, color: str) -> _NODE_TV:
+    def n_cl(self, child: NodeInput, color: str) -> NODE_TV:
         return self._make_node(self.node_cl, self._proc_arg(child), str(color))
 
-    def n_br(self) -> _NODE_TV:
+    def n_br(self) -> NODE_TV:
         return self._make_node(self.node_br)
 
-    def n_userinfo(self, user_id: str, user_info: str) -> _NODE_TV:
+    def n_userinfo(self, user_id: str, user_info: str) -> NODE_TV:
         return self._make_node(self.node_userinfo, str(user_id), str(user_info))
 
-    def n_img(self, src: str, width: int, height: int, alt: str) -> _NODE_TV:
+    def n_img(self, src: str, width: int, height: int, alt: str) -> NODE_TV:
         return self._make_node(self.node_image, src, width, height, alt)
 
-    def n_tooltip(self, text: NodeInput, tooltip: NodeInput, placement: str | None = "") -> _NODE_TV:
+    def n_tooltip(self, text: NodeInput, tooltip: NodeInput, placement: str | None = "") -> NODE_TV:
         if placement:
             return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip), str(placement))
         return self._make_node(self.node_tooltip, self._proc_arg(text), self._proc_arg(tooltip))
@@ -145,7 +145,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
             + self.rpar
         )
 
-    def dump(self, node: _NODE_TV) -> str:
+    def dump(self, node: NODE_TV) -> str:
         if not isinstance(node, self._node_cls):
             raise self.DumpError("Outer value should be a node", type(node))
         return self._dump_i(node)
@@ -241,7 +241,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
         raise self.ParseError("Unexpected data", data, pos)
 
-    def parse(self, data: str | None) -> _NODE_TV:
+    def parse(self, data: str | None) -> NODE_TV:
         if data is None:
             return None  # type: ignore  # TODO: fix
         if not data.startswith(self.lpar) or not data.endswith(self.rpar):
@@ -351,7 +351,7 @@ class MarkupProcessingBase(Generic[_NODE_TV]):
 
         raise self.DumpError("Unknown func", node)
 
-    def verbalize(self, node: _NODE_TV | None) -> Any:
+    def verbalize(self, node: NODE_TV | None) -> Any:
         """A kind-of the other way from dump: more verbose serializable structure. Still a dump."""
         if node is None:
             return None

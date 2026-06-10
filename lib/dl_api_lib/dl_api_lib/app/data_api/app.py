@@ -4,11 +4,7 @@ import abc
 from collections.abc import Iterable
 import functools
 import logging.config
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 from aiohttp import web
 from aiohttp.typedefs import Middleware
@@ -125,11 +121,8 @@ class EnvSetupResult:
     usm_middleware_list: list[Middleware] = attr.ib(kw_only=True)
 
 
-TDataApiSettings = TypeVar("TDataApiSettings", bound=DataApiAppSettings)
-
-
 @attr.s(kw_only=True)
-class DataApiAppFactory(SRFactoryBuilder, Generic[TDataApiSettings], abc.ABC):
+class DataApiAppFactory[TDataApiSettings: DataApiAppSettings](SRFactoryBuilder[TDataApiSettings], abc.ABC):
     _settings: TDataApiSettings = attr.ib()
     private_us_manager_factory_class: ClassVar[type[USMFactory]] = USMFactory
 

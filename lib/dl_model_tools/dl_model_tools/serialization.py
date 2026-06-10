@@ -17,8 +17,6 @@ import logging
 from typing import (
     Any,
     ClassVar,
-    Generic,
-    TypeVar,
     get_args,
 )
 import uuid
@@ -33,26 +31,23 @@ from dl_type_transformer.native_type_schema import OneOfNativeTypeSchema
 LOGGER = logging.getLogger(__name__)
 
 
-_TS_TV = TypeVar("_TS_TV")
-
-
-class TypeSerializer(Generic[_TS_TV]):
+class TypeSerializer[TS_TV]:
     typename: ClassVar[str]
 
     @classmethod
-    def typeobj(cls) -> type[_TS_TV]:
+    def typeobj(cls) -> type[TS_TV]:
         # https://github.com/python/typeshed/issues/7811#issuecomment-1120840824
         # TODO: replace with types.get_original_bases after switching to Python 3.12
         return get_args(cls.__orig_bases__[0])[0]  # type: ignore
 
     @staticmethod
     @abc.abstractmethod
-    def to_jsonable(value: _TS_TV) -> TJSONLike:
+    def to_jsonable(value: TS_TV) -> TJSONLike:
         raise NotImplementedError
 
     @staticmethod
     @abc.abstractmethod
-    def from_jsonable(value: TJSONLike) -> _TS_TV:
+    def from_jsonable(value: TJSONLike) -> TS_TV:
         raise NotImplementedError
 
 

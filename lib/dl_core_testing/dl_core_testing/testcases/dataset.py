@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Set
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 import pytest
 import sqlalchemy as sa
@@ -40,10 +36,8 @@ from dl_core_testing.dataset_wrappers import (
 from dl_core_testing.testcases.connection import BaseConnectionTestClass
 from dl_testing.regulated_test import RegulatedTestCase
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
-
-class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
+class BaseDatasetTestClass[CONN_TV: ConnectionBase](BaseConnectionTestClass[CONN_TV]):
     source_type: ClassVar[DataSourceType]
 
     @pytest.fixture(scope="function")
@@ -63,7 +57,7 @@ class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV])
     def saved_dataset(
         self,
         sync_us_manager: SyncUSManager,
-        saved_connection: _CONN_TV,
+        saved_connection: CONN_TV,
         dsrc_params: dict,
     ) -> Dataset:
         dataset = make_dataset(
@@ -115,7 +109,7 @@ class BaseDatasetTestClass(BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV])
         )
 
 
-class DefaultDatasetTestSuite(RegulatedTestCase, BaseDatasetTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultDatasetTestSuite[CONN_TV: ConnectionBase](RegulatedTestCase, BaseDatasetTestClass[CONN_TV]):
     def _check_simple_select(
         self,
         dataset_wrapper: DatasetTestWrapper,

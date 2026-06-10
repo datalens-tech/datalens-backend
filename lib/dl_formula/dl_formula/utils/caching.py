@@ -7,32 +7,27 @@ from functools import (
     wraps,
 )
 import threading
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 _FUNC = Callable[..., Any]
-_QUALIFIER_VALUE_TV = TypeVar("_QUALIFIER_VALUE_TV")
 
 
-class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
+class MultiCacheManager[QUALIFIER_VALUE_TV]:
     def __init__(
         self,
         wrapped_function: _FUNC,
         maxsize: int,
         cache_exceptions: tuple[type[Exception], ...] = (),
-        cache_qualifier: Callable[..., _QUALIFIER_VALUE_TV] | None = None,
+        cache_qualifier: Callable[..., QUALIFIER_VALUE_TV] | None = None,
     ):
         self._wrapped_function = wrapped_function
         self._cache_exceptions = cache_exceptions
         self._maxsize = maxsize
         self._cache_qualifier = cache_qualifier
-        self._cached_wrappers: dict[_QUALIFIER_VALUE_TV | None, _FUNC] = {}
+        self._cached_wrappers: dict[QUALIFIER_VALUE_TV | None, _FUNC] = {}
         self._cached_wrappers_lock = threading.Lock()
 
-    def _get_qualifier_value(self, *args: Any, **kwargs: Any) -> _QUALIFIER_VALUE_TV | None:
+    def _get_qualifier_value(self, *args: Any, **kwargs: Any) -> QUALIFIER_VALUE_TV | None:
         if self._cache_qualifier is None:
             return None
         return self._cache_qualifier(*args, **kwargs)
@@ -71,7 +66,7 @@ class MultiCacheManager(Generic[_QUALIFIER_VALUE_TV]):
 
         return wrapper
 
-    def cache_info(self) -> dict[_QUALIFIER_VALUE_TV | None, _CacheInfo]:
+    def cache_info(self) -> dict[QUALIFIER_VALUE_TV | None, _CacheInfo]:
         """Collect cache info objects for all existing cache qualifier values."""
         with self._cached_wrappers_lock:
             return {qvalue: wrapper.cache_info() for qvalue, wrapper in self._cached_wrappers.items()}  # type: ignore  # 2024-01-30 # TODO: "Callable[..., Any]" has no attribute "cache_info"  [attr-defined]

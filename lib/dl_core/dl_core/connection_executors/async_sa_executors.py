@@ -12,8 +12,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Generic,
-    TypeVar,
     final,
 )
 
@@ -67,8 +65,6 @@ if TYPE_CHECKING:
 
 LOGGER = logging.getLogger(__name__)
 
-_DBA_TV = TypeVar("_DBA_TV", bound=CommonBaseDirectAdapter)
-
 
 def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
     @functools.wraps(func)
@@ -113,7 +109,7 @@ def _common_exec_wrapper(func: Callable) -> Callable:
 
 # TODO FIX: Encapsulate STRAIGHTFORWARD/WRAPPED state to single object to simplify code
 @attr.s(cmp=False, hash=False)
-class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], metaclass=abc.ABCMeta):
+class DefaultSqlAlchemyConnExecutor[DBA_TV: CommonBaseDirectAdapter](AsyncConnExecutorBase, metaclass=abc.ABCMeta):
     """
     Base class that use SA adapter. To execute queries.
     Executor has 2 use cases in DIRECT execution mode (in RQE execution mode this is not true):
@@ -128,7 +124,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
     Why do we need it: to keep initialization creation of DBA in one place for sync and async environments.
     """
 
-    TARGET_ADAPTER_CLS: ClassVar[type[_DBA_TV]]
+    TARGET_ADAPTER_CLS: ClassVar[type[DBA_TV]]
     REMOTE_ADAPTER_CLS: ClassVar[type[RemoteAsyncAdapter] | None] = None
 
     # Constructor attributes

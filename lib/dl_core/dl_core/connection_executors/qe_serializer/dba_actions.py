@@ -5,8 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Generic,
-    TypeVar,
 )
 
 import attr
@@ -49,16 +47,13 @@ class ActionExecuteQuery(RemoteDBAdapterAction):
     db_adapter_query: DBAdapterQuery = attr.ib()
 
 
-_RES_SCHEMA_TV = TypeVar("_RES_SCHEMA_TV")
-
-
-class NonStreamAction(Generic[_RES_SCHEMA_TV], RemoteDBAdapterAction, metaclass=abc.ABCMeta):
+class NonStreamAction[RES_SCHEMA_TV](RemoteDBAdapterAction, metaclass=abc.ABCMeta):
     ResultSchema = ClassVar[type[BaseQEAPISchema]]
 
-    def serialize_response(self, val: _RES_SCHEMA_TV) -> dict:
+    def serialize_response(self, val: RES_SCHEMA_TV) -> dict:
         return self.ResultSchema().dump(val)  # type: ignore  # TODO: fix
 
-    def deserialize_response(self, data: dict) -> _RES_SCHEMA_TV:
+    def deserialize_response(self, data: dict) -> RES_SCHEMA_TV:
         return self.ResultSchema().load(data)  # type: ignore  # TODO: fix
 
 

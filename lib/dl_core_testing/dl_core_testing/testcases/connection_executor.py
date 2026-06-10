@@ -12,8 +12,6 @@ import functools
 from typing import (
     TYPE_CHECKING,
     ClassVar,
-    Generic,
-    TypeVar,
 )
 
 import attr
@@ -53,10 +51,7 @@ if TYPE_CHECKING:
     from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
-
-
-class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass[_CONN_TV], Generic[_CONN_TV]):
+class BaseConnectionExecutorTestClass[CONN_TV: ConnectionBase](RegulatedTestCase, BaseConnectionTestClass[CONN_TV]):
     @pytest.fixture(scope="function")
     def sync_connection_executor(
         self,
@@ -80,7 +75,7 @@ class BaseConnectionExecutorTestClass(RegulatedTestCase, BaseConnectionTestClass
             await async_conn_executor.close()
 
 
-class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
     @pytest.fixture(scope="function")
     def db_ident(self) -> DBIdent:
         raise NotImplementedError
@@ -113,7 +108,9 @@ class DefaultSyncAsyncConnectionExecutorCheckBase(BaseConnectionExecutorTestClas
         assert old_cnt == new_cnt, f"Expected {old_cnt} sessions, got {new_cnt}"
 
 
-class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
+class DefaultSyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
+    DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV]
+):
     @pytest.fixture(scope="session")
     def conn_exec_factory_async_env(self) -> bool:
         return False
@@ -269,7 +266,9 @@ class DefaultSyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorC
             sync_connection_executor.get_table_schema_info(table_def=nonexistent_table_ident)
 
 
-class DefaultAsyncConnectionExecutorTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
+class DefaultAsyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
+    DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV]
+):
     @pytest.fixture(scope="session")
     def conn_exec_factory_async_env(self) -> bool:
         return True
@@ -405,7 +404,7 @@ class SchemaNamesTestCase:
     full_match_required: bool
 
 
-class DefaultIndexDiscoveryTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
+class DefaultIndexDiscoveryTestSuite[CONN_TV: ConnectionBase](DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV]):
     """Sync-only — covers the legacy `BaseConnExecutorSet.test_indexes_discovery`."""
 
     @pytest.fixture(scope="function")
@@ -449,7 +448,7 @@ class DefaultIndexDiscoveryTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase
         assert actual_schema_info.indexes == index_test_case.expected_indexes
 
 
-class DefaultSchemaListingTestSuite(DefaultSyncAsyncConnectionExecutorCheckBase[_CONN_TV], Generic[_CONN_TV]):
+class DefaultSchemaListingTestSuite[CONN_TV: ConnectionBase](DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV]):
     """Sync + async — covers the legacy `BaseSchemaSupportedExecutorSet` schema-name tests."""
 
     @pytest.fixture(scope="function")

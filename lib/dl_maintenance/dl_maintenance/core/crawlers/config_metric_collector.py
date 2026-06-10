@@ -19,11 +19,7 @@ from enum import (
 )
 import json
 import statistics
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 import attr
 
@@ -95,11 +91,9 @@ class Metric(Enum):
 
 M = Metric  # for convenience
 
-_RAW_VALUE_TV = TypeVar("_RAW_VALUE_TV")
 
-
-class RawValueCollector(Generic[_RAW_VALUE_TV]):
-    def add_value(self, value: _RAW_VALUE_TV) -> None:
+class RawValueCollector[RAW_VALUE_TV]:
+    def add_value(self, value: RAW_VALUE_TV) -> None:
         raise NotImplementedError
 
     def get_aggregate(self, **kwargs: Any) -> dict[str, Any]:

@@ -4,7 +4,6 @@ from collections.abc import (
 )
 import re
 from typing import (
-    Generic,
     TypeVar,
     override,
 )
@@ -110,9 +109,8 @@ HttpServerRequestContextManager = request_context.BaseRequestContextManager[
 
 
 @attr.define(kw_only=True, slots=False)
-class HttpServerAppFactoryMixin(
+class HttpServerAppFactoryMixin[AppType: HttpServerAppMixin](
     dl_app_base.BaseAppFactory[AppType],
-    Generic[AppType],
 ):
     settings: HttpServerAppSettingsMixin
 

@@ -1,10 +1,6 @@
 from collections.abc import Sequence
 import enum
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 import attr
 
@@ -18,8 +14,6 @@ from dl_attrs_model_mapper_doc_tools.domain import (
     AmmOperationExample,
 )
 
-_OPERATION_KIND_ENUM_TV = TypeVar("_OPERATION_KIND_ENUM_TV", bound=enum.Enum)
-
 
 @attr.s(auto_attribs=True, kw_only=True)
 class OperationExample:
@@ -30,8 +24,8 @@ class OperationExample:
 
 
 @attr.s()
-class UserOperationInfo(Generic[_OPERATION_KIND_ENUM_TV]):
-    kind: _OPERATION_KIND_ENUM_TV = attr.ib()
+class UserOperationInfo[OPERATION_KIND_ENUM_TV: enum.Enum]:
+    kind: OPERATION_KIND_ENUM_TV = attr.ib()
     description: MText = attr.ib()
     example_list: list[OperationExample] = attr.ib(factory=list)
 
@@ -49,9 +43,9 @@ class UserOperationInfo(Generic[_OPERATION_KIND_ENUM_TV]):
 
 
 @attr.s()
-class AmmOperationsBuilder(Generic[_OPERATION_KIND_ENUM_TV]):
-    operation_kind_enum: type[_OPERATION_KIND_ENUM_TV] = attr.ib()
-    user_op_info_list: Sequence[UserOperationInfo[_OPERATION_KIND_ENUM_TV]] = attr.ib()
+class AmmOperationsBuilder[OPERATION_KIND_ENUM_TV: enum.Enum]:
+    operation_kind_enum: type[OPERATION_KIND_ENUM_TV] = attr.ib()
+    user_op_info_list: Sequence[UserOperationInfo[OPERATION_KIND_ENUM_TV]] = attr.ib()
     rq_base_type: type = attr.ib()
     rs_base_type: type = attr.ib()
     model_mapper: ModelMapperMarshmallow = attr.ib()
@@ -67,7 +61,7 @@ class AmmOperationsBuilder(Generic[_OPERATION_KIND_ENUM_TV]):
 
     def _create_amm_operation_for_kind(
         self,
-        user_op_info: UserOperationInfo[_OPERATION_KIND_ENUM_TV],
+        user_op_info: UserOperationInfo[OPERATION_KIND_ENUM_TV],
         rq_base_model_descriptor: ModelDescriptor,
     ) -> AmmOperation:
         discriminator_name = rq_base_model_descriptor.children_type_discriminator_attr_name

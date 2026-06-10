@@ -1,8 +1,4 @@
 import secrets
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import attr
 import pytest
@@ -17,10 +13,8 @@ from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
 import dl_logging
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
-
-class DefaultQESpecificTestSuite(BaseRemoteQueryExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultQESpecificTestSuite[CONN_TV: ConnectionBase](BaseRemoteQueryExecutorTestClass[CONN_TV]):
     """Suite for RQE body-signature validation and log-context propagation.
 
     Inherits the parent's `query_executor_options`, `conn_target_dto`,

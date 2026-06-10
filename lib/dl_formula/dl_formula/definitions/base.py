@@ -10,7 +10,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Generic,
     NamedTuple,
     TypeVar,
 )
@@ -59,11 +58,10 @@ if TYPE_CHECKING:
     from dl_formula.translation.env import TranslationEnvironment
 
 
-_VARIANT_OF_TV = TypeVar("_VARIANT_OF_TV")
 _VARIANT_TV = TypeVar("_VARIANT_TV", bound="ValueVariant")
 
 
-class ValueVariant(Generic[_VARIANT_OF_TV]):
+class ValueVariant[VARIANT_OF_TV]:
     """
     Wrapper for a value to be chosen from a list by dialect.
 
@@ -72,9 +70,9 @@ class ValueVariant(Generic[_VARIANT_OF_TV]):
 
     __slots__ = ("_value", "dialects")
 
-    def __init__(self, dialects: DialectCombo, value: _VARIANT_OF_TV):
+    def __init__(self, dialects: DialectCombo, value: VARIANT_OF_TV):
         self.dialects: DialectCombo = dialects
-        self._value: _VARIANT_OF_TV = value
+        self._value: VARIANT_OF_TV = value
 
     def clone(self: _VARIANT_TV, **kwargs) -> _VARIANT_TV:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
         copy_kwargs = dict(
@@ -85,7 +83,7 @@ class ValueVariant(Generic[_VARIANT_OF_TV]):
         return type(self)(**copy_kwargs)
 
     @property
-    def value(self) -> _VARIANT_OF_TV:
+    def value(self) -> VARIANT_OF_TV:
         return self._value
 
     def match(self, dialect: DialectCombo) -> bool:

@@ -2,11 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 from dl_s3.stream import (
     AsyncDataStreamBase,
@@ -16,10 +12,7 @@ from dl_s3.stream import (
 LOGGER = logging.getLogger(__name__)
 
 
-_DATA_STREAM_TV = TypeVar("_DATA_STREAM_TV", bound=DataStreamBase)
-
-
-class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
+class DataSink[DATA_STREAM_TV: DataStreamBase](metaclass=abc.ABCMeta):
     """Object that accepts data in batches and stores it somewhere"""
 
     @abc.abstractmethod
@@ -27,7 +20,7 @@ class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         """Create table, start external service, etc. - whatever is needed to get it running"""
 
     @abc.abstractmethod
-    def dump_data_stream(self, data_stream: _DATA_STREAM_TV) -> None:
+    def dump_data_stream(self, data_stream: DATA_STREAM_TV) -> None:
         """Send stream of entries (list of dicts) to storage"""
 
     @abc.abstractmethod
@@ -50,10 +43,7 @@ class DataSink(Generic[_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         self.cleanup()
 
 
-_ASYNC_DATA_STREAM_TV = TypeVar("_ASYNC_DATA_STREAM_TV", bound=AsyncDataStreamBase)
-
-
-class DataSinkAsync(Generic[_ASYNC_DATA_STREAM_TV], metaclass=abc.ABCMeta):
+class DataSinkAsync[ASYNC_DATA_STREAM_TV: AsyncDataStreamBase](metaclass=abc.ABCMeta):
     """Object that accepts data in batches and stores it somewhere"""
 
     @abc.abstractmethod
@@ -61,7 +51,7 @@ class DataSinkAsync(Generic[_ASYNC_DATA_STREAM_TV], metaclass=abc.ABCMeta):
         """Create table, start external service, etc. - whatever is needed to get it running"""
 
     @abc.abstractmethod
-    async def dump_data_stream(self, data_stream: _ASYNC_DATA_STREAM_TV) -> None:
+    async def dump_data_stream(self, data_stream: ASYNC_DATA_STREAM_TV) -> None:
         """Send stream of entries (list of dicts) to storage"""
 
     @abc.abstractmethod

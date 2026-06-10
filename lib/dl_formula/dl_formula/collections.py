@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
-from typing import (
-    Any,
-    Generic,
-    TypeVar,
-)
+from typing import Any
 
 import attr
 
@@ -63,18 +59,15 @@ class NodeSet:
         return len(self._data_set)
 
 
-_MAP_VALUE_TV = TypeVar("_MAP_VALUE_TV")
-
-
 @attr.s
-class NodeValueMap(Generic[_MAP_VALUE_TV]):
-    _data: dict[NodeExtract, _MAP_VALUE_TV] = attr.ib(factory=dict)
+class NodeValueMap[MAP_VALUE_TV]:
+    _data: dict[NodeExtract, MAP_VALUE_TV] = attr.ib(factory=dict)
 
-    def add(self, node: nodes.FormulaItem, value: _MAP_VALUE_TV) -> None:
+    def add(self, node: nodes.FormulaItem, value: MAP_VALUE_TV) -> None:
         extract = validate_node_is_extractable(node)
         self._data[extract] = value
 
-    def get(self, node: nodes.FormulaItem) -> _MAP_VALUE_TV | None:
+    def get(self, node: nodes.FormulaItem) -> MAP_VALUE_TV | None:
         if node.extract is None:
             return None
         return self._data.get(node.extract)

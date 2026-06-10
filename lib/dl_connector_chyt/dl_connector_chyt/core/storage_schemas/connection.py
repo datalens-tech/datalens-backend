@@ -1,8 +1,3 @@
-from typing import (
-    Generic,
-    TypeVar,
-)
-
 from marshmallow import fields as ma_fields
 
 from dl_core.us_manager.storage_schemas.connection import (
@@ -16,14 +11,11 @@ from dl_connector_chyt.core.us_connection import (
     ConnectionCHYTToken,
 )
 
-_CHYT_CONN_DATA_TV = TypeVar("_CHYT_CONN_DATA_TV", bound=BaseConnectionCHYT.DataModel)
 
-
-class ConnectionCHYTBaseDataStorageSchema(
+class ConnectionCHYTBaseDataStorageSchema[CHYT_CONN_DATA_TV: BaseConnectionCHYT.DataModel](
     CacheableConnectionDataSchemaMixin,
     SubselectConnectionDataSchemaMixin,
-    ConnectionBaseDataStorageSchema[_CHYT_CONN_DATA_TV],
-    Generic[_CHYT_CONN_DATA_TV],
+    ConnectionBaseDataStorageSchema[CHYT_CONN_DATA_TV],
 ):
     alias = ma_fields.String(required=True, allow_none=False)
     max_execution_time = ma_fields.Integer(required=False, allow_none=True, load_default=None, dump_default=None)

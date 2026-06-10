@@ -2,7 +2,6 @@ import abc
 from collections.abc import Sequence
 from typing import (
     Any,
-    Generic,
     Optional,
     TypeVar,
     cast,
@@ -18,7 +17,6 @@ from dl_attrs_model_mapper.utils import (
 )
 
 _TARGET_TV = TypeVar("_TARGET_TV", bound=attr.AttrsInstance)
-_PROCESSING_OBJECT_TV = TypeVar("_PROCESSING_OBJECT_TV")
 
 
 @attr.s(frozen=True)
@@ -35,7 +33,7 @@ class FieldMeta:
 
 
 # TODO FIX: Split into planing & execution
-class Processor(Generic[_PROCESSING_OBJECT_TV]):
+class Processor[PROCESSING_OBJECT_TV]:
     """
     This generic is intended for creation of processor class,
      with a `.process` method which recursively (w.r.t. class structure defined by attrs.ib)
@@ -46,7 +44,7 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
      and evolves instance with replaced attr value
 
     Parametrized by:
-        _PROCESSING_OBJECT_TV: type of the attribute value which should be processed
+        PROCESSING_OBJECT_TV: type of the attribute value which should be processed
     """
 
     @abc.abstractmethod
@@ -54,7 +52,7 @@ class Processor(Generic[_PROCESSING_OBJECT_TV]):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def _process_single_object(self, obj: _PROCESSING_OBJECT_TV, meta: FieldMeta) -> _PROCESSING_OBJECT_TV | None:
+    def _process_single_object(self, obj: PROCESSING_OBJECT_TV, meta: FieldMeta) -> PROCESSING_OBJECT_TV | None:
         raise NotImplementedError()
 
     @classmethod

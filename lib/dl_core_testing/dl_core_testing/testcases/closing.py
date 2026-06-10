@@ -3,11 +3,7 @@ from collections.abc import (
     AsyncGenerator,
     Generator,
 )
-from typing import (
-    ClassVar,
-    Generic,
-    TypeVar,
-)
+from typing import ClassVar
 
 import pytest
 import pytest_asyncio
@@ -31,10 +27,8 @@ from dl_core.utils import FutureRef
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass
 from dl_utils.aio import ContextVarExecutor
 
-_CONN_TV = TypeVar("_CONN_TV", bound=ConnectionBase)
 
-
-class DefaultClosingTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Generic[_CONN_TV]):
+class DefaultClosingTestSuite[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
     """Suite for `AsyncWrapperForSyncAdapter` and `DefaultConnExecutorFactory` closing.
 
     Connector subclasses must declare:
@@ -83,7 +77,7 @@ class DefaultClosingTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Generic
     @pytest.mark.asyncio
     async def test_ce_factory_closing_async(
         self,
-        saved_connection: _CONN_TV,
+        saved_connection: CONN_TV,
         conn_bi_context: RequestContextInfo,
         root_certificates: bytes,
     ) -> None:
@@ -105,7 +99,7 @@ class DefaultClosingTestSuite(BaseConnectionExecutorTestClass[_CONN_TV], Generic
 
     def test_ce_factory_closing_sync(
         self,
-        saved_connection: _CONN_TV,
+        saved_connection: CONN_TV,
         conn_bi_context: RequestContextInfo,
         root_certificates: bytes,
         loop: asyncio.AbstractEventLoop,

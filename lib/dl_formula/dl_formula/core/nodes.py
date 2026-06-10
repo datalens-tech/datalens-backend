@@ -15,7 +15,6 @@ import datetime
 from typing import (
     Any,
     ClassVar,
-    Generic,
     TypeVar,
     cast,
 )
@@ -57,7 +56,7 @@ class NodeMeta:
         )
 
 
-_FORMULA_ITEM_TV = TypeVar("_FORMULA_ITEM_TV", bound="FormulaItem")
+FORMULA_ITEM_TV = TypeVar("FORMULA_ITEM_TV", bound="FormulaItem")
 
 
 class FormulaItem(abc.ABC):
@@ -207,9 +206,9 @@ class FormulaItem(abc.ABC):
         for child in self.__children:
             child.visit_node_type(node_type=node_type, visit_func=visit_func)
 
-    def list_node_type(self, node_type: type[_FORMULA_ITEM_TV]) -> list[_FORMULA_ITEM_TV]:
-        res: list[_FORMULA_ITEM_TV] = []
-        self.visit_node_type(node_type=node_type, visit_func=res.append)  # type: ignore  # 2024-01-30 # TODO: Argument "visit_func" to "visit_node_type" of "FormulaItem" has incompatible type "Callable[[_FORMULA_ITEM_TV], None]"; expected "Callable[[FormulaItem], Any]"  [arg-type]
+    def list_node_type(self, node_type: type[FORMULA_ITEM_TV]) -> list[FORMULA_ITEM_TV]:
+        res: list[FORMULA_ITEM_TV] = []
+        self.visit_node_type(node_type=node_type, visit_func=res.append)  # type: ignore  # 2024-01-30 # TODO: Argument "visit_func" to "visit_node_type" of "FormulaItem" has incompatible type "Callable[[FORMULA_ITEM_TV], None]"; expected "Callable[[FormulaItem], Any]"  [arg-type]
         return res
 
     def get_by_pos(
@@ -244,7 +243,7 @@ class FormulaItem(abc.ABC):
 
     @staticmethod
     def __inplace_replace_at_index_no_copy(
-        top_node: _FORMULA_ITEM_TV, index: NodeHierarchyIndex, expr: FormulaItem
+        top_node: FORMULA_ITEM_TV, index: NodeHierarchyIndex, expr: FormulaItem
     ) -> None:
         parent_index, child_index = index.rsplit()
         assert child_index is not None
@@ -255,20 +254,20 @@ class FormulaItem(abc.ABC):
             node.__extract = node._make_extract()
 
     def substitute_batch(
-        self: _FORMULA_ITEM_TV, to_substitute: Mapping[NodeHierarchyIndex, FormulaItem]
-    ) -> _FORMULA_ITEM_TV:
+        self: FORMULA_ITEM_TV, to_substitute: Mapping[NodeHierarchyIndex, FormulaItem]
+    ) -> FORMULA_ITEM_TV:
         """
         Substitutes sub nodes by given indexes
         Note that substituent nodes are not copied before "insertion"
         """
-        self_copy: _FORMULA_ITEM_TV = copy.copy(self)
+        self_copy: FORMULA_ITEM_TV = copy.copy(self)
         for index, expr in to_substitute.items():
             self.__inplace_replace_at_index_no_copy(self_copy, index=index, expr=expr)
 
         self_copy.__extract = self_copy._make_extract()
         return self_copy
 
-    def replace_at_index(self: _FORMULA_ITEM_TV, index: NodeHierarchyIndex, expr: FormulaItem) -> _FORMULA_ITEM_TV:
+    def replace_at_index(self: FORMULA_ITEM_TV, index: NodeHierarchyIndex, expr: FormulaItem) -> FORMULA_ITEM_TV:
         """
         Replace node at index ``index`` with a new one specified by ``expr``.
         Creating new nodes while descending along the `index` in recursion.
@@ -277,7 +276,7 @@ class FormulaItem(abc.ABC):
 
         # final replacement
         if child_in_index is None:
-            return expr  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "FormulaItem", expected "_FORMULA_ITEM_TV")  [return-value]
+            return expr  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "FormulaItem", expected "FORMULA_ITEM_TV")  [return-value]
 
         child = self.__children[child_in_index]
         new_child = child.replace_at_index(index_tail, expr)
@@ -288,8 +287,8 @@ class FormulaItem(abc.ABC):
         return self.light_copy(children)
 
     def light_copy(
-        self: _FORMULA_ITEM_TV, children: Sequence[FormulaItem], *, meta: NodeMeta | None = None
-    ) -> _FORMULA_ITEM_TV:
+        self: FORMULA_ITEM_TV, children: Sequence[FormulaItem], *, meta: NodeMeta | None = None
+    ) -> FORMULA_ITEM_TV:
         """
         Creates a copy of self with new children nodes
         """
@@ -301,11 +300,11 @@ class FormulaItem(abc.ABC):
         )
 
     def replace_nodes(
-        self: _FORMULA_ITEM_TV,
+        self: FORMULA_ITEM_TV,
         match_func: Callable[[FormulaItem, tuple[FormulaItem, ...]], bool],
         replace_func: Callable[[FormulaItem, tuple[FormulaItem, ...]], FormulaItem],
         parent_stack: tuple[FormulaItem, ...] = (),
-    ) -> _FORMULA_ITEM_TV:
+    ) -> FORMULA_ITEM_TV:
         """
         Walk the whole ``FormulaItem`` (sub)tree and replace child nodes
         for which ``replace_func(<child_node>)`` is ``True`` with``replace_func(<child_node>)``.
@@ -340,7 +339,7 @@ class FormulaItem(abc.ABC):
 
         return self
 
-    def __copy__(self: _FORMULA_ITEM_TV) -> _FORMULA_ITEM_TV:
+    def __copy__(self: FORMULA_ITEM_TV) -> FORMULA_ITEM_TV:
         """Create a copy of self"""
 
         return self.__class__(
@@ -353,7 +352,7 @@ class FormulaItem(abc.ABC):
         self.__meta = meta
         self.__extract = self._make_extract()
 
-    def with_tag(self: _FORMULA_ITEM_TV, level_tag: LevelTag) -> _FORMULA_ITEM_TV:
+    def with_tag(self: FORMULA_ITEM_TV, level_tag: LevelTag) -> FORMULA_ITEM_TV:
         """
         Return a copy of node with replaced ``self.meta.level_tag``
         """
@@ -447,7 +446,7 @@ class FormulaItem(abc.ABC):
         return self.__extract
 
 
-class Child(Generic[_FORMULA_ITEM_TV]):
+class Child[FORMULA_ITEM_TV: "FormulaItem"]:
     """Descriptor for node properties that refer to child nodes"""
 
     __slots__ = ("ind",)
@@ -455,7 +454,7 @@ class Child(Generic[_FORMULA_ITEM_TV]):
     def __init__(self, ind: int):
         self.ind = ind
 
-    def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> _FORMULA_ITEM_TV:
+    def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> FORMULA_ITEM_TV:
         if instance is None:
             raise TypeError("Cannot be used on class")
         return instance.children[self.ind]  # type: ignore  # Cannot validate type here
@@ -464,7 +463,7 @@ class Child(Generic[_FORMULA_ITEM_TV]):
         raise RuntimeError("Cannot set children")
 
 
-class MultiChild(Generic[_FORMULA_ITEM_TV]):
+class MultiChild[FORMULA_ITEM_TV: "FormulaItem"]:
     """Descriptor for node properties that refer to child nodes"""
 
     __slots__ = ("slice",)
@@ -472,7 +471,7 @@ class MultiChild(Generic[_FORMULA_ITEM_TV]):
     def __init__(self, slice: slice):
         self.slice = slice
 
-    def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> tuple[_FORMULA_ITEM_TV, ...]:
+    def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> tuple[FORMULA_ITEM_TV, ...]:
         if instance is None:
             raise TypeError("Cannot be used on class")
         return instance.children[self.slice]  # type: ignore  # Cannot validate type here
@@ -502,7 +501,7 @@ class ExprWrapper(FormulaItem):
         assert len(children) == 1
 
     @classmethod
-    def make(cls: type[_FORMULA_ITEM_TV], expr: FormulaItem, *, meta: NodeMeta | None = None) -> _FORMULA_ITEM_TV:
+    def make(cls: type[FORMULA_ITEM_TV], expr: FormulaItem, *, meta: NodeMeta | None = None) -> FORMULA_ITEM_TV:
         return cls(expr, meta=meta)
 
 
@@ -777,7 +776,7 @@ class ExpressionList(FormulaItem):
     autonomous = False
 
     @classmethod
-    def make(cls: type[_FORMULA_ITEM_TV], *children: FormulaItem, meta: NodeMeta | None = None) -> _FORMULA_ITEM_TV:
+    def make(cls: type[FORMULA_ITEM_TV], *children: FormulaItem, meta: NodeMeta | None = None) -> FORMULA_ITEM_TV:
         return cls(*children, meta=meta)
 
 
@@ -806,10 +805,10 @@ class DimListNodeBase(FormulaItem):
 
     @classmethod
     def make(
-        cls: type[_FORMULA_ITEM_TV],
+        cls: type[FORMULA_ITEM_TV],
         dim_list: Sequence[FormulaItem] | None,
         meta: NodeMeta | None = None,
-    ) -> _FORMULA_ITEM_TV:
+    ) -> FORMULA_ITEM_TV:
         return cls(*(dim_list or ()), meta=meta)
 
 

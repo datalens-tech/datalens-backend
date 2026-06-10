@@ -8,10 +8,6 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import enum
 import logging
 import threading
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import attr
 
@@ -78,9 +74,6 @@ class AWFSGRuntimeError(AWFSGExeption):
     pass
 
 
-_STATE_ITEM_TV = TypeVar("_STATE_ITEM_TV")
-
-
 class _NoSet:
     instance: _NoSet = None  # type: ignore  # TODO: fix
 
@@ -89,10 +82,10 @@ _NoSet.instance = _NoSet()
 
 
 @attr.s
-class SynchronizedJobState(Generic[_STATE_ITEM_TV]):
+class SynchronizedJobState[STATE_ITEM_TV]:
     _log: logging.LoggerAdapter = attr.ib()
     _monitor: threading.Condition = attr.ib(init=False, factory=threading.Condition)
-    _buffer: _NoSet | _STATE_ITEM_TV = attr.ib(init=False, default=_NoSet.instance)
+    _buffer: _NoSet | STATE_ITEM_TV = attr.ib(init=False, default=_NoSet.instance)
     _state: JobState = attr.ib(init=False, default=JobState.worker_not_started)
 
     def _ensure_monitor(self):  # type: ignore  # TODO: fix
@@ -101,7 +94,7 @@ class SynchronizedJobState(Generic[_STATE_ITEM_TV]):
             self._log.error(msg)
             raise AWFSGRuntimeError(msg)
 
-    def fetch_buffer(self) -> _STATE_ITEM_TV:
+    def fetch_buffer(self) -> STATE_ITEM_TV:
         self._ensure_monitor()
         if self._buffer is _NoSet.instance:
             msg = "Trying to fetch from empty buffer"
@@ -110,7 +103,7 @@ class SynchronizedJobState(Generic[_STATE_ITEM_TV]):
         self._buffer, ret = _NoSet.instance, self._buffer
         return ret  # type: ignore  # TODO: fix
 
-    def set_buffer(self, val: _STATE_ITEM_TV):  # type: ignore  # TODO: fix
+    def set_buffer(self, val: STATE_ITEM_TV):  # type: ignore  # TODO: fix
         self._ensure_monitor()
         if self._buffer is not _NoSet.instance:
             msg = "Trying to reset buffer"
@@ -150,12 +143,9 @@ class SynchronizedJobState(Generic[_STATE_ITEM_TV]):
         return self._monitor.__exit__(*args, **kwargs)
 
 
-_JOB_ITEM_TV = TypeVar("_JOB_ITEM_TV")
-
-
 # TODO Switch level to debug
 @attr.s(cmp=False, hash=False)
-class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
+class Job[JOB_ITEM_TV](metaclass=abc.ABCMeta):
     _service_tpe: ThreadPoolExecutor = attr.ib()
     _workers_tpe: ThreadPoolExecutor = attr.ib()
     _worker_thread_start_timeout: float = attr.ib(default=0.1)
@@ -183,7 +173,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
         return self._ss.state
 
     @abc.abstractmethod
-    def make_generator(self) -> Generator[_JOB_ITEM_TV, None, None]:
+    def make_generator(self) -> Generator[JOB_ITEM_TV, None, None]:
         pass
 
     def _worker_do_step(self, generator: Generator) -> bool:
@@ -322,7 +312,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
                 raise AWFSGRuntimeError("Job already started")
 
     # Fetching
-    def _sync_fetch_chunk_from_buffer_schedule_next(self) -> _JOB_ITEM_TV:
+    def _sync_fetch_chunk_from_buffer_schedule_next(self) -> JOB_ITEM_TV:
         self._log.debug("Waiting for state monitor to proceed chunk fetch")
         with self._ss:
             self._log.debug("State monitor acquired to proceed chunk fetch")
@@ -355,7 +345,7 @@ class Job(Generic[_JOB_ITEM_TV], metaclass=abc.ABCMeta):
 
     # TODO FIX: Use async lock to prevent concurrent calls
     # TODO FIX: Assert that job is running
-    async def get_next(self) -> _JOB_ITEM_TV:
+    async def get_next(self) -> JOB_ITEM_TV:
         try:
             next_chunk = await self._loop.run_in_executor(
                 self._service_tpe, self._sync_fetch_chunk_from_buffer_schedule_next
