@@ -110,6 +110,7 @@ class RequestContext(
     _dependencies: RequestContextDependencies
 
 
+RequestContextVar = dl_app_api_base.RequestContextVar[RequestContext]
 RequestContextManager = dl_app_api_base.BaseRequestContextManager[
     RequestContextDependencies,
     RequestContext,
@@ -345,17 +346,23 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
 
     @override
     @dl_app_base.singleton_class_method_result
-    async def _get_request_context_provider(
+    async def _get_request_context_var(  # type: ignore[override]  # RequestContextVar is invariant
         self,
-    ) -> dl_app_api_base.RequestContextProvider[RequestContext]:
-        return dl_app_api_base.RequestContextProvider()
+    ) -> RequestContextVar:
+        return RequestContextVar()
 
     @override
     @dl_app_base.singleton_class_method_result
-    async def _get_request_context_manager(  # type: ignore[override]
+    async def _get_request_context_provider(
         self,
-    ) -> RequestContextManager:
-        request_context_provider = await self._get_request_context_provider()
+    ) -> dl_app_api_base.RequestContextProviderProtocol[RequestContext]:
+        return dl_app_api_base.RequestContextProvider(context_var=await self._get_request_context_var())
+
+    @override
+    @dl_app_base.singleton_class_method_result
+    async def _get_request_context_manager(
+        self,
+    ) -> dl_app_api_base.RequestContextManagerProtocol[RequestContext]:
         return RequestContextManager(
             context_factory=RequestContext.factory,
             dependencies=RequestContextDependencies(
@@ -363,7 +370,7 @@ class AppFactory(dl_app_api_base.HttpServerAppFactoryMixin):
                 value=42,
                 request_auth_checkers=await self._get_request_auth_checkers(),
             ),
-            context_var=request_context_provider.context_var,
+            context_var=await self._get_request_context_var(),
         )
 
     @override

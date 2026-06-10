@@ -92,6 +92,7 @@ from .request_context import (
     RequestContextMiddleware,
     RequestContextProvider,
     RequestContextProviderProtocol,
+    RequestContextVar,
 )
 
 __all__ = [
@@ -158,6 +159,7 @@ __all__ = [
     "RequestContextMiddleware",
     "RequestContextProvider",
     "RequestContextProviderProtocol",
+    "RequestContextVar",
     "Response",
     "ResponseException",
     "Route",

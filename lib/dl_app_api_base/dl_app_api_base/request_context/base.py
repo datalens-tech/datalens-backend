@@ -2,10 +2,8 @@ from collections.abc import Mapping
 import contextvars
 import logging
 from typing import (
-    Generic,
     Protocol,
     Self,
-    TypeVar,
 )
 
 import aiohttp.web
@@ -18,17 +16,10 @@ LOGGER = logging.getLogger(__name__)
 class BaseRequestContextDependencies: ...
 
 
-_RequestContextDependenciesContravariantType = TypeVar(
-    "_RequestContextDependenciesContravariantType",
-    bound=BaseRequestContextDependencies,
-    contravariant=True,
-)
-
-
 @attr.define(kw_only=True, slots=False)
-class BaseRequestContext(Generic[_RequestContextDependenciesContravariantType]):
+class BaseRequestContext[RequestContextDependenciesT: BaseRequestContextDependencies]:
     _aiohttp_request: aiohttp.web.Request
-    _dependencies: _RequestContextDependenciesContravariantType
+    _dependencies: RequestContextDependenciesT
 
     @property
     def method(self) -> str:
@@ -65,7 +56,7 @@ class BaseRequestContext(Generic[_RequestContextDependenciesContravariantType]):
     def factory(
         cls,
         aiohttp_request: aiohttp.web.Request,
-        dependencies: _RequestContextDependenciesContravariantType,
+        dependencies: RequestContextDependenciesT,
     ) -> Self:
         return cls(
             aiohttp_request=aiohttp_request,
@@ -73,38 +64,45 @@ class BaseRequestContext(Generic[_RequestContextDependenciesContravariantType]):
         )
 
 
-_RequestContextCovariantType = TypeVar("_RequestContextCovariantType", bound=BaseRequestContext, covariant=True)
-
-
-class RequestContextFactoryProtocol(
-    Protocol[
-        _RequestContextDependenciesContravariantType,
-        _RequestContextCovariantType,
-    ]
-):
+class RequestContextFactoryProtocol[
+    RequestContextDependenciesT: BaseRequestContextDependencies,
+    RequestContextT: BaseRequestContext,
+](Protocol):
     def __call__(
         self,
         aiohttp_request: aiohttp.web.Request,
-        dependencies: _RequestContextDependenciesContravariantType,
-    ) -> _RequestContextCovariantType: ...
+        dependencies: RequestContextDependenciesT,
+    ) -> RequestContextT: ...
 
 
-def _get_context_var() -> contextvars.ContextVar[_RequestContextCovariantType | None]:
+def _create_context_var[RequestContextT: BaseRequestContext]() -> contextvars.ContextVar[RequestContextT | None]:
     return contextvars.ContextVar("dl_app_api_base.request_context", default=None)
 
 
 @attr.define(frozen=True, kw_only=True)
-class RequestContextProvider(Generic[_RequestContextCovariantType]):
-    _context_var: contextvars.ContextVar[_RequestContextCovariantType | None] = attr.ib(
-        factory=_get_context_var,
+class RequestContextVar[RequestContextT: BaseRequestContext]:
+    """Thin typed wrapper around `contextvars.ContextVar` holding the current request context."""
+
+    _context_var: contextvars.ContextVar[RequestContextT | None] = attr.field(
+        factory=_create_context_var,
         init=False,
     )
 
-    @property
-    def context_var(self) -> contextvars.ContextVar[_RequestContextCovariantType | None]:
-        return self._context_var
+    def get(self) -> RequestContextT | None:
+        return self._context_var.get()
 
-    def get(self) -> _RequestContextCovariantType:
+    def set(self, request_context: RequestContextT) -> None:
+        self._context_var.set(request_context)
+
+    def clear(self) -> None:
+        self._context_var.set(None)
+
+
+@attr.define(frozen=True, kw_only=True)
+class RequestContextProvider[RequestContextT: BaseRequestContext]:
+    _context_var: RequestContextVar[RequestContextT]
+
+    def get(self) -> RequestContextT:
         context = self._context_var.get()
         if context is None:
             raise ValueError("Context is not set")
@@ -112,15 +110,18 @@ class RequestContextProvider(Generic[_RequestContextCovariantType]):
 
 
 @attr.define(frozen=True, kw_only=True)
-class BaseRequestContextManager(Generic[_RequestContextDependenciesContravariantType, _RequestContextCovariantType]):
+class BaseRequestContextManager[
+    RequestContextDependenciesT: BaseRequestContextDependencies,
+    RequestContextT: BaseRequestContext,
+]:
     _context_factory: RequestContextFactoryProtocol[
-        _RequestContextDependenciesContravariantType,
-        _RequestContextCovariantType,
+        RequestContextDependenciesT,
+        RequestContextT,
     ]
-    _dependencies: _RequestContextDependenciesContravariantType
-    _context_var: contextvars.ContextVar[_RequestContextCovariantType | None]
+    _dependencies: RequestContextDependenciesT
+    _context_var: RequestContextVar[RequestContextT]
 
-    def create(self, aiohttp_request: aiohttp.web.Request) -> _RequestContextCovariantType:
+    def create(self, aiohttp_request: aiohttp.web.Request) -> RequestContextT:
         request_context = self._context_factory(
             aiohttp_request=aiohttp_request,
             dependencies=self._dependencies,
@@ -132,14 +133,14 @@ class BaseRequestContextManager(Generic[_RequestContextDependenciesContravariant
         if self._context_var.get() is None:
             raise ValueError("Context is not set")
 
-        self._context_var.set(None)
+        self._context_var.clear()
 
 
-class RequestContextProviderProtocol(Protocol[_RequestContextCovariantType]):
-    def get(self) -> _RequestContextCovariantType: ...
+class RequestContextProviderProtocol[RequestContextT: BaseRequestContext](Protocol):
+    def get(self) -> RequestContextT: ...
 
 
-class RequestContextManagerProtocol(Protocol[_RequestContextCovariantType]):
-    def create(self, aiohttp_request: aiohttp.web.Request) -> _RequestContextCovariantType: ...
+class RequestContextManagerProtocol[RequestContextT: BaseRequestContext](Protocol):
+    def create(self, aiohttp_request: aiohttp.web.Request) -> RequestContextT: ...
 
     def clear(self) -> None: ...

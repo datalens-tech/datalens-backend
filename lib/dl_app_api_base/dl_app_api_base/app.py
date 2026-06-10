@@ -101,6 +101,7 @@ class HttpServerRequestContext(
     _dependencies: HttpServerRequestContextDependencies
 
 
+HttpServerRequestContextVar = request_context.RequestContextVar[HttpServerRequestContext]
 HttpServerRequestContextProvider = request_context.RequestContextProvider[HttpServerRequestContext]
 HttpServerRequestContextManager = request_context.BaseRequestContextManager[
     HttpServerRequestContextDependencies,
@@ -156,23 +157,28 @@ class HttpServerAppFactoryMixin(
         return app
 
     @dl_app_base.singleton_class_method_result
+    async def _get_request_context_var(
+        self,
+    ) -> HttpServerRequestContextVar:
+        return HttpServerRequestContextVar()
+
+    @dl_app_base.singleton_class_method_result
     async def _get_request_context_provider(
         self,
-    ) -> HttpServerRequestContextProvider:
-        return HttpServerRequestContextProvider()
+    ) -> request_context.RequestContextProviderProtocol[HttpServerRequestContext]:
+        return HttpServerRequestContextProvider(context_var=await self._get_request_context_var())
 
     @dl_app_base.singleton_class_method_result
     async def _get_request_context_manager(
         self,
-    ) -> HttpServerRequestContextManager:
-        request_context_provider = await self._get_request_context_provider()
+    ) -> request_context.RequestContextManagerProtocol[HttpServerRequestContext]:
         return HttpServerRequestContextManager(
             context_factory=HttpServerRequestContext.factory,
             dependencies=HttpServerRequestContextDependencies(
                 request_auth_checkers=await self._get_request_auth_checkers(),
                 user_auth_provider_factories=await self._get_user_auth_provider_factories(),
             ),
-            context_var=request_context_provider.context_var,
+            context_var=await self._get_request_context_var(),
         )
 
     @dl_app_base.singleton_class_method_result
