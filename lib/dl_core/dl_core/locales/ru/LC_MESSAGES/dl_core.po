@@ -27,6 +27,18 @@ msgstr "SQL"
 msgid "source_templates-label-subquery"
 msgstr "Подзапрос"
 
+msgid "source_templates-disabled-subselect-title"
+msgstr "Добавление источников недоступно"
+
+msgid "source_templates-disabled-subselect-description"
+msgstr "Создание источников вручную отключено в настройках подключения."
+
+msgid "source_templates-enabled-subselect-title"
+msgstr "Добавление источников доступно"
+
+msgid "source_templates-enabled-subselect-description"
+msgstr "Вы можете добавить источник вручную."
+
 msgid "notif_check-creds"
 msgstr ""
 "После импорта необходимо изменить и повторно сохранить секретные поля, "

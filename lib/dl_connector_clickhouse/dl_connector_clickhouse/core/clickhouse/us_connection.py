@@ -67,6 +67,7 @@ class ConnectionClickhouse(
                     source_type=SOURCE_TYPE_CH_TABLE,
                     localizer=localizer,
                     disabled=not self.is_subselect_allowed,
+                    disabled_text=self.subselect_disabled_text,
                     template_enabled=self.is_datasource_template_allowed,
                     db_name_form_enabled=True,
                 )
@@ -78,6 +79,7 @@ class ConnectionClickhouse(
                 source_type=SOURCE_TYPE_CH_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 template_enabled=self.is_datasource_template_allowed,
             )
         )

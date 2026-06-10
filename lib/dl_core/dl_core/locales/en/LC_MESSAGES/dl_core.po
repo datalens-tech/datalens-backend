@@ -27,6 +27,18 @@ msgstr "SQL"
 msgid "source_templates-label-subquery"
 msgstr "Subquery"
 
+msgid "source_templates-disabled-subselect-title"
+msgstr "Adding sources is unavailable"
+
+msgid "source_templates-disabled-subselect-description"
+msgstr "Manual data source creation is disabled in the connection settings."
+
+msgid "source_templates-enabled-subselect-title"
+msgstr "Adding sources is available"
+
+msgid "source_templates-enabled-subselect-description"
+msgstr "You can add a data source manually."
+
 msgid "notif_check-creds"
 msgstr ""
 "After importing, it is necessary to change and re-save secret fields such as "

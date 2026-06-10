@@ -83,6 +83,7 @@ class YDBConnection(
                 connection_id=self.uuid,  # type: ignore
                 source_type=SOURCE_TYPE_YDB_TABLE,
                 localizer=localizer,
+                disabled_text=self.subselect_disabled_text,
                 title="YDB table",
                 template_enabled=self.is_datasource_template_allowed,
                 table_form_title=localizer.translate(Translatable("source_templates-label-ydb_table")),
@@ -93,6 +94,7 @@ class YDBConnection(
                 source_type=SOURCE_TYPE_YDB_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 title="Subselect over YDB",
                 template_enabled=self.is_datasource_template_allowed,
             ),

@@ -132,6 +132,7 @@ class DataSourceTemplateResponseField(ma_fields.Field):
             "group",
             "form",
             "disabled",
+            "disabled_text",
         )
     )
 

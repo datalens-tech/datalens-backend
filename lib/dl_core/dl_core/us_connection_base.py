@@ -11,6 +11,7 @@ from typing import (
     Generic,
     NamedTuple,
     Self,
+    TypedDict,
     TypeVar,
 )
 
@@ -51,6 +52,7 @@ from dl_core.base_models import (
 )
 from dl_core.connection_executors.adapters.common_base import get_dialect_for_conn_type
 from dl_core.connection_models import (
+    DataSourceTemplateDisabledText,
     DBIdent,
     PageIdent,
     SchemaIdent,
@@ -92,6 +94,13 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
+class DataSourceTemplateDisabledTextDict(TypedDict):
+    """Translated availability message stored on a ``DataSourceTemplate``."""
+
+    title: str
+    description: str
+
+
 class DataSourceTemplate(NamedTuple):
     # for visualization in UI
     title: str
@@ -104,6 +113,10 @@ class DataSourceTemplate(NamedTuple):
     tab_title: str | None = None
     form: list[dict[str, Any]] | None = None
     disabled: bool = False
+    # Translated message describing the template's availability (why it is disabled, or
+    # that it can be added). None for templates with no message, e.g. listed db-table
+    # sources (mirrors the optional tab_title / form fields).
+    disabled_text: DataSourceTemplateDisabledTextDict | None = None
 
     def get_param_hash(self) -> str:
         from dl_core import data_source  # noqa
@@ -116,10 +129,21 @@ class DataSourceTemplate(NamedTuple):
         )
 
 
+def _resolve_disabled_text(
+    localizer: Localizer,
+    disabled_text: DataSourceTemplateDisabledText,
+) -> DataSourceTemplateDisabledTextDict:
+    return DataSourceTemplateDisabledTextDict(
+        title=localizer.translate(disabled_text.title),
+        description=localizer.translate(disabled_text.description),
+    )
+
+
 def make_table_datasource_template(
     connection_id: str,
     source_type: DataSourceType,
     localizer: Localizer,
+    disabled_text: DataSourceTemplateDisabledText,
     disabled: bool = False,
     template_enabled: bool = False,
     title: str = "Table",
@@ -183,6 +207,7 @@ def make_table_datasource_template(
         source_type=source_type,
         form=form,
         disabled=disabled,
+        disabled_text=_resolve_disabled_text(localizer, disabled_text),
         group=[],
         connection_id=connection_id,
         parameters={},
@@ -194,6 +219,7 @@ def make_subselect_datasource_template(
     source_type: DataSourceType,
     localizer: Localizer,
     disabled: bool,
+    disabled_text: DataSourceTemplateDisabledText,
     template_enabled: bool = False,
     title: str = "SQL",
     field_doc_key: str = "ANY_SUBSELECT/subsql",
@@ -214,6 +240,7 @@ def make_subselect_datasource_template(
             },
         ],
         disabled=disabled,
+        disabled_text=_resolve_disabled_text(localizer, disabled_text),
         group=[],
         connection_id=connection_id,
         parameters={},
@@ -394,6 +421,22 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     @property
     def is_subselect_allowed(self) -> bool:
         return False
+
+    @property
+    def subselect_disabled_text(self) -> DataSourceTemplateDisabledText:
+        # Availability message for a freeform source template, paired with the same
+        # ``is_subselect_allowed`` condition that drives its ``disabled`` flag: an
+        # explanation when manual / freeform source creation is forbidden, or a
+        # confirmation that it is available otherwise.
+        if self.is_subselect_allowed:
+            return DataSourceTemplateDisabledText(
+                title=Translatable("source_templates-enabled-subselect-title"),
+                description=Translatable("source_templates-enabled-subselect-description"),
+            )
+        return DataSourceTemplateDisabledText(
+            title=Translatable("source_templates-disabled-subselect-title"),
+            description=Translatable("source_templates-disabled-subselect-description"),
+        )
 
     @property
     def is_dashsql_allowed(self) -> bool:

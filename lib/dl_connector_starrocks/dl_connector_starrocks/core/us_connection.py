@@ -94,6 +94,7 @@ class ConnectionStarRocks(
                     source_type=SOURCE_TYPE_STARROCKS_TABLE,
                     localizer=localizer,
                     disabled=not self.is_subselect_allowed,
+                    disabled_text=self.subselect_disabled_text,
                     template_enabled=self.is_datasource_template_allowed,
                     db_name_form_enabled=True,
                     db_name_form_title=localizer.translate(Translatable("source_templates-label-starrocks_catalog")),
@@ -107,6 +108,7 @@ class ConnectionStarRocks(
                 source_type=SOURCE_TYPE_STARROCKS_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 template_enabled=self.is_datasource_template_allowed,
             )
         )

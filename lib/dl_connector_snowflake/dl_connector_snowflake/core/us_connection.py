@@ -152,5 +152,6 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
                 source_type=SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
             )
         ]

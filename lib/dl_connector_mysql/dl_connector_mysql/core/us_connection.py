@@ -63,6 +63,7 @@ class ConnectionMySQL(
                     source_type=SOURCE_TYPE_MYSQL_TABLE,
                     localizer=localizer,
                     disabled=not self.is_subselect_allowed,
+                    disabled_text=self.subselect_disabled_text,
                     template_enabled=self.is_datasource_template_allowed,
                 )
             )
@@ -73,6 +74,7 @@ class ConnectionMySQL(
                 source_type=SOURCE_TYPE_MYSQL_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 template_enabled=self.is_datasource_template_allowed,
             )
         )

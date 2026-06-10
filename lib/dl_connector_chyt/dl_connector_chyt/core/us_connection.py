@@ -112,6 +112,7 @@ class BaseConnectionCHYT(
                 connection_id=self.uuid,  # type: ignore
                 source_type=self.chyt_table_source_type,
                 localizer=localizer,
+                disabled_text=self.subselect_disabled_text,
                 title="YTsaurus table via CHYT",
                 template_enabled=self.is_datasource_template_allowed,
                 table_form_title=localizer.translate(Translatable("source_templates-label-ytsaurus_table")),
@@ -172,6 +173,7 @@ class BaseConnectionCHYT(
                 source_type=self.chyt_subselect_source_type,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 title="SQL query via CHYT",
                 field_doc_key="YTsaurus/CHYT_SUBSELECT/subsql",
                 template_enabled=self.is_datasource_template_allowed,

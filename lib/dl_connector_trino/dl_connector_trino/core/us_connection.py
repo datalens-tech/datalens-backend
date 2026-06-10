@@ -105,6 +105,7 @@ class ConnectionTrinoBase(
                     source_type=SOURCE_TYPE_TRINO_TABLE,
                     localizer=localizer,
                     disabled=not self.is_subselect_allowed,
+                    disabled_text=self.subselect_disabled_text,
                     template_enabled=False,  # TODO BI-6411 enable dsrc templating
                     db_name_form_enabled=True,
                     db_name_form_title=localizer.translate(Translatable("source_templates-label-trino_catalog")),
@@ -118,6 +119,7 @@ class ConnectionTrinoBase(
                 source_type=SOURCE_TYPE_TRINO_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 title="Subselect over Trino",
             )
         )

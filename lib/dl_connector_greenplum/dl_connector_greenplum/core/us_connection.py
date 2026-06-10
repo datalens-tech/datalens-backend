@@ -52,6 +52,7 @@ class GreenplumConnection(
                     source_type=SOURCE_TYPE_GP_TABLE,
                     localizer=localizer,
                     disabled=not self.is_subselect_allowed,
+                    disabled_text=self.subselect_disabled_text,
                     template_enabled=self.is_datasource_template_allowed,
                     schema_name_form_enabled=True,
                 )
@@ -63,6 +64,7 @@ class GreenplumConnection(
                 source_type=SOURCE_TYPE_GP_SUBSELECT,
                 localizer=localizer,
                 disabled=not self.is_subselect_allowed,
+                disabled_text=self.subselect_disabled_text,
                 field_doc_key="PG_SUBSELECT/subsql",  # shared, currently.
                 template_enabled=self.is_datasource_template_allowed,
             )

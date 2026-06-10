@@ -13,11 +13,13 @@ from dl_core.connection_models.dto_defs import (
     ConnDTO,
     DefaultSQLDTO,
 )
+from dl_core.connection_models.source_templates import DataSourceTemplateDisabledText
 
 __all__ = (
     "ConnDTO",
     "ConnectOptions",
     "DBIdent",
+    "DataSourceTemplateDisabledText",
     "DefaultSQLDTO",
     "PageIdent",
     "SATextTableDefinition",
