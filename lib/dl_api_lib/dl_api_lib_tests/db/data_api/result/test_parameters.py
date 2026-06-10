@@ -19,6 +19,7 @@ from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants.enums import UserDataType
+from dl_testing.constants import TEST_USER_ID
 
 
 class TestParameters(DefaultApiTestBase):
@@ -277,3 +278,67 @@ class TestParameters(DefaultApiTestBase):
         rows = get_data_rows(result_resp)
         assert len(rows) == 3
         assert {row[0] for row in rows} == {"Office Supplies", "Unknown Furniture", "Unknown Technology"}
+
+    def test_sys_user_id_resolves_to_rci_user_id(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        dataset_id: str,
+    ):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=dataset_id,
+            parameters={
+                "_sys.user_id": Parameter(StringParameterValue("anon"), None, False),
+            },
+        )
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=ds,
+            formulas={
+                "who": "[_sys.user_id]",
+            },
+        )
+
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title="who")],
+            limit=1,
+        )
+        assert result_resp.status_code == HTTPStatus.OK, result_resp.json
+        # The server injects the request user id, overriding the stored default_value.
+        assert get_data_rows(result_resp)[0][0] == TEST_USER_ID
+
+    def test_sys_user_id_rejects_client_supplied_value(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        dataset_id: str,
+    ):
+        ds = add_parameters_to_dataset(
+            api_v1=control_api,
+            dataset_id=dataset_id,
+            parameters={
+                "_sys.user_id": Parameter(StringParameterValue("anon"), None, False),
+            },
+        )
+        ds = add_formulas_to_dataset(
+            api_v1=control_api,
+            dataset=ds,
+            formulas={
+                "who": "[_sys.user_id]",
+            },
+        )
+
+        parameter = ds.find_field(title="_sys.user_id")
+        result_resp = data_api.get_result(
+            dataset=ds,
+            fields=[ds.find_field(title="who")],
+            parameters=[parameter.parameter_value("hacked")],
+            fail_ok=True,
+        )
+        assert result_resp.status_code == HTTPStatus.BAD_REQUEST, result_resp.json
+        assert (
+            result_resp.bi_status_code
+            == "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID.SYSTEM_PARAMETER_NOT_SETTABLE"
+        )

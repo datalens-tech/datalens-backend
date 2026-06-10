@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
+from dl_api_lib.dataset.sys_parameters import resolve_sys_parameter_value_specs
 from dl_api_lib.query.formalization.avatar_tools import normalize_explicit_avatar_ids
 from dl_api_lib.query.formalization.field_resolver import FieldResolver
 from dl_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
@@ -343,6 +344,17 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
     _role: DataSourceRole = attr.ib(kw_only=True)
     _dep_mgr_factory: ComponentDependencyManagerFactoryBase = attr.ib(kw_only=True)
     _service_registry: ServicesRegistry = attr.ib(kw_only=True)
+
+    def make_parameter_value_specs(
+        self,
+        block_spec: BlockSpec,
+    ) -> list[ParameterValueSpec]:
+        # Reject client-supplied `_sys.*` values and inject server-resolved ones.
+        return resolve_sys_parameter_value_specs(
+            parameter_value_specs=super().make_parameter_value_specs(block_spec=block_spec),
+            result_schema=self._dataset.result_schema,
+            rci=self._rci,
+        )
 
     def _validate_phantom_select_ids(self, phantom_select_ids: Sequence[FieldId]) -> None:
         if any(

@@ -78,6 +78,21 @@ class ParameterValueConstraintRequiredError(DataSourceConfigurationError):
     default_message = "Value constraint is required"
 
 
+class ParameterValueSystemParameterNotSettableError(ParameterValueInvalidError):
+    err_code = ParameterValueInvalidError.err_code + ["SYSTEM_PARAMETER_NOT_SETTABLE"]
+    default_message = "System parameter value cannot be set from the client"
+
+
+class UnknownSystemParameterError(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["UNKNOWN_SYSTEM_PARAMETER"]
+    default_message = "Unknown system parameter name"
+
+
+class SystemParameterTypeMismatchError(DataSourceConfigurationError):
+    err_code = DataSourceConfigurationError.err_code + ["SYSTEM_PARAMETER_TYPE_MISMATCH"]
+    default_message = "System parameter has an unexpected type"
+
+
 class DatasetConfigurationError(DLBaseException):
     err_code = DLBaseException.err_code + ["DS_CONFIG"]
 

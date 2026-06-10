@@ -42,6 +42,7 @@ from dl_api_lib.dataset.cache_invalidation import (
     get_invalidation_payload_formula,
     get_invalidation_payload_sql,
 )
+from dl_api_lib.dataset.sys_parameters import resolve_sys_parameter_value_specs
 from dl_api_lib.dataset.validator import (
     DatasetValidator,
     validate_cache_invalidation_filters,
@@ -647,7 +648,11 @@ class DatasetDataBaseView(BaseView):
             parameter_value_spec = ParameterValueSpec(field_id=field_id, value=parameter_role_spec.value)
             result.append(parameter_value_spec)
 
-        return result
+        return resolve_sys_parameter_value_specs(
+            parameter_value_specs=result,
+            result_schema=self.dataset.result_schema,
+            rci=self.dl_request.rci,
+        )
 
     async def check_for_notifications(self, services_registry: ApiServiceRegistry, us_manager: AsyncUSManager) -> None:
         ds_lc_manager = us_manager.get_lifecycle_manager(self.dataset)

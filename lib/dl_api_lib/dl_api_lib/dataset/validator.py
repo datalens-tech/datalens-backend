@@ -78,6 +78,11 @@ from dl_core.cache_invalidation import (
     CacheInvalidationError,
     CacheInvalidationSource,
 )
+from dl_core.components.sys_parameters import (
+    get_sys_parameter_expected_type,
+    is_registered_sys_name,
+    is_sys_name,
+)
 from dl_core.connectors.base.data_source_migration import get_data_source_migrator
 from dl_core.constants import DatasetConstraints
 from dl_core.data_source.base import DataSource
@@ -714,6 +719,26 @@ class DatasetValidator(DatasetBaseWrapper):
                 message="Value constraint is required for string parameters with template enabled",
                 code=common_exc.ParameterValueConstraintRequiredError.err_code,
             )
+
+        if new_field is not None and is_sys_name(new_field.title):
+            if new_field.calc_mode != CalcMode.parameter or not is_registered_sys_name(new_field.title):
+                # The `_sys.` prefix is reserved for registered system parameters (parameter fields only).
+                self._ds.error_registry.add_error(
+                    id=new_field.guid,
+                    type=ComponentType.field,
+                    message=(
+                        f"Name '{new_field.title}' uses the reserved `_sys.` prefix; "
+                        f"only registered system parameters defined as parameter fields may use it"
+                    ),
+                    code=common_exc.UnknownSystemParameterError.err_code,
+                )
+            elif new_field.cast != (expected_type := get_sys_parameter_expected_type(new_field.title)):
+                self._ds.error_registry.add_error(
+                    id=new_field.guid,
+                    type=ComponentType.field,
+                    message=f"System parameter {new_field.title} must have type {expected_type.name}",
+                    code=common_exc.SystemParameterTypeMismatchError.err_code,
+                )
 
         # Remove expression and dependency caches for field
         self.formula_compiler.uncache_field(latest_field)
