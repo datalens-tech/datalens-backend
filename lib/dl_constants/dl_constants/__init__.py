@@ -5,6 +5,7 @@ from .api_constants import (
     DLHeaders,
     DLHeadersCommon,
 )
+from .enums import UserDataType
 
 __all__ = [
     "DLAuthorizationHeaderPrefix",
@@ -12,4 +13,5 @@ __all__ = [
     "DLCookies",
     "DLHeaders",
     "DLHeadersCommon",
+    "UserDataType",
 ]

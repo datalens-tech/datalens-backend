@@ -17,8 +17,11 @@ from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_client.dsmaker.primitives import (
+    BooleanParameterValue,
     Dataset,
     DataSource,
+    FloatParameterValue,
+    IntegerParameterValue,
     ParameterValue,
     RegexParameterValueConstraint,
     ResultField,
@@ -755,3 +758,91 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         for field in failed_constraint_parameter_values.values():
             assert field.value in result_resp.json["message"]
+
+    @pytest.mark.parametrize(
+        ("default_value", "parameter_value", "expected_status_code", "expected_bi_status_code"),
+        (
+            # values that coerce cleanly to the declared type are accepted
+            pytest.param(IntegerParameterValue(value=1), "2", http.HTTPStatus.OK, None, id="integer-positive"),
+            pytest.param(IntegerParameterValue(value=1), "-1", http.HTTPStatus.OK, None, id="integer-negative"),
+            pytest.param(FloatParameterValue(value=1.0), "3.14", http.HTTPStatus.OK, None, id="float"),
+            pytest.param(BooleanParameterValue(value=True), "true", http.HTTPStatus.OK, None, id="boolean-true"),
+            pytest.param(BooleanParameterValue(value=True), "false", http.HTTPStatus.OK, None, id="boolean-false"),
+            # NOTE: date/datetime parameter defaults are not exercised here because the
+            # dsmaker implicit-update path cannot JSON-serialize native date objects;
+            # date/datetime coercion is covered by dl_model_tools unit tests instead.
+            # values that cannot be coerced (type mismatch / SQL-injection payloads) are
+            # rejected before they can reach the rendered source SQL
+            pytest.param(
+                IntegerParameterValue(value=1),
+                "2.5",
+                http.HTTPStatus.BAD_REQUEST,
+                "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID",
+                id="integer-type-mismatch",
+            ),
+            pytest.param(
+                IntegerParameterValue(value=1),
+                "0 OR 1=1 --",
+                http.HTTPStatus.BAD_REQUEST,
+                "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID",
+                id="integer-injection-or",
+            ),
+            pytest.param(
+                IntegerParameterValue(value=1),
+                "-1 UNION SELECT 999, version() --",
+                http.HTTPStatus.BAD_REQUEST,
+                "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID",
+                id="integer-injection-union",
+            ),
+            pytest.param(
+                FloatParameterValue(value=1.0),
+                "1; DROP TABLE users --",
+                http.HTTPStatus.BAD_REQUEST,
+                "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID",
+                id="float-injection",
+            ),
+            pytest.param(
+                BooleanParameterValue(value=True),
+                "1 OR 1=1",
+                http.HTTPStatus.BAD_REQUEST,
+                "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID",
+                id="boolean-injection",
+            ),
+        ),
+    )
+    def test_parameter_value_type_coercion(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        dataset_factory: DatasetFactoryProtocol,
+        default_value: ParameterValue,
+        parameter_value: str,
+        expected_status_code: http.HTTPStatus,
+        expected_bi_status_code: str | None,
+    ) -> None:
+        # A typed (non-string) template parameter must coerce its incoming value to the
+        # declared type before it reaches the rendered source SQL: values that cannot be
+        # represented as that type (type mismatches / SQL-injection payloads) are rejected.
+        ds = dataset_factory()
+        ds.result_schema["coercion_param"] = ResultField(
+            title="coercion_param",
+            cast=default_value.type,
+            default_value=default_value,
+            template_enabled=True,
+        )
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+
+        try:
+            coercion_field = ds.find_field(title="coercion_param")
+
+            result_resp = data_api.get_result(
+                dataset=ds,
+                fields=[ds.find_field(title=field_name) for field_name in self.field_names],
+                parameters=[coercion_field.parameter_value(parameter_value)],
+                fail_ok=True,
+            )
+            assert result_resp.status_code == expected_status_code, result_resp.json
+            assert result_resp.bi_status_code == expected_bi_status_code
+        finally:
+            control_api.delete_dataset(dataset_id=ds.id)

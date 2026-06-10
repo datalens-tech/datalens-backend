@@ -14,6 +14,7 @@ dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-utils = {path = "../dl_utils"}
 python = ">=3.12, <3.13"
 pytz = "*"

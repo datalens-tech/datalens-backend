@@ -24,6 +24,10 @@ from dl_core.multisource import (
 )
 from dl_core.us_dataset import Dataset
 from dl_core.us_extract import ExtractProperties
+from dl_model_tools.coercion import (
+    ParameterValueCoercionError,
+    coerce_value,
+)
 from dl_model_tools.typed_values import BIValue
 from dl_query_processing.compilation.specs import ParameterValueSpec
 
@@ -275,9 +279,22 @@ class DatasetComponentAccessor:
             field = self._dataset.result_schema.by_guid(parameter_value_spec.field_id)
             if field.template_enabled:
                 assert field.default_value is not None
+
+                # Coercion runs purely as a validation gate: it rejects type
+                # mismatches / SQL-injection payloads that cannot be represented as
+                # the declared type. The original value is validated against the
+                # constraint and stored as-is so its rendered form is unchanged.
+                try:
+                    coerce_value(parameter_value_spec.value, field.default_value.type)
+                except ParameterValueCoercionError as e:
+                    raise exc.ParameterValueInvalidError(
+                        f"Value for field {field.title} is not valid for type "
+                        f"{field.default_value.type.name}: {parameter_value_spec.value!r}"
+                    ) from e
+
                 if field.value_constraint and not field.value_constraint.is_valid(parameter_value_spec.value):
                     raise exc.ParameterValueInvalidError(
-                        f"Default value for field {field.title} is not valid: {parameter_value_spec.value}"
+                        f"Value for field {field.title} is not valid: {parameter_value_spec.value}"
                     )
 
                 result[field.title] = attr.evolve(field.default_value, value=parameter_value_spec.value)

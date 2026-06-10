@@ -1,15 +1,12 @@
-from __future__ import annotations
-
 from collections.abc import Collection
-import datetime
 import json
-import logging
 from typing import Any
 
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_formula.core.datatype import DataType
 import dl_formula.core.nodes as formula_nodes
 import dl_formula.shortcuts
+import dl_model_tools
 from dl_query_processing.column_registry import ColumnRegistry
 from dl_query_processing.compilation.primitives import (
     BASE_QUERY_ID,
@@ -22,8 +19,6 @@ from dl_query_processing.compilation.primitives import (
 )
 from dl_query_processing.enums import ExecutionLevel
 import dl_query_processing.exc
-
-LOGGER = logging.getLogger(__name__)
 
 
 def make_joined_from_for_avatars(
@@ -82,13 +77,6 @@ def single_formula_comp_query_for_validation(
     )
 
 
-def _datetime_fromisoformat(val: str) -> datetime.datetime:
-    val = val.replace(" ", "T")
-    if val.endswith("Z"):
-        val = val[:-1] + "+00:00"
-    return datetime.datetime.fromisoformat(val)
-
-
 ARRAY_TYPES = (
     DataType.ARRAY_STR,
     DataType.CONST_ARRAY_STR,
@@ -112,33 +100,33 @@ def make_literal_node(val: Any, data_type: DataType) -> formula_nodes.BaseLitera
     try:
         # strings can contain any of the types, so handle them separately
         if isinstance(val, str):
-            if data_type in (DataType.DATE, DataType.CONST_DATE):
-                dt_val = _datetime_fromisoformat(val).replace(tzinfo=None)
-                if dt_val.hour or dt_val.minute or dt_val.second or dt_val.microsecond:
-                    LOGGER.warning("Truncating datetime with nonzero time to date: %s", val)
-                node = formula_nodes.LiteralDate.make(dt_val.date())
-            elif data_type in (DataType.DATETIME, DataType.CONST_DATETIME):
-                # NOTE: the value might have non-empty tzinfo.
-                node = formula_nodes.LiteralDatetime.make(_datetime_fromisoformat(val))
-            elif data_type in (DataType.DATETIMETZ, DataType.CONST_DATETIMETZ):
-                val_dt = _datetime_fromisoformat(val)
-                # Incoming offset-less datetimes are interpreted as UTC
-                if val_dt.tzinfo is None:
-                    val_dt = val_dt.replace(tzinfo=datetime.UTC)
-                node = formula_nodes.LiteralDatetimeTZ.make(val_dt)
-            elif data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME):
-                node = formula_nodes.LiteralGenericDatetime.make(_datetime_fromisoformat(val))
-            elif data_type in (DataType.INTEGER, DataType.CONST_INTEGER):
-                node = formula_nodes.LiteralInteger.make(int(val))
+            # Scalar coercion is shared with the templated-source parameter path
+            # (``DatasetComponentAccessor.get_parameter_values_from_specs``) so the
+            # two paths validate parameter values identically.
+            if data_type in (DataType.INTEGER, DataType.CONST_INTEGER):
+                coerced_value: Any = dl_model_tools.coerce_integer(val)
+                node = formula_nodes.LiteralInteger.make(coerced_value)
             elif data_type in (DataType.FLOAT, DataType.CONST_FLOAT):
-                node = formula_nodes.LiteralFloat.make(float(val))
+                coerced_value = dl_model_tools.coerce_float(val)
+                node = formula_nodes.LiteralFloat.make(coerced_value)
             elif data_type in (DataType.BOOLEAN, DataType.CONST_BOOLEAN):
-                bool_val = {"true": True, "false": False}.get(val.lower())
-                if bool_val is None:
-                    raise ValueError("Invalid value for bool")
-                node = formula_nodes.LiteralBoolean.make(bool_val)
+                coerced_value = dl_model_tools.coerce_boolean(val)
+                node = formula_nodes.LiteralBoolean.make(coerced_value)
             elif data_type in (DataType.STRING, DataType.CONST_STRING):
-                node = formula_nodes.LiteralString.make(val)
+                coerced_value = dl_model_tools.coerce_string(val)
+                node = formula_nodes.LiteralString.make(coerced_value)
+            elif data_type in (DataType.DATE, DataType.CONST_DATE):
+                coerced_value = dl_model_tools.coerce_date(val)
+                node = formula_nodes.LiteralDate.make(coerced_value)
+            elif data_type in (DataType.GENERICDATETIME, DataType.CONST_GENERICDATETIME):
+                coerced_value = dl_model_tools.coerce_datetime(val)
+                node = formula_nodes.LiteralGenericDatetime.make(coerced_value)
+            elif data_type in (DataType.DATETIME, DataType.CONST_DATETIME):
+                coerced_value = dl_model_tools.coerce_datetime(val)
+                node = formula_nodes.LiteralDatetime.make(coerced_value)
+            elif data_type in (DataType.DATETIMETZ, DataType.CONST_DATETIMETZ):
+                coerced_value = dl_model_tools.coerce_datetime_tz(val)
+                node = formula_nodes.LiteralDatetimeTZ.make(coerced_value)
             elif data_type in (DataType.GEOPOINT, DataType.CONST_GEOPOINT):
                 node = formula_nodes.LiteralGeopoint.make(val)
             elif data_type in (DataType.GEOPOLYGON, DataType.CONST_GEOPOLYGON):
