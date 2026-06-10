@@ -243,6 +243,7 @@ class DefaultSqlAlchemyConnExecutor(AsyncConnExecutorBase, Generic[_DBA_TV], met
             trusted_query=conn_exec_query.trusted_query,
             is_ddl_dml_query=conn_exec_query.is_ddl_dml_query,
             is_dashsql_query=conn_exec_query.is_dashsql_query,
+            allow_write=conn_exec_query.allow_write,
             query_settings=conn_exec_query.query_settings,
         )
 

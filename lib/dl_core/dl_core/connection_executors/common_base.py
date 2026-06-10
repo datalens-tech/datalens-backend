@@ -84,6 +84,7 @@ class ConnExecutorQuery:
     trusted_query: bool = attr.ib(default=False)
     is_ddl_dml_query: bool = attr.ib(default=False)
     is_dashsql_query: bool = attr.ib(default=False)
+    allow_write: bool = attr.ib(default=False)
     query_settings: Mapping[str, str] = attr.ib(factory=dict)
 
 

@@ -22,6 +22,12 @@ class TableDatasourceSettingsMixin(dl_settings.BaseSettings):
     ENABLE_TABLE_DATASOURCE_FORM: bool = True
 
 
+class RawSQLReadWriteSettingsMixin(dl_settings.BaseSettings):
+    """Mixin for connector settings that can offer the readwrite raw SQL level."""
+
+    ENABLE_RAW_SQL_READWRITE_LEVEL: bool = False
+
+
 class QuerySettingsSettingsMixin(dl_settings.BaseSettings):
     """Mixin for connector settings that support per-dataset session settings (`Dataset.query_settings`).
 

@@ -35,6 +35,7 @@ from dl_connector_trino.core.constants import (
     ListingSources,
     TrinoAuthType,
 )
+from dl_connector_trino.core.settings import TrinoConnectorSettings
 
 
 @unique
@@ -276,6 +277,10 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         form_params = self._get_form_params()
         is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
+        raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
+        if isinstance(connector_settings, TrinoConnectorSettings) and connector_settings.ENABLE_RAW_SQL_READWRITE_LEVEL:
+            raw_sql_levels.append(RawSQLLevel.readwrite)
+
         return ConnectionForm(
             title=TrinoConnectionInfoProvider.get_title(self._localizer),
             rows=self._filter_nulls(
@@ -291,7 +296,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                         mode=self.mode, display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value}
                     ),
                     C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
-                    rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect, RawSQLLevel.dashsql]),
+                    rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                     *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),
                     *rc.trino_ssl_rows(),

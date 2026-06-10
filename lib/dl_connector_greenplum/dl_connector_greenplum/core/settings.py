@@ -3,6 +3,7 @@ from typing import ClassVar
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
+    RawSQLReadWriteSettingsMixin,
     TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
@@ -10,7 +11,12 @@ from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from dl_connector_greenplum.core.constants import CONNECTION_TYPE_GREENPLUM
 
 
-class GreenplumConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+class GreenplumConnectorSettings(
+    ConnectorSettings,
+    TableDatasourceSettingsMixin,
+    DatasourceTemplateSettingsMixin,
+    RawSQLReadWriteSettingsMixin,
+):
     type: str = CONNECTION_TYPE_GREENPLUM.value
 
     root_fallback_env_keys: ClassVar[dict[str, str]] = {

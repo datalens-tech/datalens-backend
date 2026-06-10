@@ -345,6 +345,7 @@ class RawSQLLevel(Enum):
     subselect = "subselect"  # wrapped raw SQL with `edit` permissions
     template = "template"  # wrapped raw SQL with `edit` and parameterized `execute` permissions
     dashsql = "dashsql"  # unwrapped raw SQL with `execute` permissions
+    readwrite = "readwrite"  # unwrapped raw SQL with `execute` and `write` permissions
 
 
 RAW_SQL_LEVEL_SORTED = [
@@ -352,6 +353,7 @@ RAW_SQL_LEVEL_SORTED = [
     RawSQLLevel.subselect,
     RawSQLLevel.template,
     RawSQLLevel.dashsql,
+    RawSQLLevel.readwrite,
 ]
 
 
@@ -376,6 +378,7 @@ def is_raw_sql_level_subselect_allowed(raw_sql_level: RawSQLLevel) -> bool:
         RawSQLLevel.subselect,
         RawSQLLevel.template,
         RawSQLLevel.dashsql,
+        RawSQLLevel.readwrite,
     )
 
 
@@ -383,11 +386,19 @@ def is_raw_sql_level_template_allowed(raw_sql_level: RawSQLLevel) -> bool:
     return raw_sql_level in (
         RawSQLLevel.template,
         RawSQLLevel.dashsql,
+        RawSQLLevel.readwrite,
     )
 
 
 def is_raw_sql_level_dashsql_allowed(raw_sql_level: RawSQLLevel) -> bool:
-    return raw_sql_level in (RawSQLLevel.dashsql,)
+    return raw_sql_level in (
+        RawSQLLevel.dashsql,
+        RawSQLLevel.readwrite,
+    )
+
+
+def is_raw_sql_level_readwrite_allowed(raw_sql_level: RawSQLLevel) -> bool:
+    return raw_sql_level in (RawSQLLevel.readwrite,)
 
 
 class DashSQLQueryType(DynamicEnum):

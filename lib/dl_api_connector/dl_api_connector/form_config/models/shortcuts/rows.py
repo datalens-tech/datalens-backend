@@ -166,6 +166,8 @@ class RowConstructor:
             template = self._localizer.translate(Translatable("value_raw-sql-level-template-2"))
         elif len(levels) == 3:
             template = self._localizer.translate(Translatable("value_raw-sql-level-template-3"))
+        elif len(levels) == 4:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-template-4"))
         else:
             raise ValueError("Invalid number of levels")
 
@@ -177,6 +179,8 @@ class RowConstructor:
                 level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-template"))
             elif level == RawSQLLevel.dashsql:
                 level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-dashsql"))
+            elif level == RawSQLLevel.readwrite:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-readwrite"))
             else:
                 raise ValueError("Invalid level")
 
@@ -194,6 +198,8 @@ class RowConstructor:
             template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-2"))
         elif len(levels) == 3:
             template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-3"))
+        elif len(levels) == 4:
+            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-4"))
         else:
             raise ValueError("Invalid number of levels")
 
@@ -205,6 +211,8 @@ class RowConstructor:
                 level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-template"))
             elif level == RawSQLLevel.dashsql:
                 level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-dashsql"))
+            elif level == RawSQLLevel.readwrite:
+                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-readwrite"))
             else:
                 raise ValueError("Invalid level")
 
@@ -216,7 +224,7 @@ class RowConstructor:
         self,
         raw_sql_level: RawSQLLevel,
     ) -> C.RadioGroupRowItemOption.ValueContent.TextEndIcon | None:
-        if raw_sql_level == RawSQLLevel.dashsql:
+        if raw_sql_level in (RawSQLLevel.dashsql, RawSQLLevel.readwrite):
             return C.RadioGroupRowItemOption.ValueContent.TextEndIcon(
                 name=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.Name.circle_exclamation,
                 view=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.View.error,

@@ -155,3 +155,9 @@ class DatasourceTemplateConnectionFormTestMixin:
     @pytest.fixture(name="enable_datasource_template", params=[True, False])
     def fixture_enable_datasource_template(self, request: pytest.FixtureRequest) -> bool:
         return request.param
+
+
+class RawSQLReadWriteConnectionFormTestMixin:
+    @pytest.fixture(name="enable_raw_sql_readwrite", params=[True, False])
+    def fixture_enable_raw_sql_readwrite(self, request: pytest.FixtureRequest) -> bool:
+        return request.param

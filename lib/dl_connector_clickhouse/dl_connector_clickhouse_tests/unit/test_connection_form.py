@@ -4,14 +4,17 @@ import pytest
 
 from dl_api_connector.form_config.models.base import ConnectionFormMode
 from dl_api_connector.i18n.localizer import CONFIGS as BI_API_CONNECTOR_CONFIGS
-from dl_api_lib_testing.connection_form_base import ConnectionFormTestBase
+from dl_api_lib_testing.connection_form_base import (
+    ConnectionFormTestBase,
+    RawSQLReadWriteConnectionFormTestMixin,
+)
 
 from dl_connector_clickhouse.api.connection_form.form_config import ClickHouseConnectionFormFactory
 from dl_connector_clickhouse.api.i18n.localizer import CONFIGS as BI_API_LIB_CONFIGS
 from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings
 
 
-class TestClickhouseConnectionForm(ConnectionFormTestBase):
+class TestClickhouseConnectionForm(ConnectionFormTestBase, RawSQLReadWriteConnectionFormTestMixin):
     CONN_FORM_FACTORY_CLS = ClickHouseConnectionFormFactory
     TRANSLATION_CONFIGS = BI_API_CONNECTOR_CONFIGS + BI_API_LIB_CONFIGS
 
@@ -45,11 +48,13 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase):
         enable_datasource_template: bool,
         allow_experimental_features: bool,
         allow_ssl_ca_verify_option: bool,
+        enable_raw_sql_readwrite: bool,
     ) -> ClickHouseConnectorSettings | None:
         return ClickHouseConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
             ALLOW_EXPERIMENTAL_FEATURES=allow_experimental_features,
             ALLOW_SSL_CA_VERIFY_OPTION=allow_ssl_ca_verify_option,
+            ENABLE_RAW_SQL_READWRITE_LEVEL=enable_raw_sql_readwrite,
         )
 
     @pytest.fixture(name="expected_form_config_file")
@@ -66,6 +71,8 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase):
             parts.append("exp")
         if connectors_settings.ALLOW_SSL_CA_VERIFY_OPTION:
             parts.append("ssl_ca_verify")
+        if connectors_settings.ENABLE_RAW_SQL_READWRITE_LEVEL:
+            parts.append("readwrite")
 
         parts.append(mode.value)
 

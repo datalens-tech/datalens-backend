@@ -3,6 +3,7 @@ from typing import ClassVar
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
+    RawSQLReadWriteSettingsMixin,
     TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
@@ -10,7 +11,12 @@ from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from dl_connector_postgresql.core.postgresql.constants import CONNECTION_TYPE_POSTGRES
 
 
-class PostgreSQLConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DatasourceTemplateSettingsMixin):
+class PostgreSQLConnectorSettings(
+    ConnectorSettings,
+    TableDatasourceSettingsMixin,
+    DatasourceTemplateSettingsMixin,
+    RawSQLReadWriteSettingsMixin,
+):
     type: str = CONNECTION_TYPE_POSTGRES.value
 
     root_fallback_env_keys: ClassVar[dict[str, str]] = {

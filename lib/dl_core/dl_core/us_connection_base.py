@@ -34,6 +34,7 @@ from dl_constants.enums import (
     RawSQLLevel,
     UserDataType,
     is_raw_sql_level_dashsql_allowed,
+    is_raw_sql_level_readwrite_allowed,
     is_raw_sql_level_subselect_allowed,
     is_raw_sql_level_template_allowed,
 )
@@ -396,6 +397,10 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     @property
     def is_dashsql_allowed(self) -> bool:
+        return False
+
+    @property
+    def is_readwrite_allowed(self) -> bool:
         return False
 
     @property
@@ -809,6 +814,13 @@ class RawSqlLevelConnectionMixin(ConnectionBase):
             return False
 
         return is_raw_sql_level_dashsql_allowed(self._raw_sql_level)
+
+    @property
+    def is_readwrite_allowed(self) -> bool:
+        if not self.allow_dashsql:
+            return False
+
+        return is_raw_sql_level_readwrite_allowed(self._raw_sql_level)
 
 
 class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):

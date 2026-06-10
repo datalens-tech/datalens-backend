@@ -179,6 +179,8 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
             raw_sql_levels.append(RawSQLLevel.template)
+        if connector_settings.ENABLE_RAW_SQL_READWRITE_LEVEL:
+            raw_sql_levels.append(RawSQLLevel.readwrite)
 
         form_params = self._get_form_params()
         is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
