@@ -124,15 +124,13 @@ def test_error_handling(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo, client.send(request):
+            pass
         assert excinfo.value.response.status_code == 404
 
         request = client.prepare_raw_request("GET", "/api/forbidden")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo, client.send(request):
+            pass
         assert excinfo.value.response.status_code == 403
 
 
@@ -325,9 +323,8 @@ def test_retry_no_retries(
 
     request = mocked_client.prepare_raw_request("GET", "/api/data")
 
-    with pytest.raises(dl_httpx.NoRetriesHttpxClientException):
-        with mocked_client.send(request):
-            pass
+    with pytest.raises(dl_httpx.NoRetriesHttpxClientException), mocked_client.send(request):
+        pass
 
     assert mock_route.call_count == 0
 
@@ -404,9 +401,8 @@ def test_retry_mutates_request_id(
             "/api/data",
             headers={REQUEST_ID_HEADER: "test-base-id"},
         )
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException), client.send(request):
+            pass
 
     assert len(captured_ids) == 3
     assert captured_ids[0] == "test-base-id"
@@ -474,9 +470,8 @@ def test_rate_limit_propagates_from_send_sync(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/data")
-        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.RateLimitHttpxClientException), client.send(request):
+            pass
 
     assert mock_route.call_count == 0
 
@@ -501,9 +496,8 @@ def test_rate_limit_retries_exhausted_not_wrapped_sync(
         rate_limiter=always_rate_limit_limiter,
     ) as client:
         request = client.prepare_raw_request("GET", "/api/data")
-        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.RateLimitHttpxClientException), client.send(request):
+            pass
 
     assert mock_route.call_count == 0
 
@@ -601,9 +595,8 @@ def test_send_sets_level2_attempt_request_id(
             "/api/data",
             headers={REQUEST_ID_HEADER: "base-id"},
         )
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException), client.send(request):
+            pass
 
     assert captured_ids == ["base-id", "base-id/2", "base-id/3"]
 
@@ -640,9 +633,8 @@ def test_sync_no_transformer_raises_original_http_status_exception(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException):
-            with client.send(request):
-                pass
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientException), client.send(request):
+            pass
 
 
 def test_sync_class_level_transformer_applied(
@@ -663,9 +655,8 @@ def test_sync_class_level_transformer_applied(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(SyncTransformedNotFound) as excinfo:
-            with client.send(request):
-                pass
+        with pytest.raises(SyncTransformedNotFound) as excinfo, client.send(request):
+            pass
 
     assert excinfo.value is expected_exception
     mock_error_transformer.transform.assert_called_once()
@@ -688,9 +679,11 @@ def test_sync_method_level_transformer_applied(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(SyncTransformedNotFound) as excinfo:
-            with client.send(request, error_transformer=mock_error_transformer):
-                pass
+        with (
+            pytest.raises(SyncTransformedNotFound) as excinfo,
+            client.send(request, error_transformer=mock_error_transformer),
+        ):
+            pass
 
     assert excinfo.value is expected_exception
     mock_error_transformer.transform.assert_called_once()
@@ -720,9 +713,11 @@ def test_sync_method_level_wins_over_class_level(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(SyncTransformedForbidden) as excinfo:
-            with client.send(request, error_transformer=method_level_transformer):
-                pass
+        with (
+            pytest.raises(SyncTransformedForbidden) as excinfo,
+            client.send(request, error_transformer=method_level_transformer),
+        ):
+            pass
 
     assert excinfo.value is expected_method_exception
     method_level_transformer.transform.assert_called_once()
@@ -752,9 +747,11 @@ def test_sync_class_level_used_when_method_level_returns_none(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(SyncTransformedNotFound) as excinfo:
-            with client.send(request, error_transformer=method_level_transformer):
-                pass
+        with (
+            pytest.raises(SyncTransformedNotFound) as excinfo,
+            client.send(request, error_transformer=method_level_transformer),
+        ):
+            pass
 
     assert excinfo.value is expected_class_exception
     method_level_transformer.transform.assert_called_once()
@@ -782,9 +779,11 @@ def test_sync_both_return_none_raises_original(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/server-error")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo:
-            with client.send(request, error_transformer=method_level_transformer):
-                pass
+        with (
+            pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo,
+            client.send(request, error_transformer=method_level_transformer),
+        ):
+            pass
 
     assert excinfo.value.response.status_code == 500
     method_level_transformer.transform.assert_called_once()
@@ -807,9 +806,8 @@ def test_client_name_appears_in_logs(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/data")
-        with caplog.at_level(logging.DEBUG, logger=LOGGER.name):
-            with client.send(request):
-                pass
+        with caplog.at_level(logging.DEBUG, logger=LOGGER.name), client.send(request):
+            pass
 
     sending_messages = [record.getMessage() for record in caplog.records if "sending Attempt" in record.getMessage()]
     assert sending_messages

@@ -94,17 +94,16 @@ class LibsPyprojectsContext(typing.Protocol):
 def fixture_libs_context(folder_context: FolderContext, file_context: FileContext) -> LibsPyprojectsContext:
     @contextlib.contextmanager
     def context(libs: dict[str, LibContext]) -> typing.ContextManager[str]:
-        with folder_context() as root_path:
-            with contextlib.ExitStack() as lib_contexts:
-                for lib_name, lib_context in libs.items():
-                    lib_contexts.enter_context(folder_context(path=f"{root_path}/{lib_name}"))
-                    lib_contexts.enter_context(
-                        file_context(path=f"{root_path}/{lib_name}/pyproject.toml", data=lib_context.pyproject)
-                    )
-                    for pytest_file in lib_context.pytest_files:
-                        lib_contexts.enter_context(file_context(path=f"{root_path}/{lib_name}/{pytest_file}"))
+        with folder_context() as root_path, contextlib.ExitStack() as lib_contexts:
+            for lib_name, lib_context in libs.items():
+                lib_contexts.enter_context(folder_context(path=f"{root_path}/{lib_name}"))
+                lib_contexts.enter_context(
+                    file_context(path=f"{root_path}/{lib_name}/pyproject.toml", data=lib_context.pyproject)
+                )
+                for pytest_file in lib_context.pytest_files:
+                    lib_contexts.enter_context(file_context(path=f"{root_path}/{lib_name}/{pytest_file}"))
 
-                yield root_path
+            yield root_path
 
     return context
 
@@ -299,14 +298,14 @@ def test_split_tests_raise_on_unused_label(
     with (
         test_targets_json_context(["package"]) as test_targets_json_path,
         libs_context({"package": LibContext(pyproject=pyproject)}) as root_path,
+        pytest.raises(ValueError),
     ):
-        with pytest.raises(ValueError):
-            split_pytest_tasks.split_tests(
-                "default,not_default",
-                root_path,
-                test_targets_json_path,
-                raise_on_unused_label=True,
-            )
+        split_pytest_tasks.split_tests(
+            "default,not_default",
+            root_path,
+            test_targets_json_path,
+            raise_on_unused_label=True,
+        )
 
     mocked_print.assert_has_calls([mock.call("ERROR::Unused labels in package:unit: unused", file=sys.stderr)])
 
@@ -364,14 +363,14 @@ def test_split_tests_raise_on_uncovered_test(
         libs_context(
             {"package": LibContext(pyproject=pyproject, pytest_files=["package_tests/not_unit/test_random.py"])}
         ) as root_path,
+        pytest.raises(ValueError),
     ):
-        with pytest.raises(ValueError):
-            split_pytest_tasks.split_tests(
-                "default",
-                root_path,
-                test_targets_json_path,
-                raise_on_uncovered_test=True,
-            )
+        split_pytest_tasks.split_tests(
+            "default",
+            root_path,
+            test_targets_json_path,
+            raise_on_uncovered_test=True,
+        )
 
     mocked_print.assert_has_calls(
         [

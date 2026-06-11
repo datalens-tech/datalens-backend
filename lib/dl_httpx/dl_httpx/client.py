@@ -503,12 +503,11 @@ class HttpxSyncClient(HttpxBaseClient[httpx.BaseTransport]):
         self,
         request: httpx.Request,
     ) -> httpx.Response:
-        with self._rate_limiter.context():
-            with self._transport_adapter.context(self._transport, request) as transport:
-                response = transport.handle_request(request)
-                response.request = request
-                response.read()
-                return response
+        with self._rate_limiter.context(), self._transport_adapter.context(self._transport, request) as transport:
+            response = transport.handle_request(request)
+            response.request = request
+            response.read()
+            return response
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -634,9 +633,11 @@ class HttpxAsyncClient(HttpxBaseClient[httpx.AsyncBaseTransport]):
                 await response.aclose()
 
     async def _send(self, request: httpx.Request) -> httpx.Response:
-        async with self._rate_limiter.context_async():
-            async with self._transport_adapter.context_async(self._transport, request) as transport:
-                response = await transport.handle_async_request(request)
-                response.request = request
-                await response.aread()
-                return response
+        async with (
+            self._rate_limiter.context_async(),
+            self._transport_adapter.context_async(self._transport, request) as transport,
+        ):
+            response = await transport.handle_async_request(request)
+            response.request = request
+            await response.aread()
+            return response

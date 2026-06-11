@@ -20,10 +20,9 @@ async def test_handler_returns_prometheus_exposition_format() -> None:
     application.router.add_get("/system/metrics", handler.process)
 
     test_server = aiohttp.test_utils.TestServer(application)
-    async with test_server:
-        async with aiohttp.test_utils.TestClient(test_server) as client:
-            response = await client.get("/system/metrics")
-            body = await response.text()
+    async with test_server, aiohttp.test_utils.TestClient(test_server) as client:
+        response = await client.get("/system/metrics")
+        body = await response.text()
 
     assert response.status == 200
     assert response.headers["Content-Type"].startswith("text/plain")

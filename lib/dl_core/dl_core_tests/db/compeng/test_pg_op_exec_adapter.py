@@ -165,13 +165,15 @@ class TestAiopgOpRunner(BaseTestPGOpExecAdapter):
         service_registry: ServicesRegistry,
         compeng_pg_dsn: str,
     ) -> AsyncGenerator[PostgreSQLExecAdapterAsync, None]:
-        async with aiopg.sa.create_engine(compeng_pg_dsn, minsize=self.min_size, maxsize=self.max_size) as engine:
-            async with engine.acquire() as conn:
-                yield AiopgExecAdapter(
-                    reporting_registry=service_registry.get_reporting_registry(),
-                    conn=conn,
-                    cache_options_builder=CompengOptionsBuilder(),
-                )
+        async with (
+            aiopg.sa.create_engine(compeng_pg_dsn, minsize=self.min_size, maxsize=self.max_size) as engine,
+            engine.acquire() as conn,
+        ):
+            yield AiopgExecAdapter(
+                reporting_registry=service_registry.get_reporting_registry(),
+                conn=conn,
+                cache_options_builder=CompengOptionsBuilder(),
+            )
 
 
 class TestAsyncpgOpRunner(BaseTestPGOpExecAdapter):
@@ -182,11 +184,9 @@ class TestAsyncpgOpRunner(BaseTestPGOpExecAdapter):
         compeng_pg_dsn: str,
     ) -> AsyncGenerator[PostgreSQLExecAdapterAsync, None]:
         pool = await asyncpg.create_pool(compeng_pg_dsn, min_size=self.min_size, max_size=self.max_size)
-        async with pool:
-            async with pool.acquire() as conn:
-                async with conn.transaction():
-                    yield AsyncpgExecAdapter(
-                        reporting_registry=service_registry.get_reporting_registry(),
-                        conn=conn,
-                        cache_options_builder=CompengOptionsBuilder(),
-                    )
+        async with pool, pool.acquire() as conn, conn.transaction():
+            yield AsyncpgExecAdapter(
+                reporting_registry=service_registry.get_reporting_registry(),
+                conn=conn,
+                cache_options_builder=CompengOptionsBuilder(),
+            )

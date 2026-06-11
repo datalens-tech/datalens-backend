@@ -97,8 +97,9 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
         table_path: str,
         secret_auth_headers: dict[str, str],
     ) -> RawIndexInfo | None:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.get(
                 make_url(
                     protocol="https",
                     host=host,
@@ -110,9 +111,10 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
                     **secret_auth_headers,
                     "accept": "application/json",
                 },
-            ) as resp:
-                resp.raise_for_status()
-                resp_js = await resp.json()
+            ) as resp,
+        ):
+            resp.raise_for_status()
+            resp_js = await resp.json()
 
         sorting_columns = tuple(
             col_js["name"] for col_js in resp_js["$value"] if isinstance(col_js.get("sort_order"), str)

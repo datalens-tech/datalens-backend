@@ -366,25 +366,21 @@ class ReferenceDocGenerator:
         func_dir = outdir
         self.generate_doc_func(outdir=func_dir)
         all_funcs_path = os.path.join(func_dir, self._gen_config.doc_all_filename)
-        with open(all_funcs_path, "w") as outfile:
-            with redirect_stdout(outfile):
-                self.generate_doc_list_all(context_path=os.path.dirname(all_funcs_path))
+        with open(all_funcs_path, "w") as outfile, redirect_stdout(outfile):
+            self.generate_doc_list_all(context_path=os.path.dirname(all_funcs_path))
         for doc_config in self._gen_config.func_doc_configs.values():
             for category in sorted(funcs_by_category):
                 category_path = os.path.join(func_dir, doc_config.cat_file_path.format(category_name=category))
-                with open(category_path, "w") as outfile:
-                    with redirect_stdout(outfile):
-                        self.generate_doc_list_category(context_path=os.path.dirname(category_path), category=category)
+                with open(category_path, "w") as outfile, redirect_stdout(outfile):
+                    self.generate_doc_list_category(context_path=os.path.dirname(category_path), category=category)
         if self._gen_config.gen_availability_table:
             availability_path = os.path.join(func_dir, self._gen_config.doc_avail_filename)
-            with open(availability_path, "w") as outfile:
-                with redirect_stdout(outfile):
-                    self.generate_doc_availability_list_for_all_audiences(
-                        context_path=os.path.dirname(availability_path),
-                    )
-        with open(os.path.join(outdir, self._gen_config.doc_toc_filename), "w") as outfile:
-            with redirect_stdout(outfile):
-                self.generate_doc_toc(list_funcs=True)
+            with open(availability_path, "w") as outfile, redirect_stdout(outfile):
+                self.generate_doc_availability_list_for_all_audiences(
+                    context_path=os.path.dirname(availability_path),
+                )
+        with open(os.path.join(outdir, self._gen_config.doc_toc_filename), "w") as outfile, redirect_stdout(outfile):
+            self.generate_doc_toc(list_funcs=True)
 
     @staticmethod
     def _get_func_base_class(name: str) -> type | None:

@@ -276,9 +276,11 @@ def test_raises_on_metrics_dir_mismatch(tmp_path: pathlib.Path) -> None:
     dir_one.mkdir()
     dir_two.mkdir()
 
-    with dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=dir_one, metrics=()):
-        with pytest.raises(ValueError, match="metrics_dir"):
-            dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=dir_two, metrics=())
+    with (
+        dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=dir_one, metrics=()),
+        pytest.raises(ValueError, match="metrics_dir"),
+    ):
+        dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=dir_two, metrics=())
 
 
 def test_can_recreate_with_different_metrics_dir_after_close(tmp_path: pathlib.Path) -> None:
@@ -301,9 +303,11 @@ def test_constructor_failure_rolls_back_patch(tmp_path: pathlib.Path) -> None:
     # restored when the outer registry exits.
     original = prometheus_client.values.ValueClass
     counter = dl_prometheus.Counter(name="dup_total", documentation="dup")
-    with dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=tmp_path, metrics=(counter,)):
-        with pytest.raises(RuntimeError):
-            dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=tmp_path, metrics=(counter,))
+    with (
+        dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=tmp_path, metrics=(counter,)),
+        pytest.raises(RuntimeError),
+    ):
+        dl_prometheus.MultiprocessMetricsRegistry(metrics_dir=tmp_path, metrics=(counter,))
     assert prometheus_client.values.ValueClass is original
 
 

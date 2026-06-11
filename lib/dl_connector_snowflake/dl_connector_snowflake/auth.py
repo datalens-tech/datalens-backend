@@ -73,47 +73,49 @@ class SFAuthProvider:
 
     async def async_get_access_token(self) -> str:
         ra = self.prepare_access_token_request_kwargs()
-        async with BIAioHTTPClient(
-            base_url=ra.endpoint,
-            conn_timeout_sec=1,
-            read_timeout_sec=2,
-            raise_for_status=False,
-            retrier=PredefinedIntervalsRetrier(retry_intervals=(0.2, 0.3, 0.5), retry_methods={"POST"}),
-            # TODO: pass ca_data through *DTO
-            # https://github.com/datalens-tech/datalens-backend/issues/233
-            ca_data=get_root_certificates(),
-        ) as http_client:
-            async with http_client.request(
+        async with (
+            BIAioHTTPClient(
+                base_url=ra.endpoint,
+                conn_timeout_sec=1,
+                read_timeout_sec=2,
+                raise_for_status=False,
+                retrier=PredefinedIntervalsRetrier(retry_intervals=(0.2, 0.3, 0.5), retry_methods={"POST"}),
+                # TODO: pass ca_data through *DTO
+                # https://github.com/datalens-tech/datalens-backend/issues/233
+                ca_data=get_root_certificates(),
+            ) as http_client,
+            http_client.request(
                 method="POST",
                 data=ra.params,
                 headers=ra.auth_as_headers,
                 conn_timeout_sec=1,
-            ) as response:
-                try:
-                    raw = await response.read()
+            ) as response,
+        ):
+            try:
+                raw = await response.read()
 
-                    if response.status == 200:
-                        try:
-                            json_data = await response.json()
-                            return json_data["access_token"]
-                        except Exception:  # noqa
-                            pass
+                if response.status == 200:
+                    try:
+                        json_data = await response.json()
+                        return json_data["access_token"]
+                    except Exception:  # noqa
+                        pass
 
-                    raise SnowflakeGetAccessTokenError(
-                        "Failed to get access token, try to obtain new refresh token",
-                        details={
-                            "status_code": response.status,
-                            "raw_response": repr(raw),
-                        },
-                    )
-                except Exception as e:
-                    raise SnowflakeGetAccessTokenError(
-                        "Failed to get access token, try to obtain new refresh token",
-                        details={
-                            "status_code": response.status,
-                            "raw_response": repr(raw),
-                        },
-                    ) from e
+                raise SnowflakeGetAccessTokenError(
+                    "Failed to get access token, try to obtain new refresh token",
+                    details={
+                        "status_code": response.status,
+                        "raw_response": repr(raw),
+                    },
+                )
+            except Exception as e:
+                raise SnowflakeGetAccessTokenError(
+                    "Failed to get access token, try to obtain new refresh token",
+                    details={
+                        "status_code": response.status,
+                        "raw_response": repr(raw),
+                    },
+                ) from e
 
     def should_notify_refresh_token_to_expire_soon(self) -> bool:
         if self.refresh_token_expire_time is None:

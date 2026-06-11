@@ -107,7 +107,6 @@ ignore = [
   "SIM112", # Later: uncapitalized-environment-variables
   "SIM113", # Later: enumerate-for-loop
   "SIM115", # Later: open-file-with-context-handler
-  "SIM117", # Later: multiple-with-statements
   "SIM118", # Later: in-dict-keys
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
 ]

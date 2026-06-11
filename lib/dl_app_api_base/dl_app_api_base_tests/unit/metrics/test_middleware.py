@@ -58,9 +58,8 @@ async def test_records_counter_and_histogram_for_successful_request() -> None:
     application = _build_app(middleware)
 
     test_server = aiohttp.test_utils.TestServer(application)
-    async with test_server:
-        async with aiohttp.test_utils.TestClient(test_server) as client:
-            response = await client.get("/items/42")
+    async with test_server, aiohttp.test_utils.TestClient(test_server) as client:
+        response = await client.get("/items/42")
 
     assert response.status == 200
 
@@ -84,11 +83,10 @@ async def test_path_label_uses_route_pattern_not_concrete_path() -> None:
     application = _build_app(middleware)
 
     test_server = aiohttp.test_utils.TestServer(application)
-    async with test_server:
-        async with aiohttp.test_utils.TestClient(test_server) as client:
-            await client.get("/items/1")
-            await client.get("/items/2")
-            await client.get("/items/3")
+    async with test_server, aiohttp.test_utils.TestClient(test_server) as client:
+        await client.get("/items/1")
+        await client.get("/items/2")
+        await client.get("/items/3")
 
     labels = {
         "method": "GET",
@@ -108,9 +106,8 @@ async def test_records_status_code_label_for_server_errors() -> None:
     application = _build_app(middleware)
 
     test_server = aiohttp.test_utils.TestServer(application)
-    async with test_server:
-        async with aiohttp.test_utils.TestClient(test_server) as client:
-            response = await client.get("/error")
+    async with test_server, aiohttp.test_utils.TestClient(test_server) as client:
+        response = await client.get("/error")
 
     assert response.status == 500
 
