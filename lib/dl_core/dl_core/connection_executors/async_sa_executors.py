@@ -43,6 +43,7 @@ from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.connection_models.common_models import TableDefinition
 from dl_core.db import SchemaInfo
+from dl_obfuscator import get_secret_strings
 from dl_type_transformer.exc import UnsupportedNativeTypeError
 from dl_utils.aio import ContextVarExecutor
 
@@ -64,6 +65,20 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _populate_keeper_from_target_dto_pool(
+    req_ctx_info: RequestContextInfo | None,
+    target_dto_pool: Sequence[ConnTargetDTO],
+) -> None:
+    if req_ctx_info is None:
+        return
+    keeper = req_ctx_info.secret_keeper
+    # ConnTargetDTO is not a BaseAttrsDataModel and has no get_secret_keys(); its secret fields are
+    # marked solely via repr= (e.g. repr=secrepr), which the walker already treats as secret
+    # (field.repr is not True). No extra resolver needed.
+    for target_dto in target_dto_pool:
+        keeper.add_secrets(get_secret_strings(target_dto), prefix="target_dto")
 
 
 def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
@@ -173,6 +188,8 @@ class DefaultSqlAlchemyConnExecutor[DBA_TV: CommonBaseDirectAdapter](AsyncConnEx
     async def _initialize(self) -> None:
         target_conn_dto_pool = await self._make_target_conn_dto_pool()
         assert target_conn_dto_pool
+
+        _populate_keeper_from_target_dto_pool(self._req_ctx_info, target_conn_dto_pool)
 
         req_ctx_info = self._req_ctx_info or RequestContextInfo.create_empty()
 

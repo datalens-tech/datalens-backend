@@ -325,3 +325,54 @@ class TestIntegrationShape:
             "fallback.HMAC_KEY": "hmac-bytes",
             "fallback.CACHES_REDIS.PASSWORD": "redis-pw",
         }
+
+
+@attr.s(frozen=True)
+class _AttrsCallableRepr:
+    password: str = attr.ib(repr=lambda _v: "***")
+    public: str = attr.ib(default="")
+
+
+@attr.s(frozen=True)
+class _AttrsOpaqueSecret:
+    blob: _Opaque = attr.ib(repr=False)
+
+
+@attr.s(frozen=True)
+class _AttrsDataModelLike:
+    password: str = attr.ib(default="")  # plain — no repr suppression
+    public: str = attr.ib(default="")
+
+
+def _attrs_password_only(cls: type) -> frozenset[str]:
+    if cls is _AttrsDataModelLike:
+        return frozenset({"password"})
+    return frozenset()
+
+
+class TestExtraSecretFieldsResolver:
+    def test_resolver_picks_up_unmarked_field(self) -> None:
+        inst = _AttrsDataModelLike(password="pw", public="visible")
+        assert get_secret_strings(inst, extra_secret_fields=_attrs_password_only) == {"password": "pw"}
+
+    def test_default_no_resolver_emits_nothing_for_unmarked(self) -> None:
+        inst = _AttrsDataModelLike(password="pw", public="visible")
+        assert get_secret_strings(inst) == {}
+
+
+class TestAttrsReprCallable:
+    def test_callable_repr_treated_as_secret(self) -> None:
+        inst = _AttrsCallableRepr(password="pw", public="visible")
+        assert get_secret_strings(inst) == {"password": "pw"}
+
+
+class TestAttrsUnsupportedWarns:
+    def test_attrs_unsupported_inside_secret_warns_and_emits_nothing(self, caplog: pytest.LogCaptureFixture) -> None:
+        inst = _AttrsOpaqueSecret(blob=_Opaque(payload="leak-me"))
+        with caplog.at_level(logging.WARNING, logger="dl_obfuscator.secret_walker"):
+            emitted = get_secret_strings(inst)
+        assert emitted == {}
+        assert any(
+            "skipping unsupported value at 'blob'" in record.message and record.levelno == logging.WARNING
+            for record in caplog.records
+        )

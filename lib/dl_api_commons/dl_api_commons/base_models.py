@@ -14,6 +14,7 @@ import dl_auth
 import dl_constants
 from dl_obfuscator.engine import ObfuscationEngine
 from dl_obfuscator.secret_keeper import SecretKeeper
+from dl_obfuscator.secret_walker import get_secret_strings
 
 
 @attr.s()
@@ -156,6 +157,11 @@ class RequestContextInfo:
 
     def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
+
+    def populate_secret_keeper(self) -> None:
+        self.secret_keeper.add_secrets(self.secret_headers, prefix="header")
+        if self.auth_data is not None:
+            self.secret_keeper.add_secrets(get_secret_strings(self.auth_data), prefix="auth_data")
 
     def get_reporting_extra(self) -> dict[str, str | int | None]:
         reporting_extra: dict[str, str | int | None] = dict(

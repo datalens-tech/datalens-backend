@@ -64,3 +64,26 @@ class TestSecretKeeper:
         representation = repr(sc)
         assert "abc123" not in representation
         assert "value456" not in representation
+
+    def test_add_secrets_with_prefix(self) -> None:
+        sc = SecretKeeper()
+
+        sc.add_secrets({"password": "pw-XXXX", "token": "tok-XXXX"}, prefix="connection")
+
+        assert sc.secrets["pw-XXXX"] == "connection.password"
+        assert sc.secrets["tok-XXXX"] == "connection.token"
+
+    def test_add_secrets_without_prefix(self) -> None:
+        sc = SecretKeeper()
+
+        sc.add_secrets({"password": "pw-XXXX"})
+
+        assert sc.secrets["pw-XXXX"] == "password"
+
+    def test_add_params_accepts_none_value(self) -> None:
+        sc = SecretKeeper()
+
+        sc.add_params({"present": "value-XXXX", "absent": None})
+
+        assert "value-XXXX" in sc.params
+        assert None not in sc.params.values()

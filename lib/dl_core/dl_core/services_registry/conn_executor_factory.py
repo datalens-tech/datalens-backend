@@ -14,6 +14,7 @@ from typing import (
 
 import attr
 
+from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.rqe import (
     RQEBaseURL,
     RQEConfig,
@@ -26,6 +27,7 @@ from dl_core.connection_executors import (
 )
 from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 from dl_core.connection_executors.models.common import RemoteQueryExecutorData
+from dl_core.connection_executors.secret_extraction import data_model_secret_fields
 from dl_core.connection_models import (
     ConnDTO,
     ConnectOptions,
@@ -37,6 +39,7 @@ from dl_core.services_registry.conn_executor_factory_base import (
     ConnExecutorRecipe,
 )
 from dl_core.us_connection_base import ConnectionBase
+from dl_obfuscator import get_secret_strings
 from dl_utils.aio import ContextVarExecutor
 
 if TYPE_CHECKING:
@@ -49,6 +52,19 @@ if TYPE_CHECKING:
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _populate_keeper_from_connection(
+    req_ctx_info: RequestContextInfo | None,
+    conn: ConnectionBase,
+) -> None:
+    if req_ctx_info is None or not conn.has_data():
+        return
+    keeper = req_ctx_info.secret_keeper
+    keeper.add_secrets(
+        get_secret_strings(conn.data, extra_secret_fields=data_model_secret_fields),
+        prefix="connection",
+    )
 
 
 @attr.s(frozen=True)
@@ -121,6 +137,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
         assert conn._context is self.req_ctx_info, "Divergence in RCI between CE factory and US connection"
 
         dto = conn.get_conn_dto()
+        _populate_keeper_from_connection(self.req_ctx_info, conn)
         conn_hosts_pool = self._get_conn_hosts_pool(dto)
 
         executor_cls = self.get_async_conn_executor_cls(conn)

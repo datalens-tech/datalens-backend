@@ -10,6 +10,7 @@ class AuthTarget(dl_dynamic_enum.DynamicEnum):
     UNITED_STORAGE = dl_dynamic_enum.AutoEnumValue()
 
 
+@attr.s()
 class AuthData(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_headers(self, target: AuthTarget | None = None) -> dict[dl_constants.DLHeaders, str]:

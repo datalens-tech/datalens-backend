@@ -1,8 +1,15 @@
 import asyncio
+import json
 import logging
 from typing import Any
 
 from aiohttp import web
+from aiohttp.typedefs import (
+    Handler,
+    Middleware,
+)
+import attr
+from multidict import CIMultiDict
 import pytest
 
 from dl_api_commons.aio.middlewares.commit_rci import commit_rci_middleware
@@ -10,6 +17,8 @@ from dl_api_commons.aio.middlewares.obfuscation_context import obfuscation_conte
 from dl_api_commons.aio.middlewares.request_bootstrap import RequestBootstrap
 from dl_api_commons.aio.middlewares.request_id import RequestId
 from dl_api_commons.aiohttp.aiohttp_wrappers import DLRequestBase
+import dl_auth
+import dl_constants
 from dl_logging.format import StdoutFormatter
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
@@ -241,3 +250,117 @@ async def test_profiling_emitted_when_formatter_active(
 
     profiling_records = [r for r in caplog.records if r.name == "dl_obfuscator.profiling"]
     assert len(profiling_records) == 1
+
+
+@attr.s
+class _AuthDataStub(dl_auth.AuthData):
+    oauth_token: str = attr.ib(repr=False)
+    public_id: str = attr.ib(default="")
+
+    def get_headers(self, target: dl_auth.AuthTarget | None = None) -> dict[dl_constants.DLHeaders, str]:
+        return {}
+
+    def get_cookies(self, target: dl_auth.AuthTarget | None = None) -> dict[dl_constants.DLCookies, str]:
+        return {}
+
+
+def _seeding_middleware(
+    secret_headers: CIMultiDict | None = None,
+    auth_data: dl_auth.AuthData | None = None,
+    set_auth_data: bool = False,
+) -> Middleware:
+    """Test helper: inject secret_headers / auth_data into temp_rci before obfuscation_context_middleware runs."""
+
+    @web.middleware
+    @DLRequestBase.use_dl_request
+    async def actual(dl_request: DLRequestBase, handler: Handler) -> web.StreamResponse:
+        kwargs: dict[str, Any] = {}
+        if secret_headers is not None:
+            kwargs["secret_headers"] = secret_headers
+        if set_auth_data:
+            kwargs["auth_data"] = auth_data
+        if kwargs:
+            dl_request.update_temp_rci(**kwargs)
+        return await handler(dl_request.request)
+
+    return actual
+
+
+async def _capture_keeper_secrets_handler(request: web.Request) -> web.Response:
+    """Handler that returns the committed RCI's secret_keeper secrets as a JSON-like string."""
+    dl_request = DLRequestBase.get_for_request(request)
+    assert dl_request is not None
+    rci = dl_request.rci
+    return web.Response(text=json.dumps(rci.secret_keeper.secrets))
+
+
+def _build_seeded_app(
+    secret_headers: CIMultiDict | None = None,
+    auth_data: dl_auth.AuthData | None = None,
+    set_auth_data: bool = False,
+) -> web.Application:
+    global_keeper = SecretKeeper()
+    global_keeper.add_secret("GLOBAL_TOKEN", "global_token")
+
+    app = web.Application(
+        middlewares=[
+            RequestBootstrap(RequestId()).middleware,
+            _seeding_middleware(secret_headers=secret_headers, auth_data=auth_data, set_auth_data=set_auth_data),
+            obfuscation_context_middleware(),
+            commit_rci_middleware(),
+        ],
+    )
+    app[OBFUSCATION_BASE_OBFUSCATORS_KEY] = create_base_obfuscators(global_keeper=global_keeper)
+    app.router.add_get("/secrets", _capture_keeper_secrets_handler)
+    return app
+
+
+class TestMiddlewareSecretPopulationAio:
+    @pytest.mark.asyncio
+    async def test_secret_headers_added_to_keeper(self, aiohttp_client: Any) -> None:
+        rci_secret_headers = CIMultiDict(
+            [
+                ("Authorization", "Bearer secret-bearer-token-XXXX"),
+                ("Cookie", "Session_id=long-cookie-value-XXXX"),
+            ]
+        )
+        client = await aiohttp_client(_build_seeded_app(secret_headers=rci_secret_headers))
+
+        async with client.get("/secrets") as resp:
+            assert resp.status == 200
+            secrets = json.loads(await resp.text())
+
+        assert secrets.get("Bearer secret-bearer-token-XXXX") == "header.Authorization"
+        assert secrets.get("Session_id=long-cookie-value-XXXX") == "header.Cookie"
+
+    @pytest.mark.asyncio
+    async def test_auth_data_added_to_keeper(self, aiohttp_client: Any) -> None:
+        auth_data = _AuthDataStub(oauth_token="oauth-token-value-XXXX", public_id="user-123")
+        client = await aiohttp_client(_build_seeded_app(auth_data=auth_data, set_auth_data=True))
+
+        async with client.get("/secrets") as resp:
+            assert resp.status == 200
+            secrets = json.loads(await resp.text())
+
+        assert secrets.get("oauth-token-value-XXXX") == "auth_data.oauth_token"
+        # `public_id` has default repr=True (not a secret marker) -> must NOT be in the keeper.
+        assert "user-123" not in secrets
+
+    @pytest.mark.asyncio
+    async def test_no_auth_data_no_crash(self, aiohttp_client: Any) -> None:
+        rci_secret_headers = CIMultiDict([("Authorization", "Bearer only-header-value-YYYY")])
+        client = await aiohttp_client(
+            _build_seeded_app(
+                secret_headers=rci_secret_headers,
+                auth_data=None,
+                set_auth_data=True,
+            )
+        )
+
+        async with client.get("/secrets") as resp:
+            assert resp.status == 200
+            secrets = json.loads(await resp.text())
+
+        # No exception thrown; header still made it in, no auth_data.* keys present.
+        assert secrets.get("Bearer only-header-value-YYYY") == "header.Authorization"
+        assert not any(name.startswith("auth_data.") for name in secrets.values())

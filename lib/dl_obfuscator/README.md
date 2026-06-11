@@ -38,8 +38,8 @@ Design the boundary at the right level: put `repr=False` exactly where secrecy a
 from dl_obfuscator import SecretKeeper, get_secret_strings
 
 keeper = SecretKeeper()
-for name, value in get_secret_strings(settings):
-    keeper.add_secret(value, name)
+# get_secret_strings returns dict[dotted_path, value]; add_secrets bulk-registers it.
+keeper.add_secrets(get_secret_strings(settings))
 ```
 
 Supported containers / nodes:
@@ -53,4 +53,17 @@ Supported containers / nodes:
 - `bytes` leaves → decoded via utf-8 with replacement and emitted if inside a `repr=False` subtree
 - `None`, numbers, enums, and other non-str leaves are skipped
 
-Unsupported container types (e.g. user-defined classes, custom collections) are **not silently swallowed**: when encountered inside a `repr=False` subtree the walker emits a `WARNING` log via `dl_obfuscator.secret_walker` so the leak is observable. Outside a secret subtree it's a `DEBUG` log. If you hit a warning, either give the value a known container shape or extend the walker.
+Unsupported container types (e.g. user-defined classes, custom collections) are **not silently swallowed**: when encountered inside a `repr=False` subtree the walker emits a `WARNING` log via `dl_obfuscator.secret_walker` so the leak is observable. If you hit a warning, either give the value a known container shape or extend the walker.
+
+## Per-request seeding & `extra_secret_fields`
+
+`get_secret_strings` also accepts `extra_secret_fields: Callable[[type], frozenset[str]]` — a resolver that marks extra field names secret beyond `repr=` (e.g. `BaseAttrsDataModel.get_secret_keys()`). Per-request middleware and connection-executor code seed the request-scoped `SecretKeeper` from runtime objects (auth data, connection data models, target DTOs), passing a source prefix:
+
+```python
+keeper.add_secrets(
+    get_secret_strings(conn.data, extra_secret_fields=data_model_secret_fields),
+    prefix="connection",
+)
+```
+
+`add_secrets(secrets, prefix="connection")` registers each secret under `connection.<path>`, so redacted log lines identify the source (e.g. `***connection.password***`).

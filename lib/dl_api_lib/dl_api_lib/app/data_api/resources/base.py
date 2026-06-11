@@ -18,6 +18,7 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
     RequiredResource,
 )
 from dl_api_lib.aio import aiohttp_wrappers
+from dl_obfuscator import SecretKeeper
 
 _METHOD_REQ_RESOURCES_ATTR_NAME = "__dl_required_resources__"
 
@@ -58,6 +59,15 @@ class BaseView(DLRequestView[aiohttp_wrappers.DSAPIRequest]):
 
     async def resolve_entities(self) -> None:
         pass
+
+    @staticmethod
+    def register_param_values(keeper: SecretKeeper, name: str, value: object) -> None:
+        if isinstance(value, str):
+            keeper.add_param(value, name)
+        elif isinstance(value, (list, tuple)):
+            for item in value:
+                if isinstance(item, str):
+                    keeper.add_param(item, name)
 
 
 # TODO FIX: add ability to exclude resources for particular handles

@@ -647,6 +647,12 @@ class DatasetDataBaseView(BaseView):
             parameter_value_spec = ParameterValueSpec(field_id=field_id, value=parameter_role_spec.value)
             result.append(parameter_value_spec)
 
+            self.register_param_values(
+                self.dl_request.rci.secret_keeper,
+                field_id,
+                parameter_role_spec.value,
+            )
+
         return resolve_sys_parameter_value_specs(
             parameter_value_specs=result,
             result_schema=self.dataset.result_schema,

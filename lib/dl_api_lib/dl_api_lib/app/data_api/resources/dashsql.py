@@ -230,6 +230,9 @@ class DashSQLView(SQLBaseView):
         incoming_parameters: list[QueryIncomingParameter] | None = None
         if raw_params is not None:
             incoming_parameters = [make_param_obj(name, param) for name, param in raw_params.items()]
+            keeper = self.dl_request.rci.secret_keeper
+            for name, param in raw_params.items():
+                self.register_param_values(keeper, name, param["value"])
 
         # TODO: move dashsql selector's construction to factory
         bleeding_edge_users = self.request.app.get("BLEEDING_EDGE_USERS", ())

@@ -54,6 +54,7 @@ def obfuscation_context_middleware(
 
             if rci is not None:
                 dl_request.update_temp_rci(obfuscation_engine=engine)
+                rci.populate_secret_keeper()
 
         try:
             return await handler(dl_request.request)

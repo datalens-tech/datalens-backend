@@ -17,7 +17,10 @@ from dl_obfuscator.request_context import (
     set_request_obfuscation_engine,
 )
 from dl_obfuscator.secret_keeper import SecretKeeper
-from dl_obfuscator.secret_walker import get_secret_strings
+from dl_obfuscator.secret_walker import (
+    SecretFieldResolver,
+    get_secret_strings,
+)
 
 OBFUSCATION_BASE_OBFUSCATORS_KEY = "OBFUSCATION_BASE_OBFUSCATORS"
 
@@ -29,6 +32,7 @@ __all__ = [
     "ObfuscationEngine",
     "OnObfuscationError",
     "RegexObfuscator",
+    "SecretFieldResolver",
     "SecretKeeper",
     "SecretObfuscator",
     "clear_request_obfuscation_engine",

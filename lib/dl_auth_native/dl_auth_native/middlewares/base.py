@@ -11,7 +11,7 @@ import dl_constants
 
 @attr.s(frozen=True)
 class AuthData(dl_auth.AuthData):
-    _user_access_token: str = attr.ib()
+    _user_access_token: str = attr.ib(repr=False)
     _token_type: str = attr.ib()
     _roles: list[str] = attr.ib(factory=list)
 

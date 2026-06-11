@@ -46,6 +46,7 @@ class ObfuscationContextMiddleware:
 
         if rci is not None:
             ReqCtxInfoMiddleware.replace_temp_rci(rci.clone(obfuscation_engine=engine))
+            rci.populate_secret_keeper()
 
     def teardown_request(self, exception: BaseException | None) -> None:
         # clear() is a safety net: dump() is a no-op when call_count == 0 or context is None
