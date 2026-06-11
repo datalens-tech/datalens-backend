@@ -37,6 +37,7 @@ from dl_core.us_manager.mutation_cache.engine_factory import (
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache import GenericCacheEngine
 from dl_core.us_manager.mutation_cache.usentry_mutation_cache_factory import USEntryMutationCacheFactory
 from dl_core.utils import FutureRef
+import dl_extract
 from dl_task_processor.processor import TaskProcessorFactory
 
 if TYPE_CHECKING:
@@ -161,6 +162,10 @@ class ServicesRegistry(metaclass=abc.ABCMeta):
     def get_installation_specific_service_registry_opt(self) -> InstallationSpecificServiceRegistry | None:
         pass
 
+    @abc.abstractmethod
+    def get_extract_clickhouse_provider(self) -> dl_extract.ExtractClickhouseProvider:
+        pass
+
 
 @attr.s(hash=False)
 class DefaultServicesRegistry(ServicesRegistry):
@@ -187,6 +192,7 @@ class DefaultServicesRegistry(ServicesRegistry):
     _required_services: set[RequiredService] = attr.ib(factory=set)
     _inst_specific_sr: InstallationSpecificServiceRegistry | None = attr.ib(default=None)
     _exports_history_url_path: str | None = attr.ib(default=None)
+    _extract_clickhouse_provider: dl_extract.ExtractClickhouseProvider | None = attr.ib(default=None)
 
     @_compute_executor.default  # noqa
     def _default_compute_executor(self) -> ComputeExecutor:
@@ -290,6 +296,11 @@ class DefaultServicesRegistry(ServicesRegistry):
 
     def get_installation_specific_service_registry_opt(self) -> InstallationSpecificServiceRegistry | None:
         return self._inst_specific_sr
+
+    def get_extract_clickhouse_provider(self) -> dl_extract.ExtractClickhouseProvider:
+        if self._extract_clickhouse_provider is not None:
+            return self._extract_clickhouse_provider
+        raise ValueError("ExtractClickhouseProvider hasn't been initialized.")
 
     def close(self) -> None:
         if self._conn_exec_factory is not None:
@@ -397,6 +408,9 @@ class DummyServiceRegistry(ServicesRegistry):
 
     def get_installation_specific_service_registry_opt(self) -> InstallationSpecificServiceRegistry | None:
         return self._inst_specific_sr
+
+    def get_extract_clickhouse_provider(self) -> dl_extract.ExtractClickhouseProvider:
+        raise NotImplementedError(self.NOT_IMPLEMENTED_MSG)
 
     def close(self) -> None:
         pass

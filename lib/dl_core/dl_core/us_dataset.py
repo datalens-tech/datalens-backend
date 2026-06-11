@@ -273,6 +273,10 @@ class Dataset(USEntry):
 
     @property
     def revision_id(self) -> str | None:
+        """
+        Returns backend-driven revision_id value
+        """
+
         return self.data.revision_id
 
     @property

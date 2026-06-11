@@ -332,7 +332,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     def __init__(
         self,
         uuid: str | None = None,
-        data: dict | None = None,
+        data: dict | BaseAttrsDataModel | None = None,
         entry_key: EntryLocation | None = None,
         type_: str | None = None,
         meta: dict | None = None,

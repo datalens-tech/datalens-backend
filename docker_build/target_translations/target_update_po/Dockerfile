@@ -12,7 +12,7 @@ COPY --from=src_terrarium . .
 # Install repmanager to access metadata in pyproject.toml
 RUN . /venv/bin/activate && pip install terrarium/dl_repmanager
 
-# Prepare a config file for babel. It's always the same, no ponit in storing in in packages
+# Prepare a config file for babel. It's always the same, no point in storing it in packages
 RUN echo "[python: **.py]\n[jinja2: **.jinja]" > babel_.ini
 # Babel < 2.13 imports the stdlib `distutils`, which was removed in Python 3.12; require a newer Babel.
 RUN . /venv/bin/activate && pip install "Babel>=2.13" pytz jinja2

@@ -25,4 +25,4 @@ class ClickHouseConnDTO(ClickHouseBaseDTO, DefaultSQLDTO):  # noqa
     protocol: str = attr.ib(kw_only=True)
     # TODO CONSIDER: Is really optional
     endpoint: str | None = attr.ib(kw_only=True)
-    cluster_name: str = attr.ib(kw_only=True)
+    cluster_name: str | None = attr.ib(kw_only=True)

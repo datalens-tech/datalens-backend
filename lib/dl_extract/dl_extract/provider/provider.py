@@ -30,6 +30,7 @@ class ExtractClickhouseConfig:
     table: str = attr.ib()
     username: str = attr.ib()
     password: str = attr.ib()
+    secure: bool = attr.ib()
 
 
 class ExtractClickhouseProvider(abc.ABC):
@@ -55,6 +56,7 @@ class StaticExtractClickhouseProvider(ExtractClickhouseProvider):
     database: str = attr.ib()
     username: str = attr.ib()
     password: str = attr.ib()
+    secure: bool = attr.ib()
 
     def get_clickhouse_config(self, arguments: ExtractClickhouseProviderArguments) -> ExtractClickhouseConfig:
         return ExtractClickhouseConfig(
@@ -64,6 +66,7 @@ class StaticExtractClickhouseProvider(ExtractClickhouseProvider):
             table=f"extract_{arguments.dataset_id}",
             username=self.username,
             password=self.password,
+            secure=self.secure,
         )
 
     @classmethod
@@ -77,4 +80,5 @@ class StaticExtractClickhouseProvider(ExtractClickhouseProvider):
             database=settings.DATABASE,
             username=settings.USERNAME,
             password=settings.PASSWORD,
+            secure=settings.SECURE,
         )

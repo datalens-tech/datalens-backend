@@ -12,3 +12,4 @@ class PrimitiveClusterExtractClickhouseProviderSettings(dl_settings.BaseSettings
     DATABASE: str
     USERNAME: str
     PASSWORD: str
+    SECURE: bool

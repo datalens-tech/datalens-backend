@@ -44,7 +44,7 @@ class ApiSourceDefinition(abc.ABC):
 
 class ApiConnectionDefinition(abc.ABC):
     core_conn_def_cls: ClassVar[type[CoreConnectionDefinition]]
-    api_generic_schema_cls: ClassVar[type[ConnectionSchema]]
+    api_generic_schema_cls: ClassVar[type[ConnectionSchema] | None] = None
     alias: ClassVar[str | None] = None  # TODO remove in favor of info provider
     info_provider_cls: ClassVar[type[ConnectionInfoProvider]]
     form_factory_cls: ClassVar[type[ConnectionFormFactory] | None] = None

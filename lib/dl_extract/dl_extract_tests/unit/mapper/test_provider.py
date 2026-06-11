@@ -8,10 +8,15 @@ def test_primitive_mapper_returns_expected_config() -> None:
         DATABASE="extracts",
         USERNAME="user",
         PASSWORD="pass",
+        SECURE=True,
     )
     mapper = dl_extract.StaticExtractClickhouseProvider.from_settings(settings=settings)
 
-    config = mapper.get_clickhouse_config(dl_extract.ExtractClickhouseProviderArguments(dataset_id="dataset-x"))
+    config = mapper.get_clickhouse_config(
+        dl_extract.ExtractClickhouseProviderArguments(
+            dataset_id="dataset-x",
+        ),
+    )
 
     assert config.hosts == ["host-1", "host-2"]
     assert config.port == 9440
@@ -19,3 +24,4 @@ def test_primitive_mapper_returns_expected_config() -> None:
     assert config.table == "extract_dataset-x"
     assert config.username == "user"
     assert config.password == "pass"
+    assert config.secure is True

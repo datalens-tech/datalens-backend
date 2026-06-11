@@ -1,3 +1,5 @@
+import logging
+
 from dl_api_connector.api_schema.source import (
     register_source_api_schema,
     register_source_template_api_schema,
@@ -22,6 +24,8 @@ from dl_api_lib.query.registry import (
 )
 from dl_api_lib.schemas.connection import register_sub_schema_class
 
+LOGGER = logging.getLogger(__name__)
+
 
 class ApiConnectorRegistrator:
     @classmethod
@@ -40,7 +44,15 @@ class ApiConnectorRegistrator:
         conn_type = conn_def.core_conn_def_cls.conn_type
         register_connector_info_provider_cls(conn_type=conn_type, info_provider_cls=conn_def.info_provider_cls)
         register_connector_alias(conn_type=conn_type, alias=conn_def.alias)
-        register_sub_schema_class(conn_type=conn_type, schema_cls=conn_def.api_generic_schema_cls)
+        if conn_def.api_generic_schema_cls is not None:
+            register_sub_schema_class(conn_type=conn_type, schema_cls=conn_def.api_generic_schema_cls)
+        else:
+            LOGGER.warning(
+                "API Connection Definition %s for type %s has no api_generic_schema_cls",
+                conn_def.__name__,
+                conn_type.value,
+            )
+
         if conn_def.form_factory_cls is not None:
             register_connection_form_factory_cls(conn_type=conn_type, factory_cls=conn_def.form_factory_cls)
 

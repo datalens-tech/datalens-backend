@@ -281,10 +281,18 @@ class USEntry:
 
     @property
     def revision_id(self) -> str | None:
+        """
+        Implementation-dependent revision_id
+        """
+
         return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
 
     @property
     def rev_id(self) -> str | None:
+        """
+        US Entry revId
+        """
+
         return self._us_resp.get("revId") if isinstance(self._us_resp, dict) else None
 
     @property
