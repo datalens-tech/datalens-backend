@@ -40,6 +40,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DbInfo
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
+from dl_core.enums import USEntryBranch
 from dl_core.exc import (
     DatasetConfigurationError,
     ReferencedUSEntryAccessDenied,
@@ -96,6 +97,7 @@ class DatasetResource(BIResource):
         params: dict | None = None,
     ) -> tuple[Dataset, DatasetUpdateInfo]:
         us_manager = cls.get_us_manager_based_on_required_resources()
+        latest_revision_id = None
         if dataset_id:
             try:
                 dataset = us_manager.get_by_id(
@@ -104,6 +106,9 @@ class DatasetResource(BIResource):
                     params=params,
                     context_name="dataset",
                 )
+                # raw entry to avoid double deserialization
+                ds_raw = us_manager.get_migrated_entry(dataset_id, branch=USEntryBranch.saved)
+                latest_revision_id = ds_raw["data"].get("revision_id")
             except UnexpectedUSEntryType as e:
                 raise USObjectNotFoundException(f"Dataset with id {dataset_id} does not exist") from e
         else:
@@ -121,6 +126,7 @@ class DatasetResource(BIResource):
         dataset_edit_allowed = cls.is_dataset_edit_allowed(dataset)
 
         loader = cls.create_dataset_api_loader()
+        latest_revision_id = latest_revision_id or dataset.revision_id
         update_info = loader.update_dataset_from_body(
             dataset=dataset,
             us_manager=us_manager,
@@ -128,6 +134,7 @@ class DatasetResource(BIResource):
             allow_rls_change=dataset_edit_allowed,
             allow_settings_change=dataset_edit_allowed,
             allow_query_settings_change=dataset_edit_allowed,
+            latest_revision_id=latest_revision_id,
         )
         return dataset, update_info
 
