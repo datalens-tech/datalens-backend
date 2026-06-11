@@ -27,41 +27,35 @@ msgstr "Password"
 msgid "field_db-name"
 msgstr "Path to database"
 
-msgid "value_raw-sql-level-template-1"
-msgstr "Allow {0}"
+msgid "value_raw-sql-level-text-subselect"
+msgstr "Subqueries only"
 
-msgid "value_raw-sql-level-template-2"
-msgstr "Allow {0} and {1}"
+msgid "value_raw-sql-level-text-template"
+msgstr "Subqueries and parameters"
 
-msgid "value_raw-sql-level-template-3"
-msgstr "Allow {0}, {1} and {2}"
+msgid "value_raw-sql-level-text-dashsql"
+msgstr "SQL to read"
 
-msgid "value_raw-sql-level-value-subselect"
-msgstr "subselects in datasets"
+msgid "value_raw-sql-level-text-readwrite"
+msgstr "SQL to write"
 
-msgid "value_raw-sql-level-value-template"
-msgstr "source parametrization"
+msgid "value_raw-sql-level-hint-subselect"
+msgstr "Identifying dataset sources with the help of SQL queries"
 
-msgid "value_raw-sql-level-value-dashsql"
-msgstr "QL-charts"
+msgid "value_raw-sql-level-hint-template"
+msgstr "Subqueries + source parametrization"
 
-msgid "value_raw-sql-level-hint-template-1"
-msgstr "This option allows you to {0}"
+msgid "value_raw-sql-level-hint-dashsql"
+msgstr "Subqueries and parameters + creating QL charts and executing read-only SQL queries"
 
-msgid "value_raw-sql-level-hint-template-2"
-msgstr "This option allows you to {0} and {1}"
+msgid "value_raw-sql-level-hint-dashsql-no-params"
+msgstr "Subqueries + creating QL charts and executing read-only SQL queries"
 
-msgid "value_raw-sql-level-hint-template-3"
-msgstr "This option allows you to {0}, {1} and {2}"
+msgid "value_raw-sql-level-hint-readwrite"
+msgstr "Subqueries and parameters, creating QL charts and executing read and write SQL queries"
 
-msgid "value_raw-sql-level-value-hint-subselect"
-msgstr "describe dataset sources using SQL queries"
-
-msgid "value_raw-sql-level-value-hint-template"
-msgstr "use templates in dataset sources"
-
-msgid "value_raw-sql-level-value-hint-dashsql"
-msgstr "create QL charts"
+msgid "value_raw-sql-level-hint-readwrite-no-params"
+msgstr "Subqueries, creating QL charts and executing read and write SQL queries"
 
 msgid "value_raw-sql-level-off"
 msgstr "Forbid"
@@ -120,3 +114,8 @@ msgstr "On"
 
 msgid "label_cache-settings"
 msgstr "Cache settings"
+
+
+
+
+

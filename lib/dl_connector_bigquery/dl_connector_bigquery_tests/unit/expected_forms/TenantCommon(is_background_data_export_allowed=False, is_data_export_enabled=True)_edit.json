@@ -43,8 +43,8 @@
                 "options": [
                     {
                         "content": {
-                            "text": "Allow subselects in datasets",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries"
+                            "text": "Subqueries only",
+                            "hintText": "Identifying dataset sources with the help of SQL queries"
                         },
                         "value": "subselect"
                     }

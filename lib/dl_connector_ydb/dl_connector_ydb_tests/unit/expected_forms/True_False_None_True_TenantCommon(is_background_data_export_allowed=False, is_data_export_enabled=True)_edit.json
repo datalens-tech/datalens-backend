@@ -74,22 +74,22 @@
                 "options": [
                     {
                         "content": {
-                            "text": "Allow subselects in datasets",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries"
+                            "text": "Subqueries only",
+                            "hintText": "Identifying dataset sources with the help of SQL queries"
                         },
                         "value": "subselect"
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and source parametrization",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and use templates in dataset sources"
+                            "text": "Subqueries and parameters",
+                            "hintText": "Subqueries + source parametrization"
                         },
                         "value": "template"
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets, source parametrization and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries, use templates in dataset sources and create QL charts",
+                            "text": "SQL to read",
+                            "hintText": "Subqueries and parameters + creating QL charts and executing read-only SQL queries",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"

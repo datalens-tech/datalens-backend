@@ -73,15 +73,15 @@
                 "options": [
                     {
                         "content": {
-                            "text": "Allow subselects in datasets",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries"
+                            "text": "Subqueries only",
+                            "hintText": "Identifying dataset sources with the help of SQL queries"
                         },
                         "value": "subselect"
                     },
                     {
                         "content": {
-                            "text": "Allow subselects in datasets and QL-charts",
-                            "hintText": "This option allows you to describe dataset sources using SQL queries and create QL charts",
+                            "text": "SQL to read",
+                            "hintText": "Subqueries + creating QL charts and executing read-only SQL queries",
                             "textEndIcon": {
                                 "name": "CircleExclamation",
                                 "view": "error"

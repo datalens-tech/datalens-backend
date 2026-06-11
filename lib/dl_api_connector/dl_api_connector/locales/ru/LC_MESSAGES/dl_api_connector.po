@@ -27,41 +27,35 @@ msgstr "Пароль"
 msgid "field_db-name"
 msgstr "Путь к базе данных"
 
-msgid "value_raw-sql-level-template-1"
-msgstr "Разрешить {0}"
+msgid "value_raw-sql-level-text-subselect"
+msgstr "Только подзапросы"
 
-msgid "value_raw-sql-level-template-2"
-msgstr "Разрешить {0} и {1}"
+msgid "value_raw-sql-level-text-template"
+msgstr "Подзапросы и параметры"
 
-msgid "value_raw-sql-level-template-3"
-msgstr "Разрешить {0}, {1} и {2}"
+msgid "value_raw-sql-level-text-dashsql"
+msgstr "SQL на чтение"
 
-msgid "value_raw-sql-level-value-subselect"
-msgstr "подзапросы в датасетах"
+msgid "value_raw-sql-level-text-readwrite"
+msgstr "SQL на запись"
 
-msgid "value_raw-sql-level-value-template"
-msgstr "параметризация источников"
+msgid "value_raw-sql-level-hint-subselect"
+msgstr "Можно определять источники датасета с помощью SQL-запросов"
 
-msgid "value_raw-sql-level-value-dashsql"
-msgstr "QL-чарты"
+msgid "value_raw-sql-level-hint-template"
+msgstr "Подзапросы + параметризация источников"
 
-msgid "value_raw-sql-level-hint-template-1"
-msgstr "Опция позволяет {0}"
+msgid "value_raw-sql-level-hint-dashsql"
+msgstr "Подзапросы и параметры + создание QL-чартов и выполнение SQL-запросов на чтение"
 
-msgid "value_raw-sql-level-hint-template-2"
-msgstr "Опция позволяет {0} и {1}"
+msgid "value_raw-sql-level-hint-dashsql-no-params"
+msgstr "Подзапросы + создание QL-чартов и выполнение SQL-запросов на чтение"
 
-msgid "value_raw-sql-level-hint-template-3"
-msgstr "Опция позволяет {0}, {1} и {2}"
+msgid "value_raw-sql-level-hint-readwrite"
+msgstr "Подзапросы и параметры, создание QL-чартов и выполнение SQL-запросов на чтение и запись"
 
-msgid "value_raw-sql-level-value-hint-subselect"
-msgstr "описывать источники датасета с помощью SQL-запросов"
-
-msgid "value_raw-sql-level-value-hint-template"
-msgstr "использовать параметризацию источников"
-
-msgid "value_raw-sql-level-value-hint-dashsql"
-msgstr "создавать QL-чарты"
+msgid "value_raw-sql-level-hint-readwrite-no-params"
+msgstr "Подзапросы, создание QL-чартов и выполнение SQL-запросов на чтение и запись"
 
 msgid "value_raw-sql-level-off"
 msgstr "Запретить"
@@ -77,7 +71,7 @@ msgstr ""
 "настроенные RLS в датасетах."
 
 msgid "field_raw-sql-level"
-msgstr "Уровень доступа SQL запросов"
+msgstr "Уровень доступа SQL-запросов"
 
 msgid "field_access-token"
 msgstr "Токен доступа"
@@ -119,3 +113,8 @@ msgstr "Вкл"
 
 msgid "label_cache-settings"
 msgstr "Настройки кэширования"
+
+
+
+
+

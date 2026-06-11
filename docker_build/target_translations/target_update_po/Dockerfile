@@ -14,7 +14,8 @@ RUN . /venv/bin/activate && pip install terrarium/dl_repmanager
 
 # Prepare a config file for babel. It's always the same, no ponit in storing in in packages
 RUN echo "[python: **.py]\n[jinja2: **.jinja]" > babel_.ini
-RUN . /venv/bin/activate && pip install Babel pytz jinja2
+# Babel < 2.13 imports the stdlib `distutils`, which was removed in Python 3.12; require a newer Babel.
+RUN . /venv/bin/activate && pip install "Babel>=2.13" pytz jinja2
 
 # For each domain -> for each locale -> generate raw .po, merge it into the existing .po
 RUN . /venv/bin/activate && for domain_pair in $(dl-package --package-path=. list-i18n-domains) ; do \

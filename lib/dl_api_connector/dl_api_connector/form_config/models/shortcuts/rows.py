@@ -156,69 +156,38 @@ class RowConstructor:
             ]
         )
 
-    def _get_raw_sql_level_radio_group_option_text(
+    def _get_raw_sql_level_option_text(
         self,
-        levels: list[RawSQLLevel],
+        level: RawSQLLevel,
     ) -> str:
-        if len(levels) == 1:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-template-1"))
-        elif len(levels) == 2:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-template-2"))
-        elif len(levels) == 3:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-template-3"))
-        elif len(levels) == 4:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-template-4"))
-        else:
-            raise ValueError("Invalid number of levels")
+        if level == RawSQLLevel.subselect:
+            return self._localizer.translate(Translatable("value_raw-sql-level-text-subselect"))
+        if level == RawSQLLevel.template:
+            return self._localizer.translate(Translatable("value_raw-sql-level-text-template"))
+        if level == RawSQLLevel.dashsql:
+            return self._localizer.translate(Translatable("value_raw-sql-level-text-dashsql"))
+        if level == RawSQLLevel.readwrite:
+            return self._localizer.translate(Translatable("value_raw-sql-level-text-readwrite"))
+        raise ValueError(f"Invalid level: {level}")
 
-        values = []
-        for level in levels:
-            if level == RawSQLLevel.subselect:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-subselect"))
-            elif level == RawSQLLevel.template:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-template"))
-            elif level == RawSQLLevel.dashsql:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-dashsql"))
-            elif level == RawSQLLevel.readwrite:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-readwrite"))
-            else:
-                raise ValueError("Invalid level")
-
-            values.append(level_text)
-
-        return template.format(*values)
-
-    def _get_raw_sql_level_radio_group_option_hint_text(
+    def _get_raw_sql_level_option_hint_text(
         self,
-        levels: list[RawSQLLevel],
+        level: RawSQLLevel,
+        has_params: bool,
     ) -> str:
-        if len(levels) == 1:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-1"))
-        elif len(levels) == 2:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-2"))
-        elif len(levels) == 3:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-3"))
-        elif len(levels) == 4:
-            template = self._localizer.translate(Translatable("value_raw-sql-level-hint-template-4"))
-        else:
-            raise ValueError("Invalid number of levels")
-
-        values = []
-        for level in levels:
-            if level == RawSQLLevel.subselect:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-subselect"))
-            elif level == RawSQLLevel.template:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-template"))
-            elif level == RawSQLLevel.dashsql:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-dashsql"))
-            elif level == RawSQLLevel.readwrite:
-                level_text = self._localizer.translate(Translatable("value_raw-sql-level-value-hint-readwrite"))
-            else:
-                raise ValueError("Invalid level")
-
-            values.append(level_text)
-
-        return template.format(*values)
+        if level == RawSQLLevel.subselect:
+            return self._localizer.translate(Translatable("value_raw-sql-level-hint-subselect"))
+        if level == RawSQLLevel.template:
+            return self._localizer.translate(Translatable("value_raw-sql-level-hint-template"))
+        if level == RawSQLLevel.dashsql:
+            if has_params:
+                return self._localizer.translate(Translatable("value_raw-sql-level-hint-dashsql"))
+            return self._localizer.translate(Translatable("value_raw-sql-level-hint-dashsql-no-params"))
+        if level == RawSQLLevel.readwrite:
+            if has_params:
+                return self._localizer.translate(Translatable("value_raw-sql-level-hint-readwrite"))
+            return self._localizer.translate(Translatable("value_raw-sql-level-hint-readwrite-no-params"))
+        raise ValueError(f"Invalid level: {level}")
 
     def _get_raw_sql_level_radio_group_option_text_end_icon(
         self,
@@ -245,17 +214,11 @@ class RowConstructor:
                     text=self._localizer.translate(Translatable("value_raw-sql-level-off")),
                 ),
             )
-        all_raw_sql_levels = sort_raw_sql_levels(all_raw_sql_levels)
 
-        for i, level in enumerate(all_raw_sql_levels):
-            if level == raw_sql_level:
-                included_levels = all_raw_sql_levels[: i + 1]
-                break
-        else:
-            raise ValueError(f"RawSQLLevel {raw_sql_level} not found in all_raw_sql_levels {all_raw_sql_levels}")
+        has_params = RawSQLLevel.template in all_raw_sql_levels
 
-        content_text = self._get_raw_sql_level_radio_group_option_text(included_levels)
-        content_hint_text = self._get_raw_sql_level_radio_group_option_hint_text(included_levels)
+        content_text = self._get_raw_sql_level_option_text(raw_sql_level)
+        content_hint_text = self._get_raw_sql_level_option_hint_text(raw_sql_level, has_params)
         if with_text_end_icon:
             text_end_icon = self._get_raw_sql_level_radio_group_option_text_end_icon(raw_sql_level)
         else:
