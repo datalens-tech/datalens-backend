@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 import logging
+import os
 from typing import TYPE_CHECKING
 
 from dl_api_commons.base_models import RequestContextInfo
@@ -189,5 +190,7 @@ RESOLVE_GROUP_SLUGS_MIGRATION = Migration(
     down_function=migrate_resolve_group_slugs_down,
     await_up_function=migrate_resolve_group_slugs_up_async,
     await_down_function=migrate_resolve_group_slugs_down_async,
-    downgrade_only=True,
+    downgrade_only=(
+        os.getenv("DISABLE_RLS_MIGRATION", "1") == "1"
+    ),  # TODO: BI-7466 tmp kostyl' poka iam ne oknet group permission
 )
