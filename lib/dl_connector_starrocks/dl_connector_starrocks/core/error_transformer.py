@@ -19,13 +19,11 @@ SQL_SYNTAX_ERROR_CODE = 1064
 
 def is_table_does_not_exist_async_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
-        if (
+        return bool(
             isinstance(exc, pymysql.OperationalError)
             and len(exc.args) >= 2
             and exc.args[0] in TABLE_DOES_NOT_EXIST_ERROR_CODES
-        ):
-            return True
-        return False
+        )
 
     return _
 
@@ -43,9 +41,9 @@ def is_table_does_not_exist_sync_error() -> ExcMatchCondition:
 
 def is_sql_syntax_error_async_error() -> ExcMatchCondition:
     def _(exc: Exception) -> bool:
-        if isinstance(exc, pymysql.ProgrammingError) and len(exc.args) >= 2 and exc.args[0] == SQL_SYNTAX_ERROR_CODE:
-            return True
-        return False
+        return bool(
+            isinstance(exc, pymysql.ProgrammingError) and len(exc.args) >= 2 and exc.args[0] == SQL_SYNTAX_ERROR_CODE
+        )
 
     return _
 

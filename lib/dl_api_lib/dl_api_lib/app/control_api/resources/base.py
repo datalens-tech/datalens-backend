@@ -52,10 +52,7 @@ def _profile_request_check(*args, **kwargs) -> bool:  # type: ignore  # TODO: fi
     Check whether request handler should be profiled with current settings:
     - ``PROFILE_PATH_RE``: limit profiling only to requests with path matching the given regex
     """
-    if PROFILE_REQ_PATH_RE and not re.match(PROFILE_REQ_PATH_RE, flask.request.path):
-        return False
-
-    return True
+    return not PROFILE_REQ_PATH_RE or re.match(PROFILE_REQ_PATH_RE, flask.request.path) is not None
 
 
 def wrap_export_import_exception(

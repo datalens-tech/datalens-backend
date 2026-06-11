@@ -121,9 +121,7 @@ class OptimizeZeroOneComparisonMutation(FormulaMutation, abc.ABC):
             return False
 
         # both a binary op and a literal should be supported
-        if not (left.name in self._supported_operators and right.value in (0, 1)):
-            return False
-        return True
+        return left.name in self._supported_operators and right.value in (0, 1)
 
     @abc.abstractmethod
     def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:

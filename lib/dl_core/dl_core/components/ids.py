@@ -64,9 +64,7 @@ class FieldIdValidator:
     def is_valid(self, field_id: FieldId) -> bool:
         if not len(field_id) or len(field_id) > self._id_length:
             return False
-        if any(symbol not in self._id_valid_symbols for symbol in field_id):
-            return False
-        return True
+        return not any(symbol not in self._id_valid_symbols for symbol in field_id)
 
     @property
     def id_length(self) -> int:

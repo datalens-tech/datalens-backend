@@ -757,10 +757,7 @@ class DatasetDataBaseView(BaseView):
         if connection is None:
             return False
 
-        if not connection.is_cache_invalidation_enabled:
-            return False
-
-        return True
+        return connection.is_cache_invalidation_enabled
 
     async def _get_cache_invalidation_payload(self) -> str | None:
         cache_invalidation_source = self.dataset.data.cache_invalidation_source

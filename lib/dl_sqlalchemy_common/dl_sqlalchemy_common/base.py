@@ -128,9 +128,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
             return True
         if supcls.__module__.startswith("tests") or supcls.__module__.endswith("_tests"):
             return True
-        if supcls.__module__.startswith("__tests__"):
-            return True
-        return False
+        return bool(supcls.__module__.startswith("__tests__"))
 
     @classmethod
     def __init_subclass__(cls) -> None:

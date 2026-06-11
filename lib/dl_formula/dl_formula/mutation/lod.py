@@ -118,11 +118,8 @@ class DoubleAggregationCollapsingMutation(FormulaMutation):
             return False
         assert isinstance(child_agg_node, nodes.FuncCall)
 
-        if child_agg_node.lod != node.lod or child_agg_node.before_filter_by != node.before_filter_by:
-            # Mismatch of advanced params
-            return False
-
-        return True
+        # Advanced params must match
+        return child_agg_node.lod == node.lod and child_agg_node.before_filter_by == node.before_filter_by
 
     def make_replacement(
         self, old: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]

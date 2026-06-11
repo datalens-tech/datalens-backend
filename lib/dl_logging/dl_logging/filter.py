@@ -8,7 +8,4 @@ class FastLogsFilter(logging.Filter):
         if not event_code:
             return False
 
-        if isinstance(event_code, str) and event_code.startswith("_"):
-            return False
-
-        return True
+        return not isinstance(event_code, str) or not event_code.startswith("_")

@@ -83,10 +83,7 @@ class SyncRedisEventRateLimiter:
 
             raise
 
-        if result == 0:
-            return False
-
-        return True
+        return result != 0
 
     def _load_function(self, replace: bool = True) -> None:
         try:
@@ -128,10 +125,7 @@ class AsyncRedisEventRateLimiter:
 
             raise
 
-        if result == 0:
-            return False
-
-        return True
+        return result != 0
 
     async def _load_function(self, replace: bool = True) -> None:
         try:

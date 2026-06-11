@@ -29,14 +29,12 @@ class BitrixGDSMultiQuerySplitter(PrefilteredFieldMultiQuerySplitter):
         if not isinstance(expr, formula_nodes.OperationCall) or formula.original_field_id is None:
             return False
         field = self.result_schema.by_guid(formula.original_field_id)
-        if (
+        # FIXME: Refactor this
+        return (
             field.data_type in self.data_types
             and expr.name in self.expr_names
             and not (isinstance(field.calc_spec, DirectCalculationSpec) and field.source.startswith("UF_CRM_"))
-        ):
-            # FIXME: Refactor this
-            return True
-        return False
+        )
 
 
 class BitrixGDSMultiQueryMutatorFactory(MultiQueryMutatorFactoryBase):
