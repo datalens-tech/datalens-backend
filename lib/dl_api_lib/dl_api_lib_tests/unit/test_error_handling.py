@@ -47,7 +47,7 @@ def test_bi_error_default_message():
 
 def test_regular_bi_error_building():
     class ExcA(DLBaseException):
-        err_code = DLBaseException.err_code + ["EXC_A"]
+        err_code = [*DLBaseException.err_code, "EXC_A"]
         _message = "ExcA message"
 
     class NonDLExc(Exception):
@@ -132,7 +132,7 @@ def test_public_schema_for_forwarded():
 
     # Ensure that message and error code are passed to output for whitelisted errors
     assert PublicAPIErrorSchema().dump(bi_error) == {
-        "code": ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + list(bi_error.application_code_stack)),
+        "code": ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX, *list(bi_error.application_code_stack)]),
         "debug": {},
         "details": {},
         "message": bi_error.message,

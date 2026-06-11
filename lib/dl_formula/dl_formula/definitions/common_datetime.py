@@ -129,8 +129,8 @@ def ch_date_with_tz(date_ctx) -> tuple[ClauseElement, ...]:  # type: ignore  # 2
 
     tz_args, _ = make_ch_tz_args(date_ctx)
     if data_type == DataType.DATETIMETZ:
-        return (date_expr,) + tz_args
+        return (date_expr, *tz_args)
     if data_type in (DataType.DATETIME, DataType.CONST_DATETIME):
-        return (date_expr,) + tuple(sa.literal(arg) for arg in tz_args)
+        return (date_expr, *tuple(sa.literal(arg) for arg in tz_args))
 
     raise ValueError("Unexpected data type in ch_date_with_tz", data_type)

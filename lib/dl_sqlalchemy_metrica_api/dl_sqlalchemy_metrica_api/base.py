@@ -483,7 +483,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                 add_to_result_map(
                     labelname,
                     label.name,
-                    (label, labelname) + label._alt_names,
+                    (label, labelname, *label._alt_names),
                     label.type,
                 )
 

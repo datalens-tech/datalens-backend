@@ -7,7 +7,7 @@ from dl_connector_chyt.core import exc
 
 
 def exc_cls_to_code(exc_cls: exc.CHYTQueryError | exc.CHYTCliqueError) -> str:
-    return ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX] + exc_cls.err_code)
+    return ".".join([GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX, *exc_cls.err_code])
 
 
 STABILIZED_CODES = (

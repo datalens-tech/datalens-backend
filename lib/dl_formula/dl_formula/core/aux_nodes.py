@@ -17,7 +17,7 @@ class ErrorNode(nodes.Null):
     """Node for setting up an error inside a formula to be raised by the translator"""
 
     __slots__ = ()
-    show_names = nodes.FormulaItem.show_names + ("err_code", "message")
+    show_names = (*nodes.FormulaItem.show_names, "err_code", "message")
 
     @property
     def err_code(self) -> tuple[str, ...]:

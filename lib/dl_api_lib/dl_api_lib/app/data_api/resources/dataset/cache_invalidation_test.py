@@ -184,7 +184,7 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
             raise CacheInvalidationTestQueryError(message="Formula mode requires a field with a formula")
 
         original_result_schema = self.dataset.result_schema
-        patched_result_schema = ResultSchema(fields=list(original_result_schema.fields) + [field])
+        patched_result_schema = ResultSchema(fields=[*list(original_result_schema.fields), field])
         self.dataset.data.result_schema = patched_result_schema
 
         try:

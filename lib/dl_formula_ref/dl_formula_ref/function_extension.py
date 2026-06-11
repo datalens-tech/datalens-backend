@@ -23,7 +23,7 @@ def register_function_extension(func_ext: FunctionExtension) -> None:
     key = (func_ext.category_name, func_ext.function_name)
     found_exts = _FUNCTION_EXTENSION_REGISTRY.get(key, [])
     if func_ext not in found_exts:
-        _FUNCTION_EXTENSION_REGISTRY[key] = found_exts + [func_ext]
+        _FUNCTION_EXTENSION_REGISTRY[key] = [*found_exts, func_ext]
 
 
 def get_function_extensions(category: str, name: str, env: GenerationEnvironment) -> list[FunctionExtension]:

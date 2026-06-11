@@ -84,189 +84,189 @@ class FormulaError(Exception):
 
 
 class ParseError(FormulaError):
-    default_code = FormulaError.default_code + ("PARSE",)
+    default_code = (*FormulaError.default_code, "PARSE")
 
 
 class ParseUnexpectedEOFError(ParseError):
-    default_code = ParseError.default_code + ("UNEXPECTED_EOF",)
+    default_code = (*ParseError.default_code, "UNEXPECTED_EOF")
 
 
 class ParseEmptyFormulaError(ParseUnexpectedEOFError):
-    default_code = ParseUnexpectedEOFError.default_code + ("EMPTY_FORMULA",)
+    default_code = (*ParseUnexpectedEOFError.default_code, "EMPTY_FORMULA")
 
 
 class ParseUnexpectedTokenError(ParseError):
-    default_code = ParseError.default_code + ("UNEXPECTED_TOKEN",)
+    default_code = (*ParseError.default_code, "UNEXPECTED_TOKEN")
 
 
 class ParseValueError(ParseError):
-    default_code = ParseError.default_code + ("VALUE",)
+    default_code = (*ParseError.default_code, "VALUE")
 
 
 class ParseDateValueError(ParseValueError):
-    default_code = ParseValueError.default_code + ("DATE",)
+    default_code = (*ParseValueError.default_code, "DATE")
 
 
 class ParseDatetimeValueError(ParseValueError):
-    default_code = ParseValueError.default_code + ("DATETIME",)
+    default_code = (*ParseValueError.default_code, "DATETIME")
 
 
 class ParseClauseError(ParseError):
-    default_code = FormulaError.default_code + ("CLAUSE",)
+    default_code = (*FormulaError.default_code, "CLAUSE")
 
 
 class ParseRecursionError(ParseError):
-    default_code = ParseError.default_code + ("RECURSION",)
+    default_code = (*ParseError.default_code, "RECURSION")
 
 
 # Validation Errors
 
 
 class ValidationError(FormulaError):
-    default_code = FormulaError.default_code + ("VALIDATION",)
+    default_code = (*FormulaError.default_code, "VALIDATION")
 
 
 class UnknownBFBFieldError(ValidationError):
-    default_code = ValidationError.default_code + ("BFB_UNKNOWN_FIELD",)
+    default_code = (*ValidationError.default_code, "BFB_UNKNOWN_FIELD")
 
 
 # Aggregation errors
 
 
 class AggregationError(ValidationError):
-    default_code = ValidationError.default_code + ("AGG",)
+    default_code = (*ValidationError.default_code, "AGG")
 
 
 class InconsistentAggregationError(AggregationError):
-    default_code = AggregationError.default_code + ("INCONSISTENT",)
+    default_code = (*AggregationError.default_code, "INCONSISTENT")
 
 
 class DoubleAggregationError(AggregationError):
-    default_code = AggregationError.default_code + ("DOUBLE",)
+    default_code = (*AggregationError.default_code, "DOUBLE")
 
 
 # Window function errors
 
 
 class WindowFunctionError(ValidationError):
-    default_code = ValidationError.default_code + ("WIN_FUNC",)
+    default_code = (*ValidationError.default_code, "WIN_FUNC")
 
 
 class NestedWindowFunctionError(WindowFunctionError):
-    default_code = WindowFunctionError.default_code + ("NESTED",)
+    default_code = (*WindowFunctionError.default_code, "NESTED")
 
 
 class WindowFunctionWOAggregationError(WindowFunctionError):
-    default_code = WindowFunctionError.default_code + ("NO_AGG",)
+    default_code = (*WindowFunctionError.default_code, "NO_AGG")
 
 
 class WindowFunctionUnselectedDimensionError(WindowFunctionError):
-    default_code = WindowFunctionError.default_code + ("BFB_UNSELECTED_DIMENSION",)
+    default_code = (*WindowFunctionError.default_code, "BFB_UNSELECTED_DIMENSION")
 
 
 # Lookup function errors
 
 
 class LookupFunctionError(ValidationError):
-    default_code = ValidationError.default_code + ("LOOKUP_FUNC",)
+    default_code = (*ValidationError.default_code, "LOOKUP_FUNC")
 
 
 class LookupFunctionArgNumberError(LookupFunctionError):
-    default_code = LookupFunctionError.default_code + ("ARG_NUM",)
+    default_code = (*LookupFunctionError.default_code, "ARG_NUM")
 
 
 class LookupFunctionUnselectedDimensionError(LookupFunctionError):
-    default_code = LookupFunctionError.default_code + ("UNSELECTED_DIMENSION",)
+    default_code = (*LookupFunctionError.default_code, "UNSELECTED_DIMENSION")
 
 
 class LookupFunctionIgnoredLookupDimensionError(LookupFunctionError):
-    default_code = LookupFunctionError.default_code + ("IGNORED_LOOKUP_DIMENSION",)
+    default_code = (*LookupFunctionError.default_code, "IGNORED_LOOKUP_DIMENSION")
 
 
 class LookupFunctionWOAggregationError(LookupFunctionError):
-    default_code = LookupFunctionError.default_code + ("NO_AGG",)
+    default_code = (*LookupFunctionError.default_code, "NO_AGG")
 
 
 class LookupFunctionConstantLookupDimensionError(LookupFunctionError):
-    default_code = LookupFunctionError.default_code + ("CONSTANT_LOOKUP_DIMENSION",)
+    default_code = (*LookupFunctionError.default_code, "CONSTANT_LOOKUP_DIMENSION")
 
 
 class LookupFunctionAggregatedDimensionError(LookupFunctionError):
-    default_code = LookupFunctionError.default_code + ("AGGREGATED_DIMENSION",)
+    default_code = (*LookupFunctionError.default_code, "AGGREGATED_DIMENSION")
 
 
 # LOD errors
 
 
 class LodError(ValidationError):
-    default_code = ValidationError.default_code + ("LOD",)
+    default_code = (*ValidationError.default_code, "LOD")
 
 
 class LodIncompatibleDimensionsError(LodError):
-    default_code = LodError.default_code + ("INCOMPATIBLE_DIMENSIONS",)
+    default_code = (*LodError.default_code, "INCOMPATIBLE_DIMENSIONS")
 
 
 class LodInvalidTopLevelDimensionsError(LodError):
-    default_code = LodError.default_code + ("INVALID_TOPLEVEL_DIMENSIONS",)
+    default_code = (*LodError.default_code, "INVALID_TOPLEVEL_DIMENSIONS")
 
 
 class LodMeasureDimensionsError(LodError):
-    default_code = LodError.default_code + ("MEASURE_AS_DIMENSION",)
+    default_code = (*LodError.default_code, "MEASURE_AS_DIMENSION")
 
 
 class UnknownSourceColumnError(FormulaError):
-    default_code = FormulaError.default_code + ("UNKNOWN_SOURCE_COLUMN",)
+    default_code = (*FormulaError.default_code, "UNKNOWN_SOURCE_COLUMN")
 
 
 class UnknownFieldInFormulaError(FormulaError):
-    default_code = FormulaError.default_code + ("UNKNOWN_FIELD_IN_FORMULA",)
+    default_code = (*FormulaError.default_code, "UNKNOWN_FIELD_IN_FORMULA")
 
 
 # Translation Errors
 
 
 class TranslationError(FormulaError):
-    default_code = FormulaError.default_code + ("TRANSLATION",)
+    default_code = (*FormulaError.default_code, "TRANSLATION")
 
 
 class DataTypeError(TranslationError):
-    default_code = TranslationError.default_code + ("DATA_TYPE",)
+    default_code = (*TranslationError.default_code, "DATA_TYPE")
 
 
 class TypeConflictError(DataTypeError):
-    default_code = DataTypeError.default_code + ("CONFLICT",)
+    default_code = (*DataTypeError.default_code, "CONFLICT")
 
 
 class TranslationUnknownFunctionError(TranslationError):
-    default_code = TranslationError.default_code + ("UNKNOWN_FUNCTION",)
+    default_code = (*TranslationError.default_code, "UNKNOWN_FUNCTION")
 
 
 class NativeFunctionForbiddenInputError(TranslationError):
-    default_code = TranslationError.default_code + ("FORBIDDEN_INPUT",)
+    default_code = (*TranslationError.default_code, "FORBIDDEN_INPUT")
     default_message = "Forbidden input for native function"
 
 
 class TranslationUnknownFieldError(TranslationError):
     # An internal error, should not appear to users.
     # If it does, investigate.
-    default_code = TranslationError.default_code + ("UNKNOWN_FIELD",)
+    default_code = (*TranslationError.default_code, "UNKNOWN_FIELD")
 
 
 # Parameter errors
 
 
 class ParameterError(FormulaError):
-    default_code = FormulaError.default_code + ("PARAMETER",)
+    default_code = (*FormulaError.default_code, "PARAMETER")
     default_message = "Invalid parameter"
 
 
 class ParameterValueError(ParameterError):
-    default_code = ParameterError.default_code + ("INVALID_VALUE",)
+    default_code = (*ParameterError.default_code, "INVALID_VALUE")
     default_message = "Invalid value for parameter"
 
 
 class ParameterUnsupportedTypeError(ParameterError):
-    default_code = ParameterError.default_code + ("UNSUPPORTED",)
+    default_code = (*ParameterError.default_code, "UNSUPPORTED")
     default_message = "Unsupported type for parameter"
 
 
@@ -274,4 +274,4 @@ class ParameterUnsupportedTypeError(ParameterError):
 
 
 class UnknownWindowDimensionError(FormulaError):
-    default_code = FormulaError.default_code + ("UNKNOWN_WINDOW_DIMENSION",)
+    default_code = (*FormulaError.default_code, "UNKNOWN_WINDOW_DIMENSION")

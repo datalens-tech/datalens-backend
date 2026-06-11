@@ -795,7 +795,7 @@ class DatasetDataBaseView(BaseView):
         field = cache_invalidation_source.field
 
         original_result_schema = self.dataset.result_schema
-        patched_result_schema = ResultSchema(fields=list(original_result_schema.fields) + [field])
+        patched_result_schema = ResultSchema(fields=[*list(original_result_schema.fields), field])
         self.dataset.data.result_schema = patched_result_schema
 
         try:

@@ -43,20 +43,23 @@ def test_sys_user_id_expected_type_is_string():
 def test_system_parameter_not_settable_inherits_parameter_value_invalid():
     # Inheriting ParameterValueInvalidError gives the HTTP 400 mapping for free.
     assert issubclass(exc.ParameterValueSystemParameterNotSettableError, exc.ParameterValueInvalidError)
-    assert exc.ParameterValueSystemParameterNotSettableError.err_code == exc.ParameterValueInvalidError.err_code + [
-        "SYSTEM_PARAMETER_NOT_SETTABLE"
+    assert exc.ParameterValueSystemParameterNotSettableError.err_code == [
+        *exc.ParameterValueInvalidError.err_code,
+        "SYSTEM_PARAMETER_NOT_SETTABLE",
     ]
 
 
 def test_unknown_system_parameter_error_code():
     assert issubclass(exc.UnknownSystemParameterError, exc.DataSourceConfigurationError)
-    assert exc.UnknownSystemParameterError.err_code == exc.DataSourceConfigurationError.err_code + [
-        "UNKNOWN_SYSTEM_PARAMETER"
+    assert exc.UnknownSystemParameterError.err_code == [
+        *exc.DataSourceConfigurationError.err_code,
+        "UNKNOWN_SYSTEM_PARAMETER",
     ]
 
 
 def test_system_parameter_type_mismatch_error_code():
     assert issubclass(exc.SystemParameterTypeMismatchError, exc.DataSourceConfigurationError)
-    assert exc.SystemParameterTypeMismatchError.err_code == exc.DataSourceConfigurationError.err_code + [
-        "SYSTEM_PARAMETER_TYPE_MISMATCH"
+    assert exc.SystemParameterTypeMismatchError.err_code == [
+        *exc.DataSourceConfigurationError.err_code,
+        "SYSTEM_PARAMETER_TYPE_MISMATCH",
     ]

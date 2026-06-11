@@ -41,7 +41,7 @@ class CHYTConnLineConstructor(BaseClickHouseConnLineConstructor):
         db_name: str | None = None,
         standard_auth: bool | None = True,
     ) -> dict:
-        new_safe_symbols = safe_db_symbols + ("*",)
+        new_safe_symbols = (*safe_db_symbols, "*")
         return super()._get_dsn_params(safe_db_symbols=new_safe_symbols, db_name=db_name, standard_auth=standard_auth)
 
 

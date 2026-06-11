@@ -97,34 +97,21 @@ class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransf
 
 async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorTransformer(
     (
-        Rule(
-            when=is_source_connect_async_error(),
-            then_raise=exc.SourceConnectError,
-        ),
-        Rule(
-            when=is_table_does_not_exist_async_error(),
-            then_raise=MysqlSourceDoesNotExistError,
-        ),
+        Rule(when=is_source_connect_async_error(), then_raise=exc.SourceConnectError),
+        Rule(when=is_table_does_not_exist_async_error(), then_raise=MysqlSourceDoesNotExistError),
         Rule(
             when=wrapper_exc_is_and_matches_re(
-                wrapper_exc_cls=pymysql.ProgrammingError,
-                err_regex_str="You have an error in your SQL syntax",
+                wrapper_exc_cls=pymysql.ProgrammingError, err_regex_str="You have an error in your SQL syntax"
             ),
             then_raise=exc.InvalidQuery,
         ),
+        Rule(when=is_sql_syntax_error_async_error(), then_raise=exc.InvalidQuery),
         Rule(
-            when=is_sql_syntax_error_async_error(),
-            then_raise=exc.InvalidQuery,
-        ),
-        Rule(
-            when=wrapper_exc_is_and_matches_re(
-                wrapper_exc_cls=RuntimeError,
-                err_regex_str=".*Received LOAD_LOCAL.*",
-            ),
+            when=wrapper_exc_is_and_matches_re(wrapper_exc_cls=RuntimeError, err_regex_str=".*Received LOAD_LOCAL.*"),
             then_raise=exc.SourceProtocolError,
         ),
+        *error_transformer.default_error_transformer_rules,
     )
-    + error_transformer.default_error_transformer_rules
 )
 
 

@@ -173,7 +173,7 @@ class WSGIRunner:
         )
 
     def _run_subproc(self) -> None:
-        cmd = ["uwsgi"] + list(self._make_uwsgi_params())
+        cmd = ["uwsgi", *list(self._make_uwsgi_params())]
         env = {
             **(self._env or {}),
             **os.environ,
@@ -185,7 +185,7 @@ class WSGIRunner:
         os.environ.update(self._env or {})
         import pyuwsgi  # noqa
 
-        cmd = [sys.argv[0]] + list(self._make_uwsgi_params())
+        cmd = [sys.argv[0], *list(self._make_uwsgi_params())]
         sys.argv = cmd
         self._debug("child: cmd: %r", cmd)
         deconfigure_logging()  # so that postfork configure_logging doesn't fail

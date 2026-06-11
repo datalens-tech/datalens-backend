@@ -49,10 +49,10 @@ class StarRocksApiConnectionDefinition(ApiConnectionDefinition):
 class StarRocksApiBackendDefinition(ApiBackendDefinition):
     core_backend_definition = StarRocksCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_STARROCKS
-    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
+    multi_query_mutation_factories = (
+        *ApiBackendDefinition.multi_query_mutation_factories,
         MQMFactorySettingItem(
-            query_proc_mode=QueryProcessingMode.native_wf,
-            factory_cls=NoCompengMultiQueryMutatorFactory,
+            query_proc_mode=QueryProcessingMode.native_wf, factory_cls=NoCompengMultiQueryMutatorFactory
         ),
     )
 

@@ -37,7 +37,7 @@ class SelfEqualityJoinCondition(JoinConditionBase):
     """
 
     __slots__ = ()
-    show_names = JoinConditionBase.show_names + ("expr",)
+    show_names = (*JoinConditionBase.show_names, "expr")
 
     expr: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
 
@@ -58,7 +58,7 @@ class BinaryJoinCondition(JoinConditionBase):
     """
 
     __slots__ = ()
-    show_names = JoinConditionBase.show_names + ("expr", "fork_expr")
+    show_names = (*JoinConditionBase.show_names, "expr", "fork_expr")
 
     expr: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
     fork_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
@@ -95,7 +95,7 @@ class QueryForkJoiningWithList(QueryForkJoiningBase):
 
     __slots__ = ()
 
-    show_names = QueryForkJoiningBase.show_names + ("condition_list",)
+    show_names = (*QueryForkJoiningBase.show_names, "condition_list")
 
     condition_list: nodes.MultiChild[JoinConditionBase] = nodes.MultiChild(slice(0, None))
 
@@ -122,7 +122,7 @@ class QueryForkJoiningWithList(QueryForkJoiningBase):
 class BfbFilterMutationSpec(nodes.FormulaItem):
     __slots__ = ()
 
-    show_names = nodes.FormulaItem.show_names + ("original", "replacement")
+    show_names = (*nodes.FormulaItem.show_names, "original", "replacement")
 
     original: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
     replacement: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
@@ -142,7 +142,7 @@ class BfbFilterMutationSpec(nodes.FormulaItem):
 class BfbFilterMutationCollectionSpec(nodes.FormulaItem):
     __slots__ = ()
 
-    show_names = nodes.FormulaItem.show_names + ("mutations",)
+    show_names = (*nodes.FormulaItem.show_names, "mutations")
 
     mutations: nodes.MultiChild[BfbFilterMutationSpec] = nodes.MultiChild(slice(0, None))
 
@@ -165,7 +165,7 @@ class QueryFork(nodes.FormulaItem):
 
     __slots__ = ()
 
-    show_names = nodes.FormulaItem.show_names + ("join_type", "joining", "result_expr", "lod", "bfb_filter_mutations")
+    show_names = (*nodes.FormulaItem.show_names, "join_type", "joining", "result_expr", "lod", "bfb_filter_mutations")
 
     joining: nodes.Child[QueryForkJoiningBase] = nodes.Child(0)
     result_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(1)
@@ -212,7 +212,7 @@ class QueryFork(nodes.FormulaItem):
 class SubQueryFork(nodes.FormulaItem):
     __slots__ = ()
 
-    show_names = nodes.FormulaItem.show_names + ("result_expr",)
+    show_names = (*nodes.FormulaItem.show_names, "result_expr")
 
     result_expr: nodes.Child[nodes.FormulaItem] = nodes.Child(0)
 

@@ -148,23 +148,23 @@ CASTS_BY_TYPE = {
 
 _AGG_BASIC = [ag.none, ag.count]
 BI_TYPE_AGGREGATIONS = {
-    UserDataType.string: _AGG_BASIC + [ag.countunique],
-    UserDataType.integer: _AGG_BASIC + [ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
-    UserDataType.float: _AGG_BASIC + [ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
-    UserDataType.date: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
-    UserDataType.datetime: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
-    UserDataType.datetimetz: _AGG_BASIC + [ag.min, ag.max, ag.countunique, ag.avg],
-    UserDataType.genericdatetime: _AGG_BASIC + [ag.min, ag.max, ag.countunique],  # TODO: 'avg'?
-    UserDataType.boolean: _AGG_BASIC + [],
-    UserDataType.geopoint: _AGG_BASIC + [],
-    UserDataType.geopolygon: _AGG_BASIC + [],
-    UserDataType.uuid: _AGG_BASIC + [ag.countunique],
-    UserDataType.markup: _AGG_BASIC + [],  # TODO: 'any'
+    UserDataType.string: [*_AGG_BASIC, ag.countunique],
+    UserDataType.integer: [*_AGG_BASIC, ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
+    UserDataType.float: [*_AGG_BASIC, ag.sum, ag.avg, ag.min, ag.max, ag.countunique],
+    UserDataType.date: [*_AGG_BASIC, ag.min, ag.max, ag.countunique, ag.avg],
+    UserDataType.datetime: [*_AGG_BASIC, ag.min, ag.max, ag.countunique, ag.avg],
+    UserDataType.datetimetz: [*_AGG_BASIC, ag.min, ag.max, ag.countunique, ag.avg],
+    UserDataType.genericdatetime: [*_AGG_BASIC, ag.min, ag.max, ag.countunique],  # TODO: 'avg'?
+    UserDataType.boolean: [*_AGG_BASIC],
+    UserDataType.geopoint: [*_AGG_BASIC],
+    UserDataType.geopolygon: [*_AGG_BASIC],
+    UserDataType.uuid: [*_AGG_BASIC, ag.countunique],
+    UserDataType.markup: [*_AGG_BASIC],  # TODO: 'any'
     UserDataType.unsupported: [ag.none],  # only explicit formula-based processing is allowed
-    UserDataType.array_float: _AGG_BASIC + [ag.countunique],
-    UserDataType.array_int: _AGG_BASIC + [ag.countunique],
-    UserDataType.array_str: _AGG_BASIC + [ag.countunique],
-    UserDataType.tree_str: _AGG_BASIC + [ag.countunique],
+    UserDataType.array_float: [*_AGG_BASIC, ag.countunique],
+    UserDataType.array_int: [*_AGG_BASIC, ag.countunique],
+    UserDataType.array_str: [*_AGG_BASIC, ag.countunique],
+    UserDataType.tree_str: [*_AGG_BASIC, ag.countunique],
 }
 
 

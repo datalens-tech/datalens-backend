@@ -18,7 +18,7 @@ class NodeHierarchyIndex(NamedTuple):
 
     def __add__(self, other: Any) -> NodeHierarchyIndex:
         if isinstance(other, int):
-            return NodeHierarchyIndex(indices=self.indices + (other,))
+            return NodeHierarchyIndex(indices=(*self.indices, other))
         if isinstance(other, NodeHierarchyIndex):
             return NodeHierarchyIndex(indices=self.indices + other.indices)
         if isinstance(other, (tuple, list)):

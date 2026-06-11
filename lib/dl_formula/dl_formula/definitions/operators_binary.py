@@ -402,9 +402,7 @@ class BinaryEqNEq(BinaryEqNEqOrderedBase):
 
 
 class BinaryEqNEqInternal(BinaryEqNEq):
-    argument_types = BinaryEqNEq.argument_types + [
-        ArgTypeSequence([DataType.MARKUP, DataType.MARKUP]),
-    ]
+    argument_types = [*BinaryEqNEq.argument_types, ArgTypeSequence([DataType.MARKUP, DataType.MARKUP])]
     # not intended to be used explicitly, only in internal JOINs
     # but JOINs are implemented in the same manner as other formulas, using formula_nodes.Binary,
     # so they won't work without Scope.EXPLICIT_USAGE
@@ -435,9 +433,7 @@ class BinaryEqualDenullified(BinaryEqNEqInternal):
     variants = [
         V(D.DUMMY | D.SQLITE, lambda left, right: sa.or_(left == right, sa.and_(left.is_(None), right.is_(None)))),
     ]
-    argument_types = BinaryEqNEqInternal.argument_types + [
-        ArgTypeSequence([DataType.MARKUP, DataType.MARKUP]),
-    ]
+    argument_types = [*BinaryEqNEqInternal.argument_types, ArgTypeSequence([DataType.MARKUP, DataType.MARKUP])]
 
 
 class BinaryNEqImpl(MultiVariantTranslation):

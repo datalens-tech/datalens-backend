@@ -109,7 +109,7 @@ class RLS:
 
             # For `userid: userid`, add the subject id to the values.
             if allow_userid:
-                allowed_values = list(allowed_values) + [user_id]
+                allowed_values = [*list(allowed_values), user_id]
 
             result[field_guid] = allowed_values
 

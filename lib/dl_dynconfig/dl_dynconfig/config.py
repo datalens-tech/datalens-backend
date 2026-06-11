@@ -51,7 +51,7 @@ class DynConfig(dl_pydantic.BaseModel):
             if annotation is not None and issubclass(annotation, DynConfig):
                 child = annotation.model_from_source(
                     source=source,
-                    path=instance._path + [field_name],
+                    path=[*instance._path, field_name],
                     initial_data=initial_data.get(field_name, {}),
                 )
                 setattr(instance, field_name, child)
@@ -89,7 +89,7 @@ class DynConfig(dl_pydantic.BaseModel):
         node = data
         for key in self._path:
             if not isinstance(node, Mapping):
-                raise pydantic.ValidationError(f"Expected a mapping at path {self._path + [key]}", [])
+                raise pydantic.ValidationError(f"Expected a mapping at path {[*self._path, key]}", [])
             if key not in node:
                 node = {}
                 break

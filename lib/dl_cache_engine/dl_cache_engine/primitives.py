@@ -90,7 +90,7 @@ class LocalKeyRepresentation:
     def extend(self, part_type: str, part_content: Hashable) -> LocalKeyRepresentation:
         assert part_content is not None
         new_part = DataKeyPart(part_type=part_type, part_content=part_content)
-        return LocalKeyRepresentation(key_parts=self.key_parts + (new_part,))
+        return LocalKeyRepresentation(key_parts=(*self.key_parts, new_part))
 
     def multi_extend(self, *parts: DataKeyPart) -> LocalKeyRepresentation:
         return LocalKeyRepresentation(key_parts=self.key_parts + parts)

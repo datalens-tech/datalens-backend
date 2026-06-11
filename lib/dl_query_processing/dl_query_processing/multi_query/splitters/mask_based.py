@@ -858,7 +858,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
             joining_node=None,
             is_base=True,
         )
-        return [base_mask] + split_masks
+        return [base_mask, *split_masks]
 
     def _separate_base_and_other_masks(
         self,
@@ -910,10 +910,10 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
                     from_ids=add_formula.from_ids,
                     is_group_by=add_formula.is_group_by,
                 )
-                base_mask = base_mask.clone(add_formulas=base_mask.add_formulas + (new_add_formula,))
+                base_mask = base_mask.clone(add_formulas=(*base_mask.add_formulas, new_add_formula))
                 base_add_formula_extracts.add(add_formula.expr.extract_not_none)
 
-        return [base_mask] + other_masks
+        return [base_mask, *other_masks]
 
     def _get_query_patch_from_split_masks(
         self,

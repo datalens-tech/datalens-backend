@@ -352,7 +352,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         # In compound query, CTEs are shared at the compound level
         if self.ctes and not is_embedded_select:
             nesting_level = len(self.stack) if not toplevel else None
-            text_pieces = [self._render_cte_clause(nesting_level=nesting_level)] + text_pieces
+            text_pieces = [self._render_cte_clause(nesting_level=nesting_level), *text_pieces]
 
         if select_stmt._suffixes:
             text_pieces.append(self._generate_prefixes(select_stmt, select_stmt._suffixes, **kwargs))

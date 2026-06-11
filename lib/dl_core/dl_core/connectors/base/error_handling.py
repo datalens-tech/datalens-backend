@@ -45,7 +45,8 @@ class ErrorHandlerMixin:
         exc_clses_to_catch: tuple[type[Exception], ...] = (
             sa_exc.DatabaseError,
             sa_exc.InvalidRequestError,
-        ) + self.EXTRA_EXC_CLS
+            *self.EXTRA_EXC_CLS,
+        )
 
         def post_process_exc_ignore_errors(exc_to_post_process: exc.DatabaseQueryError) -> None:
             if exc_post_processor is not None:

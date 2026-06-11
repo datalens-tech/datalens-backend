@@ -52,7 +52,8 @@ class ClickHouseApiConnectionDefinition(ApiConnectionDefinition):
 class ClickHouseApiBackendDefinition(ApiBackendDefinition):
     core_backend_definition = ClickHouseCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_CLICKHOUSE
-    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
+    multi_query_mutation_factories = (
+        *ApiBackendDefinition.multi_query_mutation_factories,
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
             dialects=ClickHouseDialect.and_above(ClickHouseDialect.CLICKHOUSE_22_10).to_list(),

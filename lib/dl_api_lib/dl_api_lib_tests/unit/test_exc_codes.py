@@ -17,7 +17,7 @@ def exc_cls_to_code(exc_cls):
         or getattr(exc_cls, "default_code", [])[1:]
         or []
     )
-    return ".".join((GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX) + tuple(exc_cls_code))
+    return ".".join((GLOBAL_ERR_PREFIX, DEFAULT_ERR_CODE_API_PREFIX, *tuple(exc_cls_code)))
 
 
 # Error codes referenced in docs:

@@ -372,7 +372,7 @@ class MarkupProcessing(MarkupProcessingBase[_TNode]):
 
     def _make_node(self, funcname: str, *funcargs: _TNodeActual) -> _TNode:
         # return self._node_cls(funcname, *funcargs)
-        return self._node_cls((funcname,) + funcargs)
+        return self._node_cls((funcname, *funcargs))
 
     def _unpack_node(self, node: _TNode) -> tuple[str, tuple[_TNodeActual, ...]]:
         return node[0], node[1:]

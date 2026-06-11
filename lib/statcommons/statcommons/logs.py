@@ -108,7 +108,7 @@ def format_exception_with_locals(exc_type, exc_value, tb):
         formatted.extend(exception)
         return formatted
     except Exception:
-        formatted = ["Couldn't print detailed traceback.\n"] + traceback.format_exception(exc_type, exc_value, tb)
+        formatted = ["Couldn't print detailed traceback.\n", *traceback.format_exception(exc_type, exc_value, tb)]
         return formatted
 
 

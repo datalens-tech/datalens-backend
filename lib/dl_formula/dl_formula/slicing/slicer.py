@@ -168,7 +168,7 @@ class FormulaSlicer:
         parent_stack: tuple[nodes.FormulaItem, ...],
     ) -> tuple[int, nodes.FormulaItem]:
         original_cur_node = cur_node
-        parent_stack_for_children = parent_stack + (cur_node,)  # FIXME: replace with stack from enumerate?
+        parent_stack_for_children = (*parent_stack, cur_node)  # FIXME: replace with stack from enumerate?
 
         # first calculate the level of children
         children_and_levels: list[tuple[NodeHierarchyIndex, nodes.FormulaItem, int]] = []

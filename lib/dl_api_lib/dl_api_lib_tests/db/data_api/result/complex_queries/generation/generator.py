@@ -50,7 +50,7 @@ class FormulaRecursionState:
     def pop_dimension(self) -> tuple[FormulaRecursionState, str]:
         assert self.remaining_dims
         chosen_dim = random.choice(self.remaining_dims)
-        new_effective_dims = self.effective_dims + [chosen_dim]
+        new_effective_dims = [*self.effective_dims, chosen_dim]
         new_remaining_dims = [dim for dim in self.remaining_dims if dim != chosen_dim]
         new_state = self.clone(
             remaining_dims=new_remaining_dims,

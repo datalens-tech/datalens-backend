@@ -28,7 +28,7 @@ class QueryPrePaginator:
             limit=limit,
             offset=offset,
         )
-        updated_blocks = block_legend.blocks[:block_ind] + [updated_block] + block_legend.blocks[block_ind + 1 :]
+        updated_blocks = [*block_legend.blocks[:block_ind], updated_block, *block_legend.blocks[block_ind + 1 :]]
         return block_legend.clone(blocks=updated_blocks)
 
     def pre_paginate(self, block_legend: BlockLegend) -> BlockLegend:

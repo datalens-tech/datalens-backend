@@ -17,7 +17,7 @@ class RepoCliRunner(CliRunner):
     repo_path: Path = attr.ib()
 
     def run_with_args(self, argv: list[str]) -> CliResult:
-        argv = ["--base-path", str(self.repo_path)] + argv
+        argv = ["--base-path", str(self.repo_path), *argv]
         return super().run_with_args(argv)
 
 
@@ -28,5 +28,5 @@ class PackageCliRunner(CliRunner):
     package_path: Path = attr.ib()
 
     def run_with_args(self, argv: list[str]) -> CliResult:
-        argv = ["--package-path", str(self.package_path)] + argv
+        argv = ["--package-path", str(self.package_path), *argv]
         return super().run_with_args(argv)

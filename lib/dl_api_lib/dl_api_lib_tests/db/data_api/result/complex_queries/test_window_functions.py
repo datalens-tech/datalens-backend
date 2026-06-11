@@ -84,11 +84,7 @@ class TestBasicWindowFunctions(DefaultApiTestBase, DefaultBasicWindowFunctionTes
 
             result_resp = data_api.get_result(
                 dataset=ds,
-                fields=select_fields
-                + [
-                    ds.find_field(title="order_date"),
-                    ds.find_field(title="city"),
-                ],
+                fields=[*select_fields, ds.find_field(title="order_date"), ds.find_field(title="city")],
                 filters=filters,
                 fail_ok=True,
             )

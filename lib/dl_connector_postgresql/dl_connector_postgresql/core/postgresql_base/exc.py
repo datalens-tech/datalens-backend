@@ -35,7 +35,7 @@ class PostgresSourceDoesNotExistError(exc.SourceDoesNotExist):
 
 
 class PgDoublePrecisionRoundError(exc.UnknownFunction):
-    err_code = exc.DatabaseQueryError.err_code + ["PG_DOUBLE_PRECISION_ROUND"]
+    err_code = [*exc.DatabaseQueryError.err_code, "PG_DOUBLE_PRECISION_ROUND"]
     default_message = (
         "ROUND with precision parameter is not supported for `double precision` data type " "in PostgreSQL data source."
     )

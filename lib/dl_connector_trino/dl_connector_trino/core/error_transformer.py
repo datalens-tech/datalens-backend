@@ -161,34 +161,13 @@ def is_trino_fallback_error() -> ExcMatchCondition:
 
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
-        Rule(
-            when=is_trino_column_does_not_exist_error(),
-            then_raise=exc.ColumnDoesNotExist,
-        ),
-        Rule(
-            when=is_trino_source_does_not_exist_error(),
-            then_raise=exc.SourceDoesNotExist,
-        ),
-        Rule(
-            when=is_trino_syntax_error(),
-            then_raise=exc.InvalidQuery,
-        ),
-        Rule(
-            when=is_trino_timeout_error(),
-            then_raise=exc.SourceTimeout,
-        ),
-        Rule(
-            when=is_trino_out_of_memory_error(),
-            then_raise=exc.DbMemoryLimitExceeded,
-        ),
-        Rule(
-            when=is_trino_expression_not_aggregate_error(),
-            then_raise=ExpressionNotAggregateError,
-        ),
-        Rule(
-            when=is_trino_fallback_error(),
-            then_raise=exc.DatabaseQueryError,
-        ),
+        Rule(when=is_trino_column_does_not_exist_error(), then_raise=exc.ColumnDoesNotExist),
+        Rule(when=is_trino_source_does_not_exist_error(), then_raise=exc.SourceDoesNotExist),
+        Rule(when=is_trino_syntax_error(), then_raise=exc.InvalidQuery),
+        Rule(when=is_trino_timeout_error(), then_raise=exc.SourceTimeout),
+        Rule(when=is_trino_out_of_memory_error(), then_raise=exc.DbMemoryLimitExceeded),
+        Rule(when=is_trino_expression_not_aggregate_error(), then_raise=ExpressionNotAggregateError),
+        Rule(when=is_trino_fallback_error(), then_raise=exc.DatabaseQueryError),
+        *default_error_transformer_rules,
     )
-    + default_error_transformer_rules
 )

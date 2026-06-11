@@ -96,7 +96,7 @@ class PivotTotalsNormalizerHelper:
             legend_item_id=legend_item_id,
             block_id=block_id,
         )
-        updated_pivot_item = orig_pivot_item.clone(legend_item_ids=orig_pivot_item.legend_item_ids + [legend_item_id])
+        updated_pivot_item = orig_pivot_item.clone(legend_item_ids=[*orig_pivot_item.legend_item_ids, legend_item_id])
         return new_item, updated_pivot_item
 
     def gen_single_dir_totals(

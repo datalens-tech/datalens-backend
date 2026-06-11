@@ -90,8 +90,8 @@ def test_reordered_mutation_keys(
 @pytest.fixture
 def mutation_add_one_dict(original_mutation_list) -> list[FieldAction]:
     return ActionSchema(many=True).load(
-        original_mutation_list
-        + [
+        [
+            *original_mutation_list,
             {
                 "action": "add_field",
                 "field": {
@@ -105,7 +105,7 @@ def mutation_add_one_dict(original_mutation_list) -> list[FieldAction]:
                     "source": "",
                     "formula": "[Profit]*2",
                 },
-            }
+            },
         ]
     )
 

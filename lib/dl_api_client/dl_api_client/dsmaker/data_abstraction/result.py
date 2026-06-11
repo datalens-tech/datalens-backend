@@ -85,9 +85,7 @@ class ResultRowSplitter:
                 tags.add(DataItemTag.total)
 
             mname_cell = DataCell(value=measure_cell.title, title=MEASURE_NAME_TITLE)
-            dim_tuple = DataCellTuple(
-                tuple(sorted(chain(dimension_cells + (mname_cell,)), key=lambda cell: cell.title))
-            )
+            dim_tuple = DataCellTuple(tuple(sorted(chain((*dimension_cells, mname_cell)), key=lambda cell: cell.title)))
             yield dim_tuple, DataItem(cell=measure_cell, meta=DataItemMeta(tags=frozenset(tags)))  # type: ignore  # 2024-01-24 # TODO: Incompatible types in "yield" (actual type "tuple[DataCellTuple, DataItem]", expected type "tuple[DataCellTuple, DataCell]")  [misc]
 
 

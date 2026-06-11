@@ -509,7 +509,7 @@ class EnvSettingsLoader:
 
                 child_extractor = cls.build_composite_extractor(
                     settings_type=field.type,  # type: ignore  # 2024-01-24 # TODO: Argument "settings_type" to "build_composite_extractor" of "EnvSettingsLoader" has incompatible type "type[Any] | None"; expected "type[SettingsBase]"  [arg-type]
-                    key_prefix=key_prefix + (field_s_meta.name,),
+                    key_prefix=(*key_prefix, field_s_meta.name),
                     default=field_default,
                     json_converter=field_s_meta.json_converter,
                     field_enables_flag_extractor=(

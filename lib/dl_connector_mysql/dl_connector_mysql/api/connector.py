@@ -52,7 +52,8 @@ class MySQLApiConnectionDefinition(ApiConnectionDefinition):
 class MySQLApiBackendDefinition(ApiBackendDefinition):
     core_backend_definition = MySQLCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_MYSQL
-    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
+    multi_query_mutation_factories = (
+        *ApiBackendDefinition.multi_query_mutation_factories,
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
             dialects=MySQLDialect.and_above(MySQLDialect.MYSQL_8_0_12).to_list(),

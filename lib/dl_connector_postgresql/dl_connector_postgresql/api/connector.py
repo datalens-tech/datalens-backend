@@ -52,7 +52,8 @@ class PostgreSQLApiConnectionDefinition(ApiConnectionDefinition):
 class PostgreSQLApiBackendDefinition(ApiBackendDefinition):
     core_backend_definition = PostgreSQLCoreBackendDefinition
     formula_dialect_name = DIALECT_NAME_POSTGRESQL
-    multi_query_mutation_factories = ApiBackendDefinition.multi_query_mutation_factories + (
+    multi_query_mutation_factories = (
+        *ApiBackendDefinition.multi_query_mutation_factories,
         MQMFactorySettingItem(
             query_proc_mode=QueryProcessingMode.native_wf,
             dialects=PostgreSQLDialect.and_above(PostgreSQLDialect.POSTGRESQL_9_4).to_list(),

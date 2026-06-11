@@ -300,7 +300,7 @@ def enumerate_autonomous_children(
     of larger constructs - ``CaseBlock`` and ``WindowFunction`` respectively)
     """
 
-    stack = parent_stack + (node,)
+    stack = (*parent_stack, node)
     for index, sub_node in node.enumerate(max_depth=1, prefix=prefix):
         if sub_node is node:
             # Don't need self - only children

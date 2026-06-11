@@ -80,7 +80,7 @@ def _make_logging_config(
         common_handlers = base["root"]["handlers"]
         # ^ ['debug_log', 'fast_log', 'event_log']
 
-        default_handlers = ["stream"] + common_handlers  # everything to stdout
+        default_handlers = ["stream", *common_handlers]  # everything to stdout
 
         logger_levels = _CUSTOM_LOGGER_LEVELS.copy()
         if custom_logger_levels:
@@ -155,7 +155,7 @@ def logcfg_process_enable_handler(logger_name: str, handler_name: str = "stream_
     def logcfg_process(cfg: dict, common_handlers: list[str], **kwargs: Any) -> dict:
         if handler_name in cfg["handlers"]:
             cfg["loggers"][logger_name] = dict(
-                handlers=[handler_name] + common_handlers,
+                handlers=[handler_name, *common_handlers],
                 propagate=False,
                 level="DEBUG",
             )

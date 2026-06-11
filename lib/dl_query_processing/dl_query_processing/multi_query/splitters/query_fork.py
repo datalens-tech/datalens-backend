@@ -121,7 +121,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                         query_part=query_part,
                         formula_list_idx=formula_idx,
                         outer_node_idx=index_prefix,
-                        inner_node_idx=index_prefix + (1,),  # QueryFork.result_expr = Child(1)
+                        inner_node_idx=index_prefix + 1,  # QueryFork.result_expr = Child(1)
                     ),
                     node,
                 )
@@ -133,7 +133,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                         query_part=query_part,
                         formula_list_idx=formula_idx,
                         outer_node_idx=index_prefix,
-                        inner_node_idx=index_prefix + (0,),  # SubQueryFork.result_expr = Child(0)
+                        inner_node_idx=index_prefix + 0,  # SubQueryFork.result_expr = Child(0)
                     ),
                     node,
                 )

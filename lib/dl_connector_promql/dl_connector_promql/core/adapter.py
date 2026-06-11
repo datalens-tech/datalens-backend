@@ -181,7 +181,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
             label_values = [value for _, value in chunk["metric"].items()]
             for ts, v in chunk["values"]:
-                row = [datetime.fromtimestamp(ts), float(v)] + label_values
+                row = [datetime.fromtimestamp(ts), float(v), *label_values]
                 rows.append(row)
 
         return dict(rows=rows, schema=schema)

@@ -395,7 +395,7 @@ class CustomDataLensVisitor(DataLensVisitor):
             middle_list = [
                 [middle_list[i], middle_list[i + 1]] for i in range(0, len(middle_list), 2)
             ]  # repartition list into <operator, operand> pairs
-            parts = middle_list + [(last_op, right)]
+            parts = [*middle_list, (last_op, right)]
         elif len(args) == 3:
             left, last_op, right = args
             parts = [(last_op, right)]

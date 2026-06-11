@@ -101,7 +101,7 @@ class CompiledFormulaInfo:
 
 @attr.s(slots=True, frozen=True)
 class CompiledOrderByFormulaInfo(CompiledFormulaInfo):  # noqa
-    show_names = CompiledFormulaInfo.show_names + ("direction",)
+    show_names = (*CompiledFormulaInfo.show_names, "direction")
 
     direction: OrderDirection = attr.ib(kw_only=True)
 
@@ -120,11 +120,7 @@ class CompiledOrderByFormulaInfo(CompiledFormulaInfo):  # noqa
 
 @attr.s(slots=True, frozen=True)
 class CompiledJoinOnFormulaInfo(CompiledFormulaInfo):  # noqa
-    show_names = CompiledFormulaInfo.show_names + (
-        "left_id",
-        "right_id",
-        "join_type",
-    )
+    show_names = (*CompiledFormulaInfo.show_names, "left_id", "right_id", "join_type")
 
     left_id: str = attr.ib(kw_only=True)  # is root for feature-managed relations
     right_id: str = attr.ib(kw_only=True)

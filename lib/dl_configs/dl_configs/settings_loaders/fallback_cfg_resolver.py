@@ -35,7 +35,7 @@ class ObjectLikeConfig(Mapping):
 
     def _get_key(self, key: Any) -> Any:
         if key not in self._data:
-            path = ".".join(self._path + [key])
+            path = ".".join([*self._path, key])
             raise AttributeError(f'There is no record in config by path: "{path}"')
         return self._data[key]
 
@@ -55,10 +55,10 @@ class ObjectLikeConfig(Mapping):
 
         def _get_value_for_cfg(k: Any, v: Any) -> Any:
             if isinstance(v, dict):
-                return cls.from_dict(v, path + [k])
+                return cls.from_dict(v, [*path, k])
             if isinstance(v, (list, tuple)):
                 return [
-                    cls.from_dict(item, path + [k] + [str(idx)]) if isinstance(item, dict) else item
+                    cls.from_dict(item, [*path, k, str(idx)]) if isinstance(item, dict) else item
                     for idx, item in enumerate(v)
                 ]
             return v

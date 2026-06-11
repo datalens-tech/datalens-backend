@@ -126,7 +126,7 @@ class FormulaItem:
         return self.__internal_value
 
     def stringify(self, with_meta: bool = False) -> str:
-        show_names = self.show_names if not with_meta else (self.show_names + ("meta",))
+        show_names = self.show_names if not with_meta else ((*self.show_names, "meta"))
         kv_pairs = []
         for name in show_names:
             if name == "meta":
@@ -186,7 +186,7 @@ class FormulaItem:
 
         lines = []
         lines.append("{}{}(".format(initial_indent if do_leading_indent else "", self.__class__.__name__))
-        show_names = self.show_names if not with_meta else (self.show_names + ("meta",))
+        show_names = self.show_names if not with_meta else ((*self.show_names, "meta"))
         for name in show_names:
             if name == "meta":
                 child = str(self.__meta)
@@ -314,7 +314,7 @@ class FormulaItem:
 
         is_modified = False
 
-        parent_stack_w_self = parent_stack + (self,)
+        parent_stack_w_self: tuple[FormulaItem, ...] = (*parent_stack, self)
         to_replace: dict[int, FormulaItem] = {}
 
         for idx, child in enumerate(self.__children):
@@ -491,7 +491,7 @@ class Null(FormulaItem):
 
 class ExprWrapper(FormulaItem):
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("expr",)
+    show_names = (*FormulaItem.show_names, "expr")
 
     expr: Child[FormulaItem] = Child(0)
 
@@ -517,7 +517,7 @@ class BaseLiteral(FormulaItem):
     """Represents a constant value"""
 
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("value",)
+    show_names = (*FormulaItem.show_names, "value")
 
     @property
     def value(self) -> Any:
@@ -784,7 +784,7 @@ _NAMED_ITEM_TV = TypeVar("_NAMED_ITEM_TV", bound="NamedItem")
 
 class NamedItem(FormulaItem):
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("name",)
+    show_names = (*FormulaItem.show_names, "name")
 
     @classmethod
     def validate_internal_value(cls, internal_value: tuple[Hashable | None, ...]) -> None:
@@ -798,7 +798,7 @@ class NamedItem(FormulaItem):
 
 class DimListNodeBase(FormulaItem):
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("dim_list",)
+    show_names = (*FormulaItem.show_names, "dim_list")
 
     dim_list: MultiChild[FormulaItem] = MultiChild(slice(0, None))  # TODO: rename to expr_list
 
@@ -868,7 +868,7 @@ class FuncCall(OperationCall):
     """Generic function call"""
 
     __slots__ = ()
-    show_names = OperationCall.show_names + ("args",)
+    show_names = (*OperationCall.show_names, "args")
     # Omit before_filter_by, ignore_dimensions and lod because they will be very rarely used explicitly
 
     args: MultiChild[FormulaItem] = MultiChild(slice(0, -3))
@@ -910,7 +910,7 @@ class Unary(OperationCall):
     """Unary (arithmetic or logical) operation"""
 
     __slots__ = ()
-    show_names = OperationCall.show_names + ("expr",)
+    show_names = (*OperationCall.show_names, "expr")
 
     expr: Child[FormulaItem] = Child(0)
 
@@ -935,7 +935,7 @@ class Binary(OperationCall):
     """Binary (arithmetic or logical) operation"""
 
     __slots__ = ()
-    show_names = OperationCall.show_names + ("left", "right")
+    show_names = (*OperationCall.show_names, "left", "right")
 
     left: Child[FormulaItem] = Child(0)
     right: Child[FormulaItem] = Child(1)
@@ -962,7 +962,7 @@ class Ternary(OperationCall):
     """Ternary (arithmetic or logical) operation"""
 
     __slots__ = ()
-    show_names = OperationCall.show_names + ("first", "second", "third")
+    show_names = (*OperationCall.show_names, "first", "second", "third")
 
     first: Child[FormulaItem] = Child(0)
     second: Child[FormulaItem] = Child(1)
@@ -1037,7 +1037,7 @@ class Ordering(FormulaItem):
 
     __slots__ = ()
     autonomous = False
-    show_names = FormulaItem.show_names + ("expr_list",)
+    show_names = (*FormulaItem.show_names, "expr_list")
 
     expr_list: MultiChild[FormulaItem] = MultiChild(slice(0, None))
 
@@ -1059,7 +1059,7 @@ class FieldNameListNode(FormulaItem):
     """Represents clause containing a field name list"""
 
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("field_names",)
+    show_names = (*FormulaItem.show_names, "field_names")
 
     @classmethod
     def make(
@@ -1129,7 +1129,7 @@ class WindowFuncCall(FuncCall):
     """Represents window function calls"""
 
     __slots__ = ()
-    show_names = FuncCall.show_names + ("grouping", "ordering", "before_filter_by")
+    show_names = (*FuncCall.show_names, "grouping", "ordering", "before_filter_by")
 
     args: MultiChild[FormulaItem] = MultiChild(slice(0, -5))
     ordering: Child[Ordering] = Child(-5)
@@ -1175,7 +1175,7 @@ class WindowFuncCall(FuncCall):
 class IfPart(FormulaItem):
     __slots__ = ()
     autonomous = False
-    show_names = FormulaItem.show_names + ("cond", "expr")
+    show_names = (*FormulaItem.show_names, "cond", "expr")
 
     cond: Child[FormulaItem] = Child(0)
     expr: Child[FormulaItem] = Child(1)
@@ -1207,7 +1207,7 @@ class IfBlock(FormulaItem):
     """
 
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("if_list", "else_expr")
+    show_names = (*FormulaItem.show_names, "if_list", "else_expr")
 
     if_list: MultiChild[IfPart] = MultiChild(slice(0, -1))
     else_expr: Child[FormulaItem] = Child(-1)
@@ -1242,7 +1242,7 @@ class IfBlock(FormulaItem):
 class WhenPart(FormulaItem):
     __slots__ = ()
     autonomous = False
-    show_names = FormulaItem.show_names + ("val", "expr")
+    show_names = (*FormulaItem.show_names, "val", "expr")
 
     val: Child[FormulaItem] = Child(0)
     expr: Child[FormulaItem] = Child(1)
@@ -1273,7 +1273,7 @@ class CaseBlock(FormulaItem):
     """
 
     __slots__ = ()
-    show_names = FormulaItem.show_names + ("case_expr", "when_list", "else_expr")
+    show_names = (*FormulaItem.show_names, "case_expr", "when_list", "else_expr")
 
     case_expr: Child[FormulaItem] = Child(0)
     when_list: MultiChild[WhenPart] = MultiChild(slice(1, -1))

@@ -84,23 +84,16 @@ class AsyncStarRocksChainedDbErrorTransformer(error_transformer.ChainedDbErrorTr
 
 async_starrocks_db_error_transformer: DbErrorTransformer = AsyncStarRocksChainedDbErrorTransformer(
     (
-        Rule(
-            when=is_table_does_not_exist_async_error(),
-            then_raise=exc.SourceDoesNotExist,
-        ),
+        Rule(when=is_table_does_not_exist_async_error(), then_raise=exc.SourceDoesNotExist),
         Rule(
             when=wrapper_exc_is_and_matches_re(
-                wrapper_exc_cls=pymysql.ProgrammingError,
-                err_regex_str=".*SQL syntax.*",
+                wrapper_exc_cls=pymysql.ProgrammingError, err_regex_str=".*SQL syntax.*"
             ),
             then_raise=exc.InvalidQuery,
         ),
-        Rule(
-            when=is_sql_syntax_error_async_error(),
-            then_raise=exc.InvalidQuery,
-        ),
+        Rule(when=is_sql_syntax_error_async_error(), then_raise=exc.InvalidQuery),
+        *error_transformer.default_error_transformer_rules,
     )
-    + error_transformer.default_error_transformer_rules
 )
 
 
