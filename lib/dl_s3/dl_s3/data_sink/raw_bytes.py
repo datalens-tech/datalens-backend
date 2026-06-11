@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import (
-    TYPE_CHECKING,
-    ClassVar,
-)
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
@@ -19,7 +16,7 @@ LOGGER = logging.getLogger(__name__)
 class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     batch_size_in_bytes: int = 10 * 1024**2
     max_batch_size: int | None = None
-    max_file_size_bytes: ClassVar[int] = 200 * 1024**2
+    max_file_size_bytes: int = 200 * 1024**2
 
     _upload_id: str | None = None
     _part_tags: list[tuple[int, str]] | None = None

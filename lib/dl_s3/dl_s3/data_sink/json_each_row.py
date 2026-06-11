@@ -2,10 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import (
-    TYPE_CHECKING,
-    ClassVar,
-)
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from mypy_boto3_s3.client import S3Client as SyncS3Client
@@ -140,7 +137,7 @@ class S3JsonEachRowUntypedFileDataSink(S3FileDataSink[SimpleUntypedDataStream, l
 class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncDataStream]):
     batch_size_in_bytes: int = 30 * 1024**2
     max_batch_size: int | None = None
-    max_file_size_bytes: ClassVar[int] = 200 * 1024**2
+    max_file_size_bytes: int = 200 * 1024**2
 
     _upload_id: str | None = None
     _part_tags: list[tuple[int, str]] | None = None
