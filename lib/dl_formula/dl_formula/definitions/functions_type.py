@@ -773,7 +773,7 @@ class FuncDbCastBase(TypeConvFunction):
                     )
                 ),
             )
-            for dialect in self.WHITELISTS.keys()
+            for dialect in self.WHITELISTS
         ]
 
 

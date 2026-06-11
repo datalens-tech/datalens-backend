@@ -51,11 +51,7 @@ class DLBaseException(Exception):
         """
         Message will be shown directly to user.
         """
-        if (
-            self.params
-            and self.formatting_messages
-            and frozenset(self.params.keys()) in self.formatting_messages.keys()
-        ):
+        if self.params and self.formatting_messages and frozenset(self.params.keys()) in self.formatting_messages:
             return self.formatting_messages[frozenset(self.params.keys())].format(**self.params)
         return self._message
 

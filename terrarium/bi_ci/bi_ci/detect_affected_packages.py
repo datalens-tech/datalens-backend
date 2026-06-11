@@ -61,7 +61,7 @@ def get_leafs(dependencies: dict[str, list[str]]) -> set[str]:
     all_values = []
     for deps in dependencies.values():
         all_values.extend(deps)
-    leafs = set(all_values) - set([k for k in dependencies.keys() if len(dependencies[k]) > 0])
+    leafs = set(all_values) - set([k for k in dependencies if len(dependencies[k]) > 0])
     return leafs
 
 

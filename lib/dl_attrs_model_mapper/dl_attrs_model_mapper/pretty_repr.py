@@ -53,7 +53,7 @@ class Renderer:
     _map_cls_cls_prefix: dict[type, str] = attr.ib(init=False, factory=dict)
 
     def __attrs_post_init__(self) -> None:
-        for module_obj in self._preferred_cls_name_prefixes.keys():
+        for module_obj in self._preferred_cls_name_prefixes:
             module_name = module_obj.__name__.split(".")[-1]
             declared_type_list: list[type] = [var for var in vars(module_obj).values() if isinstance(var, type)]
             for declared_type in declared_type_list:

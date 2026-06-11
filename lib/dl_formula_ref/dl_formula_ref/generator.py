@@ -189,7 +189,7 @@ class ReferenceDocGenerator:
 
         localized_categories = {
             category: human_category(category=funcs_by_category[category][0].category.name, locale=self._locale)
-            for category in funcs_by_category.keys()
+            for category in funcs_by_category
         }
         locale_sorted_categories = sorted(funcs_by_category.keys(), key=lambda category: localized_categories[category])
         for category in locale_sorted_categories:

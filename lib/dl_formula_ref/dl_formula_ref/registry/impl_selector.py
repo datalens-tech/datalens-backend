@@ -84,7 +84,7 @@ class ArgAwareImplementationSelector(ImplementationSelectorBase):
             if impl.argument_types is None:
                 continue
             for arg_type_matcher in impl.argument_types:
-                for pos in self.exp_arg_types.keys():
+                for pos in self.exp_arg_types:
                     actual_arg_types[pos] |= arg_type_matcher.get_possible_arg_types_at_pos(
                         pos=pos, total=impl.arg_cnt or INFINITE_ARG_COUNT
                     )

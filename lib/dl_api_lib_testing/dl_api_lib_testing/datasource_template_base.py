@@ -231,7 +231,7 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
         ds = control_api.apply_updates(dataset=ds).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        for parameter_name in original_datasource_parameters.keys():
+        for parameter_name in original_datasource_parameters:
             if parameter_name in self.excluded_assert_parameters:
                 continue
 
@@ -326,7 +326,7 @@ class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):
         ds = control_api.apply_updates(dataset=ds, updates=updates).dataset
         ds = control_api.save_dataset(dataset=ds).dataset
 
-        for parameter_name in original_datasource_parameters.keys():
+        for parameter_name in original_datasource_parameters:
             if parameter_name in self.excluded_assert_parameters:
                 continue
 
@@ -478,7 +478,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
     ) -> None:
         ds = saved_dataset
 
-        for field_name in parameter_fields.keys():
+        for field_name in parameter_fields:
             ds.result_schema[field_name].template_enabled = False
 
         ds = control_api.apply_updates(dataset=ds).dataset
@@ -536,7 +536,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
     ) -> None:
         ds = saved_dataset
 
-        for field_name in parameter_fields.keys():
+        for field_name in parameter_fields:
             ds.result_schema[field_name].template_enabled = False
 
         ds = control_api.apply_updates(dataset=ds).dataset
@@ -544,7 +544,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
         get_result_updates = []
 
-        for field_name in parameter_fields.keys():
+        for field_name in parameter_fields:
             original_field = ds.find_field(title=field_name)
             assert original_field.cast is not None
             get_result_updates.append(

@@ -255,7 +255,7 @@ def test_rls(entrysets: dict, expected_restrictions: dict) -> None:
         _add_rls_restrictions(rls, field_guid, entries)
 
     assert rls.has_restrictions
-    restrictions = {user_id: rls.get_user_restrictions(user_id=user_id) for user_id in expected_restrictions.keys()}
+    restrictions = {user_id: rls.get_user_restrictions(user_id=user_id) for user_id in expected_restrictions}
     # Map back fields to aliases for readability
     restrictions = {
         user_id: {field_guid: field_restrictions for field_guid, field_restrictions in user_restrictions.items()}
