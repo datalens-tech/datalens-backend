@@ -7,7 +7,7 @@ import prometheus_client
 import dl_prometheus.metrics.base as base
 
 
-class MultiprocessMode(str, enum.Enum):
+class MultiprocessMode(enum.StrEnum):
     """Aggregation mode for a Gauge under MultiprocessMetricsRegistry.
 
     Mirrors prometheus_client's `_MULTIPROC_MODES`, minus the deprecated

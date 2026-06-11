@@ -1,18 +1,18 @@
 import enum
 
 
-class DLHeaders(str, enum.Enum):
+class DLHeaders(enum.StrEnum):
     """
     Base marker class for all headers enumeration.
     Should be empty because enums with members can not be extended by other members.
     """
 
 
-class DLCookies(str, enum.Enum):
+class DLCookies(enum.StrEnum):
     """"""
 
 
-class DLContextKey(str, enum.Enum):
+class DLContextKey(enum.StrEnum):
     DISPLAY_MODE = "displayMode"
     DASH_ID = "dashId"
     CHART_ID = "chartId"

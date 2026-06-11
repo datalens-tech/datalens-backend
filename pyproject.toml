@@ -111,7 +111,6 @@ ignore = [
   "SIM117", # Later: multiple-with-statements
   "SIM118", # Later: in-dict-keys
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
-  "UP042", # Later: replace-str-enum
 ]
 # Rule categories considered for `select`, documented here (outside the array so
 # toml-sort does not drop the commented-out lines):

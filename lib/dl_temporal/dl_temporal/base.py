@@ -25,7 +25,7 @@ with temporalio.workflow.unsafe.imports_passed_through():
 LOGGER = logging.getLogger(__name__)
 
 
-class SearchAttribute(str, enum.Enum):
+class SearchAttribute(enum.StrEnum):
     RESULT_TYPE = "ResultType"
     RESULT_CODE = "ResultCode"
 
@@ -34,7 +34,7 @@ class SearchAttribute(str, enum.Enum):
         return temporalio.common.SearchAttributeKey.for_keyword(self.value)
 
 
-class ResultType(str, enum.Enum):
+class ResultType(enum.StrEnum):
     SUCCESS = "Success"
     ERROR = "Error"
 

@@ -16,7 +16,7 @@ class DataExportInfo(DataExportConnInfo):
     background_allowed_in_tenant: bool = attr.ib(default=False)
 
 
-class DataExportForbiddenReason(str, enum.Enum):
+class DataExportForbiddenReason(enum.StrEnum):
     disabled_in_ds = "DISABLED_EXPORT_DATASET"
     disabled_in_conn = "DISABLED_EXPORT_CONNECTION"
     disabled_in_tenant = "DISABLED_EXPORT_TENANT"

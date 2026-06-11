@@ -199,7 +199,7 @@ class SpecTestHandler(dl_app_api_base.BaseHandler):
 
     class RequestSchema(dl_app_api_base.BaseRequestSchema):
         class Path(dl_pydantic.BaseSchema):
-            class PathEnum(str, enum.Enum):
+            class PathEnum(enum.StrEnum):
                 FOO = "foo"
                 BAR = "bar"
 
@@ -210,7 +210,7 @@ class SpecTestHandler(dl_app_api_base.BaseHandler):
             path_nested: PathNested
 
         class Query(dl_pydantic.BaseSchema):
-            class QueryEnum(str, enum.Enum):
+            class QueryEnum(enum.StrEnum):
                 FOO = "foo"
                 BAR = "bar"
 
@@ -221,7 +221,7 @@ class SpecTestHandler(dl_app_api_base.BaseHandler):
             query_nested: QueryNested
 
         class Body(dl_pydantic.BaseSchema):
-            class BodyEnum(str, enum.Enum):
+            class BodyEnum(enum.StrEnum):
                 FOO = "foo"
                 BAR = "bar"
 
@@ -236,7 +236,7 @@ class SpecTestHandler(dl_app_api_base.BaseHandler):
         body: Body
 
     class ResponseSchema(dl_app_api_base.BaseResponseSchema):
-        class ResponseEnum(str, enum.Enum):
+        class ResponseEnum(enum.StrEnum):
             FOO = "foo"
             BAR = "bar"
 

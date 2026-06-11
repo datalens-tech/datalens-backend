@@ -10,7 +10,7 @@ import attr
 LOGGER = logging.getLogger(__name__)
 
 
-class NumberFormatType(str, enum.Enum):
+class NumberFormatType(enum.StrEnum):
     """
     According to Google API Docs + several custom types
     https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/cells#CellFormat

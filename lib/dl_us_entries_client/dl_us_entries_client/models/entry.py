@@ -8,7 +8,7 @@ import dl_pydantic
 type EntryId = str
 
 
-class EntryScope(str, enum.Enum):
+class EntryScope(enum.StrEnum):
     dashboard = "dash"
     connection = "connection"
     dataset = "dataset"
