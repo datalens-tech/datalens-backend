@@ -36,3 +36,6 @@ class HttpRequestDurationSeconds(dl_prometheus.Histogram):
             ),
             buckets=settings.BUCKETS,
         )
+
+    def record(self, *, method: str, status_code: int, path: str, duration: float) -> None:
+        self.observe(duration, labels={"method": method, "status_code": str(status_code), "path": path})

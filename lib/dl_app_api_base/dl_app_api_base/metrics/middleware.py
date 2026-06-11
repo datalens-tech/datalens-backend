@@ -25,13 +25,16 @@ class MetricsMiddleware:
         response = await handler(request)
         elapsed_seconds = time.perf_counter() - started_at
 
-        labels = {
-            "method": request.method,
-            "status_code": str(response.status),
-            "path": self._extract_path_label(request),
-        }
-        self._http_requests_total.inc(labels=labels)
-        self._http_request_duration_seconds.observe(elapsed_seconds, labels=labels)
+        method = request.method
+        status_code = response.status
+        path = self._extract_path_label(request)
+        self._http_requests_total.record(method=method, status_code=status_code, path=path)
+        self._http_request_duration_seconds.record(
+            method=method,
+            status_code=status_code,
+            path=path,
+            duration=elapsed_seconds,
+        )
 
         return response
 

@@ -49,6 +49,7 @@ class Factory(dl_temporal.app.BaseTemporalWorkerAppFactory[App]):
         return [
             *await super()._get_temporal_activities(),
             activities.Activity(),
+            activities.RaisingActivity(),
         ]
 
     @override

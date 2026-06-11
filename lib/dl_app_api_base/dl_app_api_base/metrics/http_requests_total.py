@@ -20,3 +20,6 @@ class HttpRequestsTotal(dl_prometheus.Counter):
                 "path",
             ),
         )
+
+    def record(self, *, method: str, status_code: int, path: str) -> None:
+        self.inc(labels={"method": method, "status_code": str(status_code), "path": path})

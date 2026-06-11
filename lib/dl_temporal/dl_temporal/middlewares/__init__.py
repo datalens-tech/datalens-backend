@@ -1,4 +1,7 @@
-from .activity import LoggingActivityMiddleware
+from .activity import (
+    LoggingActivityMiddleware,
+    MetricsActivityMiddleware,
+)
 from .protocol import (
     ActivityHandler,
     ActivityMiddleware,
@@ -7,6 +10,7 @@ from .protocol import (
 )
 from .workflow import (
     LoggingWorkflowMiddleware,
+    MetricsWorkflowMiddleware,
     ParentContextWorkflowMiddleware,
     SearchAttributesWorkflowMiddleware,
 )
@@ -16,6 +20,8 @@ __all__ = [
     "ActivityMiddleware",
     "LoggingActivityMiddleware",
     "LoggingWorkflowMiddleware",
+    "MetricsActivityMiddleware",
+    "MetricsWorkflowMiddleware",
     "ParentContextWorkflowMiddleware",
     "SearchAttributesWorkflowMiddleware",
     "WorkflowHandler",

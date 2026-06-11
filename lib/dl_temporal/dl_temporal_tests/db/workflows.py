@@ -137,16 +137,10 @@ class Workflow(dl_temporal.BaseWorkflow):
         raise NotImplementedError(f"Unexpected result type: {type(result)}")
 
 
-class RaisingWorkflowError(Exception): ...
-
-
 class RaisingWorkflowParams(dl_temporal.BaseWorkflowParams): ...
 
 
-# failure_exception_types makes Temporal fail the workflow on this plain error (so the logging
-# middleware's failure branch runs) instead of treating it as a workflow task failure and retrying
-# forever. define_workflow can't pass that option, so the temporalio decorators are applied directly.
-@temporalio.workflow.defn(name="test_raising_workflow", failure_exception_types=[RaisingWorkflowError])
+@dl_temporal.define_workflow
 class RaisingWorkflow(dl_temporal.BaseWorkflow):
     name = "test_raising_workflow"
     logger = LOGGER
@@ -154,6 +148,9 @@ class RaisingWorkflow(dl_temporal.BaseWorkflow):
     Params = RaisingWorkflowParams
     Result = WorkflowResult
 
-    @temporalio.workflow.run
     async def run(self, params: RaisingWorkflowParams) -> WorkflowResult:
-        raise RaisingWorkflowError("intentional failure for logging middleware test")
+        await self.execute_activity(
+            activities.RaisingActivity,
+            activities.RaisingActivity.Params(parent_context=params.parent_context),
+        )
+        raise AssertionError("RaisingActivity must fail the workflow")

@@ -1,5 +1,7 @@
 import logging
 
+import temporalio.exceptions
+
 import dl_pydantic
 import dl_temporal
 import dl_temporal_tests.db.common as common
@@ -71,3 +73,20 @@ class Activity(dl_temporal.BaseActivity):
             activity_datetime_with_timezone_result=params.activity_datetime_with_timezone_param,
             activity_nested_result=common.NestedModel(test_int=params.activity_nested_param.test_int + 1),
         )
+
+
+class RaisingActivityParams(dl_temporal.BaseActivityParams): ...
+
+
+@dl_temporal.define_activity
+class RaisingActivity(dl_temporal.BaseActivity):
+    name = "test_raising_activity"
+    logger = LOGGER
+
+    Params = RaisingActivityParams
+    Result = EmptyActivityResult
+
+    async def run(self, params: RaisingActivityParams) -> EmptyActivityResult:
+        # non_retryable so the activity fails on its first attempt instead of retrying until timeout;
+        # the failure then propagates to the workflow, so both record status="failure".
+        raise temporalio.exceptions.ApplicationError("intentional activity failure", non_retryable=True)
