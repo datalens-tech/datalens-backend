@@ -259,6 +259,19 @@ class RLSPatternType(Enum):
     userid = "userid"
 
 
+class CLSMode(Enum):
+    # Masking modes, increasing strictness (`hash` reserved for later). Strictness lives in a map in dl_cls, not enum order.
+    none = "none"
+    partial = "partial"
+    full = "full"
+
+
+class CLSSubjectType(Enum):
+    # `user`/`group` only — no `all` (CLS "everyone" is the field's default rule, not a subject).
+    user = "user"
+    group = "group"
+
+
 class ReportingQueryType(Enum):
     internal = "internal"
     external = "external"

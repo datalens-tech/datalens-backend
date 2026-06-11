@@ -123,6 +123,7 @@ dl-auth = {develop = true, path = "../lib/dl_auth"}
 dl-auth-api-lib = {develop = true, path = "../lib/dl_auth_api_lib"}
 dl-auth-native = {develop = true, path = "../lib/dl_auth_native"}
 dl-cache-engine = {develop = true, path = "../lib/dl_cache_engine"}
+dl-cls = {develop = true, path = "../lib/dl_cls"}
 dl-compeng-pg = {develop = true, path = "../lib/dl_compeng_pg"}
 dl-configs = {develop = true, path = "../lib/dl_configs"}
 dl-connector-bigquery = {develop = true, path = "../lib/dl_connector_bigquery"}

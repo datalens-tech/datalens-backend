@@ -2103,6 +2103,25 @@ type = "directory"
 url = "../lib/dl_cache_engine"
 
 [[package]]
+name = "dl-cls"
+version = "0.0.1"
+description = ""
+optional = false
+python-versions = ">=3.12, <3.13"
+files = []
+develop = true
+
+[package.dependencies]
+attrs = "*"
+dl-constants = {path = "../dl_constants"}
+dl-model-tools = {path = "../dl_model_tools"}
+marshmallow = "*"
+
+[package.source]
+type = "directory"
+url = "../lib/dl_cls"
+
+[[package]]
 name = "dl-compeng-pg"
 version = "0.0.1"
 description = ""
@@ -3280,6 +3299,7 @@ dl-app-tools = {path = "../dl_app_tools"}
 dl-constants = {path = "../dl_constants"}
 dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
+dl-model-tools = {path = "../dl_model_tools"}
 dl-utils = {path = "../dl_utils"}
 pytz = "*"
 
@@ -3765,7 +3785,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "dl-version"
-version = "0.2728.0"
+version = "0.2729.0"
 description = ""
 optional = false
 python-versions = ">=3.12, <3.13"
@@ -9855,4 +9875,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.12, <3.13"
-content-hash = "f6c06b1c16c28b1a82202661aa475b7e7884b5b6ed7a3afcd4fad862597a17cc"
+content-hash = "bf09023cccf167cc27fa41681a7b47bf7222e5808dffeaafbc0c52eae28f1a0f"
