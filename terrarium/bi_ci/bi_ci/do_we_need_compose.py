@@ -10,7 +10,8 @@ def do_we_need_compose(prj_root: Path, target: str) -> str:
     rel_path, section_name = target.split(":")
     mb_compose = prj_root / rel_path / "docker-compose.yml"
 
-    ref = tomlkit.load(open(prj_root / rel_path / "pyproject.toml"))
+    with open(prj_root / rel_path / "pyproject.toml") as f:
+        ref = tomlkit.load(f)
     section = ref.get("datalens", {}).get("pytest", {}).get(section_name, {})
 
     if section.get("skip_compose") == "true":

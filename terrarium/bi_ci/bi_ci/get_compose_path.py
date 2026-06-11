@@ -10,7 +10,8 @@ def get_compose_path(prj_root: Path, target: str) -> str:
 
     ref: dict
     try:
-        ref = tomlkit.load(open(prj_root / rel_path / "pyproject.toml"))
+        with open(prj_root / rel_path / "pyproject.toml") as f:
+            ref = tomlkit.load(f)
     except FileNotFoundError:
         ref = {}
 
