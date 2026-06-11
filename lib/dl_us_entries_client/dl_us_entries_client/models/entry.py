@@ -21,10 +21,12 @@ class EntryPermissions(dl_httpx.BaseResponseSchema):
     admin: bool
 
 
-class Data(dl_pydantic.BaseSchema): ...
+class Data(dl_pydantic.BaseSchema):
+    model_config = pydantic.ConfigDict(extra="allow")
 
 
-class UnversionedData(dl_pydantic.BaseSchema): ...
+class UnversionedData(dl_pydantic.BaseSchema):
+    model_config = pydantic.ConfigDict(extra="allow")
 
 
 class EntryData(dl_pydantic.BaseSchema):
