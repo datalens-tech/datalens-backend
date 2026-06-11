@@ -231,13 +231,12 @@ class FilterFormulaCompiler:
         if anonymous:
             original_field_id = None
 
-        formula_info = CompiledFormulaInfo(
+        return CompiledFormulaInfo(
             formula_obj=formula_obj,
             avatar_ids=self._formula_compiler._columns.get_used_avatar_ids_for_formula_obj(formula_obj),  # FIXME
             original_field_id=original_field_id,
             alias=None,
         )
-        return formula_info
 
     def compile_filter_formula(
         self,
@@ -397,5 +396,4 @@ class MainFilterFormulaCompiler(FilterFormulaCompiler):
     def _custom_filter_cast(self, filter_params: FilterParams) -> FilterParams:
         filter_params = self._mangle_containment_filter(filter_params)
         filter_params = self._mangle_array_filter(filter_params)
-        filter_params = self._mangle_date_filter(filter_params)
-        return filter_params
+        return self._mangle_date_filter(filter_params)

@@ -139,9 +139,7 @@ class AioHTTPMiddleware:
                     auth_data=auth_result.data,
                 )
             )
-            response = await handler(app_request.request)
-
-            return response
+            return await handler(app_request.request)
 
         return inner
 

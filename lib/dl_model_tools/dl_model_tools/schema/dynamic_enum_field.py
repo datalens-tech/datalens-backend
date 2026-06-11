@@ -31,5 +31,4 @@ class DynamicEnumField(ma_fields.Field):
         if not self._dyn_enum_cls.is_declared(value):
             raise ValidationError(f"Invalid value {value} for {attr}")
 
-        deserialized_value = self._dyn_enum_cls(value)
-        return deserialized_value
+        return self._dyn_enum_cls(value)

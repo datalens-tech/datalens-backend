@@ -373,11 +373,10 @@ def sort_raw_sql_levels(
     if not raw_sql_levels:
         return []
 
-    raw_sql_levels = sorted(
+    return sorted(
         raw_sql_levels,
         key=lambda x: RAW_SQL_LEVEL_SORTED.index(x),
     )
-    return raw_sql_levels
 
 
 def is_raw_sql_level_subselect_allowed(raw_sql_level: RawSQLLevel) -> bool:

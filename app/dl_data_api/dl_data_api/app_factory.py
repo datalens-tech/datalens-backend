@@ -165,13 +165,11 @@ class StandaloneDataApiAppFactory(
                 ),
             ]
 
-        result = EnvSetupResult(
+        return EnvSetupResult(
             auth_mw_list=[auth_mw],
             sr_middleware_list=sr_middleware_list,
             usm_middleware_list=usm_middleware_list,
         )
-
-        return result
 
     def _get_auth_middleware(self) -> Middleware:
         settings = self._settings.AUTH

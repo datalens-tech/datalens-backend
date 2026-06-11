@@ -264,8 +264,7 @@ class QueryTypeInfo:
         # FIXME: This is a temporary hack until we start using real texts here
         label = self.query_type.name
         label = label.replace("_", " ")
-        label = " ".join([word.capitalize() for word in label.split()])
-        return label
+        return " ".join([word.capitalize() for word in label.split()])
 
 
 @attr.s(frozen=True)
@@ -750,7 +749,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
     def get_cache_key_part(self) -> LocalKeyRepresentation:
         local_key_rep = LocalKeyRepresentation()
-        local_key_rep = local_key_rep.multi_extend(
+        return local_key_rep.multi_extend(
             DataKeyPart(
                 part_type="connection_id",
                 part_content=self.uuid,
@@ -760,7 +759,6 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
                 part_content=self.revision_id,
             ),
         )
-        return local_key_rep
 
     def get_supported_query_type_infos(self) -> frozenset[QueryTypeInfo]:
         return frozenset({QueryTypeInfo(query_type=DashSQLQueryType.generic_query)})

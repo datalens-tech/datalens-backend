@@ -47,12 +47,11 @@ class MySQLDatetruncSubtractUnitStep(MySQLDatetruncStep):
     unit_value_clause: Callable[[ClauseElement], ClauseElement] = attr.ib()
 
     def step(self, date_clause: ClauseElement) -> ClauseElement:
-        subtract_units_expr = sa.func.TIMESTAMPADD(
+        return sa.func.TIMESTAMPADD(
             sa.text(self.unit_to_subtract.name),
             -self.unit_value_clause(date_clause).self_group(),
             date_clause,
         )
-        return subtract_units_expr
 
 
 @attr.s(frozen=True)

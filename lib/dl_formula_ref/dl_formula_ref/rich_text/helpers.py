@@ -32,8 +32,7 @@ def get_human_data_type_list(types: Collection[DataType]) -> list[str]:
 
     # for the rest use basic types
     result_types.update({HUMAN_DATA_TYPES[t] for t in types_set})
-    result = sorted(result_types) if result_types else [ANY_TYPE]
-    return result
+    return sorted(result_types) if result_types else [ANY_TYPE]
 
 
 def escape_cell(s: str) -> str:
@@ -74,5 +73,4 @@ def escape_cell(s: str) -> str:
 
         i = next_bt_ind + 1
 
-    escaped_s = escaped_s.replace("|", "&#124;")
-    return escaped_s
+    return escaped_s.replace("|", "&#124;")

@@ -82,27 +82,24 @@ class FormulaConnectorTestBase(metaclass=abc.ABCMeta):
     @pytest.fixture(scope="class")
     def dbe(self, db_config: FormulaDbConfig) -> DbEvaluator:
         db = self.db_dispenser.get_database(db_config)
-        dbe = DbEvaluator(
+        return DbEvaluator(
             db=db,
             attempts=self.eval_attempts,
             retry_on_exceptions=self.retry_on_exceptions,
         )
-        return dbe
 
     def lowlevel_make_sa_table(
         self, db: DbBase, table_schema_name: str | None, table_spec: TableSpec, columns: Sequence[sa.Column]
     ) -> sa.Table:
-        table = db.table_from_columns(table_name=table_spec.table_name, schema=table_schema_name, columns=columns)
-        return table
+        return db.table_from_columns(table_name=table_spec.table_name, schema=table_schema_name, columns=columns)
 
     def get_column_sa_type(self, data_type: DataType) -> TypeEngine:
         return get_column_sa_type(data_type=data_type, dialect=self.dialect)
 
     def make_columns(self, column_specs: Sequence[ColumnSpec]) -> list[sa.Column]:
-        columns = [
+        return [
             sa.Column(name=spec.name, type_=self.get_column_sa_type(data_type=spec.data_type)) for spec in column_specs
         ]
-        return columns
 
     def generate_table_name(self, prefix: str) -> str:
         return f"{prefix}_{uuid.uuid4().hex[:6]}"

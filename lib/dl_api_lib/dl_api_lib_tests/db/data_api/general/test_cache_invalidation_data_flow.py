@@ -90,7 +90,7 @@ class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
 
         # Step 2: First query — populates cache
         def get_data(fail_ok: bool = False) -> HttpDataApiResponse:
-            result_resp = data_api.get_result(
+            return data_api.get_result(
                 dataset=ds,
                 fields=[
                     ds.find_field(title="int_value"),
@@ -98,7 +98,6 @@ class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
                 ],
                 fail_ok=fail_ok,
             )
-            return result_resp
 
         # we need to get the data twice to get rid of stale inval cache payload
         resp_v1 = get_data()
@@ -235,14 +234,13 @@ class TestCacheInvalidationModeOffDataFlow(CacheInvalidationDataFlowBase):
 
         # mode=off (default)
         def get_data() -> HttpDataApiResponse:
-            result_resp = data_api.get_result(
+            return data_api.get_result(
                 dataset=ds,
                 fields=[
                     ds.find_field(title="int_value"),
                     ds.find_field(title="measure"),
                 ],
             )
-            return result_resp
 
         resp1 = get_data()
         assert resp1.status_code == 200, resp1.response_errors

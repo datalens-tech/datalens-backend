@@ -30,8 +30,7 @@ class TestDataCaches(DefaultApiTestBase):
                 ],
             )
             assert result_resp.status_code == 200, result_resp.response_errors
-            data = get_data_rows(response=result_resp)
-            return data
+            return get_data_rows(response=result_resp)
 
         data_rows = get_data()
 

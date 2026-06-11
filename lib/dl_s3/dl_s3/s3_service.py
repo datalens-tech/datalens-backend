@@ -152,5 +152,4 @@ class S3Service:
 
     def get_sync_client(self) -> SyncS3Client:
         session = boto3.session.Session()
-        client = session.client(**self._client_init_params)
-        return client
+        return session.client(**self._client_init_params)

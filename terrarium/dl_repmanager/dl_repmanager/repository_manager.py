@@ -36,8 +36,7 @@ class PackageGenerator:
 
     @staticmethod
     def generate_new_package_reg_name(package_name: str) -> str:
-        internal_name = package_name.replace("_", "-").replace("dl-", "datalens-")
-        return internal_name
+        return package_name.replace("_", "-").replace("dl-", "datalens-")
 
     @staticmethod
     def generate_default_test_dir_name(package_name: str) -> str:
@@ -61,7 +60,7 @@ class PackageGenerator:
             )
             package_test_dirs.append(package_test_dir)
 
-        generated_package_info = PackageInfo(
+        return PackageInfo(
             package_type=package_type,
             package_reg_name=self.generate_new_package_reg_name(package_module_name),
             module_names=(package_module_name,),  # FIXME: define in template
@@ -71,7 +70,6 @@ class PackageGenerator:
             ),
             test_dirs=tuple(package_test_dirs),
         )
-        return generated_package_info
 
 
 @attr.s
@@ -172,14 +170,13 @@ class RepositoryManager:
         # Generate new path
         new_package_abs_path = old_package_info.abs_path.parent / new_package_module_name
 
-        new_package_info = old_package_info.clone(
+        return old_package_info.clone(
             package_reg_name=self.package_generator.generate_new_package_reg_name(new_package_module_name),
             module_names=(new_package_module_name,),
             test_dirs=(self.package_generator.generate_default_test_dir_name(new_package_module_name),),
             abs_path=new_package_abs_path,
             i18n_domains=tuple(new_i18n_domain_list),
         )
-        return new_package_info
 
     def rename_package(self, old_package_module_name: str, new_package_module_name: str) -> PackageInfo:
         old_package_info = self.package_index.get_package_info_from_module_name(old_package_module_name)

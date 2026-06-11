@@ -43,8 +43,7 @@ class YandexOAuth(BaseOAuth):
             "response_type": "code",
             "scope": self.scope,
         }
-        uri = self.auth_url + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
-        return uri
+        return self.auth_url + urllib.parse.urlencode({k: v for k, v in params.items() if v is not None})
 
     async def get_auth_token(self, code: str, origin: str | None = None) -> dict[str, Any]:
         async with aiohttp.ClientSession(
@@ -70,8 +69,7 @@ class YandexOAuth(BaseOAuth):
         )
 
     def _get_session_headers(self) -> dict[str, str]:
-        headers = {
+        return {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": f"Basic {b64encode(f'{self.client_id}:{self.client_secret}'.encode()).decode()}",
         }
-        return headers

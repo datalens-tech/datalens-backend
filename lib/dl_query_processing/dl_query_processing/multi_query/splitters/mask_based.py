@@ -262,7 +262,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         join_on = query.join_on
         joined_from = query.joined_from
 
-        subquery = CompiledQuery(
+        return CompiledQuery(
             id=split_mask.subquery_id,
             level_type=query.level_type,
             select=select,
@@ -280,7 +280,6 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
                 row_count_hard_limit=query.meta.row_count_hard_limit,
             ),
         )
-        return subquery
 
     def _make_join_on_expression(
         self,
@@ -948,10 +947,9 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         result_queries.append(updated_original_query)
 
         # Put it all into a patch object and return it
-        patch = CompiledMultiQueryPatch(
+        return CompiledMultiQueryPatch(
             patch_multi_query=CompiledMultiQuery(queries=result_queries),
         )
-        return patch
 
     def split_query(
         self,
@@ -964,10 +962,9 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         if not split_masks:
             return None
 
-        patch = self._get_query_patch_from_split_masks(
+        return self._get_query_patch_from_split_masks(
             query=query,
             split_masks=split_masks,
             query_id_gen=query_id_gen,
             expr_id_gen=expr_id_gen,
         )
-        return patch

@@ -24,9 +24,7 @@ def build_local_key_rep(portal: str, table: str, body: dict) -> LocalKeyRepresen
     local_key_rep = LocalKeyRepresentation()
     local_key_rep = local_key_rep.extend(part_type="portal", part_content=portal)
     local_key_rep = local_key_rep.extend(part_type="table", part_content=table)
-    local_key_rep = local_key_rep.extend(part_type="body", part_content=frozenset(body.items()))
-
-    return local_key_rep
+    return local_key_rep.extend(part_type="body", part_content=frozenset(body.items()))
 
 
 def make_simple_cli_acm(conn_params: RedisConnParams) -> TClientACM:
@@ -51,13 +49,11 @@ def bitrix_cache_serializer(data: TJSONExt) -> bytes:
     with GenericProfiler("qcache-serialize"):
         serialized_result_data = common_dumps(data)
     with GenericProfiler("qcache-compress"):
-        result_data = gzip.compress(serialized_result_data)
-    return result_data
+        return gzip.compress(serialized_result_data)
 
 
 def bitrix_cache_deserializer(data_repr: bytes) -> TJSONExt:
     with GenericProfiler("qcache-decompress"):
         encoded_data = gzip.decompress(data_repr)
     with GenericProfiler("qcache-deserialize"):
-        data = common_loads(encoded_data)
-    return data
+        return common_loads(encoded_data)

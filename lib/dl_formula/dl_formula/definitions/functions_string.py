@@ -146,8 +146,7 @@ def quote_like(value, escape="\\", chars=("%", "_")):  # type: ignore  # 2024-01
 
 def quote_like_metrica(value):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
     value = value.replace("\\", r"\\")
-    value = value.replace("*", r"\*")
-    return value
+    return value.replace("*", r"\*")
 
 
 NON_STR_CONTAINMENT_TYPES = {

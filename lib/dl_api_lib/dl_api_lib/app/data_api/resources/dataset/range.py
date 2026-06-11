@@ -153,14 +153,13 @@ class DatasetRangeView(DatasetDataBaseView, abc.ABC):
         detailed_types = postprocessed_query.meta.detailed_types
         assert detailed_types is not None
 
-        postprocessed_query = postprocessed_query.clone(
+        return postprocessed_query.clone(
             postprocessed_data=[[min_value], [max_value]],
             meta=postprocessed_query.meta.clone(
                 field_order=field_order[:1],
                 detailed_types=detailed_types[:1],
             ),
         )
-        return postprocessed_query
 
 
 class DatasetRangeViewV1(DatasetRangeView):

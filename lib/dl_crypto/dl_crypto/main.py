@@ -56,8 +56,7 @@ class CryptoController:
         assert encrypted_data["key_kind"] == self.key_kind
         encoded_cypher_text = encrypted_data["cypher_text"].encode()
         key_id = encrypted_data["key_id"]
-        plain_text = self._map_key_id_fernet_instance[key_id].decrypt(encoded_cypher_text).decode()
-        return plain_text
+        return self._map_key_id_fernet_instance[key_id].decrypt(encoded_cypher_text).decode()
 
     def encrypt_with_actual_key(self, plain_text: str | None) -> EncryptedData | None:
         return self.encrypt(key_id=self._key_config.actual_key_id, plain_text=plain_text)

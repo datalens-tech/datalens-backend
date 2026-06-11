@@ -88,9 +88,7 @@ class SyncPromQLClient:
         )
         response.raise_for_status()
         data = response.json()
-        result = rebuild_prometheus_data(data["data"])
-
-        return result
+        return rebuild_prometheus_data(data["data"])
 
     def test_connection(self):
         response = self._request("get", "-/ready")

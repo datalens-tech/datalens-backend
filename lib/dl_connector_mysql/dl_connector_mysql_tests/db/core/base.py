@@ -53,19 +53,17 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
 
     @pytest.fixture(scope="class")
     def engine_params(self, ssl_ca: str) -> dict:
-        engine_params = {
+        return {
             "connect_args": frozendict(
                 {
                     "ssl": ssl.create_default_context(cadata=ssl_ca),
                 }
             ),
         }
-        return engine_params
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
-        db_url = test_config.DB_CORE_SSL_URL
-        return db_url
+        return test_config.DB_CORE_SSL_URL
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, ssl_ca: str) -> dict:

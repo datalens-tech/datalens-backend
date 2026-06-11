@@ -184,9 +184,7 @@ class RequestLogHelper:
         headers = sorted(headers)
         headers = {normalize_header_name(key): value for key, value in headers}
 
-        headers = dict(self._obfuscator.clean_secret_data_in_headers(headers.items()))
-
-        return headers
+        return dict(self._obfuscator.clean_secret_data_in_headers(headers.items()))
 
     # TODO CONSIDER: Create custom type for headers
     def log_request_end_extended(

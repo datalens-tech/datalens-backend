@@ -317,7 +317,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         source_ids: Iterable[str],
         fail_ok: bool = False,
     ) -> HttpDatasetApiResponse:
-        refresh_resp = self.apply_updates(
+        return self.apply_updates(
             dataset=dataset,
             fail_ok=fail_ok,
             updates=[
@@ -330,7 +330,6 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
                 for source_id in source_ids
             ],
         )
-        return refresh_resp
 
     def replace_single_data_source(
         self,
@@ -338,7 +337,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         new_source: dict[str, Any],
         fail_ok: bool = False,
     ) -> HttpDatasetApiResponse:
-        response = self.apply_updates(
+        return self.apply_updates(
             dataset=dataset,
             fail_ok=fail_ok,
             updates=[
@@ -360,7 +359,6 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
                 },
             ],
         )
-        return response
 
     def replace_connection(
         self,
@@ -368,7 +366,7 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         new_connection_id: str,
         fail_ok: bool = False,
     ) -> HttpDatasetApiResponse:
-        response = self.apply_updates(
+        return self.apply_updates(
             dataset=dataset,
             fail_ok=fail_ok,
             updates=[
@@ -381,7 +379,6 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
                 },
             ],
         )
-        return response
 
     def update_setting(
         self,

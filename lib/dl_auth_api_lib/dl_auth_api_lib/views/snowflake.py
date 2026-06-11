@@ -9,12 +9,11 @@ from dl_auth_api_lib.schemas import snowflake as snowflake_schemas
 
 class BaseSnowflakeView(web.View):
     def get_client(self, data: dict[str, str]) -> SnowflakeOAuth:
-        auth_client = SnowflakeOAuth(
+        return SnowflakeOAuth(
             account=data["account"],
             client_id=data["client_id"],
             redirect_uri=data["redirect_uri"],
         )
-        return auth_client
 
 
 class SnowflakeURIView(BaseSnowflakeView):

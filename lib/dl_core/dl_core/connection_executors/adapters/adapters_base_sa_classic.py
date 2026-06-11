@@ -133,8 +133,7 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[CONN_DTO_TV]):
             # Apparently, this is the only way to pass something to the dialect's `__init__`.
             **self.get_engine_kwargs(),
         )
-        engine = engine.execution_options(compiled_cache=None)
-        return engine
+        return engine.execution_options(compiled_cache=None)
 
     _subselect_cursor_info_where_false: ClassVar[bool] = True
 

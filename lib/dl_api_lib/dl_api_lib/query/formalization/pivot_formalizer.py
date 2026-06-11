@@ -237,14 +237,13 @@ class PivotFormalizer(PivotFormalizerBase):
         else:
             title = self.make_item_title(target_legend_items, role=raw_pivot_item.role_spec.role)
 
-        item = PivotLegendItem(
+        return PivotLegendItem(
             pivot_item_id=id_gen.generate_id(),
             legend_item_ids=raw_pivot_item.legend_item_ids,
             role_spec=role_spec,
             item_type=item_type,
             title=title,
         )
-        return item
 
     def make_pivot_legend(self, raw_pivot_spec: RawPivotSpec) -> PivotLegend:
         id_gen = IdGenerator()

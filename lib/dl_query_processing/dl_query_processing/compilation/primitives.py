@@ -87,13 +87,12 @@ class CompiledFormulaInfo:
             content_item_strs.append(f"{item_name}={item_str}")
 
         content_str = "".join([f"{item_indent}{item_str},\n" for item_str in content_item_strs])
-        text = "{lead_idt}{cls}(\n{cont}\n{ini_idt})".format(
+        return "{lead_idt}{cls}(\n{cont}\n{ini_idt})".format(
             lead_idt=initial_indent if do_leading_indent else "",
             cls=self.__class__.__name__,
             cont=content_str,
             ini_idt=initial_indent,
         )
-        return text
 
     def clone(self, **updates: Any) -> Self:
         return attr.evolve(self, **updates)
@@ -287,13 +286,12 @@ class CompiledQuery:
             content_item_strs.append(f"{item_name}={item_str}")
 
         content_str = "".join([f"{item_indent}{item_str},\n" for item_str in content_item_strs])
-        text = "{lead_idt}{cls}(\n{cont}\n{ini_idt})".format(
+        return "{lead_idt}{cls}(\n{cont}\n{ini_idt})".format(
             lead_idt=initial_indent if do_leading_indent else "",
             cls=self.__class__.__name__,
             cont=content_str,
             ini_idt=initial_indent,
         )
-        return text
 
     @property
     def all_formulas(self) -> Generator[CompiledFormulaInfo, None, None]:

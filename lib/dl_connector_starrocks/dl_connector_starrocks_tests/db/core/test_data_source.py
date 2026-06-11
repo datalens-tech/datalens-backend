@@ -33,13 +33,12 @@ class TestStarRocksTableDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:  # type: ignore  # 2024-01-30 # TODO: fix
-        dsrc_spec = StandardSchemaSQLDataSourceSpec(
+        return StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_STARROCKS_TABLE,
             db_name=CoreConnectionSettings.CATALOG,
             schema_name=sample_table.db.name,
             table_name=sample_table.name,
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
@@ -57,11 +56,10 @@ class TestStarRocksSubselectDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> SubselectDataSourceSpec:  # type: ignore  # 2024-01-30 # TODO: fix
-        dsrc_spec = SubselectDataSourceSpec(
+        return SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_STARROCKS_SUBSELECT,
             subsql=f"SELECT * FROM {sample_table.db.name}.{sample_table.name}",
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)

@@ -180,7 +180,7 @@ def get_pivot_response(
             return field.desc
         return field.asc
 
-    pivot_resp = data_api.get_pivot(
+    return data_api.get_pivot(
         dataset=dataset,
         fields=legend,  # type: ignore  # 2024-01-24 # TODO: Argument "fields" to "get_pivot" of "SyncHttpDataApiV2" has incompatible type "list[RequestLegendItem]"; expected "list[ResultField | RequestLegendItem] | None"  [arg-type]
         pivot_structure=[
@@ -202,7 +202,6 @@ def get_pivot_response(
         autofill_legend=autofill_legend,
         fail_ok=True,
     )
-    return pivot_resp
 
 
 def check_pivot_response(

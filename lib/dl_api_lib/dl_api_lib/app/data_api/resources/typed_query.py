@@ -61,7 +61,7 @@ class PlainTypedQueryLoader(TypedQueryLoader):
         parameters: list[RawTypedQueryParameter],
     ) -> TypedQuery:
         query_content = PlainTypedQueryContentSchema().load(query_content)
-        typed_query = PlainTypedQuery(
+        return PlainTypedQuery(
             query_type=query_type,
             query=query_content["query"],
             parameters=tuple(
@@ -72,7 +72,6 @@ class PlainTypedQueryLoader(TypedQueryLoader):
                 for param in parameters
             ),
         )
-        return typed_query
 
 
 class TypedQueryResultSerializer:
@@ -135,19 +134,17 @@ class DashSQLTypedQueryView(BaseView):
         """Formalize and validate query from input"""
         raw_typed_query: RawTypedQuery = TypedQuerySchema().load(self.dl_request.json)
         loader = PlainTypedQueryLoader()  # TODO: Get loader from somewhere using query_type
-        typed_query = loader.load_typed_query(
+        return loader.load_typed_query(
             query_type=raw_typed_query.query_type,
             query_content=raw_typed_query.query_content,
             parameters=raw_typed_query.parameters,
         )
-        return typed_query
 
     async def execute_query(self, connection: ConnectionBase, typed_query: TypedQuery) -> TypedQueryResult:
         """Prepare everything for execution and execute"""
         tq_processor_factory = self.api_service_registry.get_typed_query_processor_factory()
         tq_processor = tq_processor_factory.get_typed_query_processor(connection=connection)
-        typed_query_result = await tq_processor.process_typed_query(typed_query=typed_query)
-        return typed_query_result
+        return await tq_processor.process_typed_query(typed_query=typed_query)
 
     def make_response_data(self, typed_query_result: TypedQueryResult, data_export_result: DataExportResult) -> dict:
         """Serialize output"""

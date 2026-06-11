@@ -142,11 +142,10 @@ def fetch_ca_certificate() -> str:
 
 
 def make_ssl_engine_params(ssl_ca: str) -> dict:
-    engine_params = {
+    return {
         "connect_args": frozendict(
             {
                 "ssl_context": ssl.create_default_context(cadata=fetch_ca_certificate()),
             }
         ),
     }
-    return engine_params

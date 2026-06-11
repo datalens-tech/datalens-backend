@@ -98,8 +98,7 @@ class SelectorCacheOptionsBuilder(DatasetOptionsBuilder):
 
     def get_cache_enabled(self, joint_dsrc_info: PreparedFromInfo) -> bool:
         assert joint_dsrc_info.data_source_list is not None
-        cache_enabled = all(dsrc.cache_enabled for dsrc in joint_dsrc_info.data_source_list)
-        return cache_enabled
+        return all(dsrc.cache_enabled for dsrc in joint_dsrc_info.data_source_list)
 
     def get_cache_options(
         self,

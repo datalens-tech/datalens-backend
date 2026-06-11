@@ -1345,15 +1345,13 @@ class DatasetValidator(DatasetBaseWrapper):
         origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
 
         def conn_executor_factory_func() -> SyncConnExecutorBase:
-            conn_executor = sr.get_conn_executor_factory().get_sync_conn_executor(conn=origin_dsrc.connection)
-            return conn_executor
+            return sr.get_conn_executor_factory().get_sync_conn_executor(conn=origin_dsrc.connection)
 
         @generic_profiler("validator-get-source-exists")
         def get_source_exists() -> bool:
             exists = False  # noqa
             with source_error_ctx():
-                exists = origin_dsrc.source_exists(conn_executor_factory=conn_executor_factory_func)
-            return exists
+                return origin_dsrc.source_exists(conn_executor_factory=conn_executor_factory_func)
 
         @generic_profiler("validator-get-db-info")
         def get_db_version(exists: bool) -> str | None:

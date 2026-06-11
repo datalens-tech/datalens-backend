@@ -53,11 +53,10 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
 
     def _func_with_collate(self, func, **kwargs):
         # See also: sqlalchemy.sql.compiler.SQLCompiler.visit_function
-        result = f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
+        return f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
         # To consider, instead of `visit_grouping`:
         # assert result.endswith(')')
         # return self._add_collate(result[:-1]) + ')'
-        return result
 
     def visit_lower_func(self, func, **kwargs):
         return self._func_with_collate(func, **kwargs)

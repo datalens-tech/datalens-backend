@@ -138,8 +138,7 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
 
     def _execute_typed_query_on_sync_adapter_from_wrapped_executor(self, typed_query: TypedQuery) -> TypedQueryResult:
         sa_adapter = self._extract_sync_sa_adapter(raise_on_not_exists=True)
-        result = sa_adapter.execute_typed_query(typed_query=typed_query)
-        return result
+        return sa_adapter.execute_typed_query(typed_query=typed_query)
 
     def _convert_async_result_to_sync(self, async_result: AsyncExecutionResult) -> SyncExecutionResult:
         def data_generator() -> Generator[TBIDataTable, None, None]:

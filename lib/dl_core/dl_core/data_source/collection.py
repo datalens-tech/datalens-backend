@@ -211,8 +211,7 @@ class DataSourceCollection:
                 for col in origin_columns
             ]
 
-        raw_schema = self._patch_raw_schema(raw_schema)
-        return raw_schema
+        return self._patch_raw_schema(raw_schema)
 
     def get_raw_schema(
         self,
@@ -234,8 +233,7 @@ class DataSourceCollection:
 
         dsrc = self.get_strict(role=role, for_preview=for_preview)
         raw_schema: list[SchemaColumn] | None = dsrc.get_schema_info(conn_executor_factory=conn_executor_factory).schema
-        raw_schema = self._patch_raw_schema(raw_schema)
-        return raw_schema
+        return self._patch_raw_schema(raw_schema)
 
     def _patch_raw_schema(self, raw_schema: list[SchemaColumn] | None) -> list[SchemaColumn] | None:
         """Patch all raw_schema columns with own source_id"""
@@ -246,14 +244,13 @@ class DataSourceCollection:
 
     def _initialize_dsrc(self, dsrc_spec: DataSourceSpec) -> "base.DataSource":
         dsrc_cls = type_mapping.get_data_source_class(dsrc_spec.source_type)
-        dsrc = dsrc_cls(
+        return dsrc_cls(
             id=self.id,
             us_entry_buffer=self._us_entry_buffer,
             spec=dsrc_spec,
             dataset_parameter_values=self._dataset_parameter_values,
             dataset_template_enabled=self._dataset_template_enabled,
         )
-        return dsrc
 
     def _get_spec_for_role(self, role: DataSourceRole) -> DataSourceSpec | None:
         if role == DataSourceRole.origin:

@@ -70,8 +70,7 @@ def _mark_skipped(func: Callable, reason: str | None) -> Callable:
 
 def _mark_failed(func: Callable, reason: str | None) -> Callable:
     assert _is_test_func(func)
-    func_replacement = pytest.mark.xfail(reason=reason or "", strict=True)(func)
-    return func_replacement
+    return pytest.mark.xfail(reason=reason or "", strict=True)(func)
 
 
 def _mark_functions(
@@ -129,8 +128,7 @@ def _make_regulated_test_class(
         test_params=test_params,
     )
 
-    new_cls = type.__new__(mcs, name, bases, attrs)  # type: ignore  # 2024-01-30 # TODO: Need type annotation for "new_cls"  [var-annotated]
-    return new_cls
+    return type.__new__(mcs, name, bases, attrs)
 
 
 def _wrap_as_regulated_test_case(test_cls: type, *, test_params: RegulatedTestParams) -> type:

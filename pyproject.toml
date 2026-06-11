@@ -93,7 +93,6 @@ ignore = [
   "B904", # Later: raise-without-from-inside-except
   "B905", # Later: zip-without-explicit-strict
   "E501", # Later: line-too-long (currently delegated to black formatting)
-  "RET504", # Later: unnecessary-assign-before-return
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
   "RUF002", # Later: ambiguous-unicode-character-docstring (same intentional Cyrillic)
   "RUF003", # Later: ambiguous-unicode-character-comment (same intentional Cyrillic)

@@ -81,8 +81,7 @@ def make_tree_dataset(db: Db, connection_id: str, control_api: SyncHttpDatasetAp
     ds.result_schema["dept_tree"] = ds.field(formula="TREE([dept])")
     ds.result_schema["person_count"] = ds.field(formula="COUNT_IF(BOOL([is_person]))")
     ds = control_api.apply_updates(dataset=ds).dataset
-    ds = control_api.save_dataset(ds).dataset
-    return ds
+    return control_api.save_dataset(ds).dataset
 
 
 def get_tree(

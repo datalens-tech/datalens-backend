@@ -78,11 +78,10 @@ def make_db_config(
     db_eng_config_cls = get_engine_wrapper_cls_for_url(url).CONFIG_CLS
     db_eng_config = db_eng_config_cls(url=url, **engine_config_kwargs)
 
-    db_config = CoreDbConfig(
+    return CoreDbConfig(
         engine_config=db_eng_config,
         conn_type=conn_type,
     )
-    return db_config
 
 
 def make_db_from_config(db_config: CoreDbConfig) -> Db:
@@ -212,11 +211,10 @@ def make_sample_data(
     ts = datetime.datetime(1970, 1, 1) + datetime.timedelta(seconds=ts_uts / 1000000)
     if columns is None:
         columns = C.full_house()
-    result = [
+    return [
         {col.name: col.vg(rn=idx, ts=ts, rnd=rnd) for col in columns}  # type: ignore  # TODO: fix
         for idx in range(start_value, start_value + rows)
     ]
-    return result
 
 
 # TODO FIX: Implement option to provide data via arguments

@@ -84,8 +84,7 @@ class BaseStorageSchema[TARGET_TV](Schema):
 
     @post_dump(pass_many=False)
     def post_dump(self, data: dict[str, Any], **_) -> dict[str, Any]:  # type: ignore  # TODO: fix
-        normalized_data = self.post_process_output_data(data)
-        return normalized_data
+        return self.post_process_output_data(data)
 
 
 class RenderModule:

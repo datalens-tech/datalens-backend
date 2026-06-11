@@ -101,8 +101,7 @@ class ExampleRenderer:
 
     def _get_result_table_from_storage(self, func_name: str, example: ExampleConfig) -> DataTable:
         storage_key = make_key_for_example(func_name=func_name, example=example)
-        result_table = self._storage.get_result_data(storage_key)
-        return result_table
+        return self._storage.get_result_data(storage_key)
 
     def render_example_from_storage(self, func_name: str, example: ExampleConfig, under_cut: bool) -> str:
         result_table = self._get_result_table_from_storage(func_name=func_name, example=example)

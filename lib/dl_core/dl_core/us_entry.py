@@ -95,7 +95,7 @@ class USEntry:
         else:
             raise AssertionError(f"Unexpected type of entry key: {type(ds_key)}")
 
-        obj = cls(
+        return cls(
             data=data_dict,
             entry_key=effective_entry_key,
             type_=type_,
@@ -104,7 +104,6 @@ class USEntry:
             us_manager=us_manager,
             **kwargs,
         )
-        return obj
 
     def __init__(
         self,
@@ -199,8 +198,7 @@ class USEntry:
             if schema is None:
                 return DotDict(data)
 
-            data = schema.load(data)
-            return data  # type: ignore  # TODO: fix
+            return schema.load(data)
         raise TypeError(f"Unexpected data type ({type(self.DataModel)}) for entry class {type(self)}")
 
     def has_data(self) -> bool:

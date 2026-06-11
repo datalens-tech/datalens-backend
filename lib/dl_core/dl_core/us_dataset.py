@@ -235,7 +235,7 @@ class Dataset(USEntry):
             # Auto-hide because it's unselectable.
             hidden = True
 
-        column_data = {
+        return {
             "title": title,
             "guid": guid,
             "hidden": hidden,
@@ -254,7 +254,6 @@ class Dataset(USEntry):
                 source=column.name,
             ),
         }
-        return column_data
 
     @property
     def result_schema(self) -> ResultSchema:

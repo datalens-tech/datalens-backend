@@ -237,5 +237,4 @@ def make_uuid_from_parts(current: str, parent: str | None = None) -> str:
         cutted_parent = parent[:cutted_half_len] + cutted_replace + parent[-cutted_half_len:]
         parent = cutted_parent
 
-    result = parent + uuid_sep + current
-    return result
+    return parent + uuid_sep + current

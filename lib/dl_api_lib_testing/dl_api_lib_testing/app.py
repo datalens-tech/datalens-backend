@@ -155,8 +155,7 @@ class TestingControlApiAppFactory(ControlApiAppFactory[ControlApiAppSettings], T
 
         us_auth_mode = USAuthMode.master if us_auth_mode_override is None else us_auth_mode_override
 
-        result = ControlApiEnvSetupResult(us_auth_mode=us_auth_mode)
-        return result
+        return ControlApiEnvSetupResult(us_auth_mode=us_auth_mode)
 
 
 class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRFactoryBuilder):
@@ -231,10 +230,8 @@ class TestingDataApiAppFactory(DataApiAppFactory[DataApiAppSettings], TestingSRF
             ),
         ]
 
-        result = DataApiEnvSetupResult(
+        return DataApiEnvSetupResult(
             auth_mw_list=auth_mw_list,
             sr_middleware_list=sr_middleware_list,
             usm_middleware_list=usm_middleware_list,
         )
-
-        return result

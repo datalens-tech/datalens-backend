@@ -317,8 +317,7 @@ class TableSQLDataSourceMixin(BaseSQLDataSource):
         if table_name is None:
             return None
 
-        table_name = self.render_dataset_parameter_values(table_name)
-        return table_name
+        return self.render_dataset_parameter_values(table_name)
 
     def is_templated(self) -> bool:
         return self._is_value_templated(self.raw_table_name)

@@ -315,7 +315,7 @@ def register_db_cast_extension(extension: DbCastExtension) -> None:
 
 class DbCastWhiteListAliasedResourceRegistry(AliasedResourceRegistryBase):
     def get_resources(self) -> MutableMapping[str, AliasedResource]:
-        resources = {
+        return {
             "supported_native_types": AliasedTableResource(
                 table_body=[
                     [
@@ -342,7 +342,6 @@ class DbCastWhiteListAliasedResourceRegistry(AliasedResourceRegistryBase):
                 ]
             ),
         }
-        return resources  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "dict[str, AliasedTableResource]", expected "MutableMapping[str, AliasedResource]")  [return-value]
 
 
 FUNCTION_DB_CAST = FunctionDocRegistryItem(

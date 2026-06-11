@@ -52,8 +52,7 @@ def _to_date(value: str, formats: Iterable[str] | None = None) -> datetime.date:
 
 
 def _to_datetime(value: str) -> datetime.datetime:
-    dt = dateutil.parser.parse(value)
-    return dt
+    return dateutil.parser.parse(value)
 
 
 def _to_boolean(value: str | bool) -> bool:

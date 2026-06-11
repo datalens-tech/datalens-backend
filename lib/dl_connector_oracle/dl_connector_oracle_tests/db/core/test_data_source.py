@@ -51,13 +51,12 @@ class TestOracleTableDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:
-        dsrc_spec = StandardSchemaSQLDataSourceSpec(
+        return StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_TABLE,
             db_name=sample_table.db.name,
             schema_name=sample_table.schema,
             table_name=sample_table.name,
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(SAMPLE_TABLE_SCHEMA_SUPERSTORE_ORACLIZED)
@@ -77,11 +76,10 @@ class TestOracleSubselectDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> SubselectDataSourceSpec:
-        dsrc_spec = SubselectDataSourceSpec(
+        return SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
             subsql=f'SELECT * FROM "{sample_table.name}"',
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(SAMPLE_TABLE_SCHEMA_SUPERSTORE_ORACLIZED)
@@ -101,11 +99,10 @@ class TestOracleSubselectByView(
 
     @pytest.fixture(scope="session")
     def initial_data_source_spec(self) -> SubselectDataSourceSpec:
-        dsrc_spec = SubselectDataSourceSpec(
+        return SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_ORACLE_SUBSELECT,
             subsql=SUBSELECT_QUERY_FULL,
         )
-        return dsrc_spec
 
     def postprocess_view_schema(
         self, view_schema: list[SchemaColumn], cursor_schema: list[SchemaColumn]

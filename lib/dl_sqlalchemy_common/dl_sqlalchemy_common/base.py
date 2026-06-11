@@ -428,8 +428,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
 
     def visit_alias(self, *args, **kwargs):
         sup = super().visit_alias(*args, **kwargs)
-        sup = self._pretty.reparenthesize(sup)
-        return sup
+        return self._pretty.reparenthesize(sup)
 
     def group_by_clause(self, select, **kw):
         sup = super().group_by_clause(select, **kw)
@@ -451,8 +450,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
             pieces = pieces[:1] + [separator + piece for piece in pieces[1:]]
             return self._pretty.join_ext(pieces, extra_separator="")
 
-        sup = super().visit_clauselist(clauselist, *args, **kwargs)
-        return sup
+        return super().visit_clauselist(clauselist, *args, **kwargs)
 
     def _generate_delimited_list(self, elements, separator, **kw):
         if separator in (", ", " "):

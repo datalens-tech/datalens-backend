@@ -61,8 +61,7 @@ async def get_active_queries(pg_adapter: PostgreSQLExecAdapterAsync) -> list[dic
     queries = await queries_resp.all()
     queries = [dict(zip(columns, row, strict=True)) for row in queries]  # should've perhaps been in the cursor?
     # skip self
-    queries = [query for query in queries if query["query"] and "active_queries_query" not in query["query"]]
-    return queries
+    return [query for query in queries if query["query"] and "active_queries_query" not in query["query"]]
 
 
 class BaseTestPGOpExecAdapter(DefaultCoreTestClass):

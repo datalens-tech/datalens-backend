@@ -91,8 +91,7 @@ class AsyncMySQLAdapter(
     @property
     def _dialect(self) -> sa.engine.default.DefaultDialect:
         enforce_collate = self._get_enforce_collate(self._target_dto)
-        dialect = DLMYSQLDialect(paramstyle="pyformat", enforce_collate=enforce_collate)
-        return dialect
+        return DLMYSQLDialect(paramstyle="pyformat", enforce_collate=enforce_collate)
 
     def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> bool | None:
         # See https://aiomysql.readthedocs.io/en/latest/cursors.html#Cursor.description

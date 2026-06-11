@@ -196,12 +196,11 @@ class BaseTrinoPasswordTestClass(BaseTrinoSslTestClass):
             test_config.CorePasswordConnectionSettings.USERNAME,
             test_config.CorePasswordConnectionSettings.PASSWORD,
         )
-        session = auth.set_http_session(https_session)
-        return session
+        return auth.set_http_session(https_session)
 
     @pytest.fixture(scope="class")
     def engine_params(self, password_session: requests.Session) -> dict:
-        engine_params = {
+        return {
             "connect_args": frozendict(
                 {
                     "http_scheme": "https",
@@ -209,7 +208,6 @@ class BaseTrinoPasswordTestClass(BaseTrinoSslTestClass):
                 }
             ),
         }
-        return engine_params
 
     @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:
@@ -223,12 +221,11 @@ class BaseTrinoJwtTestClass(BaseTrinoSslTestClass):
     @pytest.fixture(scope="session")
     def jwt_session(self, https_session: requests.Session) -> requests.Session:
         auth = JWTAuthentication(test_config.CoreJwtConnectionSettings.JWT)
-        session = auth.set_http_session(https_session)
-        return session
+        return auth.set_http_session(https_session)
 
     @pytest.fixture(scope="class")
     def engine_params(self, jwt_session: requests.Session) -> dict:
-        engine_params = {
+        return {
             "connect_args": frozendict(
                 {
                     "http_scheme": "https",
@@ -236,7 +233,6 @@ class BaseTrinoJwtTestClass(BaseTrinoSslTestClass):
                 }
             ),
         }
-        return engine_params
 
     @pytest.fixture(scope="session")
     def connection_creation_params(self, ssl_connection_creation_params: dict) -> dict:

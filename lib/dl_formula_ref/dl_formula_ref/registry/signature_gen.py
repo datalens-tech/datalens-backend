@@ -75,8 +75,7 @@ class TemplatedSignatureGenerator(SignatureGeneratorBase):
             )
             for template in self._signature_templates
         ]
-        sig_collection = FunctionSignatureCollection(placement_mode=self._placement_mode, signatures=signatures)
-        return sig_collection
+        return FunctionSignatureCollection(placement_mode=self._placement_mode, signatures=signatures)
 
 
 @attr.s(frozen=True)
@@ -189,8 +188,7 @@ class DefaultSignatureGenerator(SignatureGeneratorBase):
             )
             for is_extended_syntax in is_extended_syntax_values
         ]
-        sig_collection = FunctionSignatureCollection(
+        return FunctionSignatureCollection(
             placement_mode=self._placement_mode,
             signatures=signatures,
         )
-        return sig_collection

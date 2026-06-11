@@ -55,9 +55,8 @@ class NativePivotPaginator(PivotPaginator):
             for unused_column_key in unused_column_keys:
                 new_column_keys.remove(unused_column_key)
 
-        new_pivot_dframe = NativePivotDataFrame(
+        return NativePivotDataFrame(
             data=new_data,
             row_keys=new_row_keys,
             column_keys=new_column_keys,
         )
-        return new_pivot_dframe

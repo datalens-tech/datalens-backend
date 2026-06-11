@@ -88,12 +88,10 @@ class SupportedFunctionsManager:
 
         lookup_functions_names = get_mutation_lookup_functions_names() if is_forkable_dialect(dialect) else []
 
-        supported_function_names = sorted(
+        return sorted(
             {func[0] for func in chain.from_iterable((native_supp_funcs, compeng_supp_funcs))}
             | set(lookup_functions_names)
         )
-
-        return supported_function_names
 
     @property
     def _supported_scopes(self) -> tuple[int, ...]:

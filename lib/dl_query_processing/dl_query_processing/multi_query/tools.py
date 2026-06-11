@@ -23,8 +23,7 @@ def build_requirement_subtree(multi_query: CompiledMultiQueryBase, top_query_id:
 
     query_dict = _recursive_build(multi_query.get_query_by_id(top_query_id))
     queries = sorted(query_dict.values(), key=lambda item: item.id)
-    result_multi_query = CompiledMultiQuery(queries=queries)  # FIXME: Replace with a lazy version
-    return result_multi_query
+    return CompiledMultiQuery(queries=queries)  # FIXME: Replace with a lazy version
 
 
 @attr.s(frozen=True)
@@ -65,8 +64,7 @@ def remap_formula_obj_fields[FORMULA_NODE_TV: formula_nodes.FormulaItem](
         return remap_field(node)  # type: ignore  # 2024-01-30 # TODO: Incompatible return value type (got "Field", expected "_FORMULA_NODE_TV")  [return-value]
 
     # For all other cases when it contains Fields
-    updated_node = node.replace_nodes(
+    return node.replace_nodes(
         match_func=lambda _node, parent_stack: isinstance(_node, formula_nodes.Field),
         replace_func=remap_field,  # type: ignore  # 2024-01-30 # TODO: Argument "replace_func" to "replace_nodes" of "FormulaItem" has incompatible type "Callable[[Field, VarArg(Any), KwArg(Any)], Field]"; expected "Callable[[FormulaItem, tuple[FormulaItem, ...]], FormulaItem]"  [arg-type]
     )
-    return updated_node

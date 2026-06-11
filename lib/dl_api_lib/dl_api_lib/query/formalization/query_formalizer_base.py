@@ -116,7 +116,7 @@ class QuerySpecFormalizerBase(abc.ABC):
         assert row_count_hard_limit is not None
         row_count_hard_limit = min(row_count_hard_limit, DataAPILimits.DEFAULT_SOURCE_DB_LIMIT)
 
-        query_meta = QueryMetaInfo(
+        return QueryMetaInfo(
             query_type=block_spec.query_type,
             phantom_select_ids=phantom_select_ids,
             field_order=[
@@ -127,7 +127,6 @@ class QuerySpecFormalizerBase(abc.ABC):
             row_count_hard_limit=row_count_hard_limit,
             empty_query_mode=block_spec.empty_query_mode,
         )
-        return query_meta
 
     def make_query_spec(self, block_spec: BlockSpec) -> QuerySpec:
         order_by_specs = self.make_order_by_specs(block_spec=block_spec)

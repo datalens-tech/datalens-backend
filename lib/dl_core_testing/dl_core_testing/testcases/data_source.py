@@ -62,7 +62,7 @@ class BaseDataSourceTestClass[CONN_TV: ConnectionBase, DSRC_SPEC_TV: DataSourceS
         saved_connection: CONN_TV,
         initial_data_source_spec: DSRC_SPEC_TV,
     ) -> DSRC_TV:
-        dsrc = self.DSRC_CLS(
+        return self.DSRC_CLS(
             id=uuid.uuid4().hex,
             us_entry_buffer=sync_us_manager.get_entry_buffer(),
             connection=saved_connection,
@@ -70,7 +70,6 @@ class BaseDataSourceTestClass[CONN_TV: ConnectionBase, DSRC_SPEC_TV: DataSourceS
             dataset_parameter_values={},
             dataset_template_enabled=False,
         )
-        return dsrc
 
 
 class DefaultDataSourceTestClass[CONN_TV: ConnectionBase, DSRC_SPEC_TV: DataSourceSpec, DSRC_TV: DataSource](

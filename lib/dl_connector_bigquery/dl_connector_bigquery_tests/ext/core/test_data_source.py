@@ -35,12 +35,11 @@ class TestBigQueryTableDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> BigQueryTableDataSourceSpec:
-        dsrc_spec = BigQueryTableDataSourceSpec(
+        return BigQueryTableDataSourceSpec(
             source_type=SOURCE_TYPE_BIGQUERY_TABLE,
             dataset_name=sample_table.schema,
             table_name=sample_table.name,
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
@@ -60,11 +59,10 @@ class TestBigQuerySubselectDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> BigQuerySubselectDataSourceSpec:
-        dsrc_spec = BigQuerySubselectDataSourceSpec(
+        return BigQuerySubselectDataSourceSpec(
             source_type=SOURCE_TYPE_BIGQUERY_SUBSELECT,
             subsql=f"SELECT * FROM {sample_table.schema}.{sample_table.name}",
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)

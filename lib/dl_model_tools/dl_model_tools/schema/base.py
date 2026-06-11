@@ -30,8 +30,7 @@ class DefaultSchema[TARGET_OBJECT_TV](BaseSchema):
 
     @post_load(pass_many=False)
     def post_load(self, data: dict[str, Any], **_: Any) -> TARGET_OBJECT_TV:
-        obj = self.to_object(data)
-        return obj
+        return self.to_object(data)
 
 
 class DefaultValidateSchema[TARGET_ATTRS_OBJECT_TV: attr.AttrsInstance](DefaultSchema[TARGET_ATTRS_OBJECT_TV]):

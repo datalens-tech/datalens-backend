@@ -621,8 +621,7 @@ class ConnectionInfoSourceSchema(BIResource):
         sr = self.get_service_registry()
 
         def conn_executor_factory_func() -> SyncConnExecutorBase:
-            conn_executor = sr.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
-            return conn_executor
+            return sr.get_conn_executor_factory().get_sync_conn_executor(conn=connection)
 
         need_permission_on_entry(connection, USPermissionKind.read)
         if not connection.is_dashsql_allowed:

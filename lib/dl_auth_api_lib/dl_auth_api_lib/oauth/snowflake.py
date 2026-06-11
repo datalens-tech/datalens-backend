@@ -26,8 +26,7 @@ class SnowflakeOAuth:
             "response_type": "code",
             "state": "dl_conn_state",
         }
-        uri = self.auth_url.format(account=self.account) + urllib.parse.urlencode(params)
-        return uri
+        return self.auth_url.format(account=self.account) + urllib.parse.urlencode(params)
 
     async def get_auth_token(self, code: str, client_secret: str) -> dict[str, Any]:
         async with aiohttp.ClientSession(
@@ -52,8 +51,7 @@ class SnowflakeOAuth:
         return token_response
 
     def _get_session_headers(self, client_secret: str) -> dict[str, str]:
-        headers = {
+        return {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": f"Basic {b64encode(f'{self.client_id}:{client_secret}'.encode()).decode()}",
         }
-        return headers

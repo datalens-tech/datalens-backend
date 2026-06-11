@@ -126,8 +126,7 @@ class MetaPackageManager:
             stdout=subprocess.PIPE,
             check=True,
         )
-        dependencies = proc.stdout.decode("ascii")
-        return dependencies
+        return proc.stdout.decode("ascii")
 
     def export_dependencies(self, group: str) -> list[ReqPackageSpec]:
         raw_deps = self.export_dependencies_raw(group)

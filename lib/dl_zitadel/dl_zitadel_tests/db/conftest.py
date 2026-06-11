@@ -12,9 +12,7 @@ import dl_zitadel
 def fixture_zitadel_secrets_folder() -> str:
     current_file_path = os.path.abspath(__file__)
     current_dir_path = os.path.dirname(current_file_path)
-    secrets_dir_path = os.path.join(current_dir_path, "../../docker-compose/zitadel/secrets")
-
-    return secrets_dir_path
+    return os.path.join(current_dir_path, "../../docker-compose/zitadel/secrets")
 
 
 def wait_for_path(path: str) -> None:

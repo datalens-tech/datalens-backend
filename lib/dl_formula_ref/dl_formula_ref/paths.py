@@ -52,8 +52,7 @@ class PathRenderer:
                 break
             common_part_cnt += 1
 
-        result = os.path.join(*child_parts[common_part_cnt:])
-        return result
+        return os.path.join(*child_parts[common_part_cnt:])
 
     def child(self, name: str) -> PathRenderer:
         return attr.evolve(self, base_path=self._append_path(name))

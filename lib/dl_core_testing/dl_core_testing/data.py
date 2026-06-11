@@ -155,8 +155,7 @@ class DataFetcher:
             output_stream_ids={"down_0"},
         )
         assert len(output_streams) == 1, f"Expected 1 stream, got {len(output_streams)}"
-        data_stream = output_streams[0]
-        return data_stream
+        return output_streams[0]
 
     def get_data_stream(
         self,

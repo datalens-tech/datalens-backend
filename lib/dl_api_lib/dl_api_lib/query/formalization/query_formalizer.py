@@ -124,8 +124,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
             dataset_parameter_values=self._ds_accessor.get_parameter_values(),
             dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
-        dsrc = dsrc_coll.get_strict(role=role)
-        return dsrc
+        return dsrc_coll.get_strict(role=role)
 
     def _is_preview(self, block_spec: BlockSpec) -> bool:
         return block_spec.query_type == QueryType.preview

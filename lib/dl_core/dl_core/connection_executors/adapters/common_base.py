@@ -83,6 +83,4 @@ class CommonBaseDirectAdapter[TARGET_DTO_TV: "ConnTargetDTO"](metaclass=abc.ABCM
         )
 
         # TODO: check the `dialect dbapi paramstyle`
-        query_text = str(compiled_query)
-
-        return query_text
+        return str(compiled_query)

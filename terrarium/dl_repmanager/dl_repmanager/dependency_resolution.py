@@ -80,8 +80,7 @@ class DeepIndexBuilder:
                 root=True,
             )
 
-        deep_dep_index = DeepDependencyIndex(
+        return DeepDependencyIndex(
             reqs_by_dep_package=deep_reqs_by_dep_package,
             deps_by_req_package=deep_deps_by_req_package,
         )
-        return deep_dep_index

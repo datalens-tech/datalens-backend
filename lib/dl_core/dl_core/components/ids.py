@@ -88,8 +88,7 @@ class DefaultFieldIdGenerator(FieldIdGenerator):
 
 def make_readable_field_id(title: str, valid_symbols: str, max_length: int) -> str:
     field_id = "".join(symbol for symbol in "_".join(anyascii(title).lower().split()) if symbol in valid_symbols)
-    field_id = field_id[:max_length]
-    return field_id
+    return field_id[:max_length]
 
 
 @attr.s
@@ -101,8 +100,7 @@ class ReadableFieldIdGenerator(FieldIdGenerator):
         if title is None:
             return str(uuid.uuid4())
         field_id = make_readable_field_id(title, self._id_valid_symbols, self._id_length)
-        field_id = self._resolve_id_collisions(field_id)
-        return field_id
+        return self._resolve_id_collisions(field_id)
 
     def _resolve_id_collisions(self, item: FieldId) -> FieldId:
         existing_items = {f.guid for f in self.dataset.result_schema.fields}

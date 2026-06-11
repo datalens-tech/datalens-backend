@@ -63,14 +63,13 @@ def get_common_prefix(require=True):
     context_data = get_context_data(require=require)
     if not all(context_data.values()):
         return ""
-    prefix = (
+    return (
         "prj={project}.{application}.{environment};"
         "geo={geo};"
         # Currently does nothing, alas. Use filters like `tier={name}-*` instead:
         # 'component={component};'
         "tier={instance};"
     ).format(**context_data)
-    return prefix
 
 
 def maybe_float_size(value, divider):

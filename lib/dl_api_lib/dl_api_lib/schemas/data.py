@@ -82,8 +82,7 @@ class DatasetDataRequestBaseSchema(DefaultSchema[DataRequestModel]):
 
     def to_object(self, data: dict) -> DataRequestModel:
         raw_query_spec_union = self._make_raw_query_spec_union(data)
-        drm = self._make_drm(raw_query_spec_union=raw_query_spec_union, data=data)
-        return drm
+        return self._make_drm(raw_query_spec_union=raw_query_spec_union, data=data)
 
     def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
         raise NotImplementedError
@@ -100,7 +99,7 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema):
     TARGET_CLS = PreviewDataRequestModel
 
     def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
-        raw_query_spec_union = RawQuerySpecUnion(
+        return RawQuerySpecUnion(
             limit=data.get("limit"),
             group_by_policy=GroupByPolicy.if_measures,
             meta=RawQueryMetaInfo(
@@ -108,7 +107,6 @@ class DatasetPreviewRequestSchema(DatasetDataRequestBaseSchema):
                 row_count_hard_limit=data["row_count_hard_limit"],
             ),
         )
-        return raw_query_spec_union
 
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> PreviewDataRequestModel:
         return PreviewDataRequestModel(
@@ -180,7 +178,7 @@ class DatasetVersionResultRequestSchema(DatasetDataRequestBaseSchema):
     revision_id = ma_fields.String(load_default=None)
 
     def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
-        raw_query_spec_union = RawQuerySpecUnion(
+        return RawQuerySpecUnion(
             select_specs=[RawSelectFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field)) for field in data["columns"]],
             group_by_specs=[
                 RawGroupByFieldSpec(ref=IdOrTitleFieldRef(id_or_title=field)) for field in data["group_by"]
@@ -199,7 +197,6 @@ class DatasetVersionResultRequestSchema(DatasetDataRequestBaseSchema):
                 row_count_hard_limit=data["row_count_hard_limit"],
             ),
         )
-        return raw_query_spec_union
 
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return DataRequestModel(
@@ -243,7 +240,7 @@ class DatasetVersionValuesBasePostSchema(DatasetDataRequestBaseSchema):
         return [RawSelectFieldSpec(ref=IdFieldRef(id=field_id))]
 
     def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
-        raw_query_spec_union = RawQuerySpecUnion(
+        return RawQuerySpecUnion(
             select_specs=self._make_select_specs(field_id=data["field_guid"]),
             order_by_specs=[],
             filter_specs=[
@@ -260,7 +257,6 @@ class DatasetVersionValuesBasePostSchema(DatasetDataRequestBaseSchema):
                 query_type=self.QUERY_TYPE,
             ),
         )
-        return raw_query_spec_union
 
 
 class DatasetVersionValuesDistinctPostSchema(DatasetVersionValuesBasePostSchema):
@@ -550,7 +546,7 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
         return data["fields"]
 
     def _make_raw_query_spec_union(self, data: dict[str, Any]) -> RawQuerySpecUnion:
-        raw_query_spec_union = RawQuerySpecUnion(
+        return RawQuerySpecUnion(
             select_specs=self._make_select_specs(data),
             order_by_specs=data.get("order_by", []),
             filter_specs=data.get("filters", []),
@@ -565,7 +561,6 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
                 row_count_hard_limit=data["row_count_hard_limit"],
             ),
         )
-        return raw_query_spec_union
 
     def _make_drm(self, raw_query_spec_union: RawQuerySpecUnion, data: dict[str, Any]) -> DataRequestModel:
         return self.TARGET_CLS(

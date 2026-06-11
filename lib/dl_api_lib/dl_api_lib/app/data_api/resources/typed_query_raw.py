@@ -94,7 +94,7 @@ class DashSQLTypedQueryRawView(BaseView):
     def make_typed_query_raw(self) -> TypedQueryRaw:
         """Formalize and validate query from input"""
         raw_typed_query_raw: RawTypedQueryRaw = TypedQueryRawSchema().load(self.dl_request.json)
-        typed_query_raw = TypedQueryRaw(
+        return TypedQueryRaw(
             query_type=raw_typed_query_raw.query_type,
             parameters=TypedQueryRawParameters(
                 path=raw_typed_query_raw.parameters.path,
@@ -103,7 +103,6 @@ class DashSQLTypedQueryRawView(BaseView):
                 body=raw_typed_query_raw.parameters.body,
             ),
         )
-        return typed_query_raw
 
     async def execute_query(self, connection: ConnectionBase, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
         """Prepare everything for execution and execute"""

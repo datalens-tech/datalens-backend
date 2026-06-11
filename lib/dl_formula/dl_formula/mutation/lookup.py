@@ -287,7 +287,7 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
             *mutator.get_bfb_filter_mutations(lookup_dimension, old.args)
         )
 
-        new_node = fork_nodes.QueryFork.make(
+        return fork_nodes.QueryFork.make(
             join_type=fork_nodes.JoinType.left,
             result_expr=result_expr,
             joining=joining,
@@ -296,7 +296,6 @@ class LookupFunctionToQueryForkMutation(DimensionResolvingMutationBase):
             bfb_filter_mutations=bfb_filter_mutations,
             meta=old.meta,
         )
-        return new_node
 
 
 @attr.s

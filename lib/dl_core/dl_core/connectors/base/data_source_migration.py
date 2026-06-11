@@ -161,8 +161,7 @@ class SpecBasedSourceMigrator(DataSourceMigrator):
                     params[mapping_item.source_spec_key] = getattr(migration_dto, mapping_item.migration_dto_key)
 
             params = {key: value for key, value in params.items() if value is not None}
-            dsrc_spec = migration_spec.dsrc_spec_cls(**params)
-            return dsrc_spec
+            return migration_spec.dsrc_spec_cls(**params)
 
         raise TypeError(f"Invalid dto class: {type(migration_dto)}")
 

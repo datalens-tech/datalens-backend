@@ -79,8 +79,7 @@ class MetrikaBaseMixin(ConnectionBase):
     def get_counter_creation_date(self):  # type: ignore  # TODO: fix
         assert isinstance(self.counter_id, str)
         ids = list(filter(lambda t: t, parse_metrica_ids(self.counter_id)))
-        min_date = min([self.get_metrica_api_cli().get_counter_creation_date(cid) for cid in ids])
-        return min_date
+        return min([self.get_metrica_api_cli().get_counter_creation_date(cid) for cid in ids])
 
     @property
     def counter_creation_date(self):  # type: ignore  # TODO: fix
@@ -165,7 +164,7 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
         def user_type_converter(type_name: str) -> UserDataType:
             return UserDataType[type_name] if type_name != "datetime" else UserDataType.genericdatetime
 
-        raw_schema = tuple(
+        return tuple(
             SchemaColumn(
                 name=field["name"],
                 title=field["title"],
@@ -180,8 +179,6 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
             )
             for field in fields_info
         )
-
-        return raw_schema
 
     def get_parameter_combinations(
         self,

@@ -134,8 +134,7 @@ class ActionHandlingView(flask.views.View):
         typed_query = tq_serializer.deserialize(action.typed_query_str)
         tq_result = dba.execute_typed_query(typed_query=typed_query)
         tq_result_serializer = get_typed_query_result_serializer(query_type=action.query_type)
-        tq_result_str = tq_result_serializer.serialize(tq_result)
-        return tq_result_str
+        return tq_result_serializer.serialize(tq_result)
 
     @staticmethod
     def try_close_dba(dba: SyncDirectDBAdapter) -> None:

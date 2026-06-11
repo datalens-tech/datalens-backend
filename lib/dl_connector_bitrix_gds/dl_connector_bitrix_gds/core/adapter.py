@@ -109,8 +109,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
     @generic_profiler_async("db-query-cached")
     async def _run_query_cached(self, dba_query: DBAdapterQuery) -> Any:
         async def wrap_run_query() -> Any:
-            result = await self._run_query(dba_query)
-            return result
+            return await self._run_query(dba_query)
 
         payload = self._build_request_payload(dba_query)
         local_key_rep = build_local_key_rep(payload.portal, payload.table, payload.flatten_body)
@@ -175,9 +174,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
                 body = await resp.text()
                 raise DatabaseQueryError(db_message=body, query=query_text)
 
-            resp_body = await resp.json()
-
-        return resp_body
+            return await resp.json()
 
     def _parse_response_body_data(self, body: list, selected_columns: list | None = None) -> dict:
         if not len(body):
@@ -210,13 +207,12 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         if self.table is None:
             self.table = self._table_schema(table)
         json_body, flatten_body = self.generate_body(dba_query)
-        payload = BitrixRequestPayload(
+        return BitrixRequestPayload(
             table=table,
             portal=self._target_dto.portal,
             json_body=json_body,
             flatten_body=flatten_body,
         )
-        return payload
 
     def _extract_table_name(self, query: ClauseElement | str) -> str:
         assert isinstance(query, sa.sql.Select)

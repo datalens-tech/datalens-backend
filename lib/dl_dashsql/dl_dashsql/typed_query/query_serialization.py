@@ -39,13 +39,11 @@ class MarshmallowTypedQuerySerializer[TYPED_QUERY_TV: TypedQueryBase](TypedQuery
 
     def serialize(self, typed_query: TYPED_QUERY_TV) -> str:
         schema = self._schema_cls()
-        typed_query_str = schema.dumps(typed_query)
-        return typed_query_str
+        return schema.dumps(typed_query)
 
     def deserialize(self, typed_query_str: str) -> TYPED_QUERY_TV:
         schema = self._schema_cls()
-        typed_query = schema.loads(typed_query_str)
-        return typed_query
+        return schema.loads(typed_query_str)
 
 
 class TypedQuerySerializerParameterSchema(DefaultSchema[TypedQueryParameter], WithNestedValueSchema):

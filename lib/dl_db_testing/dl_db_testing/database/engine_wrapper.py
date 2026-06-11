@@ -150,8 +150,7 @@ class EngineWrapperBase:
         table_name: str | None = None,
     ) -> sa.Table:
         table_name = table_name or f"test_table_{shortuuid.uuid()[:10].lower()}"
-        table = sa.Table(table_name, sa.MetaData(), *columns, schema=schema)
-        return table
+        return sa.Table(table_name, sa.MetaData(), *columns, schema=schema)
 
     def count_sql_sessions(self) -> int:
         return 0

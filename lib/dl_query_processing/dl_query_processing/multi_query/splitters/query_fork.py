@@ -253,8 +253,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             filter_indices=other_mask.filter_indices,
         )
 
-        split_masks = [base_mask]
-        return split_masks
+        return [base_mask]
 
     def _collect_query_forks(
         self,
@@ -467,8 +466,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
 
     def optimize_query_split_masks(self, split_masks: list[QuerySplitMask]) -> list[QuerySplitMask]:
         """Optimize for window function sub-queries"""
-        split_masks = self._unify_masks_for_window_functions(split_masks=split_masks)
-        return split_masks
+        return self._unify_masks_for_window_functions(split_masks=split_masks)
 
     def get_split_masks(
         self,

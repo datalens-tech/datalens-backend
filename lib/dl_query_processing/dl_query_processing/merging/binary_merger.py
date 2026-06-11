@@ -242,5 +242,4 @@ def make_binary_merger(placement: BlockPlacement) -> BinaryStreamMerger:
         QueryBlockPlacementType.dispersed_after: DispersedAfterBinaryStreamMerger,
     }
     binary_merger_cls = placement_type_map[placement.type]
-    binary_merger = binary_merger_cls(placement=placement)
-    return binary_merger
+    return binary_merger_cls(placement=placement)

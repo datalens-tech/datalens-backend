@@ -174,8 +174,7 @@ class TestTrinoSyncConnectionExecutor(
             )
 
         conn_executor_query = ConnExecutorQuery(sa_query, db_name=existing_table_ident.db_name)
-        result = sync_connection_executor.execute(conn_executor_query)
-        return result
+        return sync_connection_executor.execute(conn_executor_query)
 
     def test_duplicate_parametrized_expression_in_select_fails(
         self,

@@ -123,7 +123,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
         data_key = dsrc.get_cache_key_part()
         data_key = data_key.extend(part_type="avatar_id", part_content=avatar_id)
 
-        prep_src_info = PreparedSingleFromInfo(
+        return PreparedSingleFromInfo(
             id=avatar_id,
             alias=alias,
             data_source_list=(dsrc,),
@@ -138,4 +138,3 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
             target_connection_ref=target_connection_ref,
             data_key=data_key,
         )
-        return prep_src_info

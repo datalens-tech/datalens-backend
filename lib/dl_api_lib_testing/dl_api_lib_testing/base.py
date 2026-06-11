@@ -118,7 +118,7 @@ class ApiTestBase(abc.ABC):
         redis_setting_maker = core_test_config.get_redis_setting_maker()
 
         # TODO(catsona): Deal with evolve alternative for pydantic and support new settings in create_data_api_settings and all references
-        settings = DeprecatedControlApiAppSettings(  # type: ignore  # 2024-01-29 # TODO: Unexpected keyword argument "CONNECTOR_AVAILABILITY" for "ControlApiAppSettings"  [call-arg]
+        return DeprecatedControlApiAppSettings(  # type: ignore  # 2024-01-29 # TODO: Unexpected keyword argument "CONNECTOR_AVAILABILITY" for "ControlApiAppSettings"  [call-arg]
             CONNECTOR_AVAILABILITY=ConnectorAvailabilityConfig.from_settings(
                 bi_test_config.connector_availability_settings,
             ),
@@ -138,7 +138,6 @@ class ApiTestBase(abc.ABC):
             QUERY_PROCESSING_MODE=cls.query_processing_mode,
             CA_FILE_PATH=get_root_certificates_path(),
         )
-        return settings
 
     @pytest.fixture(scope="function")
     def control_api_app_settings(
@@ -151,9 +150,7 @@ class ApiTestBase(abc.ABC):
             bi_test_config=bi_test_config,
             rqe_config_subprocess=rqe_config_subprocess,
         )
-        settings = TestingControlApiAppSettings(fallback=deprecated_settings)
-
-        return settings
+        return TestingControlApiAppSettings(fallback=deprecated_settings)
 
     @pytest.fixture(scope="class")
     def sample_table_schema(self) -> str | None:
@@ -250,7 +247,7 @@ class ApiTestBase(abc.ABC):
             min_ttl_sec=900.0,
         )
 
-        us_manager = SyncUSManager(
+        return SyncUSManager(
             bi_context=bi_context,
             services_registry=control_api_app_factory.get_sr_factory(
                 conn_opts_factory=ConnOptionsMutatorsFactory(),
@@ -265,4 +262,3 @@ class ApiTestBase(abc.ABC):
             crypto_keys_config=core_test_config.get_crypto_keys_config(),
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
-        return us_manager

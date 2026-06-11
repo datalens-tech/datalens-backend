@@ -115,12 +115,11 @@ class DatasetTestWrapper:
 
     def get_data_source_coll_opt(self, source_id: str) -> DataSourceCollection | None:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
+        return self._dsrc_coll_factory.get_data_source_collection(
             spec=dsrc_coll_spec,
             dataset_parameter_values=self._ds_accessor.get_parameter_values(),
             dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
-        return dsrc_coll
 
     def get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll = self.get_data_source_coll_opt(source_id=source_id)
@@ -138,14 +137,12 @@ class DatasetTestWrapper:
     def get_data_source_opt(self, source_id: str, role: DataSourceRole) -> DataSource | None:
         assert role is not None
         dsrc_coll = self.get_data_source_coll_strict(source_id=source_id)
-        dsrc = dsrc_coll.get_opt(role=role)
-        return dsrc
+        return dsrc_coll.get_opt(role=role)
 
     def get_data_source_strict(self, source_id: str, role: DataSourceRole) -> DataSource:
         assert role is not None
         dsrc_coll = self.get_data_source_coll_strict(source_id=source_id)
-        dsrc = dsrc_coll.get_strict(role=role)
-        return dsrc
+        return dsrc_coll.get_strict(role=role)
 
     def get_sql_data_source_strict(self, source_id: str, role: DataSourceRole) -> BaseSQLDataSource:
         dsrc = self.get_data_source_strict(source_id=source_id, role=role)

@@ -197,8 +197,7 @@ class FileUploaderClient(BIAioHTTPClient):
             return SourcePreview(source_id=src.source_id, preview=[])
 
     async def get_preview_batch(self, file_sources: list[FileSourceDesc]) -> list[SourcePreview]:
-        previews = await asyncio.gather(*[self.get_preview(src) for src in file_sources])
-        return previews
+        return await asyncio.gather(*[self.get_preview(src) for src in file_sources])
 
     def get_preview_batch_sync(self, file_sources: list[FileSourceDesc]) -> list[SourcePreview]:
         return await_sync(self.get_preview_batch(file_sources))
@@ -209,15 +208,13 @@ class FileUploaderClient(BIAioHTTPClient):
         try:
             async with self.request("post", path=path, json_data=json_data, read_timeout_sec=15) as resp:
                 resp_data = await resp.json()
-                internal_params = SourceInternalParamsResultSchema().load(resp_data)
-                return internal_params
+                return SourceInternalParamsResultSchema().load(resp_data)
         except aiohttp.ClientError:
             LOGGER.exception(f"Failed to get raw_schema for file {src.file_id} source {src.source_id}")
             raise
 
     async def get_internal_params_batch(self, file_sources: list[FileSourceDesc]) -> list[SourceInternalParams]:
-        internal_params = await asyncio.gather(*[self.get_internal_params(src) for src in file_sources])
-        return internal_params
+        return await asyncio.gather(*[self.get_internal_params(src) for src in file_sources])
 
     async def cleanup_tenant(self, tenant_id: str) -> None:
         path = "api/v2/cleanup"

@@ -39,13 +39,12 @@ class TestPostgreSQLTableDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> StandardSchemaSQLDataSourceSpec:
-        dsrc_spec = StandardSchemaSQLDataSourceSpec(
+        return StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_PG_TABLE,
             db_name=sample_table.db.name,
             schema_name=sample_table.schema,
             table_name=sample_table.name,
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
@@ -65,11 +64,10 @@ class TestPostgreSQLSubselectDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table) -> SubselectDataSourceSpec:
-        dsrc_spec = SubselectDataSourceSpec(
+        return SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_PG_SUBSELECT,
             subsql=f'SELECT * FROM "{sample_table.name}"',
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
@@ -89,8 +87,7 @@ class TestPostgreSQLSubselectByView(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self) -> SubselectDataSourceSpec:
-        dsrc_spec = SubselectDataSourceSpec(
+        return SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_PG_SUBSELECT,
             subsql=SUBSELECT_QUERY_FULL,
         )
-        return dsrc_spec

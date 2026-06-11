@@ -206,5 +206,4 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
             level_type=self.crop_to_level_type,
         )
 
-        patch = CompiledMultiQueryPatch(patch_multi_query=CompiledMultiQuery(queries=[cropped_query, *subqueries]))
-        return patch
+        return CompiledMultiQueryPatch(patch_multi_query=CompiledMultiQuery(queries=[cropped_query, *subqueries]))

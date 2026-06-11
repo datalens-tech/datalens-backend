@@ -29,12 +29,11 @@ def register_function_extension(func_ext: FunctionExtension) -> None:
 def get_function_extensions(category: str, name: str, env: GenerationEnvironment) -> list[FunctionExtension]:
     key = (category, name)
     extensions = _FUNCTION_EXTENSION_REGISTRY.get(key, [])
-    extensions = [
+    return [
         ext
         for ext in extensions
         if dialect_combo_is_supported(supported=env.supported_dialects, current=ext.dialect_combo)
     ]
-    return extensions
 
 
 def get_function_extension_notes(category: str, name: str, env: GenerationEnvironment) -> list[Note]:

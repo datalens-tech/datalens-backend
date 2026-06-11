@@ -94,9 +94,8 @@ async def oauth_app_client(oauth_app) -> DLCommonAPIClient:
 
 @pytest.fixture(scope="function")
 def snowflake_payload() -> dict[str, str]:
-    payload = {
+    return {
         "conn_type": "snowflake",
         "account": "gg36894.eu-central-1",
         "client_id": "snowflake_client_id",
     }
-    return payload

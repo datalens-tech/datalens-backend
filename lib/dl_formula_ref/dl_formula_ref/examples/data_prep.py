@@ -69,8 +69,7 @@ class DataPreparer:
         with dumper.temporary_data_table(data_table=data_table) as table_ref:
             raw_query = self._query_gen.generate_query(example=example)
             compiled_query_ctx = sa_compiler.compile_query(raw_query=raw_query, table_ref=table_ref)
-            result_data = dumper.execute_query(query_ctx=compiled_query_ctx)
-        return result_data
+            return dumper.execute_query(query_ctx=compiled_query_ctx)
 
     def generate_example_data(self, func_name: str, example: ExampleConfig) -> None:
         storage_key = make_key_for_example(func_name=func_name, example=example)

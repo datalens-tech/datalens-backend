@@ -489,7 +489,7 @@ class DlRepManagerTool(CliToolBase):
         package_index = index_builder.build_index()
 
         repository_navigator = RepositoryNavigator(repository_env=repository_env, package_index=package_index)
-        tool = cls(
+        return cls(
             repository_env=repository_env,
             package_index=package_index,
             repository_navigator=repository_navigator,
@@ -505,7 +505,6 @@ class DlRepManagerTool(CliToolBase):
                 package_index=package_index,
             ),
         )
-        return tool
 
     @classmethod
     def run_parsed_args(cls, args: argparse.Namespace) -> None:

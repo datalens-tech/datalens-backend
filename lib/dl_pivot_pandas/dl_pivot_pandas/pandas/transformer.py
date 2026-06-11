@@ -138,9 +138,8 @@ class PdPivotTransformer(PivotTransformer):
 
         LOGGER.info(f"Using {type(facade)} for pivot table")
 
-        table = PivotTable(
+        return PivotTable(
             facade=facade,
             pivot_legend=self._pivot_legend,
             cell_packer=self._cell_packer,
         )
-        return table

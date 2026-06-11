@@ -80,8 +80,7 @@ class ConnectionFormTestBase:
         form_params = FormConfigParams(user_id="test_user_id")
         form_factory = self.CONN_FORM_FACTORY_CLS(mode=mode, localizer=localizer, form_params=form_params)
         form_factory.preprocess_form_params(service_registry=service_registry)
-        form_config = form_factory.get_form_config(connectors_settings, tenant)
-        return form_config
+        return form_factory.get_form_config(connectors_settings, tenant)
 
     @pytest.fixture(name="config_dir")
     def fixture_config_dir(self, request: pytest.FixtureRequest) -> str:

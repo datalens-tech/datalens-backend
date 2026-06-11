@@ -56,7 +56,7 @@ def _is_deprecated(defn: type[MultiVariantTranslation]) -> bool:
 
 
 def _make_raw_func(item: FunctionDocRegistryItem, env: GenerationEnvironment) -> RawFunc:
-    raw_func = RawFunc(
+    return RawFunc(
         name=item.name,
         title_factory=item.get_title,
         short_title_factory=item.get_short_title,
@@ -71,7 +71,6 @@ def _make_raw_func(item: FunctionDocRegistryItem, env: GenerationEnvironment) ->
         resources=item.all_resources,
         examples=item.get_examples(env=env),
     )
-    return raw_func
 
 
 def _all_same(items: Collection[Any]) -> bool:

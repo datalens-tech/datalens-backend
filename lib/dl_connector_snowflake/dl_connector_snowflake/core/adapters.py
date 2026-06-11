@@ -42,15 +42,13 @@ def construct_creator_func(target_dto: SnowFlakeConnTargetDTO) -> Callable:
         if target_dto.user_role:
             params["role"] = target_dto.user_role
 
-        conn = sf_connect(**params)
-
         # note: let's keep following lines commented for some time,
         #   at one point SF adapter did not respect db/schema/wh passed to connect
         #   in the recent runs it seems fixed
         # conn.cursor().execute(f"use database {target_dto.db_name}")
         # conn.cursor().execute(f"use schema {target_dto.schema}")
         # conn.cursor().execute(f"use warehouse {target_dto.warehouse}")
-        return conn
+        return sf_connect(**params)
 
     return get_connection
 

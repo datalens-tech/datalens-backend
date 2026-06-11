@@ -46,8 +46,7 @@ class AggregationChecker(Checker):
         Cache the results in ``self._valid_env``.
         """
 
-        dim_bound = dl_formula.inspect.expression.is_bound_only_to(node, allow_nodes=dimension_set)
-        return dim_bound
+        return dl_formula.inspect.expression.is_bound_only_to(node, allow_nodes=dimension_set)
 
     def perform_node_check(
         self,

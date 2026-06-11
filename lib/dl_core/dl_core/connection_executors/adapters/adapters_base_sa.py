@@ -360,8 +360,7 @@ class BaseSAAdapter(
 
         inspection = sa.inspect(db_engine)
         table_columns = inspection.get_columns(columns_source, schema=db_schema)
-        table_columns = list(table_columns)
-        return table_columns
+        return list(table_columns)
 
     def _get_raw_columns_info(self, table_def: TableDefinition) -> tuple[RawColumnInfo, ...]:
         table_columns = self._get_sa_table_columns(table_def)

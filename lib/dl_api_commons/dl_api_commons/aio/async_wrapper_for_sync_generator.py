@@ -347,10 +347,7 @@ class Job[JOB_ITEM_TV](metaclass=abc.ABCMeta):
     # TODO FIX: Assert that job is running
     async def get_next(self) -> JOB_ITEM_TV:
         try:
-            next_chunk = await self._loop.run_in_executor(
-                self._service_tpe, self._sync_fetch_chunk_from_buffer_schedule_next
-            )
-            return next_chunk
+            return await self._loop.run_in_executor(self._service_tpe, self._sync_fetch_chunk_from_buffer_schedule_next)
         except _ErrorInWorkerThread:
             try:
                 self._log.info("Worker state was switched to error. Awaiting worker thread...")

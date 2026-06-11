@@ -40,8 +40,7 @@ class DefaultTypedQueryCacheKeyBuilder(TypedQueryCacheKeyBuilderBase):
     def get_cache_key(self, typed_query: TypedQuery) -> LocalKeyRepresentation:
         tq_serializer = get_typed_query_serializer(query_type=typed_query.query_type)
         serialized_query = tq_serializer.serialize(typed_query)
-        local_key_rep = self.base_key.extend(part_type="typed_query_data", part_content=serialized_query)
-        return local_key_rep
+        return self.base_key.extend(part_type="typed_query_data", part_content=serialized_query)
 
 
 @attr.s
@@ -54,13 +53,12 @@ class CachedTypedQueryProcessor(TypedQueryProcessorBase):
 
     def get_cache_options(self, typed_query: TypedQuery) -> BIQueryCacheOptions:
         local_key_rep = self._cache_key_builder.get_cache_key(typed_query=typed_query)
-        cache_options = BIQueryCacheOptions(
+        return BIQueryCacheOptions(
             cache_enabled=True,
             ttl_sec=self._cache_ttl_config.ttl_sec_direct,
             key=local_key_rep,
             refresh_ttl_on_read=self._refresh_ttl_on_read,
         )
-        return cache_options
 
     async def process_typed_query(self, typed_query: TypedQuery) -> TypedQueryResult:
         tq_result_serializer = get_typed_query_result_serializer(query_type=typed_query.query_type)
@@ -94,5 +92,4 @@ class CachedTypedQueryProcessor(TypedQueryProcessorBase):
         loaded_serialized_data = first_row[0]
         assert isinstance(loaded_serialized_data, str)
 
-        typed_query_result = tq_result_serializer.deserialize(loaded_serialized_data)
-        return typed_query_result
+        return tq_result_serializer.deserialize(loaded_serialized_data)

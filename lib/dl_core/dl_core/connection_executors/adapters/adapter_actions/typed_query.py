@@ -107,8 +107,7 @@ class TypedQueryToDBAQueryConverter:
 
     def make_dba_query(self, typed_query: TypedQuery) -> DBAdapterQuery:
         sa_query = self._make_sa_query(typed_query=typed_query)
-        dba_query = DBAdapterQuery(query=sa_query, db_name=None)
-        return dba_query
+        return DBAdapterQuery(query=sa_query, db_name=None)
 
 
 @attr.s(frozen=True)
@@ -173,19 +172,17 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
             raw_cursor_info=dba_async_result.raw_cursor_info,
             data=data,
         )
-        result = TypedQueryResult(
+        return TypedQueryResult(
             query_type=typed_query.query_type,
             data_rows=data,
             column_headers=column_headers,
         )
-        return result
 
     async def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
         assert typed_query.query_type is DashSQLQueryType.generic_query
         dba_query = self._query_converter.make_dba_query(typed_query=typed_query)
         dba_async_result = await self._async_adapter.execute(dba_query)
-        result = await self._make_result(typed_query=typed_query, dba_async_result=dba_async_result)
-        return result
+        return await self._make_result(typed_query=typed_query, dba_async_result=dba_async_result)
 
 
 @attr.s(frozen=True)
@@ -217,16 +214,14 @@ class SyncTypedQueryAdapterActionViaLegacyExecute(SyncTypedQueryAdapterAction):
         raw_cursor_info = dba_sync_result.raw_cursor_info
         assert raw_cursor_info is not None
         column_headers = self._resolve_result_column_headers(raw_cursor_info=raw_cursor_info)
-        result = TypedQueryResult(
+        return TypedQueryResult(
             query_type=typed_query.query_type,
             data_rows=data,
             column_headers=column_headers,
         )
-        return result
 
     def run_typed_query_action(self, typed_query: TypedQuery) -> TypedQueryResult:
         assert typed_query.query_type is DashSQLQueryType.generic_query
         dba_query = self._query_converter.make_dba_query(typed_query=typed_query)
         dba_sync_result = self._sync_adapter.execute(dba_query)
-        result = self._make_result(typed_query=typed_query, dba_sync_result=dba_sync_result)
-        return result
+        return self._make_result(typed_query=typed_query, dba_sync_result=dba_sync_result)

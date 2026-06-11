@@ -58,14 +58,13 @@ class BaseSslStarRocksTestClass(BaseStarRocksTestClass):
 
     @pytest.fixture(scope="class")
     def engine_params(self, ssl_ca: str) -> dict:
-        engine_params = {
+        return {
             "connect_args": frozendict(
                 {
                     "ssl": ssl.create_default_context(cadata=ssl_ca),
                 }
             ),
         }
-        return engine_params
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

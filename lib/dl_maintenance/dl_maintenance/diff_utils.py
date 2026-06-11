@@ -183,5 +183,4 @@ def get_diff_text(  # type: ignore  # TODO: fix
         meta=dict(entry.meta),
     )
 
-    result = make_diff(value_a=value_a, value_b=value_b, unified_n=unified_n, dumper=dumper, colorize=colorize)
-    return result
+    return make_diff(value_a=value_a, value_b=value_b, unified_n=unified_n, dumper=dumper, colorize=colorize)

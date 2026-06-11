@@ -85,5 +85,4 @@ def make_datetimetz_value(value: DTSourcesT, tzname: str = "UTC") -> datetime.da
     assert dt is not None
     if dt.tzinfo is None:
         dt = tzobj.localize(dt)
-    dt = dt.astimezone(UTC)
-    return dt
+    return dt.astimezone(UTC)

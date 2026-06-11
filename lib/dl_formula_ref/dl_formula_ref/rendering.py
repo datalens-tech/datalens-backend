@@ -130,8 +130,7 @@ class FuncRenderer:
             cat_link_provider=relative_path_renderer.get_cat_link,
         )
         rich_text = expander.expand_text(param_text.text)
-        result = self._rt_renderer.render(rich_text, env=self._rt_env)
-        return result
+        return self._rt_renderer.render(rich_text, env=self._rt_env)
 
     def _as_param_text(self, text: str, params: dict[str, str] | None = None) -> ParameterizedText:
         return ParameterizedText.from_str(text=text, params=params or {})
@@ -154,7 +153,7 @@ class FuncRenderer:
         return [kw.strip() for kw in keyword_list_str.split(",")]
 
     def make_signature_coll(self) -> FunctionSignatureCollection:
-        signature_coll = FunctionSignatureCollection(
+        return FunctionSignatureCollection(
             signatures=[
                 FunctionSignature(
                     title=sign.title,
@@ -167,12 +166,11 @@ class FuncRenderer:
             ],
             placement_mode=self._raw_func.signature_coll.placement_mode,
         )
-        return signature_coll
 
     def render_examples(self) -> list[str]:
         # Place examples under cut only if there are more than one
         ex_under_cut = len(self._raw_func.examples) > 1
-        examples = [
+        return [
             ex.render(
                 func_name=self._raw_func.internal_name,
                 config=self._example_rend_config,
@@ -181,16 +179,14 @@ class FuncRenderer:
             )
             for ex in self._raw_func.examples
         ]
-        return examples
 
     def render_args(self) -> list[LocalizedFuncArg]:
-        args = [
+        return [
             LocalizedFuncArg(
                 arg=arg, locale=self._locale, human_type=human_data_type(types=arg.types, locale=self._locale)
             )
             for arg in self._raw_func.args
         ]
-        return args
 
     def get_counterpart_keys(self, func_ref: FuncReference) -> list[RefFunctionKey]:
         return [
@@ -215,7 +211,7 @@ class FuncRenderer:
         ]
         root_text = "{text:also_in_other_categories}" + ",".join(counterpart_refs_list) + "."
 
-        note = ParameterizedNote(
+        return ParameterizedNote(
             param_text=self._as_param_text(
                 text=root_text,
                 params={
@@ -224,8 +220,6 @@ class FuncRenderer:
                 },
             ),
         )
-
-        return note
 
     def render(self, func_ref: FuncReference) -> RenderedFunc:
         func_file_path = self._path_renderer.get_func_path(func_key=self._func_key)
@@ -307,7 +301,7 @@ class FuncRefRenderer:
 
         one_rendered_func = next(iter(rendered_aud_func_dict.values()))
 
-        rendered_multi_func = RenderedMultiAudienceFunc(
+        return RenderedMultiAudienceFunc(
             aud_dict=rendered_aud_func_dict,
             name=raw_multi_func.name,
             category_name=one_rendered_func.category_name,
@@ -316,4 +310,3 @@ class FuncRefRenderer:
             category_keywords=one_rendered_func.category_keywords,
             file_path=func_file_path,
         )
-        return rendered_multi_func

@@ -463,5 +463,4 @@ def translate_and_compile(
         compile_kwargs={"literal_binds": True},
         dialect=sa_dialect,
     )
-    compiled_text = sa_compiled_expr.string
-    return compiled_text
+    return sa_compiled_expr.string

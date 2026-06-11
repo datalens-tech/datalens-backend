@@ -22,8 +22,7 @@ def _all_concat_yql(expr, sep=", "):  # type: ignore  # 2024-01-30 # TODO: Funct
     res = sa.func.AGGREGATE_LIST_DISTINCT(res)
     res = sa.func.ListSortAsc(res)
     # Would be nicer to cast List<Whaverer> to List<Utf8> at this point.
-    res = sa.func.String.JoinFromList(res, sep)
-    return res
+    return sa.func.String.JoinFromList(res, sep)
 
 
 DEFINITIONS_AGG = [

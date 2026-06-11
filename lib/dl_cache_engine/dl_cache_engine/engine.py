@@ -828,8 +828,7 @@ class EntityCacheEngineAsync(EntityCacheEngineBase):
             if result is not None:
                 return result
 
-        result = await rcli.get(full_key)
-        return result
+        return await rcli.get(full_key)
 
     async def invalidate_all(self) -> None:
         await self._delete_keys_by_pattern(self._get_all_keys_pattern())

@@ -90,8 +90,7 @@ def fixture_mock_retry_policy_factory(
 def fixture_mock_auth_provider(
     mocker: pytest_mock.MockerFixture,
 ) -> dl_auth.AuthProviderProtocol:
-    auth_provider = mocker.MagicMock(spec=dl_auth.AuthProviderProtocol)
-    return auth_provider
+    return mocker.MagicMock(spec=dl_auth.AuthProviderProtocol)
 
 
 @pytest.fixture(name="mock_error_transformer")

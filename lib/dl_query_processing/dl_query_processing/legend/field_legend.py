@@ -218,18 +218,16 @@ class Legend:
 
     def list_selectable_items(self) -> list[LegendItem]:
         """List the items that can be selected from the data source"""
-        items = [
+        return [
             item
             for item in self.items
             if item.role_spec.role in SELECTABLE_ROLES and isinstance(item.obj, FieldObjSpec)
         ]
-        return items
 
     def list_streamable_items(self) -> Sequence[LegendItem]:
         """List streamable items + special derived ones like templates"""
-        items = [
+        return [
             item
             for item in self.items
             if item.role_spec.role in SELECTABLE_ROLES and isinstance(item.obj, (FieldObjSpec, PlaceholderObjSpec))
         ]
-        return items

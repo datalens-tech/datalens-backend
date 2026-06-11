@@ -158,7 +158,7 @@ class SRFactoryBuilder[TSettings: AppSettings](abc.ABC):
             )
             pivot_transformer_factory = pivot_transformer_factory_cls()
 
-        sr_factory = DefaultApiSRFactory(
+        return DefaultApiSRFactory(
             async_env=self._is_async_env,
             rqe_config=settings.RQE_CONFIG,
             default_cache_ttl_config=self._get_default_cache_ttl_settings(settings),  # type: ignore  # 2024-01-24 # TODO: Argument "default_cache_ttl_config" to "DefaultApiSRFactory" has incompatible type "CacheTTLConfig | None"; expected "CacheTTLConfig"  [arg-type]
@@ -190,4 +190,3 @@ class SRFactoryBuilder[TSettings: AppSettings](abc.ABC):
             constraints=self._get_constraints(settings),
             extract_clickhouse_provider=self._get_extract_clickhouse_provider(settings),
         )
-        return sr_factory

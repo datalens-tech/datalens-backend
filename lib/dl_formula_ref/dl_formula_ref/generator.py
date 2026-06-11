@@ -339,8 +339,7 @@ class ReferenceDocGenerator:
         table = tabulate(table_data, headers=headers, tablefmt="pipe")
         # now hack column alignment to be centered for all columns except the first one
         first_match = table.find("-|")
-        table = table[: first_match + 2] + table[first_match + 2 :].replace("-|", ":|")
-        return table
+        return table[: first_match + 2] + table[first_match + 2 :].replace("-|", ":|")
 
     def generate_doc_availability_list_for_all_audiences(self, context_path: str) -> None:
         table_by_audience: dict[Audience, str] = {}

@@ -24,10 +24,9 @@ class BigQueryEngineWrapper(EngineWrapperBase):
         return self._config
 
     def get_conn_credentials(self, full: bool = False) -> dict:
-        creds = dict(
+        return dict(
             db_name=self.url.database,
         )
-        return creds
 
     def table_from_columns(
         self,
@@ -36,9 +35,8 @@ class BigQueryEngineWrapper(EngineWrapperBase):
         schema: str | None = None,
         table_name: str | None = None,
     ) -> sa.Table:
-        table = super().table_from_columns(
+        return super().table_from_columns(
             columns=columns,
             schema=schema or self.config.default_dataset_name,
             table_name=table_name,
         )
-        return table

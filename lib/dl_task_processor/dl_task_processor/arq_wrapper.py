@@ -117,12 +117,11 @@ class CronSchedule:
 
 
 def make_cron_task(task: BaseTaskMeta, schedule: CronSchedule) -> CronTask:
-    cron_task = cron(
+    return cron(
         ArqCronWrapper(task=task),
         name=task.name,
         **attr.asdict(schedule),
     )
-    return cron_task
 
 
 async def arq_base_task(context: dict, params: dict) -> None:

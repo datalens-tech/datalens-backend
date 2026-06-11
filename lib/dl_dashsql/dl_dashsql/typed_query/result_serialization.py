@@ -59,12 +59,10 @@ class DefaultTypedQueryResultSerializer(TypedQueryResultSerializer):
     _schema: ClassVar[Schema] = TypedQueryResultSerializerSchema()
 
     def serialize(self, typed_query_result: TypedQueryResult) -> str:
-        typed_query_result_str = self._schema.dumps(typed_query_result)
-        return typed_query_result_str
+        return self._schema.dumps(typed_query_result)
 
     def deserialize(self, typed_query_result_str: str) -> TypedQueryResult:
-        typed_query_result = self._schema.loads(typed_query_result_str)
-        return typed_query_result
+        return self._schema.loads(typed_query_result_str)
 
 
 @attr.s
@@ -72,12 +70,10 @@ class DefaultTypedQueryRawResultSerializer:
     _schema: ClassVar[Schema] = TypedQueryRawResultSerializerSchema()
 
     def serialize(self, typed_query_raw_result: TypedQueryRawResult) -> str:
-        typed_query_raw_result_str = self._schema.dumps(typed_query_raw_result)
-        return typed_query_raw_result_str
+        return self._schema.dumps(typed_query_raw_result)
 
     def deserialize(self, typed_query_raw_result_str: str) -> TypedQueryRawResult:
-        typed_query_raw_result = self._schema.loads(typed_query_raw_result_str)
-        return typed_query_raw_result
+        return self._schema.loads(typed_query_raw_result_str)
 
 
 def get_typed_query_result_serializer(query_type: DashSQLQueryType) -> TypedQueryResultSerializer:

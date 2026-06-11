@@ -93,9 +93,8 @@ class NativePivotTransformer(PivotTransformer):
             legend=self._legend,
             pivot_legend=self._pivot_legend,
         )
-        table = PivotTable(
+        return PivotTable(
             facade=facade,
             pivot_legend=self._pivot_legend,
             cell_packer=self._cell_packer,
         )
-        return table

@@ -411,9 +411,7 @@ class CustomYqlCompiler(ydb_sa.YqlCompiler):
             raise CompileError("Lambdas with **kwargs are not supported")
 
         args = [literal_column("$" + arg) for arg in spec.args]
-        text = f'({", ".join("$" + arg for arg in spec.args)}) -> ' f"{{ RETURN {self.process(func(*args), **kw)} ;}}"
-
-        return text
+        return f'({", ".join("$" + arg for arg in spec.args)}) -> ' f"{{ RETURN {self.process(func(*args), **kw)} ;}}"
 
     def visit_closure(self, closure: YqlClosure, **kw: Any):
         func = closure.func
@@ -425,13 +423,11 @@ class CustomYqlCompiler(ydb_sa.YqlCompiler):
             raise CompileError("Closures with **kwargs are not supported")
 
         args = [literal_column("$" + arg) for arg in spec.args]
-        text = (
+        return (
             f'(({", ".join("$" + arg for arg in spec.args)}) -> '
             f"{{ RETURN {self.process(func(*args), **kw)} ;}})"
             f'({", ".join(self.process(arg, **kw) for arg in closure.args)})'
         )
-
-        return text
 
     def visit_dot_access(self, dot_access: YqlDotAccess, **kw):
         return f"{self.process(dot_access.dot_expression, **kw)}.{dot_access.dot_index}"

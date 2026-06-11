@@ -20,7 +20,7 @@ class SaQueryCompiler:
     _function_scopes: int = attr.ib(kw_only=True, default=Scope.EXPLICIT_USAGE)
 
     def _get_translator(self, table_ref: TableReference) -> SqlAlchemyTranslator:
-        translator = SqlAlchemyTranslator(
+        return SqlAlchemyTranslator(
             env=TranslationEnvironment(
                 dialect=self.dialect,
                 required_scopes=self._function_scopes,
@@ -29,7 +29,6 @@ class SaQueryCompiler:
                 field_type_params={},
             ),
         )
-        return translator
 
     def compile_formula(self, formula_ctx: FormulaContext, translator: SqlAlchemyTranslator) -> ClauseElement:
         ctx = translator.translate(formula=formula_ctx.formula)
@@ -47,8 +46,7 @@ class SaQueryCompiler:
         sa_order_by = [self.compile_formula(formula_ctx, translator=trans) for formula_ctx in raw_query.order_by]
         sa_from = self.compile_from(table_name=table_ref.name)
         sa_query = sa.select(sa_select).select_from(sa_from).group_by(*sa_group_by).order_by(*sa_order_by)
-        compiled_query_ctx = CompiledQueryContext(
+        return CompiledQueryContext(
             result_columns=raw_query.result_columns,
             sa_query=sa_query,
         )
-        return compiled_query_ctx

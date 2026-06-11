@@ -580,7 +580,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             field.as_req_legend_item(role=FieldRole.range, range_type=RangeType.min),
             field.as_req_legend_item(role=FieldRole.range, range_type=RangeType.max),
         ]
-        data = self.make_req_data_common(
+        return self.make_req_data_common(
             dataset=dataset,
             fields=fields,
             filters=filters,
@@ -589,8 +589,6 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-
-        return data
 
     def make_req_data_get_distinct(
         self,
@@ -613,7 +611,7 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
         else:
             field_li = field.as_req_legend_item(role=FieldRole.distinct)
         fields = [field_li]
-        data = self.make_req_data_common(
+        return self.make_req_data_common(
             dataset=dataset,
             limit=limit,
             offset=offset,
@@ -625,8 +623,6 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             updates=updates,
             ignore_nonexistent_filters=ignore_nonexistent_filters,
         )
-
-        return data
 
     def make_req_data_get_pivot(
         self,

@@ -52,8 +52,7 @@ class MockupSyncPromQLClient(SyncPromQLClient):
                 ],
             },
         }
-        result = rebuild_prometheus_data(data["data"])
-        return result
+        return rebuild_prometheus_data(data["data"])
 
 
 def test_result(engine_url):

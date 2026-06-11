@@ -635,8 +635,7 @@ class FormulaCompiler:
 
             to_substitute[field_node_idx] = sub_node
 
-        formula_obj = formula_obj.substitute_batch(to_substitute)
-        return formula_obj
+        return formula_obj.substitute_batch(to_substitute)
 
     def _generate_formula_obj_for_formula_field(
         self,
@@ -761,9 +760,7 @@ class FormulaCompiler:
 
         # Only measures can contain BFB clauses
         title_id_map = {f.title: f.guid for f in self._fields}
-        formula_obj = apply_mutations(formula_obj, mutations=[RemapBfbMutation(name_mapping=title_id_map)])
-
-        return formula_obj
+        return apply_mutations(formula_obj, mutations=[RemapBfbMutation(name_mapping=title_id_map)])
 
     def _apply_function_by_name(self, formula_obj: formula_nodes.Formula, func_name: str) -> formula_nodes.Formula:
         """Apply a single-argument function to given expression"""
@@ -1078,7 +1075,7 @@ class FormulaCompiler:
         if relation.managed_by == ManagedBy.feature:
             left_avatar_id = None
 
-        formula_info = CompiledJoinOnFormulaInfo(
+        return CompiledJoinOnFormulaInfo(
             formula_obj=formula_obj,
             avatar_ids=self._columns.get_used_avatar_ids_for_formula_obj(formula_obj),
             original_field_id=None,
@@ -1087,7 +1084,6 @@ class FormulaCompiler:
             join_type=relation.join_type,
             alias=None,
         )
-        return formula_info
 
     def compile_field_formula(
         self,
@@ -1096,13 +1092,12 @@ class FormulaCompiler:
         original_field_id: str | None = None,
     ) -> CompiledFormulaInfo:
         formula_obj = self._compile_field_formula(field=field, collect_errors=collect_errors)
-        formula_info = CompiledFormulaInfo(
+        return CompiledFormulaInfo(
             formula_obj=formula_obj,
             avatar_ids=self._columns.get_used_avatar_ids_for_formula_obj(formula_obj),
             alias=field.guid,
             original_field_id=original_field_id or field.guid,
         )
-        return formula_info
 
     def make_formula_field(self, formula: str) -> BIField:
         field = BIField.make(
@@ -1139,18 +1134,16 @@ class FormulaCompiler:
     def compile_text_formula(self, formula: str, collect_errors: bool = False) -> CompiledFormulaInfo:
         field = self.make_formula_field(formula=formula)
         formula_obj = self._compile_field_formula(field=field, collect_errors=collect_errors)
-        formula_info = CompiledFormulaInfo(
+        return CompiledFormulaInfo(
             formula_obj=formula_obj,
             avatar_ids=self._columns.get_used_avatar_ids_for_formula_obj(formula_obj),
             alias=field.guid,
             original_field_id=None,
         )
-        return formula_info
 
     def get_formula_errors(self, formula: str) -> list[FormulaErrorCtx]:
         field = self.make_formula_field(formula=formula)
-        errors = self.get_field_errors(field)
-        return errors
+        return self.get_field_errors(field)
 
     def field_has_auto_aggregation(self, field: BIField) -> bool:
         try:

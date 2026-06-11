@@ -108,9 +108,8 @@ class PlaceholderQueryFormatter(QueryFormatter):
         format_state.bound_params.append(param)
         format_state.used_param_names.add(new_param_name)
 
-        placeholder = self._placeholder_style.make_placeholder(
+        return self._placeholder_style.make_placeholder(
             param_name=new_param_name,
             param_idx=param_idx,
             user_type=incoming_param.user_type,
         )
-        return placeholder

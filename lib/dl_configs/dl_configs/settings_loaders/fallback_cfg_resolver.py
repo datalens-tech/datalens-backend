@@ -63,11 +63,10 @@ class ObjectLikeConfig(Mapping):
                 ]
             return v
 
-        ret = cls(
+        return cls(
             data={k: _get_value_for_cfg(k, v) for k, v in data.items()},
             path=path,
         )
-        return ret
 
     def to_dict(self) -> dict[str, Any]:
         def _get_value_for_dict(v: Any) -> Any:

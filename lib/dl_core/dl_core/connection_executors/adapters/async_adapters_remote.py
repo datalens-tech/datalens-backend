@@ -463,8 +463,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             ),
         )
         tq_result_serializer = get_typed_query_result_serializer(query_type=typed_query.query_type)
-        tq_result = tq_result_serializer.deserialize(tq_result_str)
-        return tq_result
+        return tq_result_serializer.deserialize(tq_result_str)
 
     async def execute_typed_query_raw(self, typed_query_raw: TypedQueryRaw) -> TypedQueryRawResult:
         tq_serializer = get_typed_query_serializer(query_type=typed_query_raw.query_type)
@@ -479,8 +478,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
             ),
         )
         tq_result_serializer = DefaultTypedQueryRawResultSerializer()
-        tq_result = tq_result_serializer.deserialize(tq_result_str)
-        return tq_result
+        return tq_result_serializer.deserialize(tq_result_str)
 
     async def close(self) -> None:
         await self._session.close()

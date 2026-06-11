@@ -33,8 +33,7 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
 
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
         ds = control_api.apply_updates(dataset=ds, fail_ok=False).dataset
-        ds = control_api.save_dataset(dataset=ds).dataset
-        return ds
+        return control_api.save_dataset(dataset=ds).dataset
 
     @pytest.fixture(scope="function")
     def saved_dataset(

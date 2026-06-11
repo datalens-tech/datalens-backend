@@ -85,8 +85,7 @@ class DatasetCapabilities:
             dataset_parameter_values=self._ds_accessor.get_parameter_values(),
             dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
-        dsrc = dsrc_coll.get_strict(role=role)
-        return dsrc
+        return dsrc_coll.get_strict(role=role)
 
     def _get_first_dsrc_collection(
         self,

@@ -399,9 +399,7 @@ class PostgresQueryConstructorMixin:
         sql = " ".join(sql_parts)
         query = sa.text(sql)
         params = self._compile_pagination_params(search_text, limit, offset)
-        query = query.bindparams(*params)
-
-        return query
+        return query.bindparams(*params)
 
     def get_list_schema_names_query(
         self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
@@ -419,9 +417,7 @@ class PostgresQueryConstructorMixin:
         sql = " ".join(sql_parts)
         query = sa.text(sql)
         params = self._compile_pagination_params(search_text, limit, offset)
-        query = query.bindparams(*params)
-
-        return query
+        return query.bindparams(*params)
 
     def get_list_table_and_view_names_query(
         self, schema_name: str, search_text: str | None = None, limit: int | None = None, offset: int | None = None
@@ -446,9 +442,7 @@ class PostgresQueryConstructorMixin:
             sa.bindparam("schema", schema_name, type_=sa.String),
             *self._compile_pagination_params(search_text, limit, offset),
         ]
-        query = query.bindparams(*params)
-
-        return query
+        return query.bindparams(*params)
 
 
 @attr.s(cmp=False)

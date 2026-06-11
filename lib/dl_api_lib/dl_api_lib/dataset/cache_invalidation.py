@@ -135,12 +135,11 @@ async def get_invalidation_payload_sql(
     )
 
     try:
-        payload = await helper.get_cache_invalidation_result(
+        return await helper.get_cache_invalidation_result(
             key=key,
             throttling_interval_sec=float(throttling_interval_sec),
             generate_func=generate_func,
         )
-        return payload
     except Exception:
         LOGGER.exception("Error during invalidation cache check, skipping (graceful degradation)")
         return None

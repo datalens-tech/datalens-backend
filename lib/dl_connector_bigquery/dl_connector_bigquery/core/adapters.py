@@ -79,12 +79,10 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
             LOGGER.info("Got malformed bigquery credentials", exc_info=True)
             raise exc.MalformedCredentialsError() from e
-        credentials = g_service_account.Credentials.from_service_account_info(credentials_info)
-        return credentials
+        return g_service_account.Credentials.from_service_account_info(credentials_info)
 
     def get_bq_client(self) -> BQClient:
-        client = BQClient(credentials=self._get_bq_credentials())
-        return client
+        return BQClient(credentials=self._get_bq_credentials())
 
     def _get_tables(self, schema_ident: SchemaIdent, page_ident: PageIdent | None = None) -> list[TableIdent]:
         client = self.get_bq_client()

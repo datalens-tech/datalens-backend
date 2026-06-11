@@ -162,11 +162,10 @@ def _denullified_eq(
         left = sa.func.toString(left)
         right = sa.func.toString(right)
 
-    expr = sa.and_(
+    return sa.and_(
         sa.func.ifNull(left, null_value) == sa.func.ifNull(right, null_value),
         sa.func.isNull(left) == sa.func.isNull(right),
     )
-    return expr
 
 
 class BinaryEqualDenullified(base.BinaryEqualDenullified):

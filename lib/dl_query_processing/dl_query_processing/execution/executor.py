@@ -91,7 +91,7 @@ class QueryExecutor:
         if is_top_level and (limit is None or limit > row_count_hard_limit):
             limit = row_count_hard_limit + 1
 
-        bi_query = BIQuery(
+        return BIQuery(
             select_expressions=translated_flat_query.select,
             group_by_expressions=translated_flat_query.group_by,
             order_by_expressions=translated_flat_query.order_by,
@@ -101,8 +101,6 @@ class QueryExecutor:
             offset=translated_flat_query.offset,
             distinct=distinct if is_top_level else False,
         )
-
-        return bi_query
 
     async def _get_compeng_data_processor(self) -> OperationProcessorAsyncBase:
         factory = self._service_registry.get_data_processor_factory()
@@ -436,7 +434,7 @@ class QueryExecutor:
         assert isinstance(one_stream, DataStreamAsync)
         rows = await one_stream.data.all()
 
-        executed_query = ExecutedQuery(
+        return ExecutedQuery(
             rows=rows,
             meta=ExecutedQueryMetaInfo.from_trans_meta(
                 trans_meta=top_query.meta,
@@ -446,4 +444,3 @@ class QueryExecutor:
                 ),
             ),
         )
-        return executed_query

@@ -42,12 +42,11 @@ class TracingMiddleware(FlaskWSGIMiddleware):
     @staticmethod
     def normalize_headers(wsgi_environ: dict[str, str]) -> dict[str, str]:
         prefix = "HTTP_"
-        headers = {
+        return {
             key[len(prefix) :].replace("_", "-").lower(): val
             for (key, val) in wsgi_environ.items()
             if key.startswith(prefix)
         }
-        return headers
 
     def should_create_root_span(self, http_path: str) -> bool:
         return all(not http_path.startswith(prefix) for prefix in self.url_prefix_exclude)

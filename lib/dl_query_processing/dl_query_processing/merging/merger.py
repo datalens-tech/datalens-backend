@@ -46,7 +46,7 @@ class DataStreamMerger:
                     child_stream=child_data_stream,
                 )
 
-        merged_data_stream = MergedQueryDataStream(
+        return MergedQueryDataStream(
             legend=postprocessed_query_union.legend,
             rows=data_stream,
             legend_item_ids=legend_item_ids,
@@ -64,4 +64,3 @@ class DataStreamMerger:
                 target_connection_ids=merged_target_connection_ids,
             ),
         )
-        return merged_data_stream

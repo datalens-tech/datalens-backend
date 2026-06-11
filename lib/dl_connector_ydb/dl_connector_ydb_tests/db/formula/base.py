@@ -176,9 +176,8 @@ class YQLTestBase(FormulaConnectorTestBase):
     @pytest.fixture(scope="class")
     def dbe(self, db_config: FormulaDbConfig) -> DbEvaluator:
         db = self.db_dispenser.get_database(db_config)
-        dbe = YQLDbEvaluator(
+        return YQLDbEvaluator(
             db=db,
             attempts=self.eval_attempts,
             retry_on_exceptions=self.retry_on_exceptions,
         )
-        return dbe

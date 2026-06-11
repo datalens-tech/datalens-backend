@@ -129,9 +129,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
                 ),
             )
 
-        settings = TestingDataApiAppSettings(fallback=deprecated_settings, **extra_kwargs)
-
-        return settings
+        return TestingDataApiAppSettings(fallback=deprecated_settings, **extra_kwargs)
 
     @pytest.fixture(scope="function")
     def data_api_app_factory(self, data_api_app_settings: DataApiAppSettings) -> DataApiAppFactory:

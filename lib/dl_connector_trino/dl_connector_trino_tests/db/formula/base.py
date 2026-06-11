@@ -22,11 +22,10 @@ class TrinoFormulaTestBase(FormulaConnectorTestBase):
 
     @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
-        engine_params = {
+        return {
             "connect_args": frozendict(
                 {
                     "timezone": "UTC",
                 }
             ),
         }
-        return engine_params

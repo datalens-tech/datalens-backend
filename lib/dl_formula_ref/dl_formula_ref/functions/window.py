@@ -49,7 +49,7 @@ _SOURCE_SALES_DATA_1 = ExampleSource(
 def _make_standard_window_examples(func: str) -> list[DataExample]:
     order_by_str = " ORDER BY [City], [Category]" if supports_ordering(name=func.lower(), is_window=True) else ""
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with grouping"),
@@ -80,12 +80,11 @@ def _make_standard_window_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 def _make_rank_examples(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with two arguments"),
@@ -112,12 +111,11 @@ def _make_rank_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 def _make_if_examples(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with grouping"),
@@ -148,7 +146,6 @@ def _make_if_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 _RANK_RESOURCES = SimpleAliasedResourceRegistry(
@@ -357,7 +354,7 @@ FUNCTION_AVG_IF_WINDOW = FunctionDocRegistryItem(
 
 def _make_simple_order_by_examples(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with ORDER BY"),
@@ -384,7 +381,6 @@ def _make_simple_order_by_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 _ORDERED_WFUNC_NOTES = [
@@ -401,7 +397,7 @@ _ORDERED_WFUNC_NOTES = [
 
 def _make_rfunc_examples(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with ORDER BY"),
@@ -430,7 +426,6 @@ def _make_rfunc_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 _RFUNC_RESOURCES = SimpleAliasedResourceRegistry(
@@ -562,7 +557,7 @@ FUNCTION_RAVG = FunctionDocRegistryItem(
 
 def _make_mfunc_examples(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with two and three arguments"),
@@ -645,7 +640,6 @@ def _make_mfunc_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 _MFUNC_RESOURCES = SimpleAliasedResourceRegistry(
@@ -769,7 +763,7 @@ FUNCTION_MAVG = FunctionDocRegistryItem(
 
 def _make_lag_examples(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 name=_("Example with the optional argument"),
@@ -796,7 +790,6 @@ def _make_lag_examples(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 FUNCTION_LAG = FunctionDocRegistryItem(

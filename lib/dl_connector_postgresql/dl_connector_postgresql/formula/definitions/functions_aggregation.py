@@ -22,8 +22,7 @@ def _all_concat_pg(expr: ClauseElement, sep: str = ", ") -> ClauseElement:
     # but older postgres versions refuse to auto-cast into strings that way.
     # Also notable: `json_agg`, for unambiguous representation.
     res = sa.func.array_agg(res)
-    res = sa.func.array_to_string(res, sep)
-    return res
+    return sa.func.array_to_string(res, sep)
 
 
 DEFINITIONS_AGG = [

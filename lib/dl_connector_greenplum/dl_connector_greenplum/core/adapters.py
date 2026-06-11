@@ -47,9 +47,7 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         sql = " ".join(sql_parts)
         query = sa.text(sql)
         params = self._compile_pagination_params(search_text, limit, offset)
-        query = query.bindparams(*params)
-
-        return query
+        return query.bindparams(*params)
 
     def get_list_schema_names_query(
         self, search_text: str | None = None, limit: int | None = None, offset: int | None = None
@@ -70,9 +68,7 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
         sql = " ".join(sql_parts)
         query = sa.text(sql)
         params = self._compile_pagination_params(search_text, limit, offset)
-        query = query.bindparams(*params)
-
-        return query
+        return query.bindparams(*params)
 
     def get_list_table_and_view_names_query(
         self, schema_name: str, search_text: str | None = None, limit: int | None = None, offset: int | None = None
@@ -104,17 +100,14 @@ class GreenplumQueryConstructorMixin(PostgresQueryConstructorMixin):
             sa.bindparam("schema", schema_name, type_=sa.String),
             *self._compile_pagination_params(search_text, limit, offset),
         ]
-        query = query.bindparams(*params)
-
-        return query
+        return query.bindparams(*params)
 
 
 class GreenplumAdapter(GreenplumQueryConstructorMixin, PostgresAdapter):
     def _get_schema_names(self, db_ident: DBIdent) -> list[str]:
         db_engine = self.get_db_engine(db_ident.db_name)
         schema_query = self.get_list_schema_names_query()
-        table_list = [table_name for table_name, in db_engine.execute(schema_query)]
-        return table_list
+        return [table_name for table_name, in db_engine.execute(schema_query)]
 
 
 class AsyncGreenplumAdapter(GreenplumQueryConstructorMixin, AsyncPostgresAdapter):

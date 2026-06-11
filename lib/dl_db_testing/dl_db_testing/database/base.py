@@ -126,8 +126,7 @@ class DbBase[DB_CONFIG_TV: DbConfig]:
             query = query.select_from(from_)
 
         try:
-            value = self.execute(query).scalar()
-            return value
+            return self.execute(query).scalar()
         except Exception:
             print("QUERY:", self.expr_as_str(query))
             raise

@@ -20,5 +20,4 @@ class CliRunner:
             self.cli_cls.run(argv)
 
         assert isinstance(out_stream, io.StringIO)
-        result = CliResult(stdout=out_stream.getvalue())
-        return result
+        return CliResult(stdout=out_stream.getvalue())

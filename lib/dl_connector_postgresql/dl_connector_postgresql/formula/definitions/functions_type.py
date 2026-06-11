@@ -120,9 +120,8 @@ class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
             return sa.func.timezone(tz, value)  # make `timestamptz`
 
         if value_type in (DataType.INTEGER, DataType.FLOAT):
-            value = sa.func.to_timestamp(value)  # -> `timestamptz`
             # The timezone goes into the data_type_params.
-            return value
+            return sa.func.to_timestamp(value)  # -> `timestamptz`
 
         if value_type == DataType.STRING:
             # Casting to `timestamptz` ensures tzoffset in ISO strings isn't ignored.
@@ -156,8 +155,7 @@ class FuncDatetimeTZToNaivePG(base.FuncDatetimeTZToNaive):
         # Ensure the value is tz-aware in the postgresql:
         expr = sa.cast(expr, sa.TIMESTAMP(timezone=True))
         # Convert to postgresql's tz-naive value:
-        expr = sa.func.timezone(tz, expr)
-        return expr
+        return sa.func.timezone(tz, expr)
 
 
 class FuncDbCastPostgreSQLBase(base.FuncDbCastBase):

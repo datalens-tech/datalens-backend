@@ -73,9 +73,7 @@ class GitManager:  # type: ignore
                 cwd=destination.parent,
             )
 
-        dest_repo_manager = attr.evolve(self, path=destination)
-
-        return dest_repo_manager
+        return attr.evolve(self, path=destination)
 
     def checkout(self, rev: str) -> None:
         rev_hash = self._get_git_output(["rev-parse", rev], auto_strip=True)

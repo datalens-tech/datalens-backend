@@ -45,8 +45,7 @@ class GoogleOAuth(BaseOAuth):
             "prompt": "consent",
             "include_granted_scopes": "true",
         }
-        uri = self.auth_url + urllib.parse.urlencode(params)
-        return uri
+        return self.auth_url + urllib.parse.urlencode(params)
 
     async def get_auth_token(self, code: str, origin: str | None = None) -> dict[str, Any]:
         async with aiohttp.ClientSession(
@@ -74,7 +73,6 @@ class GoogleOAuth(BaseOAuth):
         )
 
     def _get_session_headers(self) -> dict[str, str]:
-        headers = {
+        return {
             "Content-Type": "application/x-www-form-urlencoded",
         }
-        return headers

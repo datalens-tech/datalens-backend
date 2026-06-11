@@ -38,11 +38,10 @@ class _StringLocalizer:
 def get_localizer(locale: str) -> _StringLocalizer:
     loc_loader = LocalizerLoader(configs=_LOCALIZATION_CONFIGS)
     loc_factory = loc_loader.load()
-    localizer = _StringLocalizer(
+    return _StringLocalizer(
         translatable_localizer=loc_factory.get_for_locale(locale=locale),
         default_domain=DOMAIN,
     )
-    return localizer
 
 
 @attr.s

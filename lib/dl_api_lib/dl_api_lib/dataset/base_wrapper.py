@@ -198,20 +198,18 @@ class DatasetBaseWrapper:
 
     def _get_data_source_coll_strict(self, source_id: str) -> DataSourceCollection:
         dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
-        dsrc_coll = self._dsrc_coll_factory.get_data_source_collection(
+        return self._dsrc_coll_factory.get_data_source_collection(
             spec=dsrc_coll_spec,
             dataset_parameter_values=self._get_dataset_parameter_values(),
             dataset_template_enabled=self._ds_accessor.get_template_enabled(),
         )
-        return dsrc_coll
 
     def _get_data_source_strict(self, source_id: str, role: DataSourceRole | None = None) -> DataSource:
         if role is None:
             role = self.resolve_role()
         assert role is not None
         dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
-        dsrc = dsrc_coll.get_strict(role=role)
-        return dsrc
+        return dsrc_coll.get_strict(role=role)
 
     def make_id_generator(self) -> FieldIdGenerator:
         id_generator_factory = self._service_registry.get_field_id_generator_factory()

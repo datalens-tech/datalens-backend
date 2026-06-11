@@ -68,8 +68,7 @@ class QueryCompiler:
 
     def _update_alias(self, formula: _COMPILED_FORMULA_INFO_TV, force: bool = False) -> _COMPILED_FORMULA_INFO_TV:
         alias = self._get_expression_alias(expr=formula.formula_obj, force=force)
-        formula = formula.clone(alias=alias)
-        return formula
+        return formula.clone(alias=alias)
 
     def _replace_wrapped_formula(
         self,
@@ -116,17 +115,15 @@ class QueryCompiler:
         select_wrapper: SelectWrapperSpec = SelectWrapperSpec(type=SelectValueType.plain),  # noqa: B008
     ) -> CompiledOrderByFormulaInfo:
         formula = self._make_compiled_formula(field_id=field_id, select_wrapper=select_wrapper)
-        formula = attrs_evolve_to_subclass(
+        return attrs_evolve_to_subclass(
             cls=CompiledOrderByFormulaInfo,
             inst=formula,
             direction=direction,
         )
-        return formula
 
     def _make_compiled_join_on_formula(self, relation_id: RelationId) -> CompiledJoinOnFormulaInfo:
         relation = self._ds_accessor.get_avatar_relation_strict(relation_id=relation_id)
-        formula = self._formula_compiler.compile_relation_formula(relation=relation)
-        return formula
+        return self._formula_compiler.compile_relation_formula(relation=relation)
 
     def _make_select(self, query_spec: QuerySpec) -> list[CompiledFormulaInfo]:
         result: list[CompiledFormulaInfo] = []
@@ -222,7 +219,7 @@ class QueryCompiler:
             column_reg=self._column_reg,
         )
 
-        compiled_query = CompiledQuery(
+        return CompiledQuery(
             id=BASE_QUERY_ID,
             level_type=ExecutionLevel.source_db,
             select=select,
@@ -235,4 +232,3 @@ class QueryCompiler:
             offset=query_spec.offset,
             meta=query_spec.meta,
         )
-        return compiled_query

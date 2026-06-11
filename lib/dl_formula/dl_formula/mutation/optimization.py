@@ -283,8 +283,7 @@ class OptimizeConstAndOrMutation(FormulaMutation):
             assert isinstance(old.right, nodes.BaseLiteral)
             const_node, expr_node = old.right, old.left
 
-        new_node = self._opt_ops[old.name][bool(const_node.value)](expr_node, old.meta)
-        return new_node
+        return self._opt_ops[old.name][bool(const_node.value)](expr_node, old.meta)
 
 
 class OptimizeConstFuncMutation(FormulaMutation):

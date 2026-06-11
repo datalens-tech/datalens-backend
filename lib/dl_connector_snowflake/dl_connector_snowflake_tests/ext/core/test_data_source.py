@@ -36,13 +36,12 @@ class TestSnowFlakeTableDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, settings: Settings) -> SnowFlakeTableDataSourceSpec:
-        dsrc_spec = SnowFlakeTableDataSourceSpec(
+        return SnowFlakeTableDataSourceSpec(
             source_type=SOURCE_TYPE_SNOWFLAKE_TABLE,
             table_name=settings.SNOWFLAKE_CONFIG["table_name"],
             db_name=settings.SNOWFLAKE_CONFIG["database"],
             schema_name=settings.SNOWFLAKE_CONFIG["schema"],
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return SAMPLE_TABLE_SIMPLIFIED_SCHEMA
@@ -62,11 +61,10 @@ class TestSnowFlakeSubselectDataSoure(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, settings: Settings) -> SnowFlakeSubselectDataSourceSpec:
-        dsrc_spec = SnowFlakeSubselectDataSourceSpec(
+        return SnowFlakeSubselectDataSourceSpec(
             source_type=SOURCE_TYPE_SNOWFLAKE_SUBSELECT,
             subsql=f"SELECT * FROM {settings.SNOWFLAKE_CONFIG['database']}.{settings.SNOWFLAKE_CONFIG['schema']}.{settings.SNOWFLAKE_CONFIG['table_name']}",
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return SAMPLE_TABLE_SIMPLIFIED_SCHEMA

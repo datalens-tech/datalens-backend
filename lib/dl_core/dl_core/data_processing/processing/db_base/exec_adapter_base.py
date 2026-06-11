@@ -132,7 +132,7 @@ class ProcessorDbExecAdapterBase(abc.ABC):
         query: str | Select,
         user_types: Sequence[UserDataType],
     ) -> QueryAndResultInfo:
-        query_res_info = QueryAndResultInfo(
+        return QueryAndResultInfo(
             query=query,  # type: ignore  # TODO: fix
             user_types=list(user_types),
             # This is basically legacy and will be removed.
@@ -140,7 +140,6 @@ class ProcessorDbExecAdapterBase(abc.ABC):
             # So we generate random ones here
             col_names=[f"col_{i}" for i in range(len(user_types))],
         )
-        return query_res_info
 
     async def create_table(
         self,

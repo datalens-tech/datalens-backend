@@ -440,8 +440,7 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
         expr = f"'{value_iso}'"
         if request.param == "lit":
             expr = f"__LIT__({expr})"
-        expr = f"DATETIMETZ({expr}, '{tz}')"
-        return expr
+        return f"DATETIMETZ({expr}, '{tz}')"
 
     def test_datetimetz_funcs(self, dbe: DbEvaluator, dttz_expr: str, forced_literal_use: Any) -> None:
         resp = dbe.eval(f"AVG({dttz_expr})")

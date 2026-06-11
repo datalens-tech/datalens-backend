@@ -399,5 +399,4 @@ _FS_EDITOR_CLASSES: dict[str, type[FilesystemEditor]] = {
 
 def get_fs_editor(fs_editor_type: str, base_path: Path) -> FilesystemEditor:
     fs_editor_cls = _FS_EDITOR_CLASSES[fs_editor_type]
-    fs_editor = fs_editor_cls(base_path=base_path)
-    return fs_editor
+    return fs_editor_cls(base_path=base_path)

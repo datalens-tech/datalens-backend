@@ -19,8 +19,7 @@ def secret_keeper() -> SecretKeeper:
 
 @pytest.fixture
 def secret_obfuscator(secret_keeper: SecretKeeper) -> SecretObfuscator:
-    obfuscator = SecretObfuscator(keeper=secret_keeper)
-    return obfuscator
+    return SecretObfuscator(keeper=secret_keeper)
 
 
 @pytest.fixture

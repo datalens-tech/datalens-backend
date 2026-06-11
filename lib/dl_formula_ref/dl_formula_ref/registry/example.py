@@ -46,12 +46,11 @@ class DataExample(DataExampleBase):
 
     def render(self, func_name: str, locale: str, config: DataExampleRendererConfig, under_cut: bool) -> str:
         example_renderer = self._get_renderer(locale=locale, config=config)
-        text = example_renderer.render_example_from_storage(
+        return example_renderer.render_example_from_storage(
             example=self._example_config,
             func_name=func_name,
             under_cut=under_cut,
         )
-        return text
 
 
 @attr.s(frozen=True)
@@ -60,9 +59,8 @@ class PredefinedDataExample(DataExampleBase):
 
     def render(self, func_name: str, locale: str, config: DataExampleRendererConfig, under_cut: bool) -> str:
         example_renderer = self._get_renderer(locale=locale, config=config)
-        text = example_renderer.render_example(
+        return example_renderer.render_example(
             example=self._example_config,
             result_table=self._example_config.result_table,
             under_cut=under_cut,
         )
-        return text

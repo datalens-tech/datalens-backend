@@ -81,21 +81,18 @@ def _gen_m_expr1(eng):
     expr = expr.group_by(sqlalchemy.column("browser"))
     expr = expr.limit(5)
     # expr = expr.offset(50)
-    expr = expr.order_by(sqlalchemy.column("ym:pv:date"))
-    return expr
+    return expr.order_by(sqlalchemy.column("ym:pv:date"))
 
 
 def _gen_m_expr_distinct_via_group_by(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:browserName").label("browser")])
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.group_by(sqlalchemy.column("browser"))
-    return expr
+    return expr.group_by(sqlalchemy.column("browser"))
 
 
 def _gen_m_expr_distinct(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:browserName")]).distinct()
-    expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    return expr
+    return expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
 
 
 def _gen_m_expr_date_min(eng):
@@ -104,8 +101,7 @@ def _gen_m_expr_date_min(eng):
     expr = expr.group_by(sqlalchemy.column("date"))
     expr = expr.limit(1)
     # expr = expr.order_by('date')
-    expr = expr.order_by(sqlalchemy.column("date"))
-    return expr
+    return expr.order_by(sqlalchemy.column("date"))
 
 
 def _gen_m_expr_date_max(eng):
@@ -113,8 +109,7 @@ def _gen_m_expr_date_max(eng):
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
     expr = expr.group_by(sqlalchemy.column("date"))
     expr = expr.limit(1)
-    expr = expr.order_by(sqlalchemy.desc(sqlalchemy.column("date")))
-    return expr
+    return expr.order_by(sqlalchemy.desc(sqlalchemy.column("date")))
 
 
 def _gen_m_expr_order_by(eng):
@@ -126,8 +121,7 @@ def _gen_m_expr_order_by(eng):
     )
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
     expr = expr.group_by(sqlalchemy.column("date"))
-    expr = expr.order_by(sqlalchemy.desc(sqlalchemy.literal_column("users")))
-    return expr
+    return expr.order_by(sqlalchemy.desc(sqlalchemy.literal_column("users")))
 
 
 def _gen_m_expr_cast(eng):
@@ -140,41 +134,36 @@ def _gen_m_expr_cast(eng):
             ).label("users_int"),
         ]
     )
-    expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    return expr
+    return expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
 
 
 def _gen_m_expr_date_between(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:pageviews"), sqlalchemy.column("ym:pv:users")])
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.where(sqlalchemy.column("ym:pv:date").between("2019-02-01", "2019-02-03"))
-    return expr
+    return expr.where(sqlalchemy.column("ym:pv:date").between("2019-02-01", "2019-02-03"))
 
 
 def _gen_m_expr_datetime_between_date(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:pageviews"), sqlalchemy.column("ym:pv:users")])
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.where(sqlalchemy.column("ym:pv:dateTime").between("2019-02-01", "2019-02-03"))
-    return expr
+    return expr.where(sqlalchemy.column("ym:pv:dateTime").between("2019-02-01", "2019-02-03"))
 
 
 def _gen_m_expr_datetime_between_datetime(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:pageviews"), sqlalchemy.column("ym:pv:users")])
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.where(
+    return expr.where(
         sqlalchemy.column("ym:pv:dateTime").between(
             datetime.datetime.fromisoformat("2019-02-01 00:00:00"),
             datetime.datetime.fromisoformat("2019-02-03 23:59:59"),
         )
     )
-    return expr
 
 
 def _gen_m_expr_datetime_between_datetime_str(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:pageviews"), sqlalchemy.column("ym:pv:users")])
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.where(sqlalchemy.column("ym:pv:dateTime").between("2019-02-01 00:00:00", "2019-02-03 23:59:59"))
-    return expr
+    return expr.where(sqlalchemy.column("ym:pv:dateTime").between("2019-02-01 00:00:00", "2019-02-03 23:59:59"))
 
 
 def __gen_select_users_browser(eng):
@@ -185,55 +174,47 @@ def __gen_select_users_browser(eng):
         ]
     )
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.group_by(sqlalchemy.column("browser"))
-    return expr
+    return expr.group_by(sqlalchemy.column("browser"))
 
 
 def _gen_m_expr_like(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.column("browser").like("Yandex*"))
-    return expr
+    return expr.where(sqlalchemy.column("browser").like("Yandex*"))
 
 
 def _gen_m_expr_not_like(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.column("browser").notlike("Yandex*"))
-    return expr
+    return expr.where(sqlalchemy.column("browser").notlike("Yandex*"))
 
 
 def _gen_m_expr_not_like_1(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.not_(sqlalchemy.column("browser").like("Yandex*")))
-    return expr
+    return expr.where(sqlalchemy.not_(sqlalchemy.column("browser").like("Yandex*")))
 
 
 def _gen_m_expr_contains(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.column("browser").contains("Yandex"))
-    return expr
+    return expr.where(sqlalchemy.column("browser").contains("Yandex"))
 
 
 def _gen_m_expr_not_contains(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.not_(sqlalchemy.column("browser").contains("Yandex")))
-    return expr
+    return expr.where(sqlalchemy.not_(sqlalchemy.column("browser").contains("Yandex")))
 
 
 def _gen_m_expr_startswith(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.column("browser").startswith("Yandex"))
-    return expr
+    return expr.where(sqlalchemy.column("browser").startswith("Yandex"))
 
 
 def _gen_m_expr_not_endswith(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(sqlalchemy.not_(sqlalchemy.column("browser").endswith("Chrome")))
-    return expr
+    return expr.where(sqlalchemy.not_(sqlalchemy.column("browser").endswith("Chrome")))
 
 
 def _gen_m_expr_not(eng):
     expr = __gen_select_users_browser(eng)
-    expr = expr.where(
+    return expr.where(
         sqlalchemy.not_(
             sqlalchemy.or_(
                 sqlalchemy.column("browser").like("Yandex*"),
@@ -241,7 +222,6 @@ def _gen_m_expr_not(eng):
             )
         )
     )
-    return expr
 
 
 def _gen_m_expr_not_in(eng):
@@ -253,16 +233,14 @@ def _gen_m_expr_not_in(eng):
     )
     expr = expr.select_from(sqlalchemy.Table(METRIKA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
     expr = expr.group_by(sqlalchemy.column("browser"))
-    expr = expr.where(sqlalchemy.column("browser").notin_(["Yandex Browser", "Google Chrome"]))
-    return expr
+    return expr.where(sqlalchemy.column("browser").notin_(["Yandex Browser", "Google Chrome"]))
 
 
 def _gen_am_expr1(eng):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:u:sessions"), sqlalchemy.column("ym:u:activeUsers")])
     expr = expr.group_by(sqlalchemy.column("ym:u:dayOfWeekName"))
     expr = expr.select_from(sqlalchemy.Table(APPMETRICA_SAMPLE_COUNTER_ID, sqlalchemy.MetaData(bind=eng)))
-    expr = expr.where(sqlalchemy.column("ym:u:date").between("2019-05-01", "2019-05-03"))
-    return expr
+    return expr.where(sqlalchemy.column("ym:u:date").between("2019-05-01", "2019-05-03"))
 
 
 metrika_expr_functions_list = [
@@ -304,8 +282,7 @@ def appmetrica_expr_func(request):
 @pytest.fixture
 def m_expr_distinct(metrika_sample_counter_id, metrika_db_engine):
     expr = sqlalchemy.select(columns=[sqlalchemy.column("ym:pv:dateTime")]).distinct()
-    expr = expr.select_from(sqlalchemy.Table(metrika_sample_counter_id, sqlalchemy.MetaData(bind=metrika_db_engine)))
-    return expr
+    return expr.select_from(sqlalchemy.Table(metrika_sample_counter_id, sqlalchemy.MetaData(bind=metrika_db_engine)))
 
 
 @pytest.fixture()
@@ -319,5 +296,4 @@ def metrika_expr_select_date_users(metrika_sample_counter_id, metrika_db_engine)
         columns=[sqlalchemy.column("ym:pv:date").label("date"), sqlalchemy.column("ym:pv:users")],
     )
     expr = expr.select_from(sqlalchemy.Table(metrika_sample_counter_id, sqlalchemy.MetaData(bind=metrika_db_engine)))
-    expr = expr.group_by(sqlalchemy.column("date"))
-    return expr
+    return expr.group_by(sqlalchemy.column("date"))

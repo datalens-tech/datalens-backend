@@ -35,8 +35,7 @@ class PdPivotPaginator(PivotPaginator):
             pd_df = pd_df.head(min(total_rows, limit_rows))
 
         # Create table copy with truncated data frame
-        pivot_dframe = pivot_dframe.clone(pd_df=pd_df)
-        return pivot_dframe
+        return pivot_dframe.clone(pd_df=pd_df)
 
 
 class PdHSeriesPivotPaginator(PivotPaginator):
@@ -54,8 +53,7 @@ class PdHSeriesPivotPaginator(PivotPaginator):
             assert pivot_dframe.get_row_count() == 1
             pd_series = pd_series.transform(lambda x: None)
 
-        pivot_dframe = pivot_dframe.clone(pd_series=pd_series)
-        return pivot_dframe
+        return pivot_dframe.clone(pd_series=pd_series)
 
 
 class PdVSeriesPivotPaginator(PivotPaginator):
@@ -80,5 +78,4 @@ class PdVSeriesPivotPaginator(PivotPaginator):
             pd_series = pd_series.head(min(total_rows, limit_rows))
 
         # Create table copy with truncated data frame
-        pivot_dframe = pivot_dframe.clone(pd_series=pd_series)
-        return pivot_dframe
+        return pivot_dframe.clone(pd_series=pd_series)

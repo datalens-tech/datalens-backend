@@ -10,8 +10,7 @@ class RequestPartSpecNormalizerBase[SPEC_TV](abc.ABC):
         used_ids = {
             spec.legend_item_id for spec in raw_query_spec_union.iter_item_specs() if spec.legend_item_id is not None
         }
-        id_gen = IdGenerator(used_ids=used_ids)
-        return id_gen
+        return IdGenerator(used_ids=used_ids)
 
     @abc.abstractmethod
     def normalize_spec(

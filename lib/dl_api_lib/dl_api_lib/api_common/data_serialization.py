@@ -150,8 +150,7 @@ class DataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):
         if reporting_registry is not None:
             data["notifications"] = reporting_registry.get_records_of_type(NotificationReportingRecord)
 
-        data = DataApiV2ResponseSchema().dump(data)
-        return data
+        return DataApiV2ResponseSchema().dump(data)
 
 
 def get_fields_data_raw(

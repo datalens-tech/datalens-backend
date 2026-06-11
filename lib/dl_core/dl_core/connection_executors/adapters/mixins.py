@@ -48,8 +48,7 @@ class SATypeTransformer(SAColumnTypeNormalizer):
             raise Exception(f"No defined `self._type_code_to_sa` on {self.__class__!r}")
 
         type_code = cursor_col[1]
-        sa_type = type_code_to_sa.get(type_code)
-        return sa_type
+        return type_code_to_sa.get(type_code)
 
     def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> bool | None:
         # No known `nullable=False` cases for subselects in PG and MySQL and

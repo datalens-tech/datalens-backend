@@ -176,12 +176,11 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             await preparation_callback()
 
         query_res_info = self._make_query_res_info(query=query, user_types=user_types)
-        data_stream_data = await self._get_data_stream_from_source(
+        return await self._get_data_stream_from_source(
             joint_dsrc_info=joint_dsrc_info,
             query_res_info=query_res_info,
             row_count_hard_limit=self._row_count_hard_limit,
         )
-        return data_stream_data
 
     def _save_start_exec_reporting_record(
         self,

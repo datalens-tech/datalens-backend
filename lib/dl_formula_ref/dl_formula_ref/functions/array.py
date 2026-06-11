@@ -420,7 +420,7 @@ ARRAY_AGGREGATION_FUNCTIONS_NOTE = Note(
 
 def _make_array_aggregation_function_example(func: str) -> list[DataExample]:
     func = func.upper()
-    examples = [
+    return [
         DataExample(
             example_config=ExampleConfig(
                 source=_EXAMPLE_SOURCE_ARRAY_AGGREGATION_FUNCTIONS,
@@ -439,7 +439,6 @@ def _make_array_aggregation_function_example(func: str) -> list[DataExample]:
             ),
         ),
     ]
-    return examples
 
 
 FUNCTION_ARR_MIN = FunctionDocRegistryItem(

@@ -33,8 +33,7 @@ class DLMYSQLCompilerBasic(UPSTREAM.statement_compiler):
         return super().visit_grouping(grouping, asfrom=asfrom, **kwargs)
 
     def _func_with_collate(self, func, **kwargs):
-        result = f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
-        return result
+        return f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
 
     def visit_lower_func(self, func, **kwargs):
         return self._func_with_collate(func, **kwargs)

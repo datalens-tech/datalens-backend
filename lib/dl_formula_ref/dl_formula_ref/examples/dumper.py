@@ -34,8 +34,7 @@ class DataDumper:
 
     def generate_sa_table(self, table_ref: TableReference) -> sa.Table:
         sa_columns = [sa.Column(name=col.name, type_=self.get_sa_type(col.data_type)) for col in table_ref.columns]
-        sa_table = self._db._engine_wrapper.table_from_columns(columns=sa_columns, table_name=table_ref.name)  # noqa
-        return sa_table
+        return self._db._engine_wrapper.table_from_columns(columns=sa_columns, table_name=table_ref.name)  # noqa
 
     def create_table(self, table: DataTable) -> TableReference:
         name = _make_name()
@@ -77,8 +76,7 @@ class DataDumper:
             [convert(val, col) for val, col in zip(row, query_ctx.result_columns, strict=True)]
             for row in self._db.execute(query_ctx.sa_query).fetchall()
         ]
-        result_data_table = DataTable(columns=list(query_ctx.result_columns), rows=rows)
-        return result_data_table
+        return DataTable(columns=list(query_ctx.result_columns), rows=rows)
 
 
 def get_dumper(db: Db) -> DataDumper:

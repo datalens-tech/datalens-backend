@@ -38,8 +38,7 @@ class FormulaConnector:
 
     @classmethod
     def get_dialect_names(cls) -> Sequence[DialectName]:
-        dialect_names = sorted({bit.name for bit in cls.dialects.bits}, key=lambda item: item.name)
-        return dialect_names
+        return sorted({bit.name for bit in cls.dialects.bits}, key=lambda item: item.name)
 
     @classmethod
     def registration_hook(cls) -> None:

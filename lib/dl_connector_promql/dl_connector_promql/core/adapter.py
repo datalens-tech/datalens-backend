@@ -153,7 +153,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 conn_params[param] = int(conn_param.timestamp())
 
         query_text = self.compile_query_for_execution(dba_query.query)
-        resp = await self._session.post(
+        return await self._session.post(
             url=urljoin(self._url, "api/v1/query_range"),
             data={
                 "query": query_text,
@@ -163,7 +163,6 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
             },
             allow_redirects=False,
         )
-        return resp
 
     @staticmethod
     def _parse_response_body_data(data: dict) -> dict:

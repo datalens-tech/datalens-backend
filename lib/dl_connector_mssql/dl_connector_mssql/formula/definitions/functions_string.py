@@ -17,13 +17,12 @@ def make_like_pattern_mssql_const(value: Any, left_any: bool = True, right_any: 
     # `value = re.sub(r'([\[%])', r'[\1]', value)`
     # https://stackoverflow.com/q/439495
     value = value.replace("%", "[%]")
-    result = "{}{}{}".format(
+    return "{}{}{}".format(
         "%" if left_any else "",
         value,
         "%" if right_any else "",
     )
     # result = literal(result)
-    return result
 
 
 def make_like_pattern_mssql_clause(clause, left_any=True, right_any=True):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]

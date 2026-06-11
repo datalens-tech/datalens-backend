@@ -38,8 +38,7 @@ class ValueQueryFormatter(QueryFormatter):
         format_state: QueryFormattingState,
     ) -> str:
         param = format_state.incoming_param_dict[param_name]
-        replacement_value = self._value_formatter.format_value(value=param.value, user_type=param.user_type)
-        return replacement_value
+        return self._value_formatter.format_value(value=param.value, user_type=param.user_type)
 
 
 @attr.s(frozen=True)
@@ -53,5 +52,4 @@ class DefaultParamValueFormatter(ParamValueFormatter):
 @attr.s(frozen=True)
 class DefaultValueQueryFormatterFactory(QueryFormatterFactory):
     def get_query_formatter(self) -> QueryFormatter:
-        query_formatter = ValueQueryFormatter(value_formatter=DefaultParamValueFormatter())
-        return query_formatter
+        return ValueQueryFormatter(value_formatter=DefaultParamValueFormatter())

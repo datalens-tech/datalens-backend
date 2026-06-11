@@ -36,13 +36,12 @@ class TestTrinoTableDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table: DbTable) -> StandardSchemaSQLDataSourceSpec:
-        dsrc_spec = StandardSchemaSQLDataSourceSpec(
+        return StandardSchemaSQLDataSourceSpec(
             source_type=SOURCE_TYPE_TRINO_TABLE,
             db_name=sample_table.db.name,
             schema_name=sample_table.schema,
             table_name=sample_table.name,
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)
@@ -62,11 +61,10 @@ class TestTrinoSubselectDataSource(
 
     @pytest.fixture(scope="class")
     def initial_data_source_spec(self, sample_table: DbTable) -> SubselectDataSourceSpec:
-        dsrc_spec = SubselectDataSourceSpec(
+        return SubselectDataSourceSpec(
             source_type=SOURCE_TYPE_TRINO_SUBSELECT,
             subsql=f"SELECT * FROM {sample_table.db.name}.{sample_table.schema}.{sample_table.name}",
         )
-        return dsrc_spec
 
     def get_expected_simplified_schema(self) -> list[tuple[str, UserDataType]]:
         return list(TABLE_SPEC_SAMPLE_SUPERSTORE.table_schema)

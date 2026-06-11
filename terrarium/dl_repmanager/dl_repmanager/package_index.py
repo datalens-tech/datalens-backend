@@ -99,7 +99,7 @@ class PackageIndexBuilder:
                 continue  # it is not a test dir
             test_dirs.append(test_dir.name)
 
-        package_info = PackageInfo(
+        return PackageInfo(
             package_type=package_type,
             package_reg_name=package_reg_name,
             abs_path=abs_package_dir_path,
@@ -109,7 +109,6 @@ class PackageIndexBuilder:
             implicit_deps=implicit_reqs,
             i18n_domains=i18n_domains,
         )
-        return package_info
 
     def build_index(self) -> PackageIndex:
         package_infos_by_reg_name: dict[str, PackageInfo] = {}
@@ -137,11 +136,10 @@ class PackageIndexBuilder:
                 for test_dir in package_info.test_dirs:
                     package_infos_by_test_name[test_dir] = package_info
 
-        package_index = PackageIndex(
+        return PackageIndex(
             built=True,
             package_infos_by_reg_name=package_infos_by_reg_name,
             package_infos_by_path=package_infos_by_path,
             package_infos_by_module_name=package_infos_by_module_name,
             package_infos_by_test_name=package_infos_by_test_name,
         )
-        return package_index

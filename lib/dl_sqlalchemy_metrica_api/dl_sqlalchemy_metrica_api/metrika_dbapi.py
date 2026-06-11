@@ -256,13 +256,12 @@ class Cursor:
         ]
 
     def _meth_by_operation(self, operation):
-        meth = {
+        return {
             InternalCommands.get_columns.value: self._exec_get_columns,
             InternalCommands.get_tables.value: self._exec_get_tables,
             InternalCommands.get_avail_date_min.value: self._exec_get_avail_date_min,
             InternalCommands.get_avail_date_max.value: self._exec_get_avail_date_max,
         }.get(operation)
-        return meth
 
     @check_cursor_connected
     def execute(self, operation, parameters=None):

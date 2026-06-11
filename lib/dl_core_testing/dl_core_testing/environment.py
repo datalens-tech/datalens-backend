@@ -62,15 +62,13 @@ def _wait_for_pg(dsn: str, timeout: int = 300, interval: float = 1.0) -> None:
 
 def is_docker_host_ssh() -> bool:
     docker_host = os.environ.get("DOCKER_HOST", "")
-    use_ssh_client = docker_host.startswith("ssh://")
-    return use_ssh_client
+    return docker_host.startswith("ssh://")
 
 
 def make_docker_cli(timeout: int = 300) -> DockerClient:
     import docker
 
-    docker_cli = docker.from_env(timeout=timeout, use_ssh_client=is_docker_host_ssh())
-    return docker_cli
+    return docker.from_env(timeout=timeout, use_ssh_client=is_docker_host_ssh())
 
 
 def restart_container(container_name: str) -> None:

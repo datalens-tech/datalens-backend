@@ -144,8 +144,6 @@ class DataPostprocessor:
             ),
         )
 
-        postprocessed_query = PostprocessedQuery(
+        return PostprocessedQuery(
             postprocessed_data=postprocessed_data, meta=PostprocessedQueryMetaInfo.from_exec_meta(exec_meta=query_meta)
         )
-
-        return postprocessed_query

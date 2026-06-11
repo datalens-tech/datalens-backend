@@ -201,7 +201,7 @@ class SqlSourceBuilder:
                 prepared_sources=prepared_sources,
             )
 
-        joint_dsrc_info = PreparedMultiFromInfo(
+        return PreparedMultiFromInfo(
             sql_source=joint_source,
             data_source_list=data_source_list,
             query_compiler=first_prep_source.query_compiler,
@@ -212,4 +212,3 @@ class SqlSourceBuilder:
             target_connection_ref=first_prep_source.target_connection_ref,
             data_key=data_key,
         )
-        return joint_dsrc_info

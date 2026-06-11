@@ -61,10 +61,9 @@ class QueryGenerator:
                 )
             )
 
-        query_ctx = RawQueryContext(
+        return RawQueryContext(
             result_columns=result_columns,
             select=select,
             group_by=group_by,
             order_by=order_by,
         )
-        return query_ctx

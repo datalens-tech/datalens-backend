@@ -311,8 +311,7 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
                 unwrap_args=unwrap_args,
             )
 
-        instance = cls(dialects=dialects, value=translation_impl)
-        return instance
+        return cls(dialects=dialects, value=translation_impl)
 
     def __repr__(self) -> str:
         _c0 = "\x1b[0m"

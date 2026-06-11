@@ -97,8 +97,7 @@ class AsyncStarRocksAdapter(
 
     @property
     def _dialect(self) -> sa.engine.default.DefaultDialect:
-        dialect = BIStarRocksDialect(paramstyle="pyformat")
-        return dialect
+        return BIStarRocksDialect(paramstyle="pyformat")
 
     def _cursor_column_to_nullable(self, cursor_col: tuple[Any, ...]) -> bool | None:
         # See https://aiomysql.readthedocs.io/en/latest/cursors.html#Cursor.description

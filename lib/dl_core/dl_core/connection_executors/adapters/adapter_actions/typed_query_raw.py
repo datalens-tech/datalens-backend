@@ -28,7 +28,7 @@ class TypedQueryRawToDBAQueryConverter:
 
     def make_dba_query(self, typed_query_raw: TypedQueryRaw) -> DBAdapterQuery:
         params = typed_query_raw.parameters
-        dba_query = DBAdapterQuery(
+        return DBAdapterQuery(
             query=params.path,
             connector_specific_params=dict(
                 method=params.method,
@@ -38,7 +38,6 @@ class TypedQueryRawToDBAQueryConverter:
             debug_compiled_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",
             inspector_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",  # TODO: BI-6448
         )
-        return dba_query
 
 
 @attr.s(frozen=True)
@@ -58,5 +57,4 @@ class AsyncTypedQueryRawAdapterActionViaStandardExecute(AsyncTypedQueryRawAdapte
             headers=dba_async_result.raw_data["headers"],
             body=dba_async_result.raw_data["body"],
         )
-        result = TypedQueryRawResult(query_type=typed_query_raw.query_type, data=result_data)
-        return result
+        return TypedQueryRawResult(query_type=typed_query_raw.query_type, data=result_data)

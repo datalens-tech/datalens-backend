@@ -55,8 +55,7 @@ def parse(formula: str) -> nodes.Formula:
             token=raw_token.text,
         ) from err
 
-    formula_obj = CustomDataLensVisitor(text=formula).visitParse(tree)
-    return formula_obj
+    return CustomDataLensVisitor(text=formula).visitParse(tree)
 
 
 class AntlrPyFormulaParser(FormulaParser):

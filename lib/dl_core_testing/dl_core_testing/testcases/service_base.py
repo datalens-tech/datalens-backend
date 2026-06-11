@@ -90,8 +90,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
 
     @pytest.fixture(scope="session")
     def conn_bi_context(self) -> RequestContextInfo:
-        bi_context = RequestContextInfo.create_empty()
-        return bi_context
+        return RequestContextInfo.create_empty()
 
     @pytest.fixture(scope="session")
     def root_certificates(self) -> bytes:
@@ -239,7 +238,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         conn_bi_context: RequestContextInfo,
         conn_default_service_registry: ServicesRegistry,
     ) -> SyncUSManager:
-        us_manager = SyncUSManager(
+        return SyncUSManager(
             bi_context=conn_bi_context,
             services_registry=conn_default_service_registry,
             us_base_url=conn_us_config.us_base_url,
@@ -247,7 +246,6 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             crypto_keys_config=conn_us_config.us_crypto_keys_config,
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
-        return us_manager
 
     @pytest.fixture(scope="class")
     def conn_default_async_us_manager(
@@ -257,7 +255,7 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
         conn_async_service_registry: ServicesRegistry,
         root_certificates: bytes,
     ) -> AsyncUSManager:
-        us_manager = AsyncUSManager(
+        return AsyncUSManager(
             bi_context=conn_bi_context,
             services_registry=conn_async_service_registry,
             us_base_url=conn_us_config.us_base_url,
@@ -266,7 +264,6 @@ class ServiceFixtureTextClass(metaclass=abc.ABCMeta):
             ca_data=root_certificates,
             retry_policy_factory=dl_retrier.DefaultRetryPolicyFactory(),
         )
-        return us_manager
 
 
 class DbServiceFixtureTextClass(metaclass=abc.ABCMeta):

@@ -50,14 +50,12 @@ class ConnectionSchema(USEntryBaseSchema):
             ct = ConnectionType(self.context[self.CONN_TYPE_CTX_KEY])
         except ValueError:
             ct = ConnectionType.unknown
-        ret = dict(
+        return dict(
             super().default_create_from_dict_kwargs(data),
             type_=ct.name,
             permissions_mode=data["permissions_mode"],
             initial_permissions=data["initial_permissions"],
         )
-
-        return ret
 
 
 class RequiredParameterInfoSchema(Schema):

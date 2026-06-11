@@ -154,8 +154,7 @@ def _get_uwsgi_data(sock_path=None):
     if not sock_path:
         raise Exception("UWSGI_STATS socket path env variable is not set")
 
-    data = _collect_uwsgi_info(sock_path)
-    return data
+    return _collect_uwsgi_info(sock_path)
 
 
 def uwsgi_prometheus(sock_path=None, label_prefix=""):

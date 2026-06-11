@@ -28,7 +28,7 @@ def _make_spec_from_implementation(impl: MultiVariantTranslation) -> FunctionImp
         dialects |= variant.dialects
 
     assert impl.name is not None
-    impl_spec = FunctionImplementationSpec(
+    return FunctionImplementationSpec(
         name=impl.name,
         arg_cnt=impl.arg_cnt,
         arg_names=impl.arg_names or (),
@@ -38,7 +38,6 @@ def _make_spec_from_implementation(impl: MultiVariantTranslation) -> FunctionImp
         dialects=dialects,
         return_flags=impl.return_flags,
     )
-    return impl_spec
 
 
 @lru_cache

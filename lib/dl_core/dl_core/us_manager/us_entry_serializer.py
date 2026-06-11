@@ -198,9 +198,7 @@ class USEntrySerializer(abc.ABC):
 class USEntrySerializerMarshmallow(USEntrySerializer):
     def serialize_raw(self, entry: USEntry) -> dict[str, Any]:
         dump_schema = self.get_dump_storage_schema(type(entry.data))
-        data_dict = dump_schema.dump(entry.data)
-
-        return data_dict
+        return dump_schema.dump(entry.data)
 
     def deserialize_raw(
         self,
@@ -216,15 +214,13 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
         schema = self.get_load_storage_schema(data_cls)
 
         data = schema.load(raw_data)
-        entry = cls(
+        return cls(
             uuid=entry_id,
             us_manager=us_manager,
             data=data,
             data_strict=data_strict,
             **common_properties,
         )
-
-        return entry
 
     def get_secret_keys(self, cls: type[USEntry]) -> set[DataKey]:
         data_cls = cls.DataModel

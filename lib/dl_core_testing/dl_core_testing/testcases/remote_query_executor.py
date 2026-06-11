@@ -136,8 +136,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
     async def execute_request(self, remote_adapter: RemoteAsyncAdapter, query: str) -> list[TBIDataRow]:
         async with remote_adapter:
             resp = await remote_adapter.execute(DBAdapterQuery(query))
-            result = await alist(resp.get_all_rows())
-        return result
+            return await alist(resp.get_all_rows())
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("forbid_private_addr", [True])

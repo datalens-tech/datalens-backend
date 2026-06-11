@@ -47,12 +47,11 @@ class Db(DbBase[FormulaDbConfig]):
 def make_db_config(dialect: DialectCombo, url: str, tzinfo: datetime.tzinfo | None = None) -> FormulaDbConfig:
     db_eng_config_cls = get_engine_wrapper_cls_for_url(url).CONFIG_CLS
     db_eng_config = db_eng_config_cls(url=url)
-    db_config = FormulaDbConfig(
+    return FormulaDbConfig(
         engine_config=db_eng_config,
         dialect=dialect,
         tzinfo=tzinfo,
     )
-    return db_config
 
 
 def make_db_from_config(db_config: FormulaDbConfig) -> Db:

@@ -75,8 +75,7 @@ class FuncDatetimeTZCH(SingleVariantTranslationBase, base.FuncDatetimeTZ):
             # rather than re-interpret it at the specified timezone.
             expr = sa.func.formatDateTime(expr, "%Y-%m-%d %H:%M:%S")
         expr = sa.func.toDateTime(expr, tz_ctx.expression)  # 'interpret in', effectively
-        expr = sa.func.toDateTime(expr, "UTC")
-        return expr
+        return sa.func.toDateTime(expr, "UTC")
 
 
 class FuncDatetimeTZToNaiveCH(base.FuncDatetimeTZToNaive):
@@ -90,8 +89,7 @@ class FuncDatetimeTZToNaiveCH(base.FuncDatetimeTZToNaive):
         # use cases: datepart, grouping (tz transitions should actually group into one value)
         expr = sa.func.toDateTime(expr, tz)
         # TODO: find a better way to tz-shift the value in CH: https://github.com/ClickHouse/ClickHouse/issues/19768
-        expr = sa.func.toDateTime(sa.func.formatDateTime(expr, "%Y-%m-%d %H:%M:%S"), "UTC")
-        return expr
+        return sa.func.toDateTime(sa.func.formatDateTime(expr, "%Y-%m-%d %H:%M:%S"), "UTC")
 
 
 # Note: `SingleVariantTranslationBase` here essentially acts as a mixin, providing
@@ -156,8 +154,7 @@ class FuncDbCastClickHouseBase(base.FuncDbCastBase):
     ) -> TypeEngine:
         # Add Nullable wrapper
         type_ = super().generate_cast_type(dialect=dialect, wr_name=wr_name, value=value, type_args=type_args)
-        type_ = ch_types.Nullable(type_)
-        return type_
+        return ch_types.Nullable(type_)
 
 
 class FuncDbCastClickHouse2(FuncDbCastClickHouseBase, base.FuncDbCast2):

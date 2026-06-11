@@ -168,8 +168,7 @@ class LODTestAutoGenerator:
 
         formula_tmpl, child_recursion_state = self._generate_formula_iteration(recursion_state=recursion_state)
         nested_formula = self.generate_formula(recursion_state=child_recursion_state)
-        formula = formula_tmpl.wrap(nested_formula)
-        return formula
+        return formula_tmpl.wrap(nested_formula)
 
     def generate_test_settings(self) -> TestSettings:
         dimension_cnt = random.choice(self.settings.dimension_cnts)
@@ -194,12 +193,11 @@ class LODTestAutoGenerator:
 
         measure_formulas = [self.generate_formula(recursion_state=recursion_state) for i in range(formula_cnt)]
 
-        test_settings = TestSettings(
+        return TestSettings(
             base_dimensions=base_dimensions,
             measure_formulas=measure_formulas,
             filters=chosen_filters,
         )
-        return test_settings
 
     def generate_setting_list(self, test_cnt: int) -> list[TestSettings]:
         return [self.generate_test_settings() for i in range(test_cnt)]

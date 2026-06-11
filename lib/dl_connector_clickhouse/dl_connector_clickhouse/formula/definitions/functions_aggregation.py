@@ -34,8 +34,7 @@ def _all_concat_ch(expr: ClauseElement, sep: str = ", ") -> ClauseElement:
     # Array(Any) -> Array(String)
     res = sa.func.arrayMap(chsq_clauses.Lambda(_explicit_ch_tostring), res)
     # Array(String) -> String
-    res = sa.func.arrayStringConcat(res, sep)
-    return res
+    return sa.func.arrayStringConcat(res, sep)
 
 
 def _top_concat_ch(expr: ClauseElement, amount: ClauseElement, sep: str = ", ") -> ClauseElement:
@@ -48,8 +47,7 @@ def _top_concat_ch(expr: ClauseElement, amount: ClauseElement, sep: str = ", ") 
     # Array(Any) -> Array(String)
     res = sa.func.arrayMap(chsq_clauses.Lambda(lambda x: sa.func.toString(x)), res)
     # Array(String) -> String
-    res = sa.func.arrayStringConcat(res, sep)
-    return res
+    return sa.func.arrayStringConcat(res, sep)
 
 
 DEFINITIONS_AGG = [

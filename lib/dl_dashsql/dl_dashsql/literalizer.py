@@ -28,7 +28,6 @@ class DashSQLParamLiteralizer(abc.ABC):
 class DefaultDashSQLParamLiteralizer(DashSQLParamLiteralizer):
     def get_sa_type(self, bi_type: UserDataType, value_base: IncomingDSQLParamTypeExt) -> TypeEngine:
         try:
-            sa_type = BI_TYPE_TO_SA_TYPE[bi_type]
-            return sa_type
+            return BI_TYPE_TO_SA_TYPE[bi_type]
         except (KeyError, ValueError) as e:
             raise DashSQLError(f"Unsupported type {bi_type.name!r}") from e

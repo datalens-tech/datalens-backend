@@ -36,8 +36,7 @@ def all_db_configurations():
 def base_db_for(dialect: DialectCombo) -> Db:
     url = ALL_DB_CONFIGURATIONS[dialect]
     assert url
-    db = make_db_from_config(make_db_config(url=url, dialect=dialect))
-    return db
+    return make_db_from_config(make_db_config(url=url, dialect=dialect))
 
 
 def alive_db_for(dialect, timelimit, poll_pause):
@@ -83,8 +82,7 @@ DB_STATE_TRACKING = DbStateTracking()
 
 def dbe_for(dialect: DialectCombo, wait_for_up_timeout=180.0, wait_for_up_pause=0.7) -> DbEvaluator:
     db = DB_STATE_TRACKING.get_db(dialect=dialect, global_timeout=wait_for_up_timeout, poll_pause=wait_for_up_pause)
-    dbe = DbEvaluator(db=db)
-    return dbe
+    return DbEvaluator(db=db)
 
 
 @pytest.fixture(

@@ -182,11 +182,10 @@ class NullifyFormulaAtomicQueryMutator(AtomicQueryFormulaListMutatorBase):
         formula_list: list[_COMPILED_FLA_TV],
         query_part: QueryPart,
     ) -> list[_COMPILED_FLA_TV]:
-        new_formula_list = [
+        return [
             self.nullify_formula(formula) if self.should_nullify_formula(formula, query_part=query_part) else formula
             for formula in formula_list
         ]
-        return new_formula_list
 
 
 @attr.s
@@ -206,12 +205,11 @@ class RemoveConstFromGroupByFormulaAtomicQueryMutator(AtomicQueryFormulaListMuta
         if query_part != QueryPart.group_by or self._dialects not in self._applicable_dialects:
             return formula_list
 
-        new_group_by_formula_list = [
+        return [
             group_by_item
             for group_by_item in formula_list
             if not is_bound_only_to(group_by_item.formula_obj, NodeSet())
         ]
-        return new_group_by_formula_list
 
     @classmethod
     def register_dialect(cls, dialects: DialectCombo) -> None:
@@ -251,8 +249,7 @@ class DefaultAtomicQueryMutator(AtomicQueryFormulaMutatorBase):
         if formula_obj is formula.formula_obj:
             # No changes
             return formula
-        formula = formula.clone(formula_obj=formula_obj)
-        return formula
+        return formula.clone(formula_obj=formula_obj)
 
 
 @attr.s

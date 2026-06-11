@@ -205,8 +205,7 @@ class DbEvaluator:
                 try:
                     if many:
                         return [convert(row[0]) for row in self.db.execute(query).fetchall()]
-                    result = convert(self.db.execute(query).scalar())
-                    return result
+                    return convert(self.db.execute(query).scalar())
                 except Exception as exc:
                     exc_str = str(exc)
                     if attempt < self.attempts - 1 and (

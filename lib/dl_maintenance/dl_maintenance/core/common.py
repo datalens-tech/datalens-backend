@@ -65,8 +65,7 @@ class MaintenanceEnvironmentManagerBase:
 
     def get_ca_data(self) -> bytes:
         settings = self.get_app_settings()
-        ca_data = get_root_certificates(path=settings.CA_FILE_PATH)
-        return ca_data
+        return get_root_certificates(path=settings.CA_FILE_PATH)
 
     def get_usm_from_env(self, use_sr_factory: bool = True, is_async_env: bool = True) -> SyncUSManager:
         us_config = self.get_us_config()

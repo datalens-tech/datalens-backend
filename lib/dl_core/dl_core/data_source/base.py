@@ -396,11 +396,10 @@ class DataSource(metaclass=abc.ABCMeta):
         else:
             compiled_sql_source = sql_source.compile(compile_kwargs={"literal_binds": True}).string
 
-        local_key_rep = local_key_rep.extend(
+        return local_key_rep.extend(
             part_type="data_source_sql",
             part_content=compiled_sql_source,
         )
-        return local_key_rep
 
 
 class IncompatibleDataSourceMixin(DataSource):

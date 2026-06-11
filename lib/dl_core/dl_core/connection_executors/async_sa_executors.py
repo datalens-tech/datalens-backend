@@ -103,8 +103,7 @@ def _postprocess_db_excs_wrapper(func: Callable) -> Callable:
 
 def _common_exec_wrapper(func: Callable) -> Callable:
     func = _dba_pool_revolver_wrapper(func)
-    func = _postprocess_db_excs_wrapper(func)
-    return func
+    return _postprocess_db_excs_wrapper(func)
 
 
 # TODO FIX: Encapsulate STRAIGHTFORWARD/WRAPPED state to single object to simplify code

@@ -191,9 +191,7 @@ class AsyncUSManager(USManagerBase):
             entry_id=entry_id,
             entry_scope=expected_type.scope if expected_type is not None else None,
         ):
-            us_resp = await self.get_migrated_entry(entry_id, params=params)
-
-        return us_resp
+            return await self.get_migrated_entry(entry_id, params=params)
 
     @generic_profiler_async("us-deserialize-entity-raw")  # type: ignore  # TODO: fix
     async def deserialize_us_resp(
