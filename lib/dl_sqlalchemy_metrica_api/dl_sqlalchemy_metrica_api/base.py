@@ -45,7 +45,7 @@ DEFAULT_DATE_PERIOD = 60  # days
 
 class MetrikaApiReqPreparer(compiler.IdentifierPreparer):
     illegal_initial_characters = {"$"}
-    legal_characters = re.compile(r"^[A-Z0-9_:<>\-$]+$", re.I)  # added ":<>-"
+    legal_characters = re.compile(r"^[A-Z0-9_:<>\-$]+$", re.IGNORECASE)  # added ":<>-"
 
     def __init__(self, dialect, **kwargs):
         kwargs.update(initial_quote="'", escape_quote="'")

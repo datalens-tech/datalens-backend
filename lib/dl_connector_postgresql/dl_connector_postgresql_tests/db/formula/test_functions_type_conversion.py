@@ -216,9 +216,9 @@ class DbCastTypeFunctionPostgreSQLTestSuite(
         assert dbe.eval(f'DB_CAST(ARRAY({array_float_string}), "real[]")', from_=data_table) == array_float
         assert dbe.eval(f'DB_CAST(ARRAY({array_float_string}), "numeric[]", 5, 0)', from_=data_table) == array_float
         assert dbe.eval('DB_CAST([arr_float_value], "numeric[]", 5, 0)', from_=data_table) == [
-            Decimal("0"),
-            Decimal("45"),
-            Decimal("0"),
+            Decimal(0),
+            Decimal(45),
+            Decimal(0),
             None,
         ]
 

@@ -404,7 +404,7 @@ def is_raw_sql_level_dashsql_allowed(raw_sql_level: RawSQLLevel) -> bool:
 
 
 def is_raw_sql_level_readwrite_allowed(raw_sql_level: RawSQLLevel) -> bool:
-    return raw_sql_level in (RawSQLLevel.readwrite,)
+    return raw_sql_level == RawSQLLevel.readwrite
 
 
 class DashSQLQueryType(DynamicEnum):

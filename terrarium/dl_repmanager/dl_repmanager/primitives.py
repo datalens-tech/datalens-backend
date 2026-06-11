@@ -81,7 +81,7 @@ class PypiReqPackageSpec(ReqPackageSpec):
         return f'{self.package_name} = "{self.version}"'
 
     def to_toml_value(self) -> Any:
-        return self.version if self.version else "*"
+        return self.version or "*"
 
 
 @attr.s(frozen=True)

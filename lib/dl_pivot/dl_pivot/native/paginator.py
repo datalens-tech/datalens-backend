@@ -41,9 +41,8 @@ class NativePivotPaginator(PivotPaginator):
                 value = pivot_dframe.data.get(double_key)
                 if value is not None:
                     new_data[double_key] = value
-                    if column_key in unused_column_keys:
-                        # column_key is used in the new data sub-set, so remove it from unused
-                        unused_column_keys.remove(column_key)
+                    # column_key is used in the new data sub-set, so remove it from unused
+                    unused_column_keys.discard(column_key)
 
         if self._remove_empty_columns:
             # If feature is enabled, clean up columns that have been left

@@ -18,7 +18,7 @@ def set_up(app: Flask, accept_outer_stages=False, **kwargs):  # type: ignore  # 
     def pre_log_profiling_stack():  # type: ignore  # TODO: fix
         if accept_outer_stages:
             profiling_stack = request.headers.get(headers.INTERNAL_HEADER_PROFILING_STACK)
-            GenericProfiler.reset_all(profiling_stack if profiling_stack else None)
+            GenericProfiler.reset_all(profiling_stack or None)
         else:
             GenericProfiler.reset_all()
 

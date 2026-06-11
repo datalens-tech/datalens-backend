@@ -17,11 +17,7 @@ class PipRequirement:
 
     @property
     def cleaned_version(self) -> str:
-        cleaned_version = _strip_version(self.raw_version)
-        if cleaned_version.startswith("=="):
-            cleaned_version = cleaned_version[2:]
-
-        return cleaned_version
+        return _strip_version(self.raw_version).removeprefix("==")
 
 
 @attr.s(frozen=True)
@@ -31,7 +27,7 @@ class PipRequirementsIO:
     def read_existing(self, gather_all: bool = False) -> dict[str, PipRequirement]:
         result = {}
         with open(self.path) as fh:
-            for line in fh.readlines():
+            for line in fh:
                 try:
                     parts = line.strip().split("==")
                     name = parts[0].strip()
@@ -49,5 +45,4 @@ class PipRequirementsIO:
         requirements = self.read_existing(gather_all=True)
         requirements.update(to_update)
         with open(self.path, "w") as fh:
-            for name, requirement in sorted(requirements.items()):
-                fh.write(f"{name}=={requirement.raw_version}\n")
+            fh.writelines(f"{name}=={requirement.raw_version}\n" for name, requirement in sorted(requirements.items()))

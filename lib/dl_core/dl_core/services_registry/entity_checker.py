@@ -24,7 +24,7 @@ class EntityUsageNotAllowed(Exception):
 
     @property
     def user_reason(self) -> str:
-        return self._user_reason if self._user_reason else "Unknown reason"
+        return self._user_reason or "Unknown reason"
 
 
 class EntityUsageChecker(metaclass=abc.ABCMeta):

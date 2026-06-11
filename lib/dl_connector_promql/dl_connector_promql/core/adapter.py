@@ -65,7 +65,7 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
             "passwd": quote(self._target_dto.password, safe="") if self._target_dto.password is not None else None,
             "host": quote(self._target_dto.host, safe=""),
             "port": quote(str(self._target_dto.port), safe=""),
-            "db_name": quote(db_name if db_name else (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
+            "db_name": quote(db_name or (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
         }
 
     def _get_dsn_query_params(self) -> dict:

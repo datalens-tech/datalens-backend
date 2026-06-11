@@ -386,7 +386,7 @@ class SchemaSQLDataSourceMixin(BaseSQLDataSource):
         assert isinstance(self._spec, SchemaSQLDataSourceSpec)
         # TODO FIX: DO NOT DO THIS IN PROPERTY!!!!!
         #  USE METHOD get_effective schema name or dump from connection on initial data source creation
-        return self._spec.schema_name if self._spec.schema_name else self.get_connection_cls().default_schema_name  # type: ignore  # TODO: fix
+        return self._spec.schema_name or self.get_connection_cls().default_schema_name  # type: ignore  # TODO: fix
 
 
 @attr.s
