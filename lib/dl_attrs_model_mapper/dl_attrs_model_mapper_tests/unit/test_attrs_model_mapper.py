@@ -207,7 +207,7 @@ def test_enum_by_value():
 
     serialized = schema_cls().dump(target)
 
-    assert serialized == dict(axis=target.axis.value, ab=target.ab.name)
+    assert serialized == {"axis": target.axis.value, "ab": target.ab.name}
 
     restored_target = schema_cls().load(serialized)
     assert restored_target == target
@@ -243,12 +243,12 @@ def test_nested_containers():
 
     serialized = schema_cls().dump(target)
 
-    assert serialized == dict(
-        list_of_lists_of_ints=target.list_of_lists_of_ints,
-        list_of_lists_of_lists_of_points=[
+    assert serialized == {
+        "list_of_lists_of_ints": target.list_of_lists_of_ints,
+        "list_of_lists_of_lists_of_points": [
             [[attr.asdict(point) for point in l2] for l2 in l1] for l1 in target.list_of_lists_of_lists_of_points
         ],
-    )
+    }
 
     restored_target = schema_cls().load(serialized)
     assert restored_target == target
@@ -275,9 +275,9 @@ def test_FrozenMappingStrToStrOrStrSeqField():
 
     # Serialization
     serialized = schema_cls().dump(target)
-    assert serialized == dict(
-        m=mapping_data,
-    )
+    assert serialized == {
+        "m": mapping_data,
+    }
 
     # Deserialization
     deserialized = schema_cls().load(serialized)
@@ -305,9 +305,9 @@ def test_frozen_str_mapping():
 
     # Serialization
     serialized = schema_cls().dump(target)
-    assert serialized == dict(
-        m=mapping_data,
-    )
+    assert serialized == {
+        "m": mapping_data,
+    }
 
     # Deserialization
     deserialized = schema_cls().load(serialized)
@@ -315,7 +315,7 @@ def test_frozen_str_mapping():
 
     # Deserialization errors
     with pytest.raises(marshmallow.ValidationError) as exc_pack:
-        schema_cls().load(dict(m={"de_havilland": None}))
+        schema_cls().load({"m": {"de_havilland": None}})
 
     assert exc_pack.value.messages == {
         "m": {"de_havilland": {"value": ["Field may not be null."]}},
@@ -352,13 +352,13 @@ def test_serialization_key():
 
     serialized = schema_cls().dump(target)
 
-    assert serialized == dict(
-        lop=[dict(the_x=0, y=0)],
-        loint=[1, 2, 3],
-        slan=1984,
-        no_serialization_key="no_serialization_key_value",
-        p=dict(the_x=-1, y=-1),
-    )
+    assert serialized == {
+        "lop": [{"the_x": 0, "y": 0}],
+        "loint": [1, 2, 3],
+        "slan": 1984,
+        "no_serialization_key": "no_serialization_key_value",
+        "p": {"the_x": -1, "y": -1},
+    }
 
     restored = schema_cls().load(serialized)
 
@@ -379,11 +379,11 @@ class MAFieldProjection:
 
     @classmethod
     def get_default_kwargs(cls, ma_field: fields.Field) -> dict:
-        return dict(
-            allow_none=ma_field.allow_none,
-            attribute=ma_field.attribute,
-            required=ma_field.required,
-        )
+        return {
+            "allow_none": ma_field.allow_none,
+            "attribute": ma_field.attribute,
+            "required": ma_field.required,
+        }
 
     @classmethod
     def project(cls, ma_field: fields.Field) -> "MAFieldProjection":

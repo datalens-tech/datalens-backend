@@ -109,7 +109,6 @@ ignore = [
 #
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
-# "C4",    # flake8-comprehensions — Later
 # "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
 # "ASYNC", # flake8-async — Later: catches blocking calls in async code
 # "PT",    # flake8-pytest-style — Later
@@ -129,6 +128,7 @@ ignore = [
 # "D",   # pydocstyle — Never: we don't mandate docstrings repo-wide
 select = [
   "B", # flake8-bugbear
+  "C4", # flake8-comprehensions
   "F", # Pyflakes
   "RET", # flake8-return
   "RUF", # Ruff-specific rules

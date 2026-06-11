@@ -45,7 +45,7 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
             password=test_config.CoreConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
         )
 
 
@@ -62,31 +62,31 @@ class BaseClickHouseCH26TestClass(BaseClickHouseTestClass):
             port=test_config.CoreConnectionSettingsCH26.PORT,
             username=test_config.CoreConnectionSettingsCH26.USERNAME,
             password=test_config.CoreConnectionSettingsCH26.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
         )
 
 
 class BaseClickHouseDefaultUserTestClass(BaseClickHouseTestClass):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
-        return dict(
-            db_name=test_config.CoreConnectionSettings.DB_NAME,
-            host=test_config.CoreConnectionSettings.HOST,
-            port=test_config.CoreConnectionSettings.PORT,
-        )
+        return {
+            "db_name": test_config.CoreConnectionSettings.DB_NAME,
+            "host": test_config.CoreConnectionSettings.HOST,
+            "port": test_config.CoreConnectionSettings.PORT,
+        }
 
 
 class BaseClickHouseReadonlyUserTestClass(BaseClickHouseTestClass):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
-        return dict(
-            db_name=test_config.CoreReadonlyConnectionSettings.DB_NAME,
-            host=test_config.CoreReadonlyConnectionSettings.HOST,
-            port=test_config.CoreReadonlyConnectionSettings.PORT,
-            username=test_config.CoreReadonlyConnectionSettings.USERNAME,
-            password=test_config.CoreReadonlyConnectionSettings.PASSWORD,
-            readonly=1,
-        )
+        return {
+            "db_name": test_config.CoreReadonlyConnectionSettings.DB_NAME,
+            "host": test_config.CoreReadonlyConnectionSettings.HOST,
+            "port": test_config.CoreReadonlyConnectionSettings.PORT,
+            "username": test_config.CoreReadonlyConnectionSettings.USERNAME,
+            "password": test_config.CoreReadonlyConnectionSettings.PASSWORD,
+            "readonly": 1,
+        }
 
 
 class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
@@ -134,7 +134,7 @@ class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
             port=test_config.CoreSslConnectionSettings.PORT,
             username=test_config.CoreSslConnectionSettings.USERNAME,
             password=test_config.CoreSslConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
             secure=True,
             ssl_ca=ssl_ca,
         )
@@ -151,7 +151,7 @@ class BaseSslNoVerifyClickHouseTestClass(BaseSslClickHouseTestClass):
             port=test_config.CoreSslConnectionSettings.PORT,
             username=test_config.CoreSslConnectionSettings.USERNAME,
             password=test_config.CoreSslConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
             secure=True,
             ssl_ca_verify=False,
         )

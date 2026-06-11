@@ -62,7 +62,7 @@ class SnowFlakeTestBase(FormulaConnectorTestBase):
 
     @pytest.fixture(scope="class")
     def engine_params(self, _sf_creator_func: Callable) -> dict:
-        return dict(creator=_sf_creator_func)
+        return {"creator": _sf_creator_func}
 
     @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, _sf_target_dto) -> SnowFlakeDbEngineConfig:

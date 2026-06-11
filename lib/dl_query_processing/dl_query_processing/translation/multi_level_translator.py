@@ -88,18 +88,18 @@ class MultiLevelQueryTranslator:
             }
             LOGGER.info(
                 f"Function translation statistics for {level_type.name}",
-                extra=dict(function_translation_statistics=data),
+                extra={"function_translation_statistics": data},
             )
 
     def _log_query_complexity_stats(self, compiled_multi_query: CompiledMultiQueryBase) -> None:
         LOGGER.info(
             "Query structural info",
-            extra=dict(
-                query_struct_info=dict(
-                    complexity=compiled_multi_query.get_complexity(),
-                    subquery_count=compiled_multi_query.query_count(),
-                )
-            ),
+            extra={
+                "query_struct_info": {
+                    "complexity": compiled_multi_query.get_complexity(),
+                    "subquery_count": compiled_multi_query.query_count(),
+                }
+            },
         )
 
     def _get_flat_translator_for_level_type(

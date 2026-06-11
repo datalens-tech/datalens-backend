@@ -147,13 +147,13 @@ def enrich_resp_dict_with_data_export_info(data: dict[str, Any], data_export_res
     is_background_export_allowed = data_export_result.background.allowed
     background_export_forbidden_reason = None if is_background_export_allowed else data_export_result.background.reason
 
-    data["data_export"] = dict(
-        basic=dict(
-            allowed=is_basic_export_allowed,
-            reason=basic_export_forbidden_reason,
-        ),
-        background=dict(
-            allowed=is_background_export_allowed,
-            reason=background_export_forbidden_reason,
-        ),
-    )
+    data["data_export"] = {
+        "basic": {
+            "allowed": is_basic_export_allowed,
+            "reason": basic_export_forbidden_reason,
+        },
+        "background": {
+            "allowed": is_background_export_allowed,
+            "reason": background_export_forbidden_reason,
+        },
+    }

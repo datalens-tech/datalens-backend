@@ -41,11 +41,11 @@ class LatencyTracker:
             bins_s,
             loop_ready,
             loop_scheduled,
-            extra=dict(
-                latency_stats=bins,
-                loop_ready=loop_ready,
-                loop_scheduled=loop_scheduled,
-            ),
+            extra={
+                "latency_stats": bins,
+                "loop_ready": loop_ready,
+                "loop_scheduled": loop_scheduled,
+            },
         )
 
     def _maybe_log_stats(self) -> None:

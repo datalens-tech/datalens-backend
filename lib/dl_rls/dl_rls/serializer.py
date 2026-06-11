@@ -139,7 +139,7 @@ class FieldRLSSerializer:
             return cls._parse_single_line(line)
         except ValueError as exc_value:
             raise exc.RLSConfigParsingError(
-                f"RLS: Parsing failed at line {idx + 1}", details=dict(description=str(exc_value))
+                f"RLS: Parsing failed at line {idx + 1}", details={"description": str(exc_value)}
             ) from exc_value
 
     class AccountGroups(NamedTuple):
@@ -258,11 +258,11 @@ class FieldRLSSerializer:
         #     value: user1
         # lines.
 
-        all_names = set(
+        all_names = {
             name
             for value_item in itertools.chain(value_to_item.values(), [allow_all_item])  # wildcard value
             for name in value_item.names
-        )
+        }
         all_names -= {cls.allow_all_subject_name}  # wildcard subject
         all_names_lst = sorted(all_names)
 

@@ -42,9 +42,9 @@ class PromQLConnectionTestBase(ConnectionTestBase):
 class PromQLDashSQLConnectionTest(PromQLConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return API_CONNECTION_SETTINGS | dict(
-            raw_sql_level=RawSQLLevel.dashsql.value,
-        )
+        return API_CONNECTION_SETTINGS | {
+            "raw_sql_level": RawSQLLevel.dashsql.value,
+        }
 
 
 class PromQLHeaderAuthConnectionTest(PromQLConnectionTestBase):

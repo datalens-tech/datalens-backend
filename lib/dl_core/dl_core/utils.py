@@ -81,7 +81,7 @@ def make_user_auth_cookies(
 
 def parse_comma_separated_hosts(host: str | None) -> tuple[str, ...]:
     if not host:
-        return tuple()
+        return ()
     return tuple(h.strip() for h in host.split(","))
 
 

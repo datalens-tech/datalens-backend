@@ -24,7 +24,7 @@ class DLMessagePackSerializer:
         typeobj = type(obj)
         preprocessor = self._get_preprocessor(typeobj)
         if preprocessor is not None:
-            return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))
+            return {"__dl_type__": preprocessor.typename, "value": preprocessor.to_jsonable(obj)}
         raise TypeError(f"Object of type {obj.__class__.__name__} is not MessagePack serializable")
 
     def dumps(self, value: Any) -> bytes:

@@ -122,9 +122,9 @@ def adapter_factory(
 class PingView(BaseView):
     async def get(self) -> web.Response:
         return web.json_response(
-            dict(
-                result="PONG",
-            )
+            {
+                "result": "PONG",
+            }
         )
 
 

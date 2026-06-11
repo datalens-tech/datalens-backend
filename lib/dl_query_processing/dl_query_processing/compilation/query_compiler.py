@@ -76,7 +76,7 @@ class QueryCompiler:
         expr: formula_nodes.FormulaItem,
         override_alias: str | None = None,
     ) -> CompiledFormulaInfo:
-        alias_kwarg = dict(alias=override_alias) if override_alias else {}
+        alias_kwarg = {"alias": override_alias} if override_alias else {}
         return formula.clone(
             formula_obj=formula_nodes.Formula.make(expr=expr),
             **alias_kwarg,

@@ -38,7 +38,7 @@ class ErrorData:
 DEFAULT_INTERNAL_SERVER_ERROR_DATA = ErrorData(
     HTTPStatus.INTERNAL_SERVER_ERROR,
     http_reason="Internal server error",
-    response_body=dict(message="Internal server error"),
+    response_body={"message": "Internal server error"},
     level=ErrorLevel.error,
 )
 
@@ -84,7 +84,7 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
             err_data = DEFAULT_INTERNAL_SERVER_ERROR_DATA
             return (
                 web.json_response(
-                    dict(message="Internal Server Error"),
+                    {"message": "Internal Server Error"},
                     status=500,
                 ),
                 err_data,

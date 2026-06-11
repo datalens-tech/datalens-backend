@@ -87,16 +87,15 @@ def cleanup_local_vars(local_vars: dict) -> None:
 
 
 def cleanup_event_headers(original_headers: dict[str, str]) -> dict[str, str]:
-    return {
-        name: value
-        for name, value in RequestObfuscator().clean_secret_data_in_headers(
+    return dict(
+        RequestObfuscator().clean_secret_data_in_headers(
             (
                 original_name,
                 original_value,
             )
             for original_name, original_value in original_headers.items()
         )
-    }
+    )
 
 
 def cleanup_event_request_section(req_section: dict[str, str | dict[str, str]]) -> dict[str, str | dict[str, str]]:

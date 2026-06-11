@@ -46,7 +46,7 @@ class FormulaParserFactory:
             "parser_type": parser_type.name,
         }
         LOGGER.info(
-            f"Formula parser global statistics ({parser_type.name})", extra=dict(function_parser_statistics=data)
+            f"Formula parser global statistics ({parser_type.name})", extra={"function_parser_statistics": data}
         )
 
     def log_parser_stats_for_all_used_parsers(self) -> None:

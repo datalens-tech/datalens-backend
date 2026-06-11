@@ -42,10 +42,10 @@ class PivotTable:
         return self._facade
 
     def get_columns(self) -> list[PivotHeader]:
-        return [header for header in self.facade.iter_column_headers()]
+        return list(self.facade.iter_column_headers())
 
     def get_row_dim_headers(self) -> list[DataCellVector]:
-        return [header for header in self.facade.iter_row_dim_headers()]
+        return list(self.facade.iter_row_dim_headers())
 
     def get_rows(self) -> Generator[DataRow, None, None]:
         for header, values in self.facade.iter_rows():

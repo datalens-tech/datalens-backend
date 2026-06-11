@@ -107,7 +107,7 @@ class BIMSSQLDialectBasic(UPSTREAM):
         if parameters:
             statement = self.roll_parameters_into_statement(statement, parameters)
             # no need for parameters at this point, since they're all baked into the query
-            parameters = tuple()
+            parameters = ()
 
         try:
             cursor.execute(statement, self.translate_custom_parameters(parameters))

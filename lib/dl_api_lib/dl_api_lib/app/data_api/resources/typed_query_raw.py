@@ -110,12 +110,12 @@ class DashSQLTypedQueryRawView(BaseView):
         def _make_reporting_query() -> str:
             params = typed_query_raw.parameters
             return json.dumps(
-                dict(
-                    path=hide_url_args(params.path),
-                    method=params.method,
-                    content_type=params.content_type,
-                    body="***" if params.body else None,
-                ),
+                {
+                    "path": hide_url_args(params.path),
+                    "method": params.method,
+                    "content_type": params.content_type,
+                    "body": "***" if params.body else None,
+                },
                 sort_keys=True,
             )
 

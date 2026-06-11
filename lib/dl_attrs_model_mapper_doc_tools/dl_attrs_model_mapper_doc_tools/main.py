@@ -299,17 +299,17 @@ class Docs:
             if self._generate_toc:
                 doc_writer.write_text(
                     yaml.safe_dump(
-                        dict(
-                            title="Configs",
-                            items=[
-                                dict(
+                        {
+                            "title": "Configs",
+                            "items": [
+                                {
                                     # TODO FIX: Extract TOC title somehow more accurate
-                                    name=initial_ctx.localize(class_doc.header.value),  # type: ignore  # 2024-01-30 # TODO: Item "None" of "DocHeader | None" has no attribute "value"  [union-attr]
-                                    href=self.get_file_path_for_type_strict(class_doc.type),
-                                )
+                                    "name": initial_ctx.localize(class_doc.header.value),  # type: ignore  # 2024-01-30 # TODO: Item "None" of "DocHeader | None" has no attribute "value"  [union-attr]
+                                    "href": self.get_file_path_for_type_strict(class_doc.type),
+                                }
                                 for class_doc in self._dedicated_class_docs
                             ],
-                        ),
+                        },
                         default_flow_style=False,
                         sort_keys=False,
                     ),

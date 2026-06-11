@@ -90,7 +90,7 @@ class MetrikaApiClient:
     def _request(self, method: str, uri: str, timeout: int = -1, _raw_resp: bool = False, **kwargs):
         if timeout == -1:
             timeout = self.default_timeout
-        full_url = "/".join(map(lambda s: s.strip("/"), (self.host, uri)))
+        full_url = "/".join(s.strip("/") for s in (self.host, uri))
 
         LOGGER.info(
             "Requesting Metrika API: method: %s, url: %s, params:(%s), json:(%s)",
@@ -177,7 +177,7 @@ class MetrikaApiClient:
             dims_src_keys = [rc_dict.get(dim, {}).get("src_key") or "name" for dim in q_dims]
 
             if not result_columns:
-                result_columns = [dict(name=col_name, label=None) for col_name in (*q_dims, *q_metrics)]
+                result_columns = [{"name": col_name, "label": None} for col_name in (*q_dims, *q_metrics)]
 
             for slice in resp["data"]:
                 # TODO: date dimensions values better retrieve from 'id' key instead of 'name'?
@@ -192,10 +192,10 @@ class MetrikaApiClient:
         except (KeyError, ValueError) as ex:
             raise MetrikaApiException(orig_exc=ex) from ex
 
-        return dict(
-            fields=result_columns,
-            data=rows,
-        )
+        return {
+            "fields": result_columns,
+            "data": rows,
+        }
 
     def get_table_data(self, params, result_columns=None, **kwargs):
         resp = self.get("/stat/v1/data", params=params, **kwargs)
@@ -209,7 +209,7 @@ class MetrikaApiClient:
         obj_name = "applications" if self._is_appmetrica else "counters"
         uri = f"/management/v1/{obj_name}"
         resp = self.get(uri, **kwargs)
-        return [dict(id=c_info["id"], name=c_info["name"]) for c_info in resp[obj_name]]
+        return [{"id": c_info["id"], "name": c_info["name"]} for c_info in resp[obj_name]]
 
     def get_counter_info(self, counter_id):
         """

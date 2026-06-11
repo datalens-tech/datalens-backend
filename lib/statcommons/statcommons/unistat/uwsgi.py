@@ -88,12 +88,12 @@ def uwsgi_collect_sensors(data, add_sensor):
     pages_per_gib = GiB / page_size  # 262144
 
     mem_datas = [  # all values in GiB
-        dict(
-            rss_gib=maybe_float_size(worker["rss"], GiB),
-            vsz_gib=maybe_float_size(worker["vsz"], GiB),
-            vmsize_gib=maybe_float_size(worker.get("sys_memstatus", {}).get("size"), pages_per_gib),
-            vmrss_gib=maybe_float_size(worker.get("sys_memstatus", {}).get("resident"), pages_per_gib),
-        )
+        {
+            "rss_gib": maybe_float_size(worker["rss"], GiB),
+            "vsz_gib": maybe_float_size(worker["vsz"], GiB),
+            "vmsize_gib": maybe_float_size(worker.get("sys_memstatus", {}).get("size"), pages_per_gib),
+            "vmrss_gib": maybe_float_size(worker.get("sys_memstatus", {}).get("resident"), pages_per_gib),
+        }
         for worker in data["workers"]
     ]
 

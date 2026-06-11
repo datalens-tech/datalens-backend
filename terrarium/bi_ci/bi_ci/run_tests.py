@@ -24,7 +24,7 @@ def read_pkg(path: Path) -> TOMLDocument:
 
 
 def pkg_to_targets_ref(pkg_dir: Path, doc: TOMLDocument, sections: list[str] | None = None) -> list[Target]:
-    result = list()
+    result = []
     for k, v in doc.get("datalens", {}).get("pytest", {}).items():
         if sections and k not in sections:
             continue
@@ -65,9 +65,9 @@ def run_pytest_one(t: Target) -> int:
     if t.target_path:
         run_args.append(t.target_path)
 
-    subprocess_kwargs: dict[str, str | bool] = dict(
-        universal_newlines=True,
-    )
+    subprocess_kwargs: dict[str, str | bool] = {
+        "universal_newlines": True,
+    }
     if t.root_dir:
         subprocess_kwargs["cwd"] = str(t.root_dir.expanduser().resolve())
     print(f"{run_args=}")

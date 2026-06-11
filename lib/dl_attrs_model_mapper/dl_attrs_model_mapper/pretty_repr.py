@@ -35,7 +35,7 @@ def pretty_repr(
     elif preferred_cls_name_prefixes is None:
         effective_preferred_cls_name_prefixes = {}
     else:
-        effective_preferred_cls_name_prefixes = {mod_obj: None for mod_obj in preferred_cls_name_prefixes}
+        effective_preferred_cls_name_prefixes = dict.fromkeys(preferred_cls_name_prefixes)
 
     lines = Renderer(effective_preferred_cls_name_prefixes).get_lines(model)
     return "\n".join(lines)

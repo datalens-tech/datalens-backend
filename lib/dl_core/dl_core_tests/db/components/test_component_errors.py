@@ -20,14 +20,14 @@ class TestComponentErrors(DefaultCoreTestClass):
             type=ComponentType.field,
             message="This field needs ploughing",
             code=["ERR", "3"],
-            details=dict(row=10, column=8),
+            details={"row": 10, "column": 8},
         )
         erreg.add_error(
             id=field_id,
             type=ComponentType.field,
             message="Just an error",
             code=["ERR", "3", "1"],
-            details=dict(row=100, column=80),
+            details={"row": 100, "column": 80},
         )
 
         obligatory_filter_id = str(uuid.uuid4())

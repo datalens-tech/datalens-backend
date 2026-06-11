@@ -58,10 +58,10 @@ class BaseMetricaTestClass(MetricaTestSetup[MetrikaApiConnection]):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, metrica_token: str) -> dict:
-        return dict(
-            counter_id=test_config.METRIKA_SAMPLE_COUNTER_ID,
-            token=metrica_token,
-        )
+        return {
+            "counter_id": test_config.METRIKA_SAMPLE_COUNTER_ID,
+            "token": metrica_token,
+        }
 
 
 class BaseAppMetricaTestClass(MetricaTestSetup[AppMetricaApiConnection]):
@@ -70,7 +70,7 @@ class BaseAppMetricaTestClass(MetricaTestSetup[AppMetricaApiConnection]):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, metrica_token: str) -> dict:
-        return dict(
-            counter_id=test_config.APPMETRICA_SAMPLE_COUNTER_ID,
-            token=metrica_token,
-        )
+        return {
+            "counter_id": test_config.APPMETRICA_SAMPLE_COUNTER_ID,
+            "token": metrica_token,
+        }

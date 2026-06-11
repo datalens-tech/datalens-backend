@@ -31,31 +31,31 @@ class ClickHouseConnectionTestBase(BaseClickHouseTestClass, ConnectionTestBase):
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level.value} if self.raw_sql_level is not None else {}),
         )
 
 
 class ClickHouseConnectionDefaultUserTestBase(ClickHouseConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return dict(
-            db_name=CoreConnectionSettings.DB_NAME,
-            host=CoreConnectionSettings.HOST,
-            port=CoreConnectionSettings.PORT,
-        )
+        return {
+            "db_name": CoreConnectionSettings.DB_NAME,
+            "host": CoreConnectionSettings.HOST,
+            "port": CoreConnectionSettings.PORT,
+        }
 
 
 class ClickHouseConnectionReadonlyUserTestBase(ClickHouseConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return dict(
-            db_name=CoreReadonlyConnectionSettings.DB_NAME,
-            host=CoreReadonlyConnectionSettings.HOST,
-            port=CoreReadonlyConnectionSettings.PORT,
-            username=CoreReadonlyConnectionSettings.USERNAME,
-            password=CoreReadonlyConnectionSettings.PASSWORD,
-            readonly=1,
-        )
+        return {
+            "db_name": CoreReadonlyConnectionSettings.DB_NAME,
+            "host": CoreReadonlyConnectionSettings.HOST,
+            "port": CoreReadonlyConnectionSettings.PORT,
+            "username": CoreReadonlyConnectionSettings.USERNAME,
+            "password": CoreReadonlyConnectionSettings.PASSWORD,
+            "readonly": 1,
+        }
 
 
 class ClickHouseDashSQLConnectionTest(ClickHouseConnectionTestBase):
@@ -65,13 +65,13 @@ class ClickHouseDashSQLConnectionTest(ClickHouseConnectionTestBase):
 class ClickHouseDatasetTestBase(ClickHouseConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_CH_TABLE.name,
-            parameters=dict(
-                db_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_CH_TABLE.name,
+            "parameters": {
+                "db_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
 
 class ClickHouseDatasetReadonlyUserTestBase(ClickHouseConnectionReadonlyUserTestBase, ClickHouseDatasetTestBase):

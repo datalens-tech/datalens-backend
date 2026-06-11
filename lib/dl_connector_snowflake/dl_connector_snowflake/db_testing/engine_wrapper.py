@@ -34,6 +34,6 @@ class SnowFlakeEngineWrapper(EngineWrapperBase):
         table.drop(bind=self.engine, checkfirst=True)
 
     def get_conn_credentials(self, full: bool = False) -> dict:
-        return dict(
-            db_name=self.config.db_name,
-        )
+        return {
+            "db_name": self.config.db_name,
+        }

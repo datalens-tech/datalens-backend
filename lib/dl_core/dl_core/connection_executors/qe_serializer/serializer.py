@@ -49,7 +49,7 @@ class ActionSerializer:
         if action_cls is None:
             raise TypeError(f"Action {action_cls_qualname} is not listed in serializable actions")
 
-        schema = self.MAP_ACT_TYPE_SCHEMA_CLS[action_cls](context=dict(allowed_dba_classes=allowed_dba_classes))
+        schema = self.MAP_ACT_TYPE_SCHEMA_CLS[action_cls](context={"allowed_dba_classes": allowed_dba_classes})
         obj = schema.load(data)
 
         if not isinstance(obj, action_cls):

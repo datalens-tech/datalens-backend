@@ -31,13 +31,13 @@ class BaseStarRocksTestClass(BaseConnectionTestClass[ConnectionStarRocks]):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
-        return dict(
-            host=test_config.CoreConnectionSettings.HOST,
-            port=test_config.CoreConnectionSettings.PORT,
-            username=test_config.CoreConnectionSettings.USERNAME,
-            password=test_config.CoreConnectionSettings.PASSWORD,
-            listing_sources=test_config.CoreConnectionSettings.LISTING_SOURCES,
-        )
+        return {
+            "host": test_config.CoreConnectionSettings.HOST,
+            "port": test_config.CoreConnectionSettings.PORT,
+            "username": test_config.CoreConnectionSettings.USERNAME,
+            "password": test_config.CoreConnectionSettings.PASSWORD,
+            "listing_sources": test_config.CoreConnectionSettings.LISTING_SOURCES,
+        }
 
     @pytest.fixture(scope="function")
     def existing_table_ident(self, sample_table: DbTable) -> TableIdent:
@@ -72,12 +72,12 @@ class BaseSslStarRocksTestClass(BaseStarRocksTestClass):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self, ssl_ca: str) -> dict:
-        return dict(
-            host=test_config.CoreSslConnectionSettings.HOST,
-            port=test_config.CoreSslConnectionSettings.PORT,
-            username=test_config.CoreSslConnectionSettings.USERNAME,
-            password=test_config.CoreSslConnectionSettings.PASSWORD,
-            listing_sources=test_config.CoreSslConnectionSettings.LISTING_SOURCES,
-            ssl_enable=True,
-            ssl_ca=ssl_ca,
-        )
+        return {
+            "host": test_config.CoreSslConnectionSettings.HOST,
+            "port": test_config.CoreSslConnectionSettings.PORT,
+            "username": test_config.CoreSslConnectionSettings.USERNAME,
+            "password": test_config.CoreSslConnectionSettings.PASSWORD,
+            "listing_sources": test_config.CoreSslConnectionSettings.LISTING_SOURCES,
+            "ssl_enable": True,
+            "ssl_ca": ssl_ca,
+        }

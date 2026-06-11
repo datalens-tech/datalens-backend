@@ -20,15 +20,15 @@ class TestDatasourceManualTable(
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name=sample_table.name)
+        return {"schema_name": sample_table.schema, "table_name": sample_table.name}
 
     @pytest.fixture(name="missing_table_parameters")
     def fixture_missing_table_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name="table_that_does_not_exist")
+        return {"schema_name": sample_table.schema, "table_name": "table_that_does_not_exist"}
 
     @pytest.fixture(name="templated_table_parameters")
     def fixture_templated_table_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name="{{table_name}}")
+        return {"schema_name": sample_table.schema, "table_name": "{{table_name}}"}
 
 
 class TestDatasourceManualSubselect(
@@ -40,7 +40,7 @@ class TestDatasourceManualSubselect(
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(subsql=f'select * from "{sample_table.name}"')
+        return {"subsql": f'select * from "{sample_table.name}"'}
 
 
 class TestDatasourceManualRawSqlLevelOff(
@@ -52,4 +52,4 @@ class TestDatasourceManualRawSqlLevelOff(
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name=sample_table.name)
+        return {"schema_name": sample_table.schema, "table_name": sample_table.name}

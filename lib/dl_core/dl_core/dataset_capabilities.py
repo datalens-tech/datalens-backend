@@ -118,7 +118,7 @@ class DatasetCapabilities:
     ) -> set[JoinType]:
         ignore_source_ids = ignore_source_ids or ()
         role = self.resolve_source_role(ignore_source_ids=ignore_source_ids)
-        result = set(jt for jt in JoinType)
+        result = set(JoinType)
         for source_id in self._ds_accessor.get_data_source_id_list():
             if source_id in ignore_source_ids:
                 continue
@@ -235,7 +235,7 @@ class DatasetCapabilities:
             return DataSourceRole.origin
 
         # dict: {role: sum_of_priority_values}
-        common_priorities = {role: 0 for role in DataSourceRole}
+        common_priorities = dict.fromkeys(DataSourceRole, 0)
         for coll in collections:
             if ignore_source_ids is not None and coll.id in ignore_source_ids:
                 continue
@@ -245,15 +245,15 @@ class DatasetCapabilities:
             if log_reasons:
                 LOGGER.info(
                     f"Role resolution_info for data source {coll.id}",
-                    extra=dict(
-                        role_resolution_info=dict(
-                            source_id=coll.id,
-                            source_type=coll.source_type.name,
-                            origin=role_resolution_info.origin.name,
-                            sample=role_resolution_info.sample.name,
-                            materialization=role_resolution_info.materialization.name,
-                        )
-                    ),
+                    extra={
+                        "role_resolution_info": {
+                            "source_id": coll.id,
+                            "source_type": coll.source_type.name,
+                            "origin": role_resolution_info.origin.name,
+                            "sample": role_resolution_info.sample.name,
+                            "materialization": role_resolution_info.materialization.name,
+                        }
+                    },
                 )
 
             for role in common_priorities.copy():

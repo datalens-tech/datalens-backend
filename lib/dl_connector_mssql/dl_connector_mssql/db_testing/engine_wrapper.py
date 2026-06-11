@@ -21,13 +21,13 @@ class MSSQLEngineWrapper(EngineWrapperBase):
 
         assert isinstance(odbc_dsn, str)
         odbc_props = {pair.split("=")[0]: pair.split("=")[1] for pair in odbc_dsn.split(";")}
-        return dict(
-            host=odbc_props["Server"],
-            port=int(odbc_props["Port"]),
-            username=odbc_props["UID"],
-            password=odbc_props["PWD"],
-            db_name=odbc_props["Database"],
-        )
+        return {
+            "host": odbc_props["Server"],
+            "port": int(odbc_props["Port"]),
+            "username": odbc_props["UID"],
+            "password": odbc_props["PWD"],
+            "db_name": odbc_props["Database"],
+        }
 
     def count_sql_sessions(self) -> int:
         cur = self.execute("exec sp_who")

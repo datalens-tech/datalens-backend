@@ -28,7 +28,7 @@ class GenericCacheEngine(metaclass=abc.ABCMeta):
 class MemoryCacheEngine(GenericCacheEngine):
     def __init__(self) -> None:
         # Dict[ Key: (expired_time, cached value) ]
-        self._cache: dict[str, tuple[float, str]] = dict()
+        self._cache: dict[str, tuple[float, str]] = {}
 
     async def save(self, key: str, data: str, ttl: float) -> None:
         self._cache[key] = (time.monotonic() + ttl, data)

@@ -113,9 +113,9 @@ class CursorLogger:
 
         engine_url = context.engine.url
         span.log_kv(
-            dict(
-                sa_dialect=engine_url.drivername,
-            )
+            {
+                "sa_dialect": engine_url.drivername,
+            }
         )
 
         conn.info.setdefault("query_start_time", []).append(time.monotonic())
@@ -137,18 +137,18 @@ class CursorLogger:
                 statement, ObfuscationContext.TRACING, on_error=OnObfuscationError.SKIP
             )
 
-        extra = dict(
-            event_code="db_exec",
-            username=engine_url.username,
-            query_id=str(getattr(cursor, "_query_id", None)),
+        extra = {
+            "event_code": "db_exec",
+            "username": engine_url.username,
+            "query_id": str(getattr(cursor, "_query_id", None)),
             # missing: folder_id
-            execution_time=round(execution_time_seconds * 1000),
-            database=engine_url.database,
-            host=engine_url.host,
-            drivername=engine_url.drivername,
-            statement=statement,
-            parameters_size=len(parameters),
+            "execution_time": round(execution_time_seconds * 1000),
+            "database": engine_url.database,
+            "host": engine_url.host,
+            "drivername": engine_url.drivername,
+            "statement": statement,
+            "parameters_size": len(parameters),
             # missing: dataset_id
             # missing: connection_id
-        )
+        }
         LOGGER.info("Cursor executed", extra=extra)

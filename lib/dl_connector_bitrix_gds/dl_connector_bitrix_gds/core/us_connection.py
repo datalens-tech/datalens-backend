@@ -68,7 +68,7 @@ class BitrixGDSConnection(ConnectionBase):
         db_name: str | None = None,
     ) -> list[dict]:
         return [
-            dict(db_name=DEFAULT_DB, table_name=item.table_name)
+            {"db_name": DEFAULT_DB, "table_name": item.table_name}
             for item in self.get_tables(
                 conn_executor_factory=conn_executor_factory,
                 db_name=DEFAULT_DB,

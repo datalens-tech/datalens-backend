@@ -20,10 +20,10 @@ class SleepingErrorHandler(AIOHTTPErrorHandler):
         if isinstance(err, RequestTimeoutError):
             return ErrorData(
                 status_code=424,
-                response_body=dict(code=err.err_code, message=err.message),
+                response_body={"code": err.err_code, "message": err.message},
                 level=ErrorLevel.info,
             )
-        return ErrorData(status_code=500, response_body=dict(details=str(err)), level=ErrorLevel.error)
+        return ErrorData(status_code=500, response_body={"details": str(err)}, level=ErrorLevel.error)
 
 
 @pytest.mark.asyncio

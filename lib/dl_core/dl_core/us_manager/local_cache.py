@@ -33,7 +33,7 @@ class USEntryBuffer:
                 if entry.error_kind == BrokenUSLinkErrorKind.ACCESS_DENIED:
                     raise exc.ReferencedUSEntryAccessDenied(
                         f"Referenced connection {entry.reference.conn_id} cannot be loaded: access denied",
-                        details=dict(scope="connection", entry_id=entry.reference.conn_id),
+                        details={"scope": "connection", "entry_id": entry.reference.conn_id},
                     )
                 raise ValueError(f"Referenced connection {entry.reference} cannot be loaded: {entry.error_kind}")
             raise ValueError(f"Requested referenced US entry {entry_id} is broken: {entry}", entry)

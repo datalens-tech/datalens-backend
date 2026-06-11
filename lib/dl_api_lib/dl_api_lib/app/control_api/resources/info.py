@@ -240,37 +240,37 @@ class WorkbookInfo(BIResource):
         usm = self.get_regular_us_manager()
         all_entries = usm.load_get_entries_at_path(us_path)
 
-        return dict(
-            connections={
-                conn_dict["key"].split("/")[-1]: dict(
-                    id=conn_dict["entryId"],
-                    type=conn_dict["type"],
-                )
+        return {
+            "connections": {
+                conn_dict["key"].split("/")[-1]: {
+                    "id": conn_dict["entryId"],
+                    "type": conn_dict["type"],
+                }
                 for conn_dict in all_entries
                 if conn_dict["scope"] == "connection"
             },
-            datasets={
-                ds_dict["key"].split("/")[-1]: dict(
-                    id=ds_dict["entryId"],
-                )
+            "datasets": {
+                ds_dict["key"].split("/")[-1]: {
+                    "id": ds_dict["entryId"],
+                }
                 for ds_dict in all_entries
                 if ds_dict["scope"] == "dataset"
             },
-            charts={
-                chart_dict["key"].split("/")[-1]: dict(
-                    id=chart_dict["entryId"],
-                )
+            "charts": {
+                chart_dict["key"].split("/")[-1]: {
+                    "id": chart_dict["entryId"],
+                }
                 for chart_dict in all_entries
                 if chart_dict["scope"] == "widget"
             },
-            dashboards={
-                dash["key"].split("/")[-1]: dict(
-                    id=dash["entryId"],
-                )
+            "dashboards": {
+                dash["key"].split("/")[-1]: {
+                    "id": dash["entryId"],
+                }
                 for dash in all_entries
                 if dash["scope"] == "dash"
             },
-        )
+        }
 
 
 @ns.route("/connectors/icons")
@@ -278,7 +278,7 @@ class ConnectorIconsList(BIResource):
     @schematic_request(ns=ns)
     def get(self) -> dict:
         conn_availability = self.get_service_registry().get_connector_availability()
-        return dict(icons=conn_availability.list_icons())
+        return {"icons": conn_availability.list_icons()}
 
 
 @ns.route("/connectors/icons/<string:conn_type>")
@@ -286,4 +286,4 @@ class ConnectorIcon(BIResource):
     @schematic_request(ns=ns)
     def get(self, conn_type: str) -> dict:
         conn_availability = self.get_service_registry().get_connector_availability()
-        return dict(icon=conn_availability.get_icon(conn_type=conn_type))
+        return {"icon": conn_availability.get_icon(conn_type=conn_type)}

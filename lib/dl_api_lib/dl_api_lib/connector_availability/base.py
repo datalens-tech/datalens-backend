@@ -74,10 +74,10 @@ class Section(LocalizedSerializable):
         )
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
-        return dict(
-            title=localizer.translate(self.title_translatable),
-            connectors=[connector.as_dict(localizer) for connector in self.connectors],
-        )
+        return {
+            "title": localizer.translate(self.title_translatable),
+            "connectors": [connector.as_dict(localizer) for connector in self.connectors],
+        }
 
 
 @attr.s(kw_only=True)
@@ -112,14 +112,14 @@ class ConnectorBase(LocalizedSerializable, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     def as_dict(self, localizer: Localizer) -> dict[str, Any]:
-        return dict(
-            visibility_mode=self.visibility_mode.value,
-            alias=self.alias,
-            conn_type=self.conn_type_str,
-            title=self.get_title(localizer),
-            backend_driven_form=self.backend_driven_form,
-            history=self.history,
-        )
+        return {
+            "visibility_mode": self.visibility_mode.value,
+            "alias": self.alias,
+            "conn_type": self.conn_type_str,
+            "title": self.get_title(localizer),
+            "backend_driven_form": self.backend_driven_form,
+            "history": self.history,
+        }
 
 
 def _conn_type_converter(value: Any) -> ConnectionType:
@@ -140,10 +140,10 @@ class ConnectorIconSrcConfig:
     icon_type: ConnectorIconSrcType = attr.ib()
 
     def as_dict(self, conn: Connector) -> dict[str, Any] | None:
-        return dict(
-            type=self.icon_type.value,
-            conn_type=conn.conn_type.value,
-        )
+        return {
+            "type": self.icon_type.value,
+            "conn_type": conn.conn_type.value,
+        }
 
     @classmethod
     @abc.abstractmethod
@@ -159,10 +159,10 @@ class ConnectorIconSrcConfigData(ConnectorIconSrcConfig):
         if not conn.connector_info_provider.icon_data_standard or not conn.connector_info_provider.icon_data_nav:
             return None
 
-        data = dict(
-            standard="data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_standard,
-            nav="data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_nav,
-        )
+        data = {
+            "standard": "data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_standard,
+            "nav": "data:image/svg+xml;base64," + conn.connector_info_provider.icon_data_nav,
+        }
         base_dict = super().as_dict(conn=conn)
         assert base_dict
         return dict(
@@ -183,10 +183,10 @@ class ConnectorIconSrcConfigUrl(ConnectorIconSrcConfig):
     url_prefix: str = attr.ib()
 
     def as_dict(self, conn: Connector) -> dict[str, Any] | None:
-        url = dict(
-            standard=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/{conn.conn_type.value}.svg",
-            nav=f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/{conn.conn_type.value}.svg",
-        )
+        url = {
+            "standard": f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.standard.value}/{conn.conn_type.value}.svg",
+            "nav": f"{self.url_prefix.rstrip('/')}/{ConnectorIconRole.nav.value}/{conn.conn_type.value}.svg",
+        }
         base_dict = super().as_dict(conn=conn)
         assert base_dict
         return dict(
@@ -365,10 +365,10 @@ class ConnectorAvailabilityConfig(SettingsBase):
         )
 
     def get_available_connectors(self, localizer: Localizer, tenant: TenantDef | None) -> dict[str, Any]:
-        return dict(
-            uncategorized=[connector.as_dict(localizer) for connector in self.uncategorized],
-            sections=[section.as_dict(localizer) for section in self.sections],
-        )
+        return {
+            "uncategorized": [connector.as_dict(localizer) for connector in self.uncategorized],
+            "sections": [section.as_dict(localizer) for section in self.sections],
+        }
 
     def check_connector_is_available(self, conn_type: ConnectionType) -> bool:
         conn_options = next((conn for conn in self._iter_connectors() if conn.conn_type == conn_type), None)

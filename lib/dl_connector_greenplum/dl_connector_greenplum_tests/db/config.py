@@ -35,20 +35,20 @@ DB_URLS = {
 
 
 CONNECTION_PARAMS_BY_VERSION = {
-    GreenplumVersion.GP6: dict(
-        db_name=DB_NAME,
-        host=get_test_container_hostport("db-greenplum-6", fallback_port=52320).host,
-        port=get_test_container_hostport("db-greenplum-6", fallback_port=52320).port,
-        username=GP_USER,
-        password=GP_PASSWORD,
-    ),
-    GreenplumVersion.GP7: dict(
-        db_name=DB_NAME,
-        host=get_test_container_hostport("db-greenplum-7", fallback_port=52321).host,
-        port=get_test_container_hostport("db-greenplum-7", fallback_port=52321).port,
-        username=GP_USER,
-        password=GP_PASSWORD,
-    ),
+    GreenplumVersion.GP6: {
+        "db_name": DB_NAME,
+        "host": get_test_container_hostport("db-greenplum-6", fallback_port=52320).host,
+        "port": get_test_container_hostport("db-greenplum-6", fallback_port=52320).port,
+        "username": GP_USER,
+        "password": GP_PASSWORD,
+    },
+    GreenplumVersion.GP7: {
+        "db_name": DB_NAME,
+        "host": get_test_container_hostport("db-greenplum-7", fallback_port=52321).host,
+        "port": get_test_container_hostport("db-greenplum-7", fallback_port=52321).port,
+        "username": GP_USER,
+        "password": GP_PASSWORD,
+    },
 }
 
 API_TEST_CONFIG = ApiTestEnvironmentConfiguration(

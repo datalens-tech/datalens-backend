@@ -53,7 +53,7 @@ class FormUIOverride(SerializableConfig):
     )
 
 
-TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = {field_name for field_name in TopLevelFieldName}
+TOP_LEVEL_NON_CONFIG_FIELDS: set[TopLevelFieldName] = set(TopLevelFieldName)
 
 
 def rows_converter(rows: list[FormRow]) -> list[FormRow]:
@@ -161,10 +161,10 @@ class ConnectionForm(SerializableConfig):
             else []
         )
         for api_schema in defined_api_schemas:
-            api_schema_fields |= set(form_field_api_schema.name for form_field_api_schema in api_schema.items)
+            api_schema_fields |= {form_field_api_schema.name for form_field_api_schema in api_schema.items}
             for condition in api_schema.conditions or []:
                 api_schema_fields.add(condition.when.name)
-                api_schema_fields |= set(conditional_action.selector.name for conditional_action in condition.then)
+                api_schema_fields |= {conditional_action.selector.name for conditional_action in condition.then}
 
         return api_schema_fields
 

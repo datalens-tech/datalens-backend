@@ -13,9 +13,9 @@ class USWorkbookCommandClient(CommonInternalAPIClient):
         req = Req(
             method="post",
             url="v2/workbooks",
-            data_json=dict(
-                title=title,
-            ),
+            data_json={
+                "title": title,
+            },
             require_ok=False,
         )
         resp = await self.make_request(req)
@@ -38,16 +38,17 @@ class USWorkbookCommandClient(CommonInternalAPIClient):
     async def add_wb_sa_access_binding(self, wb_id: str, sa_id: str) -> None:  # TODO: make more generic
         op_code = "wb_alter_access_bindings"
 
-        data_json = dict(
-            deltas=[
-                dict(
-                    action="ADD",
-                    accessBinding=dict(
-                        roleId="datalens.workbooks.admin", subject=dict(id=sa_id, type="serviceAccount")
-                    ),
-                )
+        data_json = {
+            "deltas": [
+                {
+                    "action": "ADD",
+                    "accessBinding": {
+                        "roleId": "datalens.workbooks.admin",
+                        "subject": {"id": sa_id, "type": "serviceAccount"},
+                    },
+                }
             ],
-        )
+        }
 
         req = Req(method="post", url=f"v2/workbooks/{wb_id}/access-bindings", data_json=data_json, require_ok=False)
         resp = await self.make_request(req)

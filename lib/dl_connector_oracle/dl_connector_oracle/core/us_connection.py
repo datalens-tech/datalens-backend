@@ -104,7 +104,7 @@ class ConnectionSQLOracle(
 
         assert self.has_schema
         return [
-            dict(schema_name=tid.schema_name, table_name=tid.table_name)
+            {"schema_name": tid.schema_name, "table_name": tid.table_name}
             for tid in self.get_tables(
                 conn_executor_factory=conn_executor_factory,
                 schema_name=None,

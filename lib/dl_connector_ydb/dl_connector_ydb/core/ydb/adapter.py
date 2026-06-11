@@ -90,13 +90,13 @@ class YDBAdapterBase(YQLAdapterBase[_DBA_YDB_BASE_DTO_TV]):
 
     def get_connect_args(self) -> dict:
         target_dto = self._target_dto
-        args = dict(
-            host=self._target_dto.host,
-            port=self._target_dto.port,
-            protocol="grpcs" if self._target_dto.ssl_enable else "grpc",
-            database=target_dto.db_name,
-            root_certificates=self._get_ssl_ca(),
-        )
+        args = {
+            "host": self._target_dto.host,
+            "port": self._target_dto.port,
+            "protocol": "grpcs" if self._target_dto.ssl_enable else "grpc",
+            "database": target_dto.db_name,
+            "root_certificates": self._get_ssl_ca(),
+        }
         self._update_connect_args(args)
         return args
 

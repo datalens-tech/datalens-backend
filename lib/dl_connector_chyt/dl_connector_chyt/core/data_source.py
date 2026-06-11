@@ -132,20 +132,18 @@ class BaseCHYTTableFuncDataSource(BaseCHYTSpecialDataSource, abc.ABC):
         assert self.conn_type is not None
         schema_info = super().get_schema_info(conn_executor_factory=conn_executor_factory)
         return schema_info.clone(
-            schema=tuple(
-                [
-                    *schema_info.schema,
-                    *[
-                        SchemaColumn(
-                            name=key,
-                            title=key,
-                            user_type=UserDataType.string,
-                            native_type=ClickHouseNativeType.normalize_name_and_create(name="string"),
-                            nullable=False,
-                        )
-                        for key in ("$table_path", "$table_name", "$table_index")
-                    ],
-                ]
+            schema=(
+                *schema_info.schema,
+                *[
+                    SchemaColumn(
+                        name=key,
+                        title=key,
+                        user_type=UserDataType.string,
+                        native_type=ClickHouseNativeType.normalize_name_and_create(name="string"),
+                        nullable=False,
+                    )
+                    for key in ("$table_path", "$table_name", "$table_index")
+                ],
             )
         )
 

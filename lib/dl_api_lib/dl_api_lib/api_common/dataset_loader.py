@@ -295,7 +295,7 @@ class DatasetApiLoader:
 
     @staticmethod
     def _rls_list_to_set(rls_list: list[RLSEntry], by_name: bool = True) -> set[tuple]:
-        return set(
+        return {
             (
                 rlse.field_guid,
                 rlse.allowed_value,
@@ -303,7 +303,7 @@ class DatasetApiLoader:
                 rlse.pattern_type,
             )
             for rlse in rls_list
-        )
+        }
 
     def _resolve_group_slugs(
         self,
@@ -384,7 +384,7 @@ class DatasetApiLoader:
                     rls_entries_pre, compare_by_name
                 ):
                     raise dl_rls.RLSConfigParsingError(
-                        "For this feature to work, save dataset after editing the RLS config.", details=dict()
+                        "For this feature to work, save dataset after editing the RLS config.", details={}
                     )
                 # otherwise no effective config changes (that are worth checking in preview)
 
@@ -429,7 +429,7 @@ class DatasetApiLoader:
 
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
-        schema_guids = set(field.guid for field in dataset.result_schema.fields)
+        schema_guids = {field.guid for field in dataset.result_schema.fields}
 
         # Validate sorting fields
         if extract.mode != ExtractMode.disabled and len(extract.sorting) == 0:

@@ -45,58 +45,58 @@ class BitrixConnectionTestBase(ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self, bitrix_datalens_token: str) -> dict:
-        return dict(
-            portal=BITRIX_PORTALS["datalens"],
-            token=bitrix_datalens_token,
-        )
+        return {
+            "portal": BITRIX_PORTALS["datalens"],
+            "token": bitrix_datalens_token,
+        }
 
 
 class BitrixInvalidConnectionTestBase(BitrixConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self, bitrix_datalens_token: str) -> dict:
-        return dict(
-            portal=BITRIX_PORTALS["invalid"],
-            token=bitrix_datalens_token,
-        )
+        return {
+            "portal": BITRIX_PORTALS["invalid"],
+            "token": bitrix_datalens_token,
+        }
 
 
 class BitrixDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_BITRIX_GDS.name,
-            title=TABLE_NAME,
-            parameters=dict(
-                db_name=DB_NAME,
-                table_name=TABLE_NAME,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_BITRIX_GDS.name,
+            "title": TABLE_NAME,
+            "parameters": {
+                "db_name": DB_NAME,
+                "table_name": TABLE_NAME,
+            },
+        }
 
 
 class BitrixSmartTablesDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_BITRIX_GDS.name,
-            title=SMART_TABLE_NAME,
-            parameters=dict(
-                db_name=DB_NAME,
-                table_name=SMART_TABLE_NAME,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_BITRIX_GDS.name,
+            "title": SMART_TABLE_NAME,
+            "parameters": {
+                "db_name": DB_NAME,
+                "table_name": SMART_TABLE_NAME,
+            },
+        }
 
 
 class BitrixUfDateTablesDatasetTestBase(BitrixConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_BITRIX_GDS.name,
-            title=UF_DATE_TABLE_NAME,
-            parameters=dict(
-                db_name=DB_NAME,
-                table_name=UF_DATE_TABLE_NAME,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_BITRIX_GDS.name,
+            "title": UF_DATE_TABLE_NAME,
+            "parameters": {
+                "db_name": DB_NAME,
+                "table_name": UF_DATE_TABLE_NAME,
+            },
+        }
 
 
 class BitrixDataApiTestBase(BitrixDatasetTestBase, StandardizedDataApiTestBase):

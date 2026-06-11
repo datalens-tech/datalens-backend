@@ -241,7 +241,7 @@ class USEntry:
                 data_dict = {}
             else:
                 data_dict = self.data
-            data = {k: v for k, v in data_dict.items()}
+            data = dict(data_dict.items())
         else:
             data = {
                 "type": self.type_,

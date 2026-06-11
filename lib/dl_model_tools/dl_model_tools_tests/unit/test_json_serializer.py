@@ -25,7 +25,7 @@ def test_json_serialization():
 
 
 def test_json_tricky_serialization():
-    tricky_data = dict(normal=SAMPLE_DATA, abnormal=EXPECTED_DUMP)
+    tricky_data = {"normal": SAMPLE_DATA, "abnormal": EXPECTED_DUMP}
     tricky_data_dumped = common_dumps(tricky_data)
     tricky_roundtrip = common_loads(tricky_data_dumped)
     assert tricky_roundtrip["normal"] == tricky_data["normal"], tricky_roundtrip
@@ -34,7 +34,7 @@ def test_json_tricky_serialization():
 
 
 def test_safe_json_serialization(caplog):
-    unserializable_data = SAMPLE_DATA | dict(unserializable=CustomType())
+    unserializable_data = SAMPLE_DATA | {"unserializable": CustomType()}
     with pytest.raises(TypeError, match="Object of type CustomType is not JSON serializable"):
         common_dumps(unserializable_data)
 

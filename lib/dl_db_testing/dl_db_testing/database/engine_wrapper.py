@@ -59,7 +59,7 @@ class EngineWrapperBase:
     _connection: Connection | None = attr.ib(init=False, default=None, repr=False)
 
     def _db_connect_params(self) -> dict:
-        return dict()
+        return {}
 
     def __attrs_post_init__(self) -> None:
         url = self._config.url
@@ -159,13 +159,13 @@ class EngineWrapperBase:
         return self.dialect.identifier_preparer.quote(value)
 
     def get_conn_credentials(self, full: bool = False) -> dict:
-        return dict(
-            host=self.url.host,
-            port=int(self.url.port),  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "int" has incompatible type "int | None"; expected "str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc"  [arg-type]
-            username=self.url.username,
-            password=self.url.password,
-            db_name=self.url.database,
-        )
+        return {
+            "host": self.url.host,
+            "port": int(self.url.port),  # type: ignore  # 2024-01-29 # TODO: Argument 1 to "int" has incompatible type "int | None"; expected "str | Buffer | SupportsInt | SupportsIndex | SupportsTrunc"  [arg-type]
+            "username": self.url.username,
+            "password": self.url.password,
+            "db_name": self.url.database,
+        }
 
     def get_conn_hosts(self) -> tuple[str, ...]:
         host = self.get_conn_credentials(full=True).get("host")

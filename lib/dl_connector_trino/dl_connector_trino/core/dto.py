@@ -21,8 +21,8 @@ class TrinoConnDTO(ConnDTO):
     ssl_ca: str | None = attr.ib(default=None)
 
     def conn_reporting_data(self) -> dict:
-        return super().conn_reporting_data() | dict(
-            host=self.host,
-            port=self.port,
-            auth_type=self.auth_type.value,
-        )
+        return super().conn_reporting_data() | {
+            "host": self.host,
+            "port": self.port,
+            "auth_type": self.auth_type.value,
+        }

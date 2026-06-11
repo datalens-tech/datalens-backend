@@ -89,10 +89,10 @@ class YQLEngineWrapper(EngineWrapperBase):
     URL_PREFIX = "yql"
 
     def get_conn_credentials(self, full: bool = False) -> dict:
-        return dict(
-            endpoint=self.engine.url.query["endpoint"],
-            db_name=self.engine.url.query["database"],
-        )
+        return {
+            "endpoint": self.engine.url.query["endpoint"],
+            "db_name": self.engine.url.query["database"],
+        }
 
     def get_version(self) -> str | None:
         return None

@@ -86,26 +86,26 @@ class TestPostgreSQLSyncConnectionExecutor(
     @pytest.fixture(scope="function", params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
     def index_test_case(self, db: Db, request: pytest.FixtureRequest):
         table_name = f"idx_test_{shortuuid.uuid()}"
-        cases = dict(
-            no_idx=(
+        cases = {
+            "no_idx": (
                 [f'CREATE TABLE "{table_name}" (num_1 integer, num_2 integer, txt text)'],
                 [],
             ),
-            one_columns_sorting=(
+            "one_columns_sorting": (
                 [
                     f'CREATE TABLE "{table_name}" (num_1 integer, num_2 integer, txt text)',
                     f'CREATE INDEX ON "{table_name}" (num_1)',
                 ],
                 [IndexInfo(columns=("num_1",), kind=None)],
             ),
-            two_columns_sorting=(
+            "two_columns_sorting": (
                 [
                     f'CREATE TABLE "{table_name}" (num_1 integer, num_2 integer, txt text)',
                     f'CREATE INDEX ON "{table_name}" (num_1, num_2)',
                 ],
                 [IndexInfo(columns=("num_1", "num_2"), kind=None)],
             ),
-        )
+        }
         ddl_list, expected_indexes = cases[request.param]
         try:
             for ddl in ddl_list:

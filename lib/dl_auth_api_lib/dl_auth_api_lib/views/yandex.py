@@ -16,7 +16,7 @@ class YandexURIView(BaseView):
         oauth_client = self.get_client(data)
         origin = self.request.headers.get(hdrs.ORIGIN)
         uri = oauth_client.get_auth_uri(origin=origin)
-        return web.json_response(yandex_schemas.YandexUriResponseSchema().dump(dict(uri=uri)))
+        return web.json_response(yandex_schemas.YandexUriResponseSchema().dump({"uri": uri}))
 
 
 class YandexTokenView(BaseView):

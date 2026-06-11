@@ -79,13 +79,13 @@ class AsyncMysqlChainedDbErrorTransformer(error_transformer.ChainedDbErrorTransf
         inspector_query: str | None,
     ) -> error_transformer.DBExcKWArgs:
         if isinstance(wrapper_exc, pymysql.ProgrammingError):
-            return dict(
-                db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
-                query=debug_query,
-                inspector_query=inspector_query,
-                orig=wrapper_exc,  # keep orig exception for .args
-                details={},
-            )
+            return {
+                "db_message": str(orig_exc) if orig_exc else str(wrapper_exc),
+                "query": debug_query,
+                "inspector_query": inspector_query,
+                "orig": wrapper_exc,  # keep orig exception for .args
+                "details": {},
+            }
         return error_transformer.ChainedDbErrorTransformer._get_error_kw(
             debug_query, orig_exc, wrapper_exc, inspector_query
         )

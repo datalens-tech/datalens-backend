@@ -140,7 +140,7 @@ class Connection:
     @check_connected
     def get_table_names(self):
         avail_counters = self._cli.get_available_counters()
-        return list(str(c_info["id"]) for c_info in avail_counters)
+        return [str(c_info["id"]) for c_info in avail_counters]
 
     def get_columns(self):
         field_props = ("name", "type", "is_dim")

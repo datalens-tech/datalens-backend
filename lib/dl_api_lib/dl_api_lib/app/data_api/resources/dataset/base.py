@@ -435,7 +435,7 @@ class DatasetDataBaseView(BaseView):
     @staticmethod
     def _updates_only_fields(updates: list[Action]) -> bool:
         # Checks if updates has only field updates
-        return all([isinstance(upd, FieldAction) for upd in updates])
+        return all(isinstance(upd, FieldAction) for upd in updates)
 
     def try_get_mutation_key(self, updates: list[Action]) -> MutationKey | None:
         return self.try_get_mutation_key_for_dataset(self.dataset_id, self.dataset.revision_id, updates)
@@ -958,7 +958,7 @@ class DatasetDataBaseView(BaseView):
         fields_data: list[dict[str, Any]] | None = None
         if add_fields_data:
             fields_data = get_fields_data_serializable(self.dataset, for_result=True)
-            LOGGER.info("Field schema data", extra=dict(fields=fields_data))
+            LOGGER.info("Field schema data", extra={"fields": fields_data})
 
         data_export_info = self.get_data_export_info()
 

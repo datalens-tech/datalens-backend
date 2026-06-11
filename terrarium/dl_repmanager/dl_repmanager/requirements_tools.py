@@ -29,7 +29,7 @@ class PipRequirementsIO:
     path: Path = attr.ib()
 
     def read_existing(self, gather_all: bool = False) -> dict[str, PipRequirement]:
-        result = dict()
+        result = {}
         with open(self.path) as fh:
             for line in fh.readlines():
                 try:

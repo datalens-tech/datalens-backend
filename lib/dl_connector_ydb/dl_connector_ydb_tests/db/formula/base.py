@@ -163,15 +163,15 @@ class YQLTestBase(FormulaConnectorTestBase):
 
     @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
-        return dict(
-            connect_args=frozendict(
-                dict(
-                    host=test_config.CoreConnectionSettings.HOST,
-                    port=test_config.CoreConnectionSettings.PORT,
-                    protocol="grpc",
-                )
+        return {
+            "connect_args": frozendict(
+                {
+                    "host": test_config.CoreConnectionSettings.HOST,
+                    "port": test_config.CoreConnectionSettings.PORT,
+                    "protocol": "grpc",
+                }
             ),
-        )
+        }
 
     @pytest.fixture(scope="class")
     def dbe(self, db_config: FormulaDbConfig) -> DbEvaluator:

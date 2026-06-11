@@ -121,7 +121,7 @@ class ConnectionSQLSnowFlake(ConnectionSQL):
             schema_name=self.data.schema,
             db_name=self.data.db_name,
         )
-        return [dict(schema_name=tid.schema_name, table_name=tid.table_name) for tid in tables]
+        return [{"schema_name": tid.schema_name, "table_name": tid.table_name} for tid in tables]
 
     def get_data_source_template_group(self, parameters: dict) -> list[str]:
         return [

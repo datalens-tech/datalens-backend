@@ -210,10 +210,10 @@ class AsyncPostgresAdapter(
         await self.execute(DBAdapterQuery("select 1"))
 
     def _make_cursor_info(self, query_attrs: Iterable[asyncpg.Attribute]) -> dict:
-        return dict(
-            names=[str(a.name) for a in query_attrs],
-            driver_types=[self._cursor_type_to_str(a.type.oid) for a in query_attrs],
-            db_types=[
+        return {
+            "names": [str(a.name) for a in query_attrs],
+            "driver_types": [self._cursor_type_to_str(a.type.oid) for a in query_attrs],
+            "db_types": [
                 self._cursor_column_to_native_type(
                     (
                         a.name,
@@ -223,17 +223,17 @@ class AsyncPostgresAdapter(
                 )
                 for a in query_attrs
             ],
-            columns=[
-                dict(
-                    name=str(a.name),
-                    postgresql_oid=a.type.oid,
-                    postgresql_typname=OID_KNOWLEDGE.get(a.type.oid),
-                )
+            "columns": [
+                {
+                    "name": str(a.name),
+                    "postgresql_oid": a.type.oid,
+                    "postgresql_typname": OID_KNOWLEDGE.get(a.type.oid),
+                }
                 for a in query_attrs
             ],
             # dashsql convenience:
-            postgresql_typnames=[OID_KNOWLEDGE.get(a.type.oid) for a in query_attrs],
-        )
+            "postgresql_typnames": [OID_KNOWLEDGE.get(a.type.oid) for a in query_attrs],
+        }
 
     def _get_row_converters(self, query_attrs: Iterable[asyncpg.Attribute]) -> tuple[Callable[[Any], Any] | None, ...]:
         return tuple(self._convert_bytea if a.type.oid == 17 else None for a in query_attrs)  # `bytea`

@@ -168,7 +168,7 @@ def test_compile(dialect, query, literal_binds):
     sql_text = str(
         query.compile(
             dialect=dialect,
-            compile_kwargs=dict(literal_binds=literal_binds),
+            compile_kwargs={"literal_binds": literal_binds},
         )
     )
     assert sql_text

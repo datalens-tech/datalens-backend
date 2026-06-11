@@ -47,13 +47,11 @@ def test_check_request_limit(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "PATCH"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="key",
-                    headers=tuple(
-                        [
-                            dl_rate_limiter.RequestEventKeyTemplateHeader(
-                                key="header",
-                                regex=re.compile("^(?P<result>.{5})"),  # first 5 characters
-                            )
-                        ]
+                    headers=(
+                        dl_rate_limiter.RequestEventKeyTemplateHeader(
+                            key="header",
+                            regex=re.compile("^(?P<result>.{5})"),  # first 5 characters
+                        ),
                     ),
                 ),
                 limit=1,
@@ -133,7 +131,7 @@ async def test_async_check_request_limit(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "PATCH"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="key",
-                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
+                    headers=(dl_rate_limiter.RequestEventKeyTemplateHeader(key="header"),),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -205,7 +203,7 @@ def test_check_request_limit_multiple_patterns(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="all_requests",
-                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
+                    headers=(dl_rate_limiter.RequestEventKeyTemplateHeader(key="header"),),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -215,7 +213,7 @@ def test_check_request_limit_multiple_patterns(mocker: pytest_mock.MockFixture):
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="dot_com_requests",
-                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
+                    headers=(dl_rate_limiter.RequestEventKeyTemplateHeader(key="header"),),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -267,7 +265,7 @@ async def test_async_check_request_limit_multiple_patterns(mocker: pytest_mock.M
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="all_requests",
-                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
+                    headers=(dl_rate_limiter.RequestEventKeyTemplateHeader(key="header"),),
                 ),
                 limit=1,
                 window_ms=1000,
@@ -277,7 +275,7 @@ async def test_async_check_request_limit_multiple_patterns(mocker: pytest_mock.M
                 methods=frozenset(["GET", "POST"]),
                 event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                     key="dot_com_requests",
-                    headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader(key="header")]),
+                    headers=(dl_rate_limiter.RequestEventKeyTemplateHeader(key="header"),),
                 ),
                 limit=1,
                 window_ms=1000,

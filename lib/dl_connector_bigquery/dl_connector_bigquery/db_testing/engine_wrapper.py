@@ -24,9 +24,9 @@ class BigQueryEngineWrapper(EngineWrapperBase):
         return self._config
 
     def get_conn_credentials(self, full: bool = False) -> dict:
-        return dict(
-            db_name=self.url.database,
-        )
+        return {
+            "db_name": self.url.database,
+        }
 
     def table_from_columns(
         self,

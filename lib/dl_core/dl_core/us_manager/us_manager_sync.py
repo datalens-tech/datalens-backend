@@ -105,17 +105,17 @@ class SyncUSManager(USManagerBase):
 
     def clone(self, **kwargs: Any) -> Self:
         """This should've been an `attr.evolve` wrapper"""
-        base_kwargs = dict(
-            us_auth_context=self._us_auth_context,
-            us_base_url=self._us_base_url,
-            bi_context=self._bi_context,
-            crypto_keys_config=self._crypto_keys_config,
-            us_api_prefix=self._us_api_prefix,
-            services_registry=self._services_registry,
-            lifecycle_manager_factory=self._lifecycle_manager_factory,
-            schema_migration_factory=self._schema_migration_factory,
-            retry_policy_factory=self._retry_policy_factory,
-        )
+        base_kwargs = {
+            "us_auth_context": self._us_auth_context,
+            "us_base_url": self._us_base_url,
+            "bi_context": self._bi_context,
+            "crypto_keys_config": self._crypto_keys_config,
+            "us_api_prefix": self._us_api_prefix,
+            "services_registry": self._services_registry,
+            "lifecycle_manager_factory": self._lifecycle_manager_factory,
+            "schema_migration_factory": self._schema_migration_factory,
+            "retry_policy_factory": self._retry_policy_factory,
+        }
         kwargs = {
             **base_kwargs,
             **kwargs,

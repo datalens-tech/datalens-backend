@@ -83,10 +83,10 @@ class DLBaseException(Exception):
         return new_exc
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
-        return dict(
-            cls_name=type(self).__qualname__,
-            message=None if self._message == self.default_message else self._message,
-            details=self.details,
-            debug_info=self.debug_info,
-            params=self.params,
-        )
+        return {
+            "cls_name": type(self).__qualname__,
+            "message": None if self._message == self.default_message else self._message,
+            "details": self.details,
+            "debug_info": self.debug_info,
+            "params": self.params,
+        }

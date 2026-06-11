@@ -55,8 +55,8 @@ def test_allowed_unknown_fields(caplog):
 
     loaded_data = SampleSchema(
         context={SampleSchema.CTX_KEY_OPERATIONS_MODE: CreateMode.create},
-    ).load(dict(a="a", b="b", allowed_unknown_field="val"))
-    assert loaded_data == dict(a="a", b="b")
+    ).load({"a": "a", "b": "b", "allowed_unknown_field": "val"})
+    assert loaded_data == {"a": "a", "b": "b"}
 
     unk_record = get_unk_fields_record()
     assert unk_record.schema_unk_fields == ["allowed_unknown_field"]
@@ -69,11 +69,11 @@ def test_allowed_unknown_fields(caplog):
     with pytest.raises(ValidationError) as validation_err:
         SampleSchema(
             context={SampleSchema.CTX_KEY_OPERATIONS_MODE: CreateMode.create},
-        ).load(dict(a="", b="", len=1))
+        ).load({"a": "", "b": "", "len": 1})
 
-    assert validation_err.value.messages == dict(
-        len=["Unknown field."],
-    )
+    assert validation_err.value.messages == {
+        "len": ["Unknown field."],
+    }
 
     unk_record = get_unk_fields_record()
     assert unk_record.schema_unk_fields == ["len"]
@@ -83,16 +83,16 @@ def test_allowed_unknown_fields(caplog):
     # Allowed unknown field update
     caplog.clear()
 
-    edit_target = dict(a="old_val_a", b="old_val_b")
+    edit_target = {"a": "old_val_a", "b": "old_val_b"}
     SampleSchema(
         context={
             SampleSchema.CTX_KEY_OPERATIONS_MODE: EditMode.edit,
             SampleSchema.CTX_KEY_EDITABLE_OBJECT: edit_target,
         },
     ).load(
-        dict(a="new_val_a", b="new_val_b", allowed_unknown_field="val")  # this field should be ignored
+        {"a": "new_val_a", "b": "new_val_b", "allowed_unknown_field": "val"}  # this field should be ignored
     )
-    assert edit_target == dict(a="old_val_a", b="new_val_b")
+    assert edit_target == {"a": "old_val_a", "b": "new_val_b"}
 
     unk_record = get_unk_fields_record()
     assert unk_record.schema_unk_fields == ["a", "allowed_unknown_field"]
@@ -103,17 +103,17 @@ def test_allowed_unknown_fields(caplog):
     caplog.clear()
 
     with pytest.raises(ValidationError) as validation_err:
-        edit_target = dict(a="old_val_a", b="old_val_b")
+        edit_target = {"a": "old_val_a", "b": "old_val_b"}
         SampleSchema(
             context={
                 SampleSchema.CTX_KEY_OPERATIONS_MODE: EditMode.edit,
                 SampleSchema.CTX_KEY_EDITABLE_OBJECT: edit_target,
             },
-        ).load(dict(b="new_val_b", some_unknown_field="val", a="new_val_a"))
+        ).load({"b": "new_val_b", "some_unknown_field": "val", "a": "new_val_a"})
 
-    assert validation_err.value.messages == dict(
-        some_unknown_field=["Unknown field."],
-    )
+    assert validation_err.value.messages == {
+        "some_unknown_field": ["Unknown field."],
+    }
 
     unk_record = get_unk_fields_record()
     assert unk_record.schema_unk_fields == ["a", "some_unknown_field"]

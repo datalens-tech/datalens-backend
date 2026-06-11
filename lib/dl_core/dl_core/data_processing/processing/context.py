@@ -34,7 +34,7 @@ class OpExecutionContext:
 
     @property
     def streams(self) -> Collection[AbstractStream]:
-        return [stream for stream in self._streams.values()]
+        return list(self._streams.values())
 
     @property
     def data_streams(self) -> Collection[DataStreamAsync]:
@@ -68,11 +68,11 @@ class OpExecutionContext:
         return self._operations_by_output[stream_id]
 
     def clone(self, **kwargs: Any) -> OpExecutionContext:
-        new_kwargs = dict(
-            processing_id=self._processing_id,
-            streams=self._streams.values(),
-            operations=self._operations,
-        )
+        new_kwargs = {
+            "processing_id": self._processing_id,
+            "streams": self._streams.values(),
+            "operations": self._operations,
+        }
 
         for key, val in kwargs.items():
             if key not in new_kwargs:

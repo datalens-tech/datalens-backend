@@ -47,24 +47,24 @@ class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return dict(
-            db_name=CoreConnectionSettings.DB_NAME,
-            host=CoreConnectionSettings.HOST,
-            port=CoreConnectionSettings.PORT,
-            username=CoreConnectionSettings.USERNAME,
-            password=CoreConnectionSettings.PASSWORD,
-            raw_sql_level=self.raw_sql_level.value,
-        )
+        return {
+            "db_name": CoreConnectionSettings.DB_NAME,
+            "host": CoreConnectionSettings.HOST,
+            "port": CoreConnectionSettings.PORT,
+            "username": CoreConnectionSettings.USERNAME,
+            "password": CoreConnectionSettings.PASSWORD,
+            "raw_sql_level": self.raw_sql_level.value,
+        }
 
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_CH_TABLE.name,
-            parameters=dict(
-                db_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_CH_TABLE.name,
+            "parameters": {
+                "db_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
     @pytest.fixture(scope="function")
     def dataset_id(self, saved_dataset: Dataset) -> str:

@@ -21,16 +21,19 @@ def test_simulation(loop: asyncio.AbstractEventLoop) -> None:
         new_loop = asyncio.new_event_loop()
         loop_keeper.append(new_loop)
         if strict_id:
-            assert id(new_loop) not in pre_test_ids, dict(case="new_loop_is_not_new", step=idx)
+            assert id(new_loop) not in pre_test_ids, {"case": "new_loop_is_not_new", "step": idx}
         new_loop.set_debug(False)
         assert not getattr(new_loop, marker_attr_n, None), "new loop should be new"
         setattr(new_loop, marker_attr_n, True)
         asyncio.set_event_loop(new_loop)
         try:
             current_loop = asyncio.get_event_loop()
-            assert current_loop is new_loop, dict(
-                case="wrong_current_loop", step=idx, new_loop=new_loop, current_loop=current_loop
-            )
+            assert current_loop is new_loop, {
+                "case": "wrong_current_loop",
+                "step": idx,
+                "new_loop": new_loop,
+                "current_loop": current_loop,
+            }
             assert getattr(current_loop, marker_attr_n, None), "current loop should have been marked as new"
             assert not getattr(current_loop, marker_attr_c, None), "current loop should not have been used"
             setattr(current_loop, marker_attr_c, True)
@@ -40,7 +43,7 @@ def test_simulation(loop: asyncio.AbstractEventLoop) -> None:
             new_loop.close()
             asyncio.set_event_loop(None)
         if strict_id:
-            assert loop_id not in pre_test_ids, dict(step=idx, case="current_loop_is_not_new")
+            assert loop_id not in pre_test_ids, {"step": idx, "case": "current_loop_is_not_new"}
         pre_test_ids.add(loop_id)
 
     if strict_id:
@@ -66,12 +69,12 @@ def test_app(caplog: pytest.LogCaptureFixture) -> None:
 
         loop.run_until_complete(make_some_sleep())
         return flask.jsonify(
-            dict(
-                event_loop_id=id(loop),
-                pid=os.getpid(),
-                thread=repr(threading.current_thread()),
-                thread_id=threading.get_ident(),
-            )
+            {
+                "event_loop_id": id(loop),
+                "pid": os.getpid(),
+                "thread": repr(threading.current_thread()),
+                "thread_id": threading.get_ident(),
+            }
         )
 
     client = app.test_client()

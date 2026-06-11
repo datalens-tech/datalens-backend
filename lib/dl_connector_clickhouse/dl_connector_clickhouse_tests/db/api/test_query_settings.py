@@ -83,7 +83,7 @@ class TestClickHouseQuerySettingsSavePasses(_BaseClickHouseQuerySettingsApiTest)
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
         subsql = "SELECT value AS value FROM system.settings WHERE name = 'max_threads'"
-        return dict(source_type=SOURCE_TYPE_CH_SUBSELECT.name, parameters=dict(subsql=subsql))
+        return {"source_type": SOURCE_TYPE_CH_SUBSELECT.name, "parameters": {"subsql": subsql}}
 
     def test_save_with_valid_query_settings_round_trips(
         self,
@@ -210,7 +210,7 @@ class TestClickHouseQuerySettingsTemplating(_BaseClickHouseQuerySettingsApiTest)
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
         subsql = "SELECT value AS value FROM system.settings WHERE name = 'max_threads'"
-        return dict(source_type=SOURCE_TYPE_CH_SUBSELECT.name, parameters=dict(subsql=subsql))
+        return {"source_type": SOURCE_TYPE_CH_SUBSELECT.name, "parameters": {"subsql": subsql}}
 
     def test_data_api_renders_parameter_into_query_setting(
         self,

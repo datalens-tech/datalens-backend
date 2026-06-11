@@ -356,7 +356,7 @@ class USManagerBase:
         """
 
         data_pack = copy.deepcopy(data_pack)
-        unversioned_data: dict[str, Any] = dict()
+        unversioned_data: dict[str, Any] = {}
 
         # Assumed that data_pack's dicts was decoupled with initial US response
         result_addressable = AddressableData(unversioned_data)
@@ -426,19 +426,19 @@ class USManagerBase:
                     f" {entry_cls.__qualname__} instead of {expected_type.__qualname__}"
                 )
 
-        common_properties: dict[str, Any] = dict(
-            entry_key=entry_loc,
-            type_=us_resp["type"],
-            meta=us_resp["meta"],
-            annotation=us_resp.get("annotation") or {"description": ""},
-            is_locked=us_resp.get("isLocked"),
-            is_favorite=us_resp.get("isFavorite"),
-            permissions=us_resp.get("permissions") or {},
-            full_permissions=us_resp.get("fullPermissions") or {},
-            links=us_resp.get("links") or {},
-            hidden=us_resp["hidden"],
-            migration_status=MigrationStatus(us_resp.get("migration_status", MigrationStatus.non_migrated.value)),
-        )
+        common_properties: dict[str, Any] = {
+            "entry_key": entry_loc,
+            "type_": us_resp["type"],
+            "meta": us_resp["meta"],
+            "annotation": us_resp.get("annotation") or {"description": ""},
+            "is_locked": us_resp.get("isLocked"),
+            "is_favorite": us_resp.get("isFavorite"),
+            "permissions": us_resp.get("permissions") or {},
+            "full_permissions": us_resp.get("fullPermissions") or {},
+            "links": us_resp.get("links") or {},
+            "hidden": us_resp["hidden"],
+            "migration_status": MigrationStatus(us_resp.get("migration_status", MigrationStatus.non_migrated.value)),
+        }
 
         entry: USEntry
         if entry_cls == USMigrationEntry:
@@ -451,8 +451,8 @@ class USManagerBase:
                 **common_properties,
             )
         else:
-            data = us_resp.get("data", dict())
-            unversioned_data = us_resp.get("unversionedData", dict())
+            data = us_resp.get("data", {})
+            unversioned_data = us_resp.get("unversionedData", {})
 
             assert isinstance(data, dict)
             assert isinstance(unversioned_data, dict)

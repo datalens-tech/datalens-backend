@@ -23,15 +23,15 @@ class TestCacheInvalidationLastResult(DefaultApiTestBase):
     def connection_params(self) -> dict:
         from dl_api_lib_tests.db.config import CoreConnectionSettings
 
-        return dict(
-            db_name=CoreConnectionSettings.DB_NAME,
-            host=CoreConnectionSettings.HOST,
-            port=CoreConnectionSettings.PORT,
-            username=CoreConnectionSettings.USERNAME,
-            password=CoreConnectionSettings.PASSWORD,
-            raw_sql_level=self.raw_sql_level.value,
-            cache_invalidation_throttling_interval_sec=600,
-        )
+        return {
+            "db_name": CoreConnectionSettings.DB_NAME,
+            "host": CoreConnectionSettings.HOST,
+            "port": CoreConnectionSettings.PORT,
+            "username": CoreConnectionSettings.USERNAME,
+            "password": CoreConnectionSettings.PASSWORD,
+            "raw_sql_level": self.raw_sql_level.value,
+            "cache_invalidation_throttling_interval_sec": 600,
+        }
 
     def test_endpoint_returns_expected_schema(
         self,
@@ -40,10 +40,10 @@ class TestCacheInvalidationLastResult(DefaultApiTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Endpoint exists, returns 200 and response matches the expected schema."""
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 'test_value'",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 'test_value'",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 

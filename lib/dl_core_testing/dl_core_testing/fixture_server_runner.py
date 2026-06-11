@@ -135,7 +135,11 @@ class WSGIRunner:
             if now > max_time:
                 raise Exception(
                     f"Timed out waiting for WSGI to come up at {url}",
-                    dict(last_error=last_error, last_resp=resp, last_resp_text=resp.text if resp is not None else None),
+                    {
+                        "last_error": last_error,
+                        "last_resp": resp,
+                        "last_resp_text": resp.text if resp is not None else None,
+                    },
                 )
             sleep_time = next_attempt_time - now
             if sleep_time > 0.001:

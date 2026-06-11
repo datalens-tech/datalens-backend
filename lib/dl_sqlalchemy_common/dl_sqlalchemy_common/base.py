@@ -148,7 +148,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         if uncovered_attrs:
             raise Exception(
                 "Dialect-specific compiler overrides methods that aren't re-overridden in `bi_...`",
-                dict(uncovered_attrs=uncovered_attrs, bi_clss=bi_clss, base_clss=base_clss),
+                {"uncovered_attrs": uncovered_attrs, "bi_clss": bi_clss, "base_clss": base_clss},
             )
         super().__init_subclass__()
 

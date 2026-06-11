@@ -47,16 +47,16 @@ class TestingCSRFMiddleware(CSRFMiddleware):
 async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
     async def f(authorized: bool | None, secrets: tuple[str, ...]) -> TestClient:
         async def non_csrf_handler(request: web.Request) -> web.Response:
-            return web.json_response(dict(ok="ok"), status=200)
+            return web.json_response({"ok": "ok"}, status=200)
 
         async def csrf_handler(request: web.Request) -> web.Response:
-            return web.json_response(dict(ok="ok"), status=200)
+            return web.json_response({"ok": "ok"}, status=200)
 
         class SkipCSRFView(DLRequestView):
             REQUIRED_RESOURCES: ClassVar[frozenset[RequiredResource]] = frozenset({RequiredResourceCommon.SKIP_CSRF})
 
             async def put(self) -> web.Response:
-                return web.json_response(dict(ok="ok"), status=200)
+                return web.json_response({"ok": "ok"}, status=200)
 
         req_id_service = RequestId(
             append_own_req_id=True,
@@ -195,7 +195,7 @@ async def test_csrf_ok(
     )
     assert resp.status == 200
     resp_json = await resp.json()
-    assert resp_json == dict(ok="ok")
+    assert resp_json == {"ok": "ok"}
 
 
 @pytest.mark.asyncio

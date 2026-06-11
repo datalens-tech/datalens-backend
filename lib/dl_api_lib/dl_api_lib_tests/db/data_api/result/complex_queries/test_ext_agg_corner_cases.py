@@ -33,7 +33,7 @@ class TestExtendedAggregationCornerCases(DefaultApiTestBase):
         data_rows = get_data_rows(result_resp)
 
         assert len(data_rows) == 3
-        assert len(set(row[2] for row in data_rows)) == 1  # They should all be the same
+        assert len({row[2] for row in data_rows}) == 1  # They should all be the same
 
     def test_lod_with_date_dimension(self, control_api, data_api, saved_dataset):
         ds = add_formulas_to_dataset(

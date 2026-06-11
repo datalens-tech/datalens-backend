@@ -47,7 +47,7 @@ class SqlSourceBuilder:
     """
 
     # Constants
-    _COMMON_JOIN_PARAMS: ClassVar[dict[str, bool]] = dict(all=False, any=False, global_=False)
+    _COMMON_JOIN_PARAMS: ClassVar[dict[str, bool]] = {"all": False, "any": False, "global_": False}
     _JOIN_PARAMS_BY_TYPE: ClassVar[dict[JoinType, dict[str, Any]]] = {
         JoinType.inner: {"type": "inner"},
         JoinType.left: {"isouter": True, "type": "left"},

@@ -21,10 +21,10 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
     ext_query_executer_secret_key="_some_test_secret_key_",
 )
 
-BITRIX_PORTALS = dict(
-    datalens="datalens.bitrix24.ru",
-    invalid="some_portal",
-)
+BITRIX_PORTALS = {
+    "datalens": "datalens.bitrix24.ru",
+    "invalid": "some_portal",
+}
 DB_NAME = "default"
 TABLE_NAME = "crm_deal"
 SMART_TABLE_NAME = "crm_dynamic_items_180"

@@ -392,7 +392,7 @@ class UStorageClientBase:
         prefix = self.prefix
         if audit_mode and prefix == USApiType.v1.value:
             prefix = USApiType.audit.value
-        return "/".join(map(lambda s: s.strip("/"), (self.host, prefix, relative_url)))
+        return "/".join(s.strip("/") for s in (self.host, prefix, relative_url))
 
     @staticmethod
     def _log_request_start(request_data: RequestData) -> None:
@@ -603,7 +603,7 @@ class UStorageClientBase:
         created_at_from: float = 0,
         limit: int | None = None,
     ) -> RequestData:
-        req_params: dict[Any, Any] = dict(scope=scope, includeData=int(include_data))
+        req_params: dict[Any, Any] = {"scope": scope, "includeData": int(include_data)}
         if entry_type:
             req_params.update(type=entry_type)
         meta = meta or {}
@@ -662,12 +662,12 @@ class UStorageClientBase:
         return cls.RequestData(
             method="get",
             relative_url="/navigation",
-            params=dict(
-                page=str(page_idx),
-                pageSize=str(page_size),
-                path=us_path,
-                includePermissionsInfo="false",
-            ),
+            params={
+                "page": str(page_idx),
+                "pageSize": str(page_size),
+                "path": us_path,
+                "includePermissionsInfo": "false",
+            },
             json=None,
         )
 

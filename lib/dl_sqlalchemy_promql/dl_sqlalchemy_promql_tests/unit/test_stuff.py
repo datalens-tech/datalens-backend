@@ -58,9 +58,9 @@ class MockupSyncPromQLClient(SyncPromQLClient):
 def test_result(engine_url):
     sa_engine = sa.create_engine(
         engine_url,
-        connect_args=dict(
-            cli_cls=MockupSyncPromQLClient,
-        ),
+        connect_args={
+            "cli_cls": MockupSyncPromQLClient,
+        },
     )
     res = sa_engine.execute(
         "up",

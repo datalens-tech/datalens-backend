@@ -57,13 +57,13 @@ class SupportedFunctionsManager:
 
     @method_lru(maxsize=1000)
     def get_supported_aggregations(self, dialect: DialectCombo, user_type: UserDataType) -> list[AggregationFunction]:
-        supported_func_names = set(
+        supported_func_names = {
             name
             for name, *_ in self._get_supported_functions(
                 dialect=dialect,
                 scope=Scope.EXPLICIT_USAGE,
             )
-        )
+        }
 
         return [
             ag_type

@@ -136,7 +136,7 @@ class DatasetComponentAccessor:
         return dataset_sources
 
     def get_data_source_coll_spec_list(self) -> list[DataSourceCollectionSpec]:
-        return [dsrc_coll_spec for dsrc_coll_spec in self._dataset.data.source_collections]
+        return list(self._dataset.data.source_collections)
 
     def get_data_source_coll_spec_opt(self, source_id: str) -> DataSourceCollectionSpec | None:
         for dsrc_coll_spec in self._dataset.data.source_collections:

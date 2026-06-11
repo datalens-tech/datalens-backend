@@ -54,7 +54,7 @@ def test_rls_simple() -> None:
     rls = RLS()
     field_guid = "guid"
     assert not rls.has_restrictions
-    _add_rls_restrictions(rls, field_guid=field_guid, restrictions=[dict(allowed_value="QQQ", subject_id="qwerty")])
+    _add_rls_restrictions(rls, field_guid=field_guid, restrictions=[{"allowed_value": "QQQ", "subject_id": "qwerty"}])
 
     assert rls.has_restrictions
     allow_all_values, allow_userid, allowed_values = rls.get_field_restriction_for_user(
@@ -70,15 +70,15 @@ def test_rls_simple() -> None:
     "entrysets, expected_restrictions",
     [
         pytest.param(
-            {"fld1": [dict(allowed_value="value_1", subject_id="user_1")]},
+            {"fld1": [{"allowed_value": "value_1", "subject_id": "user_1"}]},
             {"user_1": {"fld1": ["value_1"]}},
             id="One subject, one field, one value",
         ),
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="value_1", subject_id="user_1"),
-                    dict(allowed_value="value_2", subject_id="user_1"),
+                    {"allowed_value": "value_1", "subject_id": "user_1"},
+                    {"allowed_value": "value_2", "subject_id": "user_1"},
                 ],
             },
             {"user_1": {"fld1": ["value_1", "value_2"]}},
@@ -87,26 +87,26 @@ def test_rls_simple() -> None:
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="value_1", subject_id="user_1"),
-                    dict(allowed_value="value_2", subject_id="user_1"),
+                    {"allowed_value": "value_1", "subject_id": "user_1"},
+                    {"allowed_value": "value_2", "subject_id": "user_1"},
                 ],
                 "fld2": [
-                    dict(allowed_value="value_3", subject_id="user_1"),
+                    {"allowed_value": "value_3", "subject_id": "user_1"},
                 ],
             },
             {"user_1": {"fld1": ["value_1", "value_2"], "fld2": ["value_3"]}},
             id="One subject, two fields",
         ),
         pytest.param(
-            {"fld1": [dict(allowed_value="value", subject_id="not_user_1")]},
+            {"fld1": [{"allowed_value": "value", "subject_id": "not_user_1"}]},
             {"user_1": {"fld1": []}},
             id="No values for subject",
         ),
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="value", subject_id="user_1"),
-                    dict(allowed_value="value", subject_id="user_2"),
+                    {"allowed_value": "value", "subject_id": "user_1"},
+                    {"allowed_value": "value", "subject_id": "user_2"},
                 ],
             },
             {
@@ -118,11 +118,11 @@ def test_rls_simple() -> None:
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="value_1", subject_id="user_1"),
-                    dict(allowed_value="value_1", subject_id="user_2"),
+                    {"allowed_value": "value_1", "subject_id": "user_1"},
+                    {"allowed_value": "value_1", "subject_id": "user_2"},
                 ],
                 "fld2": [
-                    dict(allowed_value="value_2", subject_id="user_1"),
+                    {"allowed_value": "value_2", "subject_id": "user_1"},
                 ],
             },
             {
@@ -134,11 +134,11 @@ def test_rls_simple() -> None:
         pytest.param(
             {
                 "fld1": [
-                    dict(pattern_type=RLSPatternType.all, subject_id="user_1"),
-                    dict(allowed_value="value_1", subject_id="user_2"),
+                    {"pattern_type": RLSPatternType.all, "subject_id": "user_1"},
+                    {"allowed_value": "value_1", "subject_id": "user_2"},
                 ],
                 "fld2": [
-                    dict(allowed_value="value_2", subject_id="user_2"),
+                    {"allowed_value": "value_2", "subject_id": "user_2"},
                 ],
             },
             {
@@ -148,15 +148,19 @@ def test_rls_simple() -> None:
             id="Value wildcard",
         ),
         pytest.param(
-            {"fld1": [dict(pattern_type=RLSPatternType.userid, subject_type=RLSSubjectType.userid)]},
+            {"fld1": [{"pattern_type": RLSPatternType.userid, "subject_type": RLSSubjectType.userid}]},
             {"user_1": {"fld1": ["user_1"]}, "user_2": {"fld1": ["user_2"]}},
             id="Userid",
         ),
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="for_group", subject_id="group", subject_type=RLSSubjectType.group),
-                    dict(allowed_value="not_for_group", subject_id="wrong_group", subject_type=RLSSubjectType.group),
+                    {"allowed_value": "for_group", "subject_id": "group", "subject_type": RLSSubjectType.group},
+                    {
+                        "allowed_value": "not_for_group",
+                        "subject_id": "wrong_group",
+                        "subject_type": RLSSubjectType.group,
+                    },
                 ],
             },
             {
@@ -168,10 +172,14 @@ def test_rls_simple() -> None:
         pytest.param(
             {
                 "fld1": [
-                    dict(pattern_type=RLSPatternType.all, subject_id="group", subject_type=RLSSubjectType.group),
+                    {"pattern_type": RLSPatternType.all, "subject_id": "group", "subject_type": RLSSubjectType.group},
                 ],
                 "fld2": [
-                    dict(pattern_type=RLSPatternType.all, subject_id="wrong_group", subject_type=RLSSubjectType.group),
+                    {
+                        "pattern_type": RLSPatternType.all,
+                        "subject_id": "wrong_group",
+                        "subject_type": RLSSubjectType.group,
+                    },
                 ],
             },
             {  # no fld1 filters
@@ -183,11 +191,11 @@ def test_rls_simple() -> None:
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="value_for_all", subject_type=RLSSubjectType.all),
-                    dict(allowed_value="value_1", subject_id="user_1"),
+                    {"allowed_value": "value_for_all", "subject_type": RLSSubjectType.all},
+                    {"allowed_value": "value_1", "subject_id": "user_1"},
                 ],
                 "fld2": [
-                    dict(allowed_value="value_2", subject_id="user_2"),
+                    {"allowed_value": "value_2", "subject_id": "user_2"},
                 ],
             },
             {
@@ -199,24 +207,24 @@ def test_rls_simple() -> None:
         pytest.param(
             {
                 "fld1": [
-                    dict(allowed_value="f1_val_1_for_all", subject_type=RLSSubjectType.all),
-                    dict(allowed_value="f1_val_2_for_all", subject_type=RLSSubjectType.all),
-                    dict(pattern_type=RLSPatternType.all, subject_id="user_su_1"),
-                    dict(pattern_type=RLSPatternType.all, subject_id="user_su_2"),
-                    dict(allowed_value="f1_val_for_u3_u4", subject_id="user_3"),
-                    dict(allowed_value="f1_val_for_u3_u4", subject_id="user_4"),
-                    dict(allowed_value="f1_val_for_u5", subject_id="user_5"),
+                    {"allowed_value": "f1_val_1_for_all", "subject_type": RLSSubjectType.all},
+                    {"allowed_value": "f1_val_2_for_all", "subject_type": RLSSubjectType.all},
+                    {"pattern_type": RLSPatternType.all, "subject_id": "user_su_1"},
+                    {"pattern_type": RLSPatternType.all, "subject_id": "user_su_2"},
+                    {"allowed_value": "f1_val_for_u3_u4", "subject_id": "user_3"},
+                    {"allowed_value": "f1_val_for_u3_u4", "subject_id": "user_4"},
+                    {"allowed_value": "f1_val_for_u5", "subject_id": "user_5"},
                 ],
                 "fld2": [
-                    dict(allowed_value="f2_val_1_for_all", subject_type=RLSSubjectType.all),
-                    dict(allowed_value="f2_val_for_su2", subject_id="user_su_2"),
-                    dict(allowed_value="f2_val_for_u4", subject_id="user_4"),
+                    {"allowed_value": "f2_val_1_for_all", "subject_type": RLSSubjectType.all},
+                    {"allowed_value": "f2_val_for_su2", "subject_id": "user_su_2"},
+                    {"allowed_value": "f2_val_for_u4", "subject_id": "user_4"},
                 ],
                 "fld3": [
-                    dict(pattern_type=RLSPatternType.userid, subject_type=RLSSubjectType.userid),
-                    dict(allowed_value="for_group", subject_id="group", subject_type=RLSSubjectType.group),
-                    dict(allowed_value="f3_val_for_u4_u5", subject_id="user_4"),
-                    dict(allowed_value="f3_val_for_u4_u5", subject_id="user_5"),
+                    {"pattern_type": RLSPatternType.userid, "subject_type": RLSSubjectType.userid},
+                    {"allowed_value": "for_group", "subject_id": "group", "subject_type": RLSSubjectType.group},
+                    {"allowed_value": "f3_val_for_u4_u5", "subject_id": "user_4"},
+                    {"allowed_value": "f3_val_for_u4_u5", "subject_id": "user_5"},
                 ],
             },
             {
@@ -257,10 +265,7 @@ def test_rls(entrysets: dict, expected_restrictions: dict) -> None:
     assert rls.has_restrictions
     restrictions = {user_id: rls.get_user_restrictions(user_id=user_id) for user_id in expected_restrictions}
     # Map back fields to aliases for readability
-    restrictions = {
-        user_id: {field_guid: field_restrictions for field_guid, field_restrictions in user_restrictions.items()}
-        for user_id, user_restrictions in restrictions.items()
-    }
+    restrictions = {user_id: dict(user_restrictions.items()) for user_id, user_restrictions in restrictions.items()}
     assert restrictions == expected_restrictions
 
 

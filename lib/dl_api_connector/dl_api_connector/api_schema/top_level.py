@@ -69,13 +69,13 @@ class BaseTopLevelSchema[TARGET_OBJECT_TV](Schema):
         unknown: str | None = None,
     ) -> None:
         refined_kwargs = self._refine_init_kwargs(
-            dict(
-                only=only,
-                partial=partial,
-                exclude=exclude,
-                load_only=load_only,
-                dump_only=dump_only,
-            ),
+            {
+                "only": only,
+                "partial": partial,
+                "exclude": exclude,
+                "load_only": load_only,
+                "dump_only": dump_only,
+            },
             # Context is not bind to self here
             None if context is None else context.get(self.CTX_KEY_OPERATIONS_MODE),
         )
@@ -210,16 +210,14 @@ class BaseTopLevelSchema[TARGET_OBJECT_TV](Schema):
         refined_data.update(disallowed_unknown_data)
 
         if allowed_unknown_data or disallowed_unknown_data:
-            sorted_all_unknown_keys = list(
-                sorted(
-                    itertools.chain(
-                        allowed_unknown_data.keys(),
-                        disallowed_unknown_data.keys(),
-                    )
+            sorted_all_unknown_keys = sorted(
+                itertools.chain(
+                    allowed_unknown_data.keys(),
+                    disallowed_unknown_data.keys(),
                 )
             )
-            sorted_allowed_unknown_keys = list(sorted(allowed_unknown_data.keys()))
-            sorted_disallowed_unknown_keys = list(sorted(disallowed_unknown_data.keys()))
+            sorted_allowed_unknown_keys = sorted(allowed_unknown_data.keys())
+            sorted_disallowed_unknown_keys = sorted(disallowed_unknown_data.keys())
 
             LOGGER.info(
                 "Got unknown fields for schema %s/%s. Allowed: %s. Disallowed: %s",
@@ -227,26 +225,26 @@ class BaseTopLevelSchema[TARGET_OBJECT_TV](Schema):
                 self.operations_mode,
                 ",".join(sorted_allowed_unknown_keys),
                 ",".join(sorted_disallowed_unknown_keys),
-                extra=dict(
-                    schema_unk_fields=sorted_all_unknown_keys,
-                    schema_unk_fields_allowed=sorted_allowed_unknown_keys,
-                    schema_unk_fields_disallowed=sorted_disallowed_unknown_keys,
-                ),
+                extra={
+                    "schema_unk_fields": sorted_all_unknown_keys,
+                    "schema_unk_fields_allowed": sorted_allowed_unknown_keys,
+                    "schema_unk_fields_disallowed": sorted_disallowed_unknown_keys,
+                },
             )
 
         return refined_data
 
     @pre_load(pass_many=False)
     def pre_load(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
-        all_data_keys = list(sorted(data.keys()))
+        all_data_keys = sorted(data.keys())
         LOGGER.debug(
             "Got fields for schema %s/%s: %s",
             type(self).__qualname__,
             self.operations_mode,
             ",".join(all_data_keys),
-            extra=dict(
-                schema_input_keys=all_data_keys,
-            ),
+            extra={
+                "schema_input_keys": all_data_keys,
+            },
         )
 
         if isinstance(self.operations_mode, ImportMode):
@@ -339,16 +337,16 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin
                 "dir_path can not be null if collection_id and workbook_id are null", field_name="dir_path"
             )
 
-        return dict(
-            ds_key=resolve_entry_loc_from_api_req_body(
+        return {
+            "ds_key": resolve_entry_loc_from_api_req_body(
                 name=entry_name,
                 dir_path=entry_dir_path,
                 collection_id=entry_coll_id,
                 workbook_id=entry_wb_id,
             ),
-            us_manager=self.us_manager,
-            annotation=data["annotation"],
-        )
+            "us_manager": self.us_manager,
+            "annotation": data["annotation"],
+        }
 
     # TODO FIX: Find a way to specify return type
     def create_data_model(self, data_attributes: dict[str, Any]) -> Any:
@@ -363,9 +361,9 @@ class USEntryBaseSchema(BaseTopLevelSchema[_US_ENTRY_TV], USEntryAnnotationMixin
                 cause_attribute = f"data.{err.model_field}"
                 cause_field_name = (
                     next(
-                        map(
-                            lambda field: field.name,
-                            filter(lambda field: field.attribute == cause_attribute, self.fields.values()),
+                        (
+                            field.name
+                            for field in filter(lambda field: field.attribute == cause_attribute, self.fields.values())
                         ),
                         None,
                     )

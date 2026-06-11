@@ -41,15 +41,15 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
 
     @pytest.fixture(scope="class")
     def engine_params(self) -> dict:
-        return dict(
-            connect_args=frozendict(
-                dict(
-                    host=test_config.CoreConnectionSettings.HOST,
-                    port=test_config.CoreConnectionSettings.PORT,
-                    protocol="grpc",
-                )
+        return {
+            "connect_args": frozendict(
+                {
+                    "host": test_config.CoreConnectionSettings.HOST,
+                    "port": test_config.CoreConnectionSettings.PORT,
+                    "protocol": "grpc",
+                }
             ),
-        )
+        }
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
@@ -57,7 +57,7 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
             db_name=test_config.CoreConnectionSettings.DB_NAME,
             host=test_config.CoreConnectionSettings.HOST,
             port=test_config.CoreConnectionSettings.PORT,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
         )
 
     @pytest.fixture(scope="class")
@@ -81,8 +81,8 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
 
     @pytest.fixture(scope="class")
     def engine_params(self, ssl_ca: str) -> dict:
-        return dict(
-            connect_args=frozendict(
+        return {
+            "connect_args": frozendict(
                 dict(
                     host=test_config.CoreSslConnectionSettings.HOST,
                     port=test_config.CoreSslConnectionSettings.PORT,
@@ -90,7 +90,7 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
                     **test_config.make_ssl_connect_args(ssl_ca),
                 ),
             ),
-        )
+        }
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:
@@ -102,7 +102,7 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
             host=test_config.CoreSslConnectionSettings.HOST,
             port=test_config.CoreSslConnectionSettings.PORT,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
             ssl_enable=test_config.CoreSslConnectionSettings.SSL_ENABLE,
             ssl_ca=test_config.CoreSslConnectionSettings.SSL_CA,
         )

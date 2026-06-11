@@ -42,11 +42,11 @@ async def test_fields_masking(aiohttp_client, caplog, root_certificates):
         await us_client.create_entry(
             key=PathEntryLocation("fake_key"),
             scope="connection",
-            data=dict(
-                password=secret_value,
-                plain_val=non_secret_value,
-            ),
-            unversioned_data=dict(token=dict(cypher_text=secret_value)),
+            data={
+                "password": secret_value,
+                "plain_val": non_secret_value,
+            },
+            unversioned_data={"token": {"cypher_text": secret_value}},
         )
 
     try:

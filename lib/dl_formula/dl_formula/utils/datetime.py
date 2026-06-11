@@ -64,7 +64,7 @@ def make_datetime_value_base(value: DTSourcesT) -> datetime.datetime:
         return value
     if isinstance(value, datetime.date):
         return datetime.datetime.combine(value, datetime.time())
-    raise Exception("Unexpected value type", dict(value_type=type(value)))
+    raise Exception("Unexpected value type", {"value_type": type(value)})
 
 
 def make_datetime_value(value: DTSourcesT) -> datetime.datetime:

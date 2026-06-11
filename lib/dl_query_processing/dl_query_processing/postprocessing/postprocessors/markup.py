@@ -39,7 +39,7 @@ class MarkupProcessingBase[NODE_TV]:
 
     _dbg: bool = False
 
-    empty_verbose_node = dict(type="concat", children=[])
+    empty_verbose_node = {"type": "concat", "children": []}
 
     def _dbg_print(self, msg: str, *args: Any) -> None:
         if not self._dbg:
@@ -253,17 +253,17 @@ class MarkupProcessingBase[NODE_TV]:
         return node
 
     _verbalized_info = {
-        node_text: dict(name="text", arg="content"),
-        node_concat: dict(name="concat", args="children"),
-        node_url: dict(name="url", argnames=("url", "content")),
-        node_i: dict(name="italics", arg="content"),
-        node_b: dict(name="bold", arg="content"),
-        node_sz: dict(name="size", argnames=("content", "size")),
-        node_cl: dict(name="color", argnames=("content", "color")),
-        node_br: dict(name="br"),
-        node_userinfo: dict(name="user_info", argnames=("content", "user_info")),
-        node_image: dict(name="image", argnames=("src", "width", "height", "alt")),
-        node_tooltip: dict(name="tooltip", argnames=("text", "tooltip", "placement")),
+        node_text: {"name": "text", "arg": "content"},
+        node_concat: {"name": "concat", "args": "children"},
+        node_url: {"name": "url", "argnames": ("url", "content")},
+        node_i: {"name": "italics", "arg": "content"},
+        node_b: {"name": "bold", "arg": "content"},
+        node_sz: {"name": "size", "argnames": ("content", "size")},
+        node_cl: {"name": "color", "argnames": ("content", "color")},
+        node_br: {"name": "br"},
+        node_userinfo: {"name": "user_info", "argnames": ("content", "user_info")},
+        node_image: {"name": "image", "argnames": ("src", "width", "height", "alt")},
+        node_tooltip: {"name": "tooltip", "argnames": ("text", "tooltip", "placement")},
     }
 
     def _argcount_mismatch(self, node, **kwargs):  # type: ignore  # TODO: fix
@@ -275,7 +275,7 @@ class MarkupProcessingBase[NODE_TV]:
     def _verbalize_i(self, node: NodeActual) -> Any:
         """A kind-of the other way from dump: more verbose serializable structure. Still a dump."""
         if isinstance(node, str):
-            return dict(type="text", content=node)
+            return {"type": "text", "content": node}
 
         if not isinstance(node, self._node_cls):
             raise self.DumpError("Value should be a node", type(node))
@@ -283,37 +283,38 @@ class MarkupProcessingBase[NODE_TV]:
         funcname, funcargs = self._unpack_node(node)
 
         if funcname == self.node_concat:
-            return dict(type="concat", children=[self._verbalize_i(arg) for arg in funcargs])
+            return {"type": "concat", "children": [self._verbalize_i(arg) for arg in funcargs]}
         if funcname == self.node_url:
             if len(funcargs) != 2:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             url, content = funcargs
-            return dict(type="url", url=url, content=self._verbalize_i(content))
+            return {"type": "url", "url": url, "content": self._verbalize_i(content)}
         if funcname == self.node_cl:
             if len(funcargs) != 2:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             content, color = funcargs
-            return dict(type="color", color=color, content=self._verbalize_i(content))
+            return {"type": "color", "color": color, "content": self._verbalize_i(content)}
         if funcname == self.node_sz:
             if len(funcargs) != 2:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             content, size = funcargs
-            return dict(type="size", size=size, content=self._verbalize_i(content))
+            return {"type": "size", "size": size, "content": self._verbalize_i(content)}
         if funcname == self.node_userinfo:
             if len(funcargs) != 2:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
             content, user_info = funcargs
-            return dict(type="user_info", user_info=user_info, content=self._verbalize_i(content))
+            return {"type": "user_info", "user_info": user_info, "content": self._verbalize_i(content)}
         if funcname == self.node_br:
             if len(funcargs) != 0:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=2)
-            return dict(type="br")
+            return {"type": "br"}
         if funcname in (self.node_i, self.node_b):
             if len(funcargs) != 1:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=1)
-            return dict(
-                type={self.node_i: "italics", self.node_b: "bold"}[funcname], content=self._verbalize_i(funcargs[0])
-            )
+            return {
+                "type": {self.node_i: "italics", self.node_b: "bold"}[funcname],
+                "content": self._verbalize_i(funcargs[0]),
+            }
         if funcname == self.node_image:
             if len(funcargs) != 4:
                 return self._argcount_mismatch(node=node, funcname=funcname, funcargs=funcargs, expected_args=4)
@@ -333,7 +334,7 @@ class MarkupProcessingBase[NODE_TV]:
                     raise ValidationError("Height can only be greater than 0")
             else:
                 height = None
-            return dict(type="img", src=src, width=width, height=height, alt=alt)
+            return {"type": "img", "src": src, "width": width, "height": height, "alt": alt}
         if funcname == self.node_tooltip:
             if len(funcargs) == 3:
                 text, tooltip, placement = funcargs
@@ -345,9 +346,12 @@ class MarkupProcessingBase[NODE_TV]:
             if placement not in ["top", "right", "bottom", "left", "auto"]:
                 raise ValidationError('Placement can only be "top", "right", "bottom" or "left"')
 
-            return dict(
-                type="tooltip", content=self._verbalize_i(text), tooltip=self._verbalize_i(tooltip), placement=placement
-            )
+            return {
+                "type": "tooltip",
+                "content": self._verbalize_i(text),
+                "tooltip": self._verbalize_i(tooltip),
+                "placement": placement,
+            }
 
         raise self.DumpError("Unknown func", node)
 

@@ -98,11 +98,11 @@ class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTarget
             super()._make_cursor_info(cursor, db_session=db_session),
             # Deprecating:
             columns=[
-                dict(
-                    name=str(column[0]),
-                    postgresql_oid=column[1],
-                    postgresql_typname=OID_KNOWLEDGE.get(column[1]),
-                )
+                {
+                    "name": str(column[0]),
+                    "postgresql_oid": column[1],
+                    "postgresql_typname": OID_KNOWLEDGE.get(column[1]),
+                }
                 for column in cursor.description
             ],
             # dashsql convenience:

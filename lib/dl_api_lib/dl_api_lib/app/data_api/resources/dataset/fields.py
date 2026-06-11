@@ -18,4 +18,4 @@ class DatasetFieldsView(DatasetDataBaseView):
             for_result=False,
             include_details=query_params["include_details"],
         )
-        return web.json_response(dict(fields=fields, revision_id=self.dataset.revision_id))
+        return web.json_response({"fields": fields, "revision_id": self.dataset.revision_id})

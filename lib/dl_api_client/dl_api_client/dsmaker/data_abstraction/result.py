@@ -130,13 +130,12 @@ class ResultDataAbstraction:
         measure_liids: frozenset[int] | None = None,
     ) -> DataCellMapper1D:
         return SimpleDataCellMapper1D(
-            cells={
-                dim_tuple: cell  # type: ignore  # 2024-01-24 # TODO: Value expression in dictionary comprehension has incompatible type "DataCell"; expected type "DataItem"  [misc]
-                for dim_tuple, cell in self._iter_split_rows_by_measure(
+            cells=dict(
+                self._iter_split_rows_by_measure(  # type: ignore  # 2024-01-24 # TODO: Argument 1 to "dict" has incompatible type "Generator[tuple[DataCellTuple, DataCell], None, None]"; expected "Iterable[tuple[DataCellTuple, DataItem]]"  [arg-type]
                     dimension_liids=dimension_liids,
                     measure_liids=measure_liids,
                 )
-            },
+            ),
         )
 
     @classmethod

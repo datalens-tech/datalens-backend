@@ -14,8 +14,8 @@ class TestStarRocksDataset(BaseStarRocksTestClass, DefaultDatasetTestSuite[Conne
 
     @pytest.fixture(scope="function")
     def dsrc_params(self, dataset_table: DbTable) -> dict:
-        return dict(
-            db_name=test_config.CoreConnectionSettings.CATALOG,
-            schema_name=dataset_table.db.name,
-            table_name=dataset_table.name,
-        )
+        return {
+            "db_name": test_config.CoreConnectionSettings.CATALOG,
+            "schema_name": dataset_table.db.name,
+            "table_name": dataset_table.name,
+        }

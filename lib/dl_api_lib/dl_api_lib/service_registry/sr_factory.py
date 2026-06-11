@@ -51,19 +51,19 @@ class DefaultApiSRFactory(DefaultSRFactory[DefaultApiServiceRegistry]):
         request_context_info: RequestContextInfo,
         sr_ref: FutureRef[ServicesRegistry],
     ) -> dict[str, Any]:
-        return dict(
-            default_formula_parser_type=self._default_formula_parser_type,
-            dataset_validator_factory=DefaultDatasetValidatorFactory(constraints=self._constraints),
-            field_id_generator_factory=FieldIdGeneratorFactory(
+        return {
+            "default_formula_parser_type": self._default_formula_parser_type,
+            "dataset_validator_factory": DefaultDatasetValidatorFactory(constraints=self._constraints),
+            "field_id_generator_factory": FieldIdGeneratorFactory(
                 field_id_generator_type=self._field_id_generator_type,
             ),
-            supported_functions_manager=self._supported_functions_manager,
-            localizer_factory=self._localizer_factory,
-            localizer_fallback=self._localizer_fallback,
-            connector_availability=self._connector_availability,
-            query_proc_mode=self._query_proc_mode,
-            pivot_transformer_factory=self._pivot_transformer_factory,
-            feature_flags=self._feature_flags,
-            constraints=self._constraints,
-            extract_clickhouse_provider=self._extract_clickhouse_provider,
-        )
+            "supported_functions_manager": self._supported_functions_manager,
+            "localizer_factory": self._localizer_factory,
+            "localizer_fallback": self._localizer_fallback,
+            "connector_availability": self._connector_availability,
+            "query_proc_mode": self._query_proc_mode,
+            "pivot_transformer_factory": self._pivot_transformer_factory,
+            "feature_flags": self._feature_flags,
+            "constraints": self._constraints,
+            "extract_clickhouse_provider": self._extract_clickhouse_provider,
+        }

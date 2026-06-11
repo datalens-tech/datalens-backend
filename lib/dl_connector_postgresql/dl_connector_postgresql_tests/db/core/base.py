@@ -40,7 +40,7 @@ class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
             password=test_config.CoreConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
         )
 
     @pytest.fixture(scope="class")
@@ -99,7 +99,7 @@ class BaseSslPostgreSQLTestClass(BasePostgreSQLTestClass):
             port=test_config.CoreSslConnectionSettings.PORT,
             username=test_config.CoreSslConnectionSettings.USERNAME,
             password=test_config.CoreSslConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
             ssl_enable=True,
             ssl_ca=ssl_ca,
         )

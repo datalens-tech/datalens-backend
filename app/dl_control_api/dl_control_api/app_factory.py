@@ -57,7 +57,7 @@ class StandaloneControlApiSRFactoryBuilder(SRFactoryBuilder[ControlApiAppSetting
         return None
 
     def _get_bleeding_edge_users(self, settings: ControlApiAppSettingsOS) -> tuple[str, ...]:
-        return tuple()
+        return ()
 
     def _get_rqe_caches_settings(self, settings: ControlApiAppSettingsOS) -> RQECachesSetting | None:
         return None

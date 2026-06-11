@@ -105,7 +105,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert us_master_token
 
         if bi_headers is None:
-            bi_headers = dict()
+            bi_headers = {}
 
         bi_headers[DLHeadersCommon.US_MASTER_TOKEN.value] = us_master_token
 
@@ -153,7 +153,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert us_master_token
 
         if bi_headers is None:
-            bi_headers = dict()
+            bi_headers = {}
 
         bi_headers[DLHeadersCommon.US_MASTER_TOKEN.value] = us_master_token
 
@@ -277,7 +277,7 @@ class DefaultConnectorConnectionTestSuite(ConnectionTestBase, RegulatedTestCase)
         assert isinstance(resp.json["options"]["allow_dataset_usage"], bool)
         assert isinstance(resp.json["options"]["allow_typed_query_usage"], bool)
         assert len(resp.json["options"]["query_types"]) > 0
-        assert any([qt["query_type"] == "generic_query" for qt in resp.json["options"]["query_types"]])
+        assert any(qt["query_type"] == "generic_query" for qt in resp.json["options"]["query_types"])
 
     def test_connection_sources(
         self,

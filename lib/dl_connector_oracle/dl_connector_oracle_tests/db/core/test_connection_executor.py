@@ -92,7 +92,7 @@ class TestOracleSyncConnectionExecutor(
         # at the moment, checks that sample table is listed among the others
 
         tables = [sample_table]
-        expected_table_names = set(table.name.upper() for table in tables)
+        expected_table_names = {table.name.upper() for table in tables}
 
         actual_tables = sync_connection_executor.get_tables(SchemaIdent(db_name=db.name, schema_name=None))
         actual_table_names = [tid.table_name for tid in actual_tables]

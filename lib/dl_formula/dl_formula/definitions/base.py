@@ -75,10 +75,10 @@ class ValueVariant[VARIANT_OF_TV]:
         self._value: VARIANT_OF_TV = value
 
     def clone(self: _VARIANT_TV, **kwargs) -> _VARIANT_TV:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
-        copy_kwargs = dict(
-            dialects=self.dialects,
-            value=self._value,
-        )
+        copy_kwargs = {
+            "dialects": self.dialects,
+            "value": self._value,
+        }
         copy_kwargs.update(kwargs)
         return type(self)(**copy_kwargs)
 
@@ -713,7 +713,7 @@ class SingleVariantFullOverrideTranslationBase(SingleVariantTranslationBase):
     def _translate_main(cls, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
         raise Exception(
             "SingleVariantFullOverrideTranslation._translate_main dummy method was called",
-            dict(cls=cls, args=args, kwargs=kwargs),
+            {"cls": cls, "args": args, "kwargs": kwargs},
         )
 
     def translate(self, env, args) -> TranslationResult:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]

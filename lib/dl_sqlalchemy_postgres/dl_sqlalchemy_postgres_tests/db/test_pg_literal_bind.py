@@ -29,4 +29,4 @@ def test_pg_literal_bind_datetimes(
     compiled = str(query.compile(dialect=sa_engine.dialect, compile_kwargs={"literal_binds": True}))
     res_direct = list(sa_session.execute(query))
     res_literal = list(sa_session.execute(compiled))
-    assert res_direct == res_literal, dict(literal_query=compiled)
+    assert res_direct == res_literal, {"literal_query": compiled}

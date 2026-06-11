@@ -25,7 +25,7 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
             return ErrorData(
                 status_code=err.status,
                 http_reason=err.reason,
-                response_body=dict(message=err.reason),
+                response_body={"message": err.reason},
                 level=ErrorLevel.info,
             )
         if isinstance(
@@ -34,23 +34,23 @@ class OAuthApiErrorHandler(AIOHTTPErrorHandler):
         ):
             return ErrorData(
                 status_code=HTTPStatus.BAD_REQUEST,
-                response_body=dict(message=str(err)),
+                response_body={"message": str(err)},
                 level=ErrorLevel.info,
             )
         if isinstance(err, MValidationError):
             return ErrorData(
                 status_code=HTTPStatus.BAD_REQUEST,
-                response_body=dict(message=str(err)),
+                response_body={"message": str(err)},
                 level=ErrorLevel.info,
             )
         if isinstance(err, exc.DLAuthAPIBaseError):
             status_code = STATUS_CODES.get(err.__class__, HTTPStatus.INTERNAL_SERVER_ERROR)
-            body = dict(
-                message=err.message,
-                code=exc.make_err_code(err),
-                debug=err.debug_info,
-                details=err.details,
-            )
+            body = {
+                "message": err.message,
+                "code": exc.make_err_code(err),
+                "debug": err.debug_info,
+                "details": err.details,
+            }
             return ErrorData(
                 status_code=status_code,
                 response_body=body,

@@ -75,10 +75,10 @@ class CommonInternalAPIClient(DLCommonAPIClient):
 
         LOGGER.info(
             f"Handling unexpected response in internal API client: {type(self).__name__}",
-            extra=dict(
-                status_code=resp.status,
-                resp_data=resp_data,
-            ),
+            extra={
+                "status_code": resp.status,
+                "resp_data": resp_data,
+            },
         )
 
         if resp.status in (401, 403):

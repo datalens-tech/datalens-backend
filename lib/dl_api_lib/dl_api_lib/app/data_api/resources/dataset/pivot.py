@@ -117,7 +117,7 @@ class DatasetPivotView(DatasetDataBaseView):
         # Create pivot table
         with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-transform-full"):
             legend_data = dl_api_lib.schemas.legend.LegendSchema().dump(legend)
-            LOGGER.info("Pivot legend", extra=dict(legend=legend_data))
+            LOGGER.info("Pivot legend", extra={"legend": legend_data})
             transformer_factory = self.api_service_registry.get_pivot_transformer_factory()
             transformer = transformer_factory.get_transformer(legend=legend, pivot_legend=pivot_legend)
             with GenericProfiler(f"{self.profiler_prefix}-{pivot_op_name}-transform"):
@@ -131,7 +131,7 @@ class DatasetPivotView(DatasetDataBaseView):
                 "Pivot table has %s columns and %s rows",
                 col_cnt,
                 row_cnt,
-                extra=dict(pivot_table_size=dict(columns=col_cnt, rows=row_cnt)),
+                extra={"pivot_table_size": {"columns": col_cnt, "rows": row_cnt}},
             )
 
             # Paginate

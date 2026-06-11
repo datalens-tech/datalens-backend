@@ -140,7 +140,7 @@ class RawCharCollector(RawValueCollector[str]):
         self._values |= set(value)
 
     def get_aggregate(self, **kwargs: Any) -> dict[str, Any]:
-        return dict(chars="".join(sorted(self._values)))
+        return {"chars": "".join(sorted(self._values))}
 
 
 @attr.s

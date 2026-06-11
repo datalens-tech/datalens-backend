@@ -308,13 +308,13 @@ class DlRepManagerTool(CliToolBase):
 
     def package_list(self, package_type: str, mask: str, base_path: Path) -> None:
         for package_info in self.package_index.list_package_infos(package_type=package_type):
-            printable_values = dict(
-                package_type=package_info.package_type,
-                abs_path=package_info.abs_path,
-                rel_path=os.path.relpath(package_info.abs_path, base_path),
-                single_module_name=package_info.single_module_name,
-                package_reg_name=package_info.package_reg_name,
-            )
+            printable_values = {
+                "package_type": package_info.package_type,
+                "abs_path": package_info.abs_path,
+                "rel_path": os.path.relpath(package_info.abs_path, base_path),
+                "single_module_name": package_info.single_module_name,
+                "package_reg_name": package_info.package_reg_name,
+            }
             if mask:
                 print(mask.format(**printable_values))
             else:

@@ -26,13 +26,13 @@ from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TAB
 class TestExtractValidation(DefaultApiTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_CH_TABLE.name,
-            parameters=dict(
-                db_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_CH_TABLE.name,
+            "parameters": {
+                "db_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
     def test_save_dataset_without_extract_uses_defaults(
         self,
@@ -483,13 +483,13 @@ class TestExtractValidation(DefaultApiTestBase):
 class TestExtractExportImport(DefaultApiTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_CH_TABLE.name,
-            parameters=dict(
-                db_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_CH_TABLE.name,
+            "parameters": {
+                "db_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
     @pytest.fixture(scope="function")
     def export_import_headers(self, control_api_app_settings: ControlApiAppSettings) -> dict[str, str]:

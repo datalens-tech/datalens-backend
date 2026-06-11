@@ -30,13 +30,13 @@ class OracleEngineWrapper(EngineWrapperBase):
         match = re.search(
             r"HOST=(?P<host>[^)]+)\).*PORT=(?P<port>\d+)\).*(SERVICE_NAME|SID)=(?P<db_name>[^)]+)\)", oracle_dsn
         )
-        return dict(
-            host=match.group("host"),  # type: ignore  # TODO: fix
-            port=int(match.group("port")),  # type: ignore  # TODO: fix
-            username=username,
-            password=password,
-            db_name=match.group("db_name"),  # type: ignore  # TODO: fix
-        )
+        return {
+            "host": match.group("host"),  # type: ignore  # TODO: fix
+            "port": int(match.group("port")),  # type: ignore  # TODO: fix
+            "username": username,
+            "password": password,
+            "db_name": match.group("db_name"),  # type: ignore  # TODO: fix
+        }
 
     def insert_into_table(self, table: sa.Table, data: Sequence[dict]) -> None:
         # Multi-row insert doesn't work correctly

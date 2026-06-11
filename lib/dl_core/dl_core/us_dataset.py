@@ -90,14 +90,12 @@ class Dataset(USEntry):
 
         @classmethod
         def get_unversioned_keys(cls) -> set[DataKey]:
-            return set(
-                [
-                    DataKey(parts=("extract", "status")),
-                    DataKey(parts=("extract", "errors")),
-                    DataKey(parts=("extract", "last_completed")),
-                    DataKey(parts=("extract", "data_dataset_revision")),
-                ]
-            )
+            return {
+                DataKey(parts=("extract", "status")),
+                DataKey(parts=("extract", "errors")),
+                DataKey(parts=("extract", "last_completed")),
+                DataKey(parts=("extract", "data_dataset_revision")),
+            }
 
     @property
     def rls(self) -> RLS:
@@ -303,11 +301,11 @@ class Dataset(USEntry):
 
         if self.rls.items:
             warnings_list.append(
-                dict(
-                    message=localizer.translate(Translatable("notif_rls")),
-                    level=NotificationLevel.info,
-                    code=CODE_PREFIX + "RLS",
-                )
+                {
+                    "message": localizer.translate(Translatable("notif_rls")),
+                    "level": NotificationLevel.info,
+                    "code": CODE_PREFIX + "RLS",
+                }
             )
         return warnings_list
 
@@ -317,11 +315,11 @@ class Dataset(USEntry):
 
         if self.rls.items:
             warnings_list.append(
-                dict(
-                    message=localizer.translate(Translatable("notif_rls")),
-                    level=NotificationLevel.info,
-                    code=CODE_PREFIX + "RLS",
-                )
+                {
+                    "message": localizer.translate(Translatable("notif_rls")),
+                    "level": NotificationLevel.info,
+                    "code": CODE_PREFIX + "RLS",
+                }
             )
         return warnings_list
 

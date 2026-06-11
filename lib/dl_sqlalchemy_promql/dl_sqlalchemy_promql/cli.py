@@ -28,7 +28,7 @@ def rebuild_prometheus_data(data):
             raise NotSupportedError("Different schemas are not supported")
 
         rows = [
-            {**chunk["metric"], **dict(timestamp=datetime.fromtimestamp(ts), value=float(v))}
+            {**chunk["metric"], **{"timestamp": datetime.fromtimestamp(ts), "value": float(v)}}
             for (ts, v) in chunk["values"]
         ]
         result.append((schema, rows))

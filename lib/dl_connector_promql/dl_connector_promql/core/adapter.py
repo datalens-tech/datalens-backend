@@ -59,14 +59,14 @@ class PromQLConnLineConstructor(ClassicSQLConnLineConstructor["PromQLConnTargetD
         db_name: str | None = None,
         standard_auth: bool | None = True,
     ) -> dict:
-        return dict(
-            dialect=self._dialect_name,
-            user=quote(self._target_dto.username, safe="") if self._target_dto.username is not None else None,
-            passwd=quote(self._target_dto.password, safe="") if self._target_dto.password is not None else None,
-            host=quote(self._target_dto.host, safe=""),
-            port=quote(str(self._target_dto.port), safe=""),
-            db_name=quote(db_name if db_name else (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
-        )
+        return {
+            "dialect": self._dialect_name,
+            "user": quote(self._target_dto.username, safe="") if self._target_dto.username is not None else None,
+            "passwd": quote(self._target_dto.password, safe="") if self._target_dto.password is not None else None,
+            "host": quote(self._target_dto.host, safe=""),
+            "port": quote(str(self._target_dto.port), safe=""),
+            "db_name": quote(db_name if db_name else (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
+        }
 
     def _get_dsn_query_params(self) -> dict:
         params: dict = {
@@ -183,7 +183,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 row = [datetime.fromtimestamp(ts), float(v), *label_values]
                 rows.append(row)
 
-        return dict(rows=rows, schema=schema)
+        return {"rows": rows, "schema": schema}
 
     async def _parse_response_body(self, resp: ClientResponse, dba_query: DBAdapterQuery) -> dict:
         data = await resp.json()
@@ -241,12 +241,12 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
                 yield chunk
 
         return AsyncRawExecutionResult(
-            raw_cursor_info=dict(
-                schema=rd["schema"],
-                names=[name for name, _ in rd["schema"]],
-                driver_types=[driver_type for _, driver_type in rd["schema"]],
-                db_types=[self._promql_type_name_to_native_type(driver_type) for _, driver_type in rd["schema"]],
-            ),
+            raw_cursor_info={
+                "schema": rd["schema"],
+                "names": [name for name, _ in rd["schema"]],
+                "driver_types": [driver_type for _, driver_type in rd["schema"]],
+                "db_types": [self._promql_type_name_to_native_type(driver_type) for _, driver_type in rd["schema"]],
+            },
             raw_chunk_generator=chunk_gen(),
         )
 

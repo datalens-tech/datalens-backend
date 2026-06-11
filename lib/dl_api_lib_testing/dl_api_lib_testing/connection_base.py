@@ -54,9 +54,9 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
 
     @pytest.fixture(scope="class")
     def common_connection_params(self, description: str) -> dict:
-        return dict(
-            description=description,
-        )
+        return {
+            "description": description,
+        }
 
     @pytest.fixture(scope="function")
     def enriched_connection_params(self, connection_params: dict, common_connection_params: dict) -> dict:

@@ -68,10 +68,10 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
     ) -> None:
         """Test successful cache invalidation test with SQL mode returning a string."""
         # Set up cache invalidation in SQL mode with a string-returning query
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 'hello'",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 'hello'",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -95,10 +95,10 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test successful cache invalidation test with SQL mode using toString() cast."""
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT toString(42)",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT toString(42)",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -117,10 +117,10 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test that a query returning a non-string type (integer) returns 400."""
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 1",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 1",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -141,7 +141,7 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
     ) -> None:
         """Test that mode=off returns 400."""
         # Ensure cache invalidation is off (default)
-        update_data = dict(mode=CacheInvalidationMode.off.value)
+        update_data = {"mode": CacheInvalidationMode.off.value}
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -161,10 +161,10 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test that a query returning multiple rows returns 400."""
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT toString(number) FROM system.numbers LIMIT 5",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT toString(number) FROM system.numbers LIMIT 5",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -185,10 +185,10 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
     ) -> None:
         """Test that a result value exceeding 100 characters returns 400."""
         # Generate a string longer than 100 characters
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT repeat('a', 200)",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT repeat('a', 200)",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -208,10 +208,10 @@ class TestCacheInvalidationTestSqlMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test that a failing SQL query returns 400."""
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT * FROM nonexistent_table_xyz_12345",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT * FROM nonexistent_table_xyz_12345",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -236,10 +236,10 @@ class TestCacheInvalidationTestSqlModeSubselectNotAllowed(CacheInvalidationTestB
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test that SQL mode with raw_sql_level=off returns 400 (subselect not allowed)."""
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 1",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 1",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -265,13 +265,13 @@ class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test successful cache invalidation test with formula mode (MAX on string field)."""
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(
-                guid="cache_field_1",
-                formula="MAX([category])",
-            ),
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {
+                "guid": "cache_field_1",
+                "formula": "MAX([category])",
+            },
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -295,13 +295,13 @@ class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test formula mode with STR() cast wrapping a numeric aggregation."""
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(
-                guid="cache_field_1",
-                formula="STR(SUM([sales]))",
-            ),
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {
+                "guid": "cache_field_1",
+                "formula": "STR(SUM([sales]))",
+            },
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -324,26 +324,26 @@ class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
         """Test formula mode with a filter applied."""
         category_field = saved_dataset.find_field(title="category")
 
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(
-                guid="cache_field_1",
-                formula="MAX([category])",
-            ),
-            filters=[
-                dict(
-                    id="filter_1",
-                    field_guid=category_field.id,
-                    default_filters=[
-                        dict(
-                            column=category_field.id,
-                            operation=WhereClauseOperation.EQ.name,
-                            values=["Furniture"],
-                        ),
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {
+                "guid": "cache_field_1",
+                "formula": "MAX([category])",
+            },
+            "filters": [
+                {
+                    "id": "filter_1",
+                    "field_guid": category_field.id,
+                    "default_filters": [
+                        {
+                            "column": category_field.id,
+                            "operation": WhereClauseOperation.EQ.name,
+                            "values": ["Furniture"],
+                        },
                     ],
-                ),
+                },
             ],
-        )
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -366,37 +366,37 @@ class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
         category_field = saved_dataset.find_field(title="category")
         city_field = saved_dataset.find_field(title="city")
 
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(
-                guid="cache_field_1",
-                formula="MAX([category])",
-            ),
-            filters=[
-                dict(
-                    id="filter_1",
-                    field_guid=category_field.id,
-                    default_filters=[
-                        dict(
-                            column=category_field.id,
-                            operation=WhereClauseOperation.EQ.name,
-                            values=["Furniture"],
-                        ),
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {
+                "guid": "cache_field_1",
+                "formula": "MAX([category])",
+            },
+            "filters": [
+                {
+                    "id": "filter_1",
+                    "field_guid": category_field.id,
+                    "default_filters": [
+                        {
+                            "column": category_field.id,
+                            "operation": WhereClauseOperation.EQ.name,
+                            "values": ["Furniture"],
+                        },
                     ],
-                ),
-                dict(
-                    id="filter_2",
-                    field_guid=city_field.id,
-                    default_filters=[
-                        dict(
-                            column=city_field.id,
-                            operation=WhereClauseOperation.ICONTAINS.name,
-                            values=["new"],
-                        ),
+                },
+                {
+                    "id": "filter_2",
+                    "field_guid": city_field.id,
+                    "default_filters": [
+                        {
+                            "column": city_field.id,
+                            "operation": WhereClauseOperation.ICONTAINS.name,
+                            "values": ["new"],
+                        },
                     ],
-                ),
+                },
             ],
-        )
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -416,13 +416,13 @@ class TestCacheInvalidationTestFormulaMode(CacheInvalidationTestBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         """Test that the 'query' field in the response contains the actual SQL sent to the database."""
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(
-                guid="cache_field_1",
-                formula="MAX([category])",
-            ),
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {
+                "guid": "cache_field_1",
+                "formula": "MAX([category])",
+            },
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -468,7 +468,7 @@ class TestCacheInvalidationTestConnectionViewCheck(CacheInvalidationTestBase):
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Saved SQL == request SQL: the connection-view check must not fire."""
-        update_data = dict(mode=CacheInvalidationMode.sql.value, sql="SELECT 'unchanged'")
+        update_data = {"mode": CacheInvalidationMode.sql.value, "sql": "SELECT 'unchanged'"}
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -491,7 +491,7 @@ class TestCacheInvalidationTestConnectionViewCheck(CacheInvalidationTestBase):
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Body overrides SQL to a value different from US — connection-view perm required."""
-        update_data = dict(mode=CacheInvalidationMode.sql.value, sql="SELECT 'saved'")
+        update_data = {"mode": CacheInvalidationMode.sql.value, "sql": "SELECT 'saved'"}
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -523,10 +523,10 @@ class TestCacheInvalidationTestConnectionViewCheck(CacheInvalidationTestBase):
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Saved mode = formula, body flips to sql — connection-view perm required."""
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(guid="cache_field_1", formula="MAX([category])"),
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {"guid": "cache_field_1", "formula": "MAX([category])"},
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -557,10 +557,10 @@ class TestCacheInvalidationTestConnectionViewCheck(CacheInvalidationTestBase):
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         """Saved + effective mode = formula: the SQL-mode connection-view check must not fire."""
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(guid="cache_field_1", formula="MAX([category])"),
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {"guid": "cache_field_1", "formula": "MAX([category])"},
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 

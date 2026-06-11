@@ -53,22 +53,22 @@ class MetricaConnectionTestBase(BaseMetricaTestClass, ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self, metrica_token: str) -> dict:
-        return dict(
-            counter_id=METRIKA_SAMPLE_COUNTER_ID,
-            token=metrica_token,
-            accuracy=0.01,
-        )
+        return {
+            "counter_id": METRIKA_SAMPLE_COUNTER_ID,
+            "token": metrica_token,
+            "accuracy": 0.01,
+        }
 
 
 class MetricaDatasetTestBase(MetricaConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_METRICA_API.name,
-            parameters=dict(
-                db_name=MetrikaApiCounterSource.hits.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_METRICA_API.name,
+            "parameters": {
+                "db_name": MetrikaApiCounterSource.hits.name,
+            },
+        }
 
 
 class MetricaDataApiTestBase(MetricaDatasetTestBase, StandardizedDataApiTestBase):
@@ -148,19 +148,19 @@ class AppMetricaConnectionTestBase(BaseAppMetricaTestClass, ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self, metrica_token: str) -> dict:
-        return dict(
-            counter_id=APPMETRICA_SAMPLE_COUNTER_ID,
-            token=metrica_token,
-            accuracy=0.01,
-        )
+        return {
+            "counter_id": APPMETRICA_SAMPLE_COUNTER_ID,
+            "token": metrica_token,
+            "accuracy": 0.01,
+        }
 
 
 class AppMetricaDatasetTestBase(AppMetricaConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_APPMETRICA_API.name,
-            parameters=dict(
-                db_name=AppMetricaFieldsNamespaces.installs.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_APPMETRICA_API.name,
+            "parameters": {
+                "db_name": AppMetricaFieldsNamespaces.installs.name,
+            },
+        }

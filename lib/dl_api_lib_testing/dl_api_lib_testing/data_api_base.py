@@ -195,13 +195,13 @@ class StandardizedDataApiTestBase(DataApiTestBase, DatasetTestBase, metaclass=ab
         )
 
     def get_dataset_params(self, dataset_params: dict, db_table: DbTable) -> dict:
-        return dataset_params | dict(
-            parameters=dataset_params.get("parameters", {})
-            | dict(
-                schema_name=db_table.schema,
-                table_name=db_table.name,
-            )
-        )
+        return dataset_params | {
+            "parameters": dataset_params.get("parameters", {})
+            | {
+                "schema_name": db_table.schema,
+                "table_name": db_table.name,
+            }
+        }
 
     def get_result(
         self,

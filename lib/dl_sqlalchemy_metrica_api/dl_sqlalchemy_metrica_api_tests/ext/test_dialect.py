@@ -182,18 +182,16 @@ def test_calculations(metrika_sample_counter_id, metrika_db_engine):
     res = metrika_db_engine.execute(expr)
     data = res.fetchall()
     print(data)
-    assert all([(row["pageviews"] + row["users"]) == row["pv_plus_u"] for row in data])
-    assert all([(row["pageviews"] + row["users"]) == row["sum_pv_u"] for row in data])
-    assert all([(row["pageviews"] - row["users"]) == row["pv_minus_u"] for row in data])
-    assert all([row["pv_plus_1"] == row["pageviews"] + 1 for row in data])
-    assert all([row["u_minus_2"] == row["users"] - 2 for row in data])
-    assert all([round(row["pageviews"] / row["users"], 2) == round(row["pv_per_u"], 2) for row in data])
+    assert all((row["pageviews"] + row["users"]) == row["pv_plus_u"] for row in data)
+    assert all((row["pageviews"] + row["users"]) == row["sum_pv_u"] for row in data)
+    assert all((row["pageviews"] - row["users"]) == row["pv_minus_u"] for row in data)
+    assert all(row["pv_plus_1"] == row["pageviews"] + 1 for row in data)
+    assert all(row["u_minus_2"] == row["users"] - 2 for row in data)
+    assert all(round(row["pageviews"] / row["users"], 2) == round(row["pv_per_u"], 2) for row in data)
     assert all(
-        [
-            round(row["pageviews"] * row["users"] - row["ym:pv:pageviewsPerDay"] + 14, 2)
-            == round(row["some_strange_expr"], 2)
-            for row in data
-        ]
+        round(row["pageviews"] * row["users"] - row["ym:pv:pageviewsPerDay"] + 14, 2)
+        == round(row["some_strange_expr"], 2)
+        for row in data
     )
 
 

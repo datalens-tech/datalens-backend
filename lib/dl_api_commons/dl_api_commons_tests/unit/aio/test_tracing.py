@@ -81,42 +81,42 @@ async def test_tracing_scenarios(aiohttp_client: TestClient) -> None:
 
     @register_view(app, "/ok", "ok")
     def ok() -> dict:
-        return dict(ok="ok")
+        return {"ok": "ok"}
 
     @register_view(app, "/err_err", "err")
     def err_err() -> dict:
-        raise MockError(200, ErrorLevel.error, dict(err_err=None))
+        raise MockError(200, ErrorLevel.error, {"err_err": None})
 
     @register_view(app, "/err_info", "err_info")
     def err_info() -> dict:
-        raise MockError(400, ErrorLevel.info, dict(err_info=None))
+        raise MockError(400, ErrorLevel.info, {"err_info": None})
 
     @register_view(app, "/no_ep_ok", None)
     def no_ep_ok() -> dict:
-        return dict(no_ep_ok=None)
+        return {"no_ep_ok": None}
 
     @register_view(app, "/no_ep_err", None)
     def no_ep_err() -> dict:
-        raise MockError(401, ErrorLevel.error, dict(no_ep_err=None))
+        raise MockError(401, ErrorLevel.error, {"no_ep_err": None})
 
     client = await aiohttp_client(app)  # type: ignore[operator]
 
     resp = await client.get("/ok")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == dict(ok="ok")
+    assert resp.status == 200 and resp_json == {"ok": "ok"}
 
     resp = await client.get("/err_err")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == dict(err_err=None)
+    assert resp.status == 200 and resp_json == {"err_err": None}
 
     resp = await client.get("/err_info")
     resp_json = await resp.json()
-    assert resp.status == 400 and resp_json == dict(err_info=None)
+    assert resp.status == 400 and resp_json == {"err_info": None}
 
     resp = await client.get("/no_ep_ok")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == dict(no_ep_ok=None)
+    assert resp.status == 200 and resp_json == {"no_ep_ok": None}
 
     resp = await client.get("/no_ep_err")
     resp_json = await resp.json()
-    assert resp.status == 401 and resp_json == dict(no_ep_err=None)
+    assert resp.status == 401 and resp_json == {"no_ep_err": None}

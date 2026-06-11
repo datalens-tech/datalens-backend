@@ -108,22 +108,22 @@ class S3Service:
 
     def _init_client_config(self) -> None:
         ssl_context = ssl.create_default_context(cadata=self._ca_data.decode("ascii"))
-        self._connector_args = dict(
-            ssl_context=ssl_context,
-        )
+        self._connector_args = {
+            "ssl_context": ssl_context,
+        }
 
-        self._client_init_params = dict(
-            service_name="s3",
-            aws_access_key_id=self._access_key_id,
-            aws_secret_access_key=self._secret_access_key,
-            endpoint_url=self._endpoint_url,
-            config=AioConfig(
+        self._client_init_params = {
+            "service_name": "s3",
+            "aws_access_key_id": self._access_key_id,
+            "aws_secret_access_key": self._secret_access_key,
+            "endpoint_url": self._endpoint_url,
+            "config": AioConfig(
                 connector_args=self._connector_args,
                 http_session_cls=S3AIOHTTPSessionWithSSL,
                 signature_version="s3v4",  # v4 signature is required to generate presigned URLs with restriction policies
                 s3={"addressing_style": self._s3_addressing_style},
             ),
-        )
+        }
 
     async def initialize(self) -> None:
         LOGGER.info("Initializing S3 service")

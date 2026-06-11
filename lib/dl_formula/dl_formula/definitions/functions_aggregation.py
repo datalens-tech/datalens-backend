@@ -369,7 +369,7 @@ class AggArgMax(AggArgMinMax):
 # TODO: support markup agg-concat.
 # `DataType.UNSUPPORTED` could also work, but the idea is that the user should
 # add `STR()` explicitly for those.
-AGG_CONCAT_INPUT_TYPES = set(DataType) - set((DataType.MARKUP, DataType.CONST_MARKUP, DataType.UNSUPPORTED))
+AGG_CONCAT_INPUT_TYPES = set(DataType) - {DataType.MARKUP, DataType.CONST_MARKUP, DataType.UNSUPPORTED}
 
 
 class AggAllConcatBase(AggregationFunction):

@@ -45,12 +45,12 @@ class CommonAttributeProps:
     description: MText | None
 
     def to_common_ma_field_kwargs(self) -> CommonMAFieldKWArgs:
-        return dict(
-            required=self.required,
-            allow_none=self.allow_none,
-            attribute=self.attribute_name,
-            load_only=self.load_only,
-        )
+        return {
+            "required": self.required,
+            "allow_none": self.allow_none,
+            "attribute": self.attribute_name,
+            "load_only": self.load_only,
+        }
 
 
 def is_sequence(container_type: Any) -> bool:

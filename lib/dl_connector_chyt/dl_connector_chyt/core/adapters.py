@@ -106,7 +106,7 @@ class BaseCHYTAdapter(BaseClickHouseAdapter, abc.ABC):
                     port=443,
                     path="/api/v3/get",
                 ),
-                params=dict(path=f"{table_path}/@schema"),
+                params={"path": f"{table_path}/@schema"},
                 headers={
                     **secret_auth_headers,
                     "accept": "application/json",

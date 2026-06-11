@@ -89,15 +89,15 @@ def test_regular_schema():
         http_code=None,
         application_code_stack=("A", "B"),
         forward_for_anonymous=False,
-        debug=dict(a="b"),
-        details=dict(a="b"),
+        debug={"a": "b"},
+        details={"a": "b"},
     )
 
     # Ensure all fields passed to output
     assert RegularAPIErrorSchema().dump(bi_error) == {
         "code": "ERR.DS_API.A.B",
-        "debug": dict(a="b"),
-        "details": dict(a="b"),
+        "debug": {"a": "b"},
+        "details": {"a": "b"},
         "message": "Some message",
     }
 
@@ -108,8 +108,8 @@ def test_public_schema_for_non_forwarded():
         http_code=None,
         application_code_stack=("A", "B"),
         forward_for_anonymous=False,
-        debug=dict(stackrace=["1", "2"]),
-        details=dict(private_code="Some private value"),
+        debug={"stackrace": ["1", "2"]},
+        details={"private_code": "Some private value"},
     )
 
     assert PublicAPIErrorSchema().dump(bi_error) == {
@@ -126,8 +126,8 @@ def test_public_schema_for_forwarded():
         http_code=None,
         application_code_stack=("A", "B"),
         forward_for_anonymous=True,
-        debug=dict(stackrace=["1", "2"]),
-        details=dict(private_code="Some public value"),
+        debug={"stackrace": ["1", "2"]},
+        details={"private_code": "Some public value"},
     )
 
     # Ensure that message and error code are passed to output for whitelisted errors

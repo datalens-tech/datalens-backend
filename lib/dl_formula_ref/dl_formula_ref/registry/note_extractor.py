@@ -61,7 +61,7 @@ class DefaultNoteExtractor(NoteExtractorBase):
                 ParameterizedNote(
                     param_text=ParameterizedText.from_str(
                         text=CONST_TYPE_NOTE,
-                        params=dict(args=", ".join([f"`{a.name}`" for a in args if a.is_const])),
+                        params={"args": ", ".join([f"`{a.name}`" for a in args if a.is_const])},
                     ),
                     type=NoteType.ARG_RESTRICTION,
                 ),

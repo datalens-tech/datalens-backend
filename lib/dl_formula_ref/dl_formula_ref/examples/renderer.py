@@ -76,11 +76,11 @@ class ExampleRenderer:
 
         if example.formulas_as_names:
             if example.override_formula_fields is not None:
-                name_mapping = {name: formula for name, formula in example.override_formula_fields}
+                name_mapping = dict(example.override_formula_fields)
             elif not example.additional_transformations:
-                name_mapping = {name: formula for name, formula in example.formula_fields}
+                name_mapping = dict(example.formula_fields)
             else:
-                name_mapping = {name: formula for name, formula in example.additional_transformations[-1]}
+                name_mapping = dict(example.additional_transformations[-1])
             result_table = rename_columns(result_table, name_mapping=name_mapping)
 
         if example.override_formula_fields is not None:

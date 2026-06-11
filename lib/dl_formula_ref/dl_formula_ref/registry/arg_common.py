@@ -106,10 +106,10 @@ class TypeStrategyInspector:
                 ret_type_str = ParameterizedText.from_str(text=type_macro(ret_type_strat.type.non_const_type))
             elif isinstance(ret_type_strat, FromArgs):
                 common_type_args_str = cls._extract_common_type_args_str(ret_type_strat, inf_args, args)
-                ret_type_str = ParameterizedText.from_str(text=FROM_ARGS, params=dict(args=common_type_args_str))
+                ret_type_str = ParameterizedText.from_str(text=FROM_ARGS, params={"args": common_type_args_str})
                 if "," in common_type_args_str:  # FromArgs strategy is used for more than 1 argument
                     # a note about args that they must have the same type
-                    note = ParameterizedText.from_str(text=COMMON_TYPE_NOTE, params=dict(args=common_type_args_str))
+                    note = ParameterizedText.from_str(text=COMMON_TYPE_NOTE, params={"args": common_type_args_str})
 
         else:
             resolved_ret_type = False

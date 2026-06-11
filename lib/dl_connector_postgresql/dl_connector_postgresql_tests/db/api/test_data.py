@@ -130,7 +130,7 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
 
         data_rows = get_data_rows(result_resp)
         assert len(data_rows) == 3
-        assert list(sorted(data_rows)) == [["var1"], ["var2"], ["var3"]]
+        assert sorted(data_rows) == [["var1"], ["var2"], ["var3"]]
 
 
 class TestPostgreSQLDataGroupBy(PostgreSQLDataApiTestBase, DefaultConnectorDataGroupByFormulaTestSuite):

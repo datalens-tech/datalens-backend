@@ -71,7 +71,7 @@ def split_by_comma(s: str) -> tuple[str, ...]:
 
 
 def conn_type_set_env_var_converter(s: str) -> set[ConnectionType]:
-    return set(ConnectionType(entry.strip()) for entry in s.split(",") if entry)
+    return {ConnectionType(entry.strip()) for entry in s.split(",") if entry}
 
 
 class ConstructableSettingsProtocol(typing.Protocol):

@@ -18,14 +18,14 @@ class ExecutorFactoryBase:
         return CommonBaseDirectAdapter
 
     def get_dto_kwargs(self) -> dict[str, Any]:
-        return dict(
-            conn_id=None,
-            host=self.db.url.host,
-            port=self.db.url.port,
-            db_name=self.db.url.database,
-            username=self.db.url.username,
-            password=self.db.url.password,
-        )
+        return {
+            "conn_id": None,
+            "host": self.db.url.host,
+            "port": self.db.url.port,
+            "db_name": self.db.url.database,
+            "username": self.db.url.username,
+            "password": self.db.url.password,
+        }
 
     def make_dto(self) -> BaseSQLConnTargetDTO:
         dto_cls = self.get_dto_class()

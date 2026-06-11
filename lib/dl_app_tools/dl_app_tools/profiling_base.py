@@ -78,7 +78,7 @@ class GenericProfiler:
         if isinstance(outer_stages, str):
             outer_stages = cls.load_stage_stack(outer_stages)
         elif outer_stages is None:
-            outer_stages = tuple()
+            outer_stages = ()
         elif isinstance(outer_stages, (list, tuple)):
             outer_stages = tuple(outer_stages)
         else:

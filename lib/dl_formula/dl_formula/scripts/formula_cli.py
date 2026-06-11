@@ -216,8 +216,8 @@ class FormulaCliTool:
         try:
             formula = formula_parser.parse(text)
 
-            field_list = sorted(set(f.name for f in dl_formula.inspect.expression.used_fields(formula)))
-            field_types = {f: DataType.NULL for f in field_list}
+            field_list = sorted({f.name for f in dl_formula.inspect.expression.used_fields(formula)})
+            field_types = dict.fromkeys(field_list, DataType.NULL)
             if tablename:
                 field_names = {f: (tablename, f) for f in field_list}
             else:

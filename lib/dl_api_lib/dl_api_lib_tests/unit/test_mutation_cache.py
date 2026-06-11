@@ -70,8 +70,8 @@ def original_mutation_shuffle_dicts(original_mutation_list) -> list[FieldAction]
 def original_mutation_shuffle_keys(original_mutation_list) -> list[FieldAction]:
     shuffled = []
     for update in original_mutation_list:
-        update["field"] = {k: v for k, v in list(update["field"].items())[::-1]}
-        shuffled.append({k: v for k, v in list(update.items())[::-1]})
+        update["field"] = dict(list(update["field"].items())[::-1])
+        shuffled.append(dict(list(update.items())[::-1]))
     return ActionSchema(many=True).load(shuffled)
 
 

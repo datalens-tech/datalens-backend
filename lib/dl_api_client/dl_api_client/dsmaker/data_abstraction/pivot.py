@@ -151,7 +151,7 @@ class PivotDataAbstraction:
 
     def get_1d_mapper(self) -> DataCellMapper1D:
         return SimpleDataCellMapper1D(
-            cells={dim_tuple: cell for dim_tuple, cell in self._iter_all_cells()},
+            cells=dict(self._iter_all_cells()),
         )
 
     def get_row(self, idx: int) -> PivotDataRowProxy:

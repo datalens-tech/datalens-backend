@@ -75,13 +75,13 @@ class GP7DashSQLConnectionTest(GreenplumDashSQLConnectionTestMixin, GP7Connectio
 class GreenplumDatasetTestBaseMixin(DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table: DbTable) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_GP_TABLE.name,
-            parameters=dict(
-                db_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_GP_TABLE.name,
+            "parameters": {
+                "db_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
 
 class GP6DatasetTestBase(GP6ConnectionTestBase, GreenplumDatasetTestBaseMixin):

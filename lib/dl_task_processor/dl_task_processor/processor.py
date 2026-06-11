@@ -59,12 +59,12 @@ class ARQProcessorImpl(BaseTaskProcessorImpl):
     async def schedule(self, task: TaskInstance) -> None:
         await self.pool.enqueue_job(
             "arq_base_task",
-            dict(
-                name=task.name,
-                instance_id=task.instance_id,
-                request_id=task.request_id,
-                task_params=task.params,
-            ),
+            {
+                "name": task.name,
+                "instance_id": task.instance_id,
+                "request_id": task.request_id,
+                "task_params": task.params,
+            },
             _job_id=task.instance_id.to_str(),
         )
 

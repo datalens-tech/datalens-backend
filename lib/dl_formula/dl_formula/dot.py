@@ -14,7 +14,7 @@ def make_name() -> str:
 
 
 class DotTranslator:
-    terminal_opts = dict(shape="rectangle", style="filled", margin="0")
+    terminal_opts = {"shape": "rectangle", "style": "filled", "margin": "0"}
     literal_colors = {
         str: "#fff6c1",
         int: "#b2dee6",

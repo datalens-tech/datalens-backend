@@ -263,14 +263,14 @@ class ResultCacheEntry:
                 elif compress_alg == CompressAlg.GZIP:
                     result_data_to_store = gzip.compress(serialized_result_data)
 
-        details: dict[str, Any] = dict(
-            cache_row_count=len(result_data),
-            cache_serialized_bytesize=len(serialized_result_data),
-            cache_serializer_timing=prof_serialize.exec_time_sec,
-            cache_was_compressed=compress,
-            cache_compressor_timing=(prof_compress.exec_time_sec if prof_compress is not None else None),
-            cache_dumped_bytesize=len(result_data_to_store),
-        )
+        details: dict[str, Any] = {
+            "cache_row_count": len(result_data),
+            "cache_serialized_bytesize": len(serialized_result_data),
+            "cache_serializer_timing": prof_serialize.exec_time_sec,
+            "cache_was_compressed": compress,
+            "cache_compressor_timing": (prof_compress.exec_time_sec if prof_compress is not None else None),
+            "cache_dumped_bytesize": len(result_data_to_store),
+        }
 
         metadata = dict(  # TODO?: attrs-object? or protobuf?
             self.metadata or {},
@@ -376,7 +376,7 @@ class EntityCacheEntryManagerAsync(EntityCacheEntryManagerAsyncBase):
         return await self.cache_engine._update_cache(
             local_key_rep=self.local_key_rep,
             result=result,
-            metadata=dict(error=error),
+            metadata={"error": error},
             ttl_sec=ttl_sec or self.write_ttl_sec,
         )
 
@@ -499,7 +499,7 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
             result=result,
             compress=False,
             compress_alg=None,  # `compress=False` to prevent CPU-bound operation in event loop
-            metadata=dict(error=error),
+            metadata={"error": error},
             ttl_sec=ttl_sec,
         )
         try:
@@ -525,7 +525,7 @@ class EntityCacheEntryLockedManagerAsync(EntityCacheEntryManagerAsyncBase):
             error,
             save_error,
             events_readable,
-            extra=dict(redis_cache_lock_logs=events),
+            extra={"redis_cache_lock_logs": events},
         )
 
 
@@ -605,11 +605,11 @@ class EntityCacheEngineBase:
     ) -> tuple[str, dict]:
         full_key = self._get_key_query_cache_entry(local_key_rep)
 
-        details = dict(
-            cache_key=full_key,
-            cache_refresh_on_read=new_ttl_sec is not None,
-            cache_ttl_sec=new_ttl_sec,
-        )
+        details = {
+            "cache_key": full_key,
+            "cache_refresh_on_read": new_ttl_sec is not None,
+            "cache_ttl_sec": new_ttl_sec,
+        }
         return full_key, details
 
     def _make_result_cache_entry(

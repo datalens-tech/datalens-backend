@@ -63,55 +63,55 @@ class BaseApiV1SerializationAdapter:
     @_dump_item.register(DataSource)
     def dump_data_source(self, item: DataSource, action: Action) -> dict:
         if action == Action.delete:
-            return dict(id=item.id)
+            return {"id": item.id}
         assert item.source_type is not None
-        return dict(
-            id=item.id,
-            connection_id=item.connection_id,
-            source_type=item.source_type.name,
-            title=item.title,
-            raw_schema=(
+        return {
+            "id": item.id,
+            "connection_id": item.connection_id,
+            "source_type": item.source_type.name,
+            "title": item.title,
+            "raw_schema": (
                 [
-                    dict(
-                        name=col.name,
-                        title=col.title,
-                        user_type=col.user_type.name,
-                        native_type=col.native_type,
-                        description=col.description,
-                        nullable=col.nullable,
-                        has_auto_aggregation=col.has_auto_aggregation,
-                        lock_aggregation=col.lock_aggregation,
-                    )
+                    {
+                        "name": col.name,
+                        "title": col.title,
+                        "user_type": col.user_type.name,
+                        "native_type": col.native_type,
+                        "description": col.description,
+                        "nullable": col.nullable,
+                        "has_auto_aggregation": col.has_auto_aggregation,
+                        "lock_aggregation": col.lock_aggregation,
+                    }
                     for col in item.raw_schema
                 ]
                 if item.raw_schema is not None
                 else None
             ),
-            index_info_set=None if item.index_info_set is None else list(item.index_info_set),
-            parameters=item.parameters,
-            managed_by=item.managed_by.name,
-            valid=item.valid,
-        )
+            "index_info_set": None if item.index_info_set is None else list(item.index_info_set),
+            "parameters": item.parameters,
+            "managed_by": item.managed_by.name,
+            "valid": item.valid,
+        }
 
     @_dump_item.register(SourceAvatar)
     def dump_source_avatar(self, item: SourceAvatar, action: Action) -> dict:
         if action == Action.delete:
-            return dict(id=item.id)
-        return dict(
-            id=item.id,
-            source_id=item.source_id,
-            title=item.title,
-            is_root=item.is_root,
-            managed_by=item.managed_by.name,
-        )
+            return {"id": item.id}
+        return {
+            "id": item.id,
+            "source_id": item.source_id,
+            "title": item.title,
+            "is_root": item.is_root,
+            "managed_by": item.managed_by.name,
+        }
 
     @_dump_item.register(AvatarRelation)
     def dump_avatar_relation(self, item: AvatarRelation, action: Action) -> dict:
         if action == Action.delete:
-            return dict(id=item.id)
+            return {"id": item.id}
 
         def dump_condition_part(part: JoinPart) -> dict:
-            data = dict(calc_mode=part.calc_mode.name)
+            data = {"calc_mode": part.calc_mode.name}
             if isinstance(part, DirectJoinPart):
                 data["source"] = part.source
             elif isinstance(part, FormulaJoinPart):
@@ -120,61 +120,61 @@ class BaseApiV1SerializationAdapter:
                 data["field_id"] = part.field_id
             return data
 
-        return dict(
-            id=item.id,
-            left_avatar_id=item.left_avatar_id,
-            right_avatar_id=item.right_avatar_id,
-            conditions=[
-                dict(
-                    type=JoinConditionType.binary.name,
-                    left=dump_condition_part(condition.left_part),
-                    right=dump_condition_part(condition.right_part),
-                    operator=condition.operator.name,
-                )
+        return {
+            "id": item.id,
+            "left_avatar_id": item.left_avatar_id,
+            "right_avatar_id": item.right_avatar_id,
+            "conditions": [
+                {
+                    "type": JoinConditionType.binary.name,
+                    "left": dump_condition_part(condition.left_part),
+                    "right": dump_condition_part(condition.right_part),
+                    "operator": condition.operator.name,
+                }
                 for condition in item.conditions
             ],
-            join_type=item.join_type.name,
-            managed_by=item.managed_by.name,
-            required=item.required,
-        )
+            "join_type": item.join_type.name,
+            "managed_by": item.managed_by.name,
+            "required": item.required,
+        }
 
     @_dump_item.register(ResultField)
     def dump_field(self, item: ResultField, action: Action) -> dict:
         if action == Action.delete:
-            return dict(guid=item.id)
+            return {"guid": item.id}
         if action == Action.add:
-            return dict(
-                guid=item.id,
-                title=item.title,
-                calc_mode=item.calc_mode.name if item.calc_mode is not None else None,
-                aggregation=item.aggregation.name if item.aggregation is not None else None,
-                type=item.type.name if item.type is not None else None,
-                source=item.source,
-                hidden=item.hidden,
-                description=item.description,
-                formula=item.formula,
-                initial_data_type=item.initial_data_type.name if item.initial_data_type is not None else None,
-                cast=item.cast.name if item.cast is not None else None,
-                data_type=item.data_type.name if item.data_type is not None else None,
-                valid=item.valid,
-                has_auto_aggregation=item.has_auto_aggregation,
-                lock_aggregation=item.lock_aggregation,
-                avatar_id=item.avatar_id,
-                managed_by=item.managed_by.name,
-                default_value=item.default_value.value if item.default_value is not None else None,
-                value_constraint=(
+            return {
+                "guid": item.id,
+                "title": item.title,
+                "calc_mode": item.calc_mode.name if item.calc_mode is not None else None,
+                "aggregation": item.aggregation.name if item.aggregation is not None else None,
+                "type": item.type.name if item.type is not None else None,
+                "source": item.source,
+                "hidden": item.hidden,
+                "description": item.description,
+                "formula": item.formula,
+                "initial_data_type": item.initial_data_type.name if item.initial_data_type is not None else None,
+                "cast": item.cast.name if item.cast is not None else None,
+                "data_type": item.data_type.name if item.data_type is not None else None,
+                "valid": item.valid,
+                "has_auto_aggregation": item.has_auto_aggregation,
+                "lock_aggregation": item.lock_aggregation,
+                "avatar_id": item.avatar_id,
+                "managed_by": item.managed_by.name,
+                "default_value": item.default_value.value if item.default_value is not None else None,
+                "value_constraint": (
                     ParameterValueConstraintSchema().dump(item.value_constraint)
                     if item.value_constraint is not None
                     else None
                 ),
-                template_enabled=item.template_enabled,
-            )
-        return dict(guid=item.id)
+                "template_enabled": item.template_enabled,
+            }
+        return {"guid": item.id}
 
     @_dump_item.register(ObligatoryFilter)
     def dump_obligatory_filter(self, item: ObligatoryFilter, action: Action) -> dict:
         if action == Action.delete:
-            return dict(id=item.id)
+            return {"id": item.id}
         if action == Action.add:
             return ObligatoryFilterSchema().dump(item)
         return ObligatoryFilterUpdateSchema().dump(item)

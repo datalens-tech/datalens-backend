@@ -150,11 +150,11 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             json.dumps({k: (v if k != "key" else "...") for k, v in payload.json_body.items()}),
         )
 
-        request_params: dict[str, Any] = dict(
-            table=payload.table,
-            consumer="datalens",
-            request_id=request_id,
-        )
+        request_params: dict[str, Any] = {
+            "table": payload.table,
+            "consumer": "datalens",
+            "request_id": request_id,
+        }
 
         limit = self._extract_limit(dba_query.query)
         if limit is not None:
@@ -188,10 +188,12 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             selected_columns = cols
 
         try:
-            normalized_data = dict(
-                cols=[dict(id=col, label=col, type=columns_type.get(col, "string")) for col in selected_columns],
-                rows=[[dict(zip(cols, row, strict=True))[col] for col in selected_columns] for row in rows],
-            )
+            normalized_data = {
+                "cols": [
+                    {"id": col, "label": col, "type": columns_type.get(col, "string")} for col in selected_columns
+                ],
+                "rows": [[dict(zip(cols, row, strict=True))[col] for col in selected_columns] for row in rows],
+            }
         except (KeyError, TypeError, ValueError) as e:
             raise ValueError("unexpected data structure") from e
 
@@ -230,7 +232,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
         assert isinstance(dba_query.query, sa.sql.Select)
         selected_columns_values = dba_query.query.selected_columns.values()
         selected_columns: list[str] | None = None
-        if "*" not in set(column.name for column in selected_columns_values):
+        if "*" not in {column.name for column in selected_columns_values}:
             selected_columns = [extract_select_column_name(column) for column in selected_columns_values]
             # 'table."COLUMN_NAME"' -> 'COLUMN_NAME'
             selected_columns = [col.split(".")[-1].replace('"', "").replace("`", "") for col in selected_columns]
@@ -268,7 +270,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
                 yield chunk
 
         return AsyncRawExecutionResult(
-            raw_cursor_info=dict(cols=rd["cols"]),
+            raw_cursor_info={"cols": rd["cols"]},
             raw_chunk_generator=chunk_gen(),
         )
 
@@ -417,7 +419,7 @@ class BitrixGDSDefaultAdapter(AiohttpDBAdapter, ETBasedExceptionMaker):
             "key": body["key"],
             "startDate": body["dateRange"].get("startDate"),
             "endDate": body["dateRange"].get("endDate"),
-            "timeFilterColumn": body.get("configParams", dict()).get("timeFilterColumn"),
+            "timeFilterColumn": body.get("configParams", {}).get("timeFilterColumn"),
             "limit": self._extract_limit(dba_query.query),
         }
 

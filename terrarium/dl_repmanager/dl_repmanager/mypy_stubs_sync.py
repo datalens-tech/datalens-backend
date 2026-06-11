@@ -113,7 +113,7 @@ def stubs_sync(
     ignore_pkg_set = {k for k, v in overrides_map.items() if "ignore" in v}
 
     packages_to_ignore: list[str] = []
-    annotations_to_add: dict[str, PipRequirement] = dict()
+    annotations_to_add: dict[str, PipRequirement] = {}
 
     for name, req in sorted(requirements.items()):
         override = overrides_map.get(name)

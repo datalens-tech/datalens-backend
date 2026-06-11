@@ -22,9 +22,9 @@ class BigQueryTestBase(FormulaConnectorTestBase):
 
     @pytest.fixture(scope="class")
     def engine_params(self, settings: Settings) -> dict:
-        return dict(
-            credentials_base64=settings.BIGQUERY_CREDS,
-        )
+        return {
+            "credentials_base64": settings.BIGQUERY_CREDS,
+        }
 
     @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, settings: Settings) -> BigQueryDbEngineConfig:

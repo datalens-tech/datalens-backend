@@ -36,19 +36,19 @@ def get_sys_memstatus(pid):
         with open(f"/proc/{pid}/statm") as fobj:
             data_statm = fobj.read()
     except OSError as exc:
-        return dict(_exc=repr(exc))
+        return {"_exc": repr(exc)}
     data_m = data_statm.strip("\n").split(" ")
     return dict(zip(STATM_COLS, data_m, strict=True))
 
 
-CONTEXT_ENV_VARS = dict(
-    project="QLOUD_PROJECT",
-    application="QLOUD_APPLICATION",
-    environment="QLOUD_ENVIRONMENT",
+CONTEXT_ENV_VARS = {
+    "project": "QLOUD_PROJECT",
+    "application": "QLOUD_APPLICATION",
+    "environment": "QLOUD_ENVIRONMENT",
     # component='QLOUD_COMPONENT',
-    geo="QLOUD_DATACENTER",
-    instance="QLOUD_INSTANCE",
-)
+    "geo": "QLOUD_DATACENTER",
+    "instance": "QLOUD_INSTANCE",
+}
 
 
 def get_context_data(require=True):

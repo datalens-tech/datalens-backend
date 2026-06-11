@@ -158,11 +158,11 @@ class ConnectionTrinoBase(
                 offset=offset,
             )
             return [
-                dict(
-                    db_name=db_name,
-                    schema_name=table.schema_name,
-                    table_name=table.table_name,
-                )
+                {
+                    "db_name": db_name,
+                    "schema_name": table.schema_name,
+                    "table_name": table.table_name,
+                }
                 for table in tables
             ]
 
@@ -178,11 +178,11 @@ class ConnectionTrinoBase(
                 db_name=catalog_name,
             )
             parameter_combinations.extend(
-                dict(
-                    db_name=catalog_name,
-                    schema_name=table.schema_name,
-                    table_name=table.table_name,
-                )
+                {
+                    "db_name": catalog_name,
+                    "schema_name": table.schema_name,
+                    "table_name": table.table_name,
+                }
                 for table in tables
             )
 

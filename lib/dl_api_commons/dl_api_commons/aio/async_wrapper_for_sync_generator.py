@@ -162,9 +162,9 @@ class Job[JOB_ITEM_TV](metaclass=abc.ABCMeta):
     def __attrs_post_init__(self) -> None:
         self._log = logging.LoggerAdapter(
             logging.getLogger(__name__),
-            extra=dict(
-                job_sys_id=id(self),
-            ),
+            extra={
+                "job_sys_id": id(self),
+            },
         )
         self._ss = SynchronizedJobState(log=self._log)
 

@@ -96,7 +96,7 @@ COLUMN_TABLE_SCHEMA = (
     ("some_datetime", UserDataType.genericdatetime, ydb_dialect.YqlDateTime),
     ("some_timestamp", UserDataType.genericdatetime, ydb_dialect.YqlTimestamp),
 )
-_COLUMN_TABLE_SCHEMA_COLUMNS = set(col[0] for col in COLUMN_TABLE_SCHEMA)
+_COLUMN_TABLE_SCHEMA_COLUMNS = {col[0] for col in COLUMN_TABLE_SCHEMA}
 
 SA_TYPE_TO_YDB_TYPE_NAME = {
     # Integer

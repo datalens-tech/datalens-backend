@@ -28,7 +28,7 @@ class DefaultDialectExtractor(DialectExtractorBase):
     ) -> set[DialectCombo]:
         if item.category.name == "window":  # TODO: Maybe separate into two different classes?
             if EXPAND_COMPENG:
-                return set(dialect for dialect in COMPENG_SUPPORT if dialect in env.supported_dialects)
+                return {dialect for dialect in COMPENG_SUPPORT if dialect in env.supported_dialects}
             return set()
 
         def_list = item.get_implementation_specs(env=env)

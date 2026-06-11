@@ -149,7 +149,7 @@ class TaskRegistry:
     def create(cls, tasks: Iterable[type[BaseExecutorTask]]) -> "TaskRegistry":
         assert sorted(
             [t.name() for t in tasks],
-        ) == sorted(list(set([t.name() for t in tasks]))), "Some tasks has the same name"
+        ) == sorted({t.name() for t in tasks}), "Some tasks has the same name"
         return cls(tasks={task.name(): task for task in tasks})
 
     def get_task(self, name: TaskName) -> type[BaseExecutorTask]:

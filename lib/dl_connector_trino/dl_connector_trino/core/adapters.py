@@ -167,15 +167,15 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
             self._target_dto.connect_timeout,
             None,  # read timeout is handled by trino with query_max_run_time
         )
-        args: dict[str, Any] = super().get_connect_args() | dict(
-            http_scheme="https" if self._target_dto.ssl_enable else "http",
-            http_session=self._get_http_session(),
-            session_properties=dict(
-                query_max_run_time=f"{self._target_dto.total_timeout}s",
-            ),
-            legacy_primitive_types=True,
-            request_timeout=timeout,
-        )
+        args: dict[str, Any] = super().get_connect_args() | {
+            "http_scheme": "https" if self._target_dto.ssl_enable else "http",
+            "http_session": self._get_http_session(),
+            "session_properties": {
+                "query_max_run_time": f"{self._target_dto.total_timeout}s",
+            },
+            "legacy_primitive_types": True,
+            "request_timeout": timeout,
+        }
         if self._target_dto.auth_type is TrinoAuthType.none:
             pass
         elif self._target_dto.auth_type is TrinoAuthType.password:

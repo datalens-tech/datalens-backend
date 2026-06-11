@@ -16,9 +16,9 @@ import dl_crypto
 @pytest.fixture
 def crypto_keys_config() -> CryptoKeysConfig:
     return CryptoKeysConfig(
-        map_id_key=dict(
-            test_key=fernet.Fernet.generate_key().decode("ascii"),
-        ),
+        map_id_key={
+            "test_key": fernet.Fernet.generate_key().decode("ascii"),
+        },
         actual_key_id="test_key",
     )
 

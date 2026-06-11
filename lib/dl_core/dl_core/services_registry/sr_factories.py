@@ -132,7 +132,7 @@ class DefaultSRFactory(SRFactory[SERVICE_REGISTRY_TV]):
         request_context_info: RequestContextInfo,
         sr_ref: FutureRef[ServicesRegistry],
     ) -> dict[str, Any]:
-        return dict()
+        return {}
 
     @final
     def make_service_registry(

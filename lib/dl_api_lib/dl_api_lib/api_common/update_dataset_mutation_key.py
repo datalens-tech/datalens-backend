@@ -36,6 +36,6 @@ class UpdateDatasetMutationKey(MutationKey):
         except Exception as e:
             raise MutationKeySerializationError() from e
         serialized.sort(key=cls._dumps)
-        dumped = cls._dumps(dict(ds_rev=dataset_revision_id, mutation=serialized))
+        dumped = cls._dumps({"ds_rev": dataset_revision_id, "mutation": serialized})
         hashed = hashlib.sha256(dumped.encode()).hexdigest()
         return UpdateDatasetMutationKey(dumped=dumped, hash=hashed)

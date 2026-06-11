@@ -427,7 +427,7 @@ class DatabaseQueryError(DLBaseException):
         )
         new_exc.details = data.pop("details")
         new_exc.debug_info = data.pop("debug_info")
-        new_exc.params = data.pop("params", dict())
+        new_exc.params = data.pop("params", {})
         return new_exc
 
     def to_jsonable_dict(self) -> dict[str, TJSONLike]:
@@ -661,13 +661,13 @@ class DataStreamValidationError(Exception):
 
     # TODO FIX: Replace with schema
     def get_context_dict(self) -> dict[str, TJSONLike]:
-        return dict(
-            line_idx=self.jsonify_value(self.line_idx),
-            line_value=self.jsonify_value(self.line_value),
-            field_idx=self.jsonify_value(self.field_idx),
-            field_name=self.jsonify_value(self.field_name),
-            value=self.jsonify_value(self.value),
-        )
+        return {
+            "line_idx": self.jsonify_value(self.line_idx),
+            "line_value": self.jsonify_value(self.line_value),
+            "field_idx": self.jsonify_value(self.field_idx),
+            "field_name": self.jsonify_value(self.field_name),
+            "value": self.jsonify_value(self.value),
+        }
 
 
 class ReferencedUSEntryNotFound(DLBaseException):

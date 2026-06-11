@@ -47,11 +47,11 @@ class BaseDatasetTestClass[CONN_TV: ConnectionBase](BaseConnectionTestClass[CONN
 
     @pytest.fixture(scope="function")
     def dsrc_params(self, dataset_table: DbTable) -> dict:
-        return dict(
-            db_name=dataset_table.db.name,
-            schema_name=dataset_table.schema,
-            table_name=dataset_table.name,
-        )
+        return {
+            "db_name": dataset_table.db.name,
+            "schema_name": dataset_table.schema,
+            "table_name": dataset_table.name,
+        }
 
     @pytest.fixture(scope="function")
     def saved_dataset(

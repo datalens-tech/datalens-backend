@@ -107,7 +107,7 @@ class DefaultWindowOrderingMutation(FormulaMutation):
                 return node
 
             existing_order_by_extracts = [_unwrap_order_by_item(expr).extract for expr in existing_order_by]
-            new_order_by_list = [n for n in old.ordering.expr_list]
+            new_order_by_list = list(old.ordering.expr_list)
             for default_order_item in self._default_order_by:
                 if _unwrap_order_by_item(default_order_item).extract not in existing_order_by_extracts:
                     new_order_by_list.append(default_order_item)

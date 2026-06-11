@@ -34,7 +34,7 @@ class MySQLConnectionTestBase(BaseMySQLTestClass, ConnectionTestBase):
             port=CoreConnectionSettings.PORT,
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level.value} if self.raw_sql_level is not None else {}),
         )
 
 
@@ -45,13 +45,13 @@ class MySQLDashSQLConnectionTest(MySQLConnectionTestBase):
 class MySQLDatasetTestBase(MySQLConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_MYSQL_TABLE.name,
-            parameters=dict(
-                db_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_MYSQL_TABLE.name,
+            "parameters": {
+                "db_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
 
 class MySQLDataApiTestBase(MySQLDatasetTestBase, StandardizedDataApiTestBase):
@@ -67,7 +67,7 @@ class RogueMySQLConnectionTestBase(MySQLConnectionTestBase):
             port=CoreRogueConnectionSettings.PORT,
             username=CoreRogueConnectionSettings.USERNAME,
             password=CoreRogueConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level.value} if self.raw_sql_level is not None else {}),
         )
 
 

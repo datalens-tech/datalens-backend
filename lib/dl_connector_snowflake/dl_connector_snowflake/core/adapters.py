@@ -29,16 +29,16 @@ from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 
 def construct_creator_func(target_dto: SnowFlakeConnTargetDTO) -> Callable:
     def get_connection() -> Any:
-        params = dict(
-            user=target_dto.user_name,
-            account=target_dto.account_name,
-            authenticator="oauth",
-            token=target_dto.access_token,
-            cache_column_metadata=True,
-            database=target_dto.db_name,
-            schema=target_dto.schema,
-            warehouse=target_dto.warehouse,
-        )
+        params = {
+            "user": target_dto.user_name,
+            "account": target_dto.account_name,
+            "authenticator": "oauth",
+            "token": target_dto.access_token,
+            "cache_column_metadata": True,
+            "database": target_dto.db_name,
+            "schema": target_dto.schema,
+            "warehouse": target_dto.warehouse,
+        }
         if target_dto.user_role:
             params["role"] = target_dto.user_role
 

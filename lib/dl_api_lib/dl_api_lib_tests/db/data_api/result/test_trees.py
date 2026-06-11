@@ -112,7 +112,7 @@ def get_tree(
         for row in data_rows
     )
 
-    block_metas = [block_meta for block_meta in result_resp.json["blocks"]]
+    block_metas = list(result_resp.json["blocks"])
     assert len(block_metas) == len(branch_items)
     for block_meta in block_metas:
         assert block_meta["query"] is not None

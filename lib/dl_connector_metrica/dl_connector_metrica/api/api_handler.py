@@ -50,4 +50,4 @@ class MetricaConnectionAvailableCounters(BIResource):
                 "Unable to load available counters. Possibly caused by invalid OAuth token."
             ) from ex
         else:
-            return dict(counters=counters)
+            return {"counters": counters}

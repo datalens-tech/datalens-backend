@@ -24,40 +24,40 @@ class BigQueryConnectionTestBase(BaseBigQueryTestClass, ConnectionTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self, settings: Settings) -> dict:
-        return dict(
-            project_id=settings.BIGQUERY_CONFIG["project_id"],
-            credentials=settings.BIGQUERY_CREDS,
-        )
+        return {
+            "project_id": settings.BIGQUERY_CONFIG["project_id"],
+            "credentials": settings.BIGQUERY_CREDS,
+        }
 
 
 class BigQueryConnectionTestMalformedCreds(BigQueryConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self, settings: Settings) -> dict:
-        return dict(
-            project_id=settings.BIGQUERY_CONFIG["project_id"],
-            credentials=settings.BIGQUERY_CREDS + "asdf",
-        )
+        return {
+            "project_id": settings.BIGQUERY_CONFIG["project_id"],
+            "credentials": settings.BIGQUERY_CREDS + "asdf",
+        }
 
 
 class BigQueryConnectionTestBadProjectId(BigQueryConnectionTestBase):
     @pytest.fixture(scope="class")
     def connection_params(self, settings: Settings) -> dict:
-        return dict(
-            project_id=settings.BIGQUERY_CONFIG["project_id"] + "123",
-            credentials=settings.BIGQUERY_CREDS,
-        )
+        return {
+            "project_id": settings.BIGQUERY_CONFIG["project_id"] + "123",
+            "credentials": settings.BIGQUERY_CREDS,
+        }
 
 
 class BigQueryDatasetTestBase(BigQueryConnectionTestBase, DatasetTestBase):
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_BIGQUERY_TABLE.name,
-            parameters=dict(
-                dataset_name=sample_table.schema,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_BIGQUERY_TABLE.name,
+            "parameters": {
+                "dataset_name": sample_table.schema,
+                "table_name": sample_table.name,
+            },
+        }
 
 
 class BigQueryDataApiTestBase(BigQueryDatasetTestBase, StandardizedDataApiTestBase):

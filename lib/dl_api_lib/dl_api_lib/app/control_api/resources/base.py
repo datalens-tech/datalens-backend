@@ -71,13 +71,13 @@ def wrap_export_import_exception(
         except export_import_errors as e:
             LOGGER.error("Caught exception in import-export wrapper", exc_info=True)
             notifications = [
-                dict(
-                    message=e.message,
-                    level=NotificationLevel.critical,
-                    code=self._make_api_err_code(e.err_code),
-                )
+                {
+                    "message": e.message,
+                    "level": NotificationLevel.critical,
+                    "code": self._make_api_err_code(e.err_code),
+                }
             ]
-            return dict(notifications=notifications)
+            return {"notifications": notifications}
 
     return wrapper
 

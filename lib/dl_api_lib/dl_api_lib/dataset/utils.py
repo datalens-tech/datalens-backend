@@ -116,7 +116,7 @@ def log_dataset_field_stats(dataset: Dataset) -> None:
         # We expect no name collisions here
         stats[field.calc_mode.name] += 1
         stats[field.type.name.lower()] += 1
-    LOGGER.info("Dataset field stats", extra=dict(dataset_field_stats=dict(stats)))
+    LOGGER.info("Dataset field stats", extra={"dataset_field_stats": dict(stats)})
 
 
 def allow_rls_for_dataset(dataset: Dataset) -> bool:

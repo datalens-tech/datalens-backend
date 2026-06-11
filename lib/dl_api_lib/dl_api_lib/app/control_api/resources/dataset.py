@@ -405,7 +405,7 @@ class DatasetExportItem(DatasetResource):
         if ds_warnings:
             notifications.extend(ds_warnings)
 
-        return dict(dataset=ds_dict["dataset"], notifications=notifications)
+        return {"dataset": ds_dict["dataset"], "notifications": notifications}
 
 
 @ns.route("/import")
@@ -515,7 +515,7 @@ class DatasetImportCollection(DatasetResource):
         if ds_warnings:
             notifications.extend(ds_warnings)
 
-        return dict(id=dataset.uuid, notifications=notifications)
+        return {"id": dataset.uuid, "notifications": notifications}
 
 
 @ns.route("/validators/dataset")

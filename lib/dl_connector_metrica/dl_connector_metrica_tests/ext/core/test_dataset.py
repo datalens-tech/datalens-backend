@@ -74,9 +74,9 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
 
     @pytest.fixture(scope="function")
     def dsrc_params(self) -> dict:
-        return dict(
-            db_name=MetrikaApiCounterSource.hits.name,
-        )
+        return {
+            "db_name": MetrikaApiCounterSource.hits.name,
+        }
 
     def _check_simple_select(
         self,
@@ -284,9 +284,9 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
 
     @pytest.fixture(scope="function")
     def dsrc_params(self) -> dict:
-        return dict(
-            db_name=AppMetricaFieldsNamespaces.installs.name,
-        )
+        return {
+            "db_name": AppMetricaFieldsNamespaces.installs.name,
+        }
 
     def _check_simple_select(
         self,

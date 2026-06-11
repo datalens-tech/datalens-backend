@@ -30,11 +30,11 @@ class TypedQueryRawToDBAQueryConverter:
         params = typed_query_raw.parameters
         return DBAdapterQuery(
             query=params.path,
-            connector_specific_params=dict(
-                method=params.method,
-                content_type=params.content_type,
-                body=params.body,
-            ),
+            connector_specific_params={
+                "method": params.method,
+                "content_type": params.content_type,
+                "body": params.body,
+            },
             debug_compiled_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",
             inspector_query=f"{params.method} {hide_url_args(params.path)} [Content-Type: {params.content_type}]",  # TODO: BI-6448
         )

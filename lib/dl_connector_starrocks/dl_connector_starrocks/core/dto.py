@@ -20,6 +20,6 @@ class StarRocksConnDTO(ConnDTO):
         return list(self.multihosts) if self.multihosts else [self.host] if self.host else []
 
     def conn_reporting_data(self) -> dict:
-        return super().conn_reporting_data() | dict(
-            host=self.host,
-        )
+        return super().conn_reporting_data() | {
+            "host": self.host,
+        }

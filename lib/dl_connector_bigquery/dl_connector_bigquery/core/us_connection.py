@@ -76,11 +76,11 @@ class ConnectionSQLBigQuery(ConnectionSQL):
     ) -> list[dict]:
         tables = self.get_tables(conn_executor_factory)
         return [
-            dict(
-                project_id=table_ident.db_name,
-                dataset_name=table_ident.schema_name,
-                table_name=table_ident.table_name,
-            )
+            {
+                "project_id": table_ident.db_name,
+                "dataset_name": table_ident.schema_name,
+                "table_name": table_ident.table_name,
+            }
             for table_ident in tables
         ]
 

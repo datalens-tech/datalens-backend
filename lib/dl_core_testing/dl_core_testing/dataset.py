@@ -99,13 +99,13 @@ def make_dataset(
 
     if connection:
         dsrc_params = {
-            **dict(
-                db_name=db_name,
-                schema_name=schema_name,
-                table_name=table_name,
-                path=yt_path,
-                cluster=yt_cluster,
-            ),
+            **{
+                "db_name": db_name,
+                "schema_name": schema_name,
+                "table_name": table_name,
+                "path": yt_path,
+                "cluster": yt_cluster,
+            },
             **(dsrc_params or {}),
         }
         dsrc_params = {key: value for key, value in dsrc_params.items() if value is not None}

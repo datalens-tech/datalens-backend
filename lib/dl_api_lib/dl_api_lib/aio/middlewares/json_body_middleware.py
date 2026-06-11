@@ -45,10 +45,10 @@ def json_body_middleware() -> Middleware:
             dbg_body_data = RequestObfuscator().mask_sensitive_fields_by_name_in_json_recursive(body)
             dbg_body = json.dumps(dbg_body_data)
             url = dl_request.url  # url with http->https override
-            extra = dict(
-                request_path=url,
-                request_body=dbg_body,
-            )
+            extra = {
+                "request_path": url,
+                "request_body": dbg_body,
+            }
             LOGGER.debug("Body for %s: %s...", url, dbg_body[:100], extra=extra)
 
         if isinstance(view_cls, type) and issubclass(view_cls, BaseView):

@@ -26,7 +26,7 @@ def test_serialization():
 
 
 def test_safe_serialization(caplog):
-    unserializable_data = SAMPLE_DATA | dict(unserializable=CustomType())
+    unserializable_data = SAMPLE_DATA | {"unserializable": CustomType()}
     with pytest.raises(TypeError, match="Object of type CustomType is not MessagePack serializable"):
         DLMessagePackSerializer().dumps(unserializable_data)
 

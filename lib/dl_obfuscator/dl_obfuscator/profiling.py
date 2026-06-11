@@ -45,12 +45,12 @@ def dump_log_format_profiling() -> None:
             total_ms,
             obf_ms,
             call_count,
-            extra=dict(
-                event_code="dl_log_format_profiling",
-                log_format_time_ms=total_ms,
-                obfuscation_time_ms=obf_ms,
-                log_format_call_count=call_count,
-            ),
+            extra={
+                "event_code": "dl_log_format_profiling",
+                "log_format_time_ms": total_ms,
+                "obfuscation_time_ms": obf_ms,
+                "log_format_call_count": call_count,
+            },
         )
     finally:
         _log_format_profiling.reset(token)

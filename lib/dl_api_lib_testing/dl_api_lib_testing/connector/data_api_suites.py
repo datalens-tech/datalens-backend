@@ -147,7 +147,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
     ) -> None:
         columns = [
             C("int_value", UserDataType.integer, vg=lambda rn, **kwargs: rn),
-            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: list(reversed(range(rn)))),
             C(
                 "array_str_value",
                 UserDataType.array_str,
@@ -270,7 +270,7 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
             C("str_value", UserDataType.string, vg=lambda rn, **kwargs: "3"),
             C("float_value", UserDataType.float, vg=lambda rn, **kwargs: 0.03),
             C("none_value", UserDataType.float, vg=lambda rn, **kwargs: None),
-            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: [i for i in reversed(range(rn))]),
+            C("array_int_value", UserDataType.array_int, vg=lambda rn, **kwargs: list(reversed(range(rn)))),
             C("array_str_value", UserDataType.array_str, vg=lambda rn, **kwargs: [str(i) for i in reversed(range(rn))]),
             C(
                 "array_float_value",

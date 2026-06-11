@@ -195,7 +195,7 @@ def get_fields_data_serializable(
     include_details: bool = False,
 ) -> list[dict[str, TJSONLike]]:
     fields = get_fields_data_raw(dataset, for_result=for_result, include_details=include_details)
-    return DatasetFieldsResponseSchema().dump(dict(fields=fields))["fields"]
+    return DatasetFieldsResponseSchema().dump({"fields": fields})["fields"]
 
 
 class PivotDataRequestResponseSerializer(DataRequestResponseSerializerV2Mixin):

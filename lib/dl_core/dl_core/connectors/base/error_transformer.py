@@ -164,13 +164,13 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
         wrapper_exc: Exception,
         inspector_query: str | None,
     ) -> DBExcKWArgs:
-        return dict(
-            db_message=str(orig_exc) if orig_exc else str(wrapper_exc),
-            query=debug_query,
-            inspector_query=inspector_query,
-            orig=orig_exc,
-            details={},
-        )
+        return {
+            "db_message": str(orig_exc) if orig_exc else str(wrapper_exc),
+            "query": debug_query,
+            "inspector_query": inspector_query,
+            "orig": orig_exc,
+            "details": {},
+        }
 
 
 default_error_transformer_rules = (

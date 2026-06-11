@@ -328,13 +328,13 @@ class DatasetResource(BIResource):
         capabilities = DatasetCapabilities(dataset=dataset, dsrc_coll_factory=dsrc_coll_factory)
 
         opt_data: dict[str, Any] = {}
-        opt_data["preview"] = dict(
-            enabled=capabilities.supports_preview(),
-        )
-        opt_data["join"] = dict(
-            types=capabilities.get_supported_join_types(),
-            operators=[BinaryJoinOperator.eq],
-        )
+        opt_data["preview"] = {
+            "enabled": capabilities.supports_preview(),
+        }
+        opt_data["join"] = {
+            "types": capabilities.get_supported_join_types(),
+            "operators": [BinaryJoinOperator.eq],
+        }
         role = capabilities.resolve_source_role()  # the "main" role, not for preview
 
         # Determine dialect
@@ -378,19 +378,19 @@ class DatasetResource(BIResource):
         if len(is_compeng_executable_set) == 1 and next(iter(is_compeng_executable_set)):
             funcs_dialect = get_compeng_dialect()
 
-        opt_data["data_types"] = dict(
-            items=[
-                dict(
-                    type=user_type,
-                    aggregations=sfm.get_supported_aggregations(dialect=funcs_dialect, user_type=user_type),
-                    casts=CASTS_BY_TYPE.get(user_type, []),
-                    filter_operations=sfm.get_supported_filters(dialect=funcs_dialect, user_type=user_type),
-                )
+        opt_data["data_types"] = {
+            "items": [
+                {
+                    "type": user_type,
+                    "aggregations": sfm.get_supported_aggregations(dialect=funcs_dialect, user_type=user_type),
+                    "casts": CASTS_BY_TYPE.get(user_type, []),
+                    "filter_operations": sfm.get_supported_filters(dialect=funcs_dialect, user_type=user_type),
+                }
                 for user_type in UserDataType
             ],
-        )
+        }
 
-        opt_data["sources"] = dict(items=[])
+        opt_data["sources"] = {"items": []}
         connection_ids = set()
         connection_types: set[ConnectionType | None] = set()
 
@@ -405,10 +405,10 @@ class DatasetResource(BIResource):
                 continue
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             opt_data["sources"]["items"].append(
-                dict(
-                    id=source_id,
-                    schema_update_enabled=dsrc.supports_schema_update,
-                )
+                {
+                    "id": source_id,
+                    "schema_update_enabled": dsrc.supports_schema_update,
+                }
             )
             connection_id = dsrc_coll.get_connection_id(role=DataSourceRole.origin)
             if connection_id is not None:
@@ -416,12 +416,12 @@ class DatasetResource(BIResource):
                 connection_types.add(dsrc.conn_type)
 
         opt_data["sources"]["compatible_types"] = [
-            dict(source_type=source_type) for source_type in capabilities.get_compatible_source_types()
+            {"source_type": source_type} for source_type in capabilities.get_compatible_source_types()
         ]
 
         only_one_connection = len(connection_ids) <= 1
 
-        opt_data["connections"] = dict(items=[])
+        opt_data["connections"] = {"items": []}
         for conn_id in sorted(connection_ids):
             replacement_types = []
             repl_conn_types = capabilities.get_compatible_connection_types(ignore_connection_ids=[conn_id])
@@ -429,35 +429,35 @@ class DatasetResource(BIResource):
                 # it seems we can do this check once
                 if not only_one_connection:
                     continue
-                item = dict(conn_type=conn_type)
+                item = {"conn_type": conn_type}
                 if item not in replacement_types:
                     replacement_types.append(item)
 
             opt_data["connections"]["items"].append(
-                dict(
-                    id=conn_id,
-                    replacement_types=replacement_types,
-                )
+                {
+                    "id": conn_id,
+                    "replacement_types": replacement_types,
+                }
             )
 
         compatible_conn_types: list[dict] = []
         for conn_type in capabilities.get_compatible_connection_types():
             if connection_ids:  # There already are connections in the dataset
                 continue
-            compatible_conn_types.append(dict(conn_type=conn_type))
+            compatible_conn_types.append({"conn_type": conn_type})
         opt_data["connections"]["compatible_types"] = compatible_conn_types
 
         opt_data["connections"]["max"] = DEFAULT_MAX_CONNECTIONS if compatible_conn_types else 1
 
         opt_data["schema_update_enabled"] = any(
-            [dsrc_data["schema_update_enabled"] for dsrc_data in opt_data["sources"]["items"]]
+            dsrc_data["schema_update_enabled"] for dsrc_data in opt_data["sources"]["items"]
         )
 
-        opt_data["source_avatars"] = dict(
+        opt_data["source_avatars"] = {
             # if JOINs are supported, then new tables can be added
-            max=(service_registry.get_constraints().MAX_AVATARS if capabilities.get_supported_join_types() else 1),
-            items=[],
-        )
+            "max": (service_registry.get_constraints().MAX_AVATARS if capabilities.get_supported_join_types() else 1),
+            "items": [],
+        }
         for avatar in ds_accessor.get_avatar_list():
             dsrc_coll_spec = ds_accessor.get_data_source_coll_spec_strict(source_id=avatar.source_id)
             dsrc_coll = dsrc_coll_factory.get_data_source_collection(
@@ -467,19 +467,19 @@ class DatasetResource(BIResource):
             )
             dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
             opt_data["source_avatars"]["items"].append(
-                dict(
-                    id=avatar.id,
-                    schema_update_enabled=dsrc.supports_schema_update,
-                )
+                {
+                    "id": avatar.id,
+                    "schema_update_enabled": dsrc.supports_schema_update,
+                }
             )
 
         opt_data["supports_offset"] = capabilities.supports_offset(role)
 
         opt_data["supported_functions"] = sfm.get_supported_function_names(dialect=dialect)
 
-        opt_data["fields"] = dict(
-            items=[],
-        )
+        opt_data["fields"] = {
+            "items": [],
+        }
         for field in dataset.result_schema:
             if field.has_auto_aggregation or field.lock_aggregation:
                 # Aggregation is disabled
@@ -488,11 +488,11 @@ class DatasetResource(BIResource):
                 aggregations = BI_TYPE_AGGREGATIONS.get(field.cast, [])
 
             opt_data["fields"]["items"].append(
-                dict(
-                    guid=field.guid,
-                    casts=CASTS_BY_TYPE.get(field.initial_data_type, ()),
-                    aggregations=aggregations,
-                )
+                {
+                    "guid": field.guid,
+                    "casts": CASTS_BY_TYPE.get(field.initial_data_type, ()),
+                    "aggregations": aggregations,
+                }
             )
 
         # Add source_listing field with connection listing options

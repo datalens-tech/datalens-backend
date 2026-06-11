@@ -63,14 +63,14 @@ def generate_sample_data(
 ) -> list[dict[str, Any]]:
     data = []
     for num, idx in enumerate([*range(10), *range(10)]):
-        row = dict(
-            id=num + 1,
-            int_value=idx * 10,
-            date_value=start_date + DAY * idx,
-            datetime_value=start_datetime + datetime_delta * idx,
-            str_value="q" * (idx + 1),
-            str_null_value=None,
-        )
+        row = {
+            "id": num + 1,
+            "int_value": idx * 10,
+            "date_value": start_date + DAY * idx,
+            "datetime_value": start_datetime + datetime_delta * idx,
+            "str_value": "q" * (idx + 1),
+            "str_null_value": None,
+        }
         if add_arrays:
             row.update(
                 arr_int_value=[1 * idx, 23 + idx, 456, None],

@@ -22,7 +22,7 @@ class SnowflakeURIView(BaseSnowflakeView):
         data["redirect_uri"] = self.request.headers.get(hdrs.ORIGIN)
         oauth_client = self.get_client(data)
         uri = oauth_client.get_auth_uri()
-        return web.json_response(snowflake_schemas.SnowflakeUriResponseSchema().dump(dict(uri=uri)))
+        return web.json_response(snowflake_schemas.SnowflakeUriResponseSchema().dump({"uri": uri}))
 
 
 class SnowflakeTokenView(BaseSnowflakeView):

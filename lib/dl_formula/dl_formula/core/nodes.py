@@ -109,7 +109,7 @@ class FormulaItem:
         assert isinstance(internal_value, tuple)
         self.validate_internal_value(internal_value)
 
-        self.__children: list[FormulaItem] = [child for child in children]
+        self.__children: list[FormulaItem] = list(children)
         self.__internal_value = internal_value
         self.__meta: NodeMeta = meta or NodeMeta()
         self.__extract = self._make_extract()

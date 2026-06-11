@@ -295,7 +295,7 @@ COMMON_SERIALIZERS: list[type[TypeSerializer]] = [
     NativeTypeSerializer,
     UnsupportedSerializer,
 ]
-assert len(set(cls.typename for cls in COMMON_SERIALIZERS)) == len(COMMON_SERIALIZERS), "uniqueness check"
+assert len({cls.typename for cls in COMMON_SERIALIZERS}) == len(COMMON_SERIALIZERS), "uniqueness check"
 
 
 class DataLensJSONEncoder(json.JSONEncoder):
@@ -310,7 +310,7 @@ class DataLensJSONEncoder(json.JSONEncoder):
         typeobj = type(obj)
         preprocessor = self._get_preprocessor(typeobj)
         if preprocessor is not None:
-            return dict(__dl_type__=preprocessor.typename, value=preprocessor.to_jsonable(obj))
+            return {"__dl_type__": preprocessor.typename, "value": preprocessor.to_jsonable(obj)}
 
         return super().default(obj)  # effectively, raises `TypeError`
 

@@ -121,7 +121,7 @@ class ConnectionClickhouseBase(ClassicConnectionSQL):
         conn_executor = conn_executor_factory(self)
         query = ConnExecutorQuery(query="SELECT `database`, `name` from `system`.`tables`", db_name="system")
         return [
-            dict(db_name=db_name, table_name=table_name)
+            {"db_name": db_name, "table_name": table_name}
             for db_name, table_name in conn_executor.execute(query=query).get_all()
             if db_name.lower() not in ch_system_dbs
         ]

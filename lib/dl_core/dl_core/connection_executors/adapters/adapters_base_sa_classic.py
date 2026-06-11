@@ -78,14 +78,14 @@ class ClassicSQLConnLineConstructor[DBA_CLASSIC_SA_DTO_TV: "BaseSQLConnTargetDTO
         db_name: str | None = None,
         standard_auth: bool | None = True,
     ) -> dict:
-        return dict(
-            dialect=self._dialect_name,
-            user=quote(self._target_dto.username, safe="") if standard_auth else None,
-            passwd=quote(self._target_dto.password, safe="") if standard_auth else None,
-            host=quote(self._target_dto.host, safe=""),
-            port=quote(str(self._target_dto.port), safe=""),
-            db_name=quote(db_name if db_name else (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
-        )
+        return {
+            "dialect": self._dialect_name,
+            "user": quote(self._target_dto.username, safe="") if standard_auth else None,
+            "passwd": quote(self._target_dto.password, safe="") if standard_auth else None,
+            "host": quote(self._target_dto.host, safe=""),
+            "port": quote(str(self._target_dto.port), safe=""),
+            "db_name": quote(db_name if db_name else (self._target_dto.db_name or ""), safe="".join(safe_db_symbols)),
+        }
 
 
 @attr.s(cmp=False)

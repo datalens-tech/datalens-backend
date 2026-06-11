@@ -136,12 +136,12 @@ class DataPostprocessor:
 
         LOGGER.info(
             f"Returning dataset data: {len(postprocessed_data)} rows " f"with {len(result_fields_types)} columns",
-            extra=dict(
-                fetched_data_statistics=dict(
-                    row_count=len(postprocessed_data),
-                    column_count=len(result_fields_types),
-                ),
-            ),
+            extra={
+                "fetched_data_statistics": {
+                    "row_count": len(postprocessed_data),
+                    "column_count": len(result_fields_types),
+                },
+            },
         )
 
         return PostprocessedQuery(

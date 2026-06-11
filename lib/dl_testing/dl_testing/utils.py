@@ -70,10 +70,10 @@ def wait_for_initdb(
             resp = conn.getresponse()
             body = resp.read().decode("utf-8", errors="replace")
             if resp.status != 200:
-                raise Exception("Non-ok response", dict(res=resp, status=resp.status, body=body))
+                raise Exception("Non-ok response", {"res": resp, "status": resp.status, "body": body})
             return True, body
         except Exception as exc:
-            return False, dict(exc=exc)
+            return False, {"exc": exc}
 
     return wait_for(
         name="initdb readiness",
@@ -132,7 +132,7 @@ def guids_from_titles(result_schema: list[dict], titles: list[str]) -> list[str]
 
 @contextmanager
 def override_env_cm(to_set: dict[str, str], purge: bool = False) -> Generator[None, None, None]:
-    preserved = {k: v for k, v in os.environ.items()}
+    preserved = dict(os.environ.items())
 
     try:
         if purge:

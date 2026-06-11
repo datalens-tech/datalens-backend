@@ -110,7 +110,7 @@ async def test_error_handling_middleware(
                 return ErrorData(
                     status_code=err.status_code,
                     level=ErrorLevel[err.level],
-                    response_body=dict(msg=err.msg),
+                    response_body={"msg": err.msg},
                 )
             if isinstance(err, web.HTTPException):
                 return ErrorData(

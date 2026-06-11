@@ -75,15 +75,15 @@ def expected_settings(request):
     indirect=True,
 )
 def test_config_loading(expected_settings):
-    env = dict(
-        CONFIG_PATH=TEST_CONFIG_PATH,
-        EXT_QUERY_EXECUTER_SECRET_KEY="123",
-        DL_CRY_ACTUAL_KEY_ID="1",
-        DL_CRY_FALLBACK_KEY_ID="0",
-        DL_CRY_KEY_VAL_ID_0="asdasd",
-        DL_CRY_KEY_VAL_ID_1="asd",
-        US_HOST=US_HOST,
-        US_MASTER_TOKEN=US_MASTER_TOKEN,
-    )
+    env = {
+        "CONFIG_PATH": TEST_CONFIG_PATH,
+        "EXT_QUERY_EXECUTER_SECRET_KEY": "123",
+        "DL_CRY_ACTUAL_KEY_ID": "1",
+        "DL_CRY_FALLBACK_KEY_ID": "0",
+        "DL_CRY_KEY_VAL_ID_0": "asdasd",
+        "DL_CRY_KEY_VAL_ID_1": "asd",
+        "US_HOST": US_HOST,
+        "US_MASTER_TOKEN": US_MASTER_TOKEN,
+    }
     settings = load_settings_from_env_with_fallback(settings_type=expected_settings.__class__, env=env)
     assert settings == expected_settings

@@ -59,7 +59,7 @@ class AmmField:
     common_props: CommonAttributeProps = attr.ib()
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
-        ret: dict[str, Any] = dict(nullable=self.common_props.allow_none)
+        ret: dict[str, Any] = {"nullable": self.common_props.allow_none}
         if self.common_props.load_only:
             ret["writeOnly"] = True
         return ret
@@ -91,7 +91,7 @@ class AmmEnumField(AmmScalarField):
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
         return dict(
             **super().to_openapi_dict(ref_resolver, is_root_prop=is_root_prop),
-            enum=list(sorted(self.values)),
+            enum=sorted(self.values),
         )
 
 
@@ -111,7 +111,7 @@ class AmmListField(AmmField):
     item: "AmmField" = attr.ib()
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
-        return dict(type="array", items=self.item.to_openapi_dict(ref_resolver, is_root_prop=False))
+        return {"type": "array", "items": self.item.to_openapi_dict(ref_resolver, is_root_prop=False)}
 
 
 @attr.s()
@@ -119,7 +119,7 @@ class AmmStringMappingField(AmmField):
     value: "AmmField" = attr.ib()
 
     def to_openapi_dict(self, ref_resolver: AmmSchemaRegistry, *, is_root_prop: bool) -> dict[str, Any]:
-        return dict(type="object", additionalProperties=self.value.to_openapi_dict(ref_resolver, is_root_prop=False))
+        return {"type": "object", "additionalProperties": self.value.to_openapi_dict(ref_resolver, is_root_prop=False)}
 
 
 @attr.s()

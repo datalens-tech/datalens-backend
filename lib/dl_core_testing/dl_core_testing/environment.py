@@ -73,14 +73,14 @@ def make_docker_cli(timeout: int = 300) -> DockerClient:
 
 def restart_container(container_name: str) -> None:
     docker_cli = make_docker_cli()
-    container = docker_cli.containers.list(filters=dict(name=container_name), all=True)[0]
+    container = docker_cli.containers.list(filters={"name": container_name}, all=True)[0]
     container.restart()
 
 
 def run_cmd_in_containers_by_label(label: str, cmd: list[str]) -> None:
     docker_cli = make_docker_cli()
     containers = docker_cli.containers.list(
-        filters=dict(label=[f"datalens.ci.service={label}"]),
+        filters={"label": [f"datalens.ci.service={label}"]},
     )
     for container in containers:
         LOGGER.debug(f"Running command {cmd} in container {container.name}")
@@ -90,12 +90,12 @@ def run_cmd_in_containers_by_label(label: str, cmd: list[str]) -> None:
 def restart_container_by_label(label: str, compose_project: str) -> None:
     docker_cli = make_docker_cli()
     container = docker_cli.containers.list(
-        filters=dict(
-            label=[
+        filters={
+            "label": [
                 f"datalens.ci.service={label}",
                 f"com.docker.compose.project={compose_project}",
             ]
-        ),
+        },
         all=True,
     )[0]
     container.restart()

@@ -130,7 +130,7 @@ class DefaultSyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
         # at the moment, checks that sample table is listed among the others
 
         tables = [sample_table]
-        expected_table_names = set(table.name for table in tables)
+        expected_table_names = {table.name for table in tables}
 
         actual_tables = sync_connection_executor.get_tables(
             SchemaIdent(

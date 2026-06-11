@@ -188,7 +188,7 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
         offset: int | None = None,
         db_name: str | None = None,
     ) -> list[dict]:
-        return [dict(db_name=item.name) for item in MetrikaApiCounterSource]
+        return [{"db_name": item.name} for item in MetrikaApiCounterSource]
 
     def get_data_source_templates(
         self,
@@ -239,7 +239,7 @@ class AppMetricaApiConnection(MetrikaApiConnection):
         offset: int | None = None,
         db_name: str | None = None,
     ) -> list[dict]:
-        return [dict(db_name=item.name) for item in AppMetricaFieldsNamespaces]
+        return [{"db_name": item.name} for item in AppMetricaFieldsNamespaces]
 
     @property
     def allow_public_usage(self) -> bool:

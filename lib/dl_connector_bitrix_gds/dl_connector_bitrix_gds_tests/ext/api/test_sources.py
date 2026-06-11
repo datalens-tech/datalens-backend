@@ -37,14 +37,14 @@ class BitrixSourcesTestBase(DatasetTestBase, DataApiTestBase, metaclass=abc.ABCM
             if not self.do_check_source(source):
                 continue
 
-            dataset_params = dict(
-                source_type=SOURCE_TYPE_BITRIX_GDS.name,
-                title=source["title"],
-                parameters=dict(
-                    db_name=DB_NAME,
-                    table_name=source["title"],
-                ),
-            )
+            dataset_params = {
+                "source_type": SOURCE_TYPE_BITRIX_GDS.name,
+                "title": source["title"],
+                "parameters": {
+                    "db_name": DB_NAME,
+                    "table_name": source["title"],
+                },
+            }
             ds = self.make_basic_dataset(
                 control_api=control_api,
                 connection_id=saved_connection_id,

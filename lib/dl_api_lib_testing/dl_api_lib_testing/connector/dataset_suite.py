@@ -128,11 +128,11 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         saved_dataset: Dataset,
         export_import_headers: dict[str, str],
     ) -> None:
-        export_data: dict = dict()
+        export_data: dict = {}
         export_resp = control_api.export_dataset(dataset=saved_dataset, data=export_data, headers=export_import_headers)
         assert export_resp.status_code == 400, export_resp.json
 
-        import_data: dict = dict()
+        import_data: dict = {}
         import_resp = control_api.import_dataset(data=import_data, headers=export_import_headers)
         assert import_resp.status_code == 400, import_resp.json
 

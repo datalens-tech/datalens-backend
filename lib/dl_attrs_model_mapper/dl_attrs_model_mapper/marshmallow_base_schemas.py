@@ -52,7 +52,7 @@ class BaseSchema[TARGET_OBJECT_BASE_TV](marshmallow.Schema):
         # If Meta.ordered == False MA does not respect keys order at all
         # But ordered dict will break some contracts
         # So we use that in Py>3.7 any dict is ordered to do not break contracts
-        ordered_data = {k: v for k, v in data.items()} if isinstance(data, collections.OrderedDict) else data
+        ordered_data = dict(data.items()) if isinstance(data, collections.OrderedDict) else data
 
         if len(self._fields_to_skip_on_none):
             ordered_data = {
@@ -93,7 +93,7 @@ class BaseOneOfSchema(OneOfSchema):
     _map_cls_type_discriminator: ClassVar[dict[type, str]] = {}
 
     @classmethod
-    def register_type(cls, schema: type[BaseSchema], discriminator: str, aliases: tuple[str, ...] = tuple()) -> None:
+    def register_type(cls, schema: type[BaseSchema], discriminator: str, aliases: tuple[str, ...] = ()) -> None:
         cls._map_cls_type_discriminator[schema.target_cls] = discriminator
         cls.type_schemas[discriminator] = schema
         for alias in aliases:

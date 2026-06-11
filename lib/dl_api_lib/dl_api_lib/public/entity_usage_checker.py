@@ -71,16 +71,16 @@ class PublicEnvEntityUsageChecker(EntityUsageChecker):
                     self.ensure_data_connection_can_be_used(rci, conn)
                 except EntityUsageNotAllowed as conn_not_allowed_exc:
                     assert conn.uuid
-                    conn_validation_exc_map[conn.uuid] = dict(
-                        exc=str(conn_not_allowed_exc),
-                        conn_type=conn.conn_type.value,
-                    )
+                    conn_validation_exc_map[conn.uuid] = {
+                        "exc": str(conn_not_allowed_exc),
+                        "conn_type": conn.conn_type.value,
+                    }
 
             if len(conn_validation_exc_map) == 0:
                 LOGGER.info("All connections are allowed to be used in public env")
                 return
-            nonpublic_conn_ids = list()
-            nonpublic_conn_types = list()
+            nonpublic_conn_ids = []
+            nonpublic_conn_types = []
 
             for conn_id, nonpublic_conn in conn_validation_exc_map.items():
                 conn_type, exc = nonpublic_conn["conn_type"], nonpublic_conn["exc"]

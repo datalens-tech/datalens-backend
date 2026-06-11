@@ -197,11 +197,11 @@ class BaseTableTestSourceTemplate(BaseTestSourceTemplate):
 
     @pytest.fixture(name="datasource_parameters")
     def fixture_datasource_parameters(self) -> dict[str, str]:
-        return dict(table_name="{{table_name}}")
+        return {"table_name": "{{table_name}}"}
 
     @pytest.fixture(name="invalid_datasource_parameters")
     def fixture_invalid_datasource_parameters(self) -> dict[str, str]:
-        return dict(table_name="{{invalid_parameter_name}}")
+        return {"table_name": "{{invalid_parameter_name}}"}
 
 
 class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
@@ -209,11 +209,11 @@ class BaseSubselectTestSourceTemplate(BaseTableTestSourceTemplate):
 
     @pytest.fixture(name="datasource_parameters")
     def fixture_datasource_parameters(self) -> dict[str, str]:
-        return dict(subsql="SELECT * FROM {{table_name}}")
+        return {"subsql": "SELECT * FROM {{table_name}}"}
 
     @pytest.fixture(name="invalid_datasource_parameters")
     def fixture_invalid_datasource_parameters(self) -> dict[str, str]:
-        return dict(subsql="SELECT * FROM {{invalid_parameter_name}}")
+        return {"subsql": "SELECT * FROM {{invalid_parameter_name}}"}
 
 
 class BaseTestControlApiSourceTemplate(BaseTestSourceTemplate):

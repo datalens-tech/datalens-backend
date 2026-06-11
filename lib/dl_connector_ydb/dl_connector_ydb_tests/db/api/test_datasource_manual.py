@@ -24,15 +24,15 @@ class TestDatasourceManualTable(
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(table_name=sample_table.name)
+        return {"table_name": sample_table.name}
 
     @pytest.fixture(name="missing_table_parameters")
     def fixture_missing_table_parameters(self, sample_table: DbTable) -> dict:
-        return dict(table_name="table_that_does_not_exist")
+        return {"table_name": "table_that_does_not_exist"}
 
     @pytest.fixture(name="templated_table_parameters")
     def fixture_templated_table_parameters(self, sample_table: DbTable) -> dict:
-        return dict(table_name="{{table_name}}")
+        return {"table_name": "{{table_name}}"}
 
     @pytest.mark.skip(reason=_YDB_MANUAL_VALIDATES_TABLE)
     def test_manual_true_preserves_valid_for_nonexistent_table(self, *args, **kwargs) -> None: ...
@@ -50,7 +50,7 @@ class TestDatasourceManualSubselect(
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(subsql=f"select * from `{sample_table.name}`")
+        return {"subsql": f"select * from `{sample_table.name}`"}
 
 
 class TestDatasourceManualRawSqlLevelOff(
@@ -62,4 +62,4 @@ class TestDatasourceManualRawSqlLevelOff(
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(table_name=sample_table.name)
+        return {"table_name": sample_table.name}

@@ -86,8 +86,8 @@ def schematic_request(  # type: ignore  # TODO: fix
                 if url.startswith(pfx):
                     url = "https://" + url[len(pfx) :]
                 LOGGER.info("Body (piece) for %s: %s...", url, dbg_body[:1000])
-                extra = dict(
-                    request_path=request.full_path,
+                extra = {
+                    "request_path": request.full_path,
                     # Tricky point:
                     # Can either use the `dbg_body` as a string, pre-dumped
                     # into json, in which case it will be handled as a
@@ -96,8 +96,8 @@ def schematic_request(  # type: ignore  # TODO: fix
                     # dump it into json, then, in the logfeller, it will be
                     # loaded (full structure) into memory and then dumped into
                     # YSON.
-                    request_body=dbg_body,
-                )
+                    "request_body": dbg_body,
+                }
                 LOGGER.debug("Body for %s: %s...", url, dbg_body[:100], extra=extra)
                 del dbg_body_data
                 del dbg_body

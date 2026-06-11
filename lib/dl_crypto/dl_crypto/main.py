@@ -43,11 +43,11 @@ class CryptoController:
 
         encoded_plain_text = plain_text.encode()
         cypher_text = self._map_key_id_fernet_instance[key_id].encrypt(encoded_plain_text).decode()
-        return dict(
-            key_id=key_id,
-            key_kind=self.key_kind,
-            cypher_text=cypher_text,
-        )
+        return {
+            "key_id": key_id,
+            "key_kind": self.key_kind,
+            "cypher_text": cypher_text,
+        }
 
     def decrypt(self, encrypted_data: EncryptedData | None) -> str | None:
         if encrypted_data is None:

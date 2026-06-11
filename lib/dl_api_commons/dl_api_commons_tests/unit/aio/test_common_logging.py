@@ -136,7 +136,7 @@ def test_common_logging_flask(caplog: pytest.LogCaptureFixture) -> None:
 
     resp = client.get(
         request_path,
-        headers={k: v for k, v in request_headers},
+        headers=dict(request_headers),
     )
     assert resp.status_code == 200
     records = caplog.records
@@ -228,33 +228,33 @@ async def test_common_logging_aiohttp(caplog: pytest.LogCaptureFixture, aiohttp_
         (None, None),
         ({}, {}),
         (
-            dict(password="1", a=2),
-            dict(password="<hidden>", a=2),
+            {"password": "1", "a": 2},
+            {"password": "<hidden>", "a": 2},
         ),
         (
-            dict(password=1, token=False, cypher_text=5.0, a=2),
-            dict(password="<hidden>", token="<hidden>", cypher_text="<hidden>", a=2),
+            {"password": 1, "token": False, "cypher_text": 5.0, "a": 2},
+            {"password": "<hidden>", "token": "<hidden>", "cypher_text": "<hidden>", "a": 2},
         ),
         (
-            dict(a=dict(a=dict(token="", password="", cypher_text="<hidden>", sample="asdf"))),
-            dict(
-                a=dict(
-                    a=dict(
-                        token="<hidden>",
-                        password="<hidden>",
-                        cypher_text="<hidden>",
-                        sample="asdf",
-                    )
-                )
-            ),
+            {"a": {"a": {"token": "", "password": "", "cypher_text": "<hidden>", "sample": "asdf"}}},
+            {
+                "a": {
+                    "a": {
+                        "token": "<hidden>",
+                        "password": "<hidden>",
+                        "cypher_text": "<hidden>",
+                        "sample": "asdf",
+                    }
+                }
+            },
         ),
         (
-            dict(items=[dict(password="asdf"), dict(password="asdf")]),
-            dict(items=[dict(password="<hidden>"), dict(password="<hidden>")]),
+            {"items": [{"password": "asdf"}, {"password": "asdf"}]},
+            {"items": [{"password": "<hidden>"}, {"password": "<hidden>"}]},
         ),
         (
-            dict(password=["asdf", "fdsa"]),
-            dict(password=["<hidden>", "<hidden>"]),
+            {"password": ["asdf", "fdsa"]},
+            {"password": ["<hidden>", "<hidden>"]},
         ),
     ),
 )

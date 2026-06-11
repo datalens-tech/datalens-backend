@@ -189,22 +189,22 @@ class TestClickHouseSyncConnectionExecutor(
     @pytest.fixture(scope="function", params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
     def index_test_case(self, db: Db, request: pytest.FixtureRequest):
         table_name = f"idx_test_{shortuuid.uuid()}"
-        cases = dict(
-            no_idx=(
+        cases = {
+            "no_idx": (
                 f"CREATE TABLE `{table_name}` (num_1 UInt64, num_2 UInt64, txt String) ENGINE = Log",
                 [],
             ),
-            one_columns_sorting=(
+            "one_columns_sorting": (
                 f"CREATE TABLE `{table_name}` (num_1 UInt64, num_2 UInt64, txt String)"
                 f" ENGINE = MergeTree() ORDER BY (num_1)",
                 [IndexInfo(columns=("num_1",), kind=IndexKind.table_sorting)],
             ),
-            two_columns_sorting=(
+            "two_columns_sorting": (
                 f"CREATE TABLE `{table_name}` (num_1 UInt64, num_2 UInt64, txt String)"
                 f" ENGINE = MergeTree() ORDER BY (num_1, num_2)",
                 [IndexInfo(columns=("num_1", "num_2"), kind=IndexKind.table_sorting)],
             ),
-        )
+        }
         ddl, expected_indexes = cases[request.param]
         try:
             db.execute(ddl)

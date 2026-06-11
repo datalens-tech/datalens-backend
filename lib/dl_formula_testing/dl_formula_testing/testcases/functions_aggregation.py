@@ -39,7 +39,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         date_values = data_table.date_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "date_values"  [attr-defined]
 
         assert dbe.eval("AVG([date_value])", from_=data_table) == datetime.date.fromtimestamp(
-            sum(map(lambda date: utc_ts(date), date_values)) / len(date_values)
+            sum(utc_ts(date) for date in date_values) / len(date_values)
         )
 
     def test_datetime_avg_function(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
@@ -172,7 +172,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if not self.supports_top_concat:
             pytest.skip()
 
-        expected_values = set(str(val) for val in set(data_table.int_values))  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
+        expected_values = {str(val) for val in set(data_table.int_values)}  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
         res = dbe.eval("TOP_CONCAT([int_value], 3)", from_=data_table)
         assert not set(res.split(", ")) - expected_values, "should be a subset"
         res = dbe.eval("TOP_CONCAT([int_value], 3, '; ')", from_=data_table)

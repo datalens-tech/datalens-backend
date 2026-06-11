@@ -109,7 +109,7 @@ class TestSslNoVerifyIgnoredWhenSettingDisabled(
             port=test_config.CoreSslConnectionSettings.PORT,
             username=test_config.CoreSslConnectionSettings.USERNAME,
             password=test_config.CoreSslConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
             secure=True,
             ssl_ca_verify=False,  # stored, but must be ignored because ALLOW_SSL_CA_VERIFY_OPTION=False
         )

@@ -852,7 +852,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
             formula_split_masks=tuple(base_formula_split_masks),
             add_formulas=tuple(new_add_formulas),
             filter_indices=frozenset(new_filter_indices),
-            add_filters=tuple(),
+            add_filters=(),
             join_type=None,
             joining_node=None,
             is_base=True,

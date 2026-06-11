@@ -170,7 +170,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
         assert dbe.eval(
             "SUM_IF([id], [id] < 11 WITHIN [int_value])", from_=data_table, order_by=["[id]"], many=True
-        ) == ([val for val in range(1, 11)] + [val for val in range(1, 11)])
+        ) == (list(range(1, 11)) + list(range(1, 11)))
 
     def test_count_if(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         values = data_table.int_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "int_values"  [attr-defined]
@@ -192,7 +192,7 @@ class DefaultWindowFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         )
         assert dbe.eval(
             "AVG_IF([id], [id] < 11 WITHIN [int_value])", from_=data_table, order_by=["[id]"], many=True
-        ) == pytest.approx([val / 1.0 for val in range(1, 11)] + [val for val in range(1, 11)])
+        ) == pytest.approx([val / 1.0 for val in range(1, 11)] + list(range(1, 11)))
 
     def _check_rfunc(
         self, dbe: DbEvaluator, data_table: sa.Table, func_name: str, py_agg_func: Callable[[list[NUMERIC]], NUMERIC]

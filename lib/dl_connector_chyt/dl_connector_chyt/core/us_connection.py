@@ -102,11 +102,11 @@ class BaseConnectionCHYT(
         return []
 
     def get_data_source_template_templates(self, localizer: Localizer) -> list[DataSourceTemplate]:
-        common: dict[str, Any] = dict(
-            group=[],
-            connection_id=self.uuid,
-            parameters={},
-        )
+        common: dict[str, Any] = {
+            "group": [],
+            "connection_id": self.uuid,
+            "parameters": {},
+        }
         return [
             make_table_datasource_template(
                 connection_id=self.uuid,  # type: ignore

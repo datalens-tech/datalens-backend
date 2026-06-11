@@ -78,7 +78,7 @@ class DatasetApiV1SerializationAdapter(BaseApiV1SerializationAdapter):
             obligatory_filters=[
                 ObligatoryFilterSchema().load(filter_info) for filter_info in body["obligatory_filters"]
             ],
-            annotation=dict(description=body["description"]),
+            annotation={"description": body["description"]},
             extract=ExtractPropertiesSchema().load(body.get("extract", {})),
             cache_invalidation_source=CacheInvalidationSourceSchema().load(body["cache_invalidation_source"]),
             query_settings=body.get("query_settings", {}),

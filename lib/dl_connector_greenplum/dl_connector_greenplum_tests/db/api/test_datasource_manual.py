@@ -20,15 +20,15 @@ class _BaseTable(dl_api_lib_testing.BaseTestDatasourceManualTable):
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name=sample_table.name)
+        return {"schema_name": sample_table.schema, "table_name": sample_table.name}
 
     @pytest.fixture(name="missing_table_parameters")
     def fixture_missing_table_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name="table_that_does_not_exist")
+        return {"schema_name": sample_table.schema, "table_name": "table_that_does_not_exist"}
 
     @pytest.fixture(name="templated_table_parameters")
     def fixture_templated_table_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name="{{table_name}}")
+        return {"schema_name": sample_table.schema, "table_name": "{{table_name}}"}
 
 
 class _BaseSubselect(dl_api_lib_testing.BaseTestDatasourceManualSubselect):
@@ -37,7 +37,7 @@ class _BaseSubselect(dl_api_lib_testing.BaseTestDatasourceManualSubselect):
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(subsql=f'select * from "{sample_table.name}"')
+        return {"subsql": f'select * from "{sample_table.name}"'}
 
 
 class _BaseRawSqlLevelOff(dl_api_lib_testing.BaseTestDatasourceManualRawSqlLevelOff):
@@ -46,7 +46,7 @@ class _BaseRawSqlLevelOff(dl_api_lib_testing.BaseTestDatasourceManualRawSqlLevel
 
     @pytest.fixture(name="parameters")
     def fixture_parameters(self, sample_table: DbTable) -> dict:
-        return dict(schema_name=sample_table.schema, table_name=sample_table.name)
+        return {"schema_name": sample_table.schema, "table_name": sample_table.name}
 
 
 class TestDatasourceManualTableGP6(_BaseTable, GP6DatasetTestBase): ...

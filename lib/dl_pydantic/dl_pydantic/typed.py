@@ -41,8 +41,8 @@ def _merge_dict_keys(data: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(target, dict) or not isinstance(source, dict):
             raise ValueError("Can't merge non-dict")
 
-        target_keys = {key for key in target}
-        source_keys = {key for key in source}
+        target_keys = set(target)
+        source_keys = set(source)
 
         if target_keys & source_keys:
             raise ValueError(f"Can't merge duplicated keys: {target_keys & source_keys}")

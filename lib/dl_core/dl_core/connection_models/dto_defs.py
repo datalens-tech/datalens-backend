@@ -18,9 +18,9 @@ class ConnDTO:
     conn_id: str | None = attr.ib(kw_only=True)
 
     def conn_reporting_data(self) -> dict:
-        return dict(
-            connection_id=self.conn_id,
-        )
+        return {
+            "connection_id": self.conn_id,
+        }
 
     def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
@@ -43,6 +43,6 @@ class DefaultSQLDTO(ConnDTO):  # noqa
         return list(self.multihosts) if self.multihosts else [self.host] if self.host else []
 
     def conn_reporting_data(self) -> dict:
-        return super().conn_reporting_data() | dict(
-            host=self.host,
-        )
+        return super().conn_reporting_data() | {
+            "host": self.host,
+        }

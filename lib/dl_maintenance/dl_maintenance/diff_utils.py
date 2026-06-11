@@ -172,15 +172,15 @@ def get_diff_text(  # type: ignore  # TODO: fix
         return None
 
     us_resp = entry._us_resp
-    value_a = dict(
-        data=dict(us_resp["data"]),  # type: ignore  # TODO: fix
-        unversioned_data=dict(us_resp.get("unversionedData") or {}),  # type: ignore  # TODO: fix
-        meta=us_resp["meta"],  # type: ignore  # TODO: fix
-    )
-    value_b = dict(
-        data=dict(us_manager.dump_data(entry)),
-        unversioned_data=dict(getattr(entry, "unversioned_data", {})),
-        meta=dict(entry.meta),
-    )
+    value_a = {
+        "data": dict(us_resp["data"]),  # type: ignore  # TODO: fix
+        "unversioned_data": dict(us_resp.get("unversionedData") or {}),  # type: ignore  # TODO: fix
+        "meta": us_resp["meta"],  # type: ignore  # TODO: fix
+    }
+    value_b = {
+        "data": dict(us_manager.dump_data(entry)),
+        "unversioned_data": dict(getattr(entry, "unversioned_data", {})),
+        "meta": dict(entry.meta),
+    }
 
     return make_diff(value_a=value_a, value_b=value_b, unified_n=unified_n, dumper=dumper, colorize=colorize)

@@ -50,11 +50,11 @@ class DefaultDbDatasetSourceGenerator(DatasetSourceGenerator):
     connection: ConnectionBase = attr.ib(kw_only=True)
 
     def _get_table_source_params(self, db_table: DbTable) -> dict:
-        return dict(
-            db_name=db_table.db.name,
-            schema_name=db_table.schema,
-            table_name=db_table.name,
-        )
+        return {
+            "db_name": db_table.db.name,
+            "schema_name": db_table.schema,
+            "table_name": db_table.name,
+        }
 
     def generate_source_params(self) -> DataSourceCreationSpec:
         db_table = make_table(self.db)

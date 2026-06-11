@@ -218,7 +218,7 @@ class FileUploaderClient(BIAioHTTPClient):
 
     async def cleanup_tenant(self, tenant_id: str) -> None:
         path = "api/v2/cleanup"
-        json_data = CleanupApiSchema().dump(dict(tenant_id=tenant_id))
+        json_data = CleanupApiSchema().dump({"tenant_id": tenant_id})
         try:
             async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5):
                 LOGGER.info(f"Scheduled cleanup for tenant id {tenant_id}")
@@ -238,13 +238,13 @@ class FileUploaderClient(BIAioHTTPClient):
     ) -> None:
         path = "/api/v2/update_connection_data_internal"
         json_data = UpdateConnectionDataRequestSchema().dump(
-            dict(
-                type=file_type,
-                connection_id=conn_id,
-                save=True,
-                sources=sources,
-                authorized=authorized,
-            )
+            {
+                "type": file_type,
+                "connection_id": conn_id,
+                "save": True,
+                "sources": sources,
+                "authorized": authorized,
+            }
         )
         try:
             async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5):

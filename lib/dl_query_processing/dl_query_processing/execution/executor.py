@@ -302,7 +302,7 @@ class QueryExecutor:
         subquery_limit: int | None,
     ) -> tuple[dict[AvatarId, AbstractStream], dict[AvatarId, str]]:
         base_avatar_ids = translated_multi_query.get_base_root_from_ids()
-        required_avatar_ids: list[str] = [from_id for from_id in translated_multi_query.get_base_froms()]
+        required_avatar_ids: list[str] = list(translated_multi_query.get_base_froms())
         required_avatar_ids = sorted(set(required_avatar_ids + list(base_avatar_ids)))
 
         prep_component_manager = DefaultPreparedComponentManager(
@@ -427,7 +427,7 @@ class QueryExecutor:
                 row_count_hard_limit=row_count_hard_limit,
             )
 
-        streams = [stream for stream in streams_by_result_id.values()]
+        streams = list(streams_by_result_id.values())
         assert len(streams) == 1, f"There must be exactly one output data stream, got {len(streams)}"
         one_stream = streams[0]
 
@@ -439,8 +439,8 @@ class QueryExecutor:
             meta=ExecutedQueryMetaInfo.from_trans_meta(
                 trans_meta=top_query.meta,
                 debug_query=query_for_response,
-                target_connection_ids=set(
+                target_connection_ids={
                     target_conn.uuid for target_conn in exec_info.target_connections if target_conn.uuid is not None
-                ),
+                },
             ),
         )

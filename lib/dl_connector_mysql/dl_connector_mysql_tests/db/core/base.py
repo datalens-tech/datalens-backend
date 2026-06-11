@@ -38,7 +38,7 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
             port=test_config.CoreConnectionSettings.PORT,
             username=test_config.CoreConnectionSettings.USERNAME,
             password=test_config.CoreConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
         )
 
 
@@ -73,7 +73,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
             port=test_config.CoreSslConnectionSettings.PORT,
             username=test_config.CoreSslConnectionSettings.USERNAME,
             password=test_config.CoreSslConnectionSettings.PASSWORD,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
             ssl_enable=True,
             ssl_ca=ssl_ca,
         )
@@ -82,10 +82,10 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
 class BaseRogueMySQLTestClass(BaseMySQLTestClass):
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
-        return dict(
-            db_name=test_config.CoreRogueConnectionSettings.DB_NAME,
-            host=test_config.CoreRogueConnectionSettings.HOST,
-            port=test_config.CoreRogueConnectionSettings.PORT,
-            username=test_config.CoreRogueConnectionSettings.USERNAME,
-            password=test_config.CoreRogueConnectionSettings.PASSWORD,
-        )
+        return {
+            "db_name": test_config.CoreRogueConnectionSettings.DB_NAME,
+            "host": test_config.CoreRogueConnectionSettings.HOST,
+            "port": test_config.CoreRogueConnectionSettings.PORT,
+            "username": test_config.CoreRogueConnectionSettings.USERNAME,
+            "password": test_config.CoreRogueConnectionSettings.PASSWORD,
+        }

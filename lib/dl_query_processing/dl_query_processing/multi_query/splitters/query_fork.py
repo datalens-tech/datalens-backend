@@ -411,7 +411,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                         for mutation in qfork_node.bfb_filter_mutations.mutations
                     )
                 else:
-                    bfb_filter_mutations = tuple()
+                    bfb_filter_mutations = ()
 
                 qfork_info = QueryForkInfo(
                     subquery_type=subquery_type,

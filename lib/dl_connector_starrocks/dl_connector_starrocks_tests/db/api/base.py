@@ -39,7 +39,7 @@ class StarRocksConnectionTestBase(BaseStarRocksTestClass, ConnectionTestBase):
             username=CoreConnectionSettings.USERNAME,
             password=CoreConnectionSettings.PASSWORD,
             listing_sources=CoreConnectionSettings.LISTING_SOURCES.name,
-            **(dict(raw_sql_level=self.raw_sql_level.value) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level.value} if self.raw_sql_level is not None else {}),
         )
 
 
@@ -60,14 +60,14 @@ class StarRocksDatasetTestBase(StarRocksConnectionTestBase, DatasetTestBase):
 
     @pytest.fixture(scope="class")
     def dataset_params(self, sample_table: DbTable) -> dict:
-        return dict(
-            source_type=SOURCE_TYPE_STARROCKS_TABLE.name,
-            parameters=dict(
-                db_name=CoreConnectionSettings.CATALOG,
-                schema_name=sample_table.db.name,
-                table_name=sample_table.name,
-            ),
-        )
+        return {
+            "source_type": SOURCE_TYPE_STARROCKS_TABLE.name,
+            "parameters": {
+                "db_name": CoreConnectionSettings.CATALOG,
+                "schema_name": sample_table.db.name,
+                "table_name": sample_table.name,
+            },
+        }
 
 
 class StarRocksDataApiTestBase(StarRocksDatasetTestBase, StandardizedDataApiTestBase):

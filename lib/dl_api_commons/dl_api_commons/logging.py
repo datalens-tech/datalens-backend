@@ -167,12 +167,12 @@ class RequestLogHelper:
             method.upper(),
             full_path,
             status_code,
-            extra=dict(
-                event_code="http_response",
-                request_method=method,
-                request_path=full_path,
-                response_status=status_code,
-            ),
+            extra={
+                "event_code": "http_response",
+                "request_method": method,
+                "request_path": full_path,
+                "response_status": status_code,
+            },
         )
 
     # TODO FIX: Make more strict typing for headers
@@ -238,20 +238,20 @@ class RequestLogHelper:
         if response_timing is not None:
             response_timing = round(response_timing, 4)
 
-        extra = dict(
-            event_code="http_response",
-            request_method=request_method,
-            request_path=request_path,
-            request_headers=request_headers,
-            user_id=user_id,
-            username=username,
-            response_status=response_status,
-            response_headers=response_headers,
-            response_timing=response_timing,
+        extra = {
+            "event_code": "http_response",
+            "request_method": request_method,
+            "request_path": request_path,
+            "request_headers": request_headers,
+            "user_id": user_id,
+            "username": username,
+            "response_status": response_status,
+            "response_headers": response_headers,
+            "response_timing": response_timing,
             # Other possibilities:
             # response_body_info=dict(body_piece=body[:max_size], body_size=body_size, ...),
             # response_details=dict(...),
-        )
+        }
         if request_id is not None:
             extra["request_id"] = request_id
         if endpoint_code is not None:
@@ -314,7 +314,7 @@ def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwarg
             LOGGER.warning(
                 "Can not found extra key during message formatting: %s",
                 extra_name,
-                extra=extra_with_evt_code("logging_missing_extra_in_formatting", dict(extra_name=extra_name)),
+                extra=extra_with_evt_code("logging_missing_extra_in_formatting", {"extra_name": extra_name}),
             )
 
     return separator.join(parts)

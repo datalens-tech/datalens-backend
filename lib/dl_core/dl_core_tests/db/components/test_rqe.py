@@ -47,7 +47,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
             pytest.skip("Find a way to check logs of subprocess")
 
         caplog.set_level("INFO")
-        outer_logging_ctx = dict(some_str_key="some_val", some_int_key=123)
+        outer_logging_ctx = {"some_str_key": "some_val", "some_int_key": 123}
 
         with dl_logging.LogContext(context=outer_logging_ctx):
             result = await self.execute_request(remote_adapter, query="select 1")

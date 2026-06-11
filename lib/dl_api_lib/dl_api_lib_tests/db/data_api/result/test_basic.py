@@ -63,7 +63,7 @@ class TestResult(DefaultApiTestBase):
 
     def test_result_with_duplicated_fields(self, saved_dataset, data_api):
         ds = saved_dataset
-        result_resp = data_api.get_result(dataset=ds, fields=[field for field in ds.result_schema] * 2)
+        result_resp = data_api.get_result(dataset=ds, fields=list(ds.result_schema) * 2)
         assert result_resp.status_code == 200
         assert get_data_rows(result_resp)
 

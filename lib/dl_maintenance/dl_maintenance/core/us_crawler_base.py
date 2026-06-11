@@ -171,11 +171,11 @@ class USEntryCrawler:
             raise ValueError("Attempt to consequent call of USEntryCrawler.run()")
         self._run_fired = True
 
-        crawler_run_extra: dict[str, Any] = dict(
-            us_entry_crawler_name=self.type_name,
-            us_entry_crawler_dry_run=self._dry_run,
-            us_entry_crawler_run_id=self._run_id,
-        )
+        crawler_run_extra: dict[str, Any] = {
+            "us_entry_crawler_name": self.type_name,
+            "us_entry_crawler_dry_run": self._dry_run,
+            "us_entry_crawler_run_id": self._run_id,
+        }
         LOGGER.info(
             "Starting US entry crawler run: %s",
             format_dict(

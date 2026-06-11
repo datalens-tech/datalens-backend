@@ -87,7 +87,7 @@ def dbe_for(dialect: DialectCombo, wait_for_up_timeout=180.0, wait_for_up_pause=
 
 @pytest.fixture(
     scope="session",
-    params=[dialect for dialect in sorted(DB_CONFIGURATIONS)],
+    params=sorted(DB_CONFIGURATIONS),
     ids=[d.common_name_and_version for d in sorted(DB_CONFIGURATIONS)],
 )
 def any_dialect(request) -> DialectCombo:

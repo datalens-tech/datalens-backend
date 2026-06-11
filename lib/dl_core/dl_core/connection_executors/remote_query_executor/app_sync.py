@@ -264,7 +264,7 @@ class ActionHandlingView(flask.views.View):
 
 
 def ping_view() -> flask.Response:
-    return flask.jsonify(dict(result="PONG"))
+    return flask.jsonify({"result": "PONG"})
 
 
 def hook_init_logging(

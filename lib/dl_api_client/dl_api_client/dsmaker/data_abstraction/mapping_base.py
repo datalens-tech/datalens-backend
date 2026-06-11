@@ -28,7 +28,7 @@ class DataCellMapper1D(abc.ABC):
         raise NotImplementedError
 
     def as_dict(self) -> dict[DataCellTuple, DataItem]:
-        return {key: value for key, value in self.items()}
+        return dict(self.items())
 
     @abc.abstractmethod
     def get_value_count(self) -> int:
@@ -134,7 +134,7 @@ class DataCellMapper2D(abc.ABC):
         raise NotImplementedError
 
     def as_dict(self) -> dict[tuple[DataCellTuple, DataCellTuple], DataItem]:
-        return {key: value for key, value in self.items()}
+        return dict(self.items())
 
     def _make_1d_coords(self, orig_dim_coords: tuple[DataCellTuple, DataCellTuple]) -> DataCellTuple:
         """

@@ -26,7 +26,7 @@ class TestYDBConnection(YDBConnectionTestBase, DefaultConnectorConnectionTestSui
         assert us_master_token
 
         if bi_headers is None:
-            bi_headers = dict()
+            bi_headers = {}
 
         bi_headers[DLHeadersCommon.US_MASTER_TOKEN.value] = us_master_token
 

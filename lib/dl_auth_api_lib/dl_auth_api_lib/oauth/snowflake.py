@@ -42,10 +42,10 @@ class SnowflakeOAuth:
                     resp.raise_for_status()
                 if resp.content_type != "application/json":
                     raise exc.UnexpectedResponseError(
-                        details=dict(
-                            response=await resp.text(),
-                            status=resp.status,
-                        ),
+                        details={
+                            "response": await resp.text(),
+                            "status": resp.status,
+                        },
                     )
                 token_response = await resp.json()
         return token_response

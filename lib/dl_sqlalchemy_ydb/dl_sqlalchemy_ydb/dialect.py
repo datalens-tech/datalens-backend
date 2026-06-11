@@ -503,7 +503,7 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
             *args,
             **{
                 **kwargs,
-                **dict(_add_declare_for_yql_stmt_vars=True),
+                **{"_add_declare_for_yql_stmt_vars": True},
             },
         )
 

@@ -38,9 +38,9 @@ class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):
 
     @pytest.fixture(scope="class")
     def engine_params(self, settings: Settings) -> dict:
-        return dict(
-            credentials_base64=settings.BIGQUERY_CREDS,
-        )
+        return {
+            "credentials_base64": settings.BIGQUERY_CREDS,
+        }
 
     @pytest.fixture(scope="class")
     def engine_config(self, db_url: str, engine_params: dict, settings: Settings) -> BigQueryDbEngineConfig:
@@ -55,7 +55,7 @@ class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):
         return dict(
             project_id=settings.BIGQUERY_CONFIG["project_id"],
             credentials=settings.BIGQUERY_CREDS,
-            **(dict(raw_sql_level=self.raw_sql_level) if self.raw_sql_level is not None else {}),
+            **({"raw_sql_level": self.raw_sql_level} if self.raw_sql_level is not None else {}),
         )
 
     @pytest.fixture(scope="class")

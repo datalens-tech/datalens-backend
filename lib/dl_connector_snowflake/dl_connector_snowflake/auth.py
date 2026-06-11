@@ -59,12 +59,12 @@ class SFAuthProvider:
     def prepare_access_token_request_kwargs(self) -> AccessTokenRequestArgs:
         return AccessTokenRequestArgs(
             endpoint=f"https://{self.account_name}.{self._SNOWFLAKE_DOMAIN}/oauth/token-request",
-            params=dict(
-                refresh_token=self.refresh_token,
-                grant_type="refresh_token",
+            params={
+                "refresh_token": self.refresh_token,
+                "grant_type": "refresh_token",
                 # snowflake documentation mentions redirect uri, but works fine as is
                 # redirect_uri="http://localhost:8000",
-            ),
+            },
             basic_auth=(self.client_id, parse.quote(self.client_secret)),
         )
 

@@ -60,41 +60,41 @@ def load_rls(name: str) -> list[RLSEntry]:
 
 
 RLS_CONFIG_CASES = [
-    dict(
-        name="simple",
-        config=load_rls_config("simple"),
-        config_v2=load_rls_v2_config("simple_v2.json"),
-        config_to_compare=load_rls_config("simple_to_compare"),
-        config_to_compare_v2=load_rls_config("simple_v1_from_v2"),
-        rls_entries=load_rls("simple.json"),
-        config_updated=load_rls_config("simple_updated"),
-        rls_entries_updated=load_rls("simple_updated.json"),
-    ),
-    dict(
-        name="wildcards",
-        config=load_rls_config("wildcards"),
-        config_to_compare=load_rls_config("wildcards_to_compare"),
-        rls_entries=load_rls("wildcards.json"),
-    ),
-    dict(
-        name="groups",
-        config=load_rls_config("groups"),
-        config_to_compare=load_rls_config("groups_to_compare"),
-        rls_entries=load_rls("groups.json"),
-    ),
-    dict(
-        name="missing_login",
-        config=load_rls_config("missing_login"),
-        config_to_compare=load_rls_config("missing_login_to_compare"),
-        rls_entries=load_rls("missing_login.json"),
-        config_updated=load_rls_config("missing_login_updated"),
-        rls_entries_updated=load_rls("missing_login_updated.json"),
-    ),
+    {
+        "name": "simple",
+        "config": load_rls_config("simple"),
+        "config_v2": load_rls_v2_config("simple_v2.json"),
+        "config_to_compare": load_rls_config("simple_to_compare"),
+        "config_to_compare_v2": load_rls_config("simple_v1_from_v2"),
+        "rls_entries": load_rls("simple.json"),
+        "config_updated": load_rls_config("simple_updated"),
+        "rls_entries_updated": load_rls("simple_updated.json"),
+    },
+    {
+        "name": "wildcards",
+        "config": load_rls_config("wildcards"),
+        "config_to_compare": load_rls_config("wildcards_to_compare"),
+        "rls_entries": load_rls("wildcards.json"),
+    },
+    {
+        "name": "groups",
+        "config": load_rls_config("groups"),
+        "config_to_compare": load_rls_config("groups_to_compare"),
+        "rls_entries": load_rls("groups.json"),
+    },
+    {
+        "name": "missing_login",
+        "config": load_rls_config("missing_login"),
+        "config_to_compare": load_rls_config("missing_login_to_compare"),
+        "rls_entries": load_rls("missing_login.json"),
+        "config_updated": load_rls_config("missing_login_updated"),
+        "rls_entries_updated": load_rls("missing_login_updated.json"),
+    },
 ]
 
 
 def config_to_comparable(conf: str) -> set[tuple[str, str]]:
-    return set((line.split(": ")[0], ",".join(sorted(line.split(": ")[1]))) for line in conf.strip().split("\n"))
+    return {(line.split(": ")[0], ",".join(sorted(line.split(": ")[1]))) for line in conf.strip().split("\n")}
 
 
 def check_text_config_to_rls_entries(case: dict[str, Any], subject_resolver: BaseSubjectResolver) -> None:

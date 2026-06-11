@@ -293,7 +293,7 @@ def check_pivot_response(
     expected_pivot_legend_tuples: list[tuple[str, PivotRole]]
     if custom_pivot_legend_check is not None:
         # make a copy that can be appended to
-        expected_pivot_legend_tuples = [item for item in custom_pivot_legend_check]
+        expected_pivot_legend_tuples = list(custom_pivot_legend_check)
     else:
         expected_pivot_legend_tuples = [
             *[(norm_title(title), PivotRole.pivot_column) for title in columns],

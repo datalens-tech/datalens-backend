@@ -73,11 +73,11 @@ class TestTrinoSyncConnectionExecutor(
         sync_connection_executor: SyncConnExecutorBase,
         existing_table_ident: TableIdent,
     ) -> None:
-        nonexistent_table_features = dict(
-            db_name=existing_table_ident.db_name,
-            schema_name=existing_table_ident.schema_name,
-            table_name=existing_table_ident.table_name,
-        )
+        nonexistent_table_features = {
+            "db_name": existing_table_ident.db_name,
+            "schema_name": existing_table_ident.schema_name,
+            "table_name": existing_table_ident.table_name,
+        }
         nonexistent_table_features[layer] = "nonexistent_" + nonexistent_table_features[layer]
         nonexistent_table_ident = TableIdent(**nonexistent_table_features)
 

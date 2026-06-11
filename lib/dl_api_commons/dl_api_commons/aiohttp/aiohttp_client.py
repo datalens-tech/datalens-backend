@@ -138,7 +138,7 @@ class BIAioHTTPClient:
         await self.close()
 
     def url(self, path: str) -> str:
-        return "/".join(map(lambda s: s.strip("/"), (self.base_url, path)))
+        return "/".join(s.strip("/") for s in (self.base_url, path))
 
     @asynccontextmanager
     async def request(

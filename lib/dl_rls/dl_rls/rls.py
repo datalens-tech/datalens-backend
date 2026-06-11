@@ -37,7 +37,7 @@ class RLS:
 
     @property
     def fields_with_rls(self) -> list[str]:
-        return list(set(item.field_guid for item in self.items))
+        return list({item.field_guid for item in self.items})
 
     def get_entries(self, field_guid: str, user_id: str) -> list[RLSEntry]:
         return [

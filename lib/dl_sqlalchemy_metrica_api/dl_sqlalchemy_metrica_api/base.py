@@ -537,11 +537,11 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         for col in self._result_columns:
             field_name = self._labeled_columns_map.get(col[0], (col[0],))[0]
             result_cols.append(
-                dict(
-                    label=col[0],
-                    name=field_name,
-                    src_key=self.api_info.fields_by_name.get(field_name, {}).get("src_key"),
-                )
+                {
+                    "label": col[0],
+                    "name": field_name,
+                    "src_key": self.api_info.fields_by_name.get(field_name, {}).get("src_key"),
+                }
             )
         prepared_params["__RESULT_COLUMNS__"] = result_cols
         prepared_params.update(self._extra_bind_params)

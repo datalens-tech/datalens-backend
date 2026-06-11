@@ -27,16 +27,16 @@ class CacheInvalidationDataFlowBase(DefaultApiTestBase):
 
     @pytest.fixture(scope="class")
     def connection_params(self) -> dict:
-        return dict(
-            db_name=CoreConnectionSettings.DB_NAME,
-            host=CoreConnectionSettings.HOST,
-            port=CoreConnectionSettings.PORT,
-            username=CoreConnectionSettings.USERNAME,
-            password=CoreConnectionSettings.PASSWORD,
-            raw_sql_level=self.raw_sql_level.value,
-            cache_ttl_sec=86400,
-            cache_invalidation_throttling_interval_sec=600,
-        )
+        return {
+            "db_name": CoreConnectionSettings.DB_NAME,
+            "host": CoreConnectionSettings.HOST,
+            "port": CoreConnectionSettings.PORT,
+            "username": CoreConnectionSettings.USERNAME,
+            "password": CoreConnectionSettings.PASSWORD,
+            "raw_sql_level": self.raw_sql_level.value,
+            "cache_ttl_sec": 86400,
+            "cache_invalidation_throttling_interval_sec": 600,
+        }
 
 
 class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
@@ -46,10 +46,10 @@ class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
         saved_dataset: Dataset,
         data_api: SyncHttpDataApiV2,
     ) -> None:
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 'v1'",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 'v1'",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -81,10 +81,10 @@ class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
         ds = control_api.save_dataset(ds).dataset
 
         # Step 1: Set SQL invalidation
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 'v1'",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 'v1'",
+        }
         ds = control_api.update_cache_invalidation(ds, update_data).dataset
         ds = control_api.save_dataset(ds).dataset
 
@@ -119,10 +119,10 @@ class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
         data_cached = get_data_rows(response=resp_cached)
         assert data_cached == data_v1, "Cache should return same data with same invalidation payload"
         # Change invalidation payload → cache miss
-        update_data_v2 = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT 'v2'",
-        )
+        update_data_v2 = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT 'v2'",
+        }
         ds = control_api.update_cache_invalidation(ds, update_data_v2).dataset
         ds = control_api.save_dataset(ds).dataset
 
@@ -143,10 +143,10 @@ class TestCacheInvalidationSqlModeDataFlow(CacheInvalidationDataFlowBase):
         saved_dataset: Dataset,
         data_api: SyncHttpDataApiV2,
     ) -> None:
-        update_data = dict(
-            mode=CacheInvalidationMode.sql.value,
-            sql="SELECT * FROM nonexistent_table_xyz_12345",
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.sql.value,
+            "sql": "SELECT * FROM nonexistent_table_xyz_12345",
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -169,14 +169,14 @@ class TestCacheInvalidationFormulaModeDataFlow(CacheInvalidationDataFlowBase):
         saved_dataset: Dataset,
         data_api: SyncHttpDataApiV2,
     ) -> None:
-        update_data = dict(
-            mode=CacheInvalidationMode.formula.value,
-            field=dict(
-                guid="cache_inval_field",
-                title="inval_field",
-                formula="STR([category])",
-            ),
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.formula.value,
+            "field": {
+                "guid": "cache_inval_field",
+                "title": "inval_field",
+                "formula": "STR([category])",
+            },
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 
@@ -199,9 +199,9 @@ class TestCacheInvalidationModeOffDataFlow(CacheInvalidationDataFlowBase):
         data_api: SyncHttpDataApiV2,
     ) -> None:
         # Explicitly set mode=off
-        update_data = dict(
-            mode=CacheInvalidationMode.off.value,
-        )
+        update_data = {
+            "mode": CacheInvalidationMode.off.value,
+        }
         saved_dataset = control_api.update_cache_invalidation(saved_dataset, update_data).dataset
         saved_dataset = control_api.save_dataset(saved_dataset).dataset
 

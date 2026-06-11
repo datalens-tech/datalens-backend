@@ -239,7 +239,7 @@ class ConnectionsImportList(BIResource):
 
         us_manager.create(conn)
 
-        return dict(id=conn.uuid, notifications=notifications)
+        return {"id": conn.uuid, "notifications": notifications}
 
 
 @ns.route("/")
@@ -420,7 +420,7 @@ class ConnectionExportItem(BIResource):
         if conn_warnings:
             notifications.extend(conn_warnings)
 
-        return dict(connection=result, notifications=notifications)
+        return {"connection": result, "notifications": notifications}
 
 
 def _dump_source_templates(tpls: list[DataSourceTemplate] | None) -> list[dict[str, Any]] | None:

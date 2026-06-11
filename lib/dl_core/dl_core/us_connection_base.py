@@ -726,11 +726,11 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
                 break
         if with_fake_creds:
             warnings.append(
-                dict(
-                    message=localizer.translate(Translatable("notif_check-creds")),
-                    level=NotificationLevel.info,
-                    code=CODE_PREFIX + "CHECK_CREDENTIALS",
-                )
+                {
+                    "message": localizer.translate(Translatable("notif_check-creds")),
+                    "level": NotificationLevel.info,
+                    "code": CODE_PREFIX + "CHECK_CREDENTIALS",
+                }
             )
         return warnings
 
@@ -739,11 +739,11 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         warnings = []
         if self.data.get_secret_keys():
             warnings.append(
-                dict(
-                    message=localizer.translate(Translatable("notif_check-creds")),
-                    level=NotificationLevel.info,
-                    code=CODE_PREFIX + "CHECK_CREDENTIALS",
-                )
+                {
+                    "message": localizer.translate(Translatable("notif_check-creds")),
+                    "level": NotificationLevel.info,
+                    "code": CODE_PREFIX + "CHECK_CREDENTIALS",
+                }
             )
         return warnings
 
@@ -914,13 +914,13 @@ class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):
         # has db_name, so just list tables
         if not self.has_schema:
             return [
-                dict(table_name=tid.table_name) for tid in self.get_tables(conn_executor_factory=conn_executor_factory)
+                {"table_name": tid.table_name} for tid in self.get_tables(conn_executor_factory=conn_executor_factory)
             ]
 
         assert self.has_schema
         schemas = self.get_schema_names(conn_executor_factory=conn_executor_factory)
         return [
-            dict(schema_name=schema_name, table_name=tid.table_name)
+            {"schema_name": schema_name, "table_name": tid.table_name}
             for schema_name in schemas
             for tid in self.get_tables(conn_executor_factory=conn_executor_factory, schema_name=schema_name)
         ]

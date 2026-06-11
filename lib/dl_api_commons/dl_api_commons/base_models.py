@@ -31,9 +31,9 @@ class TenantDef(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
     def get_reporting_extra(self) -> dict[str, str | int | None]:
-        return dict(
-            billing_folder_id=self.get_tenant_id(),
-        )
+        return {
+            "billing_folder_id": self.get_tenant_id(),
+        }
 
 
 @attr.s(frozen=True)
@@ -164,11 +164,11 @@ class RequestContextInfo:
             self.secret_keeper.add_secrets(get_secret_strings(self.auth_data), prefix="auth_data")
 
     def get_reporting_extra(self) -> dict[str, str | int | None]:
-        reporting_extra: dict[str, str | int | None] = dict(
-            user_id=self.user_id,
-            source=self.endpoint_code,
-            username=self.user_name,
-        )
+        reporting_extra: dict[str, str | int | None] = {
+            "user_id": self.user_id,
+            "source": self.endpoint_code,
+            "username": self.user_name,
+        }
         if self.tenant is not None:
             reporting_extra.update(self.tenant.get_reporting_extra())
         return reporting_extra

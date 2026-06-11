@@ -93,7 +93,7 @@ class PingReadyView(BaseView):
         return resp.status
 
     async def get(self) -> web.Response:
-        response_details: dict[str, int | None] = dict()
+        response_details: dict[str, int | None] = {}
         required_services = self.dl_request.services_registry.get_required_services()
 
         if RequiredService.POSTGRES in required_services:

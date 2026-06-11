@@ -154,11 +154,11 @@ def logcfg_process_enable_handler(logger_name: str, handler_name: str = "stream_
 
     def logcfg_process(cfg: dict, common_handlers: list[str], **kwargs: Any) -> dict:
         if handler_name in cfg["handlers"]:
-            cfg["loggers"][logger_name] = dict(
-                handlers=[handler_name, *common_handlers],
-                propagate=False,
-                level="DEBUG",
-            )
+            cfg["loggers"][logger_name] = {
+                "handlers": [handler_name, *common_handlers],
+                "propagate": False,
+                "level": "DEBUG",
+            }
         return cfg
 
     return logcfg_process

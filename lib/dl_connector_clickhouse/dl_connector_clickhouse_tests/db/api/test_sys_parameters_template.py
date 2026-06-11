@@ -64,7 +64,7 @@ class TestSysUserIdInSourceTemplate(ClickHouseDataApiTestBase):
         ds.sources["source_1"] = DataSource(
             connection_id=saved_connection_id,
             source_type=SOURCE_TYPE_CH_SUBSELECT.name,
-            parameters=dict(subsql="SELECT '{{_sys.user_id}}' AS who"),
+            parameters={"subsql": "SELECT '{{_sys.user_id}}' AS who"},
         )
         ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
         ds = control_api.apply_updates(dataset=ds).dataset

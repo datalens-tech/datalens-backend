@@ -106,13 +106,13 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
         total_timeout = self._target_dto.total_timeout if self._target_dto.total_timeout is not None else 290
 
         return {
-            **dict(
-                protocol=self._target_dto.protocol,
-                endpoint=self._target_dto.endpoint,
-                timeout=total_timeout,
-                connect_timeout=connect_timeout,
-                stream=True,
-            ),
+            **{
+                "protocol": self._target_dto.protocol,
+                "endpoint": self._target_dto.endpoint,
+                "timeout": total_timeout,
+                "connect_timeout": connect_timeout,
+                "stream": True,
+            },
             **self._converted_headers,
         }
 
@@ -532,7 +532,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                 # (see a test in `bi-api/tests/db/result/test_error_handling.py`)
                 decoded_chunk: str | None = bytes_chunk.decode(errors="replace") if bytes_chunk is not None else None
                 raise exc.SourceProtocolError(
-                    debug_info=dict(msg="Unexpected last event", event=event, data=data, chunk=decoded_chunk),
+                    debug_info={"msg": "Unexpected last event", "event": event, "data": data, "chunk": decoded_chunk},
                     # TODO: provide the actual query
                     query="",
                     inspector_query="",
@@ -576,7 +576,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                 yield  # noqa
 
             return AsyncRawExecutionResult(
-                raw_cursor_info=dict(clickhouse_headers=ch_resp_headers),
+                raw_cursor_info={"clickhouse_headers": ch_resp_headers},
                 raw_chunk_generator=empty_chunk_gen(),
             )
 
@@ -629,21 +629,21 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             if evt_type != et.FINISHED:
                 # TODO: For user databases this should probably be passed to the user.
                 raise exc.SourceProtocolError(
-                    debug_info=dict(msg="Unexpected last event", event=evt_type, data=evt_data)
+                    debug_info={"msg": "Unexpected last event", "event": evt_type, "data": evt_data}
                 )
 
         return AsyncRawExecutionResult(
             # Reminder: this `raw_cursor_info` gets (sometimes) serialized over RQE (async-ext).
             # Primarily useful for DashSQL
-            raw_cursor_info=dict(
+            raw_cursor_info={
                 # Deprecating this in favor of `names` + `db_types`:
-                columns=[{"name": col["name"], "clickhouse_type_name": col["type"]} for col in first_evt_data],
+                "columns": [{"name": col["name"], "clickhouse_type_name": col["type"]} for col in first_evt_data],
                 # ...
-                names=[col["name"] for col in first_evt_data],
-                driver_types=[col["type"] for col in first_evt_data],
-                db_types=[self._ch_type_name_to_native_type(col["type"]) for col in first_evt_data],
-                clickhouse_headers=ch_resp_headers,
-            ),
+                "names": [col["name"] for col in first_evt_data],
+                "driver_types": [col["type"] for col in first_evt_data],
+                "db_types": [self._ch_type_name_to_native_type(col["type"]) for col in first_evt_data],
+                "clickhouse_headers": ch_resp_headers,
+            },
             # Data
             raw_chunk_generator=chunk_gen(),
         )

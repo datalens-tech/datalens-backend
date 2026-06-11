@@ -72,13 +72,13 @@ class DLArqWorker(Worker):
         if self._metrics_sender is not None:
             await self._metrics_sender.send(
                 timestamp=now_ts,
-                metrics=dict(
-                    j_complete=self.jobs_complete,
-                    j_failed=self.jobs_failed,
-                    j_retried=self.jobs_retried,
-                    j_ongoing=pending_tasks,
-                    queued=queued,
-                ),
+                metrics={
+                    "j_complete": self.jobs_complete,
+                    "j_failed": self.jobs_failed,
+                    "j_retried": self.jobs_retried,
+                    "j_ongoing": pending_tasks,
+                    "queued": queued,
+                },
             )
 
 

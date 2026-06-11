@@ -109,14 +109,14 @@ class TestStarRocksSslOnUnsupportedVersion(BaseStarRocksTestClass):
 
     @pytest.fixture(scope="function")
     def connection_creation_params(self) -> dict:
-        return dict(
-            host=test_config.CoreConnectionSettings.HOST,
-            port=test_config.CoreConnectionSettings.PORT,
-            username=test_config.CoreConnectionSettings.USERNAME,
-            password=test_config.CoreConnectionSettings.PASSWORD,
-            listing_sources=test_config.CoreConnectionSettings.LISTING_SOURCES,
-            ssl_enable=True,
-        )
+        return {
+            "host": test_config.CoreConnectionSettings.HOST,
+            "port": test_config.CoreConnectionSettings.PORT,
+            "username": test_config.CoreConnectionSettings.USERNAME,
+            "password": test_config.CoreConnectionSettings.PASSWORD,
+            "listing_sources": test_config.CoreConnectionSettings.LISTING_SOURCES,
+            "ssl_enable": True,
+        }
 
     def test_ssl_on_unsupported_version_fails(
         self,

@@ -15,7 +15,7 @@ def fixture_request_patterns() -> list[dl_rate_limiter.RequestPattern]:
             methods=frozenset(["GET"]),
             event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                 key="more_specifically_limited",
-                headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader("X-Test-Header")]),
+                headers=(dl_rate_limiter.RequestEventKeyTemplateHeader("X-Test-Header"),),
             ),
             limit=1,
             window_ms=10000,
@@ -25,7 +25,7 @@ def fixture_request_patterns() -> list[dl_rate_limiter.RequestPattern]:
             methods=frozenset(["GET"]),
             event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                 key="limited",
-                headers=tuple([dl_rate_limiter.RequestEventKeyTemplateHeader("X-Test-Header")]),
+                headers=(dl_rate_limiter.RequestEventKeyTemplateHeader("X-Test-Header"),),
             ),
             limit=5,
             window_ms=10000,
@@ -35,8 +35,8 @@ def fixture_request_patterns() -> list[dl_rate_limiter.RequestPattern]:
             methods=frozenset(["GET"]),
             event_key_template=dl_rate_limiter.RequestEventKeyTemplate(
                 key="regex_limited",
-                headers=tuple(
-                    [dl_rate_limiter.RequestEventKeyTemplateHeader("X-Test-Header", re.compile(r"(?P<result>.{3})"))]
+                headers=(
+                    dl_rate_limiter.RequestEventKeyTemplateHeader("X-Test-Header", re.compile(r"(?P<result>.{3})")),
                 ),
             ),
             limit=5,

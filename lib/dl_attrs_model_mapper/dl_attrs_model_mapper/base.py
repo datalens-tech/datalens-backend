@@ -180,7 +180,7 @@ class ModelDescriptor(BaseClassDescriptor):
                 raise AssertionError(f"Unknown type of type discriminator for {cls}: {type_discriminator_candidate}")
 
     def set_effective_type_discriminator_aliases(self, cls: type) -> None:
-        ret: list[str] = list()
+        ret: list[str] = []
         children_type_discriminator_aliases_attr_name = self.resolve_type_discriminator_aliases_attr_name(cls)
         if children_type_discriminator_aliases_attr_name is not None:
             type_discriminator_alias_candidate = (
@@ -189,7 +189,7 @@ class ModelDescriptor(BaseClassDescriptor):
                     children_type_discriminator_aliases_attr_name,
                     None,
                 )
-                or tuple()
+                or ()
             )
 
             for alias in type_discriminator_alias_candidate:

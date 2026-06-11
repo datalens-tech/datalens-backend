@@ -196,16 +196,16 @@ class DashSQLView(SQLBaseView):
                 assert isinstance(event_data, dict)
                 enrich_resp_dict_with_data_export_info(event_data, data_export_result)
 
-            events.append(dict(event=event_name, data=event_data))
+            events.append({"event": event_name, "data": event_data})
 
         return self._json_sql_response(events)
 
     async def collect_dashsql_response(self, result_events: TResultEvents, conn: ConnectionBase) -> web.Response:
         events: list = []
         async for event_name, event_data in result_events:
-            events.append(dict(event=event_name, data=event_data))
+            events.append({"event": event_name, "data": event_data})
 
-        resp_data = dict(events=events)
+        resp_data = {"events": events}
 
         data_export_info = self.get_data_export_info(conn)
         data_export_result = get_data_export_base_result(data_export_info)

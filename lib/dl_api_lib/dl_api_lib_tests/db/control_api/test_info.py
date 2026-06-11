@@ -34,8 +34,8 @@ class TestInfo(DefaultApiTestBase):
         assert resp.status_code == 200, resp.json
         resp_data = resp.json
 
-        names = set(item["name"] for item in resp_data["types"])
-        expected = set(
+        names = {item["name"] for item in resp_data["types"]}
+        expected = {
             item.name
             for item in BI_TYPE_AGGREGATIONS
             if item
@@ -46,11 +46,11 @@ class TestInfo(DefaultApiTestBase):
                 UserDataType.datetime,
                 UserDataType.unsupported,
             )
-        )
+        }
         assert names == expected
 
         for api_record in resp_data["types"]:
-            aggs = set(AggregationFunction[x] for x in api_record["aggregations"])
+            aggs = {AggregationFunction[x] for x in api_record["aggregations"]}
             expected = set(BI_TYPE_AGGREGATIONS[UserDataType[api_record["name"]]])
             assert aggs == expected
 
@@ -156,35 +156,35 @@ class TestInfo(DefaultApiTestBase):
         assert icons_resp.status_code == 404, icons_resp.json
 
     def test_public_usage_checker(self, client, saved_dataset, saved_connection_id):
-        data = dict(datasets=[saved_dataset.id])
+        data = {"datasets": [saved_dataset.id]}
         response = client.post(
             "/api/v1/info/datasets_publicity_checker",
             content_type="application/json",
             data=json.dumps(data),
         )
         expected_resp = [
-            dict(
-                reason=None,
-                dataset_id=saved_dataset.id,
-                allowed=True,
-            )
+            {
+                "reason": None,
+                "dataset_id": saved_dataset.id,
+                "allowed": True,
+            }
         ]
 
         assert response.status_code == 200
         assert response.json["result"] == expected_resp
 
-        data = dict(connections=[saved_connection_id])
+        data = {"connections": [saved_connection_id]}
         response = client.post(
             "/api/v1/info/connections_publicity_checker",
             content_type="application/json",
             data=json.dumps(data),
         )
         expected_resp = [
-            dict(
-                reason=None,
-                connection_id=saved_connection_id,
-                allowed=True,
-            )
+            {
+                "reason": None,
+                "connection_id": saved_connection_id,
+                "allowed": True,
+            }
         ]
         assert response.status_code == 200
         assert response.json["result"] == expected_resp
@@ -193,19 +193,19 @@ class TestInfo(DefaultApiTestBase):
         self, client, monkeypatch, saved_dataset, saved_connection_id
     ):
         monkeypatch.setattr(ConnectionClickhouse, "allow_public_usage", False)
-        data = dict(datasets=[saved_dataset.id])
+        data = {"datasets": [saved_dataset.id]}
         response = client.post(
             "/api/v1/info/datasets_publicity_checker",
             content_type="application/json",
             data=json.dumps(data),
         )
         expected_resp = [
-            dict(
-                reason=f"The publication of this object or some of its dependencies is not allowed. "
+            {
+                "reason": f"The publication of this object or some of its dependencies is not allowed. "
                 f"Connections of type clickhouse are not available for publication (connection ID: {saved_connection_id})",
-                dataset_id=saved_dataset.id,
-                allowed=False,
-            )
+                "dataset_id": saved_dataset.id,
+                "allowed": False,
+            }
         ]
 
         assert response.status_code == 200
@@ -215,7 +215,7 @@ class TestInfo(DefaultApiTestBase):
         resp = client.post(
             "/api/v1/info/datasets_publicity_checker",
             content_type="application/json",
-            data=json.dumps(dict(datasets=[dataset_id])),
+            data=json.dumps({"datasets": [dataset_id]}),
         )
         assert resp.status_code == 200
         resp_data = resp.json

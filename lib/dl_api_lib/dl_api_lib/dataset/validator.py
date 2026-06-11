@@ -370,10 +370,10 @@ class DatasetValidator(DatasetBaseWrapper):
         if self._is_data_api and action not in DatasetAction.get_actions_whitelist_for_data_api():
             raise exc.DatasetActionNotAllowedError(f"Action {action.value} is not allowed.")
 
-        extra = dict(
-            dataset_action_name=action.name,
-            dataset_action_data=item_data,
-        )
+        extra = {
+            "dataset_action_name": action.name,
+            "dataset_action_data": item_data,
+        }
         LOGGER.info(f"Going to apply action {action.name}", extra=extra)
 
         # TODO: ManagedBy is not present in any schema. Why is this check needed here?
@@ -788,10 +788,10 @@ class DatasetValidator(DatasetBaseWrapper):
                             message=f"Filtration type {default_filter.operation.name} "
                             f"is not allowed for field type {enum_not_none(new_field.cast).name}",
                             code=common_exc.DatasetConfigurationError.err_code,  # TODO: add specific err_code
-                            details=dict(
-                                filter_type=default_filter.operation.name,
-                                field_type=enum_not_none(new_field.cast).name,
-                            ),
+                            details={
+                                "filter_type": default_filter.operation.name,
+                                "field_type": enum_not_none(new_field.cast).name,
+                            },
                         )
                         of_component_ref = DatasetComponentRef(
                             component_type=ComponentType.obligatory_filter, component_id=oblig_filter.id
@@ -867,7 +867,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 continue
 
             LOGGER.info("Refreshing templated source %s", source_id)
-            self.apply_source_action(action=DatasetAction.refresh_source, source_data=dict(id=source_id))
+            self.apply_source_action(action=DatasetAction.refresh_source, source_data={"id": source_id})
 
     @generic_profiler("validator-apply-field-action")
     def apply_field_action(
@@ -958,17 +958,17 @@ class DatasetValidator(DatasetBaseWrapper):
                     field_data=DeleteField(guid=field_id),
                     by=by,
                 )
-                add_field_data = dict(
-                    guid=new_field_id,
-                    title=old_field.title,
-                    type=old_field.type,
-                    aggregation=old_field.aggregation,
-                    cast=old_field.cast,
-                    has_auto_aggregation=old_field.has_auto_aggregation,
-                    lock_aggregation=old_field.lock_aggregation,
-                    hidden=old_field.hidden,
-                    calc_spec=old_field.calc_spec,
-                )
+                add_field_data = {
+                    "guid": new_field_id,
+                    "title": old_field.title,
+                    "type": old_field.type,
+                    "aggregation": old_field.aggregation,
+                    "cast": old_field.cast,
+                    "has_auto_aggregation": old_field.has_auto_aggregation,
+                    "lock_aggregation": old_field.lock_aggregation,
+                    "hidden": old_field.hidden,
+                    "calc_spec": old_field.calc_spec,
+                }
                 self.apply_field_action(
                     action=DatasetAction.add_field,
                     field_data=AddField(**add_field_data),
@@ -1022,17 +1022,17 @@ class DatasetValidator(DatasetBaseWrapper):
                 from_field.aggregation != AggregationFunction.none and aggregation != AggregationFunction.none
             ) or (from_field.aggregation == AggregationFunction.none and aggregation == AggregationFunction.none)
 
-            add_field_data = dict(
-                guid=field_id,
-                title=field_data_dict["title"],
-                type=from_field.type if same_type_as_original else None,
-                aggregation=aggregation,
-                cast=cast,
-                has_auto_aggregation=from_field.has_auto_aggregation,
-                lock_aggregation=from_field.lock_aggregation,
-                hidden=from_field.hidden,
-                calc_spec=from_field.calc_spec,
-            )
+            add_field_data = {
+                "guid": field_id,
+                "title": field_data_dict["title"],
+                "type": from_field.type if same_type_as_original else None,
+                "aggregation": aggregation,
+                "cast": cast,
+                "has_auto_aggregation": from_field.has_auto_aggregation,
+                "lock_aggregation": from_field.lock_aggregation,
+                "hidden": from_field.hidden,
+                "calc_spec": from_field.calc_spec,
+            }
             self.apply_field_action(
                 action=DatasetAction.add_field,
                 field_data=AddField(**add_field_data),
@@ -1376,7 +1376,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     # Manual sources are user-provided: skip raising SourceDoesNotExist when
                     # the source can't be discovered through the connector listing.
                     return None
-                params = dict()
+                params = {}
                 if isinstance(origin_dsrc, BaseSQLDataSource):
                     table_def = origin_dsrc.get_table_definition()
                     params["table_definition"] = str(table_def)
@@ -1871,12 +1871,12 @@ class DatasetValidator(DatasetBaseWrapper):
 
                 # migrate parameters for new source type
                 updates.append(
-                    dict(
-                        id=dsrc_coll.id,
-                        connection_id=connection_data.new_id,
-                        source_type=new_source_type,
-                        parameters=parameters,
-                    )
+                    {
+                        "id": dsrc_coll.id,
+                        "connection_id": connection_data.new_id,
+                        "source_type": new_source_type,
+                        "parameters": parameters,
+                    }
                 )
                 ignore_source_ids.append(dsrc_coll.id)
 
@@ -1999,7 +1999,7 @@ class DatasetValidator(DatasetBaseWrapper):
     ) -> None:
         current_mode = self._ds_accessor.get_extract_mode()
 
-        schema_guids = set(field.guid for field in self._ds.result_schema.fields)
+        schema_guids = {field.guid for field in self._ds.result_schema.fields}
 
         # Clear old errors
         self._ds.error_registry.remove_errors_by_component_type(ComponentType.extract_filter)

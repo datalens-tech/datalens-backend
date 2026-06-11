@@ -218,7 +218,7 @@ class CompositeExtractor(SDictExtractor):
 
         if missing_required_fields or missing_sub_field_code_set:
             raise ConfigFieldMissing(
-                field_set=set(field.name for field in missing_required_fields) | missing_sub_field_code_set
+                field_set={field.name for field in missing_required_fields} | missing_sub_field_code_set
             )
 
     def _extract_from_json(self, s_dict: SDict) -> Any:
