@@ -274,6 +274,7 @@ class ConnectionOptions:
     allow_dataset_usage: bool = attr.ib(kw_only=True)
     allow_typed_query_usage: bool = attr.ib(kw_only=True)
     allow_typed_query_raw_usage: bool = attr.ib(kw_only=True)
+    allow_pagination_usage: bool = attr.ib(kw_only=True)
     query_types: list[QueryTypeInfo] = attr.ib(kw_only=True)
 
 
@@ -281,6 +282,7 @@ class ConnectionOptions:
 class ListingOptions:
     supports_source_search: bool = attr.ib(kw_only=True)
     supports_source_pagination: bool = attr.ib(kw_only=True)
+    supports_query_pagination: bool = attr.ib(kw_only=True)
     supports_db_name_listing: bool = attr.ib(kw_only=True)
     db_name_required_for_search: bool = attr.ib(kw_only=True)
     db_name_label: str | None = attr.ib(kw_only=True, default=None)
@@ -305,6 +307,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
     supports_source_pagination: ClassVar[bool] = False
     supports_db_name_listing: ClassVar[bool] = False
     db_name_required_for_search: ClassVar[bool] = False
+    supports_query_pagination: ClassVar[bool] = False
 
     is_virtual: ClassVar[bool] = False
 
@@ -674,6 +677,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return ListingOptions(
             supports_source_search=cls.supports_source_search,
             supports_source_pagination=cls.supports_source_pagination,
+            supports_query_pagination=cls.supports_query_pagination,
             supports_db_name_listing=cls.supports_db_name_listing,
             db_name_required_for_search=cls.db_name_required_for_search,
             db_name_label=cls.get_db_name_label(localizer=localizer),
@@ -768,6 +772,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             allow_dataset_usage=self.is_dataset_allowed,
             allow_typed_query_usage=self.is_typed_query_allowed,
             allow_typed_query_raw_usage=self.is_typed_query_raw_allowed,
+            allow_pagination_usage=self.supports_query_pagination,
             query_types=query_type_info_list,
         )
 

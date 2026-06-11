@@ -87,6 +87,7 @@ class AvatarsSchema(BaseSchema):
 class SourceListingSchema(BaseSchema):
     supports_source_search = ma_fields.Boolean()
     supports_source_pagination = ma_fields.Boolean()
+    supports_query_pagination = ma_fields.Boolean()
     supports_db_name_listing = ma_fields.Boolean()
     db_name_label = ma_fields.String(dump_default=None)
     db_name_required_for_search = ma_fields.Boolean()

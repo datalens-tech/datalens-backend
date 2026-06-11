@@ -240,6 +240,8 @@ class DefaultSqlAlchemyConnExecutor[DBA_TV: CommonBaseDirectAdapter](AsyncConnEx
             is_ddl_dml_query=conn_exec_query.is_ddl_dml_query,
             is_dashsql_query=conn_exec_query.is_dashsql_query,
             allow_write=conn_exec_query.allow_write,
+            limit=conn_exec_query.limit,
+            offset=conn_exec_query.offset,
             query_settings=conn_exec_query.query_settings,
         )
 

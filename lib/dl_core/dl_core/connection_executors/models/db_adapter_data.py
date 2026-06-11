@@ -53,6 +53,8 @@ class DBAdapterQuery:
     is_ddl_dml_query: bool = attr.ib(default=False)
     is_dashsql_query: bool = attr.ib(default=False)
     allow_write: bool = attr.ib(default=False)
+    limit: int | None = attr.ib(default=None)
+    offset: int | None = attr.ib(default=None)
     query_settings: Mapping[str, str] = attr.ib(factory=dict)
 
     def get_effective_chunk_size(self, default_chunk_size: int) -> int:

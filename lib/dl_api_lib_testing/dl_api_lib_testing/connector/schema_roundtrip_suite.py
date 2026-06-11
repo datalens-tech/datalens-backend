@@ -46,6 +46,7 @@ class ConnectionSchemaRoundtripTestSuite(ConnectionTestBase):
         allow_dashsql_usage: bool = False,
         allow_dataset_usage: bool = True,
         allow_typed_query_usage: bool = False,
+        allow_pagination_usage: bool = False,
         allow_selector: bool = False,
     ) -> dict[str, Any]:
         return {
@@ -60,6 +61,7 @@ class ConnectionSchemaRoundtripTestSuite(ConnectionTestBase):
                 "allow_dashsql_usage": allow_dashsql_usage,
                 "allow_dataset_usage": allow_dataset_usage,
                 "allow_typed_query_usage": allow_typed_query_usage,
+                "allow_pagination_usage": allow_pagination_usage,
                 "query_types": [
                     {
                         "allow_selector": allow_selector,

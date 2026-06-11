@@ -534,6 +534,7 @@ class ConnectionInfoSourceListingOptions(BIResource):
             listing_options = ListingOptions(
                 supports_source_search=False,
                 supports_source_pagination=False,
+                supports_query_pagination=False,
                 supports_db_name_listing=False,
                 db_name_required_for_search=False,
                 db_name_label=None,

@@ -239,6 +239,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         expected_fields = {
             "supports_source_search",
             "supports_source_pagination",
+            "supports_query_pagination",
             "supports_db_name_listing",
             "db_name_required_for_search",
             "db_name_label",

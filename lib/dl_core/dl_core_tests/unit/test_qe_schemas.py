@@ -134,6 +134,11 @@ _TEST_DB_ADAPTER_QUERY = (
         query="",
         connector_specific_params={"from": datetime(2020, 1, 1)},
     ),
+    DBAdapterQuery(
+        query="",
+        limit=100,
+        offset=20,
+    ),
 )
 
 
@@ -159,6 +164,19 @@ def test_db_adapter_query_schema(db_adapter_query: DBAdapterQuery):
     reloaded_db_adapter_query = schema.load(dumped_db_adapter_query)
 
     assert reloaded_db_adapter_query == db_adapter_query
+
+
+def test_db_adapter_query_schema_tolerates_missing_limit_offset():
+    # Older producer payloads won't contain limit/offset; loading must default them to None.
+    schema = DBAdapterQueryStrSchema()
+    dumped = schema.dump(DBAdapterQuery(query=""))
+    dumped.pop("limit", None)
+    dumped.pop("offset", None)
+
+    reloaded = schema.load(dumped)
+
+    assert reloaded.limit is None
+    assert reloaded.offset is None
 
 
 def test_db_adapter_query_schema_ignores_unknown_field():

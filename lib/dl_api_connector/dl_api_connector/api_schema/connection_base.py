@@ -76,4 +76,5 @@ class ConnectionOptionsSchema(Schema):
     allow_dashsql_usage = ma_fields.Boolean(dump_only=True)
     allow_dataset_usage = ma_fields.Boolean(dump_only=True)
     allow_typed_query_usage = ma_fields.Boolean(dump_only=True)
+    allow_pagination_usage = ma_fields.Boolean(dump_only=True)
     query_types = ma_fields.List(ma_fields.Nested(QueryTypeInfoSchema()), dump_only=True)
