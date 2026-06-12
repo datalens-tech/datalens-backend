@@ -106,13 +106,11 @@ class BaseClickHouseConnLineConstructor(ClassicSQLConnLineConstructor[_TARGET_DT
         total_timeout = self._target_dto.total_timeout if self._target_dto.total_timeout is not None else 290
 
         return {
-            **{
-                "protocol": self._target_dto.protocol,
-                "endpoint": self._target_dto.endpoint,
-                "timeout": total_timeout,
-                "connect_timeout": connect_timeout,
-                "stream": True,
-            },
+            "protocol": self._target_dto.protocol,
+            "endpoint": self._target_dto.endpoint,
+            "timeout": total_timeout,
+            "connect_timeout": connect_timeout,
+            "stream": True,
             **self._converted_headers,
         }
 

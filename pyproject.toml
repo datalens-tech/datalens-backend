@@ -93,6 +93,7 @@ ignore = [
   "B904", # Later: raise-without-from-inside-except
   "B905", # Later: zip-without-explicit-strict
   "E501", # Later: line-too-long (currently delegated to black formatting)
+  "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
   "RUF002", # Later: ambiguous-unicode-character-docstring (same intentional Cyrillic)
   "RUF003", # Later: ambiguous-unicode-character-comment (same intentional Cyrillic)
@@ -118,7 +119,6 @@ ignore = [
 # "FLY",   # flynt — Later: static string joins -> f-strings
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, separate initiative
-# "PIE",   # flake8-pie — Later: review per-rule (PIE790 strips `pass`, PIE807 rewrites `lambda: []`)
 # "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
 #
 # Never — will not enable:
@@ -130,6 +130,7 @@ select = [
   "C4", # flake8-comprehensions
   "F", # Pyflakes
   "FURB", # refurb
+  "PIE", # flake8-pie
   "RET", # flake8-return
   "RUF", # Ruff-specific rules
   "SIM", # flake8-simplify

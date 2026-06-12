@@ -100,7 +100,7 @@ class BaseSAAdapter(
     _target_dto: _DBA_SA_DTO_TV = attr.ib()
     _req_ctx_info: DBAdapterScopedRCI = attr.ib()
     # Internals
-    _engine_cache: dict[tuple[str | None, bool], Engine] = attr.ib(init=False, factory=lambda: {})
+    _engine_cache: dict[tuple[str | None, bool], Engine] = attr.ib(init=False, factory=dict)
     _error_transformer: ClassVar[DbErrorTransformer] = make_default_transformer_with_custom_rules()
 
     _COMMON_ENGINE_EVENT_LISTENERS: ClassVar[list[EventListenerSpec]] = [
