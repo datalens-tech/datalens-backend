@@ -94,8 +94,8 @@ ignore = [
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
-  "RUF002", # Later: ambiguous-unicode-character-docstring (same intentional Cyrillic)
-  "RUF003", # Later: ambiguous-unicode-character-comment (same intentional Cyrillic)
+  "RUF002", # Never: ambiguous-unicode-character-docstring — Cyrillic in RU docstrings is intentional; per-site review showed flagging only adds `noqa` noise (incl. dead/commented-out code)
+  "RUF003", # Never: ambiguous-unicode-character-comment — same intentional Cyrillic in RU comments
   "RUF006", # Later: asyncio-dangling-task
   "RUF009", # Later: function-call-in-dataclass-default-argument
   "RUF012", # Later: mutable-class-default
