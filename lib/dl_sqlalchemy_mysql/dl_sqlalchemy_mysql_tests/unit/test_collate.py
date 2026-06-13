@@ -45,7 +45,7 @@ CI_EXPECTED_WITHOUT_COLLATE = [
 
 
 @pytest.fixture(
-    params=list(zip(CI_EXPRS, CI_EXPECTED_WITH_COLLATE, CI_EXPECTED_WITHOUT_COLLATE)),
+    params=list(zip(CI_EXPRS, CI_EXPECTED_WITH_COLLATE, CI_EXPECTED_WITHOUT_COLLATE, strict=True)),
     ids=[name for name, _ in CI_EXPRS],
 )
 def ci_expr_with_expected(request):

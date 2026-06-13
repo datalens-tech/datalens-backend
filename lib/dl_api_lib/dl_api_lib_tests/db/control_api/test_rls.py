@@ -79,6 +79,7 @@ class TestRLS(DefaultApiTestBase):
         for item1, item2 in zip(
             sorted(ds.rls2[field_guid], key=lambda x: (x.allowed_value, x.subject.subject_id)),
             sorted(config_v2, key=lambda x: (x.allowed_value, x.subject.subject_id)),
+            strict=True,
         ):
             assert item1.subject == item2.subject
             assert item1.pattern_type == item2.pattern_type

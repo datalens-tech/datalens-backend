@@ -90,7 +90,6 @@ target-version = "py312"
 # Never — a deliberate, permanent choice; comment says what it is and why we keep ignoring it.
 # Later — we want it eventually; comment says what it is.
 ignore = [
-  "B905", # Later: zip-without-explicit-strict
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)

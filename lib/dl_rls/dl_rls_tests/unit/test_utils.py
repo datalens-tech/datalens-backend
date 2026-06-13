@@ -16,7 +16,7 @@ TEST_DATA = ["'abc'de", "'ab''c'''de", "'ab''c'''"]
 EXPECTED = [("abc", "de"), ("ab'c'", "de"), ("ab'c'", "")]
 
 
-@pytest.mark.parametrize(["string", "expected"], zip(TEST_DATA, EXPECTED))
+@pytest.mark.parametrize(["string", "expected"], zip(TEST_DATA, EXPECTED, strict=True))
 def test_quoting(string: str, expected: tuple[str, str]) -> None:
     split = split_by_quoted_quote(string)
     assert split == expected

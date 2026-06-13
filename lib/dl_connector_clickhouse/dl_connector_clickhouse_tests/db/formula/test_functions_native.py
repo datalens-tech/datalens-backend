@@ -105,8 +105,8 @@ class TestNativeAggregationFunctionClickHouse_22_10(
 
         assert (
             dbe.eval('DB_CALL_AGG_INT("argMax", [str_value], [int_value])', from_=data_table)
-            == max(list(zip(int_values, str_values)))[1]
+            == max(list(zip(int_values, str_values, strict=True)))[1]
         )
         assert dbe.eval('DB_CALL_AGG_INT("sumIf", [int_value], [str_value] = "qqqqq")', from_=data_table) == sum(
-            next(zip(*filter(lambda x: x[1] == "qqqqq", zip(int_values, str_values))))
+            next(zip(*filter(lambda x: x[1] == "qqqqq", zip(int_values, str_values, strict=True)), strict=True))
         )

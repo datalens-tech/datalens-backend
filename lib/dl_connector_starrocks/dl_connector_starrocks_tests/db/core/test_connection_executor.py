@@ -139,7 +139,7 @@ class TestStarRocksSyncConnectionExecutor(
             ).schema
 
             assert len(detected_columns) == len(type_schema)
-            for col_schema, cd in zip(detected_columns, type_schema):
+            for col_schema, cd in zip(detected_columns, type_schema, strict=True):
                 assert (
                     col_schema.user_type == cd.user_type
                 ), f"Column {col_schema.name}: expected {cd.user_type}, got {col_schema.user_type}"

@@ -48,7 +48,7 @@ class TestTrinoConnection(
         assert dsrc_templates
 
         tmpl_info = {(dsrc_tmpl.title, *dsrc_tmpl.group) for dsrc_tmpl in dsrc_templates}
-        tmpl_titles, tmpl_db_names, tmpl_schema_names = zip(*tmpl_info)
+        tmpl_titles, tmpl_db_names, tmpl_schema_names = zip(*tmpl_info, strict=True)
 
         assert "sample" in tmpl_titles
 
