@@ -42,7 +42,7 @@ class FrozenStrMapping(Mapping[str, _FM_VAL_T], Hashable):
     _dict: dict[str, _FM_VAL_T]
 
     def __init__(self, mapping: Mapping[str, _FM_VAL_T]) -> None:
-        for k, _ in mapping.items():
+        for k in mapping:
             assert isinstance(k, str), f"Got non str key for FrozenStrMapping: {k!r}"
 
         self._dict = dict(mapping)

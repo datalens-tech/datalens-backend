@@ -123,9 +123,7 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
 
     async def close(self) -> None:
         LOGGER.info("Starting async executor wrapper close procedure")
-        fut_list = []
-        for wr in self._gen_wrappers_weak_set:
-            fut_list.append(wr.cancel())
+        fut_list = [wr.cancel() for wr in self._gen_wrappers_weak_set]
         if fut_list:
             LOGGER.info("Waiting for %s running generators to be closed", len(fut_list))
             await asyncio.gather(*fut_list, return_exceptions=True)

@@ -51,8 +51,7 @@ class OpenApiSpec:
                 path_type = request_schema.model_fields["path"].annotation
                 assert path_type is not None and issubclass(path_type, dl_pydantic.BaseModel)
                 path_schema = path_type.model_json_schema()
-                for key, value in path_schema.get("$defs", {}).items():
-                    defs[key] = value
+                defs.update(path_schema.get("$defs", {}))
                 for property_name, property_schema in path_schema.get("properties", {}).items():
                     parameters.append(
                         {
@@ -67,8 +66,7 @@ class OpenApiSpec:
                 query_type = request_schema.model_fields["query"].annotation
                 assert query_type is not None and issubclass(query_type, dl_pydantic.BaseModel)
                 query_schema = query_type.model_json_schema()
-                for key, value in query_schema.get("$defs", {}).items():
-                    defs[key] = value
+                defs.update(query_schema.get("$defs", {}))
                 for property_name, property_schema in query_schema.get("properties", {}).items():
                     parameters.append(
                         {
@@ -83,8 +81,7 @@ class OpenApiSpec:
                 body_type = request_schema.model_fields["body"].annotation
                 assert body_type is not None and issubclass(body_type, dl_pydantic.BaseModel)
                 body_schema = body_type.model_json_schema()
-                for key, value in body_schema.get("$defs", {}).items():
-                    defs[key] = value
+                defs.update(body_schema.get("$defs", {}))
                 if len(body_schema.get("properties", {})) > 0:
                     parameters.append(
                         {
@@ -98,8 +95,7 @@ class OpenApiSpec:
             for status, response_schema in route.handler._response_schemas.items():
                 response_schema_dict = response_schema.model_json_schema()
 
-                for key, value in response_schema_dict.get("$defs", {}).items():
-                    defs[key] = value
+                defs.update(response_schema_dict.get("$defs", {}))
 
                 responses[str(status.value)] = {
                     "content": {

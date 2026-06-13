@@ -14,10 +14,7 @@ class TrinoArray(FunctionElement):
 
 @compiles(TrinoArray)
 def _compile_trino_array(element: TrinoArray, compiler: SQLCompiler, **kw: Any) -> str:
-    clauses = []
-    for clause in element.clauses:
-        clauses.append(compiler.process(clause, **kw))
-
+    clauses = [compiler.process(clause, **kw) for clause in element.clauses]
     return f"ARRAY[{', '.join(clauses)}]"
 
 

@@ -95,7 +95,7 @@ def load_func_reference_from_registry(
     }
 
     func_ref = FuncReference()
-    for _key, item in FUNC_REFERENCE_REGISTRY.items():
+    for item in FUNC_REFERENCE_REGISTRY.values():
         aud_func_dict: dict[Audience, RawFunc] = {}
         for audience, env in env_by_audience.items():
             if item.is_supported(env=env):

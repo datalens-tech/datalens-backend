@@ -34,28 +34,26 @@ class BasePostgresConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_POSTGRES_ADAP
         return enforce_collate
 
     async def _make_target_conn_dto_pool(self) -> list[PostgresConnTargetDTO]:
-        dto_pool = []
         effective_enforce_collate = self._get_effective_enforce_collate(
             enforce_collate=self._conn_dto.enforce_collate,
             multihosts=self._conn_dto.multihosts,
         )
-        for host in self._conn_hosts_pool:
-            dto_pool.append(
-                PostgresConnTargetDTO(
-                    conn_id=self._conn_dto.conn_id,
-                    pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
-                    pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                    host=host,
-                    port=self._conn_dto.port,
-                    db_name=self._conn_dto.db_name,
-                    username=self._conn_dto.username,
-                    password=self._conn_dto.password,
-                    enforce_collate=effective_enforce_collate,
-                    ssl_enable=self._conn_dto.ssl_enable,
-                    ssl_ca=self._conn_dto.ssl_ca,
-                )
+        return [
+            PostgresConnTargetDTO(
+                conn_id=self._conn_dto.conn_id,
+                pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
+                pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
+                host=host,
+                port=self._conn_dto.port,
+                db_name=self._conn_dto.db_name,
+                username=self._conn_dto.username,
+                password=self._conn_dto.password,
+                enforce_collate=effective_enforce_collate,
+                ssl_enable=self._conn_dto.ssl_enable,
+                ssl_ca=self._conn_dto.ssl_ca,
             )
-        return dto_pool
+            for host in self._conn_hosts_pool
+        ]
 
     def mutate_for_dashsql(self, db_params: dict[str, str] | None = None) -> Self:
         if db_params:

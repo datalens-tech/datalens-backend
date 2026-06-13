@@ -236,10 +236,7 @@ class DependencyReregistrationRepositoryManagementPlugin(RepositoryManagementPlu
                     updated_requirements[other_package_spec.package_name] = req_package_info
 
                 with package_meta_io_factory.package_meta_writer(new_package_info.toml_path) as pkg_meta_writer:
-                    for (
-                        _req_package_reg_name,
-                        req_package_info,
-                    ) in updated_requirements.items():
+                    for req_package_info in updated_requirements.values():
                         updated_req_path = Path(os.path.relpath(req_package_info.abs_path, new_package_info.abs_path))
                         pkg_meta_writer.update_requirement_item(
                             section_name=section_name,

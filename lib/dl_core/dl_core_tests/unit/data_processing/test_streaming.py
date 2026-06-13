@@ -46,8 +46,7 @@ async def test_async_chunked_limited():
     data = []
     with pytest.raises(exc.ResultRowCountLimitExceeded):
         async for chunk in chunked.chunks:
-            for item in chunk:
-                data.append(item)
+            data.extend(chunk)
     # Data is appended in whole chunks,
     # so the chunk that reaches the limit is never returned,
     # which is why we have only 50

@@ -208,7 +208,7 @@ class DatasetCapabilities:
         return get_conn_types_compatible_with_src_types(frozenset(list_registered_source_types()))
 
     def supports_offset(self, role: DataSourceRole) -> bool:
-        for _source_id, dsrc_coll in self._get_data_source_collections().items():
+        for dsrc_coll in self._get_data_source_collections().values():
             dsrc = dsrc_coll.get_strict(role=role)
             if not dsrc.supports_offset:
                 return False
@@ -279,8 +279,4 @@ class DatasetCapabilities:
         Check whether dataset supports preview.
         Used in options to tell the UI (or some other client) whether preview should/could be shown.
         """
-        for _source_id, dsrc_coll in self._get_data_source_collections().items():
-            if not dsrc_coll.get_strict().preview_enabled:
-                return False
-
-        return True
+        return all(dsrc_coll.get_strict().preview_enabled for dsrc_coll in self._get_data_source_collections().values())

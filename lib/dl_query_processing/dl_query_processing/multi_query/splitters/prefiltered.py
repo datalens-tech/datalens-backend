@@ -168,8 +168,7 @@ class PrefilteredFieldMultiQuerySplitter(MultiQuerySplitterBase):
 
             subquery_filters: list[CompiledFormulaInfo] = []
             if original_from_id in prefilters_by_from_id:
-                for prefilter_formula in prefilters_by_from_id[original_from_id]:
-                    subquery_filters.append(prefilter_formula)
+                subquery_filters.extend(prefilters_by_from_id[original_from_id])
 
             subquery = CompiledQuery(
                 id=new_from_id,

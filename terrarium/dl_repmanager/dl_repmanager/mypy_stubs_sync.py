@@ -88,10 +88,9 @@ class RequirementsPathProvider:
         return self.base_path / self.mypy_requirements_rel_path
 
     def get_external_requirements_path_list(self) -> list[Path]:
-        result: list[Path] = []
-        for name in self.external_requirements_file_names:
-            result.append(self.base_path / self.external_requirements_rel_py / name)
-        return result
+        return [
+            self.base_path / self.external_requirements_rel_py / name for name in self.external_requirements_file_names
+        ]
 
 
 def stubs_sync(

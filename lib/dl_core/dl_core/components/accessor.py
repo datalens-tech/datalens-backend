@@ -159,13 +159,12 @@ class DatasetComponentAccessor:
         :param right_avatar_id: limit result to relations with this left ID
         :return: list of ``AvatarRelation`` objects
         """
-        result = []
-        for relation in self._dataset.data.avatar_relations:
-            if (not left_avatar_id or relation.left_avatar_id == left_avatar_id) and (
-                not right_avatar_id or relation.right_avatar_id == right_avatar_id
-            ):
-                result.append(relation)
-        return result
+        return [
+            relation
+            for relation in self._dataset.data.avatar_relations
+            if (not left_avatar_id or relation.left_avatar_id == left_avatar_id)
+            and (not right_avatar_id or relation.right_avatar_id == right_avatar_id)
+        ]
 
     def has_avatar_relation(
         self,

@@ -260,17 +260,16 @@ class DLFormulaError(DLBaseException):
         details = {} if details is None else details.copy()
         if field is not None:
             details["field"] = {"guid": field.guid, "title": field.title, "errors": []}
-        sub_errors = []
-        for err in formula_errors or ():
-            sub_errors.append(
-                {
-                    "code": err.code,
-                    "message": err.message,
-                    "row": err.position.start_row,
-                    "col": err.position.start_col,
-                    "token": err.token,
-                }
-            )
+        sub_errors = [
+            {
+                "code": err.code,
+                "message": err.message,
+                "row": err.position.start_row,
+                "col": err.position.start_col,
+                "token": err.token,
+            }
+            for err in formula_errors or ()
+        ]
         details.update(formula_errors=sub_errors)
 
         super().__init__(message=message, details=details, orig=orig)

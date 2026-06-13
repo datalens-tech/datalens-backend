@@ -253,7 +253,7 @@ class FormulaCliTool:
     def _get_func_base_class(name: str) -> type | None:
         """Find the first (base) class for the given function"""
         name = name.lower()
-        for _i, definition in OPERATION_REGISTRY.items():
+        for definition in OPERATION_REGISTRY.values():
             if definition.name.lower() == name:  # type: ignore  # TODO: fix
                 item = definition
                 break
@@ -324,7 +324,7 @@ class FormulaCliTool:
     @classmethod
     def print_registry(cls) -> None:
         items_by_module: dict[str, list[NodeTranslation]] = defaultdict(list)
-        for _key, item in OPERATION_REGISTRY.items():
+        for item in OPERATION_REGISTRY.values():
             filename = inspect.getsourcefile(type(item))
             assert filename is not None
             items_by_module[filename].append(item)

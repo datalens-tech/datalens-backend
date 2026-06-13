@@ -113,7 +113,6 @@ ignore = [
 # "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
 # "PT",    # flake8-pytest-style — Later
 # "G",     # flake8-logging-format — Later: enforces lazy %-logging
-# "PERF",  # Perflint — Later
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, separate initiative
 # "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
@@ -130,6 +129,7 @@ select = [
   "FLY", # flynt
   "FURB", # refurb
   "LOG", # flake8-logging
+  "PERF", # Perflint
   "PIE", # flake8-pie
   "RET", # flake8-return
   "RUF", # Ruff-specific rules

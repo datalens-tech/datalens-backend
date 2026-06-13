@@ -287,17 +287,18 @@ class MacroExpander:
 
     @expand_macro.register
     def expand_macro_type(self, macro: TypeMacro) -> ListTextElement:
-        items: list[TermTextElement] = []
         type_list = [DataType[type_name.strip().upper()] for type_name in macro.values]
-        for h_type_name in get_human_data_type_list(types=type_list):
-            items.append(
+        return ListTextElement(
+            items=[
                 TermTextElement(
                     term=self._translate_text(h_type_name),
                     wrap=False,
                 )
-            )
-
-        return ListTextElement(items=items, sep=" | ", wrap=True)
+                for h_type_name in get_human_data_type_list(types=type_list)
+            ],
+            sep=" | ",
+            wrap=True,
+        )
 
     @expand_macro.register
     def expand_macro_arg(self, macro: ArgMacro) -> CodeSpanTextElement:

@@ -588,16 +588,14 @@ class MetrikaApiDialect(default.DefaultDialect):
     def get_columns(self, connection, table_name, schema=None, **kw):
         metrika_fields = connection.execute(metrika_dbapi.InternalCommands.get_columns.value)
 
-        columns = []
-        for col in metrika_fields:
-            columns.append(
-                {
-                    "name": col["name"],
-                    "type": metrika_dbapi.metrika_types_to_sqla[col["type"]],
-                    "nullable": not col["is_dim"],
-                }
-            )
-        return columns
+        return [
+            {
+                "name": col["name"],
+                "type": metrika_dbapi.metrika_types_to_sqla[col["type"]],
+                "nullable": not col["is_dim"],
+            }
+            for col in metrika_fields
+        ]
 
     @classmethod
     def dbapi(cls):

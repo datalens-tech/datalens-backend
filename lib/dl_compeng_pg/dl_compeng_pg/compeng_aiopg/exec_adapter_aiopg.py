@@ -98,13 +98,12 @@ class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # no
         self._log.info(f"Inserting data into table {table_name}")
 
         async for raw_chunk in data.chunks:
-            chunk = []
-            for row in raw_chunk:
-                chunk.append(
-                    [
-                        self._tt.cast_for_input(value=value, user_t=user_t)
-                        for value, user_t in zip(row, user_types, strict=True)
-                    ]
-                )
+            chunk = [
+                [
+                    self._tt.cast_for_input(value=value, user_t=user_t)
+                    for value, user_t in zip(row, user_types, strict=True)
+                ]
+                for row in raw_chunk
+            ]
             query = table.insert(values=chunk)
             await self._execute(query=query)

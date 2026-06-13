@@ -178,10 +178,11 @@ class LODTestAutoGenerator:
         formula_cnt = random.choice(self.settings.formula_cnts)
 
         # Generate filters
-        chosen_filters: dict[str, tuple[WhereClauseOperation, list[str]]] = {}
-        for name, params in self.settings.filters.items():
-            if random.random() <= self.settings.filter_probability:
-                chosen_filters[name] = params
+        chosen_filters: dict[str, tuple[WhereClauseOperation, list[str]]] = {
+            name: params
+            for name, params in self.settings.filters.items()
+            if random.random() <= self.settings.filter_probability
+        }
 
         recursion_state = FormulaRecursionState(
             effective_dims=effective_dims,

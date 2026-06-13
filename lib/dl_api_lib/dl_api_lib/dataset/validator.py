@@ -468,12 +468,7 @@ class DatasetValidator(DatasetBaseWrapper):
         if field is None:
             return []
 
-        result = []
-        for other_field in self._ds.result_schema:
-            if other_field.depends_on(field):
-                result.append(other_field)
-
-        return result
+        return [other_field for other_field in self._ds.result_schema if other_field.depends_on(field)]
 
     def _get_field_errors(self, field: BIField) -> list[FormulaErrorCtx]:
         errors = self.formula_compiler.get_field_errors(field=field)
@@ -2259,12 +2254,11 @@ class DatasetValidator(DatasetBaseWrapper):
             DatasetComponentRef(component_type=item.type, component_id=item.id)
             for item in self._ds.error_registry.items
         ]
-        phantom_refs: list[DatasetComponentRef] = []
-        for component_ref in all_error_refs:
-            if self._ds_ca.get_component(component_ref=component_ref) is None:
-                phantom_refs.append(component_ref)
-
-        return phantom_refs
+        return [
+            component_ref
+            for component_ref in all_error_refs
+            if self._ds_ca.get_component(component_ref=component_ref) is None
+        ]
 
     def _remove_phantom_errors_for_refs(self, phantom_refs: list[DatasetComponentRef]) -> None:
         for ref in phantom_refs:

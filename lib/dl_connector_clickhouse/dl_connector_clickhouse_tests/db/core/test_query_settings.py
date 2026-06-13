@@ -99,10 +99,7 @@ class TestClickHouseQuerySettingsApplied(BaseClickHouseTestClass):
                     query_settings={"max_threads": "7"},
                 )
             )
-            rows: list = []
-            async for chunk in result.result:
-                for row in chunk:
-                    rows.append(row)
+            rows = [row async for chunk in result.result for row in chunk]
         finally:
             await executor.close()
 

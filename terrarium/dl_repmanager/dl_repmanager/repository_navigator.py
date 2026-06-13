@@ -69,14 +69,14 @@ class RepositoryNavigator:
                 else:
                     continue
 
-                for found_module in found_modules:
-                    result.append(
-                        ImportSpec(
-                            import_ast=node,
-                            import_module_name=found_module,
-                            source_path=file_path,
-                        )
+                result.extend(
+                    ImportSpec(
+                        import_ast=node,
+                        import_module_name=found_module,
+                        source_path=file_path,
                     )
+                    for found_module in found_modules
+                )
 
         return result
 

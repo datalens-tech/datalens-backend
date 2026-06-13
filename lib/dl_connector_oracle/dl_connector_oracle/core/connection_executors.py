@@ -16,21 +16,19 @@ class OracleDefaultConnExecutor(DefaultSqlAlchemyConnExecutor[OracleDefaultAdapt
     _conn_dto: OracleConnDTO = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> list[OracleConnTargetDTO]:
-        dto_pool = []
-        for host in self._conn_hosts_pool:
-            dto_pool.append(
-                OracleConnTargetDTO(
-                    conn_id=self._conn_dto.conn_id,
-                    pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
-                    pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                    host=host,
-                    port=self._conn_dto.port,
-                    db_name=self._conn_dto.db_name,
-                    db_name_type=self._conn_dto.db_name_type,
-                    username=self._conn_dto.username,
-                    password=self._conn_dto.password,
-                    ssl_enable=self._conn_dto.ssl_enable,
-                    ssl_ca=self._conn_dto.ssl_ca,
-                )
+        return [
+            OracleConnTargetDTO(
+                conn_id=self._conn_dto.conn_id,
+                pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
+                pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
+                host=host,
+                port=self._conn_dto.port,
+                db_name=self._conn_dto.db_name,
+                db_name_type=self._conn_dto.db_name_type,
+                username=self._conn_dto.username,
+                password=self._conn_dto.password,
+                ssl_enable=self._conn_dto.ssl_enable,
+                ssl_ca=self._conn_dto.ssl_ca,
             )
-        return dto_pool
+            for host in self._conn_hosts_pool
+        ]

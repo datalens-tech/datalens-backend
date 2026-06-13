@@ -322,11 +322,7 @@ class AsyncPostgresAdapter(
 
     async def get_schema_names(self, db_ident: DBIdent) -> list[str]:
         result = await self.execute(DBAdapterQuery(self.get_list_schema_names_query()))
-        schema_names = []
-        async for row in result.get_all_rows():
-            for value in row:
-                schema_names.append(str(value))
-        return schema_names
+        return [str(value) async for row in result.get_all_rows() for value in row]
 
     async def _get_relation_names(self, schema_ident: SchemaIdent, get_query: str) -> list[TableIdent]:
         query = sa.text(get_query).bindparams(
@@ -337,9 +333,7 @@ class AsyncPostgresAdapter(
             )
         )
         result = await self.execute(DBAdapterQuery(query))
-        relations = []
-        async for row in result.get_all_rows():
-            relations.append(str(row[0]))
+        relations = [str(row[0]) async for row in result.get_all_rows()]
         return [
             TableIdent(
                 db_name=schema_ident.db_name,
@@ -362,9 +356,7 @@ class AsyncPostgresAdapter(
             offset=page_ident.offset,
         )
         result = await self.execute(DBAdapterQuery(table_and_view_query))
-        table_and_view_names = []
-        async for row in result.get_all_rows():
-            table_and_view_names.append(str(row[0]))
+        table_and_view_names = [str(row[0]) async for row in result.get_all_rows()]
         return [
             TableIdent(
                 db_name=schema_ident.db_name,

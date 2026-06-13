@@ -182,12 +182,11 @@ class BaseTopLevelSchema[TARGET_OBJECT_TV](Schema):
             self.operations_mode,
         )
 
-        cleaned_data = {}
-        for field_name, field_value in data.items():
-            if field_name in self.fields and not self.fields[field_name].dump_only:
-                cleaned_data[field_name] = field_value
-
-        return cleaned_data
+        return {
+            field_name: field_value
+            for field_name, field_value in data.items()
+            if field_name in self.fields and not self.fields[field_name].dump_only
+        }
 
     @final
     def handle_unknown_fields(self, data: dict[str, Any]) -> dict[str, Any]:

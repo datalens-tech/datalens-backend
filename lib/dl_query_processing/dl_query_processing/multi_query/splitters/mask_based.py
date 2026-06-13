@@ -256,8 +256,7 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
         filters: list[CompiledFormulaInfo] = [
             formula for filter_idx, formula in enumerate(query.filters) if filter_idx in split_mask.filter_indices
         ]
-        for filter in split_mask.add_filters:
-            filters.append(filter)
+        filters.extend(split_mask.add_filters)
 
         join_on = query.join_on
         joined_from = query.joined_from
@@ -702,16 +701,16 @@ class MultiQuerySplitter(MultiQuerySplitterBase):
                     incoming_masks=sorted(node_index_list),
                 )
                 if counter_formula_indices:
-                    for node_idx in counter_formula_indices:
-                        counter_formula_split_masks.append(
-                            AliasedFormulaSplitMask(
-                                alias=expr_id_gen.get_id(),
-                                query_part=query_part,
-                                formula_list_idx=formula_list_idx,
-                                inner_node_idx=node_idx,
-                                outer_node_idx=node_idx,
-                            )
+                    counter_formula_split_masks.extend(
+                        AliasedFormulaSplitMask(
+                            alias=expr_id_gen.get_id(),
+                            query_part=query_part,
+                            formula_list_idx=formula_list_idx,
+                            inner_node_idx=node_idx,
+                            outer_node_idx=node_idx,
                         )
+                        for node_idx in counter_formula_indices
+                    )
 
         return counter_formula_split_masks
 

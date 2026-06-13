@@ -277,28 +277,28 @@ class FieldRLSSerializer:
         name_to_subject[cls.allow_all_subject_name] = cls.allow_all_subject
 
         # Combine the results.
-        rls_entries = []
+        rls_entries: list[RLSEntry] = []
         for value, value_info in value_to_item.items():
             names = sorted(set(value_info.names))
-            for name in names:
-                # TODO?: write down the source config line idx too.
-                rls_entries.append(
-                    RLSEntry(
-                        field_guid=field_guid,
-                        allowed_value=value,
-                        subject=name_to_subject[name],
-                        pattern_type=RLSPatternType.value,
-                    )
-                )
-        for name in allow_all_item.names:
-            rls_entries.append(
+            # TODO?: write down the source config line idx too.
+            rls_entries.extend(
                 RLSEntry(
                     field_guid=field_guid,
-                    allowed_value=None,
+                    allowed_value=value,
                     subject=name_to_subject[name],
-                    pattern_type=RLSPatternType.all,
+                    pattern_type=RLSPatternType.value,
                 )
+                for name in names
             )
+        rls_entries.extend(
+            RLSEntry(
+                field_guid=field_guid,
+                allowed_value=None,
+                subject=name_to_subject[name],
+                pattern_type=RLSPatternType.all,
+            )
+            for name in allow_all_item.names
+        )
         for name in userid_item.names:
             assert name == cls.userid_subject_name
             rls_entries.append(

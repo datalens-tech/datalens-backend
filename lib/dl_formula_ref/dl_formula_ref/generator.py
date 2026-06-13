@@ -385,7 +385,7 @@ class ReferenceDocGenerator:
     def _get_func_base_class(name: str) -> type | None:
         """Find the first (base) class for the given function"""
         name = name.lower()
-        for _i, definition in OPERATION_REGISTRY.items():
+        for definition in OPERATION_REGISTRY.values():
             func_name = definition.name
             assert func_name is not None
             if func_name.lower() == name:

@@ -463,10 +463,8 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             data["order_by"] = order_by_data
 
         if filters is not None:
-            filter_data: list[dict] = []
             filter_schema = FilterClauseSchema()
-            for condition in filters:
-                filter_data.append(filter_schema.dump(condition))
+            filter_data: list[dict] = [filter_schema.dump(condition) for condition in filters]
             data["filters"] = filter_data
 
         if parameters is not None:
@@ -488,10 +486,8 @@ class DataApiV2SerializationAdapter(BaseApiV1SerializationAdapter):
             data["parameter_values"] = parameters_data
 
         if blocks is not None:
-            block_data: list[dict] = []
             block_schema = QueryBlockSchema()
-            for block in blocks:
-                block_data.append(block_schema.dump(block))
+            block_data: list[dict] = [block_schema.dump(block) for block in blocks]
             data["blocks"] = block_data
 
         if updates:

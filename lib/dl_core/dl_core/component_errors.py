@@ -100,11 +100,7 @@ class ComponentErrorRegistry:
         Clear all errors for components of the given type
         """
 
-        items_to_remove = []
-        for item in self.items:
-            if item.type == component_type:
-                items_to_remove.append(item)
-
+        items_to_remove = [item for item in self.items if item.type == component_type]
         for item in items_to_remove:
             self.items.remove(item)
 

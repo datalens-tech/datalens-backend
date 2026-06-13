@@ -102,7 +102,7 @@ def _patch_attrs_for_regulated_test_class(
 
     # Find and decorate test functions for skipped features
     mark_tests_skipped_for_features: dict[Callable, str] = {}
-    for _name, func in test_funcs.items():
+    for func in test_funcs.values():
         tests_feature, reason = _is_test_func_for_features_with_reason(func, test_params.mark_features_skipped or {})
         if tests_feature:
             mark_tests_skipped_for_features[func] = reason

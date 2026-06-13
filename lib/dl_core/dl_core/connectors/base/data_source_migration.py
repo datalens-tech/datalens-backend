@@ -118,17 +118,14 @@ class SpecBasedSourceMigrator(DataSourceMigrator):
         self,
         data_source_spec: DataSourceSpec,
     ) -> Sequence[DataSourceMigrationInterface]:
-        result: list[DataSourceMigrationInterface] = []
-        for migration_spec in self.get_migration_specs():
-            if migration_spec.source_type == data_source_spec.source_type:
-                result.append(
-                    self._export_for_migration_spec(
-                        data_source_spec=data_source_spec,
-                        migration_spec=migration_spec,
-                    )
-                )
-
-        return result
+        return [
+            self._export_for_migration_spec(
+                data_source_spec=data_source_spec,
+                migration_spec=migration_spec,
+            )
+            for migration_spec in self.get_migration_specs()
+            if migration_spec.source_type == data_source_spec.source_type
+        ]
 
     def _choose_migration_dto(
         self,

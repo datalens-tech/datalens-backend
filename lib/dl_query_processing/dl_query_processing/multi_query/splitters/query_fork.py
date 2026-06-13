@@ -243,8 +243,7 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                 if add_formula.expr.extract not in add_formula_extracts:
                     add_formulas.append(add_formula)
                     add_formula_extracts.add(add_formula.expr.extract_not_none)
-            for formula_mask in mask.formula_split_masks:
-                formula_masks.append(formula_mask)
+            formula_masks.extend(mask.formula_split_masks)
 
         base_mask = base_mask.clone(
             add_formulas=add_formulas,
@@ -365,16 +364,15 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
             )
 
             if qfork_signature not in qforks_by_signature:
-                dim_add_formulas: list[AddFormulaInfo] = []
-                for dim in dim_list:
-                    dim_add_formulas.append(
-                        AddFormulaInfo(
-                            alias=expr_id_gen.get_id(),
-                            expr=dim,
-                            from_ids=frozenset(query.joined_from.iter_ids()),
-                            is_group_by=not inspect_expression.is_constant_expression(dim),
-                        )
+                dim_add_formulas: list[AddFormulaInfo] = [
+                    AddFormulaInfo(
+                        alias=expr_id_gen.get_id(),
+                        expr=dim,
+                        from_ids=frozenset(query.joined_from.iter_ids()),
+                        is_group_by=not inspect_expression.is_constant_expression(dim),
                     )
+                    for dim in dim_list
+                ]
 
                 # Collect non-dimension expressions from the `joining` node.
                 # They will be needed to construct JOIN ON conditions correctly
@@ -390,16 +388,16 @@ class QueryForkQuerySplitter(MultiQuerySplitter):
                     else:
                         raise TypeError(type(condition))
 
-                    for expr in expressions:
-                        if inspect_expression.is_aggregate_expression(expr, env=inspect_env):
-                            non_dim_add_formulas.append(
-                                AddFormulaInfo(
-                                    alias=expr_id_gen.get_id(),
-                                    expr=expr,
-                                    from_ids=frozenset(query.joined_from.iter_ids()),
-                                    is_group_by=False,
-                                )
-                            )
+                    non_dim_add_formulas.extend(
+                        AddFormulaInfo(
+                            alias=expr_id_gen.get_id(),
+                            expr=expr,
+                            from_ids=frozenset(query.joined_from.iter_ids()),
+                            is_group_by=False,
+                        )
+                        for expr in expressions
+                        if inspect_expression.is_aggregate_expression(expr, env=inspect_env)
+                    )
 
                 add_formulas = tuple(dim_add_formulas + non_dim_add_formulas)
                 if isinstance(qfork_node, formula_fork_nodes.QueryFork):

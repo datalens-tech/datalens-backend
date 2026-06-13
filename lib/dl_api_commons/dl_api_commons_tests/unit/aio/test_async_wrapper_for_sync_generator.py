@@ -83,9 +83,7 @@ async def test_simple_finite_generator(
 
     job = wrapper_factory(test_generator)
 
-    result = []
-    async for item in async_gen_adapter(job):
-        result.append(item)
+    result = [item async for item in async_gen_adapter(job)]
 
     assert result == list(range(count))
     assert job.state == JobState.closed

@@ -61,12 +61,11 @@ class ComponentErrorManager:
             DatasetComponentRef(component_type=item.type, component_id=item.id)
             for item in self.dataset.error_registry.items
         ]
-        phantom_refs: list[DatasetComponentRef] = []
-        for component_ref in all_error_refs:
-            if self._dca.get_component(component_ref=component_ref) is None:
-                phantom_refs.append(component_ref)
-
-        return phantom_refs
+        return [
+            component_ref
+            for component_ref in all_error_refs
+            if self._dca.get_component(component_ref=component_ref) is None
+        ]
 
     @staticmethod
     def print_component_refs(component_refs: list[DatasetComponentRef]) -> None:

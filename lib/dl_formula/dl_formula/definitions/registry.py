@@ -125,15 +125,22 @@ class OperationRegistry:
         ]
         raise exc.DataTypeError("; ".join(message_parts) + ".")
 
-    def items(self) -> Generator[tuple[FuncKey, op_base.NodeTranslation], None, None]:
-        """Like regular ``dict.items()``,  but flatten translation lists"""
-        sorted_keys = sorted(
+    def keys(self) -> list[FuncKey]:
+        """Sorted function keys (like ``dict.keys()``)"""
+        return sorted(
             self.ops.keys(), key=lambda key: (key[0], key[1] if key[1] is not None else float("inf"), *key[2:])
         )
-        for func_key in sorted_keys:
-            trans_list = self.ops[func_key]
-            for translation in trans_list:
+
+    def items(self) -> Generator[tuple[FuncKey, op_base.NodeTranslation], None, None]:
+        """Like regular ``dict.items()``,  but flatten translation lists"""
+        for func_key in self.keys():
+            for translation in self.ops[func_key]:
                 yield func_key, translation
+
+    def values(self) -> Generator[op_base.NodeTranslation, None, None]:
+        """Like regular ``dict.values()``, but flatten translation lists"""
+        for func_key in self.keys():
+            yield from self.ops[func_key]
 
     def get_supported_functions(
         self,

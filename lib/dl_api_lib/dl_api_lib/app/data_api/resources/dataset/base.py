@@ -805,16 +805,15 @@ class DatasetDataBaseView(BaseView):
                 RawSelectFieldSpec(ref=IdFieldRef(id=field.guid)),
             ]
 
-            filter_specs: list[RawFilterFieldSpec] = []
-            for obligatory_filter in cache_invalidation_source.filters:
-                for default_filter in obligatory_filter.default_filters:
-                    filter_specs.append(
-                        RawFilterFieldSpec(
-                            ref=IdFieldRef(id=obligatory_filter.field_guid),
-                            operation=default_filter.operation,
-                            values=default_filter.values,
-                        )
-                    )
+            filter_specs: list[RawFilterFieldSpec] = [
+                RawFilterFieldSpec(
+                    ref=IdFieldRef(id=obligatory_filter.field_guid),
+                    operation=default_filter.operation,
+                    values=default_filter.values,
+                )
+                for obligatory_filter in cache_invalidation_source.filters
+                for default_filter in obligatory_filter.default_filters
+            ]
 
             raw_query_spec_union = RawQuerySpecUnion(
                 select_specs=select_specs,

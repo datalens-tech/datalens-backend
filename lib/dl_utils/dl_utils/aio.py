@@ -162,10 +162,7 @@ def to_sync_iterable[ITERABLE_T](
 
 async def alist[ITERABLE_T](aiterable: AsyncIterable[ITERABLE_T]) -> list[ITERABLE_T]:
     """Gather an async iterable into a single list"""
-    result = []
-    async for item in aiterable:
-        result.append(item)
-    return result
+    return [item async for item in aiterable]
 
 
 class BIAsyncTimeout:

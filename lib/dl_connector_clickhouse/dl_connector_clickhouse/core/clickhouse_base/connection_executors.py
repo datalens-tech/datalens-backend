@@ -27,32 +27,30 @@ class _BaseClickHouseConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_CLICKHOUSE
     _conn_options: CHConnectOptions = attr.ib()
 
     async def _make_target_conn_dto_pool(self) -> list[ClickHouseConnTargetDTO]:
-        dto_pool = []
-        for host in self._conn_hosts_pool:
-            dto_pool.append(
-                ClickHouseConnTargetDTO(
-                    conn_id=self._conn_dto.conn_id,
-                    pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
-                    pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
-                    protocol=self._conn_dto.protocol,
-                    host=host,
-                    port=self._conn_dto.port,
-                    db_name=self._conn_dto.db_name,
-                    cluster_name=self._conn_dto.cluster_name,
-                    endpoint=self._conn_dto.endpoint,
-                    username=self._conn_dto.username,
-                    password=self._conn_dto.password,
-                    max_execution_time=self._conn_options.max_execution_time,
-                    total_timeout=self._conn_options.total_timeout,
-                    connect_timeout=self._conn_options.connect_timeout,
-                    disable_value_processing=self._conn_options.disable_value_processing,
-                    secure=self._conn_dto.secure,
-                    ssl_ca=self._conn_dto.ssl_ca,
-                    ssl_ca_verify=self._conn_dto.ssl_ca_verify,
-                    ca_data=self._ca_data.decode("ascii"),
-                )
+        return [
+            ClickHouseConnTargetDTO(
+                conn_id=self._conn_dto.conn_id,
+                pass_db_messages_to_user=self._conn_options.pass_db_messages_to_user,
+                pass_db_query_to_user=self._conn_options.pass_db_query_to_user,
+                protocol=self._conn_dto.protocol,
+                host=host,
+                port=self._conn_dto.port,
+                db_name=self._conn_dto.db_name,
+                cluster_name=self._conn_dto.cluster_name,
+                endpoint=self._conn_dto.endpoint,
+                username=self._conn_dto.username,
+                password=self._conn_dto.password,
+                max_execution_time=self._conn_options.max_execution_time,
+                total_timeout=self._conn_options.total_timeout,
+                connect_timeout=self._conn_options.connect_timeout,
+                disable_value_processing=self._conn_options.disable_value_processing,
+                secure=self._conn_dto.secure,
+                ssl_ca=self._conn_dto.ssl_ca,
+                ssl_ca_verify=self._conn_dto.ssl_ca_verify,
+                ca_data=self._ca_data.decode("ascii"),
             )
-        return dto_pool
+            for host in self._conn_hosts_pool
+        ]
 
     def mutate_for_dashsql(self, db_params: dict[str, str] | None = None) -> Self:
         if db_params:  # TODO.

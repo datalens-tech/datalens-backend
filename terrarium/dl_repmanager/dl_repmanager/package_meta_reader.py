@@ -74,11 +74,9 @@ class PackageMetaReader:
         result: set[LocaleDomainSpec] = set()
         for domain, item_data in self._toml_reader.iter_section_items(self._SECTION_NAME_I18N_DOMAINS, strict=False):
             domain_str = str(domain).strip()
-            paths: list[Path] = []
-            for path_data in item_data:
-                paths.append(Path(str(path_data["path"]).strip()))
+            paths = tuple(Path(str(path_data["path"]).strip()) for path_data in item_data)
 
-            result.add(LocaleDomainSpec(domain_name=domain_str, scan_paths=tuple(paths)))
+            result.add(LocaleDomainSpec(domain_name=domain_str, scan_paths=paths))
 
         return tuple(result)
 

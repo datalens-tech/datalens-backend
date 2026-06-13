@@ -32,6 +32,9 @@ class FunctionReferenceRegistry:
     def items(self) -> Iterable[tuple[RefFunctionKey, FunctionDocRegistryItem]]:
         return sorted(self._registry.items())
 
+    def values(self) -> Iterable[FunctionDocRegistryItem]:
+        return [self._registry[key] for key in sorted(self._registry)]
+
     def __contains__(self, key: Any) -> bool:
         if not isinstance(key, RefFunctionKey):
             return False
@@ -42,7 +45,7 @@ class FunctionReferenceRegistry:
 
     def limit(self, env: GenerationEnvironment) -> FunctionReferenceRegistry:
         limited_reg = FunctionReferenceRegistry()
-        for _key, item in self.items():
+        for item in self.values():
             if item.is_supported(env=env):
                 limited_reg.add_item(item)
 

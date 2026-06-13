@@ -138,12 +138,11 @@ class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionP
         self._log.info(f"Inserting data into table {table_name}")
 
         async for raw_chunk in data.chunks:
-            chunk = []
-            for row in raw_chunk:
-                chunk.append(
-                    [
-                        self._tt.cast_for_input(value=value, user_t=user_t)
-                        for value, user_t in zip(row, user_types, strict=True)
-                    ]
-                )
+            chunk = [
+                [
+                    self._tt.cast_for_input(value=value, user_t=user_t)
+                    for value, user_t in zip(row, user_types, strict=True)
+                ]
+                for row in raw_chunk
+            ]
             await self._conn.copy_records_to_table(table_name=table_name, columns=names, records=chunk)

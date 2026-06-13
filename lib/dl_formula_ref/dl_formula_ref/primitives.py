@@ -164,7 +164,7 @@ class RawMultiAudienceFunc:
     def from_aud_dict(cls, aud_dict: dict[Audience, RawFunc]) -> RawMultiAudienceFunc:
         names: set[str] = set()
         internal_names: set[str] = set()
-        for _audience, raw_func in aud_dict.items():
+        for raw_func in aud_dict.values():
             names.add(raw_func.name)
             internal_names.add(raw_func.internal_name)
 

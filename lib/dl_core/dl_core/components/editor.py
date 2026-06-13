@@ -411,10 +411,9 @@ class DatasetComponentEditor:
         raise exc.DatasetConfigurationError(f"Obligatory filter with id {obfilter_id} not found.")
 
     def remove_obligatory_filter(self, obfilter_id: str) -> None:
-        new_filters = []
-        for filter_object in self._dataset.data.obligatory_filters:
-            if filter_object.id != obfilter_id:
-                new_filters.append(filter_object)
+        new_filters = [
+            filter_object for filter_object in self._dataset.data.obligatory_filters if filter_object.id != obfilter_id
+        ]
         self._dataset.data.obligatory_filters = new_filters
 
     def set_result_schema(self, result_schema: ResultSchema | Iterable[BIField]) -> None:

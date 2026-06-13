@@ -74,5 +74,5 @@ class ReInitableDbDispenser[DB_CONFIG_TV: DbConfig, DB_TV: DbBase](DbDispenserBa
         return False
 
     def check_reinit_all(self, reconnect_timeout: int | None = None) -> None:
-        for db_config, _db in self._db_cache.items():
+        for db_config in self._db_cache:
             self._check_reinit_db(db_config=db_config, reconnect_timeout=reconnect_timeout)

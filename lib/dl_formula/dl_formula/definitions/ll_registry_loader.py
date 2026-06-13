@@ -74,7 +74,7 @@ def populate_translation_registry() -> None:
 
 
 def populate_ll_op_registry() -> None:
-    for _key, impl_cls in OPERATION_REGISTRY.items():
+    for impl_cls in OPERATION_REGISTRY.values():
         name = norm_name(impl_cls.name)
         assert name is not None
         ll_item = BasicOpItem(

@@ -293,13 +293,10 @@ def extra_with_evt_code(event_code: str, extra: dict[str, Any]) -> dict[str, Any
 
 
 def _get_map_key_label(*args: str, **kwargs: str) -> dict[str, str]:
-    map_field_name_label: dict[str, str] = {}
-    for field_name in args:
-        map_field_name_label[field_name] = field_name
-    for label, field_name in kwargs.items():
-        map_field_name_label[field_name] = label
-
-    return map_field_name_label
+    return {
+        **{field_name: field_name for field_name in args},
+        **{field_name: label for label, field_name in kwargs.items()},
+    }
 
 
 def format_dict(extra: dict[str, Any], separator: str = " ", *args: str, **kwargs: str) -> str:
