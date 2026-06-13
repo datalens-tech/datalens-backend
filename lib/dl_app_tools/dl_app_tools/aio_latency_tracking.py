@@ -76,7 +76,7 @@ class LatencyTracker:
 
     async def run_task(self) -> None:
         # Does not have to be `async`, but it is more consistent this way.
-        asyncio.create_task(self._task_main())
+        self._task = asyncio.create_task(self._task_main())
 
 
 async def atest_latency_tracker() -> None:

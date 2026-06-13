@@ -166,7 +166,8 @@ async def test_start_confirmation_timeout(caplog: pytest.LogCaptureFixture) -> N
         return
 
     try:
-        asyncio.ensure_future(asyncio.get_running_loop().run_in_executor(local_worker_tpe, garbage))
+        # `garbage` is intentionally left dangling — the test exercises GC of an orphaned task.
+        asyncio.ensure_future(asyncio.get_running_loop().run_in_executor(local_worker_tpe, garbage))  # noqa: RUF006
         await asyncio.wait_for(garbage_started.wait(), timeout=1)
 
         job = LocalJob(
