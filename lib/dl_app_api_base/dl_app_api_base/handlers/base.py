@@ -166,10 +166,10 @@ class BaseRequestSchema(dl_pydantic.BaseSchema):
     async def try_from_request(cls, request: aiohttp.web.Request) -> Self:
         try:
             return await cls.from_request(request)
-        except ValueError:
+        except ValueError as exc:
             text = await request.text()
             LOGGER.exception(f"Bad request: {text}")
-            raise BadRequestResponseSchema().as_exception()
+            raise BadRequestResponseSchema().as_exception() from exc
 
 
 class BaseHandler(abc.ABC):

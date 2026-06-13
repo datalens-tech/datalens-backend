@@ -35,8 +35,8 @@ class AuthMiddleware:
         context = self._request_context_provider.get()
         try:
             await context.get_auth_user()
-        except auth_exc.AuthError:
+        except auth_exc.AuthError as exc:
             LOGGER.exception("Authentication failed")
-            raise UnauthorizedResponseSchema().as_exception()
+            raise UnauthorizedResponseSchema().as_exception() from exc
 
         return await handler(request)

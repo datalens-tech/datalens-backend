@@ -76,12 +76,12 @@ class DashSQLTypedQueryRawView(BaseView):
                 ConnectionBase,
                 context_name="connection",
             )
-        except core_exc.USValidationException:
-            raise core_exc.USInvalidConnectionID(params={"entry_id": connection_id})
-        except core_exc.USObjectNotFoundException:
-            raise core_exc.USConnectionNotFound(params={"entry_id": connection_id})
-        except core_exc.USAccessDeniedException:
-            raise core_exc.USConnectionAccessDenied(params={"entry_id": connection_id})
+        except core_exc.USValidationException as exc:
+            raise core_exc.USInvalidConnectionID(params={"entry_id": connection_id}) from exc
+        except core_exc.USObjectNotFoundException as exc:
+            raise core_exc.USConnectionNotFound(params={"entry_id": connection_id}) from exc
+        except core_exc.USAccessDeniedException as exc:
+            raise core_exc.USConnectionAccessDenied(params={"entry_id": connection_id}) from exc
         assert isinstance(connection, ConnectionBase)
         return connection
 

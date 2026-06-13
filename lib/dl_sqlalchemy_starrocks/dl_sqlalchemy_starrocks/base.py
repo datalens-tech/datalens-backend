@@ -23,7 +23,7 @@ class StarRocksDDLCompiler(MySQLDDLCompiler):
             raise sa.exc.CompileError(
                 "StarRocksDDLCompiler.post_create_table() "
                 "cannot generate DUPLICATE KEY clause for a table with no columns"
-            )
+            ) from None
         quoted_col_name = self.preparer.format_column(first_col)
         return f"\nDUPLICATE KEY({quoted_col_name})"
 

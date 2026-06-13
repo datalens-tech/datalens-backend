@@ -84,7 +84,7 @@ class BaseMiddleware:
         try:
             payload = self._token_decoder.decode(user_access_token)
         except token.TokenError as exc:
-            raise self.Unauthorized(f"Invalid user access token: {exc.message}")
+            raise self.Unauthorized(f"Invalid user access token: {exc.message}") from exc
 
         return AuthResult(
             user_id=payload.user_id,

@@ -567,7 +567,7 @@ class DatasetDataBaseView(BaseView):
                 subject_groups.extend(groups)
         except HTTPError as exc:
             if exc.response.status_code == 404:
-                raise web.HTTPNotFound(reason="Cannot find RLS groups for subject")
+                raise web.HTTPNotFound(reason="Cannot find RLS groups for subject") from exc
             LOGGER.error(f"Error while resolving RLS groups: {exc!s}", exc_info=True)
             raise exc
         LOGGER.info(f"Subject groups for RLS: {subject_groups}")
