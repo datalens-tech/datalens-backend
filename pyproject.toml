@@ -90,6 +90,10 @@ target-version = "py312"
 # Never — a deliberate, permanent choice; comment says what it is and why we keep ignoring it.
 # Later — we want it eventually; comment says what it is.
 ignore = [
+  "ASYNC109", # Later: async-function-with-timeout — fires on public APIs that take a `timeout` param; revisit per-site
+  "ASYNC210", # Later: blocking-http-call — sync HTTP (requests/urllib) in async; only intentional sync I/O so far
+  "ASYNC230", # Later: blocking-open-call — sync open() in async; only intentional blocking IO so far (tests/fixtures/maintenance)
+  "ASYNC240", # Later: blocking-os-call — os.path / pathlib metadata in async; only cheap local-fs checks so far
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
@@ -107,7 +111,6 @@ ignore = [
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
 # "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
-# "ASYNC", # flake8-async — Later: catches blocking calls in async code
 # "PT",    # flake8-pytest-style — Later
 # "G",     # flake8-logging-format — Later: enforces lazy %-logging
 # "PERF",  # Perflint — Later
@@ -120,6 +123,7 @@ ignore = [
 # "TCH", # flake8-type-checking — Never: forces `from __future__ import annotations` / TYPE_CHECKING blocks, both banned by python-style.mdc
 # "D",   # pydocstyle — Never: we don't mandate docstrings repo-wide
 select = [
+  "ASYNC", # flake8-async
   "B", # flake8-bugbear
   "C4", # flake8-comprehensions
   "F", # Pyflakes

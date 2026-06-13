@@ -95,7 +95,8 @@ class Callback:
         if self.side_effect == CallbackSideEffect.RAISE_EXCEPTION:
             raise RuntimeError("Test callback failure")
         if self.side_effect == CallbackSideEffect.INFINITE_LOOP:
-            while True:
+            # intentional busy-wait: test fixture simulating a hung callback
+            while True:  # noqa: ASYNC110
                 await asyncio.sleep(1)
         elif self.side_effect == CallbackSideEffect.NO_SIDE_EFFECT:
             pass
@@ -207,7 +208,8 @@ def fixture_app_context(
         monkeypatch.setenv("MAIN_CALLBACK_SIDE_EFFECT", main_callback_side_effect.value)
         monkeypatch.setenv("SHUTDOWN_CALLBACK_SIDE_EFFECT", shutdown_callback_side_effect.value)
 
-        gunicorn_process = subprocess.Popen(
+        # real subprocess: the test spawns an actual gunicorn process to exercise worker lifecycle
+        gunicorn_process = subprocess.Popen(  # noqa: ASYNC220
             [
                 "gunicorn",
                 "test_worker:get_app",

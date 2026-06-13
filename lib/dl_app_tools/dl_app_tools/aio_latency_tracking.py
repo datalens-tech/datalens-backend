@@ -93,12 +93,14 @@ async def atest_latency_tracker() -> None:
     part_one_end = time.monotonic() + part_one_duration_sec
     while time.monotonic() < part_one_end:
         await asyncio.sleep(0.001)
-        time.sleep(0.005)
+        # intentional blocking sleep: this helper deliberately blocks the event loop to exercise latency tracking
+        time.sleep(0.005)  # noqa: ASYNC251
 
     for idx in range(1, 3000, 50):
         await asyncio.sleep(0.001)
         LOGGER.debug("Sleeping for %r msec", idx)
-        time.sleep(idx / 1000)
+        # intentional blocking sleep: deliberately blocks the event loop to exercise latency tracking
+        time.sleep(idx / 1000)  # noqa: ASYNC251
 
 
 def test_latency_tracker() -> None:

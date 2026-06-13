@@ -25,7 +25,8 @@ class Callback:
 class SleepingCallback(Callback):
     async def call(self) -> None:
         await super().call()
-        while True:
+        # intentional busy-wait: test fixture simulating a never-returning callback
+        while True:  # noqa: ASYNC110
             await asyncio.sleep(1)
 
 
