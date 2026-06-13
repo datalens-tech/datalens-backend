@@ -29,7 +29,7 @@ class BaseOracleTestClass(BaseConnectionTestClass[ConnectionSQLOracle]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, _empty_table) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -60,7 +60,7 @@ class BaseSSLOracleTestClass(BaseOracleTestClass):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL_SSL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, ssl_ca: str, _empty_table) -> dict:
         return dict(
             db_name=test_config.CoreSSLConnectionSettings.DB_NAME,

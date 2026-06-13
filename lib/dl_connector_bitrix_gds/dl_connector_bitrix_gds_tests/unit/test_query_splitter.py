@@ -40,7 +40,7 @@ RESULT_SCHEMA = ResultSchema(
 
 
 @pytest.mark.parametrize(
-    "formula_obj, original_field_id, expected",
+    ("formula_obj", "original_field_id", "expected"),
     [
         pytest.param(
             n.formula(

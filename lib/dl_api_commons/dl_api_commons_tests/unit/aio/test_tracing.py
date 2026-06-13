@@ -103,20 +103,25 @@ async def test_tracing_scenarios(aiohttp_client: TestClient) -> None:
 
     resp = await client.get("/ok")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == {"ok": "ok"}
+    assert resp.status == 200
+    assert resp_json == {"ok": "ok"}
 
     resp = await client.get("/err_err")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == {"err_err": None}
+    assert resp.status == 200
+    assert resp_json == {"err_err": None}
 
     resp = await client.get("/err_info")
     resp_json = await resp.json()
-    assert resp.status == 400 and resp_json == {"err_info": None}
+    assert resp.status == 400
+    assert resp_json == {"err_info": None}
 
     resp = await client.get("/no_ep_ok")
     resp_json = await resp.json()
-    assert resp.status == 200 and resp_json == {"no_ep_ok": None}
+    assert resp.status == 200
+    assert resp_json == {"no_ep_ok": None}
 
     resp = await client.get("/no_ep_err")
     resp_json = await resp.json()
-    assert resp.status == 401 and resp_json == {"no_ep_err": None}
+    assert resp.status == 401
+    assert resp_json == {"no_ep_err": None}

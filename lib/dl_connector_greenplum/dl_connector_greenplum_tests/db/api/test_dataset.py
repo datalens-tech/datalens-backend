@@ -11,7 +11,7 @@ from dl_connector_greenplum_tests.db.api.base import (
 
 
 class GreenplumDatasetTestSuite(DefaultConnectorDatasetTestSuite, metaclass=abc.ABCMeta):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def source_listing_values(self) -> dict[str, bool | str | None]:
         return {
             "supports_source_search": True,

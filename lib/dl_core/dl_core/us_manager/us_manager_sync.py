@@ -177,7 +177,8 @@ class SyncUSManager(USManagerBase):
         us_scope = save_params.pop("scope")
         us_type = save_params.pop("type")
         entry_loc = entry.entry_key
-        assert "data" in save_params and "unversioned_data" in save_params
+        assert "data" in save_params
+        assert "unversioned_data" in save_params
         assert entry_loc is not None, "Can not save entry without key/workbook data"
 
         if not entry.stored_in_db:

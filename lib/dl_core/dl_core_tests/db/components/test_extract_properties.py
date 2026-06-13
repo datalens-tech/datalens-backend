@@ -20,7 +20,7 @@ from dl_core_tests.db.base import DefaultCoreTestClass
 
 
 class TestExtractValidationMocked(DefaultCoreTestClass):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_us_manager(self) -> MockedSyncUSManager:
         return MockedSyncUSManager()
 

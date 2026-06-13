@@ -165,5 +165,6 @@ class CHYTAdapter(BaseCHYTAdapter):
         table_path: str,
         secret_auth_headers: dict[str, str],
     ) -> RawIndexInfo | None:
-        assert isinstance(table_path, str) and table_path.startswith("//"), "Incorrect YT table path"
+        assert isinstance(table_path, str), "Incorrect YT table path"
+        assert table_path.startswith("//"), "Incorrect YT table path"
         return await self._fetch_yt_sorting_columns(self._target_dto.host, table_path, secret_auth_headers)

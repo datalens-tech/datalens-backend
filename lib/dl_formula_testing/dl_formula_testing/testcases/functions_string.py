@@ -218,7 +218,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         assert not dbe.eval('NOTCONTAINS(#2019-03-04#, "019")')
         assert not dbe.eval('NOTCONTAINS(#2019-03-04T12:34:56#, "019")')
 
-    @pytest.mark.parametrize("value_fl,pattern_fl,expected", CONTAINS_TESTS)
+    @pytest.mark.parametrize(("value_fl", "pattern_fl", "expected"), CONTAINS_TESTS)
     def test_contains_extended(
         self,
         dbe: DbEvaluator,
@@ -240,7 +240,7 @@ class DefaultStringFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         statement = f"CONTAINS(__LIT__({value_fl}), __LIT__({pattern_fl}))"
         assert dbe.eval(statement) is expected, (statement, expected)
 
-    @pytest.mark.parametrize("value_fl,pattern_fl,expected", CONTAINS_TESTS)
+    @pytest.mark.parametrize(("value_fl", "pattern_fl", "expected"), CONTAINS_TESTS)
     def test_notcontains_extended(
         self,
         dbe: DbEvaluator,

@@ -42,16 +42,20 @@ async def test_service_header_normal_case(aiohttp_client: TestClient) -> None:
     client = await aiohttp_client(app)  # type: ignore[operator]
 
     resp = await client.get("/not_found")
-    assert 404 == resp.status and [server_header] == resp.headers.getall("Server")
+    assert 404 == resp.status
+    assert [server_header] == resp.headers.getall("Server")
 
     resp = await client.get("/simple_view")
-    assert 200 == resp.status and [server_header] == resp.headers.getall("Server")
+    assert 200 == resp.status
+    assert [server_header] == resp.headers.getall("Server")
 
     resp = await client.get("/fail_view")
-    assert 500 == resp.status and [server_header] == resp.headers.getall("Server")
+    assert 500 == resp.status
+    assert [server_header] == resp.headers.getall("Server")
 
     resp = await client.get("/streamed_view")
-    assert 200 == resp.status and [server_header] == resp.headers.getall("Server")
+    assert 200 == resp.status
+    assert [server_header] == resp.headers.getall("Server")
 
 
 def test_service_header_validation_fail() -> None:

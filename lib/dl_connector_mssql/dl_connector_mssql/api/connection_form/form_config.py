@@ -27,7 +27,8 @@ class MSSQLConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, MSSQLConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, MSSQLConnectorSettings)
 
         rc = RowConstructor(localizer=self._localizer)
 

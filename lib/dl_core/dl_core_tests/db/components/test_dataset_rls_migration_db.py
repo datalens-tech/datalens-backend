@@ -141,7 +141,7 @@ class TestDatasetRlsMigration(DefaultCoreTestClass):
     in ``test_migration.py``.
     """
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_us_migration_manager(
         self,
         conn_default_sync_us_manager: SyncUSManager,

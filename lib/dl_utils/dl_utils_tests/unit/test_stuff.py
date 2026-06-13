@@ -24,7 +24,7 @@ def test_join_in_chunks():
 
 
 @pytest.mark.parametrize(
-    "url_or_path,expected",
+    ("url_or_path", "expected"),
     [
         ("/api/v1/query?order_by=category&token=mytoken", "/api/v1/query?order_by=[hidden]&token=[hidden]"),
         ("", ""),
@@ -45,7 +45,7 @@ def test_hide_url_args(url_or_path: str, expected: str):
 
 
 @pytest.mark.parametrize(
-    "request_id,attempt,expected",
+    ("request_id", "attempt", "expected"),
     [
         ("abc123", 1, "abc123"),
         ("abc123", 2, "abc123/2"),

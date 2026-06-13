@@ -21,18 +21,18 @@ LOGGER = logging.getLogger(__name__)
 aiohttp_client = aiohttp_client
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def config_path() -> str:
     dir_path = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(dir_path, "config.yaml")
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def oauth_app_settings(monkeypatch, config_path):
     monkeypatch.setenv("CONFIG_PATH", config_path)
     monkeypatch.setenv("AUTH_CLIENTS__APP_METRICA__CLIENT_SECRET", "123pass")
     monkeypatch.setenv("AUTH_CLIENTS__YA_CLIENT__CLIENT_SECRET", "pass1234")
-    settings = AuthAPISettings(
+    return AuthAPISettings(
         auth_clients={
             "metrica": YandexOAuthClient(
                 conn_type="metrica",
@@ -66,7 +66,6 @@ def oauth_app_settings(monkeypatch, config_path):
             },
         }
     )
-    yield settings
 
 
 class TestingOAuthApiAppFactory(OAuthApiAppFactory[AuthAPISettings]):
@@ -74,7 +73,7 @@ class TestingOAuthApiAppFactory(OAuthApiAppFactory[AuthAPISettings]):
         return []
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def oauth_app(loop, aiohttp_client, oauth_app_settings):
     app_factory = TestingOAuthApiAppFactory(settings=oauth_app_settings)
     app = app_factory.create_app()
@@ -92,7 +91,7 @@ async def oauth_app_client(oauth_app) -> DLCommonAPIClient:
         )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def snowflake_payload() -> dict[str, str]:
     return {
         "conn_type": "snowflake",

@@ -26,7 +26,7 @@ def appmetrica_sample_counter_id():
     return APPMETRICA_SAMPLE_COUNTER_ID
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def shrink_metrika_default_date_period(monkeypatch):
     """
     To reduce load to Metrika API and tests run time.
@@ -42,17 +42,17 @@ def _appmetrica_db_engine():
     return sqlalchemy.create_engine(f"appmetrica_api://:{_get_oauth_from_env()}@/installs")
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def metrika_db_engine(shrink_metrika_default_date_period):
     return _metrika_db_engine()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def metrika_db_engine_with_accuracy(shrink_metrika_default_date_period):
     return sqlalchemy.create_engine(f"metrika_api://:{_get_oauth_from_env()}@/hits?accuracy=0.1")
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def appmetrica_db_engine(shrink_metrika_default_date_period):
     return _appmetrica_db_engine()
 
@@ -285,7 +285,7 @@ def m_expr_distinct(metrika_sample_counter_id, metrika_db_engine):
     return expr.select_from(sqlalchemy.Table(metrika_sample_counter_id, sqlalchemy.MetaData(bind=metrika_db_engine)))
 
 
-@pytest.fixture()
+@pytest.fixture
 def metrika_expr_func_expr1():
     return _gen_m_expr1
 

@@ -1,6 +1,6 @@
 import datetime
 
-from pytest import MonkeyPatch
+import pytest
 
 import dl_retrier
 
@@ -24,7 +24,7 @@ class FakeDatetimeModule:
         self.datetime = FakeDatetime(intervals)
 
 
-def test_iter_retries_zero_timeout(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_zero_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -58,7 +58,7 @@ def test_iter_retries_zero_timeout(monkeypatch: MonkeyPatch) -> None:
     assert retries == expected
 
 
-def test_iter_retries_multiple(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_multiple(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -123,7 +123,7 @@ def test_iter_retries_multiple(monkeypatch: MonkeyPatch) -> None:
     assert list(retries_iterator) == expected
 
 
-def test_iter_retries_backoff_max_limit(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_backoff_max_limit(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # 1 call
@@ -194,7 +194,7 @@ def test_iter_retries_backoff_max_limit(monkeypatch: MonkeyPatch) -> None:
     assert retries == expected
 
 
-def test_iter_retries_timeout_limits_request_and_connect(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_timeout_limits_request_and_connect(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -237,7 +237,7 @@ def test_iter_retries_timeout_limits_request_and_connect(monkeypatch: MonkeyPatc
     assert retries == expected
 
 
-def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -281,7 +281,7 @@ def test_iter_retries_stops_when_sleep_exceeds_timeout(monkeypatch: MonkeyPatch)
     assert retries == expected
 
 
-def test_iter_retries_zero_retries_count(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_zero_retries_count(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter
@@ -317,7 +317,7 @@ def test_iter_retries_zero_retries_count(monkeypatch: MonkeyPatch) -> None:
     assert retries == expected
 
 
-def test_iter_retries_one_retry_count(monkeypatch: MonkeyPatch) -> None:
+def test_iter_retries_one_retry_count(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_datetime = FakeDatetimeModule(
         [
             0,  # enter

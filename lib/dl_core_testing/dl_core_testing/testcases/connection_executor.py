@@ -52,7 +52,7 @@ if TYPE_CHECKING:
 
 
 class BaseConnectionExecutorTestClass[CONN_TV: ConnectionBase](RegulatedTestCase, BaseConnectionTestClass[CONN_TV]):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_connection_executor(
         self,
         sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
@@ -76,11 +76,11 @@ class BaseConnectionExecutorTestClass[CONN_TV: ConnectionBase](RegulatedTestCase
 
 
 class DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         raise NotImplementedError
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def existing_table_ident(self, sample_table: DbTable) -> TableIdent:
         # Using sample table by default, but this can be overridden by redefining this fixture
         return TableIdent(
@@ -89,7 +89,7 @@ class DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV: ConnectionBase](BaseC
             table_name=sample_table.name,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def nonexistent_table_ident(self, existing_table_ident: TableIdent) -> TableIdent:
         return existing_table_ident.clone(table_name=f"nonexistent_table_{shortuuid.uuid().lower()}")
 
@@ -407,11 +407,11 @@ class SchemaNamesTestCase:
 class DefaultIndexDiscoveryTestSuite[CONN_TV: ConnectionBase](DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV]):
     """Sync-only — covers the legacy `BaseConnExecutorSet.test_indexes_discovery`."""
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def index_test_case(self) -> IndexTestCase:
         pytest.skip("No `index_test_case` fixture defined for this connector")
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def fetch_table_indexes_sync_connection_executor(
         self,
         sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],
@@ -451,7 +451,7 @@ class DefaultIndexDiscoveryTestSuite[CONN_TV: ConnectionBase](DefaultSyncAsyncCo
 class DefaultSchemaListingTestSuite[CONN_TV: ConnectionBase](DefaultSyncAsyncConnectionExecutorCheckBase[CONN_TV]):
     """Sync + async — covers the legacy `BaseSchemaSupportedExecutorSet` schema-name tests."""
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def schema_names_test_case(self) -> SchemaNamesTestCase:
         raise NotImplementedError("Override `schema_names_test_case` for this connector")
 

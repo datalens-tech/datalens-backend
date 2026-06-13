@@ -38,7 +38,7 @@ CI_EXPECTED_WITHOUT_COLLATE = [
 def ci_expr_with_expected(request):
     """Fixture that yields (expr, expected_with_collate, expected_without_collate)"""
     (_name, expr), expected_ci, expected_no_ci = request.param
-    yield expr, expected_ci, expected_no_ci
+    return expr, expected_ci, expected_no_ci
 
 
 @pytest.mark.param

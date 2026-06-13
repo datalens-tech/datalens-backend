@@ -45,7 +45,7 @@ class TrinoSyncConnectionExecutorBase(
     BaseTrinoTestClass,
     DefaultSyncAsyncConnectionExecutorCheckBase[ConnectionTrino],
 ):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return None
 
@@ -59,7 +59,7 @@ class TestTrinoSyncConnectionExecutor(
     DefaultSyncConnectionExecutorTestSuite[ConnectionTrino],
 ):
     @pytest.mark.parametrize(
-        "layer, expected_error_name",
+        ("layer", "expected_error_name"),
         [
             ("table_name", "TABLE_NOT_FOUND"),
             ("schema_name", "SCHEMA_NOT_FOUND"),
@@ -236,7 +236,7 @@ class TestTrinoSyncConnectionExecutor(
 
 
 class TestTrinoSyncConnectionExecutorTimeout(TrinoSyncConnectionExecutorBase):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_connection_executor(
         self,
         sync_conn_executor_factory: Callable[[], SyncConnExecutorBase],

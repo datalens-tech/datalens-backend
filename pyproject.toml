@@ -96,6 +96,11 @@ ignore = [
   "ASYNC240", # Later: blocking-os-call — os.path / pathlib metadata in async; only cheap local-fs checks so far
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
+  "PT011", # Later: pytest-raises-too-broad — needs a narrower exception or `match=` per call site
+  "PT012", # Later: pytest-raises-with-multiple-statements — restructure each `with pytest.raises` block per site
+  "PT017", # Later: pytest-assert-in-except — rewrite manual except-assert into `pytest.raises` per site
+  "PT019", # Later: pytest-fixture-param-without-value — migrate underscore-fixture params to `@pytest.mark.usefixtures` per site
+  "PT021", # Later: pytest-fixture-finalizer-callback — migrate `request.addfinalizer` to `yield` per site
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
   "RUF002", # Never: ambiguous-unicode-character-docstring — Cyrillic in RU docstrings is intentional; per-site review showed flagging only adds `noqa` noise (incl. dead/commented-out code)
   "RUF003", # Never: ambiguous-unicode-character-comment — same intentional Cyrillic in RU comments
@@ -111,7 +116,6 @@ ignore = [
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
 # "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
-# "PT",    # flake8-pytest-style — Later
 # "G",     # flake8-logging-format — Later: enforces lazy %-logging
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, separate initiative
@@ -131,6 +135,7 @@ select = [
   "LOG", # flake8-logging
   "PERF", # Perflint
   "PIE", # flake8-pie
+  "PT", # flake8-pytest-style
   "RET", # flake8-return
   "RUF", # Ruff-specific rules
   "SIM", # flake8-simplify

@@ -57,7 +57,7 @@ class ApiTestBase(abc.ABC):
     compeng_enabled: ClassVar[bool] = True
     query_processing_mode: ClassVar[QueryProcessingMode] = QueryProcessingMode.basic
 
-    @pytest.fixture(scope="function", autouse=True)
+    @pytest.fixture(autouse=True)
     def preload(self) -> None:
         preload_api_lib()
 
@@ -78,11 +78,11 @@ class ApiTestBase(abc.ABC):
     def is_connector_available(self, conn_type: ConnectionType) -> bool:
         return True
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def enable_all_connectors(self, monkeypatch: Any) -> None:
         monkeypatch.setattr(ConnectorAvailabilityConfig, "check_connector_is_available", self.is_connector_available)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def environment_readiness(self, enable_all_connectors: Any) -> None:
         """Make sure the environment is ready for tests"""
         return
@@ -92,7 +92,7 @@ class ApiTestBase(abc.ABC):
         with pytest.MonkeyPatch.context() as mp:
             yield mp
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def rqe_config_subprocess(
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
@@ -139,7 +139,7 @@ class ApiTestBase(abc.ABC):
             CA_FILE_PATH=get_root_certificates_path(),
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def control_api_app_settings(
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
@@ -160,19 +160,19 @@ class ApiTestBase(abc.ABC):
     def ca_data(self) -> bytes:
         return get_root_certificates()
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def control_api_app_factory(self, control_api_app_settings: ControlApiAppSettings) -> ControlApiAppFactory:
         return TestingControlApiAppFactory(settings=control_api_app_settings)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def fake_tenant(self) -> dl_api_commons.TenantDef:
         return dl_api_commons.TenantCommon()
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def fake_auth_data(self) -> dl_auth.AuthData | None:
         return None
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def control_api_app(
         self,
         environment_readiness: None,
@@ -199,7 +199,7 @@ class ApiTestBase(abc.ABC):
             assert ctx
             yield app
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def client(
         self,
         control_api_app: Flask,
@@ -215,11 +215,11 @@ class ApiTestBase(abc.ABC):
 
         return control_api_app.test_client()
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def control_api_sync_client(self, client: FlaskClient) -> SyncHttpClientBase:
         return FlaskSyncApiClient(int_wclient=client)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def control_api(
         self,
         control_api_sync_client: SyncHttpClientBase,
@@ -227,7 +227,7 @@ class ApiTestBase(abc.ABC):
     ) -> SyncHttpDatasetApiV1:
         return SyncHttpDatasetApiV1(client=control_api_sync_client, headers=bi_headers or {})
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_us_manager(
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,

@@ -23,7 +23,7 @@ def test_model_validate_with_original_type() -> None:
 
 
 @pytest.mark.parametrize(
-    "value,expected_value",
+    ("value", "expected_value"),
     [
         (
             "2025-01-02T03:04:05.000006Z",
@@ -75,7 +75,7 @@ def test_raises_validation_error_on_none() -> None:
 
 
 @pytest.mark.parametrize(
-    "value,expected_json",
+    ("value", "expected_json"),
     [
         (
             dl_pydantic.JsonableDatetime(2025, 1, 2, 3, 4, 5, 6, tzinfo=datetime.UTC),

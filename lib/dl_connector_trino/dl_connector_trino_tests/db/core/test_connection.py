@@ -58,7 +58,7 @@ class TestTrinoConnection(
         assert "test_memory_catalog" in tmpl_db_names
         assert len(set(tmpl_db_names) & set(TRINO_SYSTEM_CATALOGS)) == 0
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def catalog_name(self) -> str:
         return "test_memory_catalog"
 

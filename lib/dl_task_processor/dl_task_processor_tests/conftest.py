@@ -22,7 +22,7 @@ from dl_task_processor_tests.utils import (
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def task_state():
     return TaskState(BITaskStateImpl())
 

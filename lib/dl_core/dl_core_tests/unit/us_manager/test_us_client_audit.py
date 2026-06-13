@@ -10,7 +10,7 @@ from dl_core.united_storage_client import (
 import dl_retrier
 
 
-@pytest.fixture()
+@pytest.fixture
 def us_client() -> UStorageClient:
     return UStorageClient(
         host="http://us-host",
@@ -21,7 +21,7 @@ def us_client() -> UStorageClient:
 
 
 @pytest.mark.parametrize(
-    "audit_mode,expected_url",
+    ("audit_mode", "expected_url"),
     [
         (False, "http://us-host/v1/entries/some-id"),
         (True, "http://us-host/audit/v1/entries/some-id"),
@@ -35,7 +35,7 @@ def test_get_full_url_audit_mode(us_client: UStorageClient, audit_mode: bool, ex
 
 @responses.activate
 @pytest.mark.parametrize(
-    "context_headers,expected_prefix",
+    ("context_headers", "expected_prefix"),
     [
         ({DLHeadersCommon.AUDIT_MODE.value: "true"}, "audit/v1"),
         ({DLHeadersCommon.DATASET_ID.value: "ds-123"}, "v1"),

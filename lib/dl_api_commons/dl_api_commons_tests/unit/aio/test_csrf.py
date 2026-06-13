@@ -89,7 +89,7 @@ async def csrf_app_factory(aiohttp_client: TestClient) -> _AppFactory:
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "case_name, method, authorized, headers, cookies, secrets",
+    ("case_name", "method", "authorized", "headers", "cookies", "secrets"),
     [
         (
             "OK_just_cookie",
@@ -200,7 +200,7 @@ async def test_csrf_ok(
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "case_name, method, authorized, headers, cookies, secrets",
+    ("case_name", "method", "authorized", "headers", "cookies", "secrets"),
     [
         (
             "INVALID_no_csrf_token_provided",

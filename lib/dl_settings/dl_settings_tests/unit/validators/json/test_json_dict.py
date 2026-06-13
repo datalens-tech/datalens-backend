@@ -8,7 +8,7 @@ T = typing.TypeVar("T")
 
 
 @pytest.mark.parametrize(
-    "input, expected",
+    ("input", "expected"),
     [
         (None, None),
         ({"key": "value"}, {"key": "value"}),

@@ -135,7 +135,8 @@ class OptimizeZeroOneComparisonMutation(FormulaMutation, abc.ABC):
         left, right = old.left, old.right
         if isinstance(left, nodes.BaseLiteral) and isinstance(right, nodes.Binary):
             left, right = right, left
-        assert isinstance(left, nodes.Binary) and isinstance(right, nodes.BaseLiteral)
+        assert isinstance(left, nodes.Binary)
+        assert isinstance(right, nodes.BaseLiteral)
 
         opt, lit = left, right  # aliases for convenience
         if (old.name == "==" and lit.value == 1) or (old.name == "!=" and lit.value == 0):

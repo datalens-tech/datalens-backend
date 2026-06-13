@@ -57,7 +57,7 @@ class PGOpRunnerTestBase(DefaultCoreTestClass):
         ):
             yield processor
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def input_stream(self) -> DataStreamAsync:
         names = ["int_value", "str_value", "dt_value", "gdt_value"]
         user_types = [UserDataType.integer, UserDataType.string, UserDataType.datetime, UserDataType.genericdatetime]

@@ -194,7 +194,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         ydb_rc: YDBRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, YDBConnectorSettings)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
@@ -296,7 +297,8 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, YDBConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, YDBConnectorSettings)
         rc = RowConstructor(localizer=self._localizer)
         ydb_rc = YDBRowConstructor(localizer=self._localizer)
 

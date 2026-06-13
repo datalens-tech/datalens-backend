@@ -6,7 +6,7 @@ from dl_connector_postgresql_tests.db.api.base import PostgreSQLDatasetTestBase
 
 
 class TestPostgreSQLDataset(PostgreSQLDatasetTestBase, DefaultConnectorDatasetTestSuite):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def source_listing_values(self) -> dict[str, bool | str | None]:
         return {
             "supports_source_search": True,

@@ -72,7 +72,7 @@ class TestMetricaDataset(BaseMetricaTestClass, DefaultDatasetTestSuite[MetrikaAp
             result_cnt=5,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dsrc_params(self) -> dict:
         return {
             "db_name": MetrikaApiCounterSource.hits.name,
@@ -282,7 +282,7 @@ class TestAppMetricaDataset(BaseAppMetricaTestClass, DefaultDatasetTestSuite[App
     def _allow_adding_sources(self, dataset: Dataset) -> bool:
         return False
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dsrc_params(self) -> dict:
         return {
             "db_name": AppMetricaFieldsNamespaces.installs.name,

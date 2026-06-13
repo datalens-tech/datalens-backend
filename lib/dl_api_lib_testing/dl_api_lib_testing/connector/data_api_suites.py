@@ -241,15 +241,15 @@ class DefaultConnectorDataResultTestSuite(StandardizedDataApiTestBase, Regulated
         )
 
     @pytest.mark.parametrize(
-        "field_title,filter_field_title,is_numeric",
-        (
+        ("field_title", "filter_field_title", "is_numeric"),
+        [
             ("array_int_value", "int_value", True),
             ("array_str_value", "str_value", False),
             ("array_str_value", "concat_const", False),
             ("array_str_value", "concat_field", False),
             ("array_float_value", "float_value", True),
             ("array_float_value", "none_value", False),
-        ),
+        ],
     )
     @for_features(array_support)
     def test_array_contains_field(

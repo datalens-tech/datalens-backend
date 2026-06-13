@@ -38,7 +38,8 @@ class CHYTConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, CHYTConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, CHYTConnectorSettings)
 
         rc = RowConstructor(localizer=self._localizer)
 

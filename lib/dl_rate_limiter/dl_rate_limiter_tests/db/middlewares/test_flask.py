@@ -19,7 +19,7 @@ def fixture_app(sync_request_limiter: dl_rate_limiter.SyncRequestRateLimiter) ->
     app.config.update({"TESTING": True})
     dl_rate_limiter.FlaskMiddleware(rate_limiter=sync_request_limiter).set_up(app)
 
-    yield app
+    return app
 
 
 @pytest.fixture(name="client")

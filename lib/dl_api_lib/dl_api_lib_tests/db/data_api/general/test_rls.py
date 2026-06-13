@@ -11,7 +11,6 @@ from dl_rls.testing.testing_data import (
 
 class TestRLS(DefaultApiTestBase):
     @pytest.fixture(
-        scope="function",
         params=[
             ("dl_api_lib_test_config", False, "1"),
             ("dl_api_lib_group_config", True, "1"),

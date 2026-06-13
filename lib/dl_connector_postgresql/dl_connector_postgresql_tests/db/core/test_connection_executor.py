@@ -48,7 +48,7 @@ class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
         },
     )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=CoreConnectionSettings.DB_NAME)
 
@@ -56,11 +56,11 @@ class PostgreSQLSyncAsyncConnectionExecutorCheckBase(
         assert db_version is not None
         assert "." in db_version
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def enabled_citext_extension(self, db: Db) -> None:
         db.execute("CREATE EXTENSION IF NOT EXISTS CITEXT;")
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def schema_names_test_case(self, db: Db) -> SchemaNamesTestCase:
         schema_name_list = [make_schema(db) for _ in range(3)]
         return SchemaNamesTestCase(
@@ -83,7 +83,7 @@ class TestPostgreSQLSyncConnectionExecutor(
         },
     )
 
-    @pytest.fixture(scope="function", params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
+    @pytest.fixture(params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
     def index_test_case(self, db: Db, request: pytest.FixtureRequest):
         table_name = f"idx_test_{shortuuid.uuid()}"
         cases = {

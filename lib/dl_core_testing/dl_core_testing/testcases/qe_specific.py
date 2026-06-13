@@ -23,7 +23,7 @@ class DefaultQESpecificTestSuite[CONN_TV: ConnectionBase](BaseRemoteQueryExecuto
     """
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("force_async_rqe", (True, False))
+    @pytest.mark.parametrize("force_async_rqe", [True, False])
     async def test_body_signature_validation(
         self,
         conn_target_dto: ConnTargetDTO,
@@ -56,7 +56,7 @@ class DefaultQESpecificTestSuite[CONN_TV: ConnectionBase](BaseRemoteQueryExecuto
                 await remote_adapter.execute(DBAdapterQuery("select 1"))
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("force_async_rqe", (True, False))
+    @pytest.mark.parametrize("force_async_rqe", [True, False])
     async def test_qe_logging_ctx_propagation(
         self,
         query_executor_options: RemoteQueryExecutorData,

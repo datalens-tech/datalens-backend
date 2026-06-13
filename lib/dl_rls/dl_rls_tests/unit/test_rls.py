@@ -67,7 +67,7 @@ def test_rls_simple() -> None:
 
 
 @pytest.mark.parametrize(
-    "entrysets, expected_restrictions",
+    ("entrysets", "expected_restrictions"),
     [
         pytest.param(
             {"fld1": [{"allowed_value": "value_1", "subject_id": "user_1"}]},

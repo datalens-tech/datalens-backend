@@ -6,7 +6,7 @@ from dl_constants.enums import WhereClauseOperation
 
 
 class TestDataApiErrors(DefaultApiTestBase):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_test_params(self, sample_table) -> DataApiTestParams:
         # This default is defined for the sample table
         return DataApiTestParams(

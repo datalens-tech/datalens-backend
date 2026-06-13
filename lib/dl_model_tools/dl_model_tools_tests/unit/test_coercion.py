@@ -9,7 +9,7 @@ import dl_model_tools
 
 
 @pytest.mark.parametrize(
-    "raw, user_type, expected",
+    ("raw", "user_type", "expected"),
     [
         # integer: native and string-encoded both accepted; integral floats too
         (2, dl_constants.UserDataType.integer, 2),
@@ -51,7 +51,7 @@ def test_coerce_value_accepts_valid(raw, user_type, expected):
 
 
 @pytest.mark.parametrize(
-    "raw, user_type",
+    ("raw", "user_type"),
     [
         # the bounty payloads must be rejected for non-string types
         ("0 OR 1=1 --", dl_constants.UserDataType.integer),

@@ -34,7 +34,7 @@ from dl_testing.containers import get_test_container_hostport
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def redis_settings(request):
     # try to redefine value
     if hasattr(request, "param") and request.param is not None:
@@ -57,12 +57,12 @@ async def redis_pool(loop, redis_settings):
     await pool.close()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def task_state():
     return TaskState(BITaskStateImpl())
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def worker_settings(request):
     return getattr(request, "param", WorkerSettings())
 
@@ -89,7 +89,7 @@ async def task_processor_arq_worker(loop, init_task_processor_arq_worker):
     await wrapper.stop()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def task_processor_arq_client(loop, task_processor_arq_worker, redis_pool, redis_settings, task_state):
     impl = ARQProcessorImpl(redis_pool)
     p = TaskProcessor(impl=impl, state=task_state)
@@ -97,7 +97,7 @@ def task_processor_arq_client(loop, task_processor_arq_worker, redis_pool, redis
     return p
 
 
-@pytest.fixture(scope="function", params=["arq", "local"])
+@pytest.fixture(params=["arq", "local"])
 def task_processor_client(request, task_processor_arq_client, task_processor_local_client):
     if request.param == "arq":
         yield task_processor_arq_client

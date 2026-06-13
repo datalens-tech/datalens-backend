@@ -15,7 +15,7 @@ class PostgreSQLTestBase(FormulaConnectorTestBase):
     def db_url(self) -> str:
         return DB_URLS[self.dialect]
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def enabled_pgcrypto_extension(self, db_config: FormulaDbConfig) -> None:
         db = self.db_dispenser.get_database(db_config)
         db.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto;")

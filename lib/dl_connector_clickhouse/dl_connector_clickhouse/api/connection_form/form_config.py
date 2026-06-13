@@ -243,7 +243,8 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
-        assert connector_settings is not None and isinstance(connector_settings, ClickHouseConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, ClickHouseConnectorSettings)
         clickhouse_rc = ClickHouseRowConstructor(localizer=self._localizer)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]

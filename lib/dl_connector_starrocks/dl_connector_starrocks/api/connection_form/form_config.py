@@ -106,7 +106,8 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
         rc: StarRocksRowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> Sequence[FormRow]:
-        assert connector_settings is not None and isinstance(connector_settings, StarRocksConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, StarRocksConnectorSettings)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:

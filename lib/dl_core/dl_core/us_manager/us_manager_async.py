@@ -273,7 +273,8 @@ class AsyncUSManager(USManagerBase):
         save_params = self._get_entry_save_params(entry)
         us_scope = save_params.pop("scope")
         us_type = save_params.pop("type")
-        assert "data" in save_params and "unversioned_data" in save_params
+        assert "data" in save_params
+        assert "unversioned_data" in save_params
 
         if not entry.stored_in_db:
             entry_loc = entry.entry_key

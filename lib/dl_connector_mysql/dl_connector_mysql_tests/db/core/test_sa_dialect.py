@@ -11,7 +11,7 @@ from dl_connector_mysql_tests.db.core.base import BaseMySQLTestClass
 class TestMySQLSaDialect(BaseMySQLTestClass):
     @pytest.mark.parametrize(
         ("value", "type_", "expected"),
-        (
+        [
             pytest.param(
                 datetime.date(2022, 1, 2), sqlalchemy.sql.sqltypes.Date(), datetime.date(2022, 1, 2), id="date-as-date"
             ),
@@ -30,7 +30,7 @@ class TestMySQLSaDialect(BaseMySQLTestClass):
                 datetime.datetime(2022, 1, 2, 12, 59, 59),
                 id="datetime-as-string",
             ),
-        ),
+        ],
     )
     def test_mysql_literal_bind_datetimes(self, value, type_, expected, db):
         execute = db.execute

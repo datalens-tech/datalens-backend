@@ -55,7 +55,7 @@ class BaseDataSourceTestClass[CONN_TV: ConnectionBase, DSRC_SPEC_TV: DataSourceS
     def initial_data_source_spec(self) -> DSRC_SPEC_TV:
         raise NotImplementedError
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_source(
         self,
         sync_us_manager: SyncUSManager,
@@ -177,7 +177,7 @@ class DataSourceTestByViewClass[
     ) -> list[SchemaColumn]:
         return [self.postprocess_view_schema_column(schema_col) for schema_col in view_schema]
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def subselect_view(self, initial_data_source_spec: SUBSELECT_DSRC_SPEC_TV, db: Db) -> str:
         name = f"test_view_from_subselect_{shortuuid.uuid().lower()}"
         db.execute(f"create view {name} as select * from ({initial_data_source_spec.subsql}) source")

@@ -102,7 +102,7 @@ class TestDateTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultDateType
 class GenericDatetimeTypeFunctionPostgreSQLTestSuite(
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
-    @pytest.mark.parametrize("func_name", ("GENERICDATETIME",))
+    @pytest.mark.parametrize("func_name", ["GENERICDATETIME"])
     def test_genericdatetime2_pg(self, dbe: DbEvaluator, func_name: str) -> None:
         mos_tz = "Europe/Moscow"
         dt_naive = datetime.datetime(2019, 1, 3, 2, 4, 5)

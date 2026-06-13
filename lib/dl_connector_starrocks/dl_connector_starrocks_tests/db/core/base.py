@@ -29,7 +29,7 @@ class BaseStarRocksTestClass(BaseConnectionTestClass[ConnectionStarRocks]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return {
             "host": test_config.CoreConnectionSettings.HOST,
@@ -39,7 +39,7 @@ class BaseStarRocksTestClass(BaseConnectionTestClass[ConnectionStarRocks]):
             "listing_sources": test_config.CoreConnectionSettings.LISTING_SOURCES,
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def existing_table_ident(self, sample_table: DbTable) -> TableIdent:
         return TableIdent(
             db_name=test_config.CoreConnectionSettings.CATALOG,
@@ -70,7 +70,7 @@ class BaseSslStarRocksTestClass(BaseStarRocksTestClass):
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, ssl_ca: str) -> dict:
         return {
             "host": test_config.CoreSslConnectionSettings.HOST,

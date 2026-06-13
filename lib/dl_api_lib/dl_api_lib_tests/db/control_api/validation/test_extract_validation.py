@@ -491,7 +491,7 @@ class TestExtractExportImport(DefaultApiTestBase):
             },
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def export_import_headers(self, control_api_app_settings: ControlApiAppSettings) -> dict[str, str]:
         assert control_api_app_settings.US_MASTER_TOKEN is not None
         return {

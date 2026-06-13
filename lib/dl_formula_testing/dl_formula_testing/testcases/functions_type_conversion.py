@@ -274,7 +274,7 @@ class DefaultDateTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
 
 
 class DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
-    @pytest.mark.parametrize("func_name", ("GENERICDATETIME", "DATETIME"))
+    @pytest.mark.parametrize("func_name", ["GENERICDATETIME", "DATETIME"])
     def test_genericdatetime(self, dbe: DbEvaluator, func_name: str) -> None:
         assert dt_strip(dbe.eval("##2019-01-02 03:04:05##")) == datetime.datetime(2019, 1, 2, 3, 4, 5)
         assert dbe.eval("##2019-01-02##") == datetime.date(2019, 1, 2)
@@ -288,7 +288,7 @@ class DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite(FormulaConnect
         assert dt_strip(dbe.eval(f"{func_name}({int(utc_ts(2019, 1, 2, 3, 4, 5))})")) in expected_values
         assert dt_strip(dbe.eval(f"{func_name}({float(utc_ts(2019, 1, 2, 3, 4, 5))})")) in expected_values
 
-    @pytest.mark.parametrize("func_name", ("GENERICDATETIME", "DATETIME"))
+    @pytest.mark.parametrize("func_name", ["GENERICDATETIME", "DATETIME"])
     def test_genericdatetime_from_null(self, dbe: DbEvaluator, func_name: str) -> None:
         assert dbe.eval(f"{func_name}(NULL)") is None
         if not self.empty_str_is_null:  # NULL can be interpreted as ''
@@ -296,7 +296,7 @@ class DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite(FormulaConnect
         assert dbe.eval(f"{func_name}(DATE(NULL))") is None
         assert dbe.eval(f"{func_name}({func_name}(NULL))") is None
 
-    @pytest.mark.parametrize("func_name", ("GENERICDATETIME", "DATETIME"))
+    @pytest.mark.parametrize("func_name", ["GENERICDATETIME", "DATETIME"])
     def test_genericdatetime_from_data_null(self, dbe: DbEvaluator, null_data_table: sa.Table, func_name: str) -> None:
         if not self.empty_str_is_null:  # NULL can be interpreted as ''
             assert dbe.eval(f"{func_name}([str_null])", from_=null_data_table) is None

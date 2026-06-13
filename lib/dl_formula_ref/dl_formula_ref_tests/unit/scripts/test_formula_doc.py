@@ -26,7 +26,7 @@ def tool():
     return ToolRunner(parser=parser, tool_cls=FormulaDocTool)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def example_data_patch(monkeypatch):
     # TODO: Maybe this should be the standard way to access this file
     # Workaround for accessing data file from the monobinary in CI tests

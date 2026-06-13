@@ -25,12 +25,12 @@ from dl_testing.constants import TEST_USER_ID
 class TestParameters(DefaultApiTestBase):
     @pytest.mark.parametrize(
         ("multiplier", "expected_status_code"),
-        (
+        [
             (None, HTTPStatus.OK),
             (2, HTTPStatus.OK),
             (5, HTTPStatus.OK),
             (-1, HTTPStatus.BAD_REQUEST),
-        ),
+        ],
     )
     def test_parameter_in_formula(
         self,
@@ -85,11 +85,11 @@ class TestParameters(DefaultApiTestBase):
 
     @pytest.mark.parametrize(
         ("default_value", "expected_status_code", "expected_bi_status_code"),
-        (
+        [
             ("42", HTTPStatus.OK, None),
             ("142", HTTPStatus.BAD_REQUEST, "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"),
             ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API"),
-        ),
+        ],
     )
     def test_parameter_constraint_default_value_mutation(
         self,
@@ -134,11 +134,11 @@ class TestParameters(DefaultApiTestBase):
 
     @pytest.mark.parametrize(
         ("param_value", "expected_status_code", "expected_bi_status_code"),
-        (
+        [
             (42, HTTPStatus.OK, None),
             (142, HTTPStatus.BAD_REQUEST, "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"),
             ("abc", HTTPStatus.BAD_REQUEST, "ERR.DS_API.FORMULA.PARAMETER.INVALID_VALUE"),
-        ),
+        ],
     )
     def test_parameter_constraint_parameter_value(
         self,

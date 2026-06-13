@@ -167,10 +167,12 @@ def test_common_logging_flask(caplog: pytest.LogCaptureFixture) -> None:
 
     # Check that own request id was appended
     internal_request_id = records[0].request_id  # type: ignore
-    assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
+    assert internal_request_id
+    assert internal_request_id.startswith("parentreqid1234--")
 
     parent_request_id = records[0].parent_request_id  # type: ignore
-    assert parent_request_id and parent_request_id == "parentreqid1234"
+    assert parent_request_id
+    assert parent_request_id == "parentreqid1234"
 
 
 @pytest.mark.asyncio
@@ -219,12 +221,13 @@ async def test_common_logging_aiohttp(caplog: pytest.LogCaptureFixture, aiohttp_
 
     # Check that own request id was appended
     internal_request_id = req_id_records[0].request_id  # type: ignore
-    assert internal_request_id and internal_request_id.startswith("parentreqid1234--")
+    assert internal_request_id
+    assert internal_request_id.startswith("parentreqid1234--")
 
 
 @pytest.mark.parametrize(
-    "source, expected_masked",
-    (
+    ("source", "expected_masked"),
+    [
         (None, None),
         ({}, {}),
         (
@@ -256,7 +259,7 @@ async def test_common_logging_aiohttp(caplog: pytest.LogCaptureFixture, aiohttp_
             {"password": ["asdf", "fdsa"]},
             {"password": ["<hidden>", "<hidden>"]},
         ),
-    ),
+    ],
 )
 def test_mask_sensitive_fields_by_name_recursive(source: dict[str, Any], expected_masked: dict[str, Any]) -> None:
     actual_masked = RequestObfuscator().mask_sensitive_fields_by_name_in_json_recursive(source)

@@ -103,7 +103,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             PIVOT_ENGINE_TYPE=PIVOT_ENGINE_TYPE_PANDAS,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_app_settings(
         self,
         bi_test_config: ApiTestEnvironmentConfiguration,
@@ -131,11 +131,11 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
 
         return TestingDataApiAppSettings(fallback=deprecated_settings, **extra_kwargs)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_app_factory(self, data_api_app_settings: DataApiAppSettings) -> DataApiAppFactory:
         return TestingDataApiAppFactory(settings=data_api_app_settings)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_app(
         self,
         data_api_app_factory: DataApiAppFactory,
@@ -145,7 +145,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             connectors_settings=connectors_settings,
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_lowlevel_aiohttp_client(
         self,
         loop: asyncio.AbstractEventLoop,
@@ -154,7 +154,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     ) -> TestClient:
         return loop.run_until_complete(aiohttp_client(data_api_app))
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_sync_client(
         self,
         loop: asyncio.AbstractEventLoop,
@@ -167,7 +167,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
             ),
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api(
         self,
         data_api_sync_client: SyncHttpClientBase,
@@ -175,7 +175,7 @@ class DataApiTestBase(ApiTestBase, metaclass=abc.ABCMeta):
     ) -> SyncHttpDataApiV2:
         return SyncHttpDataApiV2(client=data_api_sync_client, headers=bi_headers or {})
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def native_agg_function_names(self) -> dict[str, str]:
         return {
             "sum": "sum",

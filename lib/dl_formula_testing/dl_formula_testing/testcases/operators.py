@@ -198,7 +198,7 @@ class DefaultOperatorFormulaConnectorTestSuite(FormulaConnectorTestBase):
         if self.supports_arrays:
             assert dbe.eval("ARRAY(1, 2, NULL, 4) = ARRAY(1, 2, NULL, 4)")
 
-    @pytest.mark.parametrize("lit", (pytest.param("##", id="generic"), pytest.param("#", id="regular")))
+    @pytest.mark.parametrize("lit", [pytest.param("##", id="generic"), pytest.param("#", id="regular")])
     def test_comparison_operators_datetimes(self, dbe: DbEvaluator, lit: str) -> None:
         def _dt_lit(s: str) -> str:
             return f"{lit}{s}{lit}"

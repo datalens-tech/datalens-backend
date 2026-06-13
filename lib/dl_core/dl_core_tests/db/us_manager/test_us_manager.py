@@ -87,7 +87,9 @@ class TestUSManager(DefaultCoreTestClass):
         #
         lock_token = sync_us_manager.acquire_lock(orig_entry)
         # Ensure lock token was saved
-        assert isinstance(lock_token, str) and lock_token and lock_token == orig_entry._lock
+        assert isinstance(lock_token, str)
+        assert lock_token
+        assert lock_token == orig_entry._lock
         # Reloading entry
         reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
         # Ensure lock works
@@ -160,10 +162,8 @@ class TestUSManager(DefaultCoreTestClass):
             add_connection_from_data_source(dsrc_coll.get_opt(DataSourceRole.materialization))
             add_connection_from_data_source(dsrc_coll.get_opt(DataSourceRole.sample))
 
-        assert (
-            len(manually_collected_related_conn_set) > 0
-            and loaded_connection_ref_set == manually_collected_related_conn_set
-        )
+        assert len(manually_collected_related_conn_set) > 0
+        assert loaded_connection_ref_set == manually_collected_related_conn_set
 
     @pytest.mark.asyncio
     async def test_correct_exception_on_missing_dependency(

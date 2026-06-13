@@ -44,7 +44,7 @@ class MetricaTestSetup(BaseConnectionTestClass[_CONN_TV]):
         engine_wrapper = TestingEngineWrapper(config=db_config.engine_config)
         return Db(config=db_config, engine_wrapper=engine_wrapper)
 
-    @pytest.fixture(scope="function", autouse=True)
+    @pytest.fixture(autouse=True)
     def shrink_metrika_default_date_period(self, monkeypatch):
         """
         To reduce load for Metrika API and tests run time.
@@ -56,7 +56,7 @@ class BaseMetricaTestClass(MetricaTestSetup[MetrikaApiConnection]):
     conn_type = CONNECTION_TYPE_METRICA_API
     core_test_config = test_config.CORE_TEST_CONFIG
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, metrica_token: str) -> dict:
         return {
             "counter_id": test_config.METRIKA_SAMPLE_COUNTER_ID,
@@ -68,7 +68,7 @@ class BaseAppMetricaTestClass(MetricaTestSetup[AppMetricaApiConnection]):
     conn_type = CONNECTION_TYPE_APPMETRICA_API
     core_test_config = test_config.CORE_TEST_CONFIG
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, metrica_token: str) -> dict:
         return {
             "counter_id": test_config.APPMETRICA_SAMPLE_COUNTER_ID,

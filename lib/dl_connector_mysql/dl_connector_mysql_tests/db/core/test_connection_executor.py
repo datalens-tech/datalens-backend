@@ -35,7 +35,7 @@ class MySQLSyncAsyncConnectionExecutorCheckBase(
         },
     )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=CoreConnectionSettings.DB_NAME)
 
@@ -88,7 +88,7 @@ class TestMySQLAsyncConnectionExecutor(
     MySQLSyncAsyncConnectionExecutorCheckBase,
     DefaultAsyncConnectionExecutorTestSuite[ConnectionMySQL],
 ):
-    @pytest.fixture(autouse=True, scope="function")
+    @pytest.fixture(autouse=True)
     def mock_aiomysql_prepare(self, monkeypatch):
         """
         Replace for

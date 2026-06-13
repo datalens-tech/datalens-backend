@@ -101,7 +101,7 @@ class TestSslNoVerifyIgnoredWhenSettingDisabled(
     and SSL certificate verification remains active.
     """
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,

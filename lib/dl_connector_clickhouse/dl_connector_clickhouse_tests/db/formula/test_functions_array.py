@@ -52,7 +52,7 @@ class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionCli
         assert not dbe.eval('CONTAINS_SUBSEQUENCE(ARRAY("cde"), [arr_str_value])', from_=data_table)
 
     @pytest.mark.parametrize(
-        "bi_func, eval_func",
+        ("bi_func", "eval_func"),
         [
             ("ARR_MIN", min),
             ("ARR_MAX", max),

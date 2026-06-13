@@ -99,7 +99,7 @@ _CHYT_REPORT_FIELDS_FROM_START = {
     ],
 )
 @pytest.mark.parametrize(
-    "case_name, records_seq, expected_query_data",
+    ("case_name", "records_seq", "expected_query_data"),
     [
         (
             "OK_no_cache_used",

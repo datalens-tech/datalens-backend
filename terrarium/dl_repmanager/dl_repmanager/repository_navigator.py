@@ -158,7 +158,8 @@ class RepositoryNavigator:
 
     def _naive_path_to_module(self, path: Path) -> str:
         path_str = str(path)
-        assert not path_str.startswith("/") and path_str.endswith(".py")
+        assert not path_str.startswith("/")
+        assert path_str.endswith(".py")
         return path_str[:-3].replace("/", ".")
 
     def resolve_entity_to_type(

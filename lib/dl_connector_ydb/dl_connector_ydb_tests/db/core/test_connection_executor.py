@@ -19,7 +19,7 @@ class YDBSyncAsyncConnectionExecutorCheckBase(
     BaseYDBTestClass,
     DefaultSyncAsyncConnectionExecutorCheckBase[YDBConnection],
 ):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=CoreConnectionSettings.DB_NAME)
 

@@ -23,7 +23,7 @@ class BigQuerySyncAsyncConnectionExecutorCheckBase(
         },
     )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=None)
 

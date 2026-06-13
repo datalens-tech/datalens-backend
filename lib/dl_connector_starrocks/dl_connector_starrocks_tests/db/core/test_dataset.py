@@ -12,7 +12,7 @@ from dl_connector_starrocks_tests.db.core.base import BaseStarRocksTestClass
 class TestStarRocksDataset(BaseStarRocksTestClass, DefaultDatasetTestSuite[ConnectionStarRocks]):
     source_type = SOURCE_TYPE_STARROCKS_TABLE
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dsrc_params(self, dataset_table: DbTable) -> dict:
         return {
             "db_name": test_config.CoreConnectionSettings.CATALOG,

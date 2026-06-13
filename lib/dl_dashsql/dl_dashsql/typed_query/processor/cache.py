@@ -88,7 +88,8 @@ class CachedTypedQueryProcessor(TypedQueryProcessorBase):
         # Extract the serialized data
         assert len(data_rows) == 1
         first_row = data_rows[0]
-        assert isinstance(first_row, (list, tuple)) and len(first_row) == 1
+        assert isinstance(first_row, (list, tuple))
+        assert len(first_row) == 1
         loaded_serialized_data = first_row[0]
         assert isinstance(loaded_serialized_data, str)
 

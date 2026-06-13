@@ -220,4 +220,5 @@ class TestInfo(DefaultApiTestBase):
         assert resp.status_code == 200
         resp_data = resp.json
         assert "result" in resp_data
-        assert len(resp_data["result"]) == 1 and resp_data["result"][0]["allowed"] == True, resp_data
+        assert len(resp_data["result"]) == 1, resp_data
+        assert resp_data["result"][0]["allowed"] == True, resp_data

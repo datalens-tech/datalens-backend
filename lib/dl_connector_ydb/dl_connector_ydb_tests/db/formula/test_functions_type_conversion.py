@@ -160,7 +160,7 @@ class DbCastTypeFunctionYQLTestSuite(
         # target - target type for cast
         # cast_args - type arguments (for decimal)
         # ok - if no exception should occur
-        "target,cast_args,ok",
+        ("target", "cast_args", "ok"),
         [
             # Bool
             ("Bool", None, True),
@@ -209,7 +209,7 @@ class DbCastTypeFunctionYQLTestSuite(
         # target - target type for cast
         # cast_args - type arguments (for decimal)
         # ok - if no exception should occur
-        "target,cast_args,ok",
+        ("target", "cast_args", "ok"),
         [
             # Bool
             ("Bool", None, True),
@@ -258,7 +258,7 @@ class DbCastTypeFunctionYQLTestSuite(
         # target - target type for cast
         # cast_args - type arguments (for decimal)
         # ok - if no exception should occur
-        "target,cast_args,ok",
+        ("target", "cast_args", "ok"),
         [
             # Bool
             ("Bool", None, True),
@@ -307,7 +307,7 @@ class DbCastTypeFunctionYQLTestSuite(
         # target - target type for cast
         # cast_args - type arguments (for decimal)
         # ok - if no exception should occur
-        "target,cast_args,ok",
+        ("target", "cast_args", "ok"),
         [
             # Bool
             ("Bool", None, True),
@@ -356,7 +356,7 @@ class DbCastTypeFunctionYQLTestSuite(
         # target - target type for cast
         # cast_args - type arguments (for decimal)
         # ok - if no exception should occur
-        "target,cast_args,ok",
+        ("target", "cast_args", "ok"),
         [
             # Bool
             ("Bool", None, False),
@@ -459,7 +459,7 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
         "datetime_value": DataType.DATETIME,
     }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def ydb_data_test_table_field_types(self) -> dict[str, DataType]:
         return {**self.YDB_TYPE_FIELD_TYPES}
 

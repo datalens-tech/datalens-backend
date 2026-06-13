@@ -30,7 +30,7 @@ class BaseMySQLTestClass(BaseConnectionTestClass[ConnectionMySQL]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -65,7 +65,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, ssl_ca: str) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
@@ -80,7 +80,7 @@ class BaseSslMySQLTestClass(BaseMySQLTestClass):
 
 
 class BaseRogueMySQLTestClass(BaseMySQLTestClass):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return {
             "db_name": test_config.CoreRogueConnectionSettings.DB_NAME,

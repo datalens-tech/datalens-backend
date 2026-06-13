@@ -173,7 +173,8 @@ class PostgreSQLConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         connector_settings: ConnectorSettings | None,
     ) -> typing.Sequence[FormRow]:
-        assert connector_settings is not None and isinstance(connector_settings, PostgreSQLConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, PostgreSQLConnectorSettings)
         postgres_rc = PostgresRowConstructor(localizer=self._localizer)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]

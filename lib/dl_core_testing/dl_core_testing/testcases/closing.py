@@ -48,7 +48,7 @@ class DefaultClosingTestSuite[CONN_TV: ConnectionBase](BaseConnectionExecutorTes
         target_conn_dto_pool = await async_connection_executor._make_target_conn_dto_pool()
         yield next(iter(target_conn_dto_pool))
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def tpe(self) -> Generator[ContextVarExecutor, None, None]:
         tpe = ContextVarExecutor()
         yield tpe

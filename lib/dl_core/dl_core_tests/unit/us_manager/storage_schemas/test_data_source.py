@@ -93,7 +93,7 @@ def sync_usm(bi_context, crypto_keys_config, default_service_registry) -> SyncUS
     )
 
 
-@pytest.fixture(scope="function", params=_DS_FACTORY.keys())
+@pytest.fixture(params=_DS_FACTORY.keys())
 def supported_data_source(sync_usm: SyncUSManager, request: pytest.FixtureRequest) -> data_source.DataSource:
     p = request.param
     return _DS_FACTORY[p](sync_usm)

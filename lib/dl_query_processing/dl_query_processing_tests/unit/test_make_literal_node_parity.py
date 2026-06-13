@@ -9,7 +9,7 @@ import dl_query_processing.exc
 
 
 @pytest.mark.parametrize(
-    "raw, data_type, expected_value",
+    ("raw", "data_type", "expected_value"),
     [
         ("2", DataType.INTEGER, 2),
         ("-1", DataType.CONST_INTEGER, -1),
@@ -29,7 +29,7 @@ def test_make_literal_node_scalar_values(raw, data_type, expected_value):
 
 
 @pytest.mark.parametrize(
-    "raw, data_type",
+    ("raw", "data_type"),
     [
         ("0 OR 1=1 --", DataType.INTEGER),
         ("-1 UNION SELECT 999, version() --", DataType.INTEGER),

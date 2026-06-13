@@ -39,7 +39,8 @@ class OracleConnectionFormFactory(ConnectionFormFactory):
         connector_settings: ConnectorSettings | None,
         tenant: TenantDef | None,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, OracleConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, OracleConnectorSettings)
         rc = RowConstructor(self._localizer)
 
         common_api_schema_items: list[FormFieldApiSchema] = [

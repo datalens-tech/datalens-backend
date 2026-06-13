@@ -26,7 +26,7 @@ class TestDialect:
         return mock.Mock(spec=pyodbc.Cursor)
 
     @pytest.mark.parametrize(
-        "parameter, output",
+        ("parameter", "output"),
         [
             (None, "NULL"),
             (True, "1"),

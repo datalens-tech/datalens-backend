@@ -40,7 +40,7 @@ class TestAsyncPostgreSQLAdapter(
         ]
 
     @pytest.mark.parametrize(
-        "schema, expected_tables",
+        ("schema", "expected_tables"),
         [
             ("test_data", ["sample"]),
             ("test_data_partitions", ["sample_partition"]),

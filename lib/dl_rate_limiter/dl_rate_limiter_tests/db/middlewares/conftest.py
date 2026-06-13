@@ -45,7 +45,7 @@ def fixture_request_patterns() -> list[dl_rate_limiter.RequestPattern]:
     ]
 
 
-@pytest.fixture(name="sync_request_limiter", scope="function")
+@pytest.fixture(name="sync_request_limiter")
 def fixture_sync_request_limiter(
     sync_redis_client: redis.Redis,
     request_patterns: list[dl_rate_limiter.RequestPattern],

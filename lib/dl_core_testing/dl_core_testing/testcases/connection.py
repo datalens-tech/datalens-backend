@@ -44,20 +44,20 @@ class BaseConnectionTestClass[CONN_TV: ConnectionBase](
 ):
     raw_sql_level: ClassVar[RawSQLLevel | None] = None
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_us_manager(self, conn_default_sync_us_manager: SyncUSManager) -> SyncUSManager:
         return conn_default_sync_us_manager
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def async_us_manager(self, conn_default_async_us_manager: AsyncUSManager) -> AsyncUSManager:
         return conn_default_async_us_manager
 
     @abc.abstractmethod
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         raise NotImplementedError
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def saved_connection(self, sync_us_manager: SyncUSManager, connection_creation_params: dict) -> CONN_TV:
         conn = make_saved_connection(
             sync_usm=sync_us_manager,
@@ -66,7 +66,7 @@ class BaseConnectionTestClass[CONN_TV: ConnectionBase](
         )
         return cast(CONN_TV, conn)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_conn_executor_factory(
         self,
         saved_connection: CONN_TV,
@@ -78,7 +78,7 @@ class BaseConnectionTestClass[CONN_TV: ConnectionBase](
 
         return factory
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def async_conn_executor_factory(
         self,
         saved_connection: CONN_TV,

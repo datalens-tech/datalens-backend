@@ -36,7 +36,7 @@ class MSSQLSyncAsyncConnectionExecutorCheckBase(
         },
     )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=CoreConnectionSettings.DB_NAME)
 
@@ -44,7 +44,7 @@ class MSSQLSyncAsyncConnectionExecutorCheckBase(
         assert db_version is not None
         assert "." in db_version
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def schema_names_test_case(self, db: Db) -> SchemaNamesTestCase:
         schema_name_list = [make_schema(db) for _ in range(3)]
         return SchemaNamesTestCase(

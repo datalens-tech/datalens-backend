@@ -401,7 +401,7 @@ class BaseTestControlApiSourceTemplateConnectionDisabled(BaseTestSourceTemplate)
 class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
     field_names: ClassVar[Sequence[str]] = ["discount", "city"]
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def saved_dataset(
         self,
         control_api: SyncHttpDatasetApiV1,
@@ -761,7 +761,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
 
     @pytest.mark.parametrize(
         ("default_value", "parameter_value", "expected_status_code", "expected_bi_status_code"),
-        (
+        [
             # values that coerce cleanly to the declared type are accepted
             pytest.param(IntegerParameterValue(value=1), "2", http.HTTPStatus.OK, None, id="integer-positive"),
             pytest.param(IntegerParameterValue(value=1), "-1", http.HTTPStatus.OK, None, id="integer-negative"),
@@ -808,7 +808,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
                 "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID",
                 id="boolean-injection",
             ),
-        ),
+        ],
     )
     def test_parameter_value_type_coercion(
         self,

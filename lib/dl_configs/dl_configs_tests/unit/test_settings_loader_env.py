@@ -772,7 +772,7 @@ def test_json_value():
     )
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def temp_file_factory() -> Callable[[str], str]:
     with tempfile.TemporaryDirectory() as tmp_dir_name:
 

@@ -5,7 +5,7 @@ from dl_api_lib_tests.db.base import DefaultApiTestBase
 
 
 class TestDatasetJoinOptimization(DefaultApiTestBase):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dataset_for_join_optimization_tests(self, control_api, saved_connection_id, dataset_params):
         ds = Dataset()
 

@@ -40,12 +40,12 @@ from dl_testing.regulated_test import RegulatedTestCase
 class BaseDatasetTestClass[CONN_TV: ConnectionBase](BaseConnectionTestClass[CONN_TV]):
     source_type: ClassVar[DataSourceType]
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dataset_table(self, sample_table: DbTable) -> DbTable:
         """The table to be used for datasets. By default use the sample table"""
         return sample_table
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dsrc_params(self, dataset_table: DbTable) -> dict:
         return {
             "db_name": dataset_table.db.name,
@@ -53,7 +53,7 @@ class BaseDatasetTestClass[CONN_TV: ConnectionBase](BaseConnectionTestClass[CONN
             "table_name": dataset_table.name,
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def saved_dataset(
         self,
         sync_us_manager: SyncUSManager,
@@ -69,17 +69,17 @@ class BaseDatasetTestClass[CONN_TV: ConnectionBase](BaseConnectionTestClass[CONN
         sync_us_manager.save(dataset)
         return dataset
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def empty_saved_dataset(self, sync_us_manager: SyncUSManager) -> Dataset:
         dataset = make_dataset(sync_usm=sync_us_manager)
         sync_us_manager.save(dataset)
         return dataset
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dataset_wrapper(self, saved_dataset: Dataset, sync_us_manager: SyncUSManager) -> DatasetTestWrapper:
         return DatasetTestWrapper(dataset=saved_dataset, us_manager=sync_us_manager)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def editable_dataset_wrapper(
         self,
         saved_dataset: Dataset,

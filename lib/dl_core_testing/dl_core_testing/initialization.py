@@ -1,4 +1,4 @@
-from pytest import Config
+import pytest
 from statcommons.logs import LOGMUTATORS
 
 from dl_core.loader import load_core_lib
@@ -8,7 +8,7 @@ from dl_db_testing.loader import load_db_testing_lib
 import dl_logging
 
 
-def initialize_core_test(pytest_config: Config, core_test_config: CoreTestEnvironmentConfiguration) -> None:
+def initialize_core_test(pytest_config: pytest.Config, core_test_config: CoreTestEnvironmentConfiguration) -> None:
     # Configure pytest itself
     pytest_config.addinivalue_line("markers", "slow: ...")
     pytest_config.addinivalue_line("markers", "yt: ...")

@@ -56,7 +56,7 @@ class ClickHouseSyncAsyncConnectionExecutorCheckBase(
         },
     )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=CoreConnectionSettings.DB_NAME)
 
@@ -186,7 +186,7 @@ class TestClickHouseSyncConnectionExecutor(
             ],
         }
 
-    @pytest.fixture(scope="function", params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
+    @pytest.fixture(params=["no_idx", "one_columns_sorting", "two_columns_sorting"])
     def index_test_case(self, db: Db, request: pytest.FixtureRequest):
         table_name = f"idx_test_{shortuuid.uuid()}"
         cases = {

@@ -585,7 +585,8 @@ class USManagerBase:
     def _prepare_update_entry_params(self, entry: USEntry, update_revision: bool | None = None) -> dict:
         assert entry.uuid is not None
         save_params = self._get_entry_save_params(entry)
-        assert "data" in save_params and "unversioned_data" in save_params
+        assert "data" in save_params
+        assert "unversioned_data" in save_params
 
         save_params.pop("scope")
         save_params.pop("type")

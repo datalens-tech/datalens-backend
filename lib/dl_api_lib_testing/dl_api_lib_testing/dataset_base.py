@@ -35,7 +35,7 @@ class DatasetTestBase(ConnectionTestBase, metaclass=abc.ABCMeta):
         ds = control_api.apply_updates(dataset=ds, fail_ok=False).dataset
         return control_api.save_dataset(dataset=ds).dataset
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def saved_dataset(
         self,
         control_api: SyncHttpDatasetApiV1,

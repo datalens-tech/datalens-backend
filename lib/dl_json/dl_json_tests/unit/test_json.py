@@ -4,7 +4,7 @@ import dl_json
 
 
 @pytest.mark.parametrize(
-    "value, string_json, bytes_json",
+    ("value", "string_json", "bytes_json"),
     [
         ("foo", '"foo"', b'"foo"'),
         (1, "1", b"1"),

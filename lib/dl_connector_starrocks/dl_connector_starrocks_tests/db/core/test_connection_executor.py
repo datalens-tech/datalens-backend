@@ -49,7 +49,7 @@ class StarRocksSyncAsyncConnectionExecutorCheckBase(
         },
     )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def db_ident(self) -> DBIdent:
         return DBIdent(db_name=test_config.CoreConnectionSettings.DB_NAME)
 
@@ -178,7 +178,7 @@ class TestStarRocksAsyncConnectionExecutor(
         with pytest.raises(core_exc.SourceDoesNotExist):
             await async_connection_executor.execute(query)
 
-    @pytest.fixture(autouse=True, scope="function")
+    @pytest.fixture(autouse=True)
     def mock_aiomysql_prepare(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Patch ResultProxy._prepare to avoid 'Event loop is closed' warnings.
 

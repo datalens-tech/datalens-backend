@@ -51,7 +51,7 @@ class BaseYDBTestClass(BaseConnectionTestClass[YDBConnection]):
             ),
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -96,7 +96,7 @@ class BaseSSLYDBTestClass(BaseYDBTestClass):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL_SSL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,

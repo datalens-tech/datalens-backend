@@ -151,7 +151,7 @@ def test_split_tests_skip_tests(
 
 
 @pytest.mark.parametrize(
-    "requested_mode, result",
+    ("requested_mode", "result"),
     [
         ("default", '["package:__default__"]'),
         ("not_default", "[]"),
@@ -174,7 +174,7 @@ def test_split_tests_without_targets(
 
 
 @pytest.mark.parametrize(
-    "requested_mode, result",
+    ("requested_mode", "result"),
     [
         ("default", '["package:unit"]'),
         ("not_default", "[]"),

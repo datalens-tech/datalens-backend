@@ -5,7 +5,7 @@ from dl_api_commons.client.base import Req
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "conn_type, resp_uri",
+    ("conn_type", "resp_uri"),
     [
         (
             "gsheets",

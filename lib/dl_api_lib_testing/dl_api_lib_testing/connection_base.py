@@ -58,7 +58,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
             "description": description,
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def enriched_connection_params(self, connection_params: dict, common_connection_params: dict) -> dict:
         return common_connection_params | connection_params
 
@@ -66,7 +66,7 @@ class ConnectionTestBase(ApiTestBase, DbServiceFixtureTextClass):
     def edit_connection_params_case(self) -> EditConnectionParamsCase | None:
         return None
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def saved_connection_id(
         self,
         control_api_sync_client: SyncHttpClientBase,

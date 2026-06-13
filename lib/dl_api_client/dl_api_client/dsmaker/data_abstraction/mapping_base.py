@@ -102,7 +102,8 @@ class FilterProxyDataCellMapper1D(DataCellMapper1D):
     exclude_tag_combos: Set[frozenset[DataItemTag]] = attr.ib(kw_only=True, factory=frozenset)
 
     def __attrs_post_init__(self) -> None:
-        assert not self.require_tag_combos and self.exclude_tag_combos, "Cannot specify both requirements and excludes"
+        assert not self.require_tag_combos, "Cannot specify both requirements and excludes"
+        assert self.exclude_tag_combos, "Cannot specify both requirements and excludes"
 
     def items(self) -> Iterable[tuple[DataCellTuple, DataItem]]:
         for dims, item in self.nested.items():

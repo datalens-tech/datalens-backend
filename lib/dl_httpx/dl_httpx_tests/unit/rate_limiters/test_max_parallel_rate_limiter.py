@@ -12,7 +12,7 @@ def _max_parallel_limiter(max_parallel: int) -> dl_httpx.MaxParallelRateLimiter:
     return dl_httpx.MaxParallelRateLimiter.from_settings(settings)
 
 
-@pytest.mark.parametrize("value", (0, -1))
+@pytest.mark.parametrize("value", [0, -1])
 def test_max_parallel_invalid(value: int) -> None:
     with pytest.raises(pydantic.ValidationError):
         dl_httpx.RateLimiterSettings.factory(

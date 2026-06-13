@@ -38,7 +38,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
     EXT_QUERY_EXECUTER_SECRET_KEY: ClassVar[str] = "very_secret_key"
     EXT_QUERY_EXECUTER_SECRET_KEY_ALT: ClassVar[str] = "very_secret_key_alt"
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def forbid_private_addr(self) -> bool:
         return False
 
@@ -46,7 +46,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
     def basic_test_query(self) -> str:
         return "select 1"
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def query_executor_app(
         self, loop: asyncio.AbstractEventLoop, aiohttp_client: AiohttpClient, forbid_private_addr: bool
     ) -> TestClient:
@@ -64,7 +64,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
         with pytest.MonkeyPatch.context() as mp:
             yield mp
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_rqe_netloc_subprocess(
         self,
         forbid_private_addr: bool,
@@ -78,7 +78,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
         ).sync_rqe_netloc_subprocess_cm() as sync_rqe_config:
             yield sync_rqe_config
 
-    @pytest.fixture(scope="function", params=[RQEExecuteRequestMode.STREAM, RQEExecuteRequestMode.NON_STREAM])
+    @pytest.fixture(params=[RQEExecuteRequestMode.STREAM, RQEExecuteRequestMode.NON_STREAM])
     def query_executor_options(
         self,
         query_executor_app: TestClient,
@@ -123,7 +123,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
             force_async_rqe=request.param,
         )
 
-    @pytest.fixture(scope="function", params=[True, False], ids=["json", "pickle"], autouse=True)
+    @pytest.fixture(params=[True, False], ids=["json", "pickle"], autouse=True)
     def use_new_qe_serializer(self, request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) -> None:
         if request.param:
             monkeypatch.setenv("USE_NEW_QE_SERIALIZER", "1")

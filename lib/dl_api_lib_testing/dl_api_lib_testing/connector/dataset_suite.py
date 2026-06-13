@@ -115,7 +115,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
             assert dataset.sources
             assert all(source.connection_id == new_connection_id for source in dataset.sources)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def export_import_headers(self, control_api_app_settings: ControlApiAppSettings) -> dict[str, str]:
         assert control_api_app_settings.US_MASTER_TOKEN is not None
         return {
@@ -210,7 +210,7 @@ class DefaultConnectorDatasetTestSuite(DatasetTestBase, RegulatedTestCase, metac
         assert import_resp.json["notifications"][0]["code"] == "ERR.DS_API.WB_IMPORT.DS", import_resp.json
         assert "without a connection" in import_resp.json["notifications"][0]["message"], import_resp.json
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def source_listing_values(self) -> dict[str, bool | str | None]:
         return {
             "supports_source_search": False,

@@ -1,7 +1,7 @@
 from collections.abc import Callable
 
 import attr
-from pytest import MonkeyPatch
+import pytest
 
 from dl_query_processing.compilation.primitives import CompiledMultiQueryBase
 from dl_query_processing.translation.multi_level_translator import MultiLevelQueryTranslator
@@ -9,7 +9,7 @@ from dl_query_processing.translation.multi_level_translator import MultiLevelQue
 
 @attr.s
 class MultiQueryInterceptor:
-    _mpatch: MonkeyPatch = attr.ib(kw_only=True)
+    _mpatch: pytest.MonkeyPatch = attr.ib(kw_only=True)
     _callback: Callable[[CompiledMultiQueryBase], None] = attr.ib(kw_only=True)
     _intercepted: bool = attr.ib(init=False, default=False)
 

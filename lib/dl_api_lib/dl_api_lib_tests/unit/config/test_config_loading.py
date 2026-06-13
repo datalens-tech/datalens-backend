@@ -70,7 +70,7 @@ def expected_settings(request):
 
 @pytest.mark.parametrize(
     "expected_settings",
-    argvalues=(EXPECTED_CONTROL_API_SETTINGS, EXPECTED_DATA_API_SETTINGS),
+    argvalues=[EXPECTED_CONTROL_API_SETTINGS, EXPECTED_DATA_API_SETTINGS],
     ids=("control_api", "data_api"),
     indirect=True,
 )

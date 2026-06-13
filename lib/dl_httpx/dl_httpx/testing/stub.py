@@ -78,7 +78,11 @@ class TrackedCallable[CallableT: Callable]:
     def assert_called_once_with(self, *args: Any, **kwargs: Any) -> None:
         self.assert_called_once()
         call = self.calls[0]
-        assert call.args == args and call.kwargs == kwargs, (
+        assert call.args == args, (
+            f"Expected {self.method.__name__!r} to be called with args={args!r}, kwargs={kwargs!r}, "
+            f"but was called with args={call.args!r}, kwargs={call.kwargs!r}"
+        )
+        assert call.kwargs == kwargs, (
             f"Expected {self.method.__name__!r} to be called with args={args!r}, kwargs={kwargs!r}, "
             f"but was called with args={call.args!r}, kwargs={call.kwargs!r}"
         )
@@ -95,7 +99,11 @@ class TrackedCallable[CallableT: Callable]:
     def assert_awaited_once_with(self, *args: Any, **kwargs: Any) -> None:
         self.assert_awaited_once()
         call = self.calls[0]
-        assert call.args == args and call.kwargs == kwargs, (
+        assert call.args == args, (
+            f"Expected {self.method.__name__!r} to be awaited with args={args!r}, kwargs={kwargs!r}, "
+            f"but was awaited with args={call.args!r}, kwargs={call.kwargs!r}"
+        )
+        assert call.kwargs == kwargs, (
             f"Expected {self.method.__name__!r} to be awaited with args={args!r}, kwargs={kwargs!r}, "
             f"but was awaited with args={call.args!r}, kwargs={call.kwargs!r}"
         )

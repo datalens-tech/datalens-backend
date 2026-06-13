@@ -8,7 +8,7 @@ from dl_constants.api_constants import DLHeadersCommon
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "conn_type, resp_uri",
+    ("conn_type", "resp_uri"),
     [
         (
             "metrica",

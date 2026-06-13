@@ -210,7 +210,8 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
         data_strict: bool = True,
     ) -> USEntry:
         data_cls = cls.DataModel
-        assert data_cls is not None and issubclass(data_cls, BaseAttrsDataModel)
+        assert data_cls is not None
+        assert issubclass(data_cls, BaseAttrsDataModel)
         schema = self.get_load_storage_schema(data_cls)
 
         data = schema.load(raw_data)
@@ -224,12 +225,14 @@ class USEntrySerializerMarshmallow(USEntrySerializer):
 
     def get_secret_keys(self, cls: type[USEntry]) -> set[DataKey]:
         data_cls = cls.DataModel
-        assert data_cls is not None and issubclass(data_cls, BaseAttrsDataModel)
+        assert data_cls is not None
+        assert issubclass(data_cls, BaseAttrsDataModel)
         return data_cls.get_secret_keys()
 
     def get_unversioned_keys(self, cls: type[USEntry]) -> set[DataKey]:
         data_cls = cls.DataModel
-        assert data_cls is not None and issubclass(data_cls, BaseAttrsDataModel)
+        assert data_cls is not None
+        assert issubclass(data_cls, BaseAttrsDataModel)
         return data_cls.get_unversioned_keys()
 
     def set_data_attr(self, entry: USEntry, key: DataKey, value: Any) -> None:

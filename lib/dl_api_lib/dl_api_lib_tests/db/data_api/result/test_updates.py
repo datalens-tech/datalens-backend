@@ -17,7 +17,7 @@ from dl_core_testing.database import DbTable
 
 
 class TestUpdates(DefaultApiTestBase):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def data_api_test_params(self, sample_table: DbTable) -> DataApiTestParams:
         # This default is defined for the sample table
         return DataApiTestParams(

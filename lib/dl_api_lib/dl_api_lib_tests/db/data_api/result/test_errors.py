@@ -27,7 +27,7 @@ class TestResultErrors(DefaultApiTestBase):
         assert result_resp.status_code == 400
         assert result_resp.bi_status_code == "ERR.DS_API.FIELD.NOT_FOUND"
 
-    @pytest.mark.parametrize("ref_type", (QueryItemRefType.id, QueryItemRefType.title))
+    @pytest.mark.parametrize("ref_type", [QueryItemRefType.id, QueryItemRefType.title])
     def test_incomplete_field_ref(self, saved_dataset, data_api, ref_type):
         error_msg = f"{{'fields': {{0: {{'ref': {{'{ref_type.value}': ['Missing data for required field.']}}}}}}}}"
         result_resp = data_api.get_result(
@@ -112,10 +112,10 @@ class TestResultErrors(DefaultApiTestBase):
 
     @pytest.mark.parametrize(
         ("filter_name", "filter_values"),
-        (
+        [
             ("eq", []),
             ("isnull", [None]),
-        ),
+        ],
     )
     def test_invalid_argument_count_filter_error(self, saved_dataset, data_api, filter_name, filter_values):
         ds = saved_dataset

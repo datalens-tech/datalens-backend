@@ -157,7 +157,7 @@ class YQLTestBase(FormulaConnectorTestBase):
         finally:
             dbe.db.drop_table(table)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def ydb_data_table_field_types(self) -> dict[str, DataType]:
         return {**FIELD_TYPES, **self.YDB_FIELD_TYPES}
 

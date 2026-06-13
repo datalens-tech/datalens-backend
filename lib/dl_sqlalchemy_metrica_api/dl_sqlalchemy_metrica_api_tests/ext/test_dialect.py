@@ -40,7 +40,8 @@ def test_get_columns(db_engine):
     print(cols)
     assert isinstance(cols, list)
     assert isinstance(cols[0], dict)
-    assert "name" in cols[0] and "type" in cols[0]
+    assert "name" in cols[0]
+    assert "type" in cols[0]
 
 
 def test_distincts(m_expr_distinct, metrika_db_engine):

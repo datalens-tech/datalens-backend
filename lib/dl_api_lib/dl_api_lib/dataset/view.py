@@ -197,9 +197,8 @@ class DatasetView(DatasetBaseWrapper):
     def build_exec_info(self) -> QueryExecutionInfo:
         LOGGER.info(f"Select field IDs: {[spec.field_id for spec in self.query_spec.select_specs]}")
 
-        assert (
-            self._formula_compiler is not None and self.inspect_env is not None
-        ), "perhaps the sources were not reloaded properly"
+        assert self._formula_compiler is not None, "perhaps the sources were not reloaded properly"
+        assert self.inspect_env is not None, "perhaps the sources were not reloaded properly"
 
         translated_multi_query = self.compile_and_translate_query(query_spec=self.query_spec)
 

@@ -28,7 +28,7 @@ class GreenplumSQLConnectionTestSuite(DefaultConnectorConnectionTestSuite, metac
         assert response.json["cache_ttl_sec"] is None
 
     @pytest.mark.parametrize(
-        "args,expected_status_code",
+        ("args", "expected_status_code"),
         [
             ("", 200),
             ("?search_text=ampl&db_name=test_memory_catalog", 400),

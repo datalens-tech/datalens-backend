@@ -95,7 +95,8 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
         rc: RowConstructor,
         postgres_rc: PostgresRowConstructor,
     ) -> ConnectionForm:
-        assert connector_settings is not None and isinstance(connector_settings, GreenplumConnectorSettings)
+        assert connector_settings is not None
+        assert isinstance(connector_settings, GreenplumConnectorSettings)
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:

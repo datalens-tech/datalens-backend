@@ -32,7 +32,7 @@ class BasePostgreSQLTestClass(BaseConnectionTestClass[ConnectionPostgreSQL]):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -91,7 +91,7 @@ class BaseSslPostgreSQLTestClass(BasePostgreSQLTestClass):
     def db_url(self) -> str:
         return test_config.DB_CORE_SSL_URL
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, ssl_ca: str) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,

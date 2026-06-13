@@ -9,14 +9,14 @@ import sqlalchemy.orm as sqlalchemy_orm
 
 @pytest.mark.parametrize(
     "timezone",
-    (
+    [
         None,
         datetime.UTC,
         pytz.timezone("America/New_York"),
-    ),
+    ],
     ids=["no_timezone", "utc_timezone", "ny_timezone"],
 )
-@pytest.mark.parametrize("microseconds", (0, 123356), ids=["no_microseconds", "with_microseconds"])
+@pytest.mark.parametrize("microseconds", [0, 123356], ids=["no_microseconds", "with_microseconds"])
 def test_pg_literal_bind_datetimes(
     timezone: datetime.timezone | None,
     microseconds: int,

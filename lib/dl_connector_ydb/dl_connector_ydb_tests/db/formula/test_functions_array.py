@@ -89,7 +89,7 @@ class TestArrayFunctionYDB(YQLViewTableTestBase, ArrayFunctionYDBTestSuite):
         super().test_unnest_array(dbe, data_table)
 
     @pytest.mark.parametrize(
-        "bi_func, eval_func",
+        ("bi_func", "eval_func"),
         [
             ("ARR_MIN", min),
             ("ARR_MAX", max),

@@ -60,11 +60,11 @@ class BaseAsyncAdapterTestClass[TARGET_DTO_TV: BaseSQLConnTargetDTO](
         assert exception_info.value.query == expected_query, exception_info.value.query
 
     @pytest.mark.parametrize(
-        "pass_db_query_to_user, expected_query",
-        (
+        ("pass_db_query_to_user", "expected_query"),
+        [
             (False, None),
             (True, "select 1 from <hidden>"),
-        ),
+        ],
     )
     @pytest.mark.asyncio
     async def test_pass_db_query_to_user(

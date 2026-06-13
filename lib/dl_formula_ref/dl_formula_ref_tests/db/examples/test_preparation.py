@@ -12,7 +12,7 @@ from dl_formula_ref.generator import (
 from dl_connector_clickhouse.formula.constants import ClickHouseDialect
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def example_db_config_file(all_db_configurations, dbe):
     db_conf_data = {
         "CLICKHOUSE_22_10": all_db_configurations[ClickHouseDialect.CLICKHOUSE_22_10],
@@ -25,12 +25,12 @@ def example_db_config_file(all_db_configurations, dbe):
         yield db_conf_f.name
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def config_example_dialect_patch(monkeypatch):
     monkeypatch.setattr(DOC_GEN_CONFIG_DEFAULT, "default_example_dialect", ClickHouseDialect.CLICKHOUSE_22_10)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def example_data_file(monkeypatch):
     with tempfile.NamedTemporaryFile() as ex_data_f:
         yield ex_data_f.name

@@ -1272,7 +1272,8 @@ class DatasetValidator(DatasetBaseWrapper):
             return True
         if old_raw_schema is None or new_raw_schema is None:
             return False
-        assert old_raw_schema is not None and new_raw_schema is not None
+        assert old_raw_schema is not None
+        assert new_raw_schema is not None
 
         if type(old_raw_schema) is not type(new_raw_schema):
             old_raw_schema = tuple(old_raw_schema)

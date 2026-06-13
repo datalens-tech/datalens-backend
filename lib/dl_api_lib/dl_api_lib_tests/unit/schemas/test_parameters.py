@@ -6,7 +6,7 @@ from dl_model_tools.schema.typed_values import VALUE_TYPE_CONTEXT_KEY
 
 
 @pytest.mark.parametrize(
-    "data, expected_type",
+    ("data", "expected_type"),
     [
         ({"type": "null"}, ParameterValueConstraintType.null),
         ({"type": "all"}, ParameterValueConstraintType.all),

@@ -171,7 +171,7 @@ def test_up_sync_noop_when_no_slug_resolution_needed(items: list[dict] | None) -
 
 
 @pytest.mark.parametrize(
-    "sr_factory, expected_exc",
+    ("sr_factory", "expected_exc"),
     [
         pytest.param(lambda: None, RLSError, id="services_registry_is_none"),
         pytest.param(
@@ -326,7 +326,7 @@ async def test_up_async_noop_when_no_slug_resolution_needed(items: list[dict] | 
 
 
 @pytest.mark.parametrize(
-    "sr_factory, expected_exc",
+    ("sr_factory", "expected_exc"),
     [
         pytest.param(lambda: None, RLSError, id="services_registry_is_none"),
         pytest.param(

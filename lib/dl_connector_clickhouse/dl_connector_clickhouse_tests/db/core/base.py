@@ -37,7 +37,7 @@ class BaseClickHouseTestClass(BaseConnectionTestClass[ConnectionClickhouse]):
     def engine_config(self, db_url: str, engine_params: dict) -> ClickhouseDbEngineConfig:
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettings.DB_NAME,
@@ -54,7 +54,7 @@ class BaseClickHouseCH26TestClass(BaseClickHouseTestClass):
     def db_url(self) -> str:
         return test_config.DB_CORE_URL_CH26
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreConnectionSettingsCH26.DB_NAME,
@@ -67,7 +67,7 @@ class BaseClickHouseCH26TestClass(BaseClickHouseTestClass):
 
 
 class BaseClickHouseDefaultUserTestClass(BaseClickHouseTestClass):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return {
             "db_name": test_config.CoreConnectionSettings.DB_NAME,
@@ -77,7 +77,7 @@ class BaseClickHouseDefaultUserTestClass(BaseClickHouseTestClass):
 
 
 class BaseClickHouseReadonlyUserTestClass(BaseClickHouseTestClass):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return {
             "db_name": test_config.CoreReadonlyConnectionSettings.DB_NAME,
@@ -126,7 +126,7 @@ class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
             )
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, ssl_ca: str) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,
@@ -143,7 +143,7 @@ class BaseSslClickHouseTestClass(BaseClickHouseTestClass):
 class BaseSslNoVerifyClickHouseTestClass(BaseSslClickHouseTestClass):
     connection_settings = ClickHouseConnectorSettings(ALLOW_SSL_CA_VERIFY_OPTION=True)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return dict(
             db_name=test_config.CoreSslConnectionSettings.DB_NAME,

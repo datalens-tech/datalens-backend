@@ -24,21 +24,21 @@ from dl_api_commons.aio.async_wrapper_for_sync_generator import (
 LOGGER = logging.getLogger(__name__)
 
 
-@pytest.fixture()
+@pytest.fixture
 def service_tpe() -> Generator[ThreadPoolExecutor, None, None]:
     tpe = ThreadPoolExecutor(thread_name_prefix="SERVICE_TPE_")
     yield tpe
     tpe.shutdown()
 
 
-@pytest.fixture()
+@pytest.fixture
 def worker_tpe() -> Generator[ThreadPoolExecutor, None, None]:
     tpe = ThreadPoolExecutor(thread_name_prefix="WORKER_TPE_")
     yield tpe
     tpe.shutdown()
 
 
-@pytest.fixture()
+@pytest.fixture
 def wrapper_factory(
     worker_tpe: ThreadPoolExecutor,
     service_tpe: ThreadPoolExecutor,

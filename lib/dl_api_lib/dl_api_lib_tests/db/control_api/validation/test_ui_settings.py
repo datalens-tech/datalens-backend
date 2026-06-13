@@ -41,7 +41,7 @@ class TestUISettings(DefaultApiTestBase):
         assert field.ui_settings == ui_settings
 
     @pytest.mark.parametrize(
-        "data_value,data_size",
+        ("data_value", "data_size"),
         [
             ("x", DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE),
             ("я", int(DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE / 2)),

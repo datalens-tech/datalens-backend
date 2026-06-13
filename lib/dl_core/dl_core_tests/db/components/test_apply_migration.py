@@ -57,7 +57,7 @@ class SimpleEntrySchemaMigrationFactory(EntrySchemaMigrationFactoryBase):
 
 
 class TestMigration(DefaultCoreTestClass):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def sync_us_migration_manager(self, conn_default_sync_us_manager: SyncUSManager) -> SyncUSManager:
         return conn_default_sync_us_manager.clone(
             schema_migration_factory=SimpleEntrySchemaMigrationFactory(),

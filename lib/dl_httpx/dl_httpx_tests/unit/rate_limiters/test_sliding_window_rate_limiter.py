@@ -6,7 +6,7 @@ import pytest
 import dl_httpx
 
 
-@pytest.mark.parametrize("value", (0, -1))
+@pytest.mark.parametrize("value", [0, -1])
 def test_sliding_window_invalid_max_requests(value: int) -> None:
     with pytest.raises(pydantic.ValidationError):
         dl_httpx.RateLimiterSettings.factory(
@@ -18,7 +18,7 @@ def test_sliding_window_invalid_max_requests(value: int) -> None:
         )
 
 
-@pytest.mark.parametrize("value", (0, -1.0))
+@pytest.mark.parametrize("value", [0, -1.0])
 def test_sliding_window_invalid_window(value: float) -> None:
     with pytest.raises(pydantic.ValidationError):
         dl_httpx.RateLimiterSettings.factory(

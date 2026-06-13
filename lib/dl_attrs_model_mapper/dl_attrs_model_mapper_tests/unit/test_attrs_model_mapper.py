@@ -491,10 +491,10 @@ class TargetVariousMappings:
 
 
 @pytest.mark.parametrize(
-    "main_cls,extra_cls_list",
+    ("main_cls", "extra_cls_list"),
     [
-        [Target1, []],
-        [TargetVariousMappings, []],
+        (Target1, []),
+        (TargetVariousMappings, []),
     ],
 )
 def test_schema_generation(main_cls: type, extra_cls_list: list[type]):

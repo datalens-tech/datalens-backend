@@ -107,7 +107,7 @@ class TestStarRocksSslOnUnsupportedVersion(BaseStarRocksTestClass):
     """Verify that ssl_enable=True against StarRocks without SSL support
     fails with a clear error instead of hanging."""
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self) -> dict:
         return {
             "host": test_config.CoreConnectionSettings.HOST,

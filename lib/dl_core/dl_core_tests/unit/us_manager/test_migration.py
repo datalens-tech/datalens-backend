@@ -259,10 +259,10 @@ def test_migration_failure(l3_nonstrict_migrator):
 
 @pytest.mark.parametrize(
     "migration_version",
-    (
+    [
         "some string",
         "2022-12-03T23:00:00",
-    ),
+    ],
 )
 def test_wrong_migration_version(migration_version):
     with pytest.raises(TypeError):

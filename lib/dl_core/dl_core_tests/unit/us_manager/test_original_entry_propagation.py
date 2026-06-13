@@ -102,12 +102,12 @@ class TestMockedSyncUSManager(MockedSyncUSManager):
         return super()._get_entry_class(us_scope=us_scope, us_type=us_type, entry_key=entry_key)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def test_lifecycle_factory() -> TestLifecycleManagerFactory:
     return TestLifecycleManagerFactory()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def test_us_manager(
     bi_context: RequestContextInfo,
     crypto_keys_config: CryptoKeysConfig,
@@ -126,7 +126,7 @@ def test_us_manager(
     return us_manager
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def entry(
     test_us_manager: USManagerBase,
     test_lifecycle_factory: TestLifecycleManagerFactory,

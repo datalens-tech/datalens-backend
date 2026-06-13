@@ -28,7 +28,9 @@ class RenderContext:
     def resolve_rel_ref(self, ref: str) -> str:
         ref_url = urlparse(ref)
         if ref_url.scheme == "":
-            assert ref_url.netloc == "" and ref_url.params == "" and ref_url.query == "", f"Unsupported ref: {ref_url}"
+            assert ref_url.netloc == "", f"Unsupported ref: {ref_url}"
+            assert ref_url.params == "", f"Unsupported ref: {ref_url}"
+            assert ref_url.query == "", f"Unsupported ref: {ref_url}"
 
             rel_to_root_current_dir = os.path.dirname(self.current_file)
             rel_to_root_target_file_path = ref_url.path

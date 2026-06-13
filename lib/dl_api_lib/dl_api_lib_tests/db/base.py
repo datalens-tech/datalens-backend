@@ -41,7 +41,7 @@ class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
     def engine_config(self, db_url: str, engine_params: dict) -> ClickhouseDbEngineConfig:
         return ClickhouseDbEngineConfig(url=db_url, engine_params=engine_params)
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def environment_readiness(self, enable_all_connectors) -> None:
         pass
 
@@ -66,6 +66,6 @@ class DefaultApiTestBase(DataApiTestBase, DatasetTestBase, ConnectionTestBase):
             },
         }
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def dataset_id(self, saved_dataset: Dataset) -> str:
         return saved_dataset.id

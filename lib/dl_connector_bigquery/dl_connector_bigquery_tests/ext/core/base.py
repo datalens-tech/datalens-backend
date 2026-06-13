@@ -50,7 +50,7 @@ class BaseBigQueryTestClass(BaseConnectionTestClass[ConnectionSQLBigQuery]):
             default_dataset_name=settings.BIGQUERY_CONFIG["dataset_name"],
         )
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def connection_creation_params(self, settings: Settings) -> dict:
         return dict(
             project_id=settings.BIGQUERY_CONFIG["project_id"],

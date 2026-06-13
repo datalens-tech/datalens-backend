@@ -6,7 +6,7 @@ from dl_connector_trino_tests.db.api.base import TrinoDatasetTestBase
 
 
 class TestTrinoDataset(TrinoDatasetTestBase, DefaultConnectorDatasetTestSuite):
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def source_listing_values(self) -> dict[str, bool | str | None]:
         return {
             "supports_source_search": True,

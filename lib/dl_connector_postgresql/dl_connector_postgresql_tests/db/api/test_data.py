@@ -88,7 +88,7 @@ class TestPostgreSQLDataResult(PostgreSQLDataApiTestBase, DefaultConnectorDataRe
         data_rows = get_data_rows(result_resp)
         assert data_rows == [["var1", "str2", "2"]]
 
-    @pytest.fixture(scope="function")
+    @pytest.fixture
     def enabled_citext_extension(self, db: Db) -> None:
         db.execute("CREATE EXTENSION IF NOT EXISTS CITEXT;")
 

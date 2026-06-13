@@ -246,7 +246,8 @@ class RepositoryManager:
 
         regex: re.Pattern
         if allow_dash:
-            assert "-" not in old_str and "-" not in new_str
+            assert "-" not in old_str
+            assert "-" not in new_str
             regex = re.compile(rf"(^|[^\w])(?P<mod_name>{re.escape(old_str)})($|[^\w])")
         else:
             regex = re.compile(rf"(^|[^\w\-])(?P<mod_name>{re.escape(old_str)})($|[^\w\-])")
