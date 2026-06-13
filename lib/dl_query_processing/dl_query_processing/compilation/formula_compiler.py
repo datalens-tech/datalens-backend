@@ -954,7 +954,9 @@ class FormulaCompiler:
         try:
             self._compile_field_formula(field, collect_errors=True)
         except formula_exc.FormulaError:
-            pass  # ignore errors
+            # Errors are collected via collect_errors=True and surfaced through get_field_errors;
+            # this preparation step itself is best-effort.
+            LOGGER.info("Formula preparation failed for field %s, ignoring", field.guid)
 
     def get_field_validity(self, field: BIField) -> bool:
         """Return boolean flag indicating whether the field is valid."""

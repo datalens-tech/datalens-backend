@@ -208,8 +208,8 @@ class ArqWorkerTestWrapper:
         try:
             await self._worker.stop()
         except asyncio.exceptions.CancelledError:
-            pass
+            LOGGER.info("Cancelled while stopping arq worker", exc_info=True)
         try:
             await asyncio.gather(self._task)
         except:
-            pass
+            LOGGER.info("Error while awaiting arq worker task on stop", exc_info=True)

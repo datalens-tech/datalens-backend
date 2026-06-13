@@ -1,5 +1,6 @@
 import asyncio
 from collections.abc import Mapping
+import contextlib
 import datetime
 import logging
 from typing import Self
@@ -97,10 +98,8 @@ class TemporalClient:
         if self._update_metadata_task.done():
             return
         self._update_metadata_task.cancel()
-        try:
+        with contextlib.suppress(asyncio.CancelledError):
             await self._update_metadata_task
-        except asyncio.CancelledError:
-            pass
 
     async def check_health(self) -> bool:
         try:

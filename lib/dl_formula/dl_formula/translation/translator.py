@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import datetime
 from functools import singledispatchmethod
 from itertools import chain
@@ -218,10 +219,8 @@ class SqlAlchemyTranslator:
             self._translate_node(node, ctx)
 
         ctx.flush()
-        try:
+        with contextlib.suppress(exc.CacheError):  # node is not cacheable
             self._env.translation_cache.add(node=node, value=ctx.copy())
-        except exc.CacheError:
-            pass  # node is not cacheable
 
         if postprocess:
             self._postprocess_context(ctx)

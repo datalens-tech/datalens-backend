@@ -141,7 +141,7 @@ class DatasetApiLoader:
                 except core_exc.ReferencedUSEntryNotFound:
                     # Ignore deleted connections here - an error will be raised
                     # when it is fetched from the buffer
-                    pass
+                    LOGGER.info("Referenced US entry not found while preloading source %s, skipping", connection_id)
             else:
                 pass  # TODO: Maybe validate that the patch doesn't contain any new connections?
 

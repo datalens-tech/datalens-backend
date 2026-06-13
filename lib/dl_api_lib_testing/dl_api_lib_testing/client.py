@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from asyncio import AbstractEventLoop
+import contextlib
 import json
 from typing import Any
 
@@ -77,10 +78,8 @@ class TestClientConverterAiohttpToFlask:
 
         js: dict | None = None
         if resp_data is not None:
-            try:
+            with contextlib.suppress(json.JSONDecodeError):
                 js = json.loads(resp_data)
-            except json.JSONDecodeError:
-                pass
 
         return self.Resp(status_code=resp.status, data=resp_data, json=js)
 

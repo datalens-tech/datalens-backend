@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator
+import contextlib
 import datetime
 import logging
 import uuid
@@ -42,10 +43,8 @@ async def fixture_cleanup_schedules(
     temporal_client: dl_temporal.TemporalClient,
 ) -> AsyncGenerator[None, None]:
     async for entry in await temporal_client.list_schedules():
-        try:
+        with contextlib.suppress(dl_temporal.NotFound):
             await temporal_client.delete_schedule(entry.id)
-        except dl_temporal.NotFound:
-            pass
     yield
 
 

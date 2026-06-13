@@ -6,6 +6,7 @@ from collections.abc import (
 )
 from http import HTTPStatus
 from itertools import chain
+import logging
 from typing import Any
 
 import attr
@@ -30,6 +31,8 @@ from dl_api_client.dsmaker.primitives import (
     ResultField,
     UpdateAction,
 )
+
+LOGGER = logging.getLogger(__name__)
 
 
 @attr.s(frozen=True)
@@ -213,8 +216,8 @@ class SyncHttpDatasetApiV1(SyncHttpApiV1Base):
         for dataset_id in self._created_dataset_id_list:
             try:
                 self.delete_dataset(dataset_id, fail_ok=True)
-            except Exception:  # noqa
-                pass
+            except Exception:
+                LOGGER.warning("Failed to clean up dataset %s", dataset_id, exc_info=True)
 
     def copy_dataset(
         self,

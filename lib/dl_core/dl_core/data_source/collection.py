@@ -283,10 +283,7 @@ class DataSourceCollection:
         return self.get_opt(role) is not None
 
     def invalidate(self, role: DataSourceRole) -> None:
-        try:
-            del self._loaded_sources[role]
-        except KeyError:
-            pass
+        self._loaded_sources.pop(role, None)
 
     def get_param_hash(self) -> str:
         role = DataSourceRole.origin

@@ -4,6 +4,7 @@ from collections.abc import (
     Iterable,
     Sequence,
 )
+import contextlib
 import difflib
 from typing import Any
 
@@ -154,10 +155,8 @@ def make_diff(  # type: ignore  # TODO: fix
     result = result.strip()
 
     if colorize:
-        try:
+        with contextlib.suppress(Exception):
             result = _colorize_diff(result).strip()
-        except Exception:
-            pass
     return result
 
 

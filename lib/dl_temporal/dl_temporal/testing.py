@@ -29,7 +29,5 @@ async def worker_run_context(
         yield worker
     finally:
         run_task.cancel()
-        try:
+        with contextlib.suppress(asyncio.CancelledError):
             await run_task
-        except asyncio.CancelledError:
-            pass

@@ -100,7 +100,6 @@ ignore = [
   "RUF009", # Later: function-call-in-dataclass-default-argument
   "RUF012", # Later: mutable-class-default
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
-  "SIM105", # Later: suppressible-exception (contextlib.suppress changes traceback semantics — adopt per-site)
   "SIM108", # Never: if-else-block-instead-of-if-exp — forcing ternaries hurts readability; many sites carry explanatory comments / type-ignores that don't survive the (unsafe-only) autofix
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
 ]

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -43,6 +44,9 @@ from dl_type_transformer.type_transformer import TypeTransformer
 
 if TYPE_CHECKING:
     from dl_core.connection_executors.adapters.async_adapters_base import AsyncDBAdapter
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 @attr.s(frozen=True)
@@ -155,7 +159,7 @@ class AsyncTypedQueryAdapterActionViaStandardExecute(AsyncTypedQueryAdapterActio
                 try:
                     user_type = self._type_transformer.type_native_to_user(native_type)
                 except UnsupportedNativeTypeError:
-                    pass
+                    LOGGER.info("Unsupported native type %r, falling back to unsupported", native_type)
 
             headers.append(TypedQueryResultColumnHeader(name=name, user_type=user_type))
 

@@ -98,10 +98,8 @@ class TOMLWriter(TOMLReaderBase):
     @classmethod
     @contextlib.contextmanager
     def suppress_non_existent_key(cls) -> Generator[None, None, None]:
-        try:
+        with contextlib.suppress(NonExistentKey):
             yield
-        except NonExistentKey:
-            pass
 
     def set_text_value(self, section_name: str, key: str, value: str) -> None:
         section = self.get_section(section_name)

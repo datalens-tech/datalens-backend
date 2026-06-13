@@ -54,10 +54,8 @@ def fixture_file_context() -> FileContext:
         try:
             yield path
         finally:
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 os.remove(path)
-            except FileNotFoundError:
-                pass
 
     return context
 

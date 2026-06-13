@@ -279,7 +279,7 @@ class DefaultSqlAlchemyConnExecutor[DBA_TV: CommonBaseDirectAdapter](AsyncConnEx
                 try:
                     bi_type = tt.type_native_to_user(native_type)
                 except UnsupportedNativeTypeError:
-                    pass
+                    LOGGER.info("Unsupported native type %r, falling back to unsupported", native_type)
 
             result.append(bi_type)
 
