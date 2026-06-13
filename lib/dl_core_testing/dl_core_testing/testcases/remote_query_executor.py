@@ -72,12 +72,7 @@ class BaseRemoteQueryExecutorTestClass[CONN_TV: ConnectionBase](BaseConnectionEx
     ) -> Generator[RQEBaseURL, None, None]:
         monkeysession.setenv("no_proxy", "*")  # https://github.com/python/cpython/issues/74570#issuecomment-1093748531
         with RQEConfigurationMaker(
-            ext_query_executer_secret_key=",".join(
-                (
-                    self.EXT_QUERY_EXECUTER_SECRET_KEY,
-                    self.EXT_QUERY_EXECUTER_SECRET_KEY_ALT,
-                )
-            ),
+            ext_query_executer_secret_key=f"{self.EXT_QUERY_EXECUTER_SECRET_KEY},{self.EXT_QUERY_EXECUTER_SECRET_KEY_ALT}",
             core_connector_whitelist=self.core_test_config.core_connector_ep_names,
             forbid_private_addr="1" if forbid_private_addr else "0",
         ).sync_rqe_netloc_subprocess_cm() as sync_rqe_config:

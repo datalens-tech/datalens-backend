@@ -135,7 +135,7 @@ class UStorageClientAIO(UStorageClientBase):
         )
 
         self._bi_http_client = BIAioHTTPClient(
-            base_url="/".join([self.host, self.prefix]),
+            base_url=f"{self.host}/{self.prefix}",
             headers=self._default_headers,
             cookies=self._cookies,
             raise_for_status=False,

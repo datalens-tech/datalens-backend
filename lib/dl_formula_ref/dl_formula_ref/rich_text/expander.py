@@ -48,7 +48,7 @@ from dl_formula_ref.texts import (
 )
 from dl_i18n.localizer_base import Translatable
 
-_MACRO_CHOICES = "|".join(("ref", "link", "text", "table", "dialects", "arg", "argn", "type", "macro", "category"))
+_MACRO_CHOICES = "ref|link|text|table|dialects|arg|argn|type|macro|category"
 # 3 kinds of macros:
 #     {type: single_value}
 #     {type: first_value: second_value}
@@ -61,14 +61,7 @@ SIMPLE_MACRO_RE = re.compile(
     r"(|:(?P<second_value>[^{}:|`]+)|(?P<list>(\|[^{}:|`]+)+))"
     r"\}"
 )
-_BLOCK_MACRO_CHOICES = "|".join(
-    (
-        "if",
-        "note",
-        "audience",
-        "end",
-    )
-)
+_BLOCK_MACRO_CHOICES = "if|note|audience|end"
 END_TAG = "end"
 BLOCK_TAG_RE = re.compile(r"\{\s*(?P<tag_name>" + _BLOCK_MACRO_CHOICES + r")(\s+(?P<block_param>[^}]+))?\s*\}")
 

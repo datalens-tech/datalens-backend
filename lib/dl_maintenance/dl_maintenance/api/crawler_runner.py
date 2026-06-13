@@ -39,12 +39,8 @@ async def run_crawler(
     finally:
         if configure_logging:
             print(
-                "\n".join(
-                    (
-                        red,
-                        "!!! LOGGING WAS CONFIGURED TO SEND LOGS TO CENTRAL STORAGE !!!",
-                        "!!! NOTICE THAT ALL FURTHER LOGS WILL BE SENT TO CENTRAL STORAGE !!!",
-                        nc,
-                    )
-                )
+                f"{red}\n"
+                "!!! LOGGING WAS CONFIGURED TO SEND LOGS TO CENTRAL STORAGE !!!\n"
+                "!!! NOTICE THAT ALL FURTHER LOGS WILL BE SENT TO CENTRAL STORAGE !!!\n"
+                f"{nc}"
             )

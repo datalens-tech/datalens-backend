@@ -121,7 +121,7 @@ class ReadableFieldIdGeneratorWithPrefix(ReadableFieldIdGenerator):
         field_id = super().make_field_id(title=title)
         if title is None:
             return field_id
-        return "_".join([generate_random_str(), field_id])
+        return f"{generate_random_str()}_{field_id}"
 
 
 @attr.s
@@ -132,7 +132,7 @@ class ReadableFieldIdGeneratorWithSuffix(ReadableFieldIdGenerator):
         field_id = super().make_field_id(title=title)
         if title is None:
             return field_id
-        return "_".join([field_id, generate_random_str()])
+        return f"{field_id}_{generate_random_str()}"
 
 
 @unique

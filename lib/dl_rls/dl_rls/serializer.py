@@ -83,7 +83,7 @@ class FieldRLSSerializer:
     )
     # allow_all line `*: user1, user2, …`
     _aa_line_re = re.compile(r"^\s*\*\s*:" + _subjects_re_s)
-    _uid_line_re = re.compile(r"\s*".join(("^", "userid", ":", "userid", "$")))  # 'userid: userid'
+    _uid_line_re = re.compile(r"^\s*userid\s*:\s*userid\s*$")  # 'userid: userid'
     assert _uid_line_re.match(userid_line)  # self-check
     # 'value': user1, user2, …`. Note that the value might contain more quotes.
     _line_re = re.compile(r"^'.+': " + _subjects_re_s)
