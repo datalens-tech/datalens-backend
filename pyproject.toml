@@ -112,7 +112,6 @@ ignore = [
 # "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
 # "ASYNC", # flake8-async — Later: catches blocking calls in async code
 # "PT",    # flake8-pytest-style — Later
-# "LOG",   # flake8-logging — Later
 # "G",     # flake8-logging-format — Later: enforces lazy %-logging
 # "PERF",  # Perflint — Later
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
@@ -129,6 +128,7 @@ select = [
   "F", # Pyflakes
   "FLY", # flynt
   "FURB", # refurb
+  "LOG", # flake8-logging
   "PIE", # flake8-pie
   "RET", # flake8-return
   "RUF", # Ruff-specific rules

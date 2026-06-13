@@ -44,7 +44,7 @@ class BaseSchema[TARGET_OBJECT_BASE_TV](marshmallow.Schema):
         try:
             return self.target_cls(**data)
         except Exception as exc:
-            logging.exception(f"Can not instantiate class {self.target_cls}: {exc}")
+            LOGGER.exception(f"Can not instantiate class {self.target_cls}: {exc}")
             raise
 
     @post_dump(pass_many=False)

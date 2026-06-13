@@ -7,6 +7,8 @@ import pytest
 
 import dl_zitadel
 
+LOGGER = logging.getLogger(__name__)
+
 
 @pytest.fixture(name="zitadel_secrets_folder")
 def fixture_zitadel_secrets_folder() -> str:
@@ -17,7 +19,7 @@ def fixture_zitadel_secrets_folder() -> str:
 
 def wait_for_path(path: str) -> None:
     while not os.path.exists(path):
-        logging.warning(f"Waiting for {path} to exist")
+        LOGGER.warning(f"Waiting for {path} to exist")
         time.sleep(1)
 
 

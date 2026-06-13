@@ -88,7 +88,7 @@ class FormulaDbDispenser(DbDispenserBase[FormulaDbConfig, Db]):
         timelimit = self.first_call_time + self.global_timeout
         db = make_db_from_config(db_config)
         wait_condition = partial(self.ensure_db_is_up, db=db)
-        logging.info(f"Waiting for db to come up: {db_config!r}")
+        LOGGER.info(f"Waiting for db to come up: {db_config!r}")
         wait_for("Make database", condition=wait_condition, timeout=timelimit, interval=self.poll_pause)
 
         return db

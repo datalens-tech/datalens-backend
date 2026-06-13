@@ -53,7 +53,7 @@ async def shield_wait_for_complete[CORO_TV](
         try:
             await real_task
         except Exception as e:  # noqa
-            logging.exception("Error during awaiting critical section after cancellation")
+            LOGGER.exception("Error during awaiting critical section after cancellation")
 
         # Raising original exception to meet
         raise

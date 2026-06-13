@@ -64,7 +64,7 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
         self, err: Exception, request: web.Request, req_logging_ctx_ctrl: RequestLoggingContextController
     ) -> tuple[web.Response, ErrorData]:
         if isinstance(err, CancelledError):
-            LOGGER.warning("Client request was cancelled", exc_info=True)
+            LOGGER.warning("Client request was cancelled", exc_info=err)
             raise  # noqa
         if isinstance(err, web.HTTPSuccessful):
             raise  # noqa
@@ -111,9 +111,9 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
                 # Assumed that events will bi captured for warnings and higher, so we capture manually only for info
                 if use_sentry:
                     sentry_sdk.capture_exception(err)
-                LOGGER.info("Regular exception fired", exc_info=True)
+                LOGGER.info("Regular exception fired", exc_info=err)
             elif err_data.level == ErrorLevel.warning:
-                LOGGER.warning("Warning exception fired", exc_info=True)
+                LOGGER.warning("Warning exception fired", exc_info=err)
             else:
                 request_logging_context_ctrl.put_to_context("is_error", True)
                 LOGGER.exception("Caught an exception in request handler")

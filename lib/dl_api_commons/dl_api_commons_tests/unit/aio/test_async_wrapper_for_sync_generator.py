@@ -21,6 +21,8 @@ from dl_api_commons.aio.async_wrapper_for_sync_generator import (
     JobState,
 )
 
+LOGGER = logging.getLogger(__name__)
+
 
 @pytest.fixture()
 def service_tpe() -> Generator[ThreadPoolExecutor, None, None]:
@@ -149,18 +151,18 @@ async def test_start_confirmation_timeout(caplog: pytest.LogCaptureFixture) -> N
     stop_garbage = threading.Event()
 
     def garbage() -> None:
-        logging.info("Garbage thread was started")
+        LOGGER.info("Garbage thread was started")
 
         def cb() -> None:
-            logging.info("Triggering event 'garbage_started'")
+            LOGGER.info("Triggering event 'garbage_started'")
             garbage_started.set()
 
         loop.call_soon_threadsafe(cb)
         got_stop_event = stop_garbage.wait(timeout=15)
         if got_stop_event:
-            logging.info("Stopping garbage thread due to stop event")
+            LOGGER.info("Stopping garbage thread due to stop event")
         else:
-            logging.info("Stopping garbage thread due to timeout")
+            LOGGER.info("Stopping garbage thread due to timeout")
         return
 
     try:
@@ -178,12 +180,12 @@ async def test_start_confirmation_timeout(caplog: pytest.LogCaptureFixture) -> N
         await job.cancel()
 
     finally:
-        logging.info("Executing test clean-up")
+        LOGGER.info("Executing test clean-up")
         # Terminating garbage thread
         stop_garbage.set()
         local_worker_tpe.shutdown(wait=True)
         local_service_tpe.shutdown(wait=True)
-        logging.info("Test clean-up done")
+        LOGGER.info("Test clean-up done")
 
 
 @pytest.mark.asyncio
@@ -199,7 +201,7 @@ async def test_closing_before_full_consuming(
                 time.sleep(0.5)
                 yield random.randint(0, int(1e6))
         finally:
-            logging.info("Generator was correctly closed")
+            LOGGER.info("Generator was correctly closed")
 
     job = wrapper_factory(test_generator)
     await job.run()

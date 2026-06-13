@@ -8,6 +8,8 @@ import attr
 
 import dl_configs.utils as bi_config_utils
 
+LOGGER = logging.getLogger(__name__)
+
 
 @attr.s()
 class BaseSSLCertAdapter:
@@ -37,7 +39,7 @@ class BaseSSLCertAdapter:
 
         if self.__context_counter == 0:
             with open(crt_path, "x", encoding="utf-8") as f:
-                logging.debug(f"Writing root CA to {crt_path}")
+                LOGGER.debug(f"Writing root CA to {crt_path}")
                 f.write(ssl_ca)
         self.__context_counter += 1
 
@@ -46,5 +48,5 @@ class BaseSSLCertAdapter:
         finally:
             self.__context_counter -= 1
             if self.__context_counter == 0:
-                logging.debug(f"Removing root CA from {crt_path}")
+                LOGGER.debug(f"Removing root CA from {crt_path}")
                 os.remove(crt_path)

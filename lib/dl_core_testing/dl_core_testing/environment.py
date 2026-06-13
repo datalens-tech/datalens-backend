@@ -147,7 +147,7 @@ def prepare_united_storage(
 
                 return True, ""
         except Exception as e:
-            logging.exception("_wait_for_us failed with exception")
+            LOGGER.exception("_wait_for_us failed with exception")
             return False, str(e)
 
     max_wait_time = 160.0
