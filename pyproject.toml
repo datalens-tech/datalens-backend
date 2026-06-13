@@ -95,7 +95,7 @@ ignore = [
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
   "RUF002", # Never: ambiguous-unicode-character-docstring — Cyrillic in RU docstrings is intentional; per-site review showed flagging only adds `noqa` noise (incl. dead/commented-out code)
   "RUF003", # Never: ambiguous-unicode-character-comment — same intentional Cyrillic in RU comments
-  "RUF009", # Later: function-call-in-dataclass-default-argument
+  "RUF009", # Never: function-call-in-dataclass-default — fires on the attrs field-declaration idiom (`s_attrib()` returns `attr.ib()`, ~287 sites); a pure false positive, not a real shared-mutable default
   "RUF012", # Later: mutable-class-default
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
   "SIM108", # Never: if-else-block-instead-of-if-exp — forcing ternaries hurts readability; many sites carry explanatory comments / type-ignores that don't survive the (unsafe-only) autofix
