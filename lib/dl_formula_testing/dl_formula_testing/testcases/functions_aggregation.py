@@ -38,9 +38,9 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
     def test_date_avg_function(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         date_values = data_table.date_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "date_values"  [attr-defined]
 
-        assert dbe.eval("AVG([date_value])", from_=data_table) == datetime.date.fromtimestamp(
-            sum(utc_ts(date) for date in date_values) / len(date_values)
-        )
+        avg_ts = sum(utc_ts(date) for date in date_values) / len(date_values)
+        expected_date = datetime.datetime.fromtimestamp(avg_ts, tz=datetime.UTC).date()
+        assert dbe.eval("AVG([date_value])", from_=data_table) == expected_date
 
     def test_datetime_avg_function(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         datetime_values = data_table.datetime_values  # type: ignore  # 2024-01-29 # TODO: "Table" has no attribute "datetime_values"  [attr-defined]

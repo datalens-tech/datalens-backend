@@ -92,6 +92,13 @@ target-version = "py312"
 ignore = [
   "ASYNC109", # Never: async-function-with-timeout — fires on any async fn that has a `timeout` parameter regardless of use; our `timeout` params are legitimate domain durations (functions run their own wait-loop), so enforcing only adds noqa noise
   "ASYNC210", # Later: blocking-http-call — sync HTTP (requests/urllib) in async; only intentional sync I/O so far
+  "DTZ001", # Later: call-datetime-without-tzinfo — DTZ category is enabled, but its firing sub-rules are deferred: naive datetimes are pervasive (tests, parsing, connector data, internal timings) and per-site tz migration needs the connector/DB test matrix to verify
+  "DTZ002", # Later: call-datetime-today
+  "DTZ004", # Later: call-datetime-utcfromtimestamp
+  "DTZ005", # Later: call-datetime-now-without-tzinfo
+  "DTZ006", # Later: call-datetime-fromtimestamp
+  "DTZ007", # Later: call-datetime-strptime-without-zone
+  "DTZ011", # Later: call-date-today
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "PT011", # Later: pytest-raises-too-broad — needs a narrower exception or `match=` per call site
@@ -111,7 +118,6 @@ ignore = [
 #
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
-# "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, separate initiative
 # "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
@@ -124,6 +130,7 @@ select = [
   "ASYNC", # flake8-async
   "B", # flake8-bugbear
   "C4", # flake8-comprehensions
+  "DTZ", # flake8-datetimez
   "F", # Pyflakes
   "FLY", # flynt
   "FURB", # refurb
