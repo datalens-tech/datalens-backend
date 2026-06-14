@@ -3665,6 +3665,7 @@ dl-app-base = {path = "../dl_app_base"}
 dl-dynconfig = {path = "../dl_dynconfig"}
 dl-json = {path = "../dl_json"}
 dl-logging = {path = "../dl_logging"}
+dl-prometheus = {path = "../dl_prometheus"}
 dl-pydantic = {path = "../dl_pydantic"}
 dl-settings = {path = "../dl_settings"}
 dl-utils = {path = "../dl_utils"}
@@ -3786,7 +3787,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "dl-version"
-version = "0.2734.0"
+version = "0.2736.0"
 description = ""
 optional = false
 python-versions = ">=3.12, <3.13"
