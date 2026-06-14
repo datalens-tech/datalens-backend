@@ -92,7 +92,6 @@ target-version = "py312"
 ignore = [
   "ASYNC109", # Never: async-function-with-timeout — fires on any async fn that has a `timeout` parameter regardless of use; our `timeout` params are legitimate domain durations (functions run their own wait-loop), so enforcing only adds noqa noise
   "DTZ001", # Later: call-datetime-without-tzinfo — DTZ category is enabled, but its firing sub-rules are deferred: naive datetimes are pervasive (tests, parsing, connector data, internal timings) and per-site tz migration needs the connector/DB test matrix to verify
-  "DTZ002", # Later: call-datetime-today
   "DTZ004", # Later: call-datetime-utcfromtimestamp
   "DTZ005", # Later: call-datetime-now-without-tzinfo
   "DTZ006", # Later: call-datetime-fromtimestamp
