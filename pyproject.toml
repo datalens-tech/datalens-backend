@@ -92,7 +92,6 @@ target-version = "py312"
 ignore = [
   "ASYNC109", # Never: async-function-with-timeout — fires on any async fn that has a `timeout` parameter regardless of use; our `timeout` params are legitimate domain durations (functions run their own wait-loop), so enforcing only adds noqa noise
   "ASYNC210", # Later: blocking-http-call — sync HTTP (requests/urllib) in async; only intentional sync I/O so far
-  "ASYNC240", # Later: blocking-os-call — os.path / pathlib metadata in async; only cheap local-fs checks so far
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "PT011", # Later: pytest-raises-too-broad — needs a narrower exception or `match=` per call site
