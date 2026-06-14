@@ -92,7 +92,7 @@ def test_operator_null_error():
 
 
 def test_translate_multiple_errors():
-    try:
+    with pytest.raises(exc.TranslationError) as exc_info:
         translate(
             Formula(
                 FuncCall.make(
@@ -108,18 +108,15 @@ def test_translate_multiple_errors():
             dialect=D.DUMMY,
             collect_errors=True,
         )
-        raised = False
-    except exc.TranslationError as err:
-        raised = True
-        assert len(err.errors) == 2
-        assert err.errors[0].token == "UNKNOWN_1"
-        assert err.errors[0].position.start == 4
-        assert err.errors[0].code == ("FORMULA", "TRANSLATION", "UNKNOWN_FUNCTION")
-        assert err.errors[1].token == "Unknown F"
-        assert err.errors[1].position.start == 104
-        assert err.errors[1].code == ("FORMULA", "TRANSLATION", "UNKNOWN_FIELD")
 
-    assert raised
+    err = exc_info.value
+    assert len(err.errors) == 2
+    assert err.errors[0].token == "UNKNOWN_1"
+    assert err.errors[0].position.start == 4
+    assert err.errors[0].code == ("FORMULA", "TRANSLATION", "UNKNOWN_FUNCTION")
+    assert err.errors[1].token == "Unknown F"
+    assert err.errors[1].position.start == 104
+    assert err.errors[1].code == ("FORMULA", "TRANSLATION", "UNKNOWN_FIELD")
 
 
 def test_internal_functions():

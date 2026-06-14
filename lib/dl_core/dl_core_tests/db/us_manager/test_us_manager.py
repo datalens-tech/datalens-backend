@@ -64,13 +64,10 @@ class TestUSManager(DefaultCoreTestClass):
                 reloaded_conn = await usm.get_by_id(original_conn.uuid, ConnectionClickhouse)
                 reloaded_conn.data.name = "ololo"
 
-                with pytest.raises(exc.USLockUnacquiredException):
-                    try:
-                        await usm.save(reloaded_conn)
-                    except exc.USLockUnacquiredException as e:
-                        assert isinstance(e.orig_exc, ClientResponseError)
-                        assert e.orig_exc.status == 423
-                        raise
+                with pytest.raises(exc.USLockUnacquiredException) as exc_info:
+                    await usm.save(reloaded_conn)
+                assert isinstance(exc_info.value.orig_exc, ClientResponseError)
+                assert exc_info.value.orig_exc.status == 423
 
                 locked_conn.data.name = "azaza"
                 await usm.save(locked_conn)
