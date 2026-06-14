@@ -39,7 +39,7 @@ def test_safe_serialization(caplog):
 
     log_record = get_log_record(caplog, predicate=lambda r: r.funcName == "to_jsonable", single=True)
     assert log_record.levelname == "WARNING"
-    assert log_record.msg == "Value of type CustomType is not serializable, skipping serialization"
+    assert log_record.getMessage() == "Value of type CustomType is not serializable, skipping serialization"
 
 
 @flaky.flaky(max_runs=3)

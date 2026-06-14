@@ -244,7 +244,8 @@ class DatasetCapabilities:
 
             if log_reasons:
                 LOGGER.info(
-                    f"Role resolution_info for data source {coll.id}",
+                    "Role resolution_info for data source %s",
+                    coll.id,
                     extra={
                         "role_resolution_info": {
                             "source_id": coll.id,

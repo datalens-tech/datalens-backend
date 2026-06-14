@@ -802,7 +802,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
 
         disabled_types = (os.environ.get("DL_NONLOCKED_CACHE_CONN_TYPES") or "").split(",")
         result = self.conn_type.name not in disabled_types
-        LOGGER.debug(f"use_locked_cache = {self.conn_type.name!r} not in {disabled_types!r} = {result!r}")
+        LOGGER.debug("use_locked_cache = %r not in %r = %r", self.conn_type.name, disabled_types, result)
         return result
 
     def test(self, conn_executor_factory: Callable[[ConnectionBase], SyncConnExecutorBase]) -> None:

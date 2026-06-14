@@ -94,7 +94,7 @@ def compile_query_with_literal_binds_if_possible(
         return compiled_query % ()
     except Exception:
         LOGGER.exception("Failed to compile query with literal_binds")
-        LOGGER.debug(f"Debug query: {compile_query_for_debug(query, dialect)}")
+        LOGGER.debug("Debug query: %s", compile_query_for_debug(query, dialect))
         return query
 
 

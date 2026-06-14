@@ -108,7 +108,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
             joint_dsrc_info.query_compiler.dialect,
             obfuscation_engine=self._rci.obfuscation_engine,
         )
-        LOGGER.info(f"SQL query for dataset: {debug_query}")
+        LOGGER.info("SQL query for dataset: %s", debug_query)
 
         assert joint_dsrc_info.target_connection_ref is not None
         target_connection = self._us_entry_buffer.get_entry(joint_dsrc_info.target_connection_ref)

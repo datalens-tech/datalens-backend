@@ -222,10 +222,10 @@ def from_name_and_version(
     else:
         parsed_version = None
 
-    LOGGER.info(f"Parsed dialect version {dialect_version} as {parsed_version}")
+    LOGGER.info("Parsed dialect version %s as %s", dialect_version, parsed_version)
 
     if parsed_version is None and dialect_name in dialect_defaults:
-        LOGGER.info(f"Falling back to {dialect_defaults[dialect_name]}")
+        LOGGER.info("Falling back to %s", dialect_defaults[dialect_name])
         return dialect_defaults[dialect_name]
 
     matches_by_name = sorted(
@@ -244,7 +244,7 @@ def from_name_and_version(
     if matches_by_version:
         # perfect match. Return the latest dialect version possible
         matched_dialect = matches_by_version[-1]
-        LOGGER.info(f"Matched dialect found: {matched_dialect.single_bit}")
+        LOGGER.info("Matched dialect found: %s", matched_dialect.single_bit)
         return matched_dialect
 
     LOGGER.warning('Failed to get dialect for DB "%s" and version "%s"', dialect_name.name, dialect_version)

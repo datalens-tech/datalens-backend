@@ -57,7 +57,7 @@ class RedisBaseService(metaclass=abc.ABCMeta):
     _ssl: bool | None = attr.ib(default=None)
 
     async def init_hook(self, target_app: web.Application) -> None:
-        LOGGER.info(f"Initializing Redis {self._instance_kind.name}")
+        LOGGER.info("Initializing Redis %s", self._instance_kind.name)
         target_app[self.get_full_app_key(self._instance_kind)] = self
         await self.initialize()
 

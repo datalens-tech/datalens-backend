@@ -147,13 +147,13 @@ class BaseEntrySchemaMigration:
                     continue
                 if migration.version in seen_versions:
                     raise ValueError(f"Double migration detected for migration version: {migration.version}")
-                LOGGER.info(f"Apply migration ver={migration.version}, {migration.name}")
+                LOGGER.info("Apply migration ver=%s, %s", migration.version, migration.name)
                 entry_copy = migration.migrate_up(entry_copy, self.services_registry)
                 seen_versions.add(migration.version)
             # Rollback last migration if it needed
             last_migration = self.sorted_migrations[-1]
             if last_migration.id == entry_schema_id and last_migration.downgrade_only:
-                LOGGER.info(f"Rollback migration ver={last_migration.version}, {last_migration.name}")
+                LOGGER.info("Rollback migration ver=%s, %s", last_migration.version, last_migration.name)
                 entry_copy = last_migration.migrate_down(entry_copy, self.services_registry)
             return entry_copy
         except UnknownEntryMigration:
@@ -186,13 +186,13 @@ class BaseEntrySchemaMigration:
                     continue
                 if migration.version in seen_versions:
                     raise ValueError(f"Double migration detected for migration version: {migration.version}")
-                LOGGER.info(f"Apply migration ver={migration.version}, {migration.name}")
+                LOGGER.info("Apply migration ver=%s, %s", migration.version, migration.name)
                 entry_copy = await migration.migrate_up_async(entry_copy, self.services_registry)
                 seen_versions.add(migration.version)
             # Rollback last migration if it needed
             last_migration = self.sorted_migrations[-1]
             if last_migration.id == entry_schema_id and last_migration.downgrade_only:
-                LOGGER.info(f"Rollback migration ver={last_migration.version}, {last_migration.name}")
+                LOGGER.info("Rollback migration ver=%s, %s", last_migration.version, last_migration.name)
                 entry_copy = await last_migration.migrate_down_async(entry_copy, self.services_registry)
             return entry_copy
         except UnknownEntryMigration:

@@ -252,7 +252,7 @@ class DataSource(metaclass=abc.ABCMeta):
         except DLBaseException as e:
             if strict:
                 raise
-            LOGGER.warning(f"Error while getting {attr_name} from connection: {e!s}")
+            LOGGER.warning("Error while getting %s from connection: %s", attr_name, e)
             return None
 
     @property

@@ -72,7 +72,7 @@ def check_permissions_for_origin_sources(
             try:
                 bi_utils.need_permission_on_entry(data_source.connection, permission_kind)
             except exc.ReferencedUSEntryNotFound:
-                LOGGER.info(f"Connection for source {data_source.id} not found => skipping permission check")
+                LOGGER.info("Connection for source %s not found => skipping permission check", data_source.id)
 
 
 def validate_dataset_query_settings(

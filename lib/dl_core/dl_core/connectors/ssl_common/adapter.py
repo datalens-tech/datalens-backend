@@ -39,7 +39,7 @@ class BaseSSLCertAdapter:
 
         if self.__context_counter == 0:
             with open(crt_path, "x", encoding="utf-8") as f:
-                LOGGER.debug(f"Writing root CA to {crt_path}")
+                LOGGER.debug("Writing root CA to %s", crt_path)
                 f.write(ssl_ca)
         self.__context_counter += 1
 
@@ -48,5 +48,5 @@ class BaseSSLCertAdapter:
         finally:
             self.__context_counter -= 1
             if self.__context_counter == 0:
-                LOGGER.debug(f"Removing root CA from {crt_path}")
+                LOGGER.debug("Removing root CA from %s", crt_path)
                 os.remove(crt_path)

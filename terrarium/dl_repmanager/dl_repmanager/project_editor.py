@@ -41,9 +41,9 @@ class PyPrjEditor:
         data = self._get_meta_project_reader(metapackage_name=metapackage_name).get_mypy_common()
         for pi in self.package_index.list_package_infos():
             with self.package_meta_io_factory.package_meta_writer(pi.toml_path) as pmw:
-                log.debug(f"Checking {pi.abs_path}")
+                log.debug("Checking %s", pi.abs_path)
                 pmw.update_mypy_common(data)
 
-            log.debug(f"pyproject-fmt {pi.toml_path!s}")
+            log.debug("pyproject-fmt %s", pi.toml_path)
             subprocess.run(f"pyproject-fmt {pi.abs_path!s}", shell=True)
             (pi.abs_path / "mypy.ini").unlink(missing_ok=True)

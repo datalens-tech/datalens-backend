@@ -94,7 +94,7 @@ class AsyncChunkedLimited(AsyncChunkedBase[ENTRY_TV]):
                     raise self.limit_exc_to_raise()
                 yield item
 
-            LOGGER.info(f"Received {cnt} data rows.")
+            LOGGER.info("Received %s data rows.", cnt)
 
         return async_item_gen()
 
@@ -111,7 +111,7 @@ class AsyncChunkedLimited(AsyncChunkedBase[ENTRY_TV]):
                     raise self.limit_exc_to_raise()
                 yield chunk
 
-            LOGGER.info(f"Received {cnt} data rows.")
+            LOGGER.info("Received %s data rows.", cnt)
 
         return async_chunk_gen()
 

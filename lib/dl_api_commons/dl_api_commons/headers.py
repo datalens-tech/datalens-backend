@@ -57,11 +57,11 @@ def get_x_dl_context(header_value: str) -> dict:
         x_dl_context = json.loads(header_value)
     except (json.decoder.JSONDecodeError, TypeError):
         x_dl_context = {}
-        LOGGER.warning(f"Got a malformed {DLHeadersCommon.DL_CONTEXT} header: {header_value!r}")
+        LOGGER.warning("Got a malformed %s header: %r", DLHeadersCommon.DL_CONTEXT, header_value)
 
     x_dl_context_filtered = {k: v for k, v in x_dl_context.items() if isinstance(v, str)}
 
     if x_dl_context_filtered != x_dl_context:
-        LOGGER.warning(f"Got unexpected data structure in {DLHeadersCommon.DL_CONTEXT} header: {header_value!r}")
+        LOGGER.warning("Got unexpected data structure in %s header: %r", DLHeadersCommon.DL_CONTEXT, header_value)
 
     return x_dl_context_filtered

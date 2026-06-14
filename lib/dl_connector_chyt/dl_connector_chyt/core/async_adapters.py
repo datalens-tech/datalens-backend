@@ -32,5 +32,5 @@ class AsyncCHYTAdapter(BaseAsyncClickHouseAdapter):
 
     async def _make_query(self, dba_q: DBAdapterQuery, mirroring_mode: bool = False) -> ClientResponse:
         resp = await super()._make_query(dba_q=dba_q, mirroring_mode=mirroring_mode)
-        LOGGER.info(f"CHYT Response headers: {resp.headers}")
+        LOGGER.info("CHYT Response headers: %s", resp.headers)
         return resp

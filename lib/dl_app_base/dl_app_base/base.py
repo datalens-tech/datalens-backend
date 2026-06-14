@@ -78,7 +78,7 @@ class BaseApp:
                     raise exceptions.StartupError(message) from e
                 self.logger.warning(message)
             else:
-                self.logger.info(f"Successfully started StartupCallback({callback.name})")
+                self.logger.info("Successfully started StartupCallback(%s)", callback.name)
 
         self.logger.info("Startup Callbacks completed")
 
@@ -100,7 +100,7 @@ class BaseApp:
                     raise exceptions.ShutdownError(message) from e
                 self.logger.warning(message)
             else:
-                self.logger.info(f"Successfully shutdown ShutdownCallback({callback.name})")
+                self.logger.info("Successfully shutdown ShutdownCallback(%s)", callback.name)
 
         self.logger.info("ShutdownCallbacks completed")
         self._state.runtime_status = RuntimeStatus.STOPPED

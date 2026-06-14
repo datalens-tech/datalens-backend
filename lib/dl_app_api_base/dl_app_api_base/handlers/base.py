@@ -168,7 +168,7 @@ class BaseRequestSchema(dl_pydantic.BaseSchema):
             return await cls.from_request(request)
         except ValueError as exc:
             text = await request.text()
-            LOGGER.exception(f"Bad request: {text}")
+            LOGGER.exception("Bad request: %s", text)
             raise BadRequestResponseSchema().as_exception() from exc
 
 

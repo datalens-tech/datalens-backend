@@ -116,7 +116,7 @@ class WithDatabaseNameOverride:
     def _get_db_name_for_query(default: str | None, from_query: str | None, warn_override: bool) -> str:
         if default is not None and from_query is not None:
             if default != from_query and warn_override:
-                LOGGER.warning(f"Divergence in DB names: default='{default}' from_query='{from_query}'")
+                LOGGER.warning("Divergence in DB names: default='%s' from_query='%s'", default, from_query)
             return from_query
         if default is not None:
             return default

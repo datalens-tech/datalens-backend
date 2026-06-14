@@ -218,7 +218,7 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
                     use_cache=False,
                 )
             except Exception as ex:
-                LOGGER.exception("Cache invalidation formula query execution failed", exc_info=True)
+                LOGGER.exception("Cache invalidation formula query execution failed")
                 raise CacheInvalidationTestQueryError(
                     message="Cache invalidation formula query execution failed",
                     debug_info={"db_message": str(ex)},

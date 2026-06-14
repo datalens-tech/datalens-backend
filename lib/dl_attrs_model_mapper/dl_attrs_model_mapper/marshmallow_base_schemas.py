@@ -43,8 +43,8 @@ class BaseSchema[TARGET_OBJECT_BASE_TV](marshmallow.Schema):
     def post_load(self, data: dict[str, Any], **_: Any) -> TARGET_OBJECT_BASE_TV:
         try:
             return self.target_cls(**data)
-        except Exception as exc:
-            LOGGER.exception(f"Can not instantiate class {self.target_cls}: {exc}")
+        except Exception:
+            LOGGER.exception("Can not instantiate class %s", self.target_cls)
             raise
 
     @post_dump(pass_many=False)

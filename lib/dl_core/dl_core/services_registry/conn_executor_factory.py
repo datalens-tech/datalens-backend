@@ -124,7 +124,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
             if len(hosts) == 1:
                 hosts = hosts * self.SINGLE_HOST_RETRY_ATTEMPTS
             elif len(hosts) > self.MAX_HOST_RETRY_ATTEMPTS:
-                LOGGER.info(f"Hosts list truncated from {len(hosts)} to {self.MAX_HOST_RETRY_ATTEMPTS}")
+                LOGGER.info("Hosts list truncated from %s to %s", len(hosts), self.MAX_HOST_RETRY_ATTEMPTS)
                 hosts = hosts[: self.MAX_HOST_RETRY_ATTEMPTS]
 
             return tuple(hosts)

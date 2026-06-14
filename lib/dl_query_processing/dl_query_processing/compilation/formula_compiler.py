@@ -244,9 +244,11 @@ class FieldProcessingStageManager:
                     pass_on_errors = []
                 if pass_on_errors:
                     LOGGER.error(
-                        f"Formula handling errors found on stage {stage.name} "
-                        f"for field {field.title!r} ({field.guid}): "
-                        f"{[str(e) for e in pass_on_errors]}"
+                        "Formula handling errors found on stage %s for field %r (%s): %s",
+                        stage.name,
+                        field.title,
+                        field.guid,
+                        [str(e) for e in pass_on_errors],
                     )
                 raise dl_query_processing.exc.FormulaHandlingError(*pass_on_errors, stage=stage, field=field) from err
 
@@ -299,7 +301,7 @@ def implements_stage(stage: ProcessingStage) -> Callable[[StageProcType], StageP
                     try:
                         formula_obj = func(self, field, collect_errors)
                     except Exception:
-                        LOGGER.debug(f"Stage {stage.name} failed for field {field.title!r} ({field.guid})")
+                        LOGGER.debug("Stage %s failed for field %r (%s)", stage.name, field.title, field.guid)
                         raise
                 assert formula_obj is not None
                 self._stage_manager.set_result(formula_obj, field=field, stage=stage)
@@ -480,7 +482,7 @@ class FormulaCompiler:
             try:
                 av_column = self._columns.get_avatar_column(avatar_id=avatar_id, name=field.source)
             except formula_exc.FormulaError:
-                LOGGER.warning(f"Unknown column {field.source} for avatar {avatar_id}")
+                LOGGER.warning("Unknown column %s for avatar %s", field.source, avatar_id)
             else:
                 if av_column.column.has_auto_aggregation:
                     # Better to check this property in the column, than in the field

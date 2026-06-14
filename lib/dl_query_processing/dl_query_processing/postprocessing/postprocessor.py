@@ -135,7 +135,9 @@ class DataPostprocessor:
                 postprocessed_data = tuple(restore_order(postprocessed_data))
 
         LOGGER.info(
-            f"Returning dataset data: {len(postprocessed_data)} rows " f"with {len(result_fields_types)} columns",
+            "Returning dataset data: %s rows with %s columns",
+            len(postprocessed_data),
+            len(result_fields_types),
             extra={
                 "fetched_data_statistics": {
                     "row_count": len(postprocessed_data),

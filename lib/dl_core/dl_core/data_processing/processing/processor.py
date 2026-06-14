@@ -155,7 +155,7 @@ class OperationProcessorAsyncBase(abc.ABC):
         output_stream_ids: Collection[str],
     ) -> list[DataStreamAsync]:
         processing_id = shortuuid.uuid()
-        LOGGER.info(f"Initializing processing context {processing_id}")
+        LOGGER.info("Initializing processing context %s", processing_id)
         ctx = OpExecutionContext(
             processing_id=processing_id,
             streams=streams,
@@ -164,7 +164,7 @@ class OperationProcessorAsyncBase(abc.ABC):
 
         self.pre_run(ctx=ctx)
 
-        LOGGER.info(f'Processor got operations: {", ".join([type(op).__name__ for op in operations])}')
+        LOGGER.info("Processor got operations: %s", ", ".join([type(op).__name__ for op in operations]))
 
         exec_exception: Exception | None = None
         try:

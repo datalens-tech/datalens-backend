@@ -64,7 +64,7 @@ class DLCommonAPIClient:
     ) -> None:
         headers_intersection = acc.keys() & update.keys()
         if headers_intersection:
-            LOGGER.warning(f"Got headers intersection on update on stage {stage!r}: {headers_intersection}")
+            LOGGER.warning("Got headers intersection on update on stage %r: %s", stage, headers_intersection)
         acc.update(update)
 
     # TODO FIX: Check if no overrides (take in account that headers are CI)

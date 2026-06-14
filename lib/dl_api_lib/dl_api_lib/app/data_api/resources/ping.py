@@ -114,7 +114,7 @@ class PingReadyView(BaseView):
 
             for rqe_service in required_rqe_services:
                 rqe_base_url = rqe_base_url_map[rqe_service]
-                LOGGER.info(f"Going to check RQE readiness ({rqe_service.name} at {rqe_base_url})")
+                LOGGER.info("Going to check RQE readiness (%s at %s)", rqe_service.name, rqe_base_url)
                 response_details[rqe_service.name] = await self.is_rqe_ready(rqe_base_url)
 
         status = (

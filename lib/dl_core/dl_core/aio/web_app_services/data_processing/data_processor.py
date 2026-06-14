@@ -39,14 +39,14 @@ class DataProcessorService(metaclass=abc.ABCMeta):
 
     async def init_hook(self, target_app: web.Application) -> None:
         assert self.APP_KEY not in target_app, f"{type(self).__name__} already initiated for app"
-        LOGGER.info(f"Initializing {type(self).__name__} data processor service")
+        LOGGER.info("Initializing %s data processor service", type(self).__name__)
         target_app[self.APP_KEY] = self
         await self.initialize()
 
     async def tear_down_hook(self, target_app: web.Application) -> None:
-        LOGGER.info(f"Tear down {type(self).__name__} data processor service...")
+        LOGGER.info("Tear down %s data processor service...", type(self).__name__)
         await self.tear_down(target_app)
-        LOGGER.info(f"Tear down {type(self).__name__} data processor service: done.")
+        LOGGER.info("Tear down %s data processor service: done.", type(self).__name__)
 
     async def tear_down(self, target_app: web.Application) -> None:
         await self.finalize()

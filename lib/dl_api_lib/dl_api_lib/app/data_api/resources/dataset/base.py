@@ -466,7 +466,7 @@ class DatasetDataBaseView(BaseView):
                 engine=cache_engine,
             )
         except CacheInitializationError:  # Error creating factory with redis cache engine or something
-            LOGGER.error("Mutation cache error", exc_info=True)
+            LOGGER.exception("Mutation cache error")
             return None
 
     async def try_get_dataset_from_cache(
@@ -568,9 +568,9 @@ class DatasetDataBaseView(BaseView):
         except HTTPError as exc:
             if exc.response.status_code == 404:
                 raise web.HTTPNotFound(reason="Cannot find RLS groups for subject") from exc
-            LOGGER.error(f"Error while resolving RLS groups: {exc!s}", exc_info=True)
+            LOGGER.exception("Error while resolving RLS groups")
             raise exc
-        LOGGER.info(f"Subject groups for RLS: {subject_groups}")
+        LOGGER.info("Subject groups for RLS: %s", subject_groups)
         self.dataset.rls.allowed_groups = set(subject_groups)
 
     async def prepare_dataset_for_request(
@@ -1041,8 +1041,9 @@ class DatasetDataBaseView(BaseView):
         req_dataset_revision_id = req_model.dataset_revision_id
         if req_dataset_revision_id is not None and req_dataset_revision_id != dataset_revision_id:
             LOGGER.warning(
-                f"Dataset revision id mismatch: got {req_dataset_revision_id} from the request, "
-                f"but found {dataset_revision_id} in the current dataset"
+                "Dataset revision id mismatch: got %s from the request, but found %s in the current dataset",
+                req_dataset_revision_id,
+                dataset_revision_id,
             )
 
     @staticmethod

@@ -66,7 +66,7 @@ class SyncPromQLClient:
 
     def _request(self, method, endpoint, **kwargs):
         if endpoint.startswith("/"):
-            LOGGER.warning(f"Endpoint '{endpoint}' starts with '/' that can effect final url")
+            LOGGER.warning("Endpoint '%s' starts with '/' that can affect final url", endpoint)
         url = urljoin(self._base_url, endpoint)
         return self._session.request(method, url, **kwargs)
 

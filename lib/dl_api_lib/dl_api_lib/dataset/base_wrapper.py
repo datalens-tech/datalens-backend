@@ -106,7 +106,7 @@ class AvatarAliasMapper:
         avatar_idx = self.next_idx
         self.next_idx += 1
         result = f"t{avatar_idx}"
-        LOGGER.debug(f"AvatarAliasMapper: mapping {avatar_id!r} -> {result!r}")
+        LOGGER.debug("AvatarAliasMapper: mapping %r -> %r", avatar_id, result)
         self.avatar_map[avatar_id] = result
         return result
 

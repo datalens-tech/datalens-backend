@@ -112,7 +112,7 @@ class BIMSSQLDialectBasic(UPSTREAM):
         try:
             cursor.execute(statement, self.translate_custom_parameters(parameters))
         except pyodbc.OperationalError:
-            LOGGER.error(f"pyodbc OperationalError. Full statement: {statement}\n Params: {parameters}")
+            LOGGER.error("pyodbc OperationalError. Full statement: %s\n Params: %s", statement, parameters)
             raise
 
     @upbase._db_plus_owner

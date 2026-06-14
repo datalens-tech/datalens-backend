@@ -492,7 +492,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             )
 
             def _unwrap_to_column_clause(element):
-                LOGGER.info(f"element {element} {type(element)}")
+                LOGGER.info("element %s %s", element, type(element))
                 if isinstance(element, elements.ColumnClause):
                     return element
                 if hasattr(element, "clause"):

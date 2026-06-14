@@ -152,7 +152,9 @@ class QueryExecutor:
         op: BaseOp  # For usage in various parts of this function
 
         LOGGER.info(
-            f"Executing level type {level_type}. " f"Got source streams with result IDs: {list(streams_by_result_id)}"
+            "Executing level type %s. Got source streams with result IDs: %s",
+            level_type,
+            list(streams_by_result_id),
         )
 
         streams: list[DataStreamAsync] = [stream for _, stream in sorted(streams_by_result_id.items())]  # type: ignore  # TODO: fix
@@ -276,8 +278,10 @@ class QueryExecutor:
             )
             assert isinstance(op, DownloadOp)  # for typing
             LOGGER.info(
-                f"Adding DownloadOp for query {result_id} with "
-                f"input stream {op.source_stream_id} and output stream {op.dest_stream_id}"
+                "Adding DownloadOp for query %s with input stream %s and output stream %s",
+                result_id,
+                op.source_stream_id,
+                op.dest_stream_id,
             )
             operations.append(op)
             output_stream_to_result_map[op.dest_stream_id] = result_id
@@ -346,8 +350,8 @@ class QueryExecutor:
             stream_aliases[stream.id] = stream.alias
 
         id_map_for_log = {result_id: stream.id for result_id, stream in streams_by_result_id.items()}
-        LOGGER.info(f"Generated base streams for result IDs: {id_map_for_log}")
-        LOGGER.info(f"Using aliases: {stream_aliases}")
+        LOGGER.info("Generated base streams for result IDs: %s", id_map_for_log)
+        LOGGER.info("Using aliases: %s", stream_aliases)
         assert len(streams_by_result_id) == len(stream_aliases)
         return streams_by_result_id, stream_aliases
 

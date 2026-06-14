@@ -125,7 +125,7 @@ class SomeTask(BaseExecutorTask[SomeTaskInterface, Context]):
     cls_meta = SomeTaskInterface
 
     async def run(self) -> TaskResult:
-        LOGGER.info(f"Its some task with a {self._ctx} {self.meta.foo}")
+        LOGGER.info("Its some task with a %s %s", self._ctx, self.meta.foo)
         loop = asyncio.get_running_loop()
         try:
             result = await loop.run_in_executor(
@@ -145,14 +145,14 @@ class WaitingTask(BaseExecutorTask[WaitingTaskInterface, Context]):
     cls_meta = WaitingTaskInterface
 
     async def run(self) -> TaskResult:
-        LOGGER.info(f"Its a waiting task with a {self._ctx}, going to wait for {self.meta.seconds_to_wait}s...")
+        LOGGER.info("Its a waiting task with a %s, going to wait for %ss...", self._ctx, self.meta.seconds_to_wait)
         await asyncio.sleep(self.meta.seconds_to_wait)
         LOGGER.info("Done waiting")
         return Success()
 
 
 def some_sync_function_with_logs() -> None:
-    LOGGER.info(f"{BROKEN_MARK}")
+    LOGGER.info("%s", BROKEN_MARK)
 
 
 @attr.s
@@ -184,7 +184,7 @@ class RetryTask(BaseExecutorTask[RetryTaskInterface, Context]):
     cls_meta = RetryTaskInterface
 
     async def run(self) -> TaskResult:
-        LOGGER.info(f"Its retry task with a {self._ctx} {self.meta.foobar}")
+        LOGGER.info("Its retry task with a %s %s", self._ctx, self.meta.foobar)
         return Retry(
             attempts=2,
             backoff=1,

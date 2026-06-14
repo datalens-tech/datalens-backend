@@ -98,7 +98,7 @@ def _log_exc(coro):  # type: ignore  # 2024-01-30 # TODO: Function is missing a 
         try:
             return await coro(*args, **kwargs)
         except Exception:
-            LOGGER.exception("Unhandled exception in application signal listener", exc_info=True)
+            LOGGER.exception("Unhandled exception in application signal listener")
             raise
 
     return wrapper

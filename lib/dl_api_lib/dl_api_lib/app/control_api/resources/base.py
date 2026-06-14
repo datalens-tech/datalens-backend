@@ -69,7 +69,7 @@ def wrap_export_import_exception(
         try:
             return func(self, *args, **kwargs)
         except export_import_errors as e:
-            LOGGER.error("Caught exception in import-export wrapper", exc_info=True)
+            LOGGER.exception("Caught exception in import-export wrapper")
             notifications = [
                 {
                     "message": e.message,

@@ -116,7 +116,6 @@ ignore = [
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
 # "DTZ",   # flake8-datetimez — Later: forces explicit tz on datetime calls
-# "G",     # flake8-logging-format — Later: enforces lazy %-logging
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, separate initiative
 # "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
@@ -132,6 +131,7 @@ select = [
   "F", # Pyflakes
   "FLY", # flynt
   "FURB", # refurb
+  "G", # flake8-logging-format
   "LOG", # flake8-logging
   "PERF", # Perflint
   "PIE", # flake8-pie

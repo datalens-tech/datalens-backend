@@ -50,12 +50,12 @@ class S3FileDataSink[DATA_STREAM_TV: DataStreamBase, ITER_TV](DataSink[DATA_STRE
         )
         self._multipart_upload_started = True
         self._upload_id = mp_upl_resp["UploadId"]
-        LOGGER.info(f"Created multipart upload. S3 key: {self._s3_key}, UploadId: {self._upload_id}")
+        LOGGER.info("Created multipart upload. S3 key: %s, UploadId: %s", self._s3_key, self._upload_id)
         self._part_tags = []
         self._part_number = 1
 
     def finalize(self) -> None:
-        LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
+        LOGGER.info("Completing S3 multipart upload. %s parts were uploaded.", self._part_number - 1)
         assert self._upload_id is not None
         if self._multipart_upload_started and self._part_tags:
             self._s3.complete_multipart_upload(
@@ -83,7 +83,7 @@ class S3FileDataSink[DATA_STREAM_TV: DataStreamBase, ITER_TV](DataSink[DATA_STRE
         return b"\n".join(batch) + b"\n"
 
     def _dump_data_batch(self, batch: list[bytes], progress: int) -> None:
-        LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
+        LOGGER.info("Dumping %s data rows into s3 file %s.", len(batch), self._s3_key)
         assert self._upload_id is not None
         part_resp = self._s3.upload_part(
             Bucket=self._bucket_name,
@@ -92,13 +92,13 @@ class S3FileDataSink[DATA_STREAM_TV: DataStreamBase, ITER_TV](DataSink[DATA_STRE
             PartNumber=self._part_number,
             Body=self._prepare_chunk_body(batch),
         )
-        LOGGER.info(f"Part number {self._part_number} uploaded.")
+        LOGGER.info("Part number %s uploaded.", self._part_number)
         assert self._part_tags is not None
         self._part_tags.append((self._part_number, part_resp["ETag"]))
         self._part_number += 1
 
         self._rows_saved += len(batch)
-        LOGGER.info(f"Copied: {self._rows_saved} rows ({progress}%%) to S3")
+        LOGGER.info("Copied: %s rows (%s%%) to S3", self._rows_saved, progress)
 
     @abc.abstractmethod
     def _process_row(self, row_data: ITER_TV) -> bytes:
@@ -165,13 +165,13 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
         )
         self._multipart_upload_started = True
         self._upload_id = mp_upl_resp["UploadId"]
-        LOGGER.info(f"Created multipart upload. S3 key: {self._s3_key}, UploadId: {self._upload_id}")
+        LOGGER.info("Created multipart upload. S3 key: %s, UploadId: %s", self._s3_key, self._upload_id)
         self._part_tags = []
         self._part_number = 1
 
     async def finalize(self) -> None:
         if self._multipart_upload_started:
-            LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
+            LOGGER.info("Completing S3 multipart upload. %s parts were uploaded.", self._part_number - 1)
             assert self._upload_id is not None
             await self._s3.complete_multipart_upload(
                 Bucket=self._bucket_name,
@@ -202,7 +202,7 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
     async def _dump_data_batch(self, batch: list[bytes], progress: int) -> None:
         if self._bytes_saved + len(batch) > self.max_file_size_bytes:
             raise self._max_file_size_exc
-        LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
+        LOGGER.info("Dumping %s data rows into s3 file %s.", len(batch), self._s3_key)
         assert self._upload_id is not None
         batch_to_write = self._prepare_chunk_body(batch)
         part_resp = await self._s3.upload_part(
@@ -212,14 +212,14 @@ class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncData
             PartNumber=self._part_number,
             Body=batch_to_write,
         )
-        LOGGER.info(f"Part number {self._part_number} uploaded.")
+        LOGGER.info("Part number %s uploaded.", self._part_number)
         assert isinstance(self._part_tags, list)
         self._part_tags.append((self._part_number, part_resp["ETag"]))
         self._part_number += 1
 
         self._rows_saved += len(batch)
         self._bytes_saved += len(batch_to_write)
-        LOGGER.info(f"Copied: {self._rows_saved} rows ({progress}%%) to S3")
+        LOGGER.info("Copied: %s rows (%s%%) to S3", self._rows_saved, progress)
 
     def _process_row(self, row_data: list) -> bytes:
         return json.dumps(row_data).encode("utf-8")

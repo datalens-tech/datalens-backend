@@ -193,7 +193,7 @@ class FileUploaderClient(BIAioHTTPClient):
                 resp_data = await resp.json()
                 return SourcePreview(source_id=src.source_id, preview=resp_data["preview"])
         except aiohttp.ClientError:
-            LOGGER.exception(f"Failed to get preview for file {src.file_id} source {src.source_id}")
+            LOGGER.exception("Failed to get preview for file %s source %s", src.file_id, src.source_id)
             return SourcePreview(source_id=src.source_id, preview=[])
 
     async def get_preview_batch(self, file_sources: list[FileSourceDesc]) -> list[SourcePreview]:
@@ -210,7 +210,7 @@ class FileUploaderClient(BIAioHTTPClient):
                 resp_data = await resp.json()
                 return SourceInternalParamsResultSchema().load(resp_data)
         except aiohttp.ClientError:
-            LOGGER.exception(f"Failed to get raw_schema for file {src.file_id} source {src.source_id}")
+            LOGGER.exception("Failed to get raw_schema for file %s source %s", src.file_id, src.source_id)
             raise
 
     async def get_internal_params_batch(self, file_sources: list[FileSourceDesc]) -> list[SourceInternalParams]:
@@ -221,9 +221,9 @@ class FileUploaderClient(BIAioHTTPClient):
         json_data = CleanupApiSchema().dump({"tenant_id": tenant_id})
         try:
             async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5):
-                LOGGER.info(f"Scheduled cleanup for tenant id {tenant_id}")
+                LOGGER.info("Scheduled cleanup for tenant id %s", tenant_id)
         except aiohttp.ClientError:
-            LOGGER.exception(f"Failed to call cleanup for tenant id {tenant_id}")
+            LOGGER.exception("Failed to call cleanup for tenant id %s", tenant_id)
             raise
 
     def cleanup_tenant_sync(self, tenant_id: str) -> None:
@@ -248,9 +248,9 @@ class FileUploaderClient(BIAioHTTPClient):
         )
         try:
             async with self.request("post", path=path, json_data=json_data, read_timeout_sec=5):
-                LOGGER.info(f"Scheduled update for connection id {conn_id}")
+                LOGGER.info("Scheduled update for connection id %s", conn_id)
         except aiohttp.ClientError:
-            LOGGER.exception(f"Failed to call update for connection id {conn_id}")
+            LOGGER.exception("Failed to call update for connection id %s", conn_id)
             raise
 
     def close_sync(self) -> None:

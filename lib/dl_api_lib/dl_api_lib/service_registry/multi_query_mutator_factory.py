@@ -35,10 +35,11 @@ class SRMultiQueryMutatorFactory:
             dialect=dialect,
         )
         LOGGER.info(
-            f"Resolved MQM factory for backend_type {backend_type.name} "
-            f"and dialect {dialect.common_name_and_version} "
-            f"in {self._query_proc_mode.name} mode "
-            f"to {factory_cls.__name__}"
+            "Resolved MQM factory for backend_type %s and dialect %s in %s mode to %s",
+            backend_type.name,
+            dialect.common_name_and_version,
+            self._query_proc_mode.name,
+            factory_cls.__name__,
         )
         return factory_cls
 

@@ -38,7 +38,7 @@ class CommonInternalAPIClient(DLCommonAPIClient):
         try:
             yield None
         except marshmallow.exceptions.ValidationError as ma_exc:
-            LOGGER.info(f"Deserialization fail in internal API client: {type(self).__name__}", exc_info=True)
+            LOGGER.info("Deserialization fail in internal API client: %s", type(self).__name__, exc_info=True)
             effective_messages: dict[str, Any] = ma_exc.messages  # type: ignore  # 2024-01-30 # TODO: Incompatible types in assignment (expression has type "list[str] | list[Any] | dict[Any, Any]", variable has type "dict[str, Any]")  [assignment]
 
             raise dl_api_commons.exc.MalformedAPIResponseErr(
@@ -74,7 +74,8 @@ class CommonInternalAPIClient(DLCommonAPIClient):
             resp_data = repr(common_data.response_body)
 
         LOGGER.info(
-            f"Handling unexpected response in internal API client: {type(self).__name__}",
+            "Handling unexpected response in internal API client: %s",
+            type(self).__name__,
             extra={
                 "status_code": resp.status,
                 "resp_data": resp_data,

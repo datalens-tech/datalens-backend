@@ -154,7 +154,7 @@ class FilterFormulaCompiler:
 
         data_type = self._formula_compiler.get_field_final_formula_data_type(field=field)
         assert data_type is not None
-        LOGGER.info(f"Filtered field {field.title!r} has data type {data_type.name} and is a {field.type.name}")
+        LOGGER.info("Filtered field %r has data type %s and is a %s", field.title, data_type.name, field.type.name)
 
         filter_params = FilterParams(
             field=field,
@@ -174,7 +174,11 @@ class FilterFormulaCompiler:
         arg_cast_type = mangled_filter_params.arg_cast_type
 
         LOGGER.info(
-            f"Will cast field {field.title!r} to {field_cast_type.name} " f"and {filter_args!r} to {arg_cast_type.name}"
+            "Will cast field %r to %s and %r to %s",
+            field.title,
+            field_cast_type.name,
+            filter_args,
+            arg_cast_type.name,
         )
         if field_cast_type != data_type:
             field_formula_obj = self._formula_compiler.apply_cast_to_formula(

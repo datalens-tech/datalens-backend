@@ -197,7 +197,7 @@ class DatasetComponentEditor:
             dsrc_coll_spec = self._ds_accessor.get_data_source_coll_spec_strict(source_id=source_id)
 
             if dsrc_coll_spec.managed_by != ManagedBy.user:
-                LOGGER.info(f"dsrc_coll_spec.managed_by = {dsrc_coll_spec.managed_by}. Skipping datasource deletion.")
+                LOGGER.info("dsrc_coll_spec.managed_by = %s. Skipping datasource deletion.", dsrc_coll_spec.managed_by)
                 return
 
             # We can delete only sources from non-ref collections

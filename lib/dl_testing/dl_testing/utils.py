@@ -91,10 +91,10 @@ def wait_for_port(host: str, port: int, period_seconds: int = 1, timeout_seconds
         try:
             sock.connect((host, port))
             sock.close()
-            LOGGER.info(f"{host}:{port} is available")
+            LOGGER.info("%s:%s is available", host, port)
             return
         except OSError:
-            LOGGER.warning(f"Waiting for {host}:{port} to become available")
+            LOGGER.warning("Waiting for %s:%s to become available", host, port)
             time.sleep(period_seconds)
 
     raise Exception(f"Timeout waiting for {host}:{port} to become available")

@@ -83,7 +83,7 @@ def run_cmd_in_containers_by_label(label: str, cmd: list[str]) -> None:
         filters={"label": [f"datalens.ci.service={label}"]},
     )
     for container in containers:
-        LOGGER.debug(f"Running command {cmd} in container {container.name}")
+        LOGGER.debug("Running command %s in container %s", cmd, container.name)
         container.exec_run(cmd, socket=is_docker_host_ssh())
 
 
@@ -152,7 +152,7 @@ def prepare_united_storage(
 
     max_wait_time = 160.0
     wait_pause = 0.5
-    LOGGER.debug(f"prepare_united_storage: waiting for up to {max_wait_time}s for US to respond with ok...")
+    LOGGER.debug("prepare_united_storage: waiting for up to %ss for US to respond with ok...", max_wait_time)
     wait_for("US startup", condition=_wait_for_us, timeout=max_wait_time, interval=wait_pause)
 
     LOGGER.debug("prepare_united_storage: done.")

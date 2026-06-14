@@ -141,7 +141,7 @@ class AsyncPostgresAdapter(
         try:
             d = dateutil_parser.parse(s, ignoretz=ignoretz)
         except (dateutil_parser.ParserError, OverflowError) as e:
-            LOGGER.info(f"Can't parse date {s} by {ignoretz}")
+            LOGGER.info("Can't parse date %s by %s", s, ignoretz)
             # its impossible to get extra info about the position in stream
             # because it's a callback for asyncpg
             raise exc.DataStreamValidationError(value=s) from e

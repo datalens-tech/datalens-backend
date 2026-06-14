@@ -59,8 +59,9 @@ async def create_s3_bucket(
             break
         except botocore.exceptions.HTTPClientError:
             LOGGER.warning(
-                f"HTTPClientError during creating S3 bucket. Attempt {attempt} from {max_attempts}. "
-                "Retrying after 5 seconds...",
+                "HTTPClientError during creating S3 bucket. Attempt %s from %s. Retrying after 5 seconds...",
+                attempt,
+                max_attempts,
                 exc_info=True,
             )
             if attempt > max_attempts:

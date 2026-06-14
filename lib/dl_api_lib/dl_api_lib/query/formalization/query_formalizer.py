@@ -389,7 +389,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         if not field.valid:
             # FIXME: BI-2714 Investigate if/why this error is happening and return the raise
             # raise exc.InvalidFieldError(
-            LOGGER.error(f"Field {field.title!r} ({field_id}) is invalid and cannot be selected. Error ignored.")
+            LOGGER.error("Field %r (%s) is invalid and cannot be selected. Error ignored.", field.title, field_id)
 
         self._ensure_not_unsupported_type(field)
         if not block_spec.allow_measure_fields:
@@ -517,7 +517,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             for avatar_id in (relation.left_avatar_id, relation.right_avatar_id)
             if relation.required
         }
-        LOGGER.info(f"Adding avatars that are a part of required relations: {avatar_ids_by_required_relations}")
+        LOGGER.info("Adding avatars that are a part of required relations: %s", avatar_ids_by_required_relations)
         explicitly_required_avatar_ids |= avatar_ids_by_required_relations
 
         # Normalize avatars (fix them if there are no user-managed ones)

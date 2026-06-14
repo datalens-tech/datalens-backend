@@ -101,7 +101,7 @@ class SqlSourceBuilder:
 
                 relation_expr_ctx = prep_relation.expression
                 relation_expr: JoinExpressionType = relation_expr_ctx.expression  # type: ignore  # 2024-01-24 # TODO: "ClauseElement" has no attribute "expression"  [attr-defined]
-                LOGGER.info(f"Including relation between avatars {avatar_id} and {child_avatar_id}")
+                LOGGER.info("Including relation between avatars %s and %s", avatar_id, child_avatar_id)
                 avatar_join_info_list.append(
                     AvatarJoinInfo(
                         avatar_id=child_avatar_id, join_type=prep_relation.join_type, on_clause=relation_expr
@@ -185,8 +185,9 @@ class SqlSourceBuilder:
         )
         if used_avatar_ids != required_avatar_ids:
             LOGGER.warning(
-                f"Used avatar IDs are different from required: required: {required_avatar_ids}, "
-                f"used: {used_avatar_ids}"
+                "Used avatar IDs are different from required: required: %s, used: %s",
+                required_avatar_ids,
+                used_avatar_ids,
             )
 
         data_key = LocalKeyRepresentation()

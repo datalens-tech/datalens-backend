@@ -66,9 +66,10 @@ class OpExecutorAsync:
             raise TypeError(f"Type {type(op).__name__} is not supported as a source for OpExecutorAsync")
 
         LOGGER.info(
-            f"Running {type(op).__name__} "
-            f"with source streams {stream_ids} "
-            f"and destination stream {op.dest_stream_id}"
+            "Running %s with source streams %s and destination stream %s",
+            type(op).__name__,
+            stream_ids,
+            op.dest_stream_id,
         )
         return await self._execute(op)
 
@@ -107,7 +108,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
             dialect=query_compiler.dialect,
             obfuscation_engine=get_request_obfuscation_engine(),
         )
-        LOGGER.info(f"Going to database with SQL query:\n{query_debug_str}")
+        LOGGER.info("Going to database with SQL query:\n%s", query_debug_str)
 
         query_id = make_id()
 
@@ -181,7 +182,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
 
         data_key = source_stream.data_key.extend("query", op.data_key_data)
 
-        LOGGER.info(f"Preliminary cache key info for query: {data_key.key_parts_hash}")
+        LOGGER.info("Preliminary cache key info for query: %s", data_key.key_parts_hash)
 
         return data_key
 
@@ -199,7 +200,7 @@ class CalcOpExecutorAsync(OpExecutorAsync):
         )
         query_debug_str = compile_query_for_debug(query=query, dialect=query_compiler.dialect)
 
-        LOGGER.info(f"Generated lazy query: {query_debug_str}")
+        LOGGER.info("Generated lazy query: %s", query_debug_str)
 
         names = op.bi_query.get_names()
         user_types = op.bi_query.get_user_types()
@@ -299,10 +300,10 @@ class UploadOpExecutorAsync(OpExecutorAsync):
             nonlocal executed
 
             if executed:
-                LOGGER.info(f"Skipping upload to table {table_name} as it was already executed")
+                LOGGER.info("Skipping upload to table %s as it was already executed", table_name)
                 return
 
-            LOGGER.info(f"Uploading to table {table_name}")
+            LOGGER.info("Uploading to table %s", table_name)
             await self.db_ex_adapter.create_table(
                 table_name=table_name,
                 names=source_stream.names,

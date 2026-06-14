@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 def initialize_api_lib_test(pytest_config: pytest.Config, api_test_config: ApiTestEnvironmentConfiguration) -> None:
     LOGGER.debug("Initializing API lib test")
-    LOGGER.debug(f"API test config: {api_test_config}")
+    LOGGER.debug("API test config: %s", api_test_config)
 
     load_api_lib(api_lib_config=api_test_config.get_api_library_config())
     initialize_core_test(pytest_config=pytest_config, core_test_config=api_test_config.core_test_config)

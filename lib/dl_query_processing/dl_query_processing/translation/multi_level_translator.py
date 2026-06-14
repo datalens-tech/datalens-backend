@@ -87,7 +87,8 @@ class MultiLevelQueryTranslator:
                 "cache_hits": combined_stats,
             }
             LOGGER.info(
-                f"Function translation statistics for {level_type.name}",
+                "Function translation statistics for %s",
+                level_type.name,
                 extra={"function_translation_statistics": data},
             )
 

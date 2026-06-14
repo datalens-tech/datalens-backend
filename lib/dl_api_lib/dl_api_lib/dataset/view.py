@@ -195,7 +195,7 @@ class DatasetView(DatasetBaseWrapper):
         return self._capabilities.resolve_source_role(for_preview=self.is_preview)
 
     def build_exec_info(self) -> QueryExecutionInfo:
-        LOGGER.info(f"Select field IDs: {[spec.field_id for spec in self.query_spec.select_specs]}")
+        LOGGER.info("Select field IDs: %s", [spec.field_id for spec in self.query_spec.select_specs])
 
         assert self._formula_compiler is not None, "perhaps the sources were not reloaded properly"
         assert self.inspect_env is not None, "perhaps the sources were not reloaded properly"

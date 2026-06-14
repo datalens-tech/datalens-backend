@@ -63,7 +63,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
         required_avatar_ids = set(required_avatar_ids)
         ranks = self.rank_avatars()
         if len(required_avatar_ids) > 1:
-            LOGGER.info(f"Got avatar ranks: {ranks}")
+            LOGGER.info("Got avatar ranks: %s", ranks)
 
         required_relation_ids: set[RelationId] = set()
 
@@ -77,11 +77,11 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
                     )
                     required_relation_ids.add(relation.id)
             if updated_required_avatar_ids == required_avatar_ids:
-                LOGGER.info(f"Finished resolving feature-managed avatars on iteration {iteration}")
+                LOGGER.info("Finished resolving feature-managed avatars on iteration %s", iteration)
                 break
             LOGGER.info(
-                "Found additional avatars in required feature-managed relations: "
-                f"{updated_required_avatar_ids - required_avatar_ids}"
+                "Found additional avatars in required feature-managed relations: %s",
+                updated_required_avatar_ids - required_avatar_ids,
             )
             required_avatar_ids = updated_required_avatar_ids
         else:
@@ -113,7 +113,7 @@ class AvatarTreeResolver(AvatarTreeResolverBase):
                     # add this parent to required IDs
                     if new_avatar_id not in required_avatar_ids:
                         LOGGER.info(
-                            f"Implicitly adding avatar {new_avatar_id} " f"so that avatar {avatar_id} can be joined to"
+                            "Implicitly adding avatar %s so that avatar %s can be joined to", new_avatar_id, avatar_id
                         )
                         required_avatar_ids.add(new_avatar_id)
                     avatar_id = new_avatar_id

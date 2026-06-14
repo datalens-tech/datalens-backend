@@ -42,13 +42,13 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
         )
         self._multipart_upload_started = True
         self._upload_id = mp_upl_resp["UploadId"]
-        LOGGER.info(f"Created multipart upload. S3 key: {self._s3_key}, UploadId: {self._upload_id}")
+        LOGGER.info("Created multipart upload. S3 key: %s, UploadId: %s", self._s3_key, self._upload_id)
         self._part_tags = []
         self._part_number = 1
 
     async def finalize(self) -> None:
         if self._multipart_upload_started:
-            LOGGER.info(f"Completing S3 multipart upload. {self._part_number - 1} parts were uploaded.")
+            LOGGER.info("Completing S3 multipart upload. %s parts were uploaded.", self._part_number - 1)
             assert self._upload_id is not None
             await self._s3.complete_multipart_upload(
                 Bucket=self._bucket_name,
@@ -76,7 +76,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     async def _dump_data_batch(self, batch: bytes, progress: int) -> None:
         if self._bytes_saved + len(batch) > self.max_file_size_bytes:
             raise self._max_file_size_exc
-        LOGGER.info(f"Dumping {len(batch)} data rows into s3 file {self._s3_key}.")
+        LOGGER.info("Dumping %s data rows into s3 file %s.", len(batch), self._s3_key)
         assert self._upload_id is not None
         part_resp = await self._s3.upload_part(
             Bucket=self._bucket_name,
@@ -85,13 +85,13 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
             PartNumber=self._part_number,
             Body=batch,
         )
-        LOGGER.info(f"Part number {self._part_number} uploaded.")
+        LOGGER.info("Part number %s uploaded.", self._part_number)
         assert isinstance(self._part_tags, list)
         self._part_tags.append((self._part_number, part_resp["ETag"]))
         self._part_number += 1
 
         self._bytes_saved += len(batch)
-        LOGGER.info(f"Copied: {self._bytes_saved} bytes in {self._chunks_saved} chunks ({progress}%%) to S3")
+        LOGGER.info("Copied: %s bytes in %s chunks (%s%%) to S3", self._bytes_saved, self._chunks_saved, progress)
 
     def _should_dump_batch(self, batch: bytes) -> bool:
         assert self.batch_size_in_bytes

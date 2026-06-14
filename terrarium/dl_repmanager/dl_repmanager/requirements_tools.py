@@ -38,7 +38,7 @@ class PipRequirementsIO:
                     if gather_all or name not in ["mypy", "python"]:
                         result[name] = PipRequirement(name=name, raw_version=version)
                 except Exception:
-                    log.warning(f"Failed to parse {line} from file {self.path}")
+                    log.warning("Failed to parse %s from file %s", line, self.path)
         return result
 
     def write_updates(self, to_update: dict[str, PipRequirement]) -> None:

@@ -136,7 +136,7 @@ class PdPivotTransformer(PivotTransformer):
         else:
             raise TypeError("Invalid pivot configuration")
 
-        LOGGER.info(f"Using {type(facade)} for pivot table")
+        LOGGER.info("Using %s for pivot table", type(facade))
 
         return PivotTable(
             facade=facade,

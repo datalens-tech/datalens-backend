@@ -374,7 +374,7 @@ class DatasetValidator(DatasetBaseWrapper):
             "dataset_action_name": action.name,
             "dataset_action_data": item_data,
         }
-        LOGGER.info(f"Going to apply action {action.name}", extra=extra)
+        LOGGER.info("Going to apply action %s", action.name, extra=extra)
 
         # TODO: ManagedBy is not present in any schema. Why is this check needed here?
         if by is not None and (item_data.managed_by or ManagedBy.user) != by:
@@ -600,8 +600,9 @@ class DatasetValidator(DatasetBaseWrapper):
         # Auto-manage cast
         if field_is_new and updated_field.cast is None:
             LOGGER.info(
-                f"Automatically initializing cast in {field.title} "
-                f"as {enum_not_none(updated_field.initial_data_type).name}"
+                "Automatically initializing cast in %s as %s",
+                field.title,
+                enum_not_none(updated_field.initial_data_type).name,
             )
             updated_field = updated_field.clone(cast=updated_field.initial_data_type)
         elif not field_is_new and updated_field.initial_data_type != field.initial_data_type:
@@ -613,8 +614,9 @@ class DatasetValidator(DatasetBaseWrapper):
                 updated_field
             ):
                 LOGGER.info(
-                    f"Automatically setting cast in {field.title} "
-                    f"to {enum_not_none(updated_field.initial_data_type).name}"
+                    "Automatically setting cast in %s to %s",
+                    field.title,
+                    enum_not_none(updated_field.initial_data_type).name,
                 )
                 updated_field = updated_field.clone(cast=updated_field.initial_data_type)
                 # the change of cast might result in new data_type
@@ -928,7 +930,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 return
 
             self._ds_ca.validate_component_can_be_managed(component_ref=component_ref, by=by)
-            LOGGER.info(f"Field {field_id} old data", extra=old_field._asdict())
+            LOGGER.info("Field %s old data", field_id, extra=old_field._asdict())
 
         if action == DatasetAction.add_field or update_field_id:
             checked_field_id = field_id if not update_field_id else new_field_id
@@ -1119,8 +1121,10 @@ class DatasetValidator(DatasetBaseWrapper):
             if original_title in new_name_by_title:
                 if new_name_by_title[original_title] != old_field.source:
                     LOGGER.info(
-                        f'Replacing source column "{original_title}" '
-                        f'with "{new_name_by_title[original_title]}" in field {old_field.guid}'
+                        'Replacing source column "%s" with "%s" in field %s',
+                        original_title,
+                        new_name_by_title[original_title],
+                        old_field.guid,
                     )
                     # match by title
                     new_field = new_field.clone(source=new_name_by_title[original_title])
@@ -1328,7 +1332,7 @@ class DatasetValidator(DatasetBaseWrapper):
             try:
                 yield
             except common_exc.DLBaseException as err:
-                LOGGER.exception(f"Failed to check source {source_id}. Assuming it doesn't exist")
+                LOGGER.exception("Failed to check source %s. Assuming it doesn't exist", source_id)
                 self._ds.error_registry.add_error(
                     id=source_id,
                     type=ComponentType.data_source,
@@ -1356,7 +1360,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 with source_error_ctx():
                     db_version = origin_dsrc.get_db_info(conn_executor_factory=conn_executor_factory_func).version
 
-                LOGGER.info(f"Got version {db_version} for data source {source_id}")
+                LOGGER.info("Got version %s for data source %s", db_version, source_id)
             return db_version
 
         @generic_profiler("validator-get-schema")
@@ -1386,13 +1390,13 @@ class DatasetValidator(DatasetBaseWrapper):
             return None
 
         exists = get_source_exists()
-        LOGGER.info(f"Data source {source_id} exists: {exists}")
+        LOGGER.info("Data source %s exists: %s", source_id, exists)
         new_raw_schema_info: SchemaInfo | None = get_schema_info(exists=exists)
 
         new_raw_schema = new_raw_schema_info.schema if new_raw_schema_info is not None else []
         new_idx_info_set = new_raw_schema_info.indexes if new_raw_schema_info is not None else None
 
-        LOGGER.info(f"Got raw_schema with {len(new_raw_schema)} columns for data source {source_id}")
+        LOGGER.info("Got raw_schema with %s columns for data source %s", len(new_raw_schema), source_id)
 
         db_version = get_db_version(exists=exists)
         self._ds_editor.update_data_source(
@@ -1697,7 +1701,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 which = "right"
             else:
                 which = "both"
-            LOGGER.warning(f"Can't generate condition: schema for {which} is missing")
+            LOGGER.warning("Can't generate condition: schema for %s is missing", which)
             return []
 
         left_by_name = {col.name: col for col in left_columns}
@@ -1838,7 +1842,7 @@ class DatasetValidator(DatasetBaseWrapper):
             )
             old_connection = self._sync_us_manager.get_loaded_us_connection(old_connection_ref)
         except (common_exc.ReferencedUSEntryNotFound, common_exc.ReferencedUSEntryAccessDenied) as e:
-            LOGGER.info(f'Failed to get the old connection, reason: "{e}"')
+            LOGGER.info('Failed to get the old connection, reason: "%s"', e)
             old_connection = None
 
         new_connection_ref = DefaultConnectionRef(conn_id=connection_data.new_id)
@@ -1876,11 +1880,13 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
                 ignore_source_ids.append(dsrc_coll.id)
 
-        LOGGER.info(f"Found {len(updates)} sources to update")
+        LOGGER.info("Found %s sources to update", len(updates))
         for dsrc_data in updates:
             LOGGER.info(
-                f'Going to update source {dsrc_data["id"]} as {dsrc_data["source_type"].name} '  # type: ignore  # 2024-01-24 # TODO: "object" has no attribute "name"  [attr-defined]
-                f"for connection {connection_data.new_id}"
+                "Going to update source %s as %s for connection %s",
+                dsrc_data["id"],
+                dsrc_data["source_type"].name,  # type: ignore  # 2024-01-24 # TODO: "object" has no attribute "name"  [attr-defined]
+                connection_data.new_id,
             )
             self.apply_source_action(
                 action=DatasetAction.update_source,
@@ -2269,8 +2275,8 @@ class DatasetValidator(DatasetBaseWrapper):
         phantom_error_refs = self._find_phantom_error_refs()
         if phantom_error_refs:
             LOGGER.warning(
-                f"Detected phantom errors during dataset validation: {phantom_error_refs},"
-                " removing from component errors"
+                "Detected phantom errors during dataset validation: %s, removing from component errors",
+                phantom_error_refs,
             )
 
         self._remove_phantom_errors_for_refs(phantom_error_refs)

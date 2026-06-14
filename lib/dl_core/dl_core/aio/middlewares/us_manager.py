@@ -120,7 +120,7 @@ async def _usm_close_cm(usm: AsyncUSManager, label: str) -> AsyncGenerator[None,
         except asyncio.CancelledError:
             raise
         except Exception:  # noqa
-            LOGGER.warning(f"Error during closing {label} USManager", exc_info=True)
+            LOGGER.warning("Error during closing %s USManager", label, exc_info=True)
 
 
 def us_manager_middleware(

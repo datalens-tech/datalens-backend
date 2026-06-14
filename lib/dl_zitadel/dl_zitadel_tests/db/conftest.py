@@ -19,7 +19,7 @@ def fixture_zitadel_secrets_folder() -> str:
 
 def wait_for_path(path: str) -> None:
     while not os.path.exists(path):
-        LOGGER.warning(f"Waiting for {path} to exist")
+        LOGGER.warning("Waiting for %s to exist", path)
         time.sleep(1)
 
 

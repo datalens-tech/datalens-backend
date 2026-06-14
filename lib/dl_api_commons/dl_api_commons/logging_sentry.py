@@ -108,7 +108,7 @@ def cleanup_event_request_section(req_section: dict[str, str | dict[str, str]]) 
     elif isinstance(secret_original_headers, dict):
         clean_req_section["headers"] = cleanup_event_headers(secret_original_headers)
     else:
-        log.error(f"Unexpected type of request headers section in outgoing Sentry event: {type(req_section)}")
+        log.error("Unexpected type of request headers section in outgoing Sentry event: %s", type(req_section))
 
     return clean_req_section
 
@@ -129,7 +129,7 @@ def cleanup_common_secret_data(
     elif isinstance(secret_original_req_section, dict):
         event["request"] = cleanup_event_request_section(secret_original_req_section)
     else:
-        log.error(f"Unexpected type of request section in outgoing Sentry event: {type(secret_original_req_section)}")
+        log.error("Unexpected type of request section in outgoing Sentry event: %s", type(secret_original_req_section))
 
     _obfuscate_sentry_event(event)
 

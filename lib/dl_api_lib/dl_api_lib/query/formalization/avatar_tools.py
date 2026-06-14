@@ -28,9 +28,10 @@ def normalize_explicit_avatar_ids(dataset: Dataset, required_avatar_ids: set[Ava
             root_avatar = accessor.get_root_avatar_opt()
             if root_avatar is not None:
                 LOGGER.warning(
-                    f"Requested to build source without avatars. "
-                    f"Should only happen when selecting constants. "
-                    f"Falling back to root avatar {root_avatar.id}"
+                    "Requested to build source without avatars. "
+                    "Should only happen when selecting constants. "
+                    "Falling back to root avatar %s",
+                    root_avatar.id,
                 )
                 required_avatar_ids = required_avatar_ids | {root_avatar.id}
 
