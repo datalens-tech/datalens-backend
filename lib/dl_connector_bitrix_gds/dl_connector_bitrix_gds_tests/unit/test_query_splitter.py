@@ -1,4 +1,7 @@
-from datetime import date
+from datetime import (
+    UTC,
+    datetime,
+)
 
 import pytest
 
@@ -47,8 +50,8 @@ RESULT_SCHEMA = ResultSchema(
                 n.ternary(
                     "between",
                     first=n.field("valid_date"),
-                    second=n.lit(date.today()),
-                    third=n.lit(date.today()),
+                    second=n.lit(datetime.now(UTC).date()),
+                    third=n.lit(datetime.now(UTC).date()),
                 )
             ),
             "valid_date",
@@ -60,7 +63,7 @@ RESULT_SCHEMA = ResultSchema(
                 n.binary(
                     "==",
                     left=n.field("valid_date"),
-                    right=n.lit(date.today()),
+                    right=n.lit(datetime.now(UTC).date()),
                 )
             ),
             "valid_date",
@@ -72,7 +75,7 @@ RESULT_SCHEMA = ResultSchema(
                 n.binary(
                     "==",
                     left=n.field("user_date"),
-                    right=n.lit(date.today()),
+                    right=n.lit(datetime.now(UTC).date()),
                 )
             ),
             "user_date",
@@ -96,7 +99,7 @@ RESULT_SCHEMA = ResultSchema(
                 n.binary(
                     "==",
                     left=n.field("valid_date"),
-                    right=n.lit(date.today()),
+                    right=n.lit(datetime.now(UTC).date()),
                 )
             ),
             None,
@@ -108,7 +111,7 @@ RESULT_SCHEMA = ResultSchema(
                 n.binary(
                     "==",
                     left=n.func.DATEADD(n.field("valid_date")),
-                    right=n.lit(date.today()),
+                    right=n.lit(datetime.now(UTC).date()),
                 ),
             ),
             "valid_date",

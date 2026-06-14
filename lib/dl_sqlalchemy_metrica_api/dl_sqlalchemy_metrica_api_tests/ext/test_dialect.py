@@ -80,7 +80,7 @@ def test_exceptions(m_expr_distinct, metrika_db_engine):
 
 @pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_future_date(metrika_expr_select_date_users, metrika_db_engine):
-    today = datetime.date.today()
+    today = datetime.datetime.now(datetime.UTC).date()
     expr = metrika_expr_select_date_users.where(
         sa.column("ym:pv:date").between(
             datetime.datetime.fromisoformat((today - datetime.timedelta(days=2)).isoformat()),
@@ -96,7 +96,7 @@ def test_future_date(metrika_expr_select_date_users, metrika_db_engine):
 
 @pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gt(metrika_expr_select_date_users, metrika_db_engine):
-    start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
+    start_dt = (datetime.datetime.now(datetime.UTC).date() - datetime.timedelta(days=5)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") > start_dt)
     print(str(expr))
 
@@ -107,7 +107,7 @@ def test_date_gt(metrika_expr_select_date_users, metrika_db_engine):
 
 @pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gte(metrika_expr_select_date_users, metrika_db_engine):
-    start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
+    start_dt = (datetime.datetime.now(datetime.UTC).date() - datetime.timedelta(days=5)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") >= start_dt)
     print(str(expr))
 
@@ -118,8 +118,9 @@ def test_date_gte(metrika_expr_select_date_users, metrika_db_engine):
 
 @pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gt_lt(metrika_expr_select_date_users, metrika_db_engine):
-    start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
-    end_dt = (datetime.date.today() - datetime.timedelta(days=2)).isoformat()
+    today = datetime.datetime.now(datetime.UTC).date()
+    start_dt = (today - datetime.timedelta(days=5)).isoformat()
+    end_dt = (today - datetime.timedelta(days=2)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") > start_dt)
     expr = expr.where(sa.column("ym:pv:date") < end_dt)
     print(str(expr))
@@ -132,7 +133,7 @@ def test_date_gt_lt(metrika_expr_select_date_users, metrika_db_engine):
 
 @pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_eq(metrika_expr_select_date_users, metrika_db_engine):
-    start_dt = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+    start_dt = (datetime.datetime.now(datetime.UTC).date() - datetime.timedelta(days=1)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("ym:pv:date") == start_dt)
     print(str(expr))
 
@@ -143,8 +144,9 @@ def test_date_eq(metrika_expr_select_date_users, metrika_db_engine):
 
 @pytest.mark.xfail(reason="BI-7353", strict=False)
 def test_date_gt_lt_by_alias(metrika_expr_select_date_users, metrika_db_engine):
-    start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
-    end_dt = (datetime.date.today() - datetime.timedelta(days=2)).isoformat()
+    today = datetime.datetime.now(datetime.UTC).date()
+    start_dt = (today - datetime.timedelta(days=5)).isoformat()
+    end_dt = (today - datetime.timedelta(days=2)).isoformat()
     expr = metrika_expr_select_date_users.where(sa.column("date") > start_dt)
     expr = expr.where(sa.column("date") < end_dt)
     print(str(expr))
@@ -233,8 +235,9 @@ def test_multicounter_req(metrika_sample_counter_id, metrika_db_engine):
     expr = expr.select_from(
         sa.Table("50514217,51341415", sa.MetaData(bind=metrika_db_engine)),
     )
-    start_dt = (datetime.date.today() - datetime.timedelta(days=5)).isoformat()
-    end_dt = (datetime.date.today() - datetime.timedelta(days=2)).isoformat()
+    today = datetime.datetime.now(datetime.UTC).date()
+    start_dt = (today - datetime.timedelta(days=5)).isoformat()
+    end_dt = (today - datetime.timedelta(days=2)).isoformat()
     expr = expr.where(sa.column("date").between(start_dt, end_dt))
     expr = expr.group_by(
         sa.column("date"),

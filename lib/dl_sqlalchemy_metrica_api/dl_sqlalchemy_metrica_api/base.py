@@ -441,7 +441,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                         value = dateutil.parser.parse(value).date()
                 query_params[date_param] = value
 
-        today = datetime.date.today()
+        today = datetime.date.today()  # noqa: DTZ011  # TODO: fix in BI-7500
         if not self._date_filter_present and not query_params.get("date1") and not query_params.get("date2"):
             # TODO: use counter timezone
             dt1 = today - datetime.timedelta(days=DEFAULT_DATE_PERIOD)

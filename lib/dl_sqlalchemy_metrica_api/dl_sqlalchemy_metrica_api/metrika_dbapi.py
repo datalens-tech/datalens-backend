@@ -243,7 +243,7 @@ class Cursor:
 
     def _exec_get_avail_date_max(self, operation, parameters):
         # TODO: use counter timezone
-        today = date.today()
+        today = date.today()  # noqa: DTZ011  # TODO: fix in BI-7500
         self._result_data = [(today.isoformat(),)]
         self.rowcount = 1
         result_columns = parameters.pop("__RESULT_COLUMNS__", [])

@@ -96,7 +96,6 @@ ignore = [
   "DTZ005", # Later: call-datetime-now-without-tzinfo
   "DTZ006", # Later: call-datetime-fromtimestamp
   "DTZ007", # Later: call-datetime-strptime-without-zone
-  "DTZ011", # Later: call-date-today
   "E501", # Later: line-too-long (currently delegated to black formatting)
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
