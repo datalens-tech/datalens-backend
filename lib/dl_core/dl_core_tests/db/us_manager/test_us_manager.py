@@ -90,8 +90,8 @@ class TestUSManager(DefaultCoreTestClass):
         # Reloading entry
         reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
         # Ensure lock works
+        reloaded_entry.data.host = "ololo"
         with pytest.raises(exc.USLockUnacquiredException):
-            reloaded_entry.data.host = "ololo"
             sync_us_manager.save(reloaded_entry)
         # Ensure we can save originally locked entry
         orig_entry.data.host = "azaza"
@@ -109,8 +109,8 @@ class TestUSManager(DefaultCoreTestClass):
             # Reloading entry
             reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
             # Ensure lock works
+            reloaded_entry.data.host = "ololo_get_locked_cm"
             with pytest.raises(exc.USLockUnacquiredException):
-                reloaded_entry.data.host = "ololo_get_locked_cm"
                 sync_us_manager.save(reloaded_entry)
 
         # Ensure locked entry was released
@@ -125,8 +125,8 @@ class TestUSManager(DefaultCoreTestClass):
             # Reloading entry
             reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
             # Ensure lock works
+            reloaded_entry.data.host = "ololo_just_locked_cm"
             with pytest.raises(exc.USLockUnacquiredException):
-                reloaded_entry.data.host = "ololo_just_locked_cm"
                 sync_us_manager.save(reloaded_entry)
 
         # Ensure locked entry was released

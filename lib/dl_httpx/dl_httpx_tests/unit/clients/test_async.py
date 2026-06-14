@@ -315,8 +315,7 @@ async def test_retry_client_error(
         async with mocked_client.send(request):
             pass
 
-        assert excinfo.value.original_exception, base_client_error
-
+    assert excinfo.value.original_exception is base_client_error
     assert mock_route.call_count == 3
 
 

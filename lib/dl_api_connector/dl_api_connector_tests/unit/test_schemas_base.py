@@ -102,8 +102,8 @@ def test_allowed_unknown_fields(caplog):
     # Disallowed unknown fields update
     caplog.clear()
 
+    edit_target = {"a": "old_val_a", "b": "old_val_b"}
     with pytest.raises(ValidationError) as validation_err:
-        edit_target = {"a": "old_val_a", "b": "old_val_b"}
         SampleSchema(
             context={
                 SampleSchema.CTX_KEY_OPERATIONS_MODE: EditMode.edit,

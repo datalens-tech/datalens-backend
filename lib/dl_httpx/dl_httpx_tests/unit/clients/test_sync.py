@@ -298,12 +298,10 @@ def test_retry_client_error(
     mock_route = respx_mock.get("https://example.com/api/data").mock(side_effect=base_client_error)
 
     request = mocked_client.prepare_raw_request("GET", "/api/data")
-    with pytest.raises(dl_httpx.RequestHttpxClientException) as excinfo:
-        with mocked_client.send(request):
-            pass
+    with pytest.raises(dl_httpx.RequestHttpxClientException) as excinfo, mocked_client.send(request):
+        pass
 
-        assert excinfo.value.original_exception, base_client_error
-
+    assert excinfo.value.original_exception is base_client_error
     assert mock_route.call_count == 3
 
 

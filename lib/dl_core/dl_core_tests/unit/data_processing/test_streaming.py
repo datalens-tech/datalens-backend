@@ -43,10 +43,14 @@ async def test_async_chunked_limited():
         max_count=53,
         limit_exc_to_raise=exc.ResultRowCountLimitExceeded,
     )
-    data = []
-    with pytest.raises(exc.ResultRowCountLimitExceeded):
+    data: list[int] = []
+
+    async def _consume_chunks() -> None:
         async for chunk in chunked.chunks:
             data.extend(chunk)
+
+    with pytest.raises(exc.ResultRowCountLimitExceeded):
+        await _consume_chunks()
     # Data is appended in whole chunks,
     # so the chunk that reaches the limit is never returned,
     # which is why we have only 50
@@ -58,10 +62,14 @@ async def test_async_chunked_limited():
         max_count=53,
         limit_exc_to_raise=exc.ResultRowCountLimitExceeded,
     )
-    data = []
-    with pytest.raises(exc.ResultRowCountLimitExceeded):
+    data: list[int] = []
+
+    async def _consume_items() -> None:
         async for item in chunked.items:
             data.append(item)
+
+    with pytest.raises(exc.ResultRowCountLimitExceeded):
+        await _consume_items()
     assert data == list(range(53))
 
     # all
