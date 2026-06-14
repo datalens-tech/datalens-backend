@@ -53,7 +53,7 @@ def test_not_a_dict_data() -> None:
     class Root(dl_settings.BaseSettings):
         child: Child
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Input should be a valid dictionary"):
         Root.model_validate({"child": ""})
 
 
@@ -67,7 +67,7 @@ def test_already_registered() -> None:
     Base.register("child", Child)
     Base.register("child", Child)  # it's ok, just warning
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"already registered"):
         Base.register("child", AnotherChild)
 
 
@@ -78,14 +78,14 @@ def test_not_subclass() -> None:
 
     class Child(Base2): ...
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"must be subclass of"):
         Base.register("child", Child)
 
 
 def test_unknown_type() -> None:
     class Base(dl_settings.TypedBaseSettings): ...
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Unknown type:"):
         Base.factory({"type": "child"})
 
 
@@ -124,7 +124,7 @@ def test_list_factory_not_sequence() -> None:
 
     Base.register("child", Child)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Data must be sequence for list factory"):
         Base.list_factory(typing.cast(list, "test"))
 
 
@@ -147,7 +147,7 @@ def test_dict_factory_not_dict() -> None:
 
     Base.register("child", Child)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Data must be mapping for dict factory"):
         Base.dict_factory(typing.cast(dict, "test"))
 
 
@@ -475,7 +475,7 @@ def test_typed_dict_settings_with_fallback(
         monkeypatch.setenv("CHILDREN_CHILD_SECRET", "secret_test_2")
         config_path = tmp_configs.add({"CHILDREN": {"child": {"VALUE": "test_2", "SECRET": "test_secret"}}})
         monkeypatch.setenv("CONFIG_PATH", str(config_path))
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"Can't merge duplicated keys"):
             root = Root(extra_fallback_env_keys=fallback_env_keys)
 
     with tmp_configs_utils.TmpConfigs() as tmp_configs:

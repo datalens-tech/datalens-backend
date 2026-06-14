@@ -14,7 +14,7 @@ def test_unregistered_metric_raises_on_use() -> None:
 def test_rejects_labels_when_none_declared() -> None:
     counter = dl_prometheus.Counter(name="hits_total", documentation="hits")
     dl_prometheus.MetricsRegistry(metrics=(counter,))
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"has no labelnames"):
         counter.inc(labels={"method": "GET"})
 
 
@@ -25,7 +25,7 @@ def test_requires_labels_when_declared() -> None:
         labelnames=("method",),
     )
     dl_prometheus.MetricsRegistry(metrics=(counter,))
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"requires labels"):
         counter.inc()
 
 
@@ -36,7 +36,7 @@ def test_rejects_label_name_mismatch() -> None:
         labelnames=("method",),
     )
     dl_prometheus.MetricsRegistry(metrics=(counter,))
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"labels mismatch"):
         counter.inc(labels={"path": "/"})
 
 

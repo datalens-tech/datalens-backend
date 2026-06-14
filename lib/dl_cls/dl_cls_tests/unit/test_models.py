@@ -77,19 +77,19 @@ def test_subject_is_hashable() -> None:
 def test_negative_prefix_rejected() -> None:
     # Defense-in-depth: a negative edge would slice (e.g. value[:-1]) and leak source data,
     # even when a spec is built programmatically (bypassing the schema's Range validator).
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"prefix must be non-negative"):
         CLSMaskSpec(mode=CLSMode.partial, prefix=-1)
 
 
 def test_negative_suffix_rejected() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"suffix must be non-negative"):
         CLSMaskSpec(mode=CLSMode.partial, suffix=-1)
 
 
 @pytest.mark.parametrize("mode", [CLSMode.partial, CLSMode.full])
 def test_empty_mask_rejected_for_masking_modes(mode: CLSMode) -> None:
     # An empty mask leaks edges (partial) or breaks the length-preservation contract.
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"mask must be non-empty"):
         CLSMaskSpec(mode=mode, mask="")
 
 

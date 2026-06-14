@@ -59,7 +59,7 @@ async def test_service_header_normal_case(aiohttp_client: TestClient) -> None:
 
 
 def test_service_header_validation_fail() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Server header must have non-zero length"):
         ServerHeader("")
 
     with pytest.raises(TypeError):

@@ -64,7 +64,7 @@ def test_not_a_dict_data() -> None:
     class Root(dl_pydantic.BaseModel):
         child: Child
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Input should be a valid dictionary"):
         Root.model_validate({"child": ""})
 
 
@@ -78,7 +78,7 @@ def test_already_registered() -> None:
     Base.register("child", Child)
     Base.register("child", Child)  # it's ok, just warning
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"already registered"):
         Base.register("child", AnotherChild)
 
 
@@ -89,14 +89,14 @@ def test_not_subclass() -> None:
 
     class Child(Base2): ...
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"must be subclass of"):
         Base.register("child", Child)
 
 
 def test_unknown_type() -> None:
     class Base(dl_pydantic.TypedBaseModel): ...
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Unknown type:"):
         Base.factory({"type": "child"})
 
 
@@ -135,7 +135,7 @@ def test_list_factory_not_sequence() -> None:
 
     Base.register("child", Child)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"must be sequence for list factory"):
         Base.list_factory(typing.cast(list, "test"))
 
 
@@ -158,7 +158,7 @@ def test_dict_factory_not_dict() -> None:
 
     Base.register("child", Child)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"must be mapping for dict factory"):
         Base.dict_factory(typing.cast(dict, "test"))
 
 
@@ -340,7 +340,7 @@ def test_model_json_schema_with_nested_models() -> None:
 def test_model_json_schema_not_subclass() -> None:
     class Base(dl_pydantic.TypedBaseModel): ...
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"No classes registered for"):
         Base.model_json_schema()
 
 
@@ -366,7 +366,7 @@ def test_register_unknown() -> None:
 
     Base.register("child", Child)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Unknown type:"):
         Base.factory({"type": "bebebe"})
 
     class UnknownChild(Base):
@@ -440,7 +440,7 @@ def test_register_unset_already_registered() -> None:
 
     Base.register_unset(DefaultChild)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Unset class already registered"):
         Base.register_unset(AnotherDefaultChild)
 
 
@@ -450,7 +450,7 @@ def test_register_unset_not_subclass() -> None:
     class Stranger(dl_pydantic.TypedBaseModel):
         type: str = "stranger"
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"must be subclass of"):
         Base.register_unset(Stranger)
 
 

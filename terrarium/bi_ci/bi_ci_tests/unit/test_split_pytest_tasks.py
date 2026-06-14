@@ -296,7 +296,7 @@ def test_split_tests_raise_on_unused_label(
     with (
         test_targets_json_context(["package"]) as test_targets_json_path,
         libs_context({"package": LibContext(pyproject=pyproject)}) as root_path,
-        pytest.raises(ValueError),
+        pytest.raises(ValueError, match=r"Unused labels in "),
     ):
         split_pytest_tasks.split_tests(
             "default,not_default",
@@ -361,7 +361,7 @@ def test_split_tests_raise_on_uncovered_test(
         libs_context(
             {"package": LibContext(pyproject=pyproject, pytest_files=["package_tests/not_unit/test_random.py"])}
         ) as root_path,
-        pytest.raises(ValueError),
+        pytest.raises(ValueError, match=r"Uncovered test file "),
     ):
         split_pytest_tasks.split_tests(
             "default",
