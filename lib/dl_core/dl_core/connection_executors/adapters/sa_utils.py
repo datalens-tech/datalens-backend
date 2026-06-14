@@ -2,10 +2,15 @@ from __future__ import annotations
 
 import logging
 import time
+from typing import Any
 
 import opentracing
 import sqlalchemy as sa
-from sqlalchemy.engine import Dialect
+from sqlalchemy.engine import (
+    Connection,
+    Dialect,
+)
+from sqlalchemy.engine.default import DefaultExecutionContext
 from sqlalchemy.sql.elements import ClauseElement
 
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
@@ -104,7 +109,14 @@ def make_debug_query(query: str, params: list | dict) -> str:
 
 class CursorLogger:
     @staticmethod
-    def before_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def before_cursor_execute_handler(
+        conn: Connection,
+        cursor: Any,
+        statement: str,
+        parameters: Any,
+        context: DefaultExecutionContext,
+        executemany: bool,
+    ) -> None:
         tracer = opentracing.global_tracer()
         # Scope was not created due to decoupled span closing procedure
         #  which may cause broken parent-child relationships in case when `after_cursor_execute_handler()`
@@ -122,7 +134,14 @@ class CursorLogger:
         conn.info.setdefault("ot_span_scope_stack", []).append(span)
 
     @staticmethod
-    def after_cursor_execute_handler(conn, cursor, statement, parameters, context, executemany):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def after_cursor_execute_handler(
+        conn: Connection,
+        cursor: Any,
+        statement: str,
+        parameters: Any,
+        context: DefaultExecutionContext,
+        executemany: bool,
+    ) -> None:
         engine_url = context.engine.url
         query_start_time = conn.info["query_start_time"].pop(-1)
 

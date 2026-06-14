@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections import ChainMap
 from collections import ChainMap as ChainMapGeneric
+from collections.abc import Iterator
 from contextlib import contextmanager
 import copy
 import logging
@@ -623,10 +624,10 @@ class USManagerBase:
 
     @staticmethod
     @contextmanager
-    def _enrich_us_exception(  # type: ignore  # TODO: fix
+    def _enrich_us_exception(
         entry_id: str | None = None,
         entry_scope: str | None = None,
-    ):
+    ) -> Iterator[None]:
         try:
             yield
         except exc.USReqException as err:

@@ -92,7 +92,7 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
     """
 
     @staticmethod
-    def _get_future_class_attr(bases, attrs, attr_name):  # type: ignore  # TODO: fix
+    def _get_future_class_attr(bases: tuple[type, ...], attrs: dict[str, Any], attr_name: str) -> Any:
         """Get attribute of future class described by ``bases`` and ``attrs``"""
         if attr_name in attrs:
             # attribute is redefined in new class

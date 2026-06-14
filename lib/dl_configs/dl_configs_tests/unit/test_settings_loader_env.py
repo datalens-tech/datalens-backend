@@ -374,7 +374,7 @@ def test_fallback_factory_static_method():
     @attr.s
     class Nested(SettingsBase):
         @staticmethod
-        def a_default(env):
+        def a_default(env) -> str:
             if isinstance(env, Fallback1):
                 return env.fb_1_only
             if isinstance(env, Fallback2):
@@ -401,13 +401,13 @@ def test_app_type():
         mode: Mode = s_attrib("APP_MODE", is_app_cfg_type=True, env_var_converter=lambda s: Mode[s])
 
         @staticmethod
-        def default_depends_on_mode(fallback_config: Fallback, mode: Mode):
+        def default_depends_on_mode(fallback_config: Fallback, mode: Mode) -> str:
             return f"{mode.name} + {fallback_config.SOME_KEY}"
 
         depends_on_mode: str = s_attrib("DEPENDS_ON_MODE", fallback_factory=default_depends_on_mode)
 
         @staticmethod
-        def default_not_depends_on_mode(fallback_config: Fallback):
+        def default_not_depends_on_mode(fallback_config: Fallback) -> str:
             return fallback_config.SOME_KEY
 
         not_depends_on_mode: str = s_attrib("NOT_DEPENDS_ON_MODE", fallback_factory=default_not_depends_on_mode)
@@ -437,7 +437,7 @@ def test_app_type_field_override():
         override_me: str = s_attrib("OVERRIDE_ME")
 
         @staticmethod
-        def default_depends_on_mode(fallback_config: Fallback, mode: Mode):
+        def default_depends_on_mode(fallback_config: Fallback, mode: Mode) -> str:
             return f"{mode.name} + {fallback_config.SOME_KEY}"
 
         depends_on_mode: str = s_attrib("DEPENDS_ON_MODE", fallback_factory=default_depends_on_mode)

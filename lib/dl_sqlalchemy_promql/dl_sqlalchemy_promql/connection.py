@@ -50,7 +50,9 @@ class Connection:
         self.cli.close()
 
     @staticmethod
-    def _create_cli(cli_cls, base_url, username, password, auth_type=None, auth_header=None, **conn_kwargs):
+    def _create_cli(
+        cli_cls, base_url, username, password, auth_type=None, auth_header=None, **conn_kwargs
+    ) -> SyncPromQLClient:
         return cli_cls(
             base_url=base_url,
             username=username,

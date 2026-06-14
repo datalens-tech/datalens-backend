@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 class BIMSSQLDialectBasic(UPSTREAM):
     @staticmethod  # noqa: C901
-    def _quote_simple_value(value):
+    def _quote_simple_value(value) -> str | None:
         """Mainly from pymssql quoting, without the encoded output"""
 
         if value is None:
@@ -80,7 +80,7 @@ class BIMSSQLDialectBasic(UPSTREAM):
         return None
 
     @staticmethod
-    def translate_custom_parameters(params):
+    def translate_custom_parameters(params) -> list:
         def translate(param):
             if isinstance(param, tuple):
                 # Sometimes a result of a query will be provided as a filter to another query, but

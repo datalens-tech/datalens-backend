@@ -17,11 +17,11 @@ ischema_names = {
 
 class CHYTTableExpression(sa.sql.elements.TextClause):
     @staticmethod
-    def _quote_identifier(value):
+    def _quote_identifier(value) -> str:
         return quote_identifier(value)
 
     @staticmethod
-    def _quote_value(value):
+    def _quote_value(value) -> str:
         from clickhouse_sqlalchemy.drivers.http.escaper import Escaper
 
         return Escaper().escape_item(value)

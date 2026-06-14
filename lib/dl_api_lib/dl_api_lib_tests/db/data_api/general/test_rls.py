@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
@@ -37,7 +39,7 @@ class TestRLS(DefaultApiTestBase):
         return resp.dataset
 
     @staticmethod
-    def _get_rls_preview_response(ds, data_api, monkeypatch, modify_rls):
+    def _get_rls_preview_response(ds, data_api, monkeypatch, modify_rls) -> Any:
         def get_subjects_by_names_mock(self, names):
             raise RuntimeError("Shouldn't be invoked in preview")
 

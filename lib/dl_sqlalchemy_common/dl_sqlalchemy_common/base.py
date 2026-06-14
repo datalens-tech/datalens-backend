@@ -123,7 +123,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
     _pretty: Formatter = Formatter()
 
     @staticmethod
-    def _is_local_overrides_class(supcls):
+    def _is_local_overrides_class(supcls) -> bool:
         if supcls.__module__.startswith("dl_") or supcls.__module__.startswith("bi_"):
             return True
         if supcls.__module__.startswith("tests") or supcls.__module__.endswith("_tests"):

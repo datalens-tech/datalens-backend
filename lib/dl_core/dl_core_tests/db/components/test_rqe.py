@@ -37,7 +37,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
                 await self.execute_request(remote_adapter, query="select 1")
 
     @staticmethod
-    def _validate_logging_ctx(record, outer_logging_ctx):
+    def _validate_logging_ctx(record, outer_logging_ctx) -> None:
         filtered_inner_ctx = {k: v for k, v in record.log_context.items() if k in outer_logging_ctx}
         assert filtered_inner_ctx == outer_logging_ctx
 

@@ -114,7 +114,7 @@ ignore = [
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
 # "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
-# "ANN",   # flake8-annotations — Later: blanket annotation enforcement, separate initiative
+# "ANN",   # flake8-annotations — Later: blanket annotation enforcement, enabled incrementally per sub-rule in BI-7445 (see ANN* entries in select); the full category is still deferred
 # "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
 #
 # Never — will not enable:
@@ -122,6 +122,7 @@ ignore = [
 # "TCH", # flake8-type-checking — Never: forces `from __future__ import annotations` / TYPE_CHECKING blocks, both banned by python-style.mdc
 # "D",   # pydocstyle — Never: we don't mandate docstrings repo-wide
 select = [
+  "ANN205", # flake8-annotations (sub-rule): missing-return-type-static-method
   "ASYNC", # flake8-async
   "B", # flake8-bugbear
   "C4", # flake8-comprehensions

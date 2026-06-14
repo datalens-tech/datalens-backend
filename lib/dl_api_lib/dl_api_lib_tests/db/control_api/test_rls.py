@@ -20,7 +20,7 @@ from dl_rls.testing.testing_data import (
 
 class TestRLS(DefaultApiTestBase):
     @staticmethod
-    def add_rls_to_dataset(control_api, dataset, rls_config, rls2_config=None):
+    def add_rls_to_dataset(control_api, dataset, rls_config, rls2_config=None) -> tuple:
         field_guid = dataset.result_schema[0].id
         # only one nonempty rls can be passed
         if rls2_config:

@@ -220,30 +220,30 @@ class RecordDataFormatterMixin:
     )
 
     @staticmethod
-    def get_record_timestamp(record):
+    def get_record_timestamp(record) -> float:
         return record.created
 
     @staticmethod
-    def get_record_timestampns(record, ns=int(1e9)):  # noqa: B008
+    def get_record_timestampns(record, ns: int = 1_000_000_000) -> int:
         return int(record.created * ns)
 
     @staticmethod
-    def get_record_isotimestamp(record, fmt=DT_FORMAT):
+    def get_record_isotimestamp(record, fmt=DT_FORMAT) -> str:
         dt = datetime.datetime.fromtimestamp(record.created)
         return dt.strftime(fmt)
 
     # Maybe: get_record_tzaware_isotiemstamp
 
     @staticmethod
-    def get_record_message(record):
+    def get_record_message(record) -> str:
         return record.getMessage()
 
     @staticmethod
-    def get_record_pid(record):
+    def get_record_pid(record) -> int | None:
         return record.process
 
     @staticmethod
-    def get_record_exc_type(record):
+    def get_record_exc_type(record) -> str | None:
         if not record.exc_info:
             return None
         if not isinstance(record.exc_info, tuple):
@@ -251,7 +251,7 @@ class RecordDataFormatterMixin:
         return record.exc_info[0].__name__
 
     @staticmethod
-    def get_record_exc_info(record):
+    def get_record_exc_info(record) -> str | None:
         exc_info = record.exc_info
         if exc_info is None:
             return None
@@ -293,7 +293,7 @@ class JsonExtFormatter(RecordDataFormatterMixin, logging.Formatter):
         return self.dumps(log_data)
 
     @staticmethod
-    def dumps(data):
+    def dumps(data) -> str:
         return json.dumps(data, default=robust_smart_str)
 
 

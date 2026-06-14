@@ -63,7 +63,21 @@ def get_sub_keys(prefix: str, env: SDict) -> dict[str, str]:
     return {key[len(effective_prefix) :]: value for key, value in env.items() if key.startswith(effective_prefix)}
 
 
-NOT_SET = object()
+class NotSet:
+    """Typed sentinel for "value was not provided" (distinct from ``None``)."""
+
+    _instance: NotSet | None = None
+
+    def __new__(cls) -> NotSet:
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __repr__(self) -> str:
+        return "NOT_SET"
+
+
+NOT_SET = NotSet()
 
 
 @attr.s
