@@ -7,7 +7,7 @@ import dl_prometheus
 
 @attrs.define(frozen=True, kw_only=True)
 class MetricsHandler(base.BaseHandler):
-    OPENAPI_TAGS = ["system"]
+    OPENAPI_TAGS = ("system",)
     OPENAPI_DESCRIPTION = "Returns application metrics in Prometheus format"
 
     _metrics_registry: dl_prometheus.MetricsRegistryProtocol

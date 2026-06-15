@@ -1,4 +1,5 @@
 import abc
+from collections.abc import Sequence
 import http
 import logging
 from typing import (
@@ -177,7 +178,7 @@ class BaseHandler(abc.ABC):
 
     class ResponseSchema(BaseResponseSchema): ...
 
-    OPENAPI_TAGS: ClassVar[list[str]] = []
+    OPENAPI_TAGS: ClassVar[Sequence[str]] = ()
     OPENAPI_DESCRIPTION: ClassVar[str] = ""
     OPENAPI_INCLUDE: ClassVar[bool] = True
 

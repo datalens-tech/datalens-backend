@@ -6,7 +6,7 @@ import dl_app_api_base.handlers.base as base
 
 @attrs.define(frozen=True, kw_only=True)
 class SettingsHandler(base.BaseHandler):
-    OPENAPI_TAGS = ["admin"]
+    OPENAPI_TAGS = ("admin",)
     OPENAPI_DESCRIPTION = "Returns the full application settings"
 
     _settings_repr: str = attrs.field()

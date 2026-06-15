@@ -195,7 +195,7 @@ class HeadersHandler(dl_app_api_base.BaseHandler):
 
 
 class SpecTestHandler(dl_app_api_base.BaseHandler):
-    OPENAPI_TAGS = ["spec-test"]
+    OPENAPI_TAGS = ("spec-test",)
 
     class RequestSchema(dl_app_api_base.BaseRequestSchema):
         class Path(dl_pydantic.BaseSchema):

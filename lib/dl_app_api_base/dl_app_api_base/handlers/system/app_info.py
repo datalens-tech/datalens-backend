@@ -6,7 +6,7 @@ import dl_app_api_base.handlers.base as base
 
 @attrs.define(frozen=True, kw_only=True)
 class AppInfoHandler(base.BaseHandler):
-    OPENAPI_TAGS = ["system"]
+    OPENAPI_TAGS = ("system",)
     OPENAPI_DESCRIPTION = "Returns application info"
 
     _app_name: str = attrs.field()

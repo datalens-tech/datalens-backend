@@ -1,4 +1,7 @@
-from collections.abc import Mapping
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 import http
 from typing import Protocol
 
@@ -7,7 +10,7 @@ import dl_pydantic
 
 class OpenApiHandlerProtocol(Protocol):
     @property
-    def OPENAPI_TAGS(self) -> list[str]: ...
+    def OPENAPI_TAGS(self) -> Sequence[str]: ...
 
     @property
     def OPENAPI_DESCRIPTION(self) -> str: ...

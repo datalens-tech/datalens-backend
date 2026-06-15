@@ -9,7 +9,7 @@ import dl_dynconfig
 
 @attrs.define(frozen=True, kw_only=True)
 class DynConfigHandler(base.BaseHandler):
-    OPENAPI_TAGS = ["admin"]
+    OPENAPI_TAGS = ("admin",)
     OPENAPI_DESCRIPTION = "Returns the current dynamic configuration and its source type"
 
     _dynconfig: dl_dynconfig.DynConfig = attrs.field()
