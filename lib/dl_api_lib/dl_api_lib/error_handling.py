@@ -29,6 +29,7 @@ EXCEPTION_CODES = {
     dl_query_processing.exc.DatasetError: status.BAD_REQUEST,
     formula_exc.FormulaError: status.BAD_REQUEST,
     common_exc.DatabaseQueryError: status.BAD_REQUEST,
+    common_exc.DatabaseReadOnlyTransactionError: status.BAD_REQUEST,
     common_exc.SourceAccessDenied: status.FORBIDDEN,
     common_exc.DataSourceErrorFromComponentError: status.BAD_REQUEST,
     common_exc.DatabaseUnavailable: status.BAD_REQUEST,

@@ -49,6 +49,7 @@ def make_async_pg_error_transformer() -> DbErrorTransformer:
         ((asyncpg_exc.UndefinedTableError, None), PostgresSourceDoesNotExistError),
         # ((asyncpg_exc.FDWTableNotFoundError, None), exc.SourceDoesNotExist),
         ((asyncpg_exc.FDWTableNotFoundError, None), PostgresSourceDoesNotExistError),  # todo: test for this error
+        ((asyncpg_exc.ReadOnlySQLTransactionError, None), exc.DatabaseReadOnlyTransactionError),
         ((asyncpg_exc.SyntaxOrAccessError, None), exc.DatabaseOperationalError),
         ((TimeoutError, None), exc.SourceConnectError),
         ((OSError, "Connect call failed"), exc.SourceConnectError),

@@ -139,6 +139,10 @@ _TEST_DB_ADAPTER_QUERY = (
         limit=100,
         offset=20,
     ),
+    DBAdapterQuery(
+        query="",
+        allow_write=True,
+    ),
 )
 
 

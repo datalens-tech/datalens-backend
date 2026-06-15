@@ -442,6 +442,11 @@ class DatabaseQueryError(DLBaseException):
         return f"{self.db_message} (DB query: {self.query})"
 
 
+class DatabaseReadOnlyTransactionError(DatabaseQueryError):
+    err_code = [*DatabaseQueryError.err_code, "READONLY_TRANSACTION"]
+    default_message = "Cannot execute a write operation in a read-only transaction."
+
+
 class ResultRowCountLimitExceeded(DLBaseException):
     err_code = [*DLBaseException.err_code, "ROW_COUNT_LIMIT"]
     default_message = "Received too many result data rows."

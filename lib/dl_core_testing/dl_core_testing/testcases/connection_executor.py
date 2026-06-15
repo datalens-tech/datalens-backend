@@ -477,3 +477,48 @@ class DefaultSchemaListingTestSuite[CONN_TV: ConnectionBase](DefaultSyncAsyncCon
             assert sorted(actual) == sorted(schema_names_test_case.expected_schemas)
         else:
             assert set(actual).issuperset(set(schema_names_test_case.expected_schemas))
+
+
+class ReadWriteAdapterTestSuite[CONN_TV: ConnectionBase](BaseConnectionExecutorTestClass[CONN_TV]):
+    @pytest.fixture
+    def rw_table_name(self, db: Db) -> Generator[str, None, None]:
+        name = f"dl_rw_test_{shortuuid.uuid().lower()}"
+        db.execute(f"CREATE TABLE {name} (id integer)")
+        try:
+            yield name
+        finally:
+            db.execute(f"DROP TABLE IF EXISTS {name}")
+
+    @pytest.mark.asyncio
+    async def test_write_executes_when_allow_write(
+        self,
+        db: Db,
+        async_connection_executor: AsyncConnExecutorBase,
+        rw_table_name: str,
+    ) -> None:
+        query = ConnExecutorQuery(
+            query=sa.text(f"INSERT INTO {rw_table_name} (id) VALUES (1)"),
+            is_dashsql_query=True,
+            autodetect_user_types=True,
+            allow_write=True,
+        )
+        result = await async_connection_executor.execute(query)
+        await result.get_all()
+        rows = [tuple(row) for row in db.execute(f"SELECT id FROM {rw_table_name} ORDER BY id")]
+        assert rows == [(1,)], rows
+
+    @pytest.mark.asyncio
+    async def test_write_rejected_when_not_allow_write(
+        self,
+        async_connection_executor: AsyncConnExecutorBase,
+        rw_table_name: str,
+    ) -> None:
+        query = ConnExecutorQuery(
+            query=sa.text(f"INSERT INTO {rw_table_name} (id) VALUES (1)"),
+            is_dashsql_query=True,
+            autodetect_user_types=True,
+            allow_write=False,
+        )
+        result = await async_connection_executor.execute(query)
+        with pytest.raises(core_exc.DatabaseReadOnlyTransactionError):
+            await result.get_all()
