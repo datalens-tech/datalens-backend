@@ -94,7 +94,7 @@ ignore = [
   "DTZ001", # Later (TODO: BI-7500): call-datetime-without-tzinfo — DTZ category is enabled, but this sub-rule is deferred wholesale to BI-7500: naive datetimes are pervasive (tests, parsing, connector data, internal timings) and per-site tz migration needs the connector/DB test matrix to verify
   "E501", # Never: line-too-long — line length is delegated to black
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
-  "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
+  "RUF001", # Never: ambiguous-unicode-character-string — Cyrillic look-alikes in string literals (test data, localized messages) are intentional; per-site review showed flagging only adds `noqa` noise
   "RUF002", # Never: ambiguous-unicode-character-docstring — Cyrillic in RU docstrings is intentional; per-site review showed flagging only adds `noqa` noise (incl. dead/commented-out code)
   "RUF003", # Never: ambiguous-unicode-character-comment — same intentional Cyrillic in RU comments
   "RUF009", # Never: function-call-in-dataclass-default — fires on the attrs field-declaration idiom (`s_attrib()` returns `attr.ib()`, ~287 sites); a pure false positive, not a real shared-mutable default
