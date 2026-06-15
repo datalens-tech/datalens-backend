@@ -12,10 +12,10 @@ class FakeDatetime:
 
     def now(self) -> datetime.datetime:
         if self.position >= len(self.intervals):
-            return datetime.datetime.fromtimestamp(self.intervals[-1])
+            return datetime.datetime.fromtimestamp(self.intervals[-1], tz=datetime.UTC)
 
         self.position += 1
-        return datetime.datetime.fromtimestamp(self.intervals[self.position - 1])
+        return datetime.datetime.fromtimestamp(self.intervals[self.position - 1], tz=datetime.UTC)
 
 
 class FakeDatetimeModule:

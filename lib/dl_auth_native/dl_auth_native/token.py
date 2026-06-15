@@ -24,7 +24,7 @@ class PayloadSchema(dl_pydantic.BaseModel):
     def to_dataclass(self) -> Payload:
         return Payload(
             user_id=self.user_id,
-            expires_at=datetime.datetime.fromtimestamp(self.exp),
+            expires_at=datetime.datetime.fromtimestamp(self.exp, tz=datetime.UTC).replace(tzinfo=None),
             roles=self.roles,
         )
 

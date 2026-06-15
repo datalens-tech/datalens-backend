@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import (
+    UTC,
+    datetime,
+)
 import logging
 from urllib.parse import urljoin
 
@@ -28,7 +31,7 @@ def rebuild_prometheus_data(data):
             raise NotSupportedError("Different schemas are not supported")
 
         rows = [
-            {**chunk["metric"], "timestamp": datetime.fromtimestamp(ts), "value": float(v)}
+            {**chunk["metric"], "timestamp": datetime.fromtimestamp(ts, tz=UTC).replace(tzinfo=None), "value": float(v)}
             for (ts, v) in chunk["values"]
         ]
         result.append((schema, rows))

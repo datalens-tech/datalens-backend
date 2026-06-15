@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import (
+    UTC,
     datetime,
     timedelta,
 )
@@ -140,7 +141,7 @@ class BaseEntrySchemaMigration:
             entry_schema_id = self._get_entry_schema_id(entry_copy)
             if entry_schema_id != 1 and entry_schema_id not in self.migration_ids:
                 raise UnknownEntryMigration(
-                    f"Unknown entry version: {datetime.fromtimestamp(entry_schema_id).isoformat()}"
+                    f"Unknown entry version: {datetime.fromtimestamp(entry_schema_id, tz=UTC).isoformat()}"
                 )
             for migration in self.sorted_migrations:
                 if migration.id <= entry_schema_id or migration.downgrade_only:
@@ -179,7 +180,7 @@ class BaseEntrySchemaMigration:
             entry_schema_id = self._get_entry_schema_id(entry_copy)
             if entry_schema_id != 1 and entry_schema_id not in self.migration_ids:
                 raise UnknownEntryMigration(
-                    f"Unknown entry version: {datetime.fromtimestamp(entry_schema_id).isoformat()}"
+                    f"Unknown entry version: {datetime.fromtimestamp(entry_schema_id, tz=UTC).isoformat()}"
                 )
             for migration in self.sorted_migrations:
                 if migration.id <= entry_schema_id or migration.downgrade_only:

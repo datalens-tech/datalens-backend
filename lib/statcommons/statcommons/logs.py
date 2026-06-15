@@ -131,7 +131,8 @@ def get_record_exc_repr(record, fmt=FILE_FORMAT, datefmt=DT_FORMAT, full=False, 
     # construct required fields in record.__dict__
     record.message = record.getMessage()
     if fmt.find("%(asctime)") >= 0:
-        record.asctime = datetime.datetime.fromtimestamp(record.created).strftime(datefmt)
+        dt = datetime.datetime.fromtimestamp(record.created, tz=datetime.UTC)
+        record.asctime = dt.strftime(datefmt)
 
     lines = [fmt % record.__dict__]
 
@@ -229,7 +230,7 @@ class RecordDataFormatterMixin:
 
     @staticmethod
     def get_record_isotimestamp(record, fmt=DT_FORMAT) -> str:
-        dt = datetime.datetime.fromtimestamp(record.created)
+        dt = datetime.datetime.fromtimestamp(record.created, tz=datetime.UTC)
         return dt.strftime(fmt)
 
     # Maybe: get_record_tzaware_isotiemstamp

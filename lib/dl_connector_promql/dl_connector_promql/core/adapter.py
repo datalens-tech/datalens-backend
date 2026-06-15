@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import (
+    UTC,
+    datetime,
+)
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -180,7 +183,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
             label_values = [value for _, value in chunk["metric"].items()]
             for ts, v in chunk["values"]:
-                row = [datetime.fromtimestamp(ts), float(v), *label_values]
+                row = [datetime.fromtimestamp(ts, tz=UTC).replace(tzinfo=None), float(v), *label_values]
                 rows.append(row)
 
         return {"rows": rows, "schema": schema}
