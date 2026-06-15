@@ -92,7 +92,7 @@ target-version = "py312"
 ignore = [
   "ASYNC109", # Never: async-function-with-timeout — fires on any async fn that has a `timeout` parameter regardless of use; our `timeout` params are legitimate domain durations (functions run their own wait-loop), so enforcing only adds noqa noise
   "DTZ001", # Later (TODO: BI-7500): call-datetime-without-tzinfo — DTZ category is enabled, but this sub-rule is deferred wholesale to BI-7500: naive datetimes are pervasive (tests, parsing, connector data, internal timings) and per-site tz migration needs the connector/DB test matrix to verify
-  "E501", # Later: line-too-long (currently delegated to black formatting)
+  "E501", # Never: line-too-long — line length is delegated to black
   "PIE790", # Never: unnecessary-placeholder — we intentionally keep explicit `pass` / `...` in stub bodies (abstract methods, empty overrides, docstring-only classes) for readability
   "RUF001", # Later: ambiguous-unicode-character-string (Cyrillic look-alikes often intentional — needs per-site review)
   "RUF002", # Never: ambiguous-unicode-character-docstring — Cyrillic in RU docstrings is intentional; per-site review showed flagging only adds `noqa` noise (incl. dead/commented-out code)
