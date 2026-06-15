@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from clickhouse_sqlalchemy.drivers.http.base import ClickHouseDialect_http as UPSTREAM
 import sqlalchemy as sa
 from sqlalchemy import exc
@@ -32,7 +34,7 @@ class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compile
     through `self._pretty`
     """
 
-    def visit_join(self, join, asfrom=False, **kwargs):
+    def visit_join(self, join, asfrom=False, **kwargs: Any):
         # need to make a variable to prevent leaks in some debuggers
         join_type = getattr(join, "type", None)
         if join_type is None:
@@ -151,11 +153,11 @@ class BIClickHouseCompiler(BIClickHouseCompilerBasic, UPSTREAM.statement_compile
 
     # Copypaste of `CompilerPrettyMixin`, just to confirm that the same
     # processing is okay for the overridden methods.
-    def group_by_clause(self, select, **kw):
+    def group_by_clause(self, select, **kw: Any):
         sup = super().group_by_clause(select, **kw)
         return self._pretty.postprocess_block("GROUP BY", sup)
 
-    def limit_clause(self, select, **kw):
+    def limit_clause(self, select, **kw: Any):
         sup = super().limit_clause(select, **kw)
         return self._pretty.postprocess_block("LIMIT", sup)
 

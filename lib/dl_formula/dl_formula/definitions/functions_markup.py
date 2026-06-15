@@ -2,7 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from enum import Enum
-from typing import ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
@@ -134,7 +137,7 @@ def process_markup_child(node):  # type: ignore  # 2024-01-24 # TODO: Function i
     raise Exception("Unexpected markup child type", node)
 
 
-def markup_node(func_name, *children):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+def markup_node(func_name: str, *children: Any) -> Any:
     """
     Using `concat` and `replace`, return an expression that results in
     something parseable by the special parser.

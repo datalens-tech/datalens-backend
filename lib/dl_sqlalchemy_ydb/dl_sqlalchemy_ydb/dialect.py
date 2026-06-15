@@ -217,7 +217,7 @@ class YqlClosure(ydb_sa.types.Lambda):
     def __init__(
         self,
         func,
-        *args,
+        *args: Any,
     ) -> None:
         super().__init__(func)
 
@@ -429,7 +429,7 @@ class CustomYqlCompiler(ydb_sa.YqlCompiler):
             f'({", ".join(self.process(arg, **kw) for arg in closure.args)})'
         )
 
-    def visit_dot_access(self, dot_access: YqlDotAccess, **kw):
+    def visit_dot_access(self, dot_access: YqlDotAccess, **kw: Any):
         return f"{self.process(dot_access.dot_expression, **kw)}.{dot_access.dot_index}"
 
 
@@ -506,7 +506,9 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
         )
 
     @reflection.cache
-    def get_columns(self, connection, table_name, schema=None, **kw):
+    # `object` (not `Any`): @reflection.cache regenerates this signature via exec, whose namespace
+    # cannot resolve typing names; `object` is a builtin and is always available there.
+    def get_columns(self, connection, table_name, schema=None, **kw: object):
         table = self._describe_table(connection, table_name, schema)
         as_compatible = []
         for column in table.columns:

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 import attr
 import pytest
@@ -35,22 +36,22 @@ class Level1EntrySchemaMigration(BaseEntrySchemaMigration):
         return migrations
 
     @staticmethod
-    def _migrate_v1_to_v2(entry: dict, **kwargs) -> dict:
+    def _migrate_v1_to_v2(entry: dict, **kwargs: Any) -> dict:
         entry["data"]["new_field"] = entry["data"].pop("old_field", "default_value")
         return entry
 
     @staticmethod
-    def _migrate_v2_to_v1(entry: dict, **kwargs) -> dict:
+    def _migrate_v2_to_v1(entry: dict, **kwargs: Any) -> dict:
         entry["data"]["old_field"] = entry["data"].pop("new_field", "default_value")
         return entry
 
     @staticmethod
-    def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
+    def _migrate_v2_to_v3(entry: dict, **kwargs: Any) -> dict:
         entry["data"]["l1_field"] = "added_in_l1"
         return entry
 
     @staticmethod
-    def _migrate_v3_to_v2(entry: dict, **kwargs) -> dict:
+    def _migrate_v3_to_v2(entry: dict, **kwargs: Any) -> dict:
         entry["data"].pop("l1_field")
         return entry
 
@@ -79,22 +80,22 @@ class Level2EntrySchemaMigration(Level1EntrySchemaMigration):
         return migrations
 
     @staticmethod
-    def _migrate_v1_to_v2(entry: dict, **kwargs) -> dict:
+    def _migrate_v1_to_v2(entry: dict, **kwargs: Any) -> dict:
         entry["data"]["new_field"] = "default_value"
         return entry
 
     @staticmethod
-    def _migrate_v2_to_v1(entry: dict, **kwargs) -> dict:
+    def _migrate_v2_to_v1(entry: dict, **kwargs: Any) -> dict:
         entry["data"].pop("new_field")
         return entry
 
     @staticmethod
-    def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
+    def _migrate_v2_to_v3(entry: dict, **kwargs: Any) -> dict:
         entry["data"]["l2_field"] = "added_in_l2"
         return entry
 
     @staticmethod
-    def _migrate_v3_to_v2(entry: dict, **kwargs) -> dict:
+    def _migrate_v3_to_v2(entry: dict, **kwargs: Any) -> dict:
         entry["data"].pop("l2_field")
         return entry
 
@@ -115,12 +116,12 @@ class Level2EntrySchemaMigrationDowngradeOnly(Level1EntrySchemaMigration):
         return migrations
 
     @staticmethod
-    def _migrate_v2_to_v3(entry: dict, **kwargs) -> dict:
+    def _migrate_v2_to_v3(entry: dict, **kwargs: Any) -> dict:
         entry["data"]["l2_field"] = "added_in_l2"
         return entry
 
     @staticmethod
-    def _migrate_v3_to_v2(entry: dict, **kwargs) -> dict:
+    def _migrate_v3_to_v2(entry: dict, **kwargs: Any) -> dict:
         entry["data"].pop("l2_field")
         return entry
 

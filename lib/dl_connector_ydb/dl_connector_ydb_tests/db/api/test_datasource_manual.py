@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 import dl_api_lib_testing
@@ -35,10 +37,10 @@ class TestDatasourceManualTable(
         return {"table_name": "{{table_name}}"}
 
     @pytest.mark.skip(reason=_YDB_MANUAL_VALIDATES_TABLE)
-    def test_manual_true_preserves_valid_for_nonexistent_table(self, *args, **kwargs) -> None: ...
+    def test_manual_true_preserves_valid_for_nonexistent_table(self, *args: Any, **kwargs: Any) -> None: ...
 
     @pytest.mark.skip(reason=_YDB_MANUAL_VALIDATES_TABLE)
-    def test_toggle_manual_false_to_true_resets_valid(self, *args, **kwargs) -> None: ...
+    def test_toggle_manual_false_to_true_resets_valid(self, *args: Any, **kwargs: Any) -> None: ...
 
 
 class TestDatasourceManualSubselect(

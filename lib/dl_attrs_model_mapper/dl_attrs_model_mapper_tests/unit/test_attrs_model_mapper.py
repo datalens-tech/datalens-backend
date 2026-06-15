@@ -1,7 +1,10 @@
 import abc
 from copy import deepcopy
 import enum
-from typing import ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 import attr
 import marshmallow
@@ -374,7 +377,7 @@ class MAFieldProjection:
     attribute: str = attr.ib()
     required: bool = attr.ib()
 
-    def __init_subclass__(cls, **kwargs) -> None:
+    def __init_subclass__(cls, **kwargs: Any) -> None:
         cls.MAP_MA_FIELD_CLS_PROJECTION_CLS[cls.MA_TYPE] = cls
 
     @classmethod

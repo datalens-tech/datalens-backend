@@ -1,4 +1,7 @@
-from typing import ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 from marshmallow import (
     EXCLUDE,
@@ -23,5 +26,5 @@ class DefaultSchema[TARGET_OBJECT_TV](BaseSchema):
         return self.get_target_cls()(**data)
 
     @post_load(pass_many=False)
-    def post_load(self, data, **_) -> TARGET_OBJECT_TV:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def post_load(self, data: dict, **_: Any) -> TARGET_OBJECT_TV:
         return self.to_object(data)

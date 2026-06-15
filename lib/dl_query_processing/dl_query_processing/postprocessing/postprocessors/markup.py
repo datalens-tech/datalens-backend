@@ -266,7 +266,7 @@ class MarkupProcessingBase[NODE_TV]:
         node_tooltip: {"name": "tooltip", "argnames": ("text", "tooltip", "placement")},
     }
 
-    def _argcount_mismatch(self, node, **kwargs):  # type: ignore  # TODO: fix
+    def _argcount_mismatch(self, node: NODE_TV, **kwargs: Any) -> Any:
         # Would be nice to do `self.DumpError("Argcount mismatch", node)` here,
         # but NULL-related behavior makes it unfeasible.
         # Thus, return an empty node (equivalent to an empty string).

@@ -28,7 +28,7 @@ class ForkPopenHack(subprocess.Popen):
         self._target = target
         super().__init__(args=(), **kwargs)
 
-    def _execute_child(self, *args, **kwargs):  # type: ignore  # TODO: fix
+    def _execute_child(self, *args: Any, **kwargs: Any) -> None:
         # Most of the arguments are ignored,
         # unix-only version
         # skipping: errpipe.
@@ -84,7 +84,7 @@ class WSGIRunner:
 
     _proc: subprocess.Popen = attr.ib(init=False, default=None)
 
-    def _debug(self, message, *args):  # type: ignore  # TODO: fix
+    def _debug(self, message: str, *args: Any) -> None:
         sys.stderr.write(f"{self.__class__.__name__} @ {os.getpid()}: ")
         sys.stderr.write(message % args)
         sys.stderr.write("\n")

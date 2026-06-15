@@ -146,7 +146,11 @@ def make_id() -> str:
     return shortuuid.uuid()
 
 
-def attrs_evolve_to_subclass[MODEL_TYPE_TV: attr.AttrsInstance](cls: type[MODEL_TYPE_TV], inst: Any, **kwargs) -> MODEL_TYPE_TV:  # type: ignore  # TODO: fix
+def attrs_evolve_to_subclass[MODEL_TYPE_TV: attr.AttrsInstance](
+    cls: type[MODEL_TYPE_TV],
+    inst: Any,
+    **kwargs: Any,
+) -> MODEL_TYPE_TV:
     """
     Evolve an attr.s instance to a subclass instance with additional attributes.
     Note that this works correctly only for attributes with ``init=True``.
@@ -163,7 +167,11 @@ def attrs_evolve_to_subclass[MODEL_TYPE_TV: attr.AttrsInstance](cls: type[MODEL_
     return cls(**all_attrs)
 
 
-def attrs_evolve_to_superclass[MODEL_TYPE_TV: attr.AttrsInstance](cls: type[MODEL_TYPE_TV], inst: Any, **kwargs) -> MODEL_TYPE_TV:  # type: ignore  # TODO: fix
+def attrs_evolve_to_superclass[MODEL_TYPE_TV: attr.AttrsInstance](
+    cls: type[MODEL_TYPE_TV],
+    inst: Any,
+    **kwargs: Any,
+) -> MODEL_TYPE_TV:
     """
     Evolve an attr.s instance to a superclass instance with additional attributes.
     Note that this works correctly only for attributes with ``init=True``.

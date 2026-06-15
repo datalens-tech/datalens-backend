@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    Any,
+)
 
 import attr
 import pytest
@@ -36,12 +39,12 @@ class SimpleEntrySchemaMigration(BaseEntrySchemaMigration):
         return migrations
 
     @staticmethod
-    def _migrate_v1_to_v2(entry: dict, **kwargs) -> dict:
+    def _migrate_v1_to_v2(entry: dict, **kwargs: Any) -> dict:
         entry["meta"]["test_field"] = "test_value"
         return entry
 
     @staticmethod
-    def _migrate_v2_to_v1(entry: dict, **kwargs) -> dict:
+    def _migrate_v2_to_v1(entry: dict, **kwargs: Any) -> dict:
         entry["meta"].pop("test_field")
         return entry
 

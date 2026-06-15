@@ -3,6 +3,7 @@ import logging.config
 import os
 import socket
 import sys
+from typing import Any
 
 from .logs import LOGMUTATORS
 
@@ -20,7 +21,7 @@ ENV_CONTEXT = {
 }
 
 
-def make_file_logger_syslog(name, params=None, **kwargs):
+def make_file_logger_syslog(name, params=None, **kwargs: Any):
     addr = "/dev/log-ext"
     if not os.path.exists(addr):
         addr = "/dev/log"

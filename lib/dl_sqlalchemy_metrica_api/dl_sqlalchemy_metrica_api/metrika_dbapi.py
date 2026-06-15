@@ -9,6 +9,7 @@ from collections.abc import Iterator
 from datetime import date
 from enum import Enum
 from functools import wraps
+from typing import Any
 from urllib.parse import parse_qs
 
 import dateutil.parser
@@ -94,7 +95,7 @@ cast_type_to_sqla_type = {
 
 def check_connected(func):
     @wraps(func)
-    def func_wrapper(self, *args, **kwargs):
+    def func_wrapper(self, *args: Any, **kwargs: Any):
         if self.is_connected is False:
             raise ConnectionClosedException("Connection object is closed")
         return func(self, *args, **kwargs)
@@ -109,7 +110,7 @@ class Connection:
     fields_namespace = None
     accuracy = None
 
-    def __init__(self, oauth_token, fields_namespace=None, accuracy=None, **client_kwargs) -> None:
+    def __init__(self, oauth_token, fields_namespace=None, accuracy=None, **client_kwargs: Any) -> None:
         client_kwargs.setdefault("host", self.metrica_host)
         self._cli = MetrikaApiClient(oauth_token, **client_kwargs)
         if fields_namespace:
@@ -157,7 +158,7 @@ class Connection:
         return self._cli.get_counter_creation_date(counter_id)
 
 
-def connect(oauth_token=None, **kwargs):
+def connect(oauth_token=None, **kwargs: Any):
     oauth_token = oauth_token or kwargs.get("password")
     fields_namespace = kwargs.get("database")
     accuracy = kwargs.get("accuracy")
@@ -166,7 +167,7 @@ def connect(oauth_token=None, **kwargs):
 
 def check_cursor_connected(func):
     @wraps(func)
-    def func_wrapper(self, *args, **kwargs):
+    def func_wrapper(self, *args: Any, **kwargs: Any):
         if not self._connected:
             raise CursorClosedException("Cursor object is closed")
         if not self.connection.is_connected:
@@ -331,8 +332,8 @@ class Cursor:
     def __iter__(self) -> Iterator:
         raise NotImplementedError()
 
-    def setinputsizes(self, *args, **kwargs):
+    def setinputsizes(self, *args: Any, **kwargs: Any):
         pass
 
-    def setoutputsize(self, *args, **kwargs):
+    def setoutputsize(self, *args: Any, **kwargs: Any):
         pass

@@ -2,7 +2,10 @@ import abc
 from collections.abc import Callable
 from functools import wraps
 import logging
-from typing import ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 import attr
 import sqlalchemy as sa
@@ -46,7 +49,7 @@ LOGGER = logging.getLogger(__name__)
 
 def require_table_name(func):  # type: ignore  # TODO: fix
     @wraps(func)
-    def wrapper(self, *args, **kwargs):  # type: ignore  # TODO: fix
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
         if not self.table_name:
             raise exc.TableNameNotConfiguredError
 

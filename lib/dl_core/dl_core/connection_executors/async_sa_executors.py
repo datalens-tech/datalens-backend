@@ -83,7 +83,7 @@ def _populate_keeper_from_target_dto_pool(
 
 def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
     @functools.wraps(func)
-    async def method_wrapper(self: DefaultSqlAlchemyConnExecutor, *args, **kwargs):  # type: ignore  # TODO: fix
+    async def method_wrapper(self: DefaultSqlAlchemyConnExecutor, *args: Any, **kwargs: Any) -> Any:
         # Not sure do we have to reset index on every call
         # self._dba_attempt_index = 0
 
@@ -109,7 +109,7 @@ def _dba_pool_revolver_wrapper(func: Callable) -> Callable:
 
 def _postprocess_db_excs_wrapper(func: Callable) -> Callable:
     @functools.wraps(func)
-    async def method_wrapper(self: DefaultSqlAlchemyConnExecutor, *args, **kwargs):  # type: ignore  # TODO: fix
+    async def method_wrapper(self: DefaultSqlAlchemyConnExecutor, *args: Any, **kwargs: Any) -> Any:
         with self._postprocess_db_excs():
             return await func(self, *args, **kwargs)
 

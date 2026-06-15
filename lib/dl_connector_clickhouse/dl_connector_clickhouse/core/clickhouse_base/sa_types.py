@@ -5,6 +5,7 @@ from collections.abc import (
     Collection,
 )
 from functools import partial
+from typing import Any
 
 from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
@@ -51,7 +52,7 @@ def ch_instantiator(typecls: type[TypeEngine]) -> Callable:
     return type_gen
 
 
-def ch_fallback_type_gen(*args, **kwargs):  # type: ignore  # TODO: fix
+def ch_fallback_type_gen(*args: Any, **kwargs: Any) -> TypeEngine:
     return ch_types.Nullable(ch_types.String())
 
 

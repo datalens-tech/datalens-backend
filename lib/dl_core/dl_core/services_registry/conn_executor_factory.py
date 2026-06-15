@@ -9,7 +9,9 @@ import logging
 import random
 from typing import (
     TYPE_CHECKING,
+    Any,
     ClassVar,
+    Self,
 )
 
 import attr
@@ -249,7 +251,7 @@ class DefaultConnExecutorFactory(BaseClosableExecutorFactory):
     def conn_security_manager(self) -> ConnectionSecurityManager:
         return self.conn_sec_mgr
 
-    def clone(self, **kwargs):  # type: ignore  # TODO: fix
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

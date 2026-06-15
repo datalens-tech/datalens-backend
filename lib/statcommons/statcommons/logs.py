@@ -323,11 +323,11 @@ class TaggedSysLogHandlerBase(logging.handlers.SysLogHandler):
     similar to FileHandler's `filename` parameter.
     """
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.syslog_tag = kwargs.pop("syslog_tag")
         super().__init__(*args, **kwargs)
 
-    def format(self, *args, **kwargs):  # pylint: disable=arguments-differ
+    def format(self, *args: Any, **kwargs: Any):  # pylint: disable=arguments-differ
         res = super().format(*args, **kwargs)
         return self.syslog_tag + " " + res
 
@@ -337,7 +337,7 @@ class TaggedSysLogHandler(TaggedSysLogHandlerBase):
 
     _sndbuf_size = 5 * 2**20
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         self._sbdbuf_size = kwargs.pop("sbdbuf_size", self._sndbuf_size)
         super().__init__(*args, **kwargs)
         self.configure_socket(self.socket)
@@ -355,7 +355,7 @@ class LogRecordCaptureHandler(logging.Handler):
     without formatting them.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.records = []
 
@@ -403,8 +403,8 @@ class RecordMutators:
                 raise ValueError("Attempting to replace an existing mutator", name, current, mutator)
         self.mutators[name] = mutator
 
-    def __call__(self, *args, **kwargs) -> logging.LogRecord:
-        """Log record factrory entry point"""
+    def __call__(self, *args: Any, **kwargs: Any) -> logging.LogRecord:
+        """Log record factory entry point"""
         if self.old_factory is None:
             raise Exception("This mutators-wrapper was not `apply`ed yet.")
         record = self.old_factory(*args, **kwargs)

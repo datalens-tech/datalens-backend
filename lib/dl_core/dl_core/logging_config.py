@@ -1,7 +1,11 @@
+from typing import Any
+
+from flask import Flask
+
 import dl_logging
 
 
-def hook_configure_logging(app, *args, **kwargs):  # type: ignore  # TODO: fix
+def hook_configure_logging(app: Flask, *args: Any, **kwargs: Any) -> None:
     """
     Try to configure logging in uwsgi `postfork` if possible,
     but ensure it is configured in `before_first_request` (flask app).

@@ -8,6 +8,7 @@ from collections.abc import (
 )
 from contextlib import contextmanager
 import logging
+from typing import Any
 
 from sqlalchemy.engine import Engine
 import sqlalchemy.exc
@@ -45,7 +46,7 @@ class CustomSession(Session):
         super().close()
         self.__closed = True
 
-    def execute(self, *args, **kwargs):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def execute(self, *args: Any, **kwargs: Any) -> Any:
         if self.__closed:
             raise exc.DBSessionError("Cannot execute on closed session")
         return super().execute(*args, **kwargs)

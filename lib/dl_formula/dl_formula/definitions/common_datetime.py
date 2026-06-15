@@ -78,7 +78,7 @@ def ensure_naive_first_arg(func):  # type: ignore  # 2024-01-24 # TODO: Function
     # TODO: this should have probably been an autocast-by-function (same with str->markup)
 
     @functools.wraps(func)
-    def _ensured_naive_first_arg(datetime_ctx, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _ensured_naive_first_arg(datetime_ctx: Any, *args: Any, **kwargs: Any) -> Any:
         datetime_ctx = ensure_naive_datetime(datetime_ctx)
         return func(datetime_ctx, *args, **kwargs)
 

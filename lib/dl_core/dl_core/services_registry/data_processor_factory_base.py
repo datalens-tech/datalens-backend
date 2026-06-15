@@ -76,7 +76,7 @@ class BaseClosableDataProcessorFactory(DataProcessorFactory):
         await processor.start()
         return processor
 
-    def _create_data_processor(  # type: ignore  # TODO: fix
+    def _create_data_processor(
         self,
         dataset: Dataset,
         processor_type: ProcessorType,
@@ -84,7 +84,7 @@ class BaseClosableDataProcessorFactory(DataProcessorFactory):
         us_entry_buffer: USEntryBuffer,
         allow_cache_usage: bool = True,
         reporting_enabled: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ) -> ExecutorBasedOperationProcessor:
         raise NotImplementedError
 

@@ -47,7 +47,7 @@ LOGGER = logging.getLogger(__name__)
 # PROFILE_REQ_PATH_RE="/api/v1/datasets/njJYHhj8oikj/versions/draft/result"
 
 
-def _profile_request_check(*args, **kwargs) -> bool:  # type: ignore  # TODO: fix
+def _profile_request_check(*args: Any, **kwargs: Any) -> bool:
     """
     Check whether request handler should be profiled with current settings:
     - ``PROFILE_PATH_RE``: limit profiling only to requests with path matching the given regex

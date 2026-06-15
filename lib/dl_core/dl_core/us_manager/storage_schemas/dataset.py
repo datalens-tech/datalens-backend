@@ -425,7 +425,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         return {"fields": data}
 
     @post_dump
-    def flatten_fields(self, data, **_):  # type: ignore  # TODO: fix
+    def flatten_fields(self, data: dict[str, Any], **_: Any) -> Any:
         return data.get("fields")
 
     @post_load

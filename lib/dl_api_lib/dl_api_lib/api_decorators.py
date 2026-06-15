@@ -3,6 +3,7 @@ from functools import wraps
 import json
 import logging
 import sys
+from typing import Any
 
 import flask
 from flask import request
@@ -75,7 +76,7 @@ def schematic_request(  # type: ignore  # TODO: fix
                 f = ns.response(code, description, model)(f)
 
         @wraps(f)
-        def wrapper(*args, **kwargs):  # type: ignore  # TODO: fix
+        def wrapper(*args: Any, **kwargs: Any) -> tuple[Any, int]:
             body = request.get_json() if body_schema is not None else None
 
             if LOGGER.isEnabledFor(logging.INFO):
@@ -161,7 +162,7 @@ def with_profiler_stats(stats_dir: str, condition_check: Callable | None = None)
 
     def decorator(func):  # type: ignore  # TODO: fix
         @wraps(func)
-        def wrapper(*args, **kwargs):  # type: ignore  # TODO: fix
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             if condition_check is None or condition_check(*args, **kwargs):
                 with utils.profile_stats(stats_dir):
                     return func(*args, **kwargs)

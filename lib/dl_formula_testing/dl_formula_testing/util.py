@@ -72,7 +72,7 @@ def utcize(dt: datetime.datetime) -> datetime.datetime:
     return dt.replace(tzinfo=datetime.UTC)
 
 
-def utc_ts(*args, tzinfo: datetime.tzinfo | None = None) -> float:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+def utc_ts(*args: Any, tzinfo: datetime.tzinfo | None = None) -> float:
     if len(args) == 1:
         dt = args[0]
         if not isinstance(dt, datetime.datetime):

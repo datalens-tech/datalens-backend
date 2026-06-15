@@ -64,7 +64,7 @@ class BaseStorageSchema[TARGET_TV](Schema):
         raise NotImplementedError("This schema is does not implement object deserialization")
 
     @pre_load(pass_many=False)
-    def pre_load(self, data, **_):  # type: ignore  # TODO: fix
+    def pre_load(self, data: Any, **_: Any) -> dict[str, Any]:
         normalized_data = self.pre_process_input_data(data)
         # storing unknown fields
         unknown_keys = normalized_data.keys() - self.fields.keys()
@@ -77,13 +77,13 @@ class BaseStorageSchema[TARGET_TV](Schema):
         return normalized_data
 
     @post_load(pass_many=False)
-    def post_load(self, data, **_):  # type: ignore  # TODO: fix
+    def post_load(self, data: Any, **_: Any) -> TARGET_TV:
         obj = self.to_object(data)
         self.pop_ctx(data)
         return obj
 
     @post_dump(pass_many=False)
-    def post_dump(self, data: dict[str, Any], **_) -> dict[str, Any]:  # type: ignore  # TODO: fix
+    def post_dump(self, data: dict[str, Any], **_: Any) -> dict[str, Any]:
         return self.post_process_output_data(data)
 
 

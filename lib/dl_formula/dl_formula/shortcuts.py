@@ -248,7 +248,7 @@ class NodeShortcut:
             self._case_expr = case_expr
             self._when_list: list = []
 
-        def whens(self, *when_list) -> NodeShortcut.CaseProxy:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+        def whens(self, *when_list: Any) -> NodeShortcut.CaseProxy:
             self._when_list += when_list or []
             return self
 
@@ -289,7 +289,7 @@ class NodeShortcut:
                 else_expr=_norm(expr),
             )
 
-    def if_(self, *exprs) -> NodeShortcut.IfBlockProxy | NodeShortcut.IfPartProxy:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def if_(self, *exprs: Any) -> NodeShortcut.IfBlockProxy | NodeShortcut.IfPartProxy:
         """
         Usage:
         TODO

@@ -13,7 +13,7 @@ class BitrixCompiler(sa.sql.compiler.SQLCompiler):
         within_label_clause=False,
         within_columns_clause=False,
         render_label_as_label=None,
-        **kw,
+        **kw: Any,
     ):
         # Labels are not supported at all
         return label.element._compiler_dispatch(
@@ -30,7 +30,7 @@ class BitrixCompiler(sa.sql.compiler.SQLCompiler):
 
 
 class BitrixIdentifierPreparer(sa.sql.compiler.IdentifierPreparer):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         quote = "`"
         kwargs = {
             **kwargs,
@@ -107,82 +107,82 @@ class BitrixDialect(default.DefaultDialect):
     def do_rollback(self, dbapi_connection):
         pass
 
-    def get_columns(self, *args, **kwargs):
+    def get_columns(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_foreign_keys(self, connection, table_name, schema=None, **kw):
+    def get_foreign_keys(self, connection, table_name, schema=None, **kw: Any):
         return []
 
-    def get_indexes(self, connection, table_name, schema=None, **kw):
+    def get_indexes(self, connection, table_name, schema=None, **kw: Any):
         return []
 
-    def get_pk_constraint(self, connection, table_name, schema=None, **kw):
+    def get_pk_constraint(self, connection, table_name, schema=None, **kw: Any):
         return []
 
-    def _get_default_schema_name(self, *args, **kwargs):
+    def _get_default_schema_name(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def _get_server_version_info(self, *args, **kwargs):
+    def _get_server_version_info(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def denormalize_name(self, *args, **kwargs):
+    def denormalize_name(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def do_begin_twophase(self, *args, **kwargs):
+    def do_begin_twophase(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def do_commit_twophase(self, *args, **kwargs):
+    def do_commit_twophase(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def do_prepare_twophase(self, *args, **kwargs):
+    def do_prepare_twophase(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def do_recover_twophase(self, *args, **kwargs):
+    def do_recover_twophase(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def do_rollback_twophase(self, *args, **kwargs):
+    def do_rollback_twophase(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_check_constraints(self, *args, **kwargs):
+    def get_check_constraints(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_isolation_level(self, *args, **kwargs):
+    def get_isolation_level(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_primary_keys(self, *args, **kwargs):
+    def get_primary_keys(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_table_comment(self, *args, **kwargs):
+    def get_table_comment(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_table_names(self, *args, **kwargs):
+    def get_table_names(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_temp_table_names(self, *args, **kwargs):
+    def get_temp_table_names(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_temp_view_names(self, *args, **kwargs):
+    def get_temp_view_names(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_unique_constraints(self, *args, **kwargs):
+    def get_unique_constraints(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_view_definition(self, *args, **kwargs):
+    def get_view_definition(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def get_view_names(self, *args, **kwargs):
+    def get_view_names(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def has_sequence(self, *args, **kwargs):
+    def has_sequence(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def has_table(self, *args, **kwargs):
+    def has_table(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def normalize_name(self, *args, **kwargs):
+    def normalize_name(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
-    def set_isolation_level(self, *args, **kwargs):
+    def set_isolation_level(self, *args: Any, **kwargs: Any):
         raise Exception("Not Implemented")
 
 

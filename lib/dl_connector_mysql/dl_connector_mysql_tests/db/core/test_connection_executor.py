@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from typing import Any
 
 from aiomysql.sa.result import (
     ResultMetaData,
@@ -110,7 +111,7 @@ class TestMySQLAsyncConnectionExecutor(
         skipping a destructor in tests doesn't sound like a terrible idea
         """
 
-        async def _prepare(self, *args, **kwargs):
+        async def _prepare(self, *args: Any, **kwargs: Any):
             cursor = self._cursor
             self._weak = None
             if cursor.description is not None:

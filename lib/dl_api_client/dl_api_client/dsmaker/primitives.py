@@ -83,7 +83,7 @@ class ApiProxyObject:
         """Generate ``add_*`` action"""
         return self._make_action(Action.add)
 
-    def update(self, **data) -> UpdateAction:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def update(self, **data: Any) -> UpdateAction:
         """Generate ``update_*`` action"""
         return self._make_action(Action.update, data=data)
 
@@ -268,7 +268,7 @@ class SourceAvatar(ApiProxyObject):
             join_type=join_type,
         )
 
-    def field(self, **kwargs) -> ResultField:  # type: ignore  # TODO: fix
+    def field(self, **kwargs: Any) -> ResultField:
         return ResultField(avatar_id=self.id, **kwargs)
 
 
@@ -1056,7 +1056,7 @@ class Dataset(ApiProxyObject):
             kwargs["title"] = name
         return Column(name=name, **kwargs)
 
-    def field(self, avatar: SourceAvatar = None, **kwargs) -> ResultField:  # type: ignore  # TODO: fix
+    def field(self, avatar: SourceAvatar | None = None, **kwargs: Any) -> ResultField:
         avatar_id = avatar.id if avatar is not None else kwargs.pop("avatar_id", None)
         return ResultField(avatar_id=avatar_id, **kwargs)
 

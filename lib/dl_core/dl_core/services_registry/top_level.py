@@ -4,6 +4,8 @@ import abc
 from collections.abc import Callable
 from typing import (
     TYPE_CHECKING,
+    Any,
+    Self,
     TypeVar,
 )
 
@@ -321,7 +323,7 @@ class DefaultServicesRegistry(ServicesRegistry):
         if self._task_processor_factory is not None:
             await self._task_processor_factory.cleanup_async()
 
-    def clone(self, **kwargs):  # type: ignore  # TODO: fix
+    def clone(self, **kwargs: Any) -> Self:
         return attr.evolve(self, **kwargs)
 
 

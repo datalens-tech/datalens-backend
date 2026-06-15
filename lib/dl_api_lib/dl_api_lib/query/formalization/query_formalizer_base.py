@@ -7,6 +7,7 @@ from collections.abc import (
     Set,
 )
 import logging
+from typing import Any
 
 import attr
 
@@ -40,7 +41,7 @@ class QuerySpecFormalizerBase(abc.ABC):
 
     _verbose_logging: bool = attr.ib(kw_only=True, default=False)
 
-    def _log_info(self, *args, **kwargs) -> None:  # type: ignore  # TODO: fix
+    def _log_info(self, *args: Any, **kwargs: Any) -> None:
         if self._verbose_logging:
             LOGGER.info(*args, **kwargs)
 

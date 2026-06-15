@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable
 import logging
+from typing import Any
 
 import attr
 
@@ -64,7 +65,7 @@ class MultiLevelQueryTranslator:
             dialect=self._compeng_dialect,
         )
 
-    def _log_info(self, *args, **kwargs) -> None:  # type: ignore  # TODO: fix
+    def _log_info(self, *args: Any, **kwargs: Any) -> None:
         if self._verbose_logging:
             LOGGER.info(*args, **kwargs)
 

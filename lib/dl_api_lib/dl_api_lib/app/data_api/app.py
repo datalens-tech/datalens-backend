@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Iterable
+from collections.abc import (
+    Awaitable,
+    Callable,
+    Iterable,
+)
 import functools
 import logging.config
-from typing import ClassVar
+from typing import (
+    Any,
+    ClassVar,
+)
 
 from aiohttp import web
 from aiohttp.typedefs import Middleware
@@ -92,9 +99,9 @@ from dl_obfuscator import (
 LOGGER = logging.getLogger(__name__)
 
 
-def _log_exc(coro):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+def _log_exc(coro: Callable[..., Awaitable[Any]]) -> Callable[..., Awaitable[Any]]:
     @functools.wraps(coro)
-    async def wrapper(*args, **kwargs):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             return await coro(*args, **kwargs)
         except Exception:

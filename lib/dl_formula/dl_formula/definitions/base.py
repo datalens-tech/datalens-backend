@@ -74,7 +74,7 @@ class ValueVariant[VARIANT_OF_TV]:
         self.dialects: DialectCombo = dialects
         self._value: VARIANT_OF_TV = value
 
-    def clone(self: _VARIANT_TV, **kwargs) -> _VARIANT_TV:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def clone(self: _VARIANT_TV, **kwargs: Any) -> _VARIANT_TV:
         copy_kwargs = {
             "dialects": self.dialects,
             "value": self._value,
@@ -322,9 +322,9 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
             _c0,
         )
 
-    def translate(  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def translate(
         self,
-        *args,
+        *args: Any,
         translator_cb: TranslateCallback,
         partition_by: ClauseList | None = None,
         default_order_by: ClauseList | None = None,
@@ -662,7 +662,7 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         self._inst_dialects = dialects
         super().__init__(arg_transformer=arg_transformer)
 
-    def _translate_main(cls, *args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, *args: Any) -> TransCallResult:
         """Variant implementation"""
         raise NotImplementedError
 
@@ -705,7 +705,7 @@ class SingleVariantFullOverrideTranslationBase(SingleVariantTranslationBase):
     __slots__ = ()
 
     @classmethod
-    def _translate_all(cls, *args, env=None) -> PartialTranslationResult:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+    def _translate_all(cls, *args: Any, env: TranslationEnvironment | None = None) -> PartialTranslationResult:
         """Main overridable method"""
         raise NotImplementedError
 

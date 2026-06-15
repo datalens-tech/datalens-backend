@@ -1,3 +1,5 @@
+from typing import Any
+
 import sqlalchemy as sa
 from sqlalchemy.dialects.mysql.base import (
     MySQLDDLCompiler,
@@ -8,10 +10,10 @@ from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 
 
 class StarRocksTypeCompiler(MySQLTypeCompiler):
-    def visit_DATETIME(self, type_, **kw):
+    def visit_DATETIME(self, type_, **kw: Any):
         return "DATETIME"
 
-    def visit_BOOLEAN(self, type_, **kw):
+    def visit_BOOLEAN(self, type_, **kw: Any):
         return "BOOLEAN"
 
 

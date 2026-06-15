@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 
@@ -20,7 +21,7 @@ from dl_core.fields import (
 )
 
 
-def _make_dataset(*fields):
+def _make_dataset(*fields: Any):
     return SimpleNamespace(result_schema=list(fields))
 
 

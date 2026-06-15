@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from typing import Any
 
 import oracledb
 
@@ -20,11 +21,11 @@ class BIOracleCompilerBasic(UPSTREAM.statement_compiler):
 class BIOracleCompiler(BIOracleCompilerBasic, UPSTREAM.statement_compiler, CompilerPrettyMixin):
     """Added prettification"""
 
-    def limit_clause(self, *args, **kwargs):
+    def limit_clause(self, *args: Any, **kwargs: Any):
         # upstream: `return ""`; no prettification to be done.
         return super().limit_clause(*args, **kwargs)
 
-    def visit_join(self, join, from_linter=None, **kwargs):
+    def visit_join(self, join, from_linter=None, **kwargs: Any):
         # superclass customizes join for the `not self.dialect.use_ansi` case,
         # which isn't currently supported in the prettifier anyway.
         return super().visit_join(join, from_linter=from_linter, **kwargs)

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 from json.decoder import JSONDecodeError
 import logging
+from typing import Any
 
 import requests
 from requests.exceptions import RequestException
@@ -74,7 +75,7 @@ class MetrikaApiClient:
     host = METRIKA_API_HOST
     default_timeout = 60
 
-    def __init__(self, oauth_token: str, host: str | None = None, default_timeout=-1, **kwargs) -> None:
+    def __init__(self, oauth_token: str, host: str | None = None, default_timeout=-1, **kwargs: Any) -> None:
         if host is not None:
             self.host = host
         if default_timeout != -1:
@@ -87,7 +88,7 @@ class MetrikaApiClient:
     def _is_appmetrica(self):
         return self.host == APPMETRICA_API_HOST
 
-    def _request(self, method: str, uri: str, timeout: int = -1, _raw_resp: bool = False, **kwargs):
+    def _request(self, method: str, uri: str, timeout: int = -1, _raw_resp: bool = False, **kwargs: Any):
         if timeout == -1:
             timeout = self.default_timeout
         full_url = "/".join(s.strip("/") for s in (self.host, uri))
@@ -143,10 +144,10 @@ class MetrikaApiClient:
             raise MetrikaHttpApiException("Unable to parse response.", orig_exc=ex) from ex
         return parsed_resp
 
-    def get(self, uri, **kwargs):
+    def get(self, uri, **kwargs: Any):
         return self._request("GET", uri, **kwargs)
 
-    def post(self, uri, **kwargs):
+    def post(self, uri, **kwargs: Any):
         return self._request("POST", uri, **kwargs)
 
     def _parse_data_resp(self, resp, result_columns=None, req_metrics=None):
@@ -197,7 +198,7 @@ class MetrikaApiClient:
             "data": rows,
         }
 
-    def get_table_data(self, params, result_columns=None, **kwargs):
+    def get_table_data(self, params, result_columns=None, **kwargs: Any):
         resp = self.get("/stat/v1/data", params=params, **kwargs)
         return self._parse_data_resp(
             resp,
@@ -205,7 +206,7 @@ class MetrikaApiClient:
             req_metrics=params.get("metrics"),
         )
 
-    def get_available_counters(self, **kwargs) -> list[dict]:
+    def get_available_counters(self, **kwargs: Any) -> list[dict]:
         obj_name = "applications" if self._is_appmetrica else "counters"
         uri = f"/management/v1/{obj_name}"
         resp = self.get(uri, **kwargs)

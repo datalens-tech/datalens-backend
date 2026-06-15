@@ -1,3 +1,5 @@
+from typing import Any
+
 from dl_sqlalchemy_promql.connection import Connection
 from dl_sqlalchemy_promql.errors import (
     DatabaseError,
@@ -37,5 +39,5 @@ threadsafety = 0
 paramstyle = "named"
 
 
-def connect(*args, **kwargs):
+def connect(*args: Any, **kwargs: Any):
     return Connection(*args, **kwargs)

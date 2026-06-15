@@ -5,6 +5,7 @@ import datetime
 import decimal
 import itertools
 import logging
+from typing import Any
 import uuid
 
 import pyodbc
@@ -150,15 +151,15 @@ class BIMSSQLDialectBasic(UPSTREAM):
 
 
 class BIMSSQLCompiler(UPSTREAM.statement_compiler, CompilerPrettyMixin):
-    def order_by_clause(self, select, **kw):
+    def order_by_clause(self, select, **kw: Any):
         sup = super().order_by_clause(select, **kw)
         return self._pretty.postprocess_block("ORDER BY", sup)
 
-    def limit_clause(self, cs, **kw):
+    def limit_clause(self, cs, **kw: Any):
         # Upstream: `return ""`
         return super().limit_clause(cs, **kw)
 
-    def visit_alias(self, alias, **kw):
+    def visit_alias(self, alias, **kw: Any):
         # Upstream only wraps its superclass.
         return super().visit_alias(alias, **kw)
 

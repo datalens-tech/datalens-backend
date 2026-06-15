@@ -5,6 +5,7 @@ from datetime import (
     datetime,
 )
 import logging
+from typing import Any
 from urllib.parse import urljoin
 
 import requests
@@ -40,7 +41,7 @@ def rebuild_prometheus_data(data):
 
 
 class SyncPromQLClient:
-    def __init__(self, base_url, username, password, auth_type=None, auth_header=None, **kwargs) -> None:
+    def __init__(self, base_url, username, password, auth_type=None, auth_header=None, **kwargs: Any) -> None:
         self._closed = False
         self._session = requests.Session()
         self._session.max_redirects = 0
@@ -67,7 +68,7 @@ class SyncPromQLClient:
         self._closed = True
         self._session.close()
 
-    def _request(self, method, endpoint, **kwargs):
+    def _request(self, method, endpoint, **kwargs: Any):
         if endpoint.startswith("/"):
             LOGGER.warning("Endpoint '%s' starts with '/' that can affect final url", endpoint)
         url = urljoin(self._base_url, endpoint)

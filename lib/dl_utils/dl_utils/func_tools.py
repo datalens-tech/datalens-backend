@@ -11,11 +11,11 @@ def method_lru(maxsize: int = 128, typed: bool = False) -> Callable:
 
     def wrapper(func: Callable) -> Callable:
         @functools.lru_cache(maxsize, typed)
-        def _func(_self: Callable, *args, **kwargs) -> Any:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+        def _func(_self: Callable, *args: Any, **kwargs: Any) -> Any:
             return func(_self(), *args, **kwargs)
 
         @functools.wraps(func)
-        def inner(self: object, *args, **kwargs) -> Callable:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
+        def inner(self: object, *args: Any, **kwargs: Any) -> Callable:
             return _func(weakref.ref(self), *args, **kwargs)
 
         return inner

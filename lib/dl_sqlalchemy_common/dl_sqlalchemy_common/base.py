@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 import itertools
+from typing import Any
 
 import sqlalchemy as sa
 
@@ -152,7 +153,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
             )
         super().__init_subclass__()
 
-    def visit_join(self, join, asfrom=False, from_linter=None, **kwargs):
+    def visit_join(self, join, asfrom=False, from_linter=None, **kwargs: Any):
         if from_linter:
             from_linter.edges.update(itertools.product(join.left._from_objects, join.right._from_objects))
 
@@ -183,7 +184,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
         select_wraps_for=None,
         lateral=False,
         from_linter=None,
-        **kwargs,
+        **kwargs: Any,
     ):
         assert select_wraps_for is None, (
             "SQLAlchemy 1.4 requires use of "
@@ -426,23 +427,23 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
 
         return self._pretty.join(text_pieces)
 
-    def visit_alias(self, *args, **kwargs):
+    def visit_alias(self, *args: Any, **kwargs: Any):
         sup = super().visit_alias(*args, **kwargs)
         return self._pretty.reparenthesize(sup)
 
-    def group_by_clause(self, select, **kw):
+    def group_by_clause(self, select, **kw: Any):
         sup = super().group_by_clause(select, **kw)
         return self._pretty.postprocess_block("GROUP BY", sup)
 
-    def order_by_clause(self, select, **kw):
+    def order_by_clause(self, select, **kw: Any):
         sup = super().order_by_clause(select, **kw)
         return self._pretty.postprocess_block("ORDER BY", sup)
 
-    def limit_clause(self, select, **kw):
+    def limit_clause(self, select, **kw: Any):
         sup = super().limit_clause(select, **kw)
         return self._pretty.postprocess_block("LIMIT", sup)
 
-    def visit_clauselist(self, clauselist, *args, **kwargs):
+    def visit_clauselist(self, clauselist, *args: Any, **kwargs: Any):
         if clauselist.operator is sa.sql.operators.and_:
             assert sa.sql.compiler.OPERATORS[clauselist.operator].strip() == "AND"
             pieces = [el._compiler_dispatch(self, *args, **kwargs) for el in clauselist.clauses]
@@ -452,7 +453,7 @@ class CompilerPrettyMixin(sa.sql.compiler.SQLCompiler):  # type: ignore  # TODO:
 
         return super().visit_clauselist(clauselist, *args, **kwargs)
 
-    def _generate_delimited_list(self, elements, separator, **kw):
+    def _generate_delimited_list(self, elements, separator, **kw: Any):
         if separator in (", ", " "):
             children = [el._compiler_dispatch(self, **kw) for el in elements]
             return self._pretty.join_ext(children, extra_separator=separator.strip())

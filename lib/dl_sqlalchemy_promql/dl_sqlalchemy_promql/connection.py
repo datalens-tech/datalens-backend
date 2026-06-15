@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import Any
 from urllib.parse import urljoin
 
 from .cli import SyncPromQLClient
@@ -20,7 +21,7 @@ class Connection:
         protocol="http",
         path=None,
         cli_cls=None,
-        **conn_kwargs,
+        **conn_kwargs: Any,
     ) -> None:
         base_url = f"{protocol}://{host}:{port}"
         if path is not None:
@@ -51,7 +52,13 @@ class Connection:
 
     @staticmethod
     def _create_cli(
-        cli_cls, base_url, username, password, auth_type=None, auth_header=None, **conn_kwargs
+        cli_cls,
+        base_url,
+        username,
+        password,
+        auth_type=None,
+        auth_header=None,
+        **conn_kwargs: Any,
     ) -> SyncPromQLClient:
         return cli_cls(
             base_url=base_url,

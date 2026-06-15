@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from dl_sqlalchemy_common.base import CompilerPrettyMixin
 
 
@@ -13,7 +15,7 @@ def test_inherit():
     class ActualCustomPGCompiler(CustomPGCompiler, CompilerPrettyMixin):
         """Local customization on top of pretty-formatting"""
 
-        def limit_clause(self, *args, **kwargs):
+        def limit_clause(self, *args: Any, **kwargs: Any):
             """
             This method has to be overridden because otherwise
             `UPSTREAM.statement_compiler.limit_clause` overrides the

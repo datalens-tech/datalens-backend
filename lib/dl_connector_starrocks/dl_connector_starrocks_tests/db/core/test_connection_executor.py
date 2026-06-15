@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 import functools
+from typing import Any
 
 from aiomysql.sa.result import (
     ResultMetaData,
@@ -187,7 +188,7 @@ class TestStarRocksAsyncConnectionExecutor(
         See dl_connector_mysql tests for the full explanation.
         """
 
-        async def _prepare(self, *args, **kwargs):  # type: ignore
+        async def _prepare(self, *args: Any, **kwargs: Any) -> None:
             cursor = self._cursor
             self._weak = None
             if cursor.description is not None:

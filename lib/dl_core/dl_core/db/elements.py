@@ -59,7 +59,7 @@ class SchemaColumn(_SchemaColumn):
             description=description or "",
         )
 
-    def clone(self, **kwargs) -> SchemaColumn:  # type: ignore  # TODO: fix
+    def clone(self, **kwargs: Any) -> SchemaColumn:
         return SchemaColumn(**dict(self._asdict(), **kwargs))
 
 
@@ -86,7 +86,7 @@ class SchemaInfo:
         else:
             raise TypeError(f"Indexes must be a frozen set or non, not {get_type_full_name(type(value))!r}")
 
-    def clone(self, **kwargs) -> SchemaInfo:  # type: ignore  # TODO: fix
+    def clone(self, **kwargs: Any) -> SchemaInfo:
         return attr.evolve(self, **kwargs)
 
     @classmethod

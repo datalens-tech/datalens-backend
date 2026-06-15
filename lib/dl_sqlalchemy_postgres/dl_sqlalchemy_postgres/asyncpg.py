@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from sqlalchemy import util
 from sqlalchemy.dialects.postgresql import (
     INTERVAL,
@@ -50,7 +52,7 @@ class AsyncpgFloat(AsyncpgNumeric):
 # we have to replace it by native SA asyncpg tools after their release
 # see https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
 class DBAPIMock:
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         pass
 
     STRING = util.symbol("STRING")
@@ -140,7 +142,7 @@ class AsyncBIPGDialect(BIPGDialect):
         },
     )
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         # special hack for getting types in compile query
         self.dbapi = DBAPIMock()

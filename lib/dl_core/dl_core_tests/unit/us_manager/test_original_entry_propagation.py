@@ -1,3 +1,4 @@
+from typing import Any
 from unittest.mock import Mock
 
 import attr
@@ -38,7 +39,7 @@ class TestUSEntryStorageSchema(DefaultStorageSchema):
 class TestLifecycleManager(EntryLifecycleManager[TestUSEntry]):
     ENTRY_CLS = TestUSEntry
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
         self.pre_save_hook_mock = Mock()

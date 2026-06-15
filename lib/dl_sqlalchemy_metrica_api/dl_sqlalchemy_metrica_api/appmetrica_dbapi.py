@@ -5,6 +5,8 @@ https://www.python.org/dev/peps/pep-0249/
 
 from __future__ import annotations
 
+from typing import Any
+
 from sqlalchemy.types import (  # noqa: F401  TODO: might actually be unnecessary.
     DATE,
     DATETIME,
@@ -68,7 +70,7 @@ class Connection(metrika_dbapi.Connection):
         }
 
 
-def connect(oauth_token=None, **kwargs):
+def connect(oauth_token=None, **kwargs: Any):
     oauth_token = oauth_token or kwargs.get("password")
     fields_namespace = kwargs.get("database")
     accuracy = kwargs.get("accuracy")

@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 import dl_api_lib_testing
@@ -72,4 +74,4 @@ class TestDatasourceManualRawSqlLevelOff(
         }
 
     @pytest.mark.skip(reason="StarRocks validator accepts manual=True table at raw_sql_level=off")
-    def test_manual_true_table_rejected_at_raw_sql_level_off(self, *args, **kwargs) -> None: ...
+    def test_manual_true_table_rejected_at_raw_sql_level_off(self, *args: Any, **kwargs: Any) -> None: ...

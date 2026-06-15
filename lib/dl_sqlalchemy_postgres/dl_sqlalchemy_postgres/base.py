@@ -36,32 +36,32 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
             return f"{result} COLLATE {self.dialect.identifier_preparer.quote(collate)}"
         return result
 
-    def visit_ilike_op_binary(self, *args, **kwargs):
+    def visit_ilike_op_binary(self, *args: Any, **kwargs: Any):
         result = super().visit_ilike_op_binary(*args, **kwargs)
         return self._add_collate(result)
 
-    def visit_notilike_op_binary(self, *args, **kwargs):
+    def visit_notilike_op_binary(self, *args: Any, **kwargs: Any):
         result = super().visit_notilike_op_binary(*args, **kwargs)
         return self._add_collate(result)
 
-    def visit_grouping(self, grouping, asfrom=False, add_grouping_collate=False, **kwargs):
+    def visit_grouping(self, grouping, asfrom=False, add_grouping_collate=False, **kwargs: Any):
         if add_grouping_collate:
             result = grouping.element._compiler_dispatch(self, **kwargs)
             result = self._add_collate(result)
             return f"({result})"
         return super().visit_grouping(grouping, asfrom=asfrom, **kwargs)
 
-    def _func_with_collate(self, func, **kwargs):
+    def _func_with_collate(self, func, **kwargs: Any):
         # See also: sqlalchemy.sql.compiler.SQLCompiler.visit_function
         return f"{func.name}{self.function_argspec(func, add_grouping_collate=True, **kwargs)}"
         # To consider, instead of `visit_grouping`:
         # assert result.endswith(')')
         # return self._add_collate(result[:-1]) + ')'
 
-    def visit_lower_func(self, func, **kwargs):
+    def visit_lower_func(self, func, **kwargs: Any):
         return self._func_with_collate(func, **kwargs)
 
-    def visit_upper_func(self, func, **kwargs):
+    def visit_upper_func(self, func, **kwargs: Any):
         return self._func_with_collate(func, **kwargs)
 
     # allow datetime literal_binds
@@ -90,13 +90,13 @@ class BIPGCompilerBasic(UPSTREAM.statement_compiler):
 class BIPGCompiler(BIPGCompilerBasic, UPSTREAM.statement_compiler, CompilerPrettyMixin):
     """Added prettification"""
 
-    def limit_clause(self, select, **kw):
+    def limit_clause(self, select, **kw: Any):
         sup = super().limit_clause(select, **kw)
         return self._pretty.postprocess_block("LIMIT", sup)
 
 
 class BICustomPGTypeCompiler(UPSTREAM.type_compiler):
-    def visit_CITEXT(self, type_, **kw):
+    def visit_CITEXT(self, type_, **kw: Any):
         return "CITEXT"
 
 
@@ -107,7 +107,7 @@ bi_pg_ischema_names.update({"citext": CITEXT})
 class BIPGDialectBasic(UPSTREAM):
     """..."""
 
-    def __init__(self, enforce_collate=None, **kwargs) -> None:
+    def __init__(self, enforce_collate=None, **kwargs: Any) -> None:
         # Side note: due to how sqlalchemy determines dialect arguments,
         # putting `*args` right after `self` breaks the passthrough.
         self.enforce_collate = enforce_collate
