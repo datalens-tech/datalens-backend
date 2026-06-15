@@ -77,13 +77,13 @@ async def test_get_all_statuses_async_callback(
 async def test_status_has_request_dt(
     readiness_subsystem_status: dl_app_api_base.ReadinessSubsystemStatus,
 ) -> None:
-    before = datetime.datetime.now()
+    before = datetime.datetime.now(datetime.UTC)
     service = dl_app_api_base.ReadinessService(
         subsystems=[dl_app_api_base.SubsystemReadinessSyncCallback(name="sub1", is_ready=lambda: True)],
         readiness_subsystem_status=readiness_subsystem_status,
     )
     result = await service.get_all_statuses()
-    after = datetime.datetime.now()
+    after = datetime.datetime.now(datetime.UTC)
     assert before <= result.statuses["sub1"].request_dt <= after
 
 
@@ -262,7 +262,7 @@ def test_readiness_subsystem_status_set_from_subsystem_status() -> None:
 
     gauge.set_from_subsystem_status(
         "sub1",
-        dl_app_api_base.SubsystemStatus(value=False, critical=True, request_dt=datetime.datetime.now()),
+        dl_app_api_base.SubsystemStatus(value=False, critical=True, request_dt=datetime.datetime.now(datetime.UTC)),
     )
 
     assert (

@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import Sequence
 from datetime import (
+    UTC,
     datetime,
     timedelta,
 )
@@ -58,7 +59,7 @@ class DLArqWorker(Worker):
         pending_tasks = sum(not t.done() for t in self.tasks.values())
         queued = await self.pool.zcard(self.queue_name)
         info = (
-            f"{datetime.now():%b-%d %H:%M:%S} j_complete={self.jobs_complete} j_failed={self.jobs_failed} "
+            f"{datetime.now(UTC):%b-%d %H:%M:%S} j_complete={self.jobs_complete} j_failed={self.jobs_failed} "
             f"j_retried={self.jobs_retried} j_ongoing={pending_tasks} queued={queued}"
         )
         await self.pool.psetex(self.health_check_key, int(self.health_check_record_ttl * 1000), info.encode())

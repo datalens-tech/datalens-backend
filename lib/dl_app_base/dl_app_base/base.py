@@ -188,8 +188,10 @@ class BaseApp:
         try:
             run_task = asyncio.create_task(self.run(), name="run_in_task_context")
 
-            deadline = datetime.datetime.now() + readiness_timeout
-            while datetime.datetime.now() < deadline and self._state.runtime_status != RuntimeStatus.RUNNING:
+            deadline = datetime.datetime.now(datetime.UTC) + readiness_timeout
+            while (
+                datetime.datetime.now(datetime.UTC) < deadline and self._state.runtime_status != RuntimeStatus.RUNNING
+            ):
                 if self._state.runtime_status in [RuntimeStatus.STOPPING, RuntimeStatus.STOPPED]:
                     raise RuntimeError("Failed to wait for the application to be running")
 

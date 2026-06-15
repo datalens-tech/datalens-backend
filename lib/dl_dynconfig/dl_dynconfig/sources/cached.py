@@ -28,12 +28,12 @@ class CachedSource(base.BaseSource):
         return (
             self._cached_data is Unset
             or self._cached_at is None
-            or self._cached_at + self._ttl < datetime.datetime.now()
+            or self._cached_at + self._ttl < datetime.datetime.now(datetime.UTC)
         )
 
     def _update_cache(self, data: T) -> T:
         self._cached_data = data
-        self._cached_at = datetime.datetime.now()
+        self._cached_at = datetime.datetime.now(datetime.UTC)
         return data
 
     async def fetch(self) -> Any:

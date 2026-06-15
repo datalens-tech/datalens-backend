@@ -94,7 +94,7 @@ class ReadinessService:
         raise ValueError(f"Unknown subsystem type: {type(subsystem)}")
 
     async def _update_statuses(self) -> None:
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(datetime.UTC)
 
         for subsystem in self.subsystems:
             cached = self._cached_statuses.get(subsystem.name)

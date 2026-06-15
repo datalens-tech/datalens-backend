@@ -17,7 +17,7 @@ def test_sync_get_token_default(mocker: pytest_mock.MockerFixture) -> None:
     client.get_token.return_value = dl_zitadel.Token(
         access_token="token",
         expires_in=60,
-        request_datetime=datetime.datetime.now(),
+        request_datetime=datetime.datetime.now(datetime.UTC),
     )
 
     # Multiple calls and only one request
@@ -40,7 +40,7 @@ async def test_async_get_token_default(mocker: pytest_mock.MockerFixture) -> Non
     client.get_token.return_value = dl_zitadel.Token(
         access_token="token",
         expires_in=60,
-        request_datetime=datetime.datetime.now(),
+        request_datetime=datetime.datetime.now(datetime.UTC),
     )
 
     # Multiple calls and only one request
@@ -62,7 +62,7 @@ def test_sync_get_token_expired(mocker: pytest_mock.MockerFixture) -> None:
     client.get_token.return_value = dl_zitadel.Token(
         access_token="token",
         expires_in=30,
-        request_datetime=datetime.datetime.now(),
+        request_datetime=datetime.datetime.now(datetime.UTC),
     )
     result = service.get_token()
 
@@ -74,7 +74,7 @@ def test_sync_get_token_expired(mocker: pytest_mock.MockerFixture) -> None:
     client.get_token.return_value = dl_zitadel.Token(
         access_token="token2",
         expires_in=60,
-        request_datetime=datetime.datetime.now(),
+        request_datetime=datetime.datetime.now(datetime.UTC),
     )
 
     result = service.get_token()
@@ -94,7 +94,7 @@ async def test_async_get_token_expired(mocker: pytest_mock.MockerFixture) -> Non
     client.get_token.return_value = dl_zitadel.Token(
         access_token="token",
         expires_in=30,
-        request_datetime=datetime.datetime.now(),
+        request_datetime=datetime.datetime.now(datetime.UTC),
     )
     result = await service.get_token()
 
@@ -106,7 +106,7 @@ async def test_async_get_token_expired(mocker: pytest_mock.MockerFixture) -> Non
     client.get_token.return_value = dl_zitadel.Token(
         access_token="token2",
         expires_in=60,
-        request_datetime=datetime.datetime.now(),
+        request_datetime=datetime.datetime.now(datetime.UTC),
     )
 
     result = await service.get_token()

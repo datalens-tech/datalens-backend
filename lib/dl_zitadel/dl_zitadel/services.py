@@ -20,7 +20,8 @@ class ZitadelBaseTokenStorage:
             LOGGER.debug("Token is not set")
             return True
 
-        if (self._token.expiration_datetime - self._token_refresh_timeout) < datetime.datetime.now():
+        now = datetime.datetime.now(datetime.UTC)
+        if (self._token.expiration_datetime - self._token_refresh_timeout) < now:
             LOGGER.debug("Token is expired %s", self._token.expiration_datetime)
             return True
 

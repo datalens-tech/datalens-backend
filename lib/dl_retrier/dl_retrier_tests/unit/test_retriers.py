@@ -10,7 +10,7 @@ class FakeDatetime:
         self.intervals = intervals
         self.position = 0
 
-    def now(self) -> datetime.datetime:
+    def now(self, tz: datetime.tzinfo | None = None) -> datetime.datetime:
         if self.position >= len(self.intervals):
             return datetime.datetime.fromtimestamp(self.intervals[-1], tz=datetime.UTC)
 
@@ -22,6 +22,7 @@ class FakeDatetimeModule:
     def __init__(self, intervals: list[int]) -> None:
         self.timedelta = datetime.timedelta
         self.datetime = FakeDatetime(intervals)
+        self.UTC = datetime.UTC
 
 
 def test_iter_retries_zero_timeout(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -58,7 +58,7 @@ async def test_default(
 ) -> None:
     token_decoder.decode.return_value = dl_auth_native.Payload(
         user_id="test_user_id",
-        expires_at=datetime.datetime.now(),
+        expires_at=datetime.datetime.now(datetime.UTC).replace(tzinfo=None),
     )
     response = await aiohttp_test_client.get(
         "/",

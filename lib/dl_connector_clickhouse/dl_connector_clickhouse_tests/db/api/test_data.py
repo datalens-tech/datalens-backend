@@ -34,7 +34,7 @@ class TestClickHouseDataResult(ClickHouseDataApiTestBase, DefaultConnectorDataRe
             formula=f"DATETRUNC(DATETIME([{data_api_test_params.date_field}]), 'day', 1)"
         )
 
-        now = datetime.now(UTC).replace(tzinfo=None)
+        now = datetime.now(UTC)
         result_resp = data_api.get_result(
             dataset=ds,
             fields=[ds.find_field(title="Countd")],

@@ -76,7 +76,8 @@ def test_decode_default(
     encoder: Encoder,
     decoder: token.Decoder,
 ) -> None:
-    expires_at = datetime.datetime.now().replace(microsecond=0) + datetime.timedelta(seconds=60)
+    now = datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+    expires_at = now.replace(microsecond=0) + datetime.timedelta(seconds=60)
     user_id = "test-user-id"
     roles_list = ["datalens.creator", "datalens.admin"]
 
@@ -99,7 +100,7 @@ def test_decode_invalid_key(
 ) -> None:
     raw_payload = {
         "userId": "test-user-id",
-        "exp": datetime.datetime.now().timestamp(),
+        "exp": datetime.datetime.now(datetime.UTC).replace(tzinfo=None).timestamp(),
     }
 
     encoded = jwt.encode(raw_payload, another_private_key_pem, algorithm=algorithm)
@@ -123,7 +124,8 @@ def test_decode_expired(
     encoder: Encoder,
     decoder: token.Decoder,
 ) -> None:
-    expires_at = datetime.datetime.now().replace(microsecond=0) - datetime.timedelta(seconds=60)
+    now = datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+    expires_at = now.replace(microsecond=0) - datetime.timedelta(seconds=60)
     user_id = "test-user-id"
 
     raw_payload = {
@@ -145,7 +147,7 @@ def test_decode_invalid_payload(
 ) -> None:
     raw_payload = {
         "userId": "test-user-id",
-        "exp": datetime.datetime.now().timestamp() + 60,
+        "exp": datetime.datetime.now(datetime.UTC).replace(tzinfo=None).timestamp() + 60,
     }
 
     encoded = encoder(raw_payload)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import (
+    UTC,
     datetime,
     timedelta,
 )
@@ -122,10 +123,10 @@ class SFAuthProvider:
             return False
 
         td = timedelta(days=self._NOTIFICATION_DAYS_BEFORE_TOKEN_EXPIRE)
-        return self.refresh_token_expire_time - datetime.now() < td
+        return self.refresh_token_expire_time - datetime.now(UTC).replace(tzinfo=None) < td
 
     def is_refresh_token_expired(self) -> bool:
         if self.refresh_token_expire_time is None:
             return False
 
-        return self.refresh_token_expire_time < datetime.now()
+        return self.refresh_token_expire_time < datetime.now(UTC).replace(tzinfo=None)

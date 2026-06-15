@@ -84,5 +84,6 @@ class SnowFlakeTestClassWithRefreshTokenSoonToExpire(BaseSnowFlakeTestClass):
             "schema": settings.SNOWFLAKE_CONFIG["schema"],
             "warehouse": settings.SNOWFLAKE_CONFIG["warehouse"],
             "refresh_token": settings.SNOWFLAKE_REFRESH_TOKEN_X,
-            "refresh_token_expire_time": datetime.datetime.now() + datetime.timedelta(days=2),
+            "refresh_token_expire_time": datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+            + datetime.timedelta(days=2),
         }
