@@ -27,12 +27,14 @@ from dl_api_client.dsmaker.primitives import (
     ResultField,
     StringParameterValue,
 )
+from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_testing.connection_base import ConnectionTestBase
 import dl_constants.enums as dl_constants_enums
 from dl_constants.enums import DataSourceType
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core_testing.database import DbTable
+from dl_testing.constants import TEST_USER_ID
 
 
 class ParameterFieldsFactoryProtocol(Protocol):
@@ -844,5 +846,81 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
             )
             assert result_resp.status_code == expected_status_code, result_resp.json
             assert result_resp.bi_status_code == expected_bi_status_code
+        finally:
+            control_api.delete_dataset(dataset_id=ds.id)
+
+
+class BaseTestDataApiSysUserIdSourceTemplate(BaseTestSourceTemplate):
+    """Subclasses set ``source_type`` (the connector's sub-select source type) and
+    ``conn_settings_cls`` and mix in its Data API test base; override ``subselect_who_sql``
+    for dialects needing different sub-select syntax (e.g. Oracle's ``FROM DUAL``).
+    """
+
+    conn_settings_cls: ClassVar[type[ConnectorSettings]]
+    # Overridable per dialect; the default needs a FROM-less SELECT (Oracle overrides with FROM DUAL).
+    subselect_who_sql: ClassVar[str] = "SELECT '{{_sys.user_id}}' AS who"
+
+    def _make_dataset(self, control_api: SyncHttpDatasetApiV1, saved_connection_id: str) -> Dataset:
+        """``default_value`` drives source-schema discovery; the constraint must accept the resolved id."""
+        ds = Dataset(template_enabled=True)
+        ds.result_schema["_sys.user_id"] = ResultField(
+            title="_sys.user_id",
+            cast=StringParameterValue.type,
+            value_constraint=RegexParameterValueConstraint(pattern=".+"),
+            default_value=StringParameterValue(value="anon"),
+            template_enabled=True,
+        )
+        ds.sources["source_1"] = DataSource(
+            connection_id=saved_connection_id,
+            source_type=self.source_type.name,
+            parameters={"subsql": self.subselect_who_sql},
+        )
+        ds.source_avatars["avatar_1"] = ds.sources["source_1"].avatar()
+        ds = control_api.apply_updates(dataset=ds).dataset
+        ds = control_api.save_dataset(dataset=ds).dataset
+        if ds.component_errors.items:
+            # Already persisted — clean up before failing so a bad run doesn't leak datasets.
+            control_api.delete_dataset(dataset_id=ds.id)
+            raise AssertionError(ds.component_errors)
+        return ds
+
+    def test_sys_user_id_resolved_into_subselect_template(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_connection_id: str,
+    ) -> None:
+        ds = self._make_dataset(control_api, saved_connection_id)
+        try:
+            result_resp = data_api.get_result(
+                dataset=ds,
+                fields=[ds.find_field(title="who")],
+                limit=1,
+            )
+            assert result_resp.status_code == http.HTTPStatus.OK, result_resp.json
+            assert get_data_rows(result_resp)[0][0] == TEST_USER_ID
+        finally:
+            control_api.delete_dataset(dataset_id=ds.id)
+
+    def test_sys_user_id_rejects_client_supplied_value_in_template_mode(
+        self,
+        control_api: SyncHttpDatasetApiV1,
+        data_api: SyncHttpDataApiV2,
+        saved_connection_id: str,
+    ) -> None:
+        ds = self._make_dataset(control_api, saved_connection_id)
+        try:
+            parameter = ds.find_field(title="_sys.user_id")
+            result_resp = data_api.get_result(
+                dataset=ds,
+                fields=[ds.find_field(title="who")],
+                parameters=[parameter.parameter_value("hacked")],
+                fail_ok=True,
+            )
+            assert result_resp.status_code == http.HTTPStatus.BAD_REQUEST, result_resp.json
+            assert (
+                result_resp.bi_status_code
+                == "ERR.DS_API.SOURCE_CONFIG.PARAMETER_VALUE_INVALID.SYSTEM_PARAMETER_NOT_SETTABLE"
+            )
         finally:
             control_api.delete_dataset(dataset_id=ds.id)
