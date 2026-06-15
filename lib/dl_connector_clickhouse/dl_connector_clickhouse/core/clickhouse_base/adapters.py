@@ -436,6 +436,16 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
     def _get_ssl_param(self) -> ssl.SSLContext | bool:
         return True
 
+    def _apply_output_format(
+        self,
+        query: str,
+        params: dict[str, str],
+    ) -> tuple[str, dict[str, str]]:
+        # Force JSONCompact output via the `default_format` request param, leaving the query
+        # body untouched. Overridable so adapters whose backend does not honor `default_format`
+        # (e.g. CHYT) can keep appending the inline `FORMAT` clause instead.
+        return query, {**params, "default_format": "JSONCompact"}
+
     # TODO FIX: Add logging from dl_core.connection_executors.adapters.sa_utils.CursorLogger
     async def _make_query(self, dba_q: DBAdapterQuery, mirroring_mode: bool = False) -> ClientResponse:
         query_str: str
@@ -449,11 +459,10 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
             # SA generates query for DBAPI, so mod is represented as `%%` so next hack is needed
             query_str = query_str % ()
 
-        final_query = query_str + "\n" + "FORMAT JSONCompact"
-        ch_params = self.get_request_params(dba_q)
+        final_query, ch_params = self._apply_output_format(query_str, self.get_request_params(dba_q))
 
         query_for_log = (
-            dba_q.debug_compiled_query + "\n" + "FORMAT JSONCompact"
+            self._apply_output_format(dba_q.debug_compiled_query, {})[0]
             if isinstance(dba_q.debug_compiled_query, str)
             else final_query
         )
