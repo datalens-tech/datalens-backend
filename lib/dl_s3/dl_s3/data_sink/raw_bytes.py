@@ -14,10 +14,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
-    batch_size_in_bytes: int = 10 * 1024**2
-    max_batch_size: int | None = None
-    max_file_size_bytes: int = 200 * 1024**2
-
     _upload_id: str | None = None
     _part_tags: list[tuple[int, str]] | None = None
     _part_number: int = 1
@@ -25,11 +21,21 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
     _chunks_saved: int = 0
     _bytes_saved: int = 0
 
-    def __init__(self, s3: S3Client, s3_key: str, bucket_name: str, max_file_size_exc: type[DLBaseException]) -> None:
+    def __init__(
+        self,
+        s3: S3Client,
+        s3_key: str,
+        bucket_name: str,
+        max_file_size_exc: type[DLBaseException],
+        max_file_size_bytes: int = 200 * 1024**2,
+        batch_size_in_bytes: int = 10 * 1024**2,
+    ) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
         self._max_file_size_exc = max_file_size_exc
+        self.max_file_size_bytes = max_file_size_bytes
+        self.batch_size_in_bytes = batch_size_in_bytes
 
         self._chunks_saved = 0
         self._bytes_saved = 0

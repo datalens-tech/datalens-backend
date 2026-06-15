@@ -25,18 +25,22 @@ LOGGER = logging.getLogger(__name__)
 
 
 class S3FileDataSink[DATA_STREAM_TV: DataStreamBase, ITER_TV](DataSink[DATA_STREAM_TV], metaclass=abc.ABCMeta):
-    batch_size_in_bytes: int = 30 * 1024**2
-    max_batch_size: int | None = None
-
     _upload_id: str | None = None
     _part_tags: list[tuple[int, str]] | None = None
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
-    def __init__(self, s3: SyncS3Client, s3_key: str, bucket_name: str) -> None:
+    def __init__(
+        self,
+        s3: SyncS3Client,
+        s3_key: str,
+        bucket_name: str,
+        batch_size_in_bytes: int = 30 * 1024**2,
+    ) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
+        self.batch_size_in_bytes = batch_size_in_bytes
 
         self._row_index = 0
         self._rows_saved = 0
@@ -135,22 +139,26 @@ class S3JsonEachRowUntypedFileDataSink(S3FileDataSink[SimpleUntypedDataStream, l
 
 
 class S3JsonEachRowUntypedFileAsyncDataSink(DataSinkAsync[SimpleUntypedAsyncDataStream]):
-    batch_size_in_bytes: int = 30 * 1024**2
-    max_batch_size: int | None = None
-    max_file_size_bytes: int = 200 * 1024**2
-
     _upload_id: str | None = None
     _part_tags: list[tuple[int, str]] | None = None
     _part_number: int = 1
     _multipart_upload_started: bool = False
 
     def __init__(
-        self, s3: AsyncS3Client, s3_key: str, bucket_name: str, max_file_size_exc: type[DLBaseException]
+        self,
+        s3: AsyncS3Client,
+        s3_key: str,
+        bucket_name: str,
+        max_file_size_exc: type[DLBaseException],
+        max_file_size_bytes: int = 200 * 1024**2,
+        batch_size_in_bytes: int = 30 * 1024**2,
     ) -> None:
         self._s3 = s3
         self._s3_key = s3_key
         self._bucket_name = bucket_name
         self._max_file_size_exc = max_file_size_exc
+        self.max_file_size_bytes = max_file_size_bytes
+        self.batch_size_in_bytes = batch_size_in_bytes
 
         self._row_index = 0
         self._rows_saved = 0
