@@ -7,6 +7,7 @@ from typing import (
 )
 
 import attr
+from frozendict import frozendict
 import pydantic
 import pydantic_settings
 
@@ -480,15 +481,17 @@ class AppSettingsOS(
 ):
     AUTH: dl_settings.TypedAnnotation[BaseAuthSettingsOS] | None = None
 
-    fallback_env_keys = {
-        "AUTH__TYPE": "AUTH_TYPE",
-        "AUTH__BASE_URL": "AUTH_BASE_URL",
-        "AUTH__PROJECT_ID": "AUTH_PROJECT_ID",
-        "AUTH__CLIENT_ID": "AUTH_CLIENT_ID",
-        "AUTH__CLIENT_SECRET": "AUTH_CLIENT_SECRET",
-        "AUTH__APP_CLIENT_ID": "AUTH_APP_CLIENT_ID",
-        "AUTH__APP_CLIENT_SECRET": "AUTH_APP_CLIENT_SECRET",
-    }
+    fallback_env_keys = frozendict(
+        {
+            "AUTH__TYPE": "AUTH_TYPE",
+            "AUTH__BASE_URL": "AUTH_BASE_URL",
+            "AUTH__PROJECT_ID": "AUTH_PROJECT_ID",
+            "AUTH__CLIENT_ID": "AUTH_CLIENT_ID",
+            "AUTH__CLIENT_SECRET": "AUTH_CLIENT_SECRET",
+            "AUTH__APP_CLIENT_ID": "AUTH_APP_CLIENT_ID",
+            "AUTH__APP_CLIENT_SECRET": "AUTH_APP_CLIENT_SECRET",
+        }
+    )
 
 
 class ControlApiAppSettingsOS(AppSettingsOS, ControlApiAppSettings): ...

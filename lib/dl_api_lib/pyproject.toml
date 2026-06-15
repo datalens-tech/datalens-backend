@@ -38,6 +38,7 @@ dl-utils = {path = "../dl_utils"}
 flask = "*"
 flask-marshmallow = "*"
 flask-restx = "*"
+frozendict = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 pydantic = "*"

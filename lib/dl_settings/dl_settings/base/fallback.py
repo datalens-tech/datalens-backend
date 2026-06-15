@@ -1,7 +1,9 @@
+from collections.abc import Mapping
 import logging
 import typing
 import warnings
 
+from frozendict import frozendict
 import pydantic
 import pydantic_settings
 
@@ -102,7 +104,7 @@ class WithFallbackEnvSource(base_settings.BaseRootSettings):
     """
 
     extra_fallback_env_keys: dict[str, str] = pydantic.Field(default_factory=dict)
-    fallback_env_keys: typing.ClassVar[dict[str, str]] = {}
+    fallback_env_keys: typing.ClassVar[Mapping[str, str]] = frozendict()
 
     @classmethod
     def settings_customise_sources(

@@ -9,13 +9,13 @@ version = "0.0.1"
 
 [tool.poetry.dependencies]
 dl-pydantic = {path = "../dl_pydantic"}
+frozendict = "*"
 pydantic = "*"
 pydantic-settings = {extras = ["yaml"], version = "*"}
 python = ">=3.12, <3.13"
 
 [tool.poetry.group.tests.dependencies]
 attrs = "*"
-frozendict = "*"
 pytest = "*"
 pyyaml = "*"
 typing-extensions = "*"
