@@ -48,7 +48,7 @@ class DefaultMainAggFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase):
         def dt_avg(values) -> datetime.datetime:  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             tses = [utc_ts(dt) for dt in values]
             ts = sum(tses) / len(tses)
-            return datetime.datetime.utcfromtimestamp(ts)
+            return datetime.datetime.fromtimestamp(ts, tz=datetime.UTC).replace(tzinfo=None)
 
         # Sanity check:
         assert dt_avg(datetime_values[:1]) == datetime_values[0]

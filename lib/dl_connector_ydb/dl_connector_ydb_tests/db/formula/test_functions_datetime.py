@@ -16,13 +16,13 @@ def dt_avg(values: typing.Iterable[datetime.datetime]) -> datetime.datetime:
     tses = [utc_ts(dt) for dt in values]
     ts = sum(tses) / len(tses)
     # Note: remove microseconds as currently not implemented
-    return datetime.datetime.utcfromtimestamp(ts).replace(microsecond=0)
+    return datetime.datetime.fromtimestamp(ts, tz=datetime.UTC).replace(tzinfo=None, microsecond=0)
 
 
 def dt_max(values: typing.Iterable[datetime.datetime]) -> datetime.datetime:
     tses = [utc_ts(dt) for dt in values]
     ts = max(tses)
-    return datetime.datetime.utcfromtimestamp(ts)
+    return datetime.datetime.fromtimestamp(ts, tz=datetime.UTC).replace(tzinfo=None)
 
 
 class TestDateTimeFunctionYQL(YQLTestBase, DefaultDateTimeFunctionFormulaConnectorTestSuite):

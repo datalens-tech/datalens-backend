@@ -59,7 +59,7 @@ def make_datetime_value_base(value: DTSourcesT) -> datetime.datetime:
     if isinstance(value, str):
         return parse_dt_string(value)
     if isinstance(value, (int, float)):
-        return datetime.datetime.utcfromtimestamp(value)
+        return datetime.datetime.fromtimestamp(value, tz=datetime.UTC).replace(tzinfo=None)
     if isinstance(value, datetime.datetime):
         return value
     if isinstance(value, datetime.date):
