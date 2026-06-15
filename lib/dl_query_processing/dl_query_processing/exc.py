@@ -30,7 +30,7 @@ class FormulaHandlingError(formula_exc.FormulaError):
         *errors: FormulaErrorCtx,
         stage: ProcessingStage | None = None,
         field: BIField | None = None,
-    ):
+    ) -> None:
         super().__init__(*errors)
         self.stage = stage
         self.field = field
@@ -256,7 +256,7 @@ class DLFormulaError(DLBaseException):
         orig: Exception | None = None,
         field: BIField | None = None,
         formula_errors: Sequence[FormulaErrorCtx] | None = None,
-    ):
+    ) -> None:
         details = {} if details is None else details.copy()
         if field is not None:
             details["field"] = {"guid": field.guid, "title": field.title, "errors": []}

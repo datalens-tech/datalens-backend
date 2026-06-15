@@ -33,7 +33,7 @@ class NodeMeta:
         position: Position | None = None,
         original_text: str | None = None,
         level_tag: LevelTag | None = None,
-    ):
+    ) -> None:
         self.position = position or Position()
         self.original_text = original_text
         self.level_tag = level_tag
@@ -100,7 +100,7 @@ class FormulaItem:
         *children: FormulaItem,
         internal_value: tuple[Hashable | None, ...] = (),
         meta: NodeMeta | None = None,
-    ):
+    ) -> None:
         for child in children:
             if not isinstance(child, FormulaItem):
                 raise TypeError(f"Invalid type {type(child)} for child node")
@@ -450,7 +450,7 @@ class Child[FORMULA_ITEM_TV: "FormulaItem"]:
 
     __slots__ = ("ind",)
 
-    def __init__(self, ind: int):
+    def __init__(self, ind: int) -> None:
         self.ind = ind
 
     def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> FORMULA_ITEM_TV:
@@ -467,7 +467,7 @@ class MultiChild[FORMULA_ITEM_TV: "FormulaItem"]:
 
     __slots__ = ("slice",)
 
-    def __init__(self, slice: slice):
+    def __init__(self, slice: slice) -> None:
         self.slice = slice
 
     def __get__(self, instance: FormulaItem, owner: type[FormulaItem]) -> tuple[FORMULA_ITEM_TV, ...]:
@@ -545,7 +545,7 @@ class BaseLiteral(FormulaItem):
 class Array:
     __slots__ = ("item_cls",)
 
-    def __init__(self, item_cls: type):
+    def __init__(self, item_cls: type) -> None:
         self.item_cls = item_cls
 
     def __str__(self) -> str:

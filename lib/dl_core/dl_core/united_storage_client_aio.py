@@ -47,7 +47,7 @@ class UStorageClientAIO(UStorageClientBase):
             content: bytes,
             request_data: UStorageClientBase.RequestData,
             elapsed_seconds: float,
-        ):
+        ) -> None:
             self._response = response
             self._content = content
             self._request_data = request_data
@@ -90,7 +90,7 @@ class UStorageClientAIO(UStorageClientBase):
             return self._parsed_json_data
 
     class RequestAdapter(UStorageClientBase.RequestAdapter):
-        def __init__(self, request: aiohttp.RequestInfo, request_data: UStorageClientBase.RequestData):
+        def __init__(self, request: aiohttp.RequestInfo, request_data: UStorageClientBase.RequestData) -> None:
             self._request = request
             self._request_data = request_data
 
@@ -122,7 +122,7 @@ class UStorageClientAIO(UStorageClientBase):
         context_forwarded_for: str | None = None,
         context_real_ip: str | None = None,
         context_workbook_id: str | None = None,
-    ):
+    ) -> None:
         super().__init__(
             host=host,
             auth_ctx=auth_ctx,

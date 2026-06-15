@@ -25,7 +25,7 @@ class TypeDefiningCast(Cast):
     (in compeng asyncpg postgres prepared statements).
     """
 
-    def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         assert isinstance(self.clause, sa.sql.elements.BindParameter), "This Cast is only meant for constants"
 

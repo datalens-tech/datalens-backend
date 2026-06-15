@@ -19,7 +19,7 @@ class MultiCacheManager[QUALIFIER_VALUE_TV]:
         maxsize: int,
         cache_exceptions: tuple[type[Exception], ...] = (),
         cache_qualifier: Callable[..., QUALIFIER_VALUE_TV] | None = None,
-    ):
+    ) -> None:
         self._wrapped_function = wrapped_function
         self._cache_exceptions = cache_exceptions
         self._maxsize = maxsize

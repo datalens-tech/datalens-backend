@@ -120,6 +120,7 @@ ignore = [
 # "TCH", # flake8-type-checking — Never: forces `from __future__ import annotations` / TYPE_CHECKING blocks, both banned by python-style.mdc
 # "D",   # pydocstyle — Never: we don't mandate docstrings repo-wide
 select = [
+  "ANN204", # flake8-annotations (sub-rule): missing-return-type-special-method
   "ANN205", # flake8-annotations (sub-rule): missing-return-type-static-method
   "ASYNC", # flake8-async
   "B", # flake8-bugbear

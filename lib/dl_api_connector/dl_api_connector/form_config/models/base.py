@@ -175,7 +175,7 @@ class ConnectionFormMode(Enum):
 
 
 class ConnectionFormFactory:
-    def __init__(self, mode: ConnectionFormMode, localizer: Localizer, form_params: FormConfigParams):
+    def __init__(self, mode: ConnectionFormMode, localizer: Localizer, form_params: FormConfigParams) -> None:
         self.mode = mode
         self._localizer = localizer
         self._form_params = form_params

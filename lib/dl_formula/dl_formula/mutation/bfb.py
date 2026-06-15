@@ -13,7 +13,7 @@ class RemapBfbMutation(FormulaMutation):
     Applies a name mapper to all BEFORE FILTER BY clauses.
     """
 
-    def __init__(self, name_mapping: dict[str, str] | None = None):
+    def __init__(self, name_mapping: dict[str, str] | None = None) -> None:
         self._name_mapping = name_mapping
 
     def remap_name(self, name: str) -> str:

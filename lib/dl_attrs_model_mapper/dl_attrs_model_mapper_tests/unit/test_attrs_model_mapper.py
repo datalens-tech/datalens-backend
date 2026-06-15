@@ -374,7 +374,7 @@ class MAFieldProjection:
     attribute: str = attr.ib()
     required: bool = attr.ib()
 
-    def __init_subclass__(cls, **kwargs):
+    def __init_subclass__(cls, **kwargs) -> None:
         cls.MAP_MA_FIELD_CLS_PROJECTION_CLS[cls.MA_TYPE] = cls
 
     @classmethod

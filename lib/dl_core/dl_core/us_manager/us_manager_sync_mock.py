@@ -46,7 +46,7 @@ class MockedUStorageClient(UStorageClient):
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         prefix: str | None = None,
         context_request_id: str | None = None,
-    ):
+    ) -> None:
         super().__init__(
             host=host,
             auth_ctx=auth_ctx,
@@ -181,7 +181,7 @@ class MockedSyncUSManager(SyncUSManager):
         crypto_keys_config: CryptoKeysConfig | None = None,
         services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),  # noqa: B008
         lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
-    ):
+    ) -> None:
         super().__init__(
             bi_context=bi_context,
             us_base_url="http://localhost:66000",

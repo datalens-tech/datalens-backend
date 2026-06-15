@@ -11,7 +11,7 @@ class ZitadelBaseTokenStorage:
     def __init__(
         self,
         token_refresh_timeout: datetime.timedelta = datetime.timedelta(seconds=60),
-    ):
+    ) -> None:
         self._token_refresh_timeout = token_refresh_timeout
         self._token: dl_zitadel_clients.Token | None = None
 
@@ -36,7 +36,7 @@ class ZitadelSyncTokenStorage(ZitadelBaseTokenStorage):
         self,
         client: SyncClientProtocol,
         token_refresh_timeout: datetime.timedelta = datetime.timedelta(seconds=60),
-    ):
+    ) -> None:
         self._client = client
 
         super().__init__(token_refresh_timeout)
@@ -59,7 +59,7 @@ class ZitadelAsyncTokenStorage(ZitadelBaseTokenStorage):
         self,
         client: AsyncClientProtocol,
         token_refresh_timeout: datetime.timedelta = datetime.timedelta(seconds=60),
-    ):
+    ) -> None:
         self._client = client
 
         super().__init__(token_refresh_timeout)

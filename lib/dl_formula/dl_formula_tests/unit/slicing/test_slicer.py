@@ -35,7 +35,7 @@ class NameGen:
     'fld2_1'
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.counters = defaultdict(lambda: 0)
 
     def __call__(self, node: nodes.FormulaItem, name: str) -> str:

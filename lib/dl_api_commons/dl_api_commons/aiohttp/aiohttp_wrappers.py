@@ -62,7 +62,7 @@ class DLRequestBase:
     # flag that forces `.url` to use `https` scheme
     enforce_https_on_self_url: bool = True
 
-    def __init__(self, request: web.Request):
+    def __init__(self, request: web.Request) -> None:
         self.request = request
 
     @classmethod

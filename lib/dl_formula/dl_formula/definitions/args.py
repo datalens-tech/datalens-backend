@@ -23,7 +23,7 @@ class ArgTypeMatcher:
 class ArgTypeSequence(ArgTypeMatcher):
     __slots__ = ("_exp_arg_types",)
 
-    def __init__(self, arg_types: Sequence[DataType | Set[DataType]]):
+    def __init__(self, arg_types: Sequence[DataType | Set[DataType]]) -> None:
         self._exp_arg_types = arg_types
 
     def match_arg_types(self, arg_types: Sequence[DataType]) -> bool:
@@ -54,7 +54,7 @@ class ArgTypeForAll(ArgTypeMatcher):
         self,
         expected_types: DataType | Set[DataType],
         require_type_match: DataType | Set[DataType] | None = None,
-    ):
+    ) -> None:
         self._exp_arg_types = {expected_types} if isinstance(expected_types, DataType) else expected_types
         self._require_type_match = (
             {require_type_match} if isinstance(require_type_match, DataType) else require_type_match
@@ -84,7 +84,7 @@ class ArgTypeSequenceThenForAll(ArgTypeMatcher):
         fixed_arg_types: Sequence[DataType | Set[DataType]],
         for_all_types: DataType | Set[DataType],
         for_all_require_type_match: DataType | Set[DataType] | None = None,
-    ):
+    ) -> None:
         self._fixed_arg_num = len(fixed_arg_types)
 
         self._fixed_arg_types_matcher = ArgTypeSequence(fixed_arg_types)
@@ -120,7 +120,7 @@ class ArgFlagDispenser:
 class ArgFlagSequence(ArgFlagDispenser):
     __slots__ = ("_arg_flags",)
 
-    def __init__(self, arg_flags: Sequence[ContextFlags | None]):
+    def __init__(self, arg_flags: Sequence[ContextFlags | None]) -> None:
         self._arg_flags = arg_flags
 
     def get_flags_for_pos(self, pos: int, total: int) -> ContextFlags | None:

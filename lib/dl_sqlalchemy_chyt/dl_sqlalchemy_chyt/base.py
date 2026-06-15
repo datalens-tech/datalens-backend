@@ -27,7 +27,7 @@ class CHYTTableExpression(sa.sql.elements.TextClause):
         return Escaper().escape_item(value)
         # return QUOTER.quote(value)
 
-    def __init__(self, text, alias=None, **kwargs):
+    def __init__(self, text, alias=None, **kwargs) -> None:
         if alias:
             text = f"{text} as {self._quote_identifier(alias)}"
         text = text.replace(":", r"\:")  # see also: dl_core.utils.sa_plain_text
@@ -35,14 +35,14 @@ class CHYTTableExpression(sa.sql.elements.TextClause):
 
 
 class CHYTTablesConcat(CHYTTableExpression):
-    def __init__(self, *tables, **kwargs):
+    def __init__(self, *tables, **kwargs) -> None:
         text = "concatYtTables({})".format(", ".join(self._quote_identifier(table) for table in tables if table))
         self._tables = tables
         super().__init__(text, **kwargs)
 
 
 class CHYTTablesRange(CHYTTableExpression):
-    def __init__(self, directory, start=None, end=None, **kwargs):
+    def __init__(self, directory, start=None, end=None, **kwargs) -> None:
         if end is not None:
             args = [directory, start or "", end]
         elif start is not None:
@@ -58,7 +58,7 @@ class CHYTTablesRange(CHYTTableExpression):
 
 
 class CHYTTableSubselect(CHYTTableExpression):
-    def __init__(self, subsql, **kwargs):
+    def __init__(self, subsql, **kwargs) -> None:
         text = f"(\n{subsql}\n)"
         self._subsql = subsql
         super().__init__(text, **kwargs)

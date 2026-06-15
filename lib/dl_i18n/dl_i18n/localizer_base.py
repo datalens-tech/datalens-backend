@@ -47,7 +47,7 @@ class _GNULocalizer:
 
 
 class Localizer:
-    def __init__(self, localizers: Iterable[_GNULocalizer]):
+    def __init__(self, localizers: Iterable[_GNULocalizer]) -> None:
         self._localizers = {}
         for localizer in localizers:
             self._localizers[localizer.domain] = localizer
@@ -59,7 +59,7 @@ class Localizer:
 
 
 class LocalizerFactory:
-    def __init__(self, localizers: Iterable[_GNULocalizer]):
+    def __init__(self, localizers: Iterable[_GNULocalizer]) -> None:
         self._localizers: dict[str, list[_GNULocalizer]] = defaultdict(list)
         for localizer in localizers:
             self._localizers[localizer.locale].append(localizer)

@@ -19,7 +19,7 @@ def validate_node_is_extractable(node: nodes.FormulaItem) -> nodes.NodeExtract:
 class NodeSet:
     __slots__ = ("_data_set",)
 
-    def __init__(self, nodes: Iterable[nodes.FormulaItem] = ()):
+    def __init__(self, nodes: Iterable[nodes.FormulaItem] = ()) -> None:
         self._data_set: set[NodeExtract] = set()
         for node in nodes:
             self.add(node)

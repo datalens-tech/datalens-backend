@@ -49,7 +49,7 @@ class FormulaError(Exception):
         position: Position | None = None,
         token: str | None = None,
         code: Sequence[str] | None = None,
-    ):
+    ) -> None:
         super().__init__()
 
         self.errors: list[FormulaErrorCtx] = []

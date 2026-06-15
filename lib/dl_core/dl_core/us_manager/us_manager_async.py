@@ -75,7 +75,7 @@ class AsyncUSManager(USManagerBase):
         us_api_prefix: str | None = None,
         lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
         schema_migration_factory: EntrySchemaMigrationFactoryBase | None = None,
-    ):
+    ) -> None:
         self._us_client = UStorageClientAIO(
             host=us_base_url,
             prefix=us_api_prefix,

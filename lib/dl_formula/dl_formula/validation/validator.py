@@ -14,7 +14,7 @@ from dl_formula.validation.env import (
 
 
 class Validator:
-    def __init__(self, env: ValidationEnvironment, collect_errors: bool):
+    def __init__(self, env: ValidationEnvironment, collect_errors: bool) -> None:
         self._env = env
         self._collect_errors = collect_errors
 
@@ -57,7 +57,7 @@ class Validator:
 
 
 class ValidatorProxy:
-    def __init__(self, validator: Validator, checker_cls: type[Checker]):
+    def __init__(self, validator: Validator, checker_cls: type[Checker]) -> None:
         self._validator = validator
         self._checker_cls = checker_cls
 

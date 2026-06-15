@@ -218,7 +218,7 @@ class YqlClosure(ydb_sa.types.Lambda):
         self,
         func,
         *args,
-    ):
+    ) -> None:
         super().__init__(func)
 
         self.args = args
@@ -237,7 +237,7 @@ class YqlDotAccess(ColumnElement):
         self,
         expression,
         index: int,
-    ):
+    ) -> None:
         self.dot_expression = expression
         self.dot_index = index
 
@@ -496,7 +496,7 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
         sa.types.Interval: YqlInterval,
     }
 
-    def __init__(self, *args: typing.Any, **kwargs: typing.Any):
+    def __init__(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         super().__init__(
             *args,
             **{

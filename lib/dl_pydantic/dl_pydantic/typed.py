@@ -53,7 +53,7 @@ def _merge_dict_keys(data: dict[str, Any]) -> dict[str, Any]:
 
 
 class TypedMeta(pydantic_model_construction.ModelMetaclass):
-    def __init__(cls, name: str, bases: tuple[type, ...], attrs: dict[str, Any]):
+    def __init__(cls, name: str, bases: tuple[type, ...], attrs: dict[str, Any]) -> None:
         cls._classes: dict[str, type[TypedBaseModel]] = {}
         cls._unknown_class: type[TypedBaseModel] | None = None
         cls._unset_class: type[TypedBaseModel] | None = None

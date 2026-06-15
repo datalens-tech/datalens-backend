@@ -5,6 +5,7 @@ https://www.python.org/dev/peps/pep-0249/
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from datetime import date
 from enum import Enum
 from functools import wraps
@@ -108,7 +109,7 @@ class Connection:
     fields_namespace = None
     accuracy = None
 
-    def __init__(self, oauth_token, fields_namespace=None, accuracy=None, **client_kwargs):
+    def __init__(self, oauth_token, fields_namespace=None, accuracy=None, **client_kwargs) -> None:
         client_kwargs.setdefault("host", self.metrica_host)
         self._cli = MetrikaApiClient(oauth_token, **client_kwargs)
         if fields_namespace:
@@ -188,7 +189,7 @@ class Cursor:
     arraysize = 1
     _result_data = None
 
-    def __init__(self, api_client: MetrikaApiClient, connection: Connection):
+    def __init__(self, api_client: MetrikaApiClient, connection: Connection) -> None:
         self._cli = api_client
         self.connection = connection
         self._connected = True
@@ -327,7 +328,7 @@ class Cursor:
         self._result_data = []
         return rows
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         raise NotImplementedError()
 
     def setinputsizes(self, *args, **kwargs):

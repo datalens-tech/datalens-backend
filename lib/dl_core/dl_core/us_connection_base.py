@@ -349,7 +349,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         entry_op_mode: OperationsMode | None = None,
         *,
         us_manager: USManagerBase,
-    ):
+    ) -> None:
         super().__init__(
             uuid=uuid,
             data=data,

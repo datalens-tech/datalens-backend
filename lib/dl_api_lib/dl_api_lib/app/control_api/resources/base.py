@@ -104,7 +104,7 @@ class BIResourceMeta(type(Resource)):  # type: ignore  # TODO: fix
                 return getattr(base, attr_name)
         return None
 
-    def __new__(mcs, name, bases, attrs):  # type: ignore  # TODO: fix
+    def __new__(mcs, name: str, bases: tuple[type, ...], attrs: dict[str, Any]) -> type:
         profile_methods = mcs._get_future_class_attr(bases, attrs, "profile_methods")
         if PROFILE_REQ_METHODS:
             profile_methods = set(profile_methods) & PROFILE_REQ_METHODS

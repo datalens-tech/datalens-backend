@@ -9,7 +9,10 @@ import subprocess
 import sys
 import time
 from types import TracebackType
-from typing import Self
+from typing import (
+    Any,
+    Self,
+)
 
 import attr
 import requests
@@ -21,7 +24,7 @@ LOGGER = logging.getLogger()
 class ForkPopenHack(subprocess.Popen):
     """Execute `func` in a forked process"""
 
-    def __init__(self, target, **kwargs):  # type: ignore  # TODO: fix
+    def __init__(self, target: Any, **kwargs: Any) -> None:
         self._target = target
         super().__init__(args=(), **kwargs)
 
@@ -51,7 +54,7 @@ class ProcessPopenDuck(multiprocessing.Process):
 
     _retcode = 0
 
-    def __init__(self, *args, **kwargs):  # type: ignore  # TODO: fix
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.start()
 

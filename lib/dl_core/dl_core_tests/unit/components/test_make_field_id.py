@@ -33,15 +33,15 @@ def validator():
 @pytest.fixture
 def dataset():
     class Field:
-        def __init__(self, guid):
+        def __init__(self, guid) -> None:
             self.guid = guid
 
     class ResultSchema:
-        def __init__(self):
+        def __init__(self) -> None:
             self.fields = []
 
     class Dataset:
-        def __init__(self):
+        def __init__(self) -> None:
             self.result_schema = ResultSchema()
 
         def add_field(self, guid):

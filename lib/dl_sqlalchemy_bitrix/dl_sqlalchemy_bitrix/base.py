@@ -30,7 +30,7 @@ class BitrixCompiler(sa.sql.compiler.SQLCompiler):
 
 
 class BitrixIdentifierPreparer(sa.sql.compiler.IdentifierPreparer):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         quote = "`"
         kwargs = {
             **kwargs,

@@ -44,7 +44,7 @@ class SqlAlchemyTranslator:
         restrict_funcs: bool | None = None,
         restrict_fields: bool | None = None,
         collect_stats: bool = False,
-    ):
+    ) -> None:
         self._env = env
         self._restrict_funcs = restrict_funcs if restrict_funcs is not None else self.default_restrict_funcs
         self._restrict_fields = restrict_fields if restrict_fields is not None else self.default_restrict_fields

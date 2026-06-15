@@ -124,7 +124,7 @@ class DLMYSQLCompiler(DLMYSQLCompilerBasic, UPSTREAM.statement_compiler, Compile
 class DLMYSQLDialectBasic(UPSTREAM):
     statement_compiler = DLMYSQLCompilerBasic
 
-    def __init__(self, enforce_collate=None, **kwargs):
+    def __init__(self, enforce_collate=None, **kwargs) -> None:
         self.enforce_collate = enforce_collate
         super().__init__(**kwargs)
 

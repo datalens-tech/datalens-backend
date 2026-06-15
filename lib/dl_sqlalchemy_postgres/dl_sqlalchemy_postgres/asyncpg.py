@@ -50,7 +50,7 @@ class AsyncpgFloat(AsyncpgNumeric):
 # we have to replace it by native SA asyncpg tools after their release
 # see https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
 class DBAPIMock:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         pass
 
     STRING = util.symbol("STRING")
@@ -140,7 +140,7 @@ class AsyncBIPGDialect(BIPGDialect):
         },
     )
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         # special hack for getting types in compile query
         self.dbapi = DBAPIMock()

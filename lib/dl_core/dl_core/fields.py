@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-from collections.abc import Collection
+from collections.abc import (
+    Collection,
+    Iterator,
+)
 import logging
 import re
 from typing import (
@@ -499,16 +502,16 @@ class ResultSchema:
     def guids_to_titles(self) -> dict[FieldId, str]:
         return {f.guid: f.title for f in self.fields}
 
-    def __iter__(self):  # type: ignore  # TODO: fix
+    def __iter__(self) -> Iterator[Any]:
         return self.fields.__iter__()
 
-    def __bool__(self):  # type: ignore  # TODO: fix
-        return self.fields.__iter__()
+    def __bool__(self) -> bool:
+        return bool(self.fields)
 
-    def __len__(self):  # type: ignore  # TODO: fix
+    def __len__(self) -> int:
         return self.fields.__len__()
 
-    def __getitem__(self, ind):  # type: ignore  # TODO: fix
+    def __getitem__(self, ind: int) -> BIField:
         return self.fields.__getitem__(ind)
 
     def add(self, field: BIField, idx: int | None) -> None:

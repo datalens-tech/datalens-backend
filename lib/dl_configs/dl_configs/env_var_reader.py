@@ -25,7 +25,7 @@ class Required(NamedTuple):
 
 
 class Factory[FACTORY_RET_TV]:
-    def __init__(self, factory: Callable[[], FACTORY_RET_TV]):
+    def __init__(self, factory: Callable[[], FACTORY_RET_TV]) -> None:
         self._factory = factory
 
     def build(self) -> FACTORY_RET_TV:

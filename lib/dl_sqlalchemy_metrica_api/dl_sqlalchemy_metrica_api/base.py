@@ -47,7 +47,7 @@ class MetrikaApiReqPreparer(compiler.IdentifierPreparer):
     illegal_initial_characters = {"$"}
     legal_characters = re.compile(r"^[A-Z0-9_:<>\-$]+$", re.IGNORECASE)  # added ":<>-"
 
-    def __init__(self, dialect, **kwargs):
+    def __init__(self, dialect, **kwargs) -> None:
         kwargs.update(initial_quote="'", escape_quote="'")
         super().__init__(dialect, **kwargs)
 

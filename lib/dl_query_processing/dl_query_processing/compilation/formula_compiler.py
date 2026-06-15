@@ -136,7 +136,7 @@ class FieldProcessingStageManager:
         ProcessingStage.final,
     }
 
-    def __init__(self, columns: ColumnRegistry, inspect_env: InspectionEnvironment):
+    def __init__(self, columns: ColumnRegistry, inspect_env: InspectionEnvironment) -> None:
         self._columns = columns
         self._inspect_env = inspect_env
 
@@ -376,7 +376,7 @@ class FormulaCompiler:
         parameter_value_specs: Sequence[ParameterValueSpec] = (),
         field_wrappers: dict[str, SelectWrapperSpec] | None = None,
         validate_aggregations: bool = True,
-    ):
+    ) -> None:
         self._fields = FieldRegistry()
         self._columns = columns
         self._formula_parser = formula_parser

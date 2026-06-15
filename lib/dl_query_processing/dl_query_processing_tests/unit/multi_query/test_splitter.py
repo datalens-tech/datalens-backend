@@ -40,7 +40,7 @@ from dl_query_processing.utils.name_gen import PrefixedIdGen
 
 
 class MyMultiQuerySplitter(MultiQuerySplitter):
-    def __init__(self):
+    def __init__(self) -> None:
         self._done_once = False
 
     def get_split_masks(

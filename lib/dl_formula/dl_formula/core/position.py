@@ -13,7 +13,7 @@ class Position(NamedTuple):
 
 
 class PositionConverter:
-    def __init__(self, text: str):
+    def __init__(self, text: str) -> None:
         self._text: str = text
         self._pos_by_line: list[int] = [0]  # a list of starting positions for each line number
         for line in text.split("\n"):

@@ -70,7 +70,7 @@ class ValueVariant[VARIANT_OF_TV]:
 
     __slots__ = ("_value", "dialects")
 
-    def __init__(self, dialects: DialectCombo, value: VARIANT_OF_TV):
+    def __init__(self, dialects: DialectCombo, value: VARIANT_OF_TV) -> None:
         self.dialects: DialectCombo = dialects
         self._value: VARIANT_OF_TV = value
 
@@ -482,7 +482,7 @@ class MultiVariantTranslation(NodeTranslation):
         self,
         variants: list[TranslationVariant] | None = None,
         arg_transformer: ArgTransformer | None = None,
-    ):
+    ) -> None:
         if variants is None:
             variants = self.variants
         assert variants is not None
@@ -654,7 +654,7 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         self,
         dialects: DialectCombo | None = None,
         arg_transformer: ArgTransformer | None = None,
-    ):
+    ) -> None:
         if dialects is None:
             dialects = self.dialects
 

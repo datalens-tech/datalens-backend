@@ -258,7 +258,7 @@ class USReqException(DLBaseException):
         orig_exc: Exception | None = None,
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         self.orig_exc = orig_exc  # TODO: stop using '.orig_exc' and '.orig
         super().__init__(
             message=message,
@@ -402,7 +402,7 @@ class DatabaseQueryError(DLBaseException):
         orig: Exception | None = None,
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         super().__init__(message=message, details=details, orig=orig, debug_info=debug_info, params=params)
         self.db_message = db_message
         if db_message is not None:
@@ -464,7 +464,7 @@ class SourceDoesNotExist(DatabaseQueryError):
         orig: Exception | None = None,
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         super().__init__(
             db_message=db_message,
             query=query,
@@ -619,7 +619,7 @@ class DBSessionError(Exception):
 
 
 class EntryValidationError(Exception):
-    def __init__(self, message: str, model_field: str | None = None):
+    def __init__(self, message: str, model_field: str | None = None) -> None:
         self.message = message
         self.model_field = model_field
 
@@ -639,7 +639,7 @@ class DataStreamValidationError(Exception):
         field_idx: int | None = None,
         field_name: str | None = None,
         value: Any = None,
-    ):
+    ) -> None:
         self.line_idx = line_idx
         self.line_value = line_value
         self.field_idx = field_idx
@@ -728,7 +728,7 @@ class USPermissionRequired(USReqException):
     entry_id: str
     permission: str
 
-    def __init__(self, entry_id: str, permission: str):
+    def __init__(self, entry_id: str, permission: str) -> None:
         super().__init__()
         self.details.update(entry_id=entry_id, permission=permission)
         self.entry_id = entry_id

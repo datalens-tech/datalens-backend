@@ -38,7 +38,7 @@ class TestUSEntryStorageSchema(DefaultStorageSchema):
 class TestLifecycleManager(EntryLifecycleManager[TestUSEntry]):
     ENTRY_CLS = TestUSEntry
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self.pre_save_hook_mock = Mock()
@@ -66,7 +66,7 @@ class TestLifecycleManager(EntryLifecycleManager[TestUSEntry]):
 
 
 class TestLifecycleManagerFactory(EntryLifecycleManagerFactoryBase):
-    def __init__(self):
+    def __init__(self) -> None:
         self.created_managers: list[TestLifecycleManager] = []
 
     def get_lifecycle_manager(

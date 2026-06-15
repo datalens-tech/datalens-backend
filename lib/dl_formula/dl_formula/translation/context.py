@@ -61,7 +61,7 @@ class TranslationCtx:
         data_type_params: DataTypeParams | None = None,
         node: FormulaItem | None = None,
         required_scopes: int = Scope.EXPLICIT_USAGE,
-    ):
+    ) -> None:
         self.collect_errors = collect_errors if collect_errors is not None else self.default_collect_errors
         self.base_token = base_token
         self.children: list[TranslationCtx] = []

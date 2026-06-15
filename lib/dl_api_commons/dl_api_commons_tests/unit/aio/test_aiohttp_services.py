@@ -102,7 +102,7 @@ async def test_error_handling_middleware(
     log_name = "dl_api_commons.aio.middlewares.error_handling_outer"
 
     class MyException(Exception):
-        def __init__(self, msg: str, level: str, status_code: int):
+        def __init__(self, msg: str, level: str, status_code: int) -> None:
             super().__init__(msg)
             self.msg = msg
             self.level = level

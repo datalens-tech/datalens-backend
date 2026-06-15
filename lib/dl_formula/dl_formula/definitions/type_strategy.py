@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 class Fixed(TypeStrategy):
     __slots__ = ("_type",)
 
-    def __init__(self, type_: DataType):
+    def __init__(self, type_: DataType) -> None:
         self._type = type_
 
     @property
@@ -37,7 +37,7 @@ class Fixed(TypeStrategy):
 class FromArgs(TypeStrategy):
     __slots__ = ("_indices",)
 
-    def __init__(self, *indices: int | slice):
+    def __init__(self, *indices: int | slice) -> None:
         self._indices = indices or [slice(0, None)]
 
     def get_from_args(self, arg_types: list[DataType]) -> DataType:
@@ -73,8 +73,8 @@ class DynamicIndexStrategy(FromArgs):
 class Combined(TypeStrategy):
     __slots__ = ("_replace_types", "_substrats")
 
-    def __init__(self, *substrats: TypeStrategy, replace_types=None):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
-        self._substrats = []
+    def __init__(self, *substrats: TypeStrategy, replace_types: dict[DataType, DataType] | None = None) -> None:
+        self._substrats: list[TypeStrategy] = []
         self._replace_types = replace_types or {}
         for substrat in substrats or []:
             if isinstance(substrat, DataType):
@@ -120,7 +120,7 @@ class ParamsEmpty(TypeParamsStrategy):
 
 
 class ParamsCustom(TypeParamsStrategy):
-    def __init__(self, func: Callable[[list[TranslationCtx]], DataTypeParams]):
+    def __init__(self, func: Callable[[list[TranslationCtx]], DataTypeParams]) -> None:
         self._func = func
 
     def get_from_arg_values(self, args: list[TranslationCtx]) -> DataTypeParams:
@@ -128,7 +128,7 @@ class ParamsCustom(TypeParamsStrategy):
 
 
 class ParamsFromArgs(TypeParamsStrategy):
-    def __init__(self, index: int):
+    def __init__(self, index: int) -> None:
         self._index = index
 
     def get_from_arg_values(self, args: list[TranslationCtx]) -> DataTypeParams:

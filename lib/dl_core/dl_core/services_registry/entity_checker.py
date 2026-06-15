@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class EntityUsageNotAllowed(Exception):
     _user_reason: str | None
 
-    def __init__(self, *args: Any, user_reason: str | None = None):
+    def __init__(self, *args: Any, user_reason: str | None = None) -> None:
         super().__init__(*args)
         self._user_reason = user_reason
 

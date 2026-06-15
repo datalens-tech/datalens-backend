@@ -11,7 +11,7 @@ from dl_formula.shortcuts import n
 class PrefixFunctionMutation(FormulaMutation):
     """Prepend `s` to function names"""
 
-    def __init__(self, prefix: str):
+    def __init__(self, prefix: str) -> None:
         self._prefix = prefix
 
     def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
@@ -27,7 +27,7 @@ class PrefixFunctionMutation(FormulaMutation):
 class PostfixFieldMutation(FormulaMutation):
     """Append `s` to field names"""
 
-    def __init__(self, postfix: str):
+    def __init__(self, postfix: str) -> None:
         self._postfix = postfix
 
     def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:

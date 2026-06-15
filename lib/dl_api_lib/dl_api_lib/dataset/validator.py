@@ -301,7 +301,7 @@ class DatasetValidator(DatasetBaseWrapper):
         us_manager: USManagerBase,
         is_data_api: bool = False,
         constraints: ConstraintsSettings | None = None,
-    ):
+    ) -> None:
         super().__init__(ds=ds, us_manager=us_manager)
         self._is_data_api = is_data_api
         self._constraints = constraints if constraints is not None else ConstraintsSettings()

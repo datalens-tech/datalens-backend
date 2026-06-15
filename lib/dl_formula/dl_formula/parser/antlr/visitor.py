@@ -31,7 +31,7 @@ COMPARISON_OP_RAW_NAMES = ("=", "!=", "<>", ">", ">=", "<", "<=")
 class CustomDataLensVisitor(DataLensVisitor):
     _BOOL = {"true": True, "false": False}
 
-    def __init__(self, text: str):
+    def __init__(self, text: str) -> None:
         self._text = text
         self._pos_conv = PositionConverter(text=text)
 

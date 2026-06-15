@@ -49,7 +49,7 @@ class InvalidConfigValueException(SettingsLoadingException):
 
 
 class ConfigFieldMissing(InvalidConfigValueException):
-    def __init__(self, field_set: set[str]):
+    def __init__(self, field_set: set[str]) -> None:
         super().__init__(field_set)
         self._field_set = field_set
 

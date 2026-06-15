@@ -46,7 +46,7 @@ class NotSupportedError(DatabaseError):
 
 
 class MetrikaApiException(DatabaseError):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.orig_exc = kwargs.pop("orig_exc", None)
         super().__init__(*args, **kwargs)
 

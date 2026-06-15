@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+from typing import Any
 
 import dateutil.parser
 import dateutil.relativedelta
@@ -21,26 +22,26 @@ year = dateutil.relativedelta.relativedelta(years=1)
 
 
 class approximately:
-    def __init__(self, value, rel_tol=1e-09, abs_tol=1e-09):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init__(self, value: Any, rel_tol: float = 1e-09, abs_tol: float = 1e-09) -> None:
         self._value = value
         self._rel_tol = rel_tol
         self._abs_tol = abs_tol
 
-    def __eq__(self, other):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __eq__(self, other: Any) -> bool:
         other = float(other)
         return abs(self._value - other) <= max(self._rel_tol * max(abs(self._value), abs(other)), self._abs_tol)
 
 
 class approx_datetime:
-    def __init__(self, value):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init__(self, value: Any) -> None:
         self._value = value
 
-    def __eq__(self, other):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __eq__(self, other: Any) -> bool:
         return abs(self._value - other) <= datetime.timedelta(seconds=2)
 
 
 class approx_timestamp(approximately):
-    def __init__(self, value):  # type: ignore  # 2024-01-29 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init__(self, value: Any) -> None:
         super().__init__(value, abs_tol=1)
 
 

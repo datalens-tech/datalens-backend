@@ -16,7 +16,7 @@ class DummyUSManager(USManagerBase):
         self,
         bi_context: RequestContextInfo = RequestContextInfo.create_empty(),  # noqa: B008
         services_registry: ServicesRegistry = DummyServiceRegistry(rci=RequestContextInfo.create_empty()),  # noqa: B008
-    ):
+    ) -> None:
         super().__init__(
             bi_context=bi_context,
             us_base_url="http://localhost:66000",

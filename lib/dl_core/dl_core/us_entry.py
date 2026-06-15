@@ -126,7 +126,7 @@ class USEntry:
         entry_op_mode: OperationsMode | None = None,
         *,
         us_manager: USManagerBase,
-    ):
+    ) -> None:
         if entry_key is not None:
             assert isinstance(entry_key, EntryLocation), f"Unexpected type of entry key: {type(entry_key)}"
 
@@ -353,7 +353,7 @@ class USMigrationEntry(USEntry):
         *,
         us_manager: USManagerBase,
         unversioned_data: dict[str, Any] | None,
-    ):
+    ) -> None:
         super().__init__(
             uuid=uuid,
             data=data,

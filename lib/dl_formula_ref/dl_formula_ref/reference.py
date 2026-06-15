@@ -24,7 +24,7 @@ from dl_formula_ref.registry.tools import populate_registry_from_definitions
 
 
 class FuncReference:  # TODO: Merge with FunctionReferenceRegistry
-    def __init__(self, funcs_by_key: dict[RefFunctionKey, RawMultiAudienceFunc] | None = None):
+    def __init__(self, funcs_by_key: dict[RefFunctionKey, RawMultiAudienceFunc] | None = None) -> None:
         self._funcs_by_key = funcs_by_key or {}
 
     def __contains__(self, key: RefFunctionKey) -> bool:

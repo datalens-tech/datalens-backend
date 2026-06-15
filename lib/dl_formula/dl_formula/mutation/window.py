@@ -81,7 +81,7 @@ class DefaultWindowOrderingMutation(FormulaMutation):
     from the default ordering that are not present in the function's ordering.
     """
 
-    def __init__(self, default_order_by: Sequence[nodes.FormulaItem]):
+    def __init__(self, default_order_by: Sequence[nodes.FormulaItem]) -> None:
         self._default_order_by = list(default_order_by)
 
     def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:

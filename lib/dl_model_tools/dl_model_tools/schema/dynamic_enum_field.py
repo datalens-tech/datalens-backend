@@ -8,7 +8,7 @@ from dl_dynamic_enum import DynamicEnum
 
 
 class DynamicEnumField(ma_fields.Field):
-    def __init__(self, dyn_enum_cls: type[DynamicEnum], **kwargs: Any):
+    def __init__(self, dyn_enum_cls: type[DynamicEnum], **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self._dyn_enum_cls = dyn_enum_cls
 

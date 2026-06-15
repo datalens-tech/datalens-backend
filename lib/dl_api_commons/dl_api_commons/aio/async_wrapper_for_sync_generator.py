@@ -8,6 +8,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import enum
 import logging
 import threading
+import typing
 
 import attr
 
@@ -136,11 +137,11 @@ class SynchronizedJobState[STATE_ITEM_TV]:
         state_after = self._state
         self._log.debug("State monitor event received. Transition: %s -> %s", state_before, state_after)
 
-    def __enter__(self):  # type: ignore  # TODO: fix
+    def __enter__(self) -> bool:
         return self._monitor.__enter__()
 
-    def __exit__(self, *args, **kwargs):  # type: ignore  # TODO: fix
-        return self._monitor.__exit__(*args, **kwargs)
+    def __exit__(self, *args: typing.Any, **kwargs: typing.Any) -> None:
+        self._monitor.__exit__(*args, **kwargs)
 
 
 # TODO Switch level to debug

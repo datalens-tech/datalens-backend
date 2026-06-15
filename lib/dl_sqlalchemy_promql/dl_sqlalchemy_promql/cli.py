@@ -37,7 +37,7 @@ def rebuild_prometheus_data(data):
 
 
 class SyncPromQLClient:
-    def __init__(self, base_url, username, password, auth_type=None, auth_header=None, **kwargs):
+    def __init__(self, base_url, username, password, auth_type=None, auth_header=None, **kwargs) -> None:
         self._closed = False
         self._session = requests.Session()
         self._session.max_redirects = 0

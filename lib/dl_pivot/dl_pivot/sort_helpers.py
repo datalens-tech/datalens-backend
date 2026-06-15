@@ -12,7 +12,7 @@ class OrderableNullValueBase(abc.ABC):
 
     weight: int
 
-    def __init__(self, weight: int = 0):
+    def __init__(self, weight: int = 0) -> None:
         super().__setattr__("weight", weight)
 
     def __setattr__(self, key: str, value: Any) -> None:

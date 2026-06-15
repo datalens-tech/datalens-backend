@@ -305,7 +305,7 @@ class UStorageClientBase:
         context_forwarded_for: str | None = None,
         context_real_ip: str | None = None,
         context_workbook_id: str | None = None,
-    ):
+    ) -> None:
         self.host = host
         self.prefix = auth_ctx.get_default_prefix() if prefix is None else prefix
 
@@ -687,7 +687,7 @@ class UStorageClient(UStorageClientBase):
             self,
             request: requests.PreparedRequest,
             request_data: UStorageClientBase.RequestData,
-        ):
+        ) -> None:
             self.req = request
             self._request_data = request_data
 
@@ -708,7 +708,7 @@ class UStorageClient(UStorageClientBase):
             return self._request_data.json
 
     class ResponseAdapter(UStorageClientBase.ResponseAdapter):
-        def __init__(self, response: requests.Response, request_data: "UStorageClient.RequestData"):
+        def __init__(self, response: requests.Response, request_data: "UStorageClient.RequestData") -> None:
             self.resp = response
             self._req_adapter = UStorageClient.RequestAdapter(response.request, request_data)
 
@@ -750,7 +750,7 @@ class UStorageClient(UStorageClientBase):
         context_forwarded_for: str | None = None,
         context_real_ip: str | None = None,
         context_workbook_id: str | None = None,
-    ):
+    ) -> None:
         super().__init__(
             host=host,
             auth_ctx=auth_ctx,

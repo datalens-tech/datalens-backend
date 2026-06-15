@@ -77,7 +77,7 @@ class SyncUSManager(USManagerBase):
         # caches_redis: Optional[aioredis.Redis] = None,
         lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
         schema_migration_factory: EntrySchemaMigrationFactoryBase | None = None,
-    ):
+    ) -> None:
         super().__init__(
             bi_context=bi_context,
             crypto_keys_config=crypto_keys_config,

@@ -19,7 +19,7 @@ class OpExecutionContext:
     _streams: dict[str, AbstractStream]
     _operations: tuple[BaseOp, ...]
 
-    def __init__(self, processing_id: str, streams: Collection[AbstractStream], operations: Collection[BaseOp]):
+    def __init__(self, processing_id: str, streams: Collection[AbstractStream], operations: Collection[BaseOp]) -> None:
         self._processing_id = processing_id
         self._streams = {stream.id: stream for stream in streams}
         self._operations = tuple(op for op in operations)

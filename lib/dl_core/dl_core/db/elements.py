@@ -30,7 +30,7 @@ _SchemaColumn = namedtuple(
 
 
 class SchemaColumn(_SchemaColumn):
-    def __new__(  # type: ignore  # TODO: fix
+    def __new__(
         cls,
         name: str,
         title: str | None = None,
@@ -41,7 +41,7 @@ class SchemaColumn(_SchemaColumn):
         has_auto_aggregation: bool | None = None,
         lock_aggregation: bool = False,
         description: str | None = None,
-    ):
+    ) -> SchemaColumn:
         title = title or name
         if isinstance(user_type, str):
             user_type = UserDataType[user_type]

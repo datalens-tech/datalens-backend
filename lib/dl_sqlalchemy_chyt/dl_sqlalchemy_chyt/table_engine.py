@@ -4,7 +4,7 @@ from clickhouse_sqlalchemy.engines import Engine
 
 
 class YtTable(Engine):
-    def __init__(self, **kwargs: Any):
+    def __init__(self, **kwargs: Any) -> None:
         self.engine_kwargs = kwargs
         super().__init__()
 

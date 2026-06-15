@@ -71,7 +71,7 @@ class DefaultImplementationSelector(ImplementationSelectorBase):
 
 
 class ArgAwareImplementationSelector(ImplementationSelectorBase):
-    def __init__(self, exp_arg_types: dict[int, set[DataType]]):
+    def __init__(self, exp_arg_types: dict[int, set[DataType]]) -> None:
         self.exp_arg_types = exp_arg_types
 
     def get_implementations(

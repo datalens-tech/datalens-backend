@@ -65,7 +65,7 @@ _SUBMIT_RT = TypeVar("_SUBMIT_RT")
 class ContextVarExecutor(ThreadPoolExecutor):
     """Bug in Python: default TPE does not propagate ContextVars in running thread."""
 
-    def __init__(self, *args, **kwargs):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
         super().__init__(*args, **kwargs)
         self._futures_set = weakref.WeakSet()  # type: ignore  # 2024-01-30 # TODO: Need type annotation for "_futures_set"  [var-annotated]
 
@@ -105,7 +105,7 @@ def await_sync[WRAPPED_RT](coro: Awaitable[WRAPPED_RT], loop: asyncio.AbstractEv
 
 
 class RunThread(threading.Thread):
-    def __init__(self, coro: typing.Coroutine[typing.Any, typing.Any, _WRAPPED_RT]):
+    def __init__(self, coro: typing.Coroutine[typing.Any, typing.Any, _WRAPPED_RT]) -> None:
         self.coro = coro
         self.result: _WRAPPED_RT | None = None
         super().__init__()

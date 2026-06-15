@@ -112,7 +112,7 @@ class Container[ITEM_TV: ApiProxyObject]:
     Items can be fetched both by integer (by index) and string (by alias) keys.
     """
 
-    def __init__(self, data: list | tuple | dict | Container = None):  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "data" (default has type "None", argument has type "list[Any] | tuple[Any, ...] | dict[Any, Any] | Container[Any]")  [assignment]
+    def __init__(self, data: list | tuple | dict | Container = None) -> None:  # type: ignore  # 2024-01-24 # TODO: Incompatible default for argument "data" (default has type "None", argument has type "list[Any] | tuple[Any, ...] | dict[Any, Any] | Container[Any]")  [assignment]
         self._item_ids: list[str] = []  # order list of object IDs
         self._items: dict[str, ITEM_TV] = {}  # objects by ID
         self._id_by_alias: dict[str, str] = {}  # alias -> ID
@@ -134,7 +134,7 @@ class Container[ITEM_TV: ApiProxyObject]:
         for id in self._item_ids:
             yield self._items[id]
 
-    def __setitem__(self, alias: str, item: ITEM_TV):  # type: ignore  # TODO: fix
+    def __setitem__(self, alias: str, item: ITEM_TV) -> None:
         """
         Add item to container under given alias.
         Item order is preserved.
@@ -302,22 +302,22 @@ class ConditionMakerMixin:
             left_part=self.get_cpart_from_self(), right_part=other.get_cpart_from_self(), operator=operator
         )
 
-    def __eq__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
+    def __eq__(self, other: ConditionMakerMixin) -> JoinCondition:  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.eq)
 
-    def __ne__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
+    def __ne__(self, other: ConditionMakerMixin) -> JoinCondition:  # type: ignore  # TODO: fix
         return self._simple_condition(other, BinaryJoinOperator.ne)
 
-    def __lt__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
+    def __lt__(self, other: ConditionMakerMixin) -> JoinCondition:
         return self._simple_condition(other, BinaryJoinOperator.lt)
 
-    def __le__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
+    def __le__(self, other: ConditionMakerMixin) -> JoinCondition:
         return self._simple_condition(other, BinaryJoinOperator.lte)
 
-    def __gt__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
+    def __gt__(self, other: ConditionMakerMixin) -> JoinCondition:
         return self._simple_condition(other, BinaryJoinOperator.gt)
 
-    def __ge__(self, other: ConditionMakerMixin):  # type: ignore  # TODO: fix
+    def __ge__(self, other: ConditionMakerMixin) -> JoinCondition:
         return self._simple_condition(other, BinaryJoinOperator.gte)
 
     def get_cpart_from_self(self) -> JoinPart:
@@ -337,7 +337,7 @@ class _Column:
     lock_aggregation: bool = attr.ib(default=False)
 
 
-class Column(ConditionMakerMixin, _Column):
+class Column(ConditionMakerMixin, _Column):  # type: ignore[misc]  # TODO BI-7445: ConditionMakerMixin comparison ops return JoinCondition, clashing with _Column
     def get_cpart_from_self(self) -> JoinPart:
         return DirectJoinPart(source=self.name)
 
@@ -682,7 +682,7 @@ class ObligatoryFilter(ApiProxyObject):
     valid: bool = attr.ib(default=True)
 
 
-class ResultField(ConditionMakerMixin, _ResultField):
+class ResultField(ConditionMakerMixin, _ResultField):  # type: ignore[misc]  # TODO BI-7445: ConditionMakerMixin comparison ops return JoinCondition, clashing with _ResultField
     def get_cpart_from_self(self) -> JoinPart:
         return ResultFieldJoinPart(field_id=self.id)
 

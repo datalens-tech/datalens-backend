@@ -116,7 +116,7 @@ class USManagerBase:
         retry_policy_factory: dl_retrier.BaseRetryPolicyFactory,
         lifecycle_manager_factory: EntryLifecycleManagerFactoryBase | None = None,
         schema_migration_factory: EntrySchemaMigrationFactoryBase | None = None,
-    ):
+    ) -> None:
         # TODO FIX: Try to connect it together to eliminate possible divergence
         if services_registry is not None:
             try:

@@ -8,6 +8,7 @@ from datetime import date
 import logging
 from typing import (
     TYPE_CHECKING,
+    Any,
     ClassVar,
 )
 
@@ -57,7 +58,7 @@ def parse_metrica_ids(ids_str: str) -> Sequence[str]:
 class MetrikaBaseMixin(ConnectionBase):
     metrica_host: str | None = None
 
-    def __init__(self, *args, **kwargs):  # type: ignore  # TODO: fix
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._initial_counter_id = self.data.counter_id if self._data is not None else None
 

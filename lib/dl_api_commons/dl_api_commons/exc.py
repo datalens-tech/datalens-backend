@@ -20,7 +20,7 @@ def format_response_body(obj: Any) -> str:
 class ExceptionWithData[EXC_DATA_TV](Exception):
     _data: EXC_DATA_TV
 
-    def __init__(self, data: EXC_DATA_TV):
+    def __init__(self, data: EXC_DATA_TV) -> None:
         super().__init__(data)
         self._data = data
 
@@ -57,7 +57,7 @@ class InvalidHeaderException(Exception):
     schema_validation_messages: dict | None
     header_name: str
 
-    def __init__(self, *args: Any, header_name: str, schema_validation_messages: dict | None = None):
+    def __init__(self, *args: Any, header_name: str, schema_validation_messages: dict | None = None) -> None:
         self.header_name = header_name
         self.schema_validation_messages = schema_validation_messages
         super().__init__(*args)

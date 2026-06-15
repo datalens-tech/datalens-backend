@@ -166,13 +166,13 @@ class NodeShortcut:
     class FuncShortcut:
         """SQLAlchemy-like function shortcut provider: ````"""
 
-        def __init__(self, assume_window: bool = False):
+        def __init__(self, assume_window: bool = False) -> None:
             self._assume_window = assume_window
 
-        def __getattr__(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+        def __getattr__(self, name: str) -> Any:
             return self._make_func(name)
 
-        def __call__(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+        def __call__(self, name: str) -> Any:
             return self._make_func(name)
 
         def _make_func(self, name: str):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
@@ -244,9 +244,9 @@ class NodeShortcut:
         return self.WhenProxy(val)
 
     class CaseProxy:
-        def __init__(self, case_expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+        def __init__(self, case_expr: Any) -> None:
             self._case_expr = case_expr
-            self._when_list = []
+            self._when_list: list = []
 
         def whens(self, *when_list) -> NodeShortcut.CaseProxy:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
             self._when_list += when_list or []
@@ -265,7 +265,7 @@ class NodeShortcut:
         return self.CaseProxy(expr)
 
     class IfPartProxy:
-        def __init__(self, cond):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+        def __init__(self, cond: Any) -> None:
             self._cond = cond
             self._expr = None
 
@@ -280,7 +280,7 @@ class NodeShortcut:
         return self.IfPartProxy(cond)
 
     class IfBlockProxy:
-        def __init__(self, if_list: list):
+        def __init__(self, if_list: list) -> None:
             self._if_list = if_list
 
         def else_(self, expr) -> nodes.IfBlock:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]

@@ -74,7 +74,7 @@ class MetrikaApiClient:
     host = METRIKA_API_HOST
     default_timeout = 60
 
-    def __init__(self, oauth_token: str, host: str | None = None, default_timeout=-1, **kwargs):
+    def __init__(self, oauth_token: str, host: str | None = None, default_timeout=-1, **kwargs) -> None:
         if host is not None:
             self.host = host
         if default_timeout != -1:

@@ -17,7 +17,7 @@ class DescriptionColumn(NamedTuple):
 
 
 class Cursor:
-    def __init__(self, connection):
+    def __init__(self, connection) -> None:
         self.connection = connection
         self.description: tuple[DescriptionColumn, ...] = ()
         self.arraysize = 1

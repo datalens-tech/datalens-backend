@@ -21,7 +21,7 @@ class MockError(Exception):
     status: int
     level: ErrorLevel
 
-    def __init__(self, status: int, level: ErrorLevel, body: dict):
+    def __init__(self, status: int, level: ErrorLevel, body: dict) -> None:
         super().__init__(status, level)
         self.status = status
         self.level = level

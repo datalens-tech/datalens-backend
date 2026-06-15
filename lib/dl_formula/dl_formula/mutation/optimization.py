@@ -194,7 +194,7 @@ class OptimizeUnaryBoolFunctions(FormulaMutation):
         "isnull": {None: lambda node: node is None},
     }
 
-    def __init__(self, dialects: DialectCombo):
+    def __init__(self, dialects: DialectCombo) -> None:
         self.dialects = dialects
 
     @cached_property

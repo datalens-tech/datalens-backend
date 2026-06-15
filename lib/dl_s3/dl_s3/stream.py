@@ -43,7 +43,7 @@ class SimpleDataStream(DataStreamBase):
     Data stream that calculates progress percentage based on total data size.
     """
 
-    def __init__(self, data_iter: Iterator[dict], rows_to_copy: int | None = None):
+    def __init__(self, data_iter: Iterator[dict], rows_to_copy: int | None = None) -> None:
         self._data_iter = data_iter
         self._rows_to_copy = rows_to_copy
 
@@ -67,7 +67,7 @@ class SimpleUntypedDataStream(DataStreamBase):
     Data stream that calculates progress percentage based on total data size.
     """
 
-    def __init__(self, data_iter: Iterator[list], rows_to_copy: int | None = None):
+    def __init__(self, data_iter: Iterator[list], rows_to_copy: int | None = None) -> None:
         self._data_iter = data_iter
         self._rows_to_copy = rows_to_copy
 
@@ -87,7 +87,7 @@ class SimpleUntypedDataStream(DataStreamBase):
 
 
 class SimpleUntypedAsyncDataStream(AsyncDataStreamBase):
-    def __init__(self, data_iter: AsyncIterator[list], rows_to_copy: int | None = None):
+    def __init__(self, data_iter: AsyncIterator[list], rows_to_copy: int | None = None) -> None:
         self._data_iter = data_iter
         self._rows_to_copy = rows_to_copy
 
@@ -107,7 +107,7 @@ class SimpleUntypedAsyncDataStream(AsyncDataStreamBase):
 
 
 class RawBytesAsyncDataStream(AsyncDataStreamBase[bytes]):
-    def __init__(self, data_iter: AsyncIterator[bytes], bytes_to_copy: int | None = None):
+    def __init__(self, data_iter: AsyncIterator[bytes], bytes_to_copy: int | None = None) -> None:
         self._data_iter = data_iter
         self.bytes_to_copy = bytes_to_copy
 

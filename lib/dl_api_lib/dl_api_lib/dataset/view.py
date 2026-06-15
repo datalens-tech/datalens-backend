@@ -136,7 +136,7 @@ class DatasetView(DatasetBaseWrapper):
         block_spec: BlockSpec,
         rci: RequestContextInfo,
         parameter_value_specs: list[ParameterValueSpec] | None = None,
-    ):
+    ) -> None:
         self._rci = rci
         self._query_type = block_spec.query_type  # FIXME: Remove
         self._parameter_value_specs = parameter_value_specs

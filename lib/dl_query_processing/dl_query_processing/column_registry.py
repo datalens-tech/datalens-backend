@@ -37,7 +37,7 @@ class ColumnRegistry:
         self,
         db_columns: Collection[SchemaColumn] | None = None,
         avatar_source_map: dict[AvatarId, SourceId] | None = None,
-    ):
+    ) -> None:
         self._db_columns = list(db_columns) if db_columns is not None else []
         self._avatar_source_map = avatar_source_map.copy() if avatar_source_map is not None else {}
 

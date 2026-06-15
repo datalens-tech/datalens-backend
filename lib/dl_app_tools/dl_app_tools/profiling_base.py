@@ -125,7 +125,7 @@ class GenericProfiler:
         stage: str,
         extra_data: dict | None = None,
         logger: logging.Logger | None = None,
-    ):
+    ) -> None:
         self.logger = LOGGER if logger is None else logger  # type: logging.Logger
         self.stage = stage
         self.extra_data = {} if extra_data is None else extra_data

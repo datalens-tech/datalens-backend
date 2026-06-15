@@ -39,7 +39,7 @@ def redirect_stdin(stream: TextIO | None = None) -> Generator[None, None, None]:
 
 
 class ToolRunner:
-    def __init__(self, parser: argparse.ArgumentParser, tool_cls: type[Tool]):
+    def __init__(self, parser: argparse.ArgumentParser, tool_cls: type[Tool]) -> None:
         self.parser = parser
         self.tool_cls = tool_cls
 

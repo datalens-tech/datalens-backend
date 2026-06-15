@@ -128,7 +128,7 @@ class DatasetBaseWrapper:
         block_spec: BlockSpec | None = None,
         function_scopes: int = Scope.EXPLICIT_USAGE,
         debug_mode: bool = False,
-    ):
+    ) -> None:
         self._ds = ds
         self._us_manager = us_manager
         service_registry = self._us_manager.get_services_registry()

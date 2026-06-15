@@ -39,7 +39,7 @@ class DLBaseException(Exception):
         orig: Exception | None = None,
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         self._message = message or self.default_message
         self.details = details or {}
         self.debug_info = debug_info or {}

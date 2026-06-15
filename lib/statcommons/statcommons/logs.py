@@ -266,7 +266,7 @@ class RecordDataFormatterMixin:
         # str(exc) at the beginning for some readability.
         return f"{robust_smart_str(exc)}\n{exc_info_formatted}"
 
-    def __init__(self, skipped_record_attrs=unspecified):
+    def __init__(self, skipped_record_attrs=unspecified) -> None:
         if skipped_record_attrs is self.unspecified:
             skipped_record_attrs = self.default_skipped_record_attrs
         self.skipped_record_attrs = frozenset(skipped_record_attrs)
@@ -322,7 +322,7 @@ class TaggedSysLogHandlerBase(logging.handlers.SysLogHandler):
     similar to FileHandler's `filename` parameter.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.syslog_tag = kwargs.pop("syslog_tag")
         super().__init__(*args, **kwargs)
 
@@ -336,7 +336,7 @@ class TaggedSysLogHandler(TaggedSysLogHandlerBase):
 
     _sndbuf_size = 5 * 2**20
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self._sbdbuf_size = kwargs.pop("sbdbuf_size", self._sndbuf_size)
         super().__init__(*args, **kwargs)
         self.configure_socket(self.socket)
@@ -354,7 +354,7 @@ class LogRecordCaptureHandler(logging.Handler):
     without formatting them.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.records = []
 
@@ -374,7 +374,7 @@ class RecordMutators:
     For performance, the log record mutation is used, instead of log record mappers.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.mutators = OrderedDict()
         self.old_factory = None
 
@@ -402,7 +402,7 @@ class RecordMutators:
                 raise ValueError("Attempting to replace an existing mutator", name, current, mutator)
         self.mutators[name] = mutator
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> logging.LogRecord:
         """Log record factrory entry point"""
         if self.old_factory is None:
             raise Exception("This mutators-wrapper was not `apply`ed yet.")

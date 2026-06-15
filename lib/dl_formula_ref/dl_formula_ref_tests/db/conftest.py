@@ -59,7 +59,7 @@ def alive_db_for(dialect, timelimit, poll_pause):
 class DbStateTracking:
     """State-keeper for db liveness, to be used as a singleton"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.db_is_up: MutableSet[DialectCombo] = set()
         self.first_call_time = None
 

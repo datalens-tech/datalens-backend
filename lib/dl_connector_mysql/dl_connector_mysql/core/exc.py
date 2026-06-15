@@ -17,7 +17,7 @@ class MysqlSourceDoesNotExistError(exc.SourceDoesNotExist):
         orig: Exception | None = None,
         debug_info: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ):
+    ) -> None:
         super().__init__(
             db_message=db_message,
             query=query,

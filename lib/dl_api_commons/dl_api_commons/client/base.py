@@ -40,7 +40,7 @@ class Resp:
 
 
 class RequestExecutionException(Exception):
-    def __init__(self, msg: str, content: bytes, status: int, request_id: str):
+    def __init__(self, msg: str, content: bytes, status: int, request_id: str) -> None:
         super().__init__(msg, content)
         self.status = status
         self.request_id = request_id

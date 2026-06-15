@@ -425,7 +425,7 @@ class CacheMetadataSerialization:
         assert cls._sep not in metadata_bytes
         return metadata_bytes + cls._sep + data_bytes
 
-    def __init__(self, full_data: bytes):
+    def __init__(self, full_data: bytes) -> None:
         self.full_data = full_data
         sep_pos = full_data.index(self._sep)
         self.sep_pos = sep_pos

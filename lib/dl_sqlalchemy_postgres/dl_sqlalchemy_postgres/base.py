@@ -107,7 +107,7 @@ bi_pg_ischema_names.update({"citext": CITEXT})
 class BIPGDialectBasic(UPSTREAM):
     """..."""
 
-    def __init__(self, enforce_collate=None, **kwargs):
+    def __init__(self, enforce_collate=None, **kwargs) -> None:
         # Side note: due to how sqlalchemy determines dialect arguments,
         # putting `*args` right after `self` breaks the passthrough.
         self.enforce_collate = enforce_collate

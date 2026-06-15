@@ -194,7 +194,7 @@ class DynamicEnum(metaclass=DynamicEnumMetaclass):
 
         return super().__new__(cls)
 
-    def __init__(self, value: str):
+    def __init__(self, value: str) -> None:
         if type(value) is not str:
             raise TypeError(f"Invalid value type {type(value)}")
 
