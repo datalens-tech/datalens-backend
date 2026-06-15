@@ -36,5 +36,5 @@ class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):
 
 
 class CommitOrRollbackFailed(exc.DatabaseQueryError):
-    err_code = [*exc.DatabaseQueryError.err_code, "COMMIT_OR_ROLLBACK_FAILED"]
+    err_code = (*exc.DatabaseQueryError.err_code, "COMMIT_OR_ROLLBACK_FAILED")
     default_message = "Failed to COMMIT or ROLLBACK"

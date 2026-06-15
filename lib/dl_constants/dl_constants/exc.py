@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import (
     Any,
     ClassVar,
@@ -16,7 +17,7 @@ CODE_OK = "OK"
 #  Make only 2 arguments in constructor: data & orig
 class DLBaseException(Exception):
     # code parts joining by dots on api response preparing.
-    err_code: ClassVar[list[str]] = []  # TODO: Implement automatic hierarchial code inheritance
+    err_code: ClassVar[Sequence[str]] = ()  # TODO: Implement automatic hierarchial code inheritance
     forward_for_anonymous: ClassVar[bool] = False
     _message: str
 

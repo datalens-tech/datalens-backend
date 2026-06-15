@@ -12,10 +12,10 @@ def make_err_code(exc: type[DLAuthAPIBaseError] | DLAuthAPIBaseError) -> str:
 
 
 class DLAuthAPIBaseError(DLBaseException):
-    err_code = [*DLBaseException.err_code, "AUTH_API"]
+    err_code = (*DLBaseException.err_code, "AUTH_API")
     default_level = ErrorLevel.error
 
 
 class UnexpectedResponseError(DLAuthAPIBaseError):
-    err_code = [*DLAuthAPIBaseError.err_code, "UNEXPECTED_RESPONSE"]
+    err_code = (*DLAuthAPIBaseError.err_code, "UNEXPECTED_RESPONSE")
     default_message = "Got an unexpected response from an external API"

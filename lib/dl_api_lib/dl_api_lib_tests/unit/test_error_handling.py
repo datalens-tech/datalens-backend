@@ -47,7 +47,7 @@ def test_bi_error_default_message():
 
 def test_regular_bi_error_building():
     class ExcA(DLBaseException):
-        err_code = [*DLBaseException.err_code, "EXC_A"]
+        err_code = (*DLBaseException.err_code, "EXC_A")
         _message = "ExcA message"
 
     class NonDLExc(Exception):

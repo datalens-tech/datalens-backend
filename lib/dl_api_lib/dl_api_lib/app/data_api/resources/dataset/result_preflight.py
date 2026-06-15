@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from copy import deepcopy
 from http import HTTPStatus
 import logging
@@ -79,7 +80,7 @@ class DatasetResultPreflightView(DatasetDataBaseView):
         )
 
     @staticmethod
-    def _format_err_code(raw_code: list[str]) -> str:
+    def _format_err_code(raw_code: Sequence[str]) -> str:
         return ".".join((*DEFAULT_GLOBAL_ERR_CODE_API_PREFIX, *raw_code))
 
     @staticmethod
