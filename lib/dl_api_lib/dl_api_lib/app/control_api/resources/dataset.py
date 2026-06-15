@@ -49,10 +49,7 @@ from dl_core.base_models import (
     WorkbookEntryLocation,
 )
 from dl_core.components.editor import DatasetComponentEditor
-from dl_core.enums import (
-    USEntryBranch,
-    USEntryMode,
-)
+from dl_core.enums import USEntryMode
 from dl_core.us_dataset import Dataset
 from dl_core.utils import generate_revision_id
 import dl_query_processing.exc
@@ -241,7 +238,7 @@ class DatasetVersionItem(DatasetResource):
             us_manager.set_context("dataset", {DLHeadersCommon.AUDIT_MODE.value: audit_mode})
 
         if "rev_id" in query:
-            ds, update_info = self.get_dataset(
+            ds, _ = self.get_dataset(
                 dataset_id=dataset_id,
                 body={},
                 params={
@@ -249,9 +246,14 @@ class DatasetVersionItem(DatasetResource):
                 },
             )
             utils.need_permission_on_entry(ds, USPermissionKind.edit)
+            # raw entry to avoid double deserialization
+            ds_raw = us_manager.get_migrated_entry(dataset_id)
+            # latest data revision_id for concurrent edit checks
+            revision_id = ds_raw["data"].get("revision_id")
         else:
-            ds, update_info = self.get_dataset(dataset_id=dataset_id, body={})
+            ds, _ = self.get_dataset(dataset_id=dataset_id, body={})
             utils.need_permission_on_entry(ds, USPermissionKind.read)
+            revision_id = ds.revision_id
 
         ds_dict = ds.as_dict()  # FIXME
         # TODO FIX: determine desired behaviour in case of workbooks
@@ -266,12 +268,7 @@ class DatasetVersionItem(DatasetResource):
         ds_dict["is_favorite"] = ds.is_favorite
 
         ds_dict.update(self.make_dataset_response_data(dataset=ds, us_entry_buffer=us_manager.get_entry_buffer()))
-
-        # Returning the latest dataset revision_id for concurrent edit checks
-        # Saved revision ought to be the latest revision
-        # If there is no separate saved revision, i.e. dataset was saved with mode=publish,
-        # then saved and published revision IDs point to the same revision and it still is the latest one
-        ds_dict["dataset"]["revision_id"] = update_info.latest_revision_id
+        ds_dict["dataset"]["revision_id"] = revision_id
 
         return ds_dict
 
@@ -304,19 +301,10 @@ class DatasetVersionItem(DatasetResource):
             if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
                 raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
 
-            # Locked entry is loaded from the published branch; consult the saved branch for the actual latest revision_id
-            ds_raw_saved = us_manager.get_migrated_entry(dataset_id, branch=USEntryBranch.saved)
-            latest_revision_id = ds_raw_saved["data"].get("revision_id") or ds.revision_id
-
             loader = self.create_dataset_api_loader()
             original_ds = us_manager.clone_entry_instance(ds)
 
-            update_info = loader.populate_dataset_from_body(
-                dataset=ds,
-                body=body["dataset"],
-                us_manager=us_manager,
-                latest_revision_id=latest_revision_id,
-            )
+            update_info = loader.populate_dataset_from_body(dataset=ds, body=body["dataset"], us_manager=us_manager)
             new_sources = update_info.added_own_source_ids + update_info.updated_own_source_ids
             invalidate_sample_sources(
                 dataset=ds,
@@ -524,7 +512,6 @@ class DatasetVersionValidator(DatasetResource):
     @put_to_request_context(endpoint_code="DatasetValidate")
     @schematic_request(
         ns=ns,
-        query=dl_api_lib.schemas.validation.DatasetValidationQuerySchema(),
         body=dl_api_lib.schemas.validation.DatasetValidationSchema(),
         responses={
             200: ("Success", dl_api_lib.schemas.validation.DatasetValidationResponseSchema()),
@@ -535,30 +522,22 @@ class DatasetVersionValidator(DatasetResource):
         self,
         dataset_id: str | None = None,
         version: str | None = None,
-        query: dict | None = None,
         body: dict | None = None,
     ) -> tuple[dict, HTTPStatus]:
         """Validate dataset version schema"""
         us_manager = self.get_regular_us_manager()
-        us_get_dataset_params = None
 
+        # Pass dataset_id to US from URL
         if dataset_id is not None:
-            # Pass dataset_id to US from URL
             connection_headers = {
                 DLHeadersCommon.DATASET_ID.value: dataset_id,
             }
             us_manager.set_context("connection", connection_headers)
 
-            if query is not None and query.get("rev_id") is not None:
-                us_get_dataset_params = {
-                    "revId": query["rev_id"],
-                }
-
         assert body is not None
         dataset, _ = self.get_dataset(
             dataset_id=dataset_id,
             body=body,
-            params=us_get_dataset_params,
         )
         dataset_validator_factory = self.get_service_registry().get_dataset_validator_factory()
         ds_validator = dataset_validator_factory.get_dataset_validator(

@@ -12,10 +12,6 @@ from dl_core.marshmallow import ErrorCodeField
 from dl_model_tools.schema.base import BaseSchema
 
 
-class DatasetValidationQuerySchema(BaseSchema):
-    rev_id = ma_fields.String()
-
-
 class DatasetValidationSchema(BaseSchema):
     """
     Full dataset configuration with a batch of updates that should be applied consecutively to the configuration.
