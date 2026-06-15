@@ -278,7 +278,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
         is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
-        if isinstance(connector_settings, TrinoConnectorSettings) and connector_settings.ENABLE_RAW_SQL_READWRITE_LEVEL:
+        if isinstance(connector_settings, TrinoConnectorSettings) and connector_settings.ENABLE_DIRECTSQL:
             raw_sql_levels.append(RawSQLLevel.readwrite)
 
         return ConnectionForm(

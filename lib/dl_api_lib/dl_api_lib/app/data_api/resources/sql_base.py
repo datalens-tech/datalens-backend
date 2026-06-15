@@ -38,7 +38,7 @@ class SQLBaseView(BaseView):
     def conn_id(self) -> str | None:
         return self.request.match_info.get("conn_id")
 
-    async def _resolve_raw_sql_connection(self) -> tuple[str, ConnectionBase]:
+    async def _resolve_raw_sql_connection(self) -> tuple[str, RawSqlLevelConnectionMixin]:
         conn_id = self.conn_id
         assert conn_id
 

@@ -28,5 +28,5 @@ class TestPostgresConnectionForm(
     ) -> PostgreSQLConnectorSettings:
         return PostgreSQLConnectorSettings(
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
-            ENABLE_RAW_SQL_READWRITE_LEVEL=enable_raw_sql_readwrite,
+            ENABLE_DIRECTSQL=enable_raw_sql_readwrite,
         )

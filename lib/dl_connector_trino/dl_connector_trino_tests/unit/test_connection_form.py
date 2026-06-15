@@ -18,5 +18,5 @@ class TestTrinoConnectionForm(ConnectionFormTestBase, RawSQLReadWriteConnectionF
     @pytest.fixture
     def connectors_settings(self, enable_raw_sql_readwrite: bool) -> TrinoConnectorSettings:
         return TrinoConnectorSettings(
-            ENABLE_RAW_SQL_READWRITE_LEVEL=enable_raw_sql_readwrite,
+            ENABLE_DIRECTSQL=enable_raw_sql_readwrite,
         )

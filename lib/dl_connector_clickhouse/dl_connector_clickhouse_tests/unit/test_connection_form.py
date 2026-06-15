@@ -54,7 +54,7 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase, RawSQLReadWriteConnec
             ENABLE_DATASOURCE_TEMPLATE=enable_datasource_template,
             ALLOW_EXPERIMENTAL_FEATURES=allow_experimental_features,
             ALLOW_SSL_CA_VERIFY_OPTION=allow_ssl_ca_verify_option,
-            ENABLE_RAW_SQL_READWRITE_LEVEL=enable_raw_sql_readwrite,
+            ENABLE_DIRECTSQL=enable_raw_sql_readwrite,
         )
 
     @pytest.fixture(name="expected_form_config_file")
@@ -71,7 +71,7 @@ class TestClickhouseConnectionForm(ConnectionFormTestBase, RawSQLReadWriteConnec
             parts.append("exp")
         if connectors_settings.ALLOW_SSL_CA_VERIFY_OPTION:
             parts.append("ssl_ca_verify")
-        if connectors_settings.ENABLE_RAW_SQL_READWRITE_LEVEL:
+        if connectors_settings.ENABLE_DIRECTSQL:
             parts.append("readwrite")
 
         parts.append(mode.value)

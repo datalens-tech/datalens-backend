@@ -15,6 +15,7 @@ from typing import (
 )
 
 import attr
+import marshmallow as ma
 import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
@@ -57,7 +58,10 @@ from dl_core.connection_models import (
     SchemaIdent,
 )
 from dl_core.connectors.settings.base import ConnectorSettings
-from dl_core.connectors.settings.mixins import TemplateNameSettingsMixin
+from dl_core.connectors.settings.mixins import (
+    DirectSQLSettingsMixin,
+    TemplateNameSettingsMixin,
+)
 from dl_core.exc import (
     InvalidRequestError,
     QuerySettingForbidden,
@@ -866,6 +870,28 @@ class RawSqlLevelConnectionMixin(ConnectionBase):
             return False
 
         return is_raw_sql_level_readwrite_allowed(self._raw_sql_level)
+
+    def is_directsql_enabled(self, services_registry: ServicesRegistry) -> bool:
+        connector_settings = services_registry.get_connectors_settings(self.conn_type)
+        if not isinstance(connector_settings, DirectSQLSettingsMixin):
+            return False
+        return connector_settings.ENABLE_DIRECTSQL
+
+    async def validate_new_data(
+        self,
+        services_registry: ServicesRegistry,
+        changes: dict | None = None,
+        original_version: ConnectionBase | None = None,
+    ) -> None:
+        await super().validate_new_data(
+            services_registry=services_registry,
+            changes=changes,
+            original_version=original_version,
+        )
+        if not isinstance(self.data, ConnRawSqlLevelDataModelMixin):
+            return
+        if self.data.raw_sql_level == RawSQLLevel.readwrite and not self.is_directsql_enabled(services_registry):
+            raise ma.ValidationError("The 'readwrite' raw SQL level is not allowed for this connector.")
 
 
 class ConnectionSQL(RawSqlLevelConnectionMixin, ConnectionBase):

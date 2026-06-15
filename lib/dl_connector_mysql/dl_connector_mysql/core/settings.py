@@ -3,7 +3,7 @@ from typing import ClassVar
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
-    RawSQLReadWriteSettingsMixin,
+    DirectSQLSettingsMixin,
     TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
@@ -15,7 +15,7 @@ class MySQLConnectorSettings(
     ConnectorSettings,
     TableDatasourceSettingsMixin,
     DatasourceTemplateSettingsMixin,
-    RawSQLReadWriteSettingsMixin,
+    DirectSQLSettingsMixin,
 ):
     type: str = CONNECTION_TYPE_MYSQL.value
 

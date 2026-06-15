@@ -2,7 +2,7 @@ from typing import ClassVar
 
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
-    RawSQLReadWriteSettingsMixin,
+    DirectSQLSettingsMixin,
     TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
@@ -10,7 +10,7 @@ from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
 from dl_connector_trino.core.constants import CONNECTION_TYPE_TRINO
 
 
-class TrinoConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, RawSQLReadWriteSettingsMixin):
+class TrinoConnectorSettings(ConnectorSettings, TableDatasourceSettingsMixin, DirectSQLSettingsMixin):
     type: str = CONNECTION_TYPE_TRINO.value
 
     root_fallback_env_keys: ClassVar[dict[str, str]] = {

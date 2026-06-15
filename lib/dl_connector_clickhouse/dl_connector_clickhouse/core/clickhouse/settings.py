@@ -5,8 +5,8 @@ import pydantic
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.connectors.settings.mixins import (
     DatasourceTemplateSettingsMixin,
+    DirectSQLSettingsMixin,
     QuerySettingsSettingsMixin,
-    RawSQLReadWriteSettingsMixin,
     TableDatasourceSettingsMixin,
 )
 from dl_core.connectors.settings.primitives import ConnectorSettingsDefinition
@@ -40,7 +40,7 @@ class ClickHouseConnectorSettings(
     TableDatasourceSettingsMixin,
     DatasourceTemplateSettingsMixin,
     QuerySettingsSettingsMixin,
-    RawSQLReadWriteSettingsMixin,
+    DirectSQLSettingsMixin,
 ):
     type: str = CONNECTION_TYPE_CLICKHOUSE.value
 

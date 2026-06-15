@@ -250,7 +250,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.dashsql]
         if connector_settings.ENABLE_DATASOURCE_TEMPLATE:
             raw_sql_levels.append(RawSQLLevel.template)
-        if connector_settings.ENABLE_RAW_SQL_READWRITE_LEVEL:
+        if connector_settings.ENABLE_DIRECTSQL:
             raw_sql_levels.append(RawSQLLevel.readwrite)
 
         form_params = self._get_form_params()
