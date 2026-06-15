@@ -224,7 +224,7 @@ class MetrikaApiClient:
         counter_info = self.get_counter_info(counter_id)
         try:
             date_str = counter_info.get("create_time", counter_info.get("create_date")).split("T")[0]
-            creation_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+            creation_date = datetime.date.fromisoformat(date_str)
         except (ValueError, KeyError) as ex:
             raise MetrikaApiException(orig_exc=ex) from ex
         return creation_date

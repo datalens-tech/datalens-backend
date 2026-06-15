@@ -87,7 +87,7 @@ class CustomDataLensVisitor(DataLensVisitor):
     def visitDateLiteral(self, ctx: DataLensParser.DateLiteralContext):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         date_str = str(ctx.children[1])
         try:
-            value = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+            value = datetime.date.fromisoformat(date_str)
         except ValueError as e:
             raise exc.ParseDateValueError(
                 f"Invalid date value: {date_str}", token=date_str, position=self._make_position(ctx)
@@ -109,7 +109,7 @@ class CustomDataLensVisitor(DataLensVisitor):
     def visitGenericDateLiteral(self, ctx: DataLensParser.GenericDateLiteralContext):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
         date_str = str(ctx.children[1])
         try:
-            value = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+            value = datetime.date.fromisoformat(date_str)
         except ValueError as e:
             raise exc.ParseDateValueError(
                 f"Invalid date value: {date_str}", token=date_str, position=self._make_position(ctx)

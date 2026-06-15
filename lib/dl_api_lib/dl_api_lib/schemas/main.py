@@ -109,7 +109,7 @@ class NormalizedDateTime(ma_fields.DateTime):
         **kwargs: Any,
     ) -> str | float | None:
         if isinstance(value, str):
-            value = datetime.datetime.strptime(value.split(".")[0], "%Y-%m-%d %H:%M:%S")
+            value = datetime.datetime.fromisoformat(value.split(".")[0])
         return super()._serialize(value, attr, obj, **kwargs)
 
 

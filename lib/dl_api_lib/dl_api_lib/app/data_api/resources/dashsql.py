@@ -60,7 +60,7 @@ def parse_value(value: str | None, bi_type: UserDataType) -> IncomingDSQLParamTy
     if bi_type == UserDataType.float:
         return float(value)
     if bi_type == UserDataType.date:
-        return datetime.datetime.strptime(value, "%Y-%m-%d").date()
+        return datetime.date.fromisoformat(value)
     if bi_type == UserDataType.datetime:
         return parse_datetime(value)
     if bi_type == UserDataType.boolean:

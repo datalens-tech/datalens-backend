@@ -41,7 +41,7 @@ def _to_date(value: str, formats: Iterable[str] | None = None) -> datetime.date:
     dt = None
     for fmt in formats:
         try:
-            dt = datetime.datetime.strptime(value, fmt)
+            dt = datetime.datetime.strptime(value, fmt)  # noqa: DTZ007  # TODO: fix in BI-7500
         except ValueError:
             pass
         else:

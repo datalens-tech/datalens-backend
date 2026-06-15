@@ -44,7 +44,9 @@ def parse_dt_string(value: str) -> datetime.datetime:
     simple_format = DT_FORMATS_BY_LENGTH.get(len(value))
     if simple_format is not None:
         value = value.replace("T", " ").replace("t", " ")
-        result = datetime.datetime.strptime(value, simple_format)  # raises ValueError
+        result = datetime.datetime.strptime(  # noqa: DTZ007  # TODO: fix in BI-7500
+            value, simple_format
+        )  # raises ValueError
     else:
         result = ciso8601.parse_datetime(value)  # raises ValueError
 
