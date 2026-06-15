@@ -2,6 +2,7 @@ from collections.abc import Sequence
 
 import clickhouse_sqlalchemy.types as ch_types
 import sqlalchemy as sa
+from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import TypeEngine
 
 from dl_formula.core.datatype import DataType
@@ -58,7 +59,7 @@ class FuncDatetimeTZCH(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:
         # NOTE: Tricky point:
         # in CH, converting all aware datetimes to UTC,
         # primarily for the correct output.
@@ -82,8 +83,9 @@ class FuncDatetimeTZToNaiveCH(base.FuncDatetimeTZToNaive):
     dialects = D.CLICKHOUSE
 
     @classmethod
-    def _translate_main(cls, value_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, value_ctx: TranslationCtx) -> ClauseElement:
         expr = value_ctx.expression
+        assert value_ctx.data_type_params is not None
         tz = value_ctx.data_type_params.timezone
         assert tz
         # use cases: datepart, grouping (tz transitions should actually group into one value)
@@ -106,7 +108,7 @@ class FuncTypeGenericDatetime2CHImpl(SingleVariantTranslationBase, base.FuncType
     ]
 
     @classmethod
-    def _translate_main(cls, expr, tz):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, expr: TranslationCtx, tz: TranslationCtx) -> ClauseElement:
         return sa.func.toDateTime(expr.expression, tz.expression)
 
 

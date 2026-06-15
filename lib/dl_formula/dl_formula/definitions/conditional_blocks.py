@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import sqlalchemy as sa
-from sqlalchemy.sql.elements import Null
+from sqlalchemy.sql.elements import (
+    ClauseElement,
+    Null,
+)
 
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
@@ -21,9 +24,15 @@ from dl_formula.definitions.type_strategy import (
     FromArgs,
     IfTypeStrategy,
 )
+from dl_formula.translation.context import TranslationCtx
 
 V = TranslationVariant.make
 VW = TranslationVariantWrapped.make
+
+
+def _data_type(ctx: TranslationCtx) -> DataType:
+    assert ctx.data_type is not None
+    return ctx.data_type
 
 
 class CondBlock(MultiVariantTranslation):
@@ -52,19 +61,23 @@ class CaseBlock(CondBlock):
         return value
 
     @classmethod
-    def translation(cls, *args, as_multiif: bool = False):  # type: ignore  # 2024-01-24 # TODO: Function is missing a return type annotation  [no-untyped-def]
+    def translation(cls, *args: TranslationCtx, as_multiif: bool = False) -> ClauseElement:
         value_arg, args = args[0], args[1:]
-        else_expr, else_type = None, DataType.NULL
+        else_expr: ClauseElement | None = None
+        else_type: DataType = DataType.NULL
         if len(args) % 2 == 1:
             # block has an ELSE
-            else_expr, else_type = args[-1].expression, args[-1].data_type
+            else_arg = args[-1]
+            assert else_arg.data_type is not None
+            else_expr, else_type = else_arg.expression, else_arg.data_type
             args = args[:-1]
         when_args = [(args[ind], args[ind + 1]) for ind in range(0, len(args), 2)]
         # validate value types (must all be castable to same type)
         # all 'WHEN' values must be the same type as 'CASE' value
-        DataType.get_common_cast_type(value_arg.data_type, *[when_value.data_type for when_value, _ in when_args])
+        assert value_arg.data_type is not None
+        DataType.get_common_cast_type(value_arg.data_type, *[_data_type(when_value) for when_value, _ in when_args])
 
-        return_type = DataType.get_common_cast_type(else_type, *[then_expr.data_type for _, then_expr in when_args])
+        return_type = DataType.get_common_cast_type(else_type, *[_data_type(then_expr) for _, then_expr in when_args])
 
         if as_multiif and not return_type.is_const:
             # ClickHouse does not support non-constant THENs

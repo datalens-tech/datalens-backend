@@ -5,12 +5,14 @@ from typing import (
     TYPE_CHECKING,
     ClassVar,
     NamedTuple,
+    cast,
 )
 
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import TypeEngine
 
+from dl_formula.connectors.base.literal import Literal
 from dl_formula.core import exc
 from dl_formula.core.datatype import (
     DataType,
@@ -249,12 +251,14 @@ class FuncDatetimeTZConst(SingleVariantTranslationBase, FuncDatetimeTZ):
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx, *, _env: TranslationEnvironment):  # type: ignore  # TODO: fix
-        value = un_literal(value_ctx.expression, value_ctx=value_ctx)
+    def _translate_main(  # type: ignore[override]  # framework base `_translate_main` uses a loose (*args) signature shared across subclasses
+        cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx, *, _env: TranslationEnvironment
+    ) -> Literal:
+        value = un_literal(cast("Literal | None", value_ctx.expression), value_ctx=value_ctx)
         # TODO?: re-check the `type(value)` by `value_ctx.data_type`?
 
         # TODO: error-handling
-        tzname = un_literal(tz_ctx.expression)
+        tzname = un_literal(cast("Literal | None", tz_ctx.expression))
         # TODO: error-handling
         try:
             dt = make_datetimetz_value(value, tzname)

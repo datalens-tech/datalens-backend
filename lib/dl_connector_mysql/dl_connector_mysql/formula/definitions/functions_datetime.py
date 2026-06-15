@@ -93,7 +93,7 @@ class MySQLDatetruncBuildMixin:
     DATE_BUILD_DATA: ClassVar[Mapping[str, MySQLDatetruncStep]] = {}
 
     @classmethod
-    def make_datetrunc(cls, date, unit):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def make_datetrunc(cls, date: ClauseElement, unit: ClauseElement) -> ClauseElement:
         norm_unit = base.norm_datetrunc_unit(unit)
         if norm_unit not in cls.DATE_BUILD_DATA:
             return date

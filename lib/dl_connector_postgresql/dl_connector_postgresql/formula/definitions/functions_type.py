@@ -1,5 +1,6 @@
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
+from sqlalchemy.sql.elements import ClauseElement
 
 from dl_formula.core.datatype import DataType
 from dl_formula.definitions.args import ArgTypeSequence
@@ -13,6 +14,7 @@ from dl_formula.definitions.common_datetime import ensure_naive_first_arg
 import dl_formula.definitions.functions_type as base
 from dl_formula.definitions.scope import Scope
 from dl_formula.shortcuts import n
+from dl_formula.translation.context import TranslationCtx
 
 from dl_connector_postgresql.formula.constants import PostgreSQLDialect as D
 from dl_connector_postgresql.formula.definitions.common import PG_INT_64_TO_CHAR_FMT
@@ -33,7 +35,7 @@ class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncType
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:
         """
         Equivalent to `dt at time zone tz`.
         Its semantics:
@@ -103,8 +105,9 @@ class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     ]
 
     @classmethod
-    def _translate_main(cls, value_ctx, tz_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:
         value = value_ctx.expression
+        assert value is not None
         value_type = value_ctx.data_type
         tz = tz_ctx.expression
 
@@ -147,8 +150,9 @@ class FuncDatetimeTZToNaivePG(base.FuncDatetimeTZToNaive):
     dialects = D.POSTGRESQL | D.COMPENG
 
     @classmethod
-    def _translate_main(cls, value_ctx):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, value_ctx: TranslationCtx) -> ClauseElement:
         expr = value_ctx.expression
+        assert value_ctx.data_type_params is not None
         tz = value_ctx.data_type_params.timezone
         assert tz
 

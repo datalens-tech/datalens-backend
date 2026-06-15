@@ -1,3 +1,5 @@
+from types import ModuleType
+
 from sqlalchemy.dialects import registry
 from sqlalchemy.engine import default
 from sqlalchemy.sql import compiler
@@ -22,7 +24,7 @@ class PromQLDialect(default.DefaultDialect):
     statement_compiler = PromQLCompiler
 
     @classmethod
-    def dbapi(cls):
+    def dbapi(cls) -> ModuleType:
         from dl_sqlalchemy_promql import dbapi  # noqa
 
         return dbapi

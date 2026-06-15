@@ -421,7 +421,7 @@ class NodeTranslation:
         raise NotImplementedError
 
     @classmethod
-    def _get_return_type_info(cls, arg_types: list[DataType]) -> DataType:
+    def _get_return_type_info(cls, args: list[TranslationCtx]) -> tuple[DataType, DataTypeParams]:
         raise NotImplementedError
 
     def match_dialect(self, dialect: DialectCombo) -> bool:
@@ -537,7 +537,7 @@ class MultiVariantTranslation(NodeTranslation):
         return cls.return_flags
 
     @classmethod
-    def _get_return_type_info(cls, args):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _get_return_type_info(cls, args: list[TranslationCtx]) -> tuple[DataType, DataTypeParams]:
         arg_types = [arg.data_type for arg in args]
         data_type = cls.return_type.get_from_args(arg_types)
         data_type_params = cls.return_type_params.get_from_arg_values(args)
@@ -710,7 +710,7 @@ class SingleVariantFullOverrideTranslationBase(SingleVariantTranslationBase):
         raise NotImplementedError
 
     @classmethod
-    def _translate_main(cls, *args, **kwargs):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _translate_main(cls, *args: Any, **kwargs: Any) -> ClauseElement:
         raise Exception(
             "SingleVariantFullOverrideTranslation._translate_main dummy method was called",
             {"cls": cls, "args": args, "kwargs": kwargs},

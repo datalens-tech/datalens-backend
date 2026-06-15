@@ -119,6 +119,7 @@ ignore = [
 select = [
   "ANN204", # flake8-annotations (sub-rule): missing-return-type-special-method
   "ANN205", # flake8-annotations (sub-rule): missing-return-type-static-method
+  "ANN206", # flake8-annotations (sub-rule): missing-return-type-class-method
   "ASYNC", # flake8-async
   "B", # flake8-bugbear
   "C4", # flake8-comprehensions

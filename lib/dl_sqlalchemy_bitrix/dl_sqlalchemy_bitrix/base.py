@@ -95,7 +95,7 @@ class BitrixDialect(default.DefaultDialect):
     ischema_names: dict[str, Any] = {}
 
     @classmethod
-    def dbapi(cls):
+    def dbapi(cls) -> None:
         return None  # Not Applicable... if possible.
 
     def _check_unicode_returns(self, connection, additional_tests=None):

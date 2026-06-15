@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sqlalchemy as sa
 
+from dl_formula.connectors.base.literal import Literal
 from dl_formula.core.datatype import DataType
 from dl_formula.core.dialect import StandardDialect as D
 import dl_formula.core.exc as exc
@@ -452,7 +453,7 @@ class FuncDayofweek(SpecificDatepartFunc):
     }
 
     @classmethod
-    def _norm_fd(cls, firstday):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
+    def _norm_fd(cls, firstday: Literal | None) -> int:
         """Normalize first-day-of-the-week value (convert to int (1-7))"""
         try:
             return cls._fd_map[un_literal(firstday).lower()]

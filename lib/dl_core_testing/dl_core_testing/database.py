@@ -163,11 +163,11 @@ class C:
         return cls.ArrayDataGetter(data_container)
 
     @classmethod
-    def int_value(cls, name: str = "int_value"):  # type: ignore  # TODO: fix
+    def int_value(cls, name: str = "int_value") -> C:
         return cls(name, UserDataType.integer)
 
     @classmethod
-    def datetime_value(cls, name: str = "datetime_value"):  # type: ignore  # TODO: fix
+    def datetime_value(cls, name: str = "datetime_value") -> C:
         return cls(name, UserDataType.datetime)
 
     @classmethod

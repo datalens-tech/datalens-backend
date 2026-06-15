@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import logging
 import re
+from types import ModuleType
 from urllib.parse import urlencode
 
 import dateutil.parser
@@ -598,7 +599,7 @@ class MetrikaApiDialect(default.DefaultDialect):
         ]
 
     @classmethod
-    def dbapi(cls):
+    def dbapi(cls) -> ModuleType:
         return metrika_dbapi
 
     def _check_unicode_returns(self, connection, additional_tests=None):
@@ -632,5 +633,5 @@ class AppMetricaApiDialect(MetrikaApiDialect):
     supports_statement_cache = False
 
     @classmethod
-    def dbapi(cls):
+    def dbapi(cls) -> ModuleType:
         return appmetrica_dbapi

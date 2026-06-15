@@ -6,6 +6,7 @@ from collections.abc import (
 )
 from datetime import date
 import logging
+from types import ModuleType
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -153,7 +154,7 @@ class MetrikaApiConnection(MetrikaBaseMixin, ConnectionBase):
         return None
 
     @classmethod
-    def get_api_fields_info(cls):  # type: ignore  # TODO: fix
+    def get_api_fields_info(cls) -> ModuleType:
         return dl_sqlalchemy_metrica_api.api_info.metrika
 
     @classmethod
@@ -229,7 +230,7 @@ class AppMetricaApiConnection(MetrikaApiConnection):
         )
 
     @classmethod
-    def get_api_fields_info(cls):  # type: ignore  # TODO: fix
+    def get_api_fields_info(cls) -> ModuleType:
         return dl_sqlalchemy_metrica_api.api_info.appmetrica
 
     def get_parameter_combinations(
