@@ -135,7 +135,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         try:
             message = wrapper_exc.message  # type: ignore  # 2024-01-24 # TODO: "Exception" has no attribute "message"  [attr-defined]
         except Exception:
-            pass
+            LOGGER.debug("Wrapper exception has no `message` attribute", exc_info=True)
         else:
             kw["db_message"] = kw.get("db_message") or message
 

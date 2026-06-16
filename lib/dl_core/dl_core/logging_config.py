@@ -1,8 +1,11 @@
+import logging
 from typing import Any
 
 from flask import Flask
 
 import dl_logging
+
+LOGGER = logging.getLogger(__name__)
 
 
 def hook_configure_logging(app: Flask, *args: Any, **kwargs: Any) -> None:
@@ -13,7 +16,7 @@ def hook_configure_logging(app: Flask, *args: Any, **kwargs: Any) -> None:
     try:
         import uwsgidecorators  # type: ignore  # TODO: fix  # noqa
     except Exception:
-        pass
+        LOGGER.debug("uwsgidecorators is not available", exc_info=True)
     else:
 
         @uwsgidecorators.postfork
