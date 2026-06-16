@@ -137,6 +137,7 @@ select = [
   "PT", # flake8-pytest-style
   "RET", # flake8-return
   "RUF", # Ruff-specific rules
+  "S303", # flake8-bandit (sub-rule): suspicious-insecure-hash-usage (MD2/MD4/MD5/SHA1)
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
