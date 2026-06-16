@@ -1,3 +1,4 @@
+from frozendict import frozendict
 import sqlalchemy as sa
 import sqlalchemy.dialects.postgresql as sa_postgresql
 from sqlalchemy.sql.elements import ClauseElement
@@ -163,69 +164,79 @@ class FuncDatetimeTZToNaivePG(base.FuncDatetimeTZToNaive):
 
 
 class FuncDbCastPostgreSQLBase(base.FuncDbCastBase):
-    WHITELISTS = {
-        pg_dialect: {
-            DataType.INTEGER: [
-                base.WhitelistTypeSpec(name="smallint", sa_type=sa_postgresql.SMALLINT),
-                base.WhitelistTypeSpec(name="integer", sa_type=sa_postgresql.INTEGER),
-                base.WhitelistTypeSpec(name="bigint", sa_type=sa_postgresql.BIGINT),
-            ],
-            DataType.FLOAT: [
-                base.WhitelistTypeSpec(name="double precision", sa_type=sa_postgresql.DOUBLE_PRECISION),
-                base.WhitelistTypeSpec(name="real", sa_type=sa_postgresql.REAL),
-                base.WhitelistTypeSpec(
-                    name="numeric", sa_type=sa_postgresql.NUMERIC, arg_types=base.DECIMAL_CAST_ARG_T
-                ),
-            ],
-            DataType.STRING: [
-                base.WhitelistTypeSpec(name="text", sa_type=sa_postgresql.TEXT),
-                base.WhitelistTypeSpec(name="character", sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
-                base.WhitelistTypeSpec(
-                    name="character varying", sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T
-                ),
-                # Here we'll make an exception and allow the usage of type aliases
-                # just because in this case they are probably much more widely used
-                # then the proper type names:
-                base.WhitelistTypeSpec(name="char", sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
-                base.WhitelistTypeSpec(name="varchar", sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T),
-            ],
-            DataType.ARRAY_STR: [
-                base.WhitelistTypeSpec(name="text[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.TEXT),
-                base.WhitelistTypeSpec(
-                    name="character varying[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR
-                ),
-                base.WhitelistTypeSpec(
-                    name="varchar[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR
-                ),
-            ],
-            DataType.ARRAY_INT: [
-                base.WhitelistTypeSpec(
-                    name="smallint[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.SMALLINT
-                ),
-                base.WhitelistTypeSpec(
-                    name="integer[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.INTEGER
-                ),
-                base.WhitelistTypeSpec(
-                    name="bigint[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.BIGINT
-                ),
-            ],
-            DataType.ARRAY_FLOAT: [
-                base.WhitelistTypeSpec(
-                    name="double precision[]",
-                    sa_type=sa_postgresql.ARRAY,
-                    nested_sa_type=sa_postgresql.DOUBLE_PRECISION,
-                ),
-                base.WhitelistTypeSpec(name="real[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.REAL),
-                base.WhitelistTypeSpec(
-                    name="numeric[]",
-                    sa_type=sa_postgresql.ARRAY,
-                    nested_sa_type=sa_postgresql.NUMERIC,
-                    arg_types=base.DECIMAL_CAST_ARG_T,
-                ),
-            ],
+    WHITELISTS = frozendict(
+        {
+            pg_dialect: {
+                DataType.INTEGER: [
+                    base.WhitelistTypeSpec(name="smallint", sa_type=sa_postgresql.SMALLINT),
+                    base.WhitelistTypeSpec(name="integer", sa_type=sa_postgresql.INTEGER),
+                    base.WhitelistTypeSpec(name="bigint", sa_type=sa_postgresql.BIGINT),
+                ],
+                DataType.FLOAT: [
+                    base.WhitelistTypeSpec(name="double precision", sa_type=sa_postgresql.DOUBLE_PRECISION),
+                    base.WhitelistTypeSpec(name="real", sa_type=sa_postgresql.REAL),
+                    base.WhitelistTypeSpec(
+                        name="numeric", sa_type=sa_postgresql.NUMERIC, arg_types=base.DECIMAL_CAST_ARG_T
+                    ),
+                ],
+                DataType.STRING: [
+                    base.WhitelistTypeSpec(name="text", sa_type=sa_postgresql.TEXT),
+                    base.WhitelistTypeSpec(
+                        name="character", sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="character varying", sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T
+                    ),
+                    # Here we'll make an exception and allow the usage of type aliases
+                    # just because in this case they are probably much more widely used
+                    # then the proper type names:
+                    base.WhitelistTypeSpec(name="char", sa_type=sa_postgresql.CHAR, arg_types=base.CHAR_CAST_ARG_T),
+                    base.WhitelistTypeSpec(
+                        name="varchar", sa_type=sa_postgresql.VARCHAR, arg_types=base.CHAR_CAST_ARG_T
+                    ),
+                ],
+                DataType.ARRAY_STR: [
+                    base.WhitelistTypeSpec(
+                        name="text[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.TEXT
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="character varying[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="varchar[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.VARCHAR
+                    ),
+                ],
+                DataType.ARRAY_INT: [
+                    base.WhitelistTypeSpec(
+                        name="smallint[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.SMALLINT
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="integer[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.INTEGER
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="bigint[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.BIGINT
+                    ),
+                ],
+                DataType.ARRAY_FLOAT: [
+                    base.WhitelistTypeSpec(
+                        name="double precision[]",
+                        sa_type=sa_postgresql.ARRAY,
+                        nested_sa_type=sa_postgresql.DOUBLE_PRECISION,
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="real[]", sa_type=sa_postgresql.ARRAY, nested_sa_type=sa_postgresql.REAL
+                    ),
+                    base.WhitelistTypeSpec(
+                        name="numeric[]",
+                        sa_type=sa_postgresql.ARRAY,
+                        nested_sa_type=sa_postgresql.NUMERIC,
+                        arg_types=base.DECIMAL_CAST_ARG_T,
+                    ),
+                ],
+            }
+            for pg_dialect in (D.COMPENG, D.NON_COMPENG_POSTGRESQL)
         }
-        for pg_dialect in (D.COMPENG, D.NON_COMPENG_POSTGRESQL)
-    }
+    )
 
 
 class FuncDbCastPostgreSQL2(FuncDbCastPostgreSQLBase, base.FuncDbCast2):

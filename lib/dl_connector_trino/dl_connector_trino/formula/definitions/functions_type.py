@@ -1,3 +1,4 @@
+from frozendict import frozendict
 import sqlalchemy as sa
 from sqlalchemy.sql import functions
 from sqlalchemy.sql.elements import ClauseElement
@@ -25,61 +26,63 @@ VW = TranslationVariantWrapped.make
 
 
 class FuncDbCastTrino(base.FuncDbCastBase):
-    WHITELISTS = {
-        D.TRINO: {
-            DataType.BOOLEAN: [
-                base.WhitelistTypeSpec(name="boolean", sa_type=sa.BOOLEAN),
-            ],
-            DataType.INTEGER: [
-                base.WhitelistTypeSpec(name="tinyint", sa_type=sa.SMALLINT),
-                base.WhitelistTypeSpec(name="smallint", sa_type=sa.SMALLINT),
-                base.WhitelistTypeSpec(name="integer", sa_type=sa.INTEGER),
-                base.WhitelistTypeSpec(name="bigint", sa_type=sa.BIGINT),
-            ],
-            DataType.FLOAT: [
-                base.WhitelistTypeSpec(name="real", sa_type=sa.REAL),
-                base.WhitelistTypeSpec(name="double", sa_type=tsa.DOUBLE),
-                base.WhitelistTypeSpec(name="decimal", sa_type=sa.DECIMAL, arg_types=base.DECIMAL_CAST_ARG_T),
-            ],
-            DataType.STRING: [
-                base.WhitelistTypeSpec(name="varchar", sa_type=sa.VARCHAR),
-                base.WhitelistTypeSpec(name="char", sa_type=sa.CHAR),
-                base.WhitelistTypeSpec(name="varbinary", sa_type=sa.VARBINARY),
-                base.WhitelistTypeSpec(name="json", sa_type=tsa.JSON),
-            ],
-            DataType.DATE: [
-                base.WhitelistTypeSpec(name="date", sa_type=sa.DATE),
-            ],
-            DataType.DATETIME: [
-                base.WhitelistTypeSpec(name="timestamp", sa_type=tsa.TIMESTAMP),
-                base.WhitelistTypeSpec(name="timestamp with time zone", sa_type=tsa.TIMESTAMP),
-            ],
-            DataType.GENERICDATETIME: [
-                base.WhitelistTypeSpec(name="timestamp", sa_type=tsa.TIMESTAMP),
-                base.WhitelistTypeSpec(name="timestamp with time zone", sa_type=tsa.TIMESTAMP),
-            ],
-            DataType.ARRAY_STR: [
-                base.WhitelistTypeSpec(name="array(varchar)", sa_type=sa.ARRAY, nested_sa_type=sa.VARCHAR),
-                base.WhitelistTypeSpec(name="array(char)", sa_type=sa.ARRAY, nested_sa_type=sa.CHAR),
-            ],
-            DataType.ARRAY_INT: [
-                base.WhitelistTypeSpec(name="array(tinyint)", sa_type=sa.ARRAY, nested_sa_type=sa.SMALLINT),
-                base.WhitelistTypeSpec(name="array(smallint)", sa_type=sa.ARRAY, nested_sa_type=sa.SMALLINT),
-                base.WhitelistTypeSpec(name="array(integer)", sa_type=sa.ARRAY, nested_sa_type=sa.INTEGER),
-                base.WhitelistTypeSpec(name="array(bigint)", sa_type=sa.ARRAY, nested_sa_type=sa.BIGINT),
-            ],
-            DataType.ARRAY_FLOAT: [
-                base.WhitelistTypeSpec(name="array(real)", sa_type=sa.ARRAY, nested_sa_type=sa.REAL),
-                base.WhitelistTypeSpec(name="array(double)", sa_type=sa.ARRAY, nested_sa_type=tsa.DOUBLE),
-                base.WhitelistTypeSpec(
-                    name="array(decimal)",
-                    sa_type=sa.ARRAY,
-                    nested_sa_type=sa.DECIMAL,
-                    arg_types=base.DECIMAL_CAST_ARG_T,
-                ),
-            ],
+    WHITELISTS = frozendict(
+        {
+            D.TRINO: {
+                DataType.BOOLEAN: [
+                    base.WhitelistTypeSpec(name="boolean", sa_type=sa.BOOLEAN),
+                ],
+                DataType.INTEGER: [
+                    base.WhitelistTypeSpec(name="tinyint", sa_type=sa.SMALLINT),
+                    base.WhitelistTypeSpec(name="smallint", sa_type=sa.SMALLINT),
+                    base.WhitelistTypeSpec(name="integer", sa_type=sa.INTEGER),
+                    base.WhitelistTypeSpec(name="bigint", sa_type=sa.BIGINT),
+                ],
+                DataType.FLOAT: [
+                    base.WhitelistTypeSpec(name="real", sa_type=sa.REAL),
+                    base.WhitelistTypeSpec(name="double", sa_type=tsa.DOUBLE),
+                    base.WhitelistTypeSpec(name="decimal", sa_type=sa.DECIMAL, arg_types=base.DECIMAL_CAST_ARG_T),
+                ],
+                DataType.STRING: [
+                    base.WhitelistTypeSpec(name="varchar", sa_type=sa.VARCHAR),
+                    base.WhitelistTypeSpec(name="char", sa_type=sa.CHAR),
+                    base.WhitelistTypeSpec(name="varbinary", sa_type=sa.VARBINARY),
+                    base.WhitelistTypeSpec(name="json", sa_type=tsa.JSON),
+                ],
+                DataType.DATE: [
+                    base.WhitelistTypeSpec(name="date", sa_type=sa.DATE),
+                ],
+                DataType.DATETIME: [
+                    base.WhitelistTypeSpec(name="timestamp", sa_type=tsa.TIMESTAMP),
+                    base.WhitelistTypeSpec(name="timestamp with time zone", sa_type=tsa.TIMESTAMP),
+                ],
+                DataType.GENERICDATETIME: [
+                    base.WhitelistTypeSpec(name="timestamp", sa_type=tsa.TIMESTAMP),
+                    base.WhitelistTypeSpec(name="timestamp with time zone", sa_type=tsa.TIMESTAMP),
+                ],
+                DataType.ARRAY_STR: [
+                    base.WhitelistTypeSpec(name="array(varchar)", sa_type=sa.ARRAY, nested_sa_type=sa.VARCHAR),
+                    base.WhitelistTypeSpec(name="array(char)", sa_type=sa.ARRAY, nested_sa_type=sa.CHAR),
+                ],
+                DataType.ARRAY_INT: [
+                    base.WhitelistTypeSpec(name="array(tinyint)", sa_type=sa.ARRAY, nested_sa_type=sa.SMALLINT),
+                    base.WhitelistTypeSpec(name="array(smallint)", sa_type=sa.ARRAY, nested_sa_type=sa.SMALLINT),
+                    base.WhitelistTypeSpec(name="array(integer)", sa_type=sa.ARRAY, nested_sa_type=sa.INTEGER),
+                    base.WhitelistTypeSpec(name="array(bigint)", sa_type=sa.ARRAY, nested_sa_type=sa.BIGINT),
+                ],
+                DataType.ARRAY_FLOAT: [
+                    base.WhitelistTypeSpec(name="array(real)", sa_type=sa.ARRAY, nested_sa_type=sa.REAL),
+                    base.WhitelistTypeSpec(name="array(double)", sa_type=sa.ARRAY, nested_sa_type=tsa.DOUBLE),
+                    base.WhitelistTypeSpec(
+                        name="array(decimal)",
+                        sa_type=sa.ARRAY,
+                        nested_sa_type=sa.DECIMAL,
+                        arg_types=base.DECIMAL_CAST_ARG_T,
+                    ),
+                ],
+            }
         }
-    }
+    )
 
 
 class FuncDbCastTrino2(FuncDbCastTrino, base.FuncDbCast2):

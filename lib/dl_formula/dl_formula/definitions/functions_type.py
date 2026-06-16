@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 from typing import (
     TYPE_CHECKING,
     ClassVar,
@@ -8,6 +11,7 @@ from typing import (
     cast,
 )
 
+from frozendict import frozendict
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import TypeEngine
@@ -582,7 +586,7 @@ class FuncDbCastBase(TypeConvFunction):
     argument_types = (DbCastArgTypes(),)
     return_type = FromArgs(0)
 
-    WHITELISTS: ClassVar[dict[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]]] = {}
+    WHITELISTS: ClassVar[Mapping[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]]] = frozendict({})
 
     @classmethod
     def generate_cast_type(

@@ -1,3 +1,4 @@
+from frozendict import frozendict
 import sqlalchemy as sa
 import ydb_sqlalchemy as ydb_sa
 
@@ -190,247 +191,249 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
 
     argument_types = (YQLDbCastArgTypes(),)
 
-    WHITELISTS = {
-        yql_dialect: {
-            # TODO: Decimal, DyNumber, Json, JsonDocument, Yson, Uuid
-            # All mappings are based on the table above.
-            # Notes:
-            # - Interval can not be casted to Bool
-            # - Interval can not be casted to Decimal
-            # - Utf8 can not be casted to Uuid
-            DataType.BOOLEAN: [
-                # > Bool
-                TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > String
-                TYPES_SPEC["String"],
-            ],
-            DataType.INTEGER: [
-                # > Bool
-                TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > Decimal
-                TYPES_SPEC["Decimal"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                TYPES_SPEC["Datetime64"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                TYPES_SPEC["Timestamp64"],
-                # > Interval
-                TYPES_SPEC["Interval"],
-                TYPES_SPEC["Interval64"],
-            ],
-            DataType.FLOAT: [
-                # > Bool
-                TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > String
-                TYPES_SPEC["String"],
-            ],
-            DataType.STRING: [
-                # > Bool
-                TYPES_SPEC["Bool"],
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > Decimal
-                TYPES_SPEC["Decimal"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                TYPES_SPEC["Datetime64"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                TYPES_SPEC["Timestamp64"],
-                # > Interval
-                TYPES_SPEC["Interval"],
-                TYPES_SPEC["Interval64"],
-                # > Uuid
-                TYPES_SPEC["Uuid"],
-            ],
-            DataType.DATE: [
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                TYPES_SPEC["Datetime64"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                TYPES_SPEC["Timestamp64"],
-            ],
-            DataType.DATETIME: [
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                TYPES_SPEC["Datetime64"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                TYPES_SPEC["Timestamp64"],
-            ],
-            DataType.GENERICDATETIME: [
-                # > INT
-                TYPES_SPEC["Int8"],
-                TYPES_SPEC["Int16"],
-                TYPES_SPEC["Int32"],
-                TYPES_SPEC["Int64"],
-                # > UINT
-                TYPES_SPEC["UInt8"],
-                TYPES_SPEC["UInt16"],
-                TYPES_SPEC["UInt32"],
-                TYPES_SPEC["UInt64"],
-                # > Float
-                TYPES_SPEC["Float"],
-                # > Double
-                TYPES_SPEC["Double"],
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-                # > Date
-                TYPES_SPEC["Date"],
-                # > Datetime
-                TYPES_SPEC["Datetime"],
-                TYPES_SPEC["Datetime64"],
-                # > Timestamp
-                TYPES_SPEC["Timestamp"],
-                TYPES_SPEC["Timestamp64"],
-            ],
-            DataType.UUID: [
-                # > String
-                TYPES_SPEC["String"],
-                # > Utf8
-                TYPES_SPEC["Utf8"],
-            ],
-            DataType.ARRAY_STR: [
-                TYPES_SPEC["List<String>"],
-                TYPES_SPEC["List<String?>"],
-                TYPES_SPEC["List<Utf8>"],
-                TYPES_SPEC["List<Utf8?>"],
-            ],
-            DataType.ARRAY_INT: [
-                TYPES_SPEC["List<Int8>"],
-                TYPES_SPEC["List<Int8?>"],
-                TYPES_SPEC["List<Int16>"],
-                TYPES_SPEC["List<Int16?>"],
-                TYPES_SPEC["List<Int32>"],
-                TYPES_SPEC["List<Int32?>"],
-                TYPES_SPEC["List<Int64>"],
-                TYPES_SPEC["List<Int64?>"],
-                TYPES_SPEC["List<UInt8>"],
-                TYPES_SPEC["List<UInt8?>"],
-                TYPES_SPEC["List<UInt16>"],
-                TYPES_SPEC["List<UInt16?>"],
-                TYPES_SPEC["List<UInt32>"],
-                TYPES_SPEC["List<UInt32?>"],
-                TYPES_SPEC["List<UInt64>"],
-                TYPES_SPEC["List<UInt64?>"],
-            ],
-            DataType.ARRAY_FLOAT: [
-                TYPES_SPEC["List<Float>"],
-                TYPES_SPEC["List<Float?>"],
-                TYPES_SPEC["List<Double>"],
-                TYPES_SPEC["List<Double?>"],
-            ],
+    WHITELISTS = frozendict(
+        {
+            yql_dialect: {
+                # TODO: Decimal, DyNumber, Json, JsonDocument, Yson, Uuid
+                # All mappings are based on the table above.
+                # Notes:
+                # - Interval can not be casted to Bool
+                # - Interval can not be casted to Decimal
+                # - Utf8 can not be casted to Uuid
+                DataType.BOOLEAN: [
+                    # > Bool
+                    TYPES_SPEC["Bool"],
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > String
+                    TYPES_SPEC["String"],
+                ],
+                DataType.INTEGER: [
+                    # > Bool
+                    TYPES_SPEC["Bool"],
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > Decimal
+                    TYPES_SPEC["Decimal"],
+                    # > String
+                    TYPES_SPEC["String"],
+                    # > Date
+                    TYPES_SPEC["Date"],
+                    # > Datetime
+                    TYPES_SPEC["Datetime"],
+                    TYPES_SPEC["Datetime64"],
+                    # > Timestamp
+                    TYPES_SPEC["Timestamp"],
+                    TYPES_SPEC["Timestamp64"],
+                    # > Interval
+                    TYPES_SPEC["Interval"],
+                    TYPES_SPEC["Interval64"],
+                ],
+                DataType.FLOAT: [
+                    # > Bool
+                    TYPES_SPEC["Bool"],
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > String
+                    TYPES_SPEC["String"],
+                ],
+                DataType.STRING: [
+                    # > Bool
+                    TYPES_SPEC["Bool"],
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > Decimal
+                    TYPES_SPEC["Decimal"],
+                    # > String
+                    TYPES_SPEC["String"],
+                    # > Utf8
+                    TYPES_SPEC["Utf8"],
+                    # > Date
+                    TYPES_SPEC["Date"],
+                    # > Datetime
+                    TYPES_SPEC["Datetime"],
+                    TYPES_SPEC["Datetime64"],
+                    # > Timestamp
+                    TYPES_SPEC["Timestamp"],
+                    TYPES_SPEC["Timestamp64"],
+                    # > Interval
+                    TYPES_SPEC["Interval"],
+                    TYPES_SPEC["Interval64"],
+                    # > Uuid
+                    TYPES_SPEC["Uuid"],
+                ],
+                DataType.DATE: [
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > String
+                    TYPES_SPEC["String"],
+                    # > Utf8
+                    TYPES_SPEC["Utf8"],
+                    # > Date
+                    TYPES_SPEC["Date"],
+                    # > Datetime
+                    TYPES_SPEC["Datetime"],
+                    TYPES_SPEC["Datetime64"],
+                    # > Timestamp
+                    TYPES_SPEC["Timestamp"],
+                    TYPES_SPEC["Timestamp64"],
+                ],
+                DataType.DATETIME: [
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > String
+                    TYPES_SPEC["String"],
+                    # > Utf8
+                    TYPES_SPEC["Utf8"],
+                    # > Date
+                    TYPES_SPEC["Date"],
+                    # > Datetime
+                    TYPES_SPEC["Datetime"],
+                    TYPES_SPEC["Datetime64"],
+                    # > Timestamp
+                    TYPES_SPEC["Timestamp"],
+                    TYPES_SPEC["Timestamp64"],
+                ],
+                DataType.GENERICDATETIME: [
+                    # > INT
+                    TYPES_SPEC["Int8"],
+                    TYPES_SPEC["Int16"],
+                    TYPES_SPEC["Int32"],
+                    TYPES_SPEC["Int64"],
+                    # > UINT
+                    TYPES_SPEC["UInt8"],
+                    TYPES_SPEC["UInt16"],
+                    TYPES_SPEC["UInt32"],
+                    TYPES_SPEC["UInt64"],
+                    # > Float
+                    TYPES_SPEC["Float"],
+                    # > Double
+                    TYPES_SPEC["Double"],
+                    # > String
+                    TYPES_SPEC["String"],
+                    # > Utf8
+                    TYPES_SPEC["Utf8"],
+                    # > Date
+                    TYPES_SPEC["Date"],
+                    # > Datetime
+                    TYPES_SPEC["Datetime"],
+                    TYPES_SPEC["Datetime64"],
+                    # > Timestamp
+                    TYPES_SPEC["Timestamp"],
+                    TYPES_SPEC["Timestamp64"],
+                ],
+                DataType.UUID: [
+                    # > String
+                    TYPES_SPEC["String"],
+                    # > Utf8
+                    TYPES_SPEC["Utf8"],
+                ],
+                DataType.ARRAY_STR: [
+                    TYPES_SPEC["List<String>"],
+                    TYPES_SPEC["List<String?>"],
+                    TYPES_SPEC["List<Utf8>"],
+                    TYPES_SPEC["List<Utf8?>"],
+                ],
+                DataType.ARRAY_INT: [
+                    TYPES_SPEC["List<Int8>"],
+                    TYPES_SPEC["List<Int8?>"],
+                    TYPES_SPEC["List<Int16>"],
+                    TYPES_SPEC["List<Int16?>"],
+                    TYPES_SPEC["List<Int32>"],
+                    TYPES_SPEC["List<Int32?>"],
+                    TYPES_SPEC["List<Int64>"],
+                    TYPES_SPEC["List<Int64?>"],
+                    TYPES_SPEC["List<UInt8>"],
+                    TYPES_SPEC["List<UInt8?>"],
+                    TYPES_SPEC["List<UInt16>"],
+                    TYPES_SPEC["List<UInt16?>"],
+                    TYPES_SPEC["List<UInt32>"],
+                    TYPES_SPEC["List<UInt32?>"],
+                    TYPES_SPEC["List<UInt64>"],
+                    TYPES_SPEC["List<UInt64?>"],
+                ],
+                DataType.ARRAY_FLOAT: [
+                    TYPES_SPEC["List<Float>"],
+                    TYPES_SPEC["List<Float?>"],
+                    TYPES_SPEC["List<Double>"],
+                    TYPES_SPEC["List<Double?>"],
+                ],
+            }
+            for yql_dialect in (D.YQL, D.YQ, D.YDB)
         }
-        for yql_dialect in (D.YQL, D.YQ, D.YDB)
-    }
+    )
 
 
 class FuncDbCastYQL2(FuncDbCastYQLBase, base.FuncDbCast2):

@@ -13,6 +13,7 @@ attrs = "*"
 ciso8601 = "*"
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 graphviz = "*"
 python = ">=3.12, <3.13"
 pytz = "*"

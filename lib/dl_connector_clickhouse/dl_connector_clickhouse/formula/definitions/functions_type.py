@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
 import clickhouse_sqlalchemy.types as ch_types
+from frozendict import frozendict
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 from sqlalchemy.types import TypeEngine
@@ -120,33 +121,35 @@ class FuncGenericDatetime2CH(FuncTypeGenericDatetime2CHImpl):
 
 
 class FuncDbCastClickHouseBase(base.FuncDbCastBase):
-    WHITELISTS = {
-        D.CLICKHOUSE: {
-            DataType.INTEGER: [
-                base.WhitelistTypeSpec(name="Int8", sa_type=ch_types.Int8),
-                base.WhitelistTypeSpec(name="Int16", sa_type=ch_types.Int16),
-                base.WhitelistTypeSpec(name="Int32", sa_type=ch_types.Int32),
-                base.WhitelistTypeSpec(name="Int64", sa_type=ch_types.Int64),
-                base.WhitelistTypeSpec(name="UInt8", sa_type=ch_types.UInt8),
-                base.WhitelistTypeSpec(name="UInt16", sa_type=ch_types.UInt16),
-                base.WhitelistTypeSpec(name="UInt32", sa_type=ch_types.UInt32),
-                base.WhitelistTypeSpec(name="UInt64", sa_type=ch_types.UInt64),
-            ],
-            DataType.FLOAT: [
-                base.WhitelistTypeSpec(name="Float32", sa_type=ch_types.Float32),
-                base.WhitelistTypeSpec(name="Float64", sa_type=ch_types.Float64),
-                base.WhitelistTypeSpec(name="Decimal", sa_type=ch_types.Decimal, arg_types=base.DECIMAL_CAST_ARG_T),
-            ],
-            DataType.STRING: [
-                base.WhitelistTypeSpec(name="String", sa_type=ch_types.String),
-                # TODO: FixedString
-            ],
-            DataType.DATE: [
-                base.WhitelistTypeSpec(name="Date", sa_type=ch_types.Date),
-                base.WhitelistTypeSpec(name="Date32", sa_type=ch_types.Date32),
-            ],
+    WHITELISTS = frozendict(
+        {
+            D.CLICKHOUSE: {
+                DataType.INTEGER: [
+                    base.WhitelistTypeSpec(name="Int8", sa_type=ch_types.Int8),
+                    base.WhitelistTypeSpec(name="Int16", sa_type=ch_types.Int16),
+                    base.WhitelistTypeSpec(name="Int32", sa_type=ch_types.Int32),
+                    base.WhitelistTypeSpec(name="Int64", sa_type=ch_types.Int64),
+                    base.WhitelistTypeSpec(name="UInt8", sa_type=ch_types.UInt8),
+                    base.WhitelistTypeSpec(name="UInt16", sa_type=ch_types.UInt16),
+                    base.WhitelistTypeSpec(name="UInt32", sa_type=ch_types.UInt32),
+                    base.WhitelistTypeSpec(name="UInt64", sa_type=ch_types.UInt64),
+                ],
+                DataType.FLOAT: [
+                    base.WhitelistTypeSpec(name="Float32", sa_type=ch_types.Float32),
+                    base.WhitelistTypeSpec(name="Float64", sa_type=ch_types.Float64),
+                    base.WhitelistTypeSpec(name="Decimal", sa_type=ch_types.Decimal, arg_types=base.DECIMAL_CAST_ARG_T),
+                ],
+                DataType.STRING: [
+                    base.WhitelistTypeSpec(name="String", sa_type=ch_types.String),
+                    # TODO: FixedString
+                ],
+                DataType.DATE: [
+                    base.WhitelistTypeSpec(name="Date", sa_type=ch_types.Date),
+                    base.WhitelistTypeSpec(name="Date32", sa_type=ch_types.Date32),
+                ],
+            }
         }
-    }
+    )
 
     @classmethod
     def generate_cast_type(

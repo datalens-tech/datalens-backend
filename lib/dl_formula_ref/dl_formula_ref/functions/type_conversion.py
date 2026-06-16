@@ -1,4 +1,7 @@
-from collections.abc import MutableMapping
+from collections.abc import (
+    Mapping,
+    MutableMapping,
+)
 
 import attr
 
@@ -300,7 +303,9 @@ def _get_comment_for_type(dialect: DialectCombo, native_type_name: str) -> str |
 
 @attr.s
 class DbCastExtension:
-    type_whitelists: dict[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]] = attr.ib(kw_only=True, factory=dict)
+    type_whitelists: Mapping[DialectCombo, dict[DataType, list[WhitelistTypeSpec]]] = attr.ib(
+        kw_only=True, factory=dict
+    )
     type_comments: dict[tuple[DialectCombo, str], str | BaseTranslatable] = attr.ib(kw_only=True, factory=dict)
 
 
