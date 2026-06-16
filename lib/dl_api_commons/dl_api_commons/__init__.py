@@ -5,6 +5,7 @@ from .base_models import (
     TenantCommon,
     TenantDef,
 )
+from .crypto import get_hmac_hex_digest
 from .exc import NotFoundErr
 from .logging import RequestObfuscator
 from .tracing import get_current_tracing_headers
@@ -22,6 +23,7 @@ __all__ = (
     "TenantCommon",
     "TenantDef",
     "get_current_tracing_headers",
+    "get_hmac_hex_digest",
     "make_user_auth_cookies",
     "make_user_auth_headers",
     "stringify_dl_cookies",
