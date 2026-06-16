@@ -1,0 +1,7 @@
+from dl_formula_testing.testcases.functions_markup import DefaultMarkupFunctionFormulaConnectorTestSuite
+
+from dl_connector_greenplum_tests.db.formula.base import GreenplumTestBase
+
+
+class TestMarkupFunctionGreenplum(GreenplumTestBase, DefaultMarkupFunctionFormulaConnectorTestSuite):
+    pass
