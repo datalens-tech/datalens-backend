@@ -92,6 +92,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
+from dl_core.enums import USEntryBranch
 from dl_core.exc import USObjectNotFoundException
 from dl_core.fields import ResultSchema
 from dl_core.reporting.notifications import get_notification_record
@@ -594,6 +595,16 @@ class DatasetDataBaseView(BaseView):
                 if cached_dataset:
                     self.dataset = cached_dataset
 
+            if self.dataset_id is not None:
+                # raw entry to avoid double deserialization
+                ds_raw = await us_manager.get_migrated_entry(
+                    self.dataset_id,
+                    branch=USEntryBranch.saved,
+                    context_name="dataset",
+                )
+                latest_revision_id = ds_raw["data"].get("revision_id")
+            else:
+                latest_revision_id = None
             update_info = loader.update_dataset_from_body(
                 dataset=self.dataset,
                 us_manager=us_manager,
@@ -601,6 +612,7 @@ class DatasetDataBaseView(BaseView):
                 allow_rls_change=False,
                 allow_settings_change=False,
                 allow_query_settings_change=False,
+                latest_revision_id=latest_revision_id,
             )
             await self.resolve_rls_groups_for_dataset(req_model, services_registry)
 

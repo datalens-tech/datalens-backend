@@ -56,12 +56,7 @@ class DatasetUpdateInfo(NamedTuple):
 
     added_own_source_ids: list[str]
     updated_own_source_ids: list[str]
-
-
-EMPTY_DS_UPDATE_INFO = DatasetUpdateInfo(
-    added_own_source_ids=[],
-    updated_own_source_ids=[],
-)
+    latest_revision_id: str | None
 
 
 def clear_cache_invalidation_source_irrelevant_data(
@@ -91,19 +86,23 @@ class DatasetApiLoader:
         allow_rls_change: bool = True,
         allow_settings_change: bool = True,
         allow_query_settings_change: bool = True,
+        latest_revision_id: str | None = None,
     ) -> DatasetUpdateInfo:
-        update_info = EMPTY_DS_UPDATE_INFO
-
         if dataset_data:
-            update_info = self.populate_dataset_from_body(
+            return self.populate_dataset_from_body(
                 dataset=dataset,
                 us_manager=us_manager,
                 body=dataset_data,
                 allow_rls_change=allow_rls_change,
                 allow_settings_change=allow_settings_change,
                 allow_query_settings_change=allow_query_settings_change,
+                latest_revision_id=latest_revision_id,
             )
-        return update_info
+        return DatasetUpdateInfo(
+            added_own_source_ids=[],
+            updated_own_source_ids=[],
+            latest_revision_id=latest_revision_id,
+        )
 
     def _ensure_additional_connections_are_preloaded(
         self,
@@ -458,6 +457,7 @@ class DatasetApiLoader:
         allow_rls_change: bool = True,
         allow_settings_change: bool = True,
         allow_query_settings_change: bool = True,
+        latest_revision_id: str | None = None,
     ) -> DatasetUpdateInfo:
         """
         Synchronize dataset object with configuration received in ``body``.
@@ -468,7 +468,13 @@ class DatasetApiLoader:
         ds_accessor = DatasetComponentAccessor(dataset=dataset)
         ds_editor = DatasetComponentEditor(dataset=dataset)
 
-        if dataset.revision_id != body["revision_id"]:
+        # Callers that know the latest revision (e.g. control-api after consulting
+        # the saved branch) pass it in. For callers that don't (e.g. data-api),
+        # fall back to the loaded dataset's revision_id
+        latest_revision_id = latest_revision_id if latest_revision_id is not None else dataset.revision_id
+
+        if latest_revision_id != body["revision_id"]:
+            # A newer revision (saved or published) appeared while the user was editing
             raise exc.DatasetRevisionMismatch()
 
         if allow_settings_change:
@@ -543,4 +549,5 @@ class DatasetApiLoader:
         return DatasetUpdateInfo(
             added_own_source_ids=added_own_source_ids,
             updated_own_source_ids=updated_own_source_ids,
+            latest_revision_id=latest_revision_id,
         )
