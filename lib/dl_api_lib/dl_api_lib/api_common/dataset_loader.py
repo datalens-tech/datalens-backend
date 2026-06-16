@@ -476,6 +476,9 @@ class DatasetApiLoader:
         if latest_revision_id != body["revision_id"]:
             # A newer revision (saved or published) appeared while the user was editing
             raise exc.DatasetRevisionMismatch()
+        # Otherwise - continue with revision_id from request body
+        # Regardless of what we fetched from US, revision_id should travel through all client requests, it changes only when dataset is saved
+        ds_editor.set_revision_id(body["revision_id"])
 
         if allow_settings_change:
             ds_editor.set_load_preview_by_default(body["load_preview_by_default"])
