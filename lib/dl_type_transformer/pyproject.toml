@@ -10,6 +10,7 @@ version = "0.0.1"
 [tool.poetry.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+frozendict = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 python = ">=3.12, <3.13"

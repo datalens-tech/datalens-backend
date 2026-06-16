@@ -21,6 +21,7 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 oracledb = "*"
 python = ">=3.12, <3.13"
@@ -32,7 +33,6 @@ dl-api-lib-testing = {path = "../dl_api_lib_testing"}
 dl-core-testing = {path = "../dl_core_testing"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-testing = {path = "../dl_testing"}
-frozendict = "*"
 pytest = "*"
 requests = "*"
 

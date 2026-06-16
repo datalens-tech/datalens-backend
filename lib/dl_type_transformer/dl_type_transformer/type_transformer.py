@@ -4,6 +4,7 @@ from collections.abc import (
     Callable,
     Generator,
     Iterable,
+    Mapping,
 )
 from contextlib import contextmanager
 import datetime
@@ -18,6 +19,7 @@ from typing import (
     final,
 )
 
+from frozendict import frozendict
 import pytz
 
 from dl_constants.enums import (
@@ -209,8 +211,8 @@ class LowercaseTypeCaster(TypeCaster):
 
 
 class TypeTransformer:
-    native_to_user_map: ClassVar[dict[GenericNativeType, UserDataType]] = {}
-    user_to_native_map: ClassVar[dict[UserDataType, GenericNativeType]] = {}
+    native_to_user_map: ClassVar[Mapping[GenericNativeType, UserDataType]] = frozendict({})
+    user_to_native_map: ClassVar[Mapping[UserDataType, GenericNativeType]] = frozendict({})
     casters: ClassVar[dict[UserDataType, TypeCaster]] = {
         UserDataType.integer: IntegerTypeCaster(),
         UserDataType.float: FloatTypeCaster(),

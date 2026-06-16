@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from frozendict import frozendict
 import sqlalchemy as sa
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
@@ -89,13 +90,17 @@ class YQLTypeTransformer(TypeTransformer):
         UserDataType.markup: sa.TEXT,
     }
 
-    native_to_user_map = {
-        make_native_type(sa_type): bi_type
-        for bi_type, sa_types in _base_type_map.items()
-        for sa_type in sa_types
-        if bi_type != UserDataType.datetime
-    }
-    user_to_native_map = {
-        **{bi_type: make_native_type(sa_types[0]) for bi_type, sa_types in _base_type_map.items()},
-        **{bi_type: make_native_type(sa_type) for bi_type, sa_type in _extra_type_map.items()},
-    }
+    native_to_user_map = frozendict(
+        {
+            make_native_type(sa_type): bi_type
+            for bi_type, sa_types in _base_type_map.items()
+            for sa_type in sa_types
+            if bi_type != UserDataType.datetime
+        }
+    )
+    user_to_native_map = frozendict(
+        {
+            **{bi_type: make_native_type(sa_types[0]) for bi_type, sa_types in _base_type_map.items()},
+            **{bi_type: make_native_type(sa_type) for bi_type, sa_type in _extra_type_map.items()},
+        }
+    )

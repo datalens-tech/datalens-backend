@@ -19,6 +19,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 google-api-core = "*"
 google-auth = "*"
 google-cloud-bigquery = "*"
