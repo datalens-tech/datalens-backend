@@ -1,6 +1,6 @@
 import attr
 
-from dl_constants.enums import DataPivotEngineType
+from dl_constants import DataPivotEngineType
 import dl_pivot as package
 from dl_pivot.base.plugin import PivotEnginePlugin
 from dl_pivot.base.transformer_factory import PivotTransformerFactory

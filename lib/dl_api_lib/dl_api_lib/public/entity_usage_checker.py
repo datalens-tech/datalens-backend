@@ -7,7 +7,7 @@ import attr
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_api_lib.i18n.localizer import Translatable
-from dl_constants.enums import DataSourceRole
+from dl_constants import DataSourceRole
 from dl_core import us_dataset
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.collection import DataSourceCollectionFactory

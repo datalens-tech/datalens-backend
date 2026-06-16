@@ -5,7 +5,7 @@ from datetime import (
 
 import pytest
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.fields import (
     BIField,
     DirectCalculationSpec,

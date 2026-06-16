@@ -11,7 +11,7 @@ from typing import (
 
 import pandas as pd
 
-from dl_constants.enums import (
+from dl_constants import (
     OrderDirection,
     PivotRole,
 )

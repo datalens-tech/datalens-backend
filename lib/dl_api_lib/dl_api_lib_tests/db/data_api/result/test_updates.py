@@ -12,7 +12,7 @@ from dl_api_lib.enums import (
 )
 from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import FieldType
+from dl_constants import FieldType
 from dl_core_testing.database import DbTable
 
 

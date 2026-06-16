@@ -1,5 +1,5 @@
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core import exc
 from dl_core.components.sys_parameters import (
     SYS_PARAMETER_PREFIX,

@@ -15,7 +15,7 @@ from sqlalchemy.dialects.postgresql.psycopg2 import PGDialect_psycopg2
 from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql.base import Executable
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_processing.processing.db_base.exec_adapter_base import ProcessorDbExecAdapterBase
 from dl_type_transformer.sa_types import make_sa_type

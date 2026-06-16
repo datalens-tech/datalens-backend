@@ -21,7 +21,7 @@ import attr
 import sqlalchemy as sa
 
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import (
     BaseClassicAdapter,
     ClassicSQLConnLineConstructor,

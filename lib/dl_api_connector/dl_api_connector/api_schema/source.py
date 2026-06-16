@@ -18,7 +18,7 @@ from dl_api_connector.api_schema.source_base import (
     DataSourceBaseSchema,
     DataSourceTemplateBaseSchema,
 )
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 
 
 class DataSourceSchema(OneOfSchema):

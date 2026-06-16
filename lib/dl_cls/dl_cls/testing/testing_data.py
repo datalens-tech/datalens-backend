@@ -4,7 +4,7 @@ from dl_cls.models import (
     CLSSubject,
     FieldCLS,
 )
-from dl_constants.enums import (
+from dl_constants import (
     CLSMode,
     CLSSubjectType,
 )

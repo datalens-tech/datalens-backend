@@ -7,7 +7,7 @@ import re
 
 import attr
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_dashsql.formatting.base import (
     QueryBoundParameterWrapper,
     QueryFormatter,

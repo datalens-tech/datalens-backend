@@ -4,7 +4,7 @@ from typing import Any
 
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.us_manager.storage_schemas.data_source_spec_base import DataSourceSpecStorageSchema
 

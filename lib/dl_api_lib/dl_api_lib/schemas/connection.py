@@ -17,7 +17,7 @@ from dl_api_connector.api_schema.source_base import (
 )
 from dl_api_lib.schemas.main import NotificationContentSchema
 from dl_api_lib.schemas.options import SourceListingSchema
-from dl_constants.enums import ConnectionType as CT
+from dl_constants import ConnectionType as CT
 from dl_core.us_connection_base import (
     ConnectionBase,
     UnknownConnection,

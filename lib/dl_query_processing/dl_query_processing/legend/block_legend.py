@@ -7,7 +7,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import QueryBlockPlacementType
+from dl_constants import QueryBlockPlacementType
 from dl_query_processing.base_specs.dimensions import (
     DimensionSpec,
     DimensionValueSpec,

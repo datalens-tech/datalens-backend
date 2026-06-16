@@ -44,7 +44,7 @@ from dl_api_lib.request_model.data import (
     ReplaceConnectionAction,
     SourceActionBase,
 )
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     CalcMode,
     DataSourceRole,

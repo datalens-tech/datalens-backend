@@ -1,4 +1,4 @@
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.data_source.sql import (
     StandardSQLDataSource,
     SubselectDataSource,

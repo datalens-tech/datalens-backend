@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceRole,
     DataSourceType,
     JoinType,

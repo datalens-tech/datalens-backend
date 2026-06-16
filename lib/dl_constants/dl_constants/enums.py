@@ -519,3 +519,15 @@ class ExtractStatus(Enum):
     error = "error"
     running = "running"
     completed = "completed"
+
+
+@unique
+class USEntryMode(Enum):
+    publish = "publish"
+    save = "save"
+
+
+@unique
+class USEntryBranch(Enum):
+    published = "published"
+    saved = "saved"

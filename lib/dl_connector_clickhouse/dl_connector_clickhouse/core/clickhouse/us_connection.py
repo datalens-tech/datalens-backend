@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 from dl_core.us_connection_base import (
     ConnectionSettingsMixin,
     DataSourceTemplate,

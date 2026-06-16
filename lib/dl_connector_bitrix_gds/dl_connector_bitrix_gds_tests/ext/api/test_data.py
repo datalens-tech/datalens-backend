@@ -8,7 +8,7 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataRangeTestSuite,
     DefaultConnectorDataResultTestSuite,
 )
-from dl_constants.enums import (
+from dl_constants import (
     UserDataType,
     WhereClauseOperation,
 )

@@ -4,7 +4,7 @@ from typing import Any
 
 import attr
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.data_source_spec.base import DataSourceSpec
 from dl_core.data_source_spec.type_mapping import get_data_source_spec_class
 

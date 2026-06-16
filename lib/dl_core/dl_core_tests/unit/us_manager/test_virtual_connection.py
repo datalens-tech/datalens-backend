@@ -11,7 +11,7 @@ import attr
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DataSourceType,
 )

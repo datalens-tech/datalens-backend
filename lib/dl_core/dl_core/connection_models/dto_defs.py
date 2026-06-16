@@ -8,7 +8,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 
 
 @attr.s(frozen=True)

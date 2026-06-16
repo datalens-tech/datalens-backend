@@ -11,7 +11,7 @@ from clickhouse_sqlalchemy import types as ch_types
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import SourceBackendType
+from dl_constants import SourceBackendType
 from dl_type_transformer.native_type import (
     ClickHouseDateTime64NativeType,
     ClickHouseDateTime64WithTZNativeType,

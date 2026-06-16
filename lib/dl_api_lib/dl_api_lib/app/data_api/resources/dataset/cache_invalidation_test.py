@@ -31,7 +31,7 @@ from dl_api_lib.query.formalization.raw_specs import (
 import dl_api_lib.schemas.cache_invalidation_test as cache_invalidation_test_schemas
 from dl_api_lib.utils.base import check_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import (
+from dl_constants import (
     CacheInvalidationMode,
     UserDataType,
 )

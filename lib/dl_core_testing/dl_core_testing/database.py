@@ -19,7 +19,7 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     SourceBackendType,
     UserDataType,

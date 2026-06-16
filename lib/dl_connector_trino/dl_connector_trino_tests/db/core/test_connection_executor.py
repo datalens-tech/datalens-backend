@@ -11,7 +11,7 @@ from sqlalchemy.exc import CompileError
 from sqlalchemy.sql import compiler
 import trino.sqlalchemy.datatype as tsa
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_executors.sync_base import (

@@ -11,7 +11,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import WhereClauseOperation
+from dl_constants import WhereClauseOperation
 from dl_core.fields import BIField
 from dl_formula.core.datatype import DataType
 import dl_formula.core.nodes as formula_nodes

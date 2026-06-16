@@ -28,7 +28,7 @@ from dl_configs.settings_loaders.fallback_cfg_resolver import ObjectLikeConfig
 from dl_configs.settings_loaders.meta_definition import s_attrib
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
 from dl_configs.utils import conn_type_set_env_var_converter
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     ConnectorAvailability,
 )

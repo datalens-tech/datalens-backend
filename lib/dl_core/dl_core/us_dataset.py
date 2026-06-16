@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     DataSourceCreatedVia,
     DataSourceRole,

@@ -2,7 +2,7 @@ import pytest
 
 from dl_api_lib_testing.data_api_base import DataApiTestParams
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import WhereClauseOperation
+from dl_constants import WhereClauseOperation
 
 
 class TestDataApiErrors(DefaultApiTestBase):

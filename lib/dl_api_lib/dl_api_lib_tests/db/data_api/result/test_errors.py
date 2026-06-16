@@ -7,7 +7,7 @@ from dl_api_client.dsmaker.primitives import (
     RoleSpec,
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     CalcMode,
     FieldRole,

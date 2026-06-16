@@ -11,7 +11,7 @@ from dl_api_lib_testing.data_api_base import (
     StandardizedDataApiTestBase,
 )
 from dl_api_lib_testing.dataset_base import DatasetTestBase
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core_testing.database import (
     C,
     Db,

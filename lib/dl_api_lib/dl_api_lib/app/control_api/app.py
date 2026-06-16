@@ -28,7 +28,7 @@ from dl_api_lib.app_settings import (
     ControlApiAppTestingsSettings,
 )
 from dl_configs.utils import get_multiple_root_certificates
-from dl_constants.enums import USAuthMode
+from dl_constants import USAuthMode
 from dl_core import profiling_middleware
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware

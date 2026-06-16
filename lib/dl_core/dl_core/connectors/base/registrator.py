@@ -1,7 +1,7 @@
 import logging
 from typing import TYPE_CHECKING
 
-from dl_constants.enums import SourceBackendType
+from dl_constants import SourceBackendType
 from dl_core.backend_types import register_connection_backend_type
 from dl_core.connection_executors.adapters.common_base import register_dialect_string
 from dl_core.connection_executors.remote_query_executor.commons import register_adapter_class

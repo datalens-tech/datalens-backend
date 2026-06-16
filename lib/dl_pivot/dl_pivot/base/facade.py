@@ -10,7 +10,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import PivotRole
+from dl_constants import PivotRole
 from dl_pivot.primitives import (
     DataCell,
     DataCellVector,

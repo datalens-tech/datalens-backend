@@ -1,7 +1,7 @@
 import attr
 
 from dl_configs.settings_loaders.settings_obj_base import SettingsBase
-from dl_constants.enums import ConnectorAvailability
+from dl_constants import ConnectorAvailability
 from dl_dynamic_enum import (
     AutoEnumValue,
     DynamicEnum,

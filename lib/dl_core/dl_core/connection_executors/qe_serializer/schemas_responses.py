@@ -7,7 +7,7 @@ from marshmallow import (
     pre_dump,
 )
 
-from dl_constants.enums import IndexKind
+from dl_constants import IndexKind
 from dl_core.connection_executors.models.db_adapter_data import (
     RawColumnInfo,
     RawIndexInfo,

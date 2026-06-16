@@ -4,7 +4,7 @@ from typing import Any
 
 import attr
 
-from dl_constants.enums import RLSSubjectType
+from dl_constants import RLSSubjectType
 from dl_rls.models import (
     RLSEntry,
     RLSPatternType,

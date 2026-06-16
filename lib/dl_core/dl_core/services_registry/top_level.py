@@ -16,7 +16,7 @@ from dl_api_commons.base_models import RequestContextInfo
 from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.enums import RequiredService
-from dl_constants.enums import ProcessorType
+from dl_constants import ProcessorType
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.services_registry.cache_engine_factory import (
     CacheEngineFactory,
@@ -43,7 +43,7 @@ import dl_extract
 from dl_task_processor.processor import TaskProcessorFactory
 
 if TYPE_CHECKING:
-    from dl_constants.enums import ConnectionType
+    from dl_constants import ConnectionType
     from dl_core.aio.web_app_services.data_processing.data_processor import DataProcessorService
     from dl_core.connectors.settings.base import ConnectorSettings
     from dl_core.services_registry.compute_executor import ComputeExecutor

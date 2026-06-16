@@ -9,11 +9,11 @@ from enum import (
     unique,
 )
 
-from dl_constants.enums import (
+from dl_constants import (
     UserDataType,
     WhereClauseOperation,
 )
-from dl_constants.enums import AggregationFunction as ag
+from dl_constants import AggregationFunction as ag
 
 W = WhereClauseOperation
 _FILT_MINIMAL = frozenset((W.EQ, W.NE, W.IN, W.NIN))

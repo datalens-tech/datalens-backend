@@ -20,7 +20,7 @@ import attr
 from sqlalchemy.sql.elements import ClauseElement
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_constants.exc import DLBaseException
 from dl_constants.types import TBIDataValue
 from dl_core.connection_executors.models.common import RemoteQueryExecutorData

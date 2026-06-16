@@ -3,7 +3,7 @@ from collections.abc import Set
 import pytest
 import sqlalchemy as sa
 
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceRole,
     DataSourceType,
     JoinType,

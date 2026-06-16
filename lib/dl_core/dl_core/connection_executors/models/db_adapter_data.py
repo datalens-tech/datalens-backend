@@ -14,7 +14,7 @@ import attr
 from sqlalchemy.sql.elements import ClauseElement
 
 if TYPE_CHECKING:
-    from dl_constants.enums import IndexKind
+    from dl_constants import IndexKind
     from dl_constants.types import TJSONExt
     from dl_type_transformer.native_type import GenericNativeType
 

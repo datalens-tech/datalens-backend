@@ -22,7 +22,7 @@ import dl_api_lib.schemas.data
 import dl_api_lib.schemas.main
 from dl_api_lib.utils.base import check_permission_on_entry
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceRole,
     DataSourceType,
 )

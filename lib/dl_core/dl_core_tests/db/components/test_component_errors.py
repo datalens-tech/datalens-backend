@@ -1,6 +1,6 @@
 import uuid
 
-from dl_constants.enums import ComponentType
+from dl_constants import ComponentType
 from dl_core_tests.db.base import DefaultCoreTestClass
 
 

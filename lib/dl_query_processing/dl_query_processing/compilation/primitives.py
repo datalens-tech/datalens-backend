@@ -15,7 +15,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     JoinType,
     OrderDirection,
 )

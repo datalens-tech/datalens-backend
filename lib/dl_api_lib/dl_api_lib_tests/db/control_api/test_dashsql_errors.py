@@ -1,7 +1,7 @@
 import json
 
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.data_source import BaseSQLDataSource
 from dl_core.exc import FailedToLoadSchema
 

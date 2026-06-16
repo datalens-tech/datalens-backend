@@ -7,7 +7,7 @@ from clickhouse_sqlalchemy import types as ch_types
 from frozendict import frozendict
 import sqlalchemy as sa
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_type_transformer.native_type import GenericNativeType
 from dl_type_transformer.type_transformer import (
     TypeTransformer,

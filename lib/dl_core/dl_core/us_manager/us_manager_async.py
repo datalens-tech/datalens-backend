@@ -19,9 +19,11 @@ import typing_extensions
 from dl_api_commons.base_models import RequestContextInfo
 from dl_app_tools.profiling_base import generic_profiler_async
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DataSourceType,
+    USEntryBranch,
+    USEntryMode,
 )
 from dl_core import exc
 from dl_core.base_models import (
@@ -30,10 +32,6 @@ from dl_core.base_models import (
 )
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.type_mapping import get_connection_type_for_source_type
-from dl_core.enums import (
-    USEntryBranch,
-    USEntryMode,
-)
 from dl_core.united_storage_client import USAuthContextBase
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_connection import get_connection_class

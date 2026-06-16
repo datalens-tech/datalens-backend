@@ -78,7 +78,7 @@ from dl_api_lib.app_settings import (
 )
 from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgConfig
 from dl_configs.enums import RedisMode
-from dl_constants.enums import (
+from dl_constants import (
     ProcessorType,
     RedisInstanceKind,
 )

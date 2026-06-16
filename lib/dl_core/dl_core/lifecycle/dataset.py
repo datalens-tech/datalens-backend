@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 
-from dl_constants.enums import DataSourceRole
+from dl_constants import DataSourceRole
 from dl_core.components.editor import DatasetComponentEditor
 from dl_core.data_source_spec.collection import DataSourceCollectionSpec
 from dl_core.lifecycle.base import EntryLifecycleManager

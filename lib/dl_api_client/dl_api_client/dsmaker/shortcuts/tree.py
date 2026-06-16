@@ -6,7 +6,7 @@ from dl_api_client.dsmaker.primitives import (
     Dataset,
     RequestLegendItem,
 )
-from dl_constants.enums import FieldRole
+from dl_constants import FieldRole
 
 
 def make_request_legend_items_for_tree_branches(

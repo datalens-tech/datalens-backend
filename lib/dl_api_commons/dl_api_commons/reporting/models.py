@@ -3,7 +3,7 @@ from __future__ import annotations
 import attr
 
 from dl_api_commons.reporting.records import ReportingRecord
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     NotificationLevel,
     ReportingQueryType,

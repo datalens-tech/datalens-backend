@@ -14,7 +14,7 @@ from dl_api_lib.query.formalization.raw_specs import (
 )
 from dl_api_lib.request_model.data import PivotDataRequestModel
 from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotRequestModelNormalizer
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     PivotRole,
 )

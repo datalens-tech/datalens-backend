@@ -4,7 +4,7 @@ import uuid
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import FieldType
+from dl_constants import FieldType
 
 
 class TestResultPreflight(DefaultApiTestBase):

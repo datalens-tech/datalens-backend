@@ -31,7 +31,7 @@ from dl_api_lib.utils.base import (
     need_permission_on_entry,
 )
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 import dl_core.exc as core_exc
 from dl_core.us_connection_base import ConnectionBase
 from dl_dashsql.typed_query.primitives import (

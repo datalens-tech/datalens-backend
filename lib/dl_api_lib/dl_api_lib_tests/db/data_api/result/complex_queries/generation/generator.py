@@ -6,7 +6,7 @@ from typing import Any
 
 import attr
 
-from dl_constants.enums import WhereClauseOperation
+from dl_constants import WhereClauseOperation
 
 
 @attr.s

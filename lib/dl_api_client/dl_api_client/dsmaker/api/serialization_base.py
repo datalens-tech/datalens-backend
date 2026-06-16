@@ -31,7 +31,7 @@ from dl_api_client.dsmaker.primitives import (
     SourceAvatar,
     UpdateAction,
 )
-from dl_constants.enums import JoinConditionType
+from dl_constants import JoinConditionType
 
 
 class ObligatoryFilterUpdateSchema(DefaultSchema[ObligatoryFilter]):

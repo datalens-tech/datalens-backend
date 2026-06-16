@@ -15,7 +15,7 @@ import sqlalchemy as sa
 from sqlalchemy.sql.elements import ClauseElement
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 from dl_core import exc
 from dl_core.components.ids import AvatarId
 from dl_core.data_processing.prepared_components.primitives import (

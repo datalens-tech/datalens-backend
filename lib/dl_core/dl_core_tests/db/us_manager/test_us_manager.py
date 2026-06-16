@@ -7,7 +7,7 @@ import pytest
 import pytest_asyncio
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import DataSourceRole
+from dl_constants import DataSourceRole
 from dl_core import exc
 from dl_core.data_source import DataSource
 from dl_core.services_registry.top_level import ServicesRegistry

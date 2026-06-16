@@ -4,7 +4,7 @@ from copy import deepcopy
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     RLSPatternType,
     RLSSubjectType,
 )

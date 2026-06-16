@@ -1,7 +1,7 @@
 import pytest
 
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
-from dl_constants.enums import ParameterValueConstraintType
+from dl_constants import ParameterValueConstraintType
 from dl_model_tools.schema.typed_values import VALUE_TYPE_CONTEXT_KEY
 
 

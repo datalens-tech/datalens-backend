@@ -8,7 +8,7 @@ from dl_api_lib_testing.typed_query_base import (
     DashSQLTypedQueryTestBase,
     TypedQueryInfo,
 )
-from dl_constants.enums import (
+from dl_constants import (
     DashSQLQueryType,
     UserDataType,
 )

@@ -11,7 +11,7 @@ from dl_api_connector.connector import (
     ApiSourceDefinition,
     MQMFactorySettingItem,
 )
-from dl_constants.enums import QueryProcessingMode
+from dl_constants import QueryProcessingMode
 from dl_query_processing.multi_query.factory import NoCompengMultiQueryMutatorFactory
 
 from dl_connector_bitrix_gds.api.api_schema.connection import BitrixGDSConnectionSchema

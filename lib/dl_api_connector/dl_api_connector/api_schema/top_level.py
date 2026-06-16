@@ -30,7 +30,7 @@ from dl_api_connector.api_schema.extras import (
     FieldExtra,
     SchemaKWArgs,
 )
-from dl_constants.enums import (
+from dl_constants import (
     CreateMode,
     EditMode,
     ExportMode,

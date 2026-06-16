@@ -5,7 +5,7 @@ from typing import TypedDict
 
 import attr
 
-from dl_constants.enums import OperationsMode
+from dl_constants import OperationsMode
 
 
 class SchemaKWArgs(TypedDict):

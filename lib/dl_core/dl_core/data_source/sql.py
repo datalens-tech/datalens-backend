@@ -11,7 +11,7 @@ import attr
 import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 from dl_core import exc
 from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase

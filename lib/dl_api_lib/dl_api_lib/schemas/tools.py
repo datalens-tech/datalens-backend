@@ -6,7 +6,7 @@ from dl_api_connector.api_schema.top_level import (
     BaseTopLevelSchema,
     USEntryBaseSchema,
 )
-from dl_constants.enums import OperationsMode
+from dl_constants import OperationsMode
 from dl_core.us_manager.us_manager import USManagerBase
 
 

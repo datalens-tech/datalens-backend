@@ -1,4 +1,4 @@
-from dl_constants.enums import ParameterValueConstraintType
+from dl_constants import ParameterValueConstraintType
 from dl_core.fields import (
     BIField,
     CollectionParameterValueConstraint,

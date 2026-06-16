@@ -11,7 +11,7 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.dialects import mysql as mysql_types
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connection_executors.async_base import AsyncConnExecutorBase
 from dl_core.connection_executors.common_base import ConnExecutorQuery
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase

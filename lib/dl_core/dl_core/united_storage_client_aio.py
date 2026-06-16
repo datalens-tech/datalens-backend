@@ -20,11 +20,11 @@ from dl_api_commons.aiohttp.aiohttp_client import BIAioHTTPClient
 from dl_api_commons.retrier.aiohttp import AiohttpPolicyRetrier
 from dl_api_commons.tracing import get_current_tracing_headers
 from dl_app_tools.profiling_base import GenericProfiler
-from dl_core.base_models import EntryLocation
-from dl_core.enums import (
+from dl_constants import (
     USEntryBranch,
     USEntryMode,
 )
+from dl_core.base_models import EntryLocation
 from dl_core.exc import (
     USLockUnacquiredException,
     USReqException,

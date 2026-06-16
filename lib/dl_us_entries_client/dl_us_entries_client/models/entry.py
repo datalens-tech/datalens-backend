@@ -2,6 +2,7 @@ import enum
 
 import pydantic
 
+import dl_constants
 import dl_httpx
 import dl_pydantic
 
@@ -35,6 +36,7 @@ class EntryData(dl_pydantic.BaseSchema):
     key: str
     hidden: bool = False
     permissions: EntryPermissions | None = None
+    mode: dl_constants.USEntryMode = dl_constants.USEntryMode.publish
 
     data: Data | None = None
     unversioned_data: UnversionedData | None = pydantic.Field(

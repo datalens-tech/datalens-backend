@@ -1,4 +1,4 @@
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 
 _EXPORT_IMPORT_ALLOWED_BY_CONN_TYPE: dict[ConnectionType, bool] = {}
 

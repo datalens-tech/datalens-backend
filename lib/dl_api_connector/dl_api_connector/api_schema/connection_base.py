@@ -9,7 +9,7 @@ from marshmallow import Schema
 from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.top_level import USEntryBaseSchema
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DashSQLQueryType,
     UserDataType,

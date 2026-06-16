@@ -5,7 +5,7 @@ from typing import ClassVar
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_testing.connector.dataset_suite import DefaultConnectorDatasetTestSuite
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     FieldType,
     UserDataType,

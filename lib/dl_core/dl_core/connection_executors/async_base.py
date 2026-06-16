@@ -26,7 +26,7 @@ from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
 from dl_core.db import SchemaInfo
 
 if TYPE_CHECKING:
-    from dl_constants.enums import UserDataType
+    from dl_constants import UserDataType
     from dl_constants.types import TBIDataTable
     from dl_core.connection_models.common_models import (
         DBIdent,

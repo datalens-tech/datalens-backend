@@ -2,7 +2,7 @@ import typing
 
 import pytest
 
-from dl_constants.enums import RLSSubjectType
+from dl_constants import RLSSubjectType
 from dl_rls.models import RLSSubject
 from dl_rls.serializer import FieldRLSSerializer
 from dl_rls.subject_resolver import NotFoundSubjectResolver

@@ -1,4 +1,4 @@
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.connection_models import DataSourceTemplateDisabledText
 from dl_core.i18n.localizer import (
     CONFIGS,

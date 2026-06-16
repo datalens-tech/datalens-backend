@@ -22,7 +22,7 @@ from dl_api_lib.exc import (
 from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 from dl_api_lib.schemas.connection import ConnectionFormQuerySchema
 from dl_api_lib.schemas.main import BadRequestResponseSchema
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     UserDataType,
 )

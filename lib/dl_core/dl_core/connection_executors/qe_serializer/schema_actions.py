@@ -4,7 +4,7 @@ from typing import Any
 
 from marshmallow import fields
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 from dl_core.connection_executors.qe_serializer import dba_actions as dba_actions

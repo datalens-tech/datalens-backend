@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import attr
 
 if TYPE_CHECKING:
-    from dl_constants.enums import DataSourceRole
+    from dl_constants import DataSourceRole
     from dl_core.us_connection_base import ClassicConnectionSQL
     from dl_query_processing.translation.primitives import TranslatedMultiQueryBase
 

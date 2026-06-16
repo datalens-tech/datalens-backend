@@ -26,12 +26,13 @@ from dl_api_lib.query.registry import (
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_api_lib.utils.base import check_permission_on_entry
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     BinaryJoinOperator,
     ConnectionType,
     ManagedBy,
     RLSSubjectType,
+    USEntryBranch,
     UserDataType,
 )
 from dl_constants.exc import DEFAULT_GLOBAL_ERR_CODE_API_PREFIX
@@ -40,7 +41,6 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DbInfo
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
-from dl_core.enums import USEntryBranch
 from dl_core.exc import (
     DatasetConfigurationError,
     ReferencedUSEntryAccessDenied,

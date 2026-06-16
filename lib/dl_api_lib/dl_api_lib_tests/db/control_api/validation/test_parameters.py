@@ -5,7 +5,7 @@ import pytest
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-import dl_constants.enums as dl_constants_enums
+import dl_constants
 
 
 class TestValidationParameters(DefaultApiTestBase):
@@ -22,7 +22,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "123",
                         "value_constraint": {
@@ -49,7 +49,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "123",
                     },
@@ -77,7 +77,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "123",
                     },
@@ -117,7 +117,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "abc",
                     },
@@ -140,7 +140,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "123",
                         "value_constraint": {
@@ -167,7 +167,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "789",
                         "value_constraint": {
@@ -210,7 +210,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "test_title",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "string",
                         "default_value": "test",
                         "template_enabled": True,
@@ -242,7 +242,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "_sys.unknown",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "string",
                         "default_value": "x",
                     },
@@ -272,7 +272,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "_sys.user_id",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "string",
                         "default_value": "anon",
                     },
@@ -296,7 +296,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "_sys.user_id",
-                        "calc_mode": dl_constants_enums.CalcMode.formula.value,
+                        "calc_mode": dl_constants.CalcMode.formula.value,
                         "formula": "'x'",
                     },
                 }
@@ -322,7 +322,7 @@ class TestValidationParameters(DefaultApiTestBase):
                     "field": {
                         "guid": "test_guid",
                         "title": "_sys.user_id",
-                        "calc_mode": dl_constants_enums.CalcMode.parameter.value,
+                        "calc_mode": dl_constants.CalcMode.parameter.value,
                         "cast": "integer",
                         "default_value": "1",
                     },

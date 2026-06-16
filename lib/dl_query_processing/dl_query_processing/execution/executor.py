@@ -8,7 +8,7 @@ import logging
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceRole,
     ProcessorType,
 )

@@ -30,8 +30,8 @@ from dl_api_client.dsmaker.primitives import (
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-import dl_constants.enums as dl_constants_enums
-from dl_constants.enums import DataSourceType
+import dl_constants
+from dl_constants import DataSourceType
 from dl_core.connectors.settings.base import ConnectorSettings
 from dl_core_testing.database import DbTable
 from dl_testing.constants import TEST_USER_ID
@@ -58,7 +58,7 @@ class DatasetFactoryProtocol(Protocol):
 
 class BaseTestSourceTemplate(ConnectionTestBase):
     source_type: ClassVar[DataSourceType]
-    raw_sql_level = dl_constants_enums.RawSQLLevel.template
+    raw_sql_level = dl_constants.RawSQLLevel.template
     connector_enable_datasource_template: ClassVar[bool] = True
 
     @pytest.fixture(scope="class")
@@ -381,7 +381,7 @@ class BaseTestControlApiSourceTemplateSettingsDisabled(BaseTestSourceTemplate):
 
 
 class BaseTestControlApiSourceTemplateConnectionDisabled(BaseTestSourceTemplate):
-    raw_sql_level = dl_constants_enums.RawSQLLevel.subselect
+    raw_sql_level = dl_constants.RawSQLLevel.subselect
 
     def test_default(
         self,
@@ -458,7 +458,7 @@ class BaseTestDataApiSourceTemplate(BaseTestSourceTemplate):
     ) -> None:
         control_api_sync_client.put(
             f"/api/v1/connections/{saved_connection_id}",
-            data=json.dumps({"raw_sql_level": dl_constants_enums.RawSQLLevel.subselect.value}),
+            data=json.dumps({"raw_sql_level": dl_constants.RawSQLLevel.subselect.value}),
             content_type="application/json",
         )
 

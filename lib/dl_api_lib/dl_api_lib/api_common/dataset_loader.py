@@ -18,7 +18,7 @@ from dl_api_lib.dataset.utils import (
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
 from dl_app_tools.profiling_base import generic_profiler
-from dl_constants.enums import (
+from dl_constants import (
     CacheInvalidationMode,
     DataSourceRole,
     ExtractMode,

@@ -15,11 +15,11 @@ import shortuuid
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_core.base_models import EntryLocation
-from dl_core.enums import (
+from dl_constants import (
     USEntryBranch,
     USEntryMode,
 )
+from dl_core.base_models import EntryLocation
 from dl_core.exc import USObjectNotFoundException
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,

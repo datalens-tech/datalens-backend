@@ -8,7 +8,7 @@ import attr
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import TextClause
 
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceType,
     UserDataType,
 )

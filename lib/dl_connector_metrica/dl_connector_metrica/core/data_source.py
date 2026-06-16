@@ -9,7 +9,7 @@ from typing import (
     ClassVar,
 )
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core import exc
 from dl_core.data_source.sql import PseudoSQLDataSource
 from dl_core.db import (

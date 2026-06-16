@@ -19,7 +19,7 @@ from dl_app_tools.profiling_base import (
     generic_profiler,
     generic_profiler_async,
 )
-from dl_constants.enums import MigrationStatus
+from dl_constants import MigrationStatus
 from dl_core.exc import UnknownEntryMigration
 
 if TYPE_CHECKING:

@@ -17,7 +17,7 @@ import ydb_dbapi
 import ydb_dbapi.connections
 
 from dl_configs.utils import get_root_certificates
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 from dl_core import exc
 from dl_core.connection_executors.models.db_adapter_data import RawColumnInfo
 from dl_core.connection_models import (

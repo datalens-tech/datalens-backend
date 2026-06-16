@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from marshmallow import fields as ma_fields
 
-from dl_constants.enums import NotificationLevel
+from dl_constants import NotificationLevel
 from dl_model_tools.schema.base import BaseSchema
 
 

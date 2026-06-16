@@ -25,7 +25,7 @@ from dl_api_lib import (
 )
 from dl_api_lib.schemas.tools import prepare_schema_context
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_constants.enums import (
+from dl_constants import (
     NotificationLevel,
     OperationsMode,
 )

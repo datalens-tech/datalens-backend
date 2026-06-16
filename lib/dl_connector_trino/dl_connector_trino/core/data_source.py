@@ -1,7 +1,7 @@
 import logging
 from typing import ClassVar
 
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceType,
     JoinType,
 )

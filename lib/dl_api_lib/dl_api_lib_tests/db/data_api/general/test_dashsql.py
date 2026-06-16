@@ -5,7 +5,7 @@ import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 
 
 class TestDashSQL(DefaultApiTestBase, DefaultDashSQLTestSuite):
@@ -15,8 +15,8 @@ class TestDashSQL(DefaultApiTestBase, DefaultDashSQLTestSuite):
 
     @pytest.fixture(scope="class")
     def dashsql_datetime_query(self) -> str:
-        return """select 
-            toDateTime('2023-06-15 14:30:45'), 
+        return """select
+            toDateTime('2023-06-15 14:30:45'),
             toDateTime64('2023-06-15 14:30:45.123', 3),
             toDateTime('2023-06-15 14:30:45', 'Europe/Moscow'),
             toDateTime64('2023-06-15 14:30:45.123', 3, 'UTC'),

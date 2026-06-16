@@ -1,4 +1,4 @@
-from dl_constants.enums import ProcessorType
+from dl_constants import ProcessorType
 from dl_core.aio.web_app_services.data_processing.data_processor import (
     DataProcessorConfig,
     DataProcessorService,

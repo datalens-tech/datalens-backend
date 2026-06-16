@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dl_api_connector.form_config.models.base import ConnectionFormFactory
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 
 
 class NoForm(Exception):

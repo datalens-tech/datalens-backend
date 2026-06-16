@@ -17,11 +17,11 @@ from dl_api_commons.reporting.records import (
     RequestResultReportingRecord,
 )
 from dl_api_commons.reporting.registry import DefaultReportingRegistry
-from dl_constants.api_constants import DLContextKey
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     ReportingQueryType,
 )
+from dl_constants.api_constants import DLContextKey
 
 CONNECTION_TYPE_CHYT_TEST = ConnectionType.declare("chyt_test")
 CONNECTION_TYPE_TEST = ConnectionType.declare("test")

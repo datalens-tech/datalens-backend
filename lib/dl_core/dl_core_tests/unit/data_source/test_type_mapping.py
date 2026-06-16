@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 import pytest
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DataSourceType,
 )

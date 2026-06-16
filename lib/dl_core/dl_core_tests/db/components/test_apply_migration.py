@@ -9,7 +9,7 @@ from typing import (
 import attr
 import pytest
 
-from dl_constants.enums import MigrationStatus
+from dl_constants import MigrationStatus
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,
     Migration,

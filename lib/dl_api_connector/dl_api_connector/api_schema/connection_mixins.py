@@ -5,7 +5,7 @@ from marshmallow import fields as ma_fields
 
 from dl_api_connector.api_schema.connection_base_fields import cache_ttl_field
 from dl_api_connector.api_schema.extras import FieldExtra
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 import dl_core.marshmallow as core_ma_fields
 
 

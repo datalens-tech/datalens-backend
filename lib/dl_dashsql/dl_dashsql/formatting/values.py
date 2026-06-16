@@ -8,7 +8,7 @@ from typing import Any
 
 import attr
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_dashsql.formatting.base import (
     QueryFormatter,
     QueryFormatterFactory,

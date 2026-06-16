@@ -4,7 +4,7 @@ import attr
 from marshmallow import fields as ma_fields
 
 from dl_api_lib.schemas.data import DataExportSchemaMixin
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 from dl_model_tools.schema.base import (
     BaseSchema,
     DefaultSchema,

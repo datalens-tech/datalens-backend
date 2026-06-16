@@ -13,7 +13,7 @@ from dl_api_lib.query.registry import (
     is_compeng_enabled,
     is_forkable_dialect,
 )
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     UserDataType,
     WhereClauseOperation,

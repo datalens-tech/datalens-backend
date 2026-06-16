@@ -11,7 +11,7 @@ from dl_api_connector.api_schema.source_base import (
 )
 from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_api_connector.form_config.models.base import ConnectionFormFactory
-from dl_constants.enums import (
+from dl_constants import (
     QueryProcessingMode,
     SourceBackendType,
 )

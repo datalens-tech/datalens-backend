@@ -9,7 +9,7 @@ from dl_cls.models import (
     CLSMaskSpec,
     FieldCLS,
 )
-from dl_constants.enums import (
+from dl_constants import (
     CLSMode,
     CLSSubjectType,
 )

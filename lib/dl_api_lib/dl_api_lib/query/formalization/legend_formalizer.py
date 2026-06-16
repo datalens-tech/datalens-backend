@@ -23,7 +23,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawTemplateRoleSpec,
     RawTreeRoleSpec,
 )
-from dl_constants.enums import (
+from dl_constants import (
     CalcMode,
     FieldRole,
     FieldType,

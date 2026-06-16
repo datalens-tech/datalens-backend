@@ -11,7 +11,7 @@ import sqlalchemy as sa
 from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql.elements import ClauseElement
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     SourceBackendType,
 )

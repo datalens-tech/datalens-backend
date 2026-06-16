@@ -10,7 +10,7 @@ from typing import NamedTuple
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     OrderDirection,
     PivotHeaderRole,
 )

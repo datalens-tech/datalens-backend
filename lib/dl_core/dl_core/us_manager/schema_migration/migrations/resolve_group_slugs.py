@@ -6,7 +6,7 @@ import os
 from typing import TYPE_CHECKING
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import RLSSubjectType
+from dl_constants import RLSSubjectType
 from dl_core.us_manager.schema_migration.base import Migration
 from dl_rls.exc import RLSError
 from dl_rls.models import RLS_FAILED_USER_NAME_PREFIX

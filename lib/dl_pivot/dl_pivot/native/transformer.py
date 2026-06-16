@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import attr
 
-from dl_constants.enums import PivotRole
+from dl_constants import PivotRole
 from dl_pivot.base.transformer import PivotTransformer
 from dl_pivot.native.data_frame import (
     DoublePivotDataKey,

@@ -1,6 +1,6 @@
 import dl_cls
 from dl_cls.testing.testing_data import make_multitier_field_cls
-from dl_constants.enums import CLSMode
+from dl_constants import CLSMode
 
 
 def test_multitier_fixture_selection() -> None:

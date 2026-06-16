@@ -1,4 +1,4 @@
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 
 CONNECTOR_ALIAS_BY_TYPE: dict[ConnectionType, str | None] = {}
 

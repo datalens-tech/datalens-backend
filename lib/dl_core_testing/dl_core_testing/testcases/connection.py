@@ -10,7 +10,7 @@ from typing import (
 
 import pytest
 
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.exc import InvalidRequestError
 from dl_core.us_connection_base import (
     ConnectionBase,

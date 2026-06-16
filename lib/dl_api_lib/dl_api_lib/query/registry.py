@@ -1,7 +1,7 @@
 from collections.abc import Collection
 
 from dl_api_connector.connector import MQMFactoryKey
-from dl_constants.enums import (
+from dl_constants import (
     QueryProcessingMode,
     SourceBackendType,
 )

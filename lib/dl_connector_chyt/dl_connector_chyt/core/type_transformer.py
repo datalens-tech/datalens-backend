@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_sqlalchemy_chyt import types as chyt_types
 from dl_type_transformer.native_type import GenericNativeType
 from dl_type_transformer.type_transformer import (

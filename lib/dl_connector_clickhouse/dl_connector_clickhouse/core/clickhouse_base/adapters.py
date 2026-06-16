@@ -32,7 +32,7 @@ import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
 
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import IndexKind
+from dl_constants import IndexKind
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapter_actions.typed_query import (
     AsyncTypedQueryAdapterAction,

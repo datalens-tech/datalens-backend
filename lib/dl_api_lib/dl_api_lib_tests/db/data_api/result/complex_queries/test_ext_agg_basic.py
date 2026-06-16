@@ -15,7 +15,7 @@ from dl_api_client.dsmaker.shortcuts.result_data import (
 from dl_api_lib_testing.connector.complex_queries import DefaultBasicExtAggregationTestSuite
 from dl_api_lib_testing.helpers.data_source import data_source_settings_from_table
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import (
+from dl_constants import (
     UserDataType,
     WhereClauseOperation,
 )

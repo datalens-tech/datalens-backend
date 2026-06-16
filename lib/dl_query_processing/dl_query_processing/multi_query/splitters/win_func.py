@@ -1,6 +1,6 @@
 import attr
 
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 import dl_formula.core.fork_nodes as formula_fork_nodes
 from dl_formula.core.index import NodeHierarchyIndex
 import dl_formula.core.nodes as formula_nodes

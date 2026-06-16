@@ -6,7 +6,7 @@ from dl_api_lib_testing.typed_query_base import (
     TypedQueryParam,
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import (
+from dl_constants import (
     DashSQLQueryType,
     RawSQLLevel,
     UserDataType,

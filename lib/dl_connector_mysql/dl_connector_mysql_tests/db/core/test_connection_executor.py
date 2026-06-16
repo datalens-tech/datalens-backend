@@ -8,7 +8,7 @@ from aiomysql.sa.result import (
 import pytest
 from sqlalchemy.dialects import mysql as mysql_types
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.testcases.connection_executor import (
     DefaultAsyncConnectionExecutorTestSuite,

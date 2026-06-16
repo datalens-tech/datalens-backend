@@ -14,7 +14,7 @@ from dl_api_lib_tests.db.config import (
     DB_CORE_URL,
     CoreConnectionSettings,
 )
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 from dl_connector_clickhouse.core.clickhouse_base.constants import CONNECTION_TYPE_CLICKHOUSE

@@ -20,7 +20,7 @@ from dl_api_lib.service_registry.typed_query_raw_processor_factory import (
     DefaultRawQueryProcessorFactory,
     TypedQueryRawProcessorFactory,
 )
-from dl_constants.enums import QueryProcessingMode
+from dl_constants import QueryProcessingMode
 from dl_core.services_registry.top_level import (
     DefaultServicesRegistry,
     ServicesRegistry,

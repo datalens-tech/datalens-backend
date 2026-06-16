@@ -14,7 +14,7 @@ from dl_api_lib.service_registry.dataset_validator_factory import DefaultDataset
 from dl_api_lib.service_registry.field_id_generator_factory import FieldIdGeneratorFactory
 from dl_api_lib.service_registry.service_registry import DefaultApiServiceRegistry
 from dl_api_lib.service_registry.supported_functions_manager import SupportedFunctionsManager
-from dl_constants.enums import QueryProcessingMode
+from dl_constants import QueryProcessingMode
 from dl_core.components.ids import FieldIdGeneratorType
 from dl_core.services_registry.sr_factories import DefaultSRFactory
 from dl_core.services_registry.top_level import ServicesRegistry

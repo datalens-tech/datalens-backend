@@ -7,7 +7,7 @@ from dl_api_lib.schemas.dataset_base import (
     DatasetContentInternalSchema,
     OptionsMixin,
 )
-from dl_constants.enums import ComponentErrorLevel
+from dl_constants import ComponentErrorLevel
 from dl_core.marshmallow import ErrorCodeField
 from dl_model_tools.schema.base import BaseSchema
 

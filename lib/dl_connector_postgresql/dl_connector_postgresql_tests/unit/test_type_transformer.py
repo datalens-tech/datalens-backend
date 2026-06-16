@@ -1,6 +1,6 @@
 import pytest
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 
 from dl_connector_postgresql.core.postgresql_base.type_transformer import PostgreSQLTypeTransformer
 

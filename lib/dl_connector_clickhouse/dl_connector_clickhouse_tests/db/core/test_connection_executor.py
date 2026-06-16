@@ -8,7 +8,7 @@ import pytest
 import shortuuid
 import sqlalchemy as sa
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     IndexKind,
     UserDataType,

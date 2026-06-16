@@ -4,7 +4,7 @@ import abc
 import logging
 from typing import ClassVar
 
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 from dl_core.data_source.sql import (
     BaseSQLDataSource,
     StandardSQLDataSource,

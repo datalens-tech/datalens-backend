@@ -15,7 +15,7 @@ import uuid
 import pytest
 import shortuuid
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connection_models import TableIdent
 from dl_core.connectors.base.data_source_migration import (
     DataSourceMigrationInterface,

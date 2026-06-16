@@ -23,7 +23,7 @@ from dl_api_client.dsmaker.data_abstraction.primitives import (
     DataItemMeta,
     DataItemTag,
 )
-from dl_constants.enums import FieldRole
+from dl_constants import FieldRole
 from dl_constants.internal_constants import MEASURE_NAME_TITLE
 
 

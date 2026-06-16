@@ -12,13 +12,13 @@ from dl_api_client.dsmaker.primitives import (
 )
 from dl_api_lib.app_settings import ControlApiAppSettings
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.api_constants import DLHeadersCommon
-from dl_constants.enums import (
+from dl_constants import (
     ExtractMode,
     ExtractStatus,
     OrderDirection,
     WhereClauseOperation,
 )
+from dl_constants.api_constants import DLHeadersCommon
 
 from dl_connector_clickhouse.core.clickhouse.constants import SOURCE_TYPE_CH_TABLE
 

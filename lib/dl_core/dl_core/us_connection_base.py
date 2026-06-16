@@ -24,7 +24,7 @@ from dl_cache_engine.primitives import (
     DataKeyPart,
     LocalKeyRepresentation,
 )
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DashSQLQueryType,
     DataSourceRole,

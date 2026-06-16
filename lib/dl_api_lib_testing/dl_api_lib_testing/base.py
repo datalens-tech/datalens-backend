@@ -29,7 +29,7 @@ from dl_api_lib_testing.client import FlaskSyncApiClient
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
 import dl_auth
 from dl_configs.rqe import RQEConfig
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     QueryProcessingMode,
 )

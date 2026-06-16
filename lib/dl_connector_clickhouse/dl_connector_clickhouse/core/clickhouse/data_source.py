@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 
 from dl_connector_clickhouse.core.clickhouse.constants import (
     SOURCE_TYPE_CH_SUBSELECT,

@@ -1,4 +1,4 @@
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 
 _CONNECTION_DASHSQL_KEYS: dict[ConnectionType, frozenset[str]] = {}
 

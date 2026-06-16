@@ -5,7 +5,7 @@ import logging
 
 import attr
 
-from dl_constants.enums import ManagedBy
+from dl_constants import ManagedBy
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.dependencies.avatar_tree_base import AvatarTreeResolverBase
 from dl_core.components.dependencies.relation_avatar_base import RelationAvatarDependencyManagerBase

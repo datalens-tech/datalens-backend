@@ -52,7 +52,7 @@ from dl_api_lib.schemas.filter import WhereSchema
 from dl_api_lib.schemas.legend import LegendItemSchema
 from dl_api_lib.schemas.notification import NotificationSchema
 from dl_api_lib.schemas.pivot import RequestPivotSpecSchema
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     CalcMode,
     FieldRole,

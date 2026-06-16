@@ -11,7 +11,7 @@ import redis.asyncio
 from redis.asyncio.sentinel import Sentinel as RedisSentinel
 from redis.asyncio.sentinel import SentinelConnectionPool
 
-from dl_constants.enums import RedisInstanceKind
+from dl_constants import RedisInstanceKind
 from dl_core.utils import secrepr
 
 LOGGER = logging.getLogger(__name__)

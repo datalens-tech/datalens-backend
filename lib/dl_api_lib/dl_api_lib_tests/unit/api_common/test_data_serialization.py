@@ -7,7 +7,7 @@ from dl_api_lib.api_common.data_serialization import (
     get_fields_data_raw,
     get_fields_data_serializable,
 )
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     CalcMode,
     FieldType,

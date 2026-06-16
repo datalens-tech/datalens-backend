@@ -2,7 +2,7 @@ from aiohttp.test_utils import TestClient
 import pytest
 
 from dl_api_lib_testing.connector.dashsql_suite import DefaultDashSQLTestSuite
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core_testing.database import DbTable
 
 from dl_connector_ydb_tests.db.api.base import YDBDashSQLConnectionTest

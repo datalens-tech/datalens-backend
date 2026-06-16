@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import cast
 import uuid
 
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 from dl_core.base_models import ConnectionDataModelBase
 from dl_core.us_connection import get_connection_class
 from dl_core.us_connection_base import ConnectionBase

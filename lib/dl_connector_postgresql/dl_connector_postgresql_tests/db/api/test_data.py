@@ -14,7 +14,7 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataResultTestSuite,
 )
 from dl_api_lib_testing.data_api_base import DataApiTestParams
-from dl_constants.enums import (
+from dl_constants import (
     UserDataType,
     WhereClauseOperation,
 )

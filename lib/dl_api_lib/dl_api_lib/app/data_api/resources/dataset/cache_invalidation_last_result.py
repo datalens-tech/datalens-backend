@@ -17,7 +17,7 @@ from dl_cache_engine.cache_invalidation.primitives import (
     CacheInvalidationKey,
     CacheInvalidationStatus,
 )
-from dl_constants.enums import CacheInvalidationLastResultStatus
+from dl_constants import CacheInvalidationLastResultStatus
 from dl_constants.exc import (
     DEFAULT_GLOBAL_ERR_CODE_API_PREFIX,
     DLBaseException,

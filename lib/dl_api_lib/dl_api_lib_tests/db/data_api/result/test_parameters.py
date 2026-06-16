@@ -18,7 +18,7 @@ from dl_api_client.dsmaker.shortcuts.dataset import (
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib.enums import DatasetAction
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_testing.constants import TEST_USER_ID
 
 

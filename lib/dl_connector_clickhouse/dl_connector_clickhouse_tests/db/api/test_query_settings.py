@@ -24,7 +24,7 @@ from dl_api_client.dsmaker.shortcuts.dataset import (
     add_parameters_to_dataset,
 )
 from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
-from dl_constants.enums import (
+from dl_constants import (
     ComponentType,
     RawSQLLevel,
 )

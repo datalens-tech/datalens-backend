@@ -10,7 +10,7 @@ from typing import (
 
 from sqlalchemy.sql.type_api import TypeEngine
 
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
 from dl_type_transformer.native_type import (
     CommonNativeType,

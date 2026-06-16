@@ -5,7 +5,7 @@ import uuid
 import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_clickhouse.core.clickhouse.settings import ClickHouseConnectorSettings

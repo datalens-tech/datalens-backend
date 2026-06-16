@@ -28,7 +28,7 @@ from dl_api_lib.request_model.normalization.drm_normalizer_base import (
     RequestModelNormalizerBase,
     RequestPartSpecNormalizerBase,
 )
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     PivotRole,
 )

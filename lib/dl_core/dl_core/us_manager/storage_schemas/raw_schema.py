@@ -5,7 +5,7 @@ from typing import Any
 
 from marshmallow import fields
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.db import SchemaColumn
 from dl_core.us_manager.storage_schemas.base import (
     BaseStorageSchema,

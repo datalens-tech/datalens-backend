@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import attr
 import pandas as pd
 
-from dl_constants.enums import PivotRole
+from dl_constants import PivotRole
 from dl_pivot.base.transformer import PivotTransformer
 from dl_pivot.empty.facade import EmptyDataFrameFacade
 from dl_pivot.primitives import (

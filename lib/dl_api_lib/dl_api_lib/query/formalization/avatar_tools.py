@@ -1,6 +1,6 @@
 import logging
 
-from dl_constants.enums import ManagedBy
+from dl_constants import ManagedBy
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId
 from dl_core.us_dataset import Dataset

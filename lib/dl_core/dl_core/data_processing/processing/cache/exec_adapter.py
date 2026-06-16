@@ -17,7 +17,7 @@ from dl_cache_engine.processing_helper import (
     CacheSituation,
     TJSONExtChunkStream,
 )
-from dl_constants.enums import (
+from dl_constants import (
     JoinType,
     UserDataType,
 )

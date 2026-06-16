@@ -22,7 +22,7 @@ from typing import (
 from frozendict import frozendict
 import pytz
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     UserDataType,
 )

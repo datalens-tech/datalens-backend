@@ -21,7 +21,7 @@ import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     UserDataType,
 )

@@ -5,7 +5,7 @@ import uuid
 
 import attr
 
-from dl_constants.enums import (
+from dl_constants import (
     BinaryJoinOperator,
     DataSourceRole,
     DataSourceType,

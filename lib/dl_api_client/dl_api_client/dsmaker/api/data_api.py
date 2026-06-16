@@ -35,7 +35,7 @@ from dl_api_client.dsmaker.primitives import (
     UpdateAction,
     WhereClause,
 )
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     OrderDirection,
     RangeType,

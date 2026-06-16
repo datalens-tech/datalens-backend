@@ -13,7 +13,7 @@ import pytest
 
 from dl_api_client.dsmaker.api.http_sync_base import SyncHttpClientBase
 from dl_api_lib_testing.base import ApiTestBase
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 from dl_core_testing.database import (
     Db,
     DbTable,

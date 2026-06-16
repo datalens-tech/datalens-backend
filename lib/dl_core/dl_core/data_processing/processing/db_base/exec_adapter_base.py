@@ -18,7 +18,7 @@ import sqlalchemy as sa
 from sqlalchemy.sql.selectable import Select
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 from dl_constants.types import TBIDataValue
 from dl_core.connectors.base.query_compiler import QueryCompiler
 from dl_core.data_processing.cache.utils import DatasetOptionsBuilder
@@ -31,7 +31,7 @@ from dl_utils.streaming import AsyncChunkedBase
 if TYPE_CHECKING:
     from dl_api_commons.reporting.records import ReportingRecord
     from dl_api_commons.reporting.registry import ReportingRegistry
-    from dl_constants.enums import UserDataType
+    from dl_constants import UserDataType
     from dl_core.base_models import ConnectionRef
     from dl_core.data_processing.prepared_components.primitives import PreparedFromInfo
 

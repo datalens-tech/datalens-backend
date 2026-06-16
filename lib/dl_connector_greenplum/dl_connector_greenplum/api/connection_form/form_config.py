@@ -17,7 +17,7 @@ from dl_api_connector.form_config.models.common import CommonFieldName
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_greenplum.api.connection_info import GreenplumConnectionInfoProvider

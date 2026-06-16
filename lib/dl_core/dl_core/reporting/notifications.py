@@ -3,7 +3,7 @@ import time
 from typing import Any
 
 from dl_api_commons.reporting.models import NotificationReportingRecord
-from dl_constants.enums import (
+from dl_constants import (
     NotificationLevel,
     NotificationType,
 )

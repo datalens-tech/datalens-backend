@@ -10,7 +10,7 @@ from sqlalchemy.sql.selectable import (
     Select,
 )
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.query.expression import (
     ExpressionCtx,
     OrderByExpressionCtx,

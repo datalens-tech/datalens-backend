@@ -10,7 +10,7 @@ from dl_api_client.dsmaker.primitives import (
     StringParameterValue,
 )
 from dl_api_lib_testing.connection_base import ConnectionTestBase
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceType,
     RawSQLLevel,
 )

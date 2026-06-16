@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 
-from dl_constants.enums import RLSSubjectType
+from dl_constants import RLSSubjectType
 from dl_rls.models import RLSEntry
 
 

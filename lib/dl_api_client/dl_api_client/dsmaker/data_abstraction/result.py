@@ -22,7 +22,7 @@ from dl_api_client.dsmaker.data_abstraction.primitives import (
     DataItemMeta,
     DataItemTag,
 )
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     FieldType,
 )

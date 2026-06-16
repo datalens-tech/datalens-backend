@@ -6,7 +6,7 @@ from contextlib import contextmanager
 import attr
 import sqlalchemy as sa
 
-from dl_constants.enums import DataSourceRole
+from dl_constants import DataSourceRole
 from dl_core.backend_types import get_backend_type
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import AvatarId

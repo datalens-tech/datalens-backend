@@ -1,5 +1,5 @@
 from dl_api_connector.connection_info import ConnectionInfoProvider
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 
 
 class InfoProviderNotFound(Exception):

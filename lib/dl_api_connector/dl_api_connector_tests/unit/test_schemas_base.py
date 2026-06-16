@@ -10,7 +10,7 @@ import pytest
 
 from dl_api_connector.api_schema.extras import FieldExtra
 from dl_api_connector.api_schema.top_level import BaseTopLevelSchema
-from dl_constants.enums import (
+from dl_constants import (
     CreateMode,
     EditMode,
 )

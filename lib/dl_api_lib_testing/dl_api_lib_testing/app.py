@@ -19,7 +19,7 @@ from dl_api_lib.app_settings import (
 from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.enums import RequiredService
-from dl_constants.enums import (
+from dl_constants import (
     RLSSubjectType,
     USAuthMode,
 )

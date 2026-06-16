@@ -14,7 +14,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 import dl_formula.core.aux_nodes as formula_aux_nodes
 import dl_formula.core.exc as formula_exc
 from dl_formula.core.extract import NodeExtract

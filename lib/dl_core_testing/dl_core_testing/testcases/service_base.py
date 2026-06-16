@@ -23,7 +23,7 @@ from dl_compeng_pg.compeng_pg_base.data_processor_service_pg import CompEngPgCon
 from dl_configs.crypto_keys import CryptoKeysConfig
 from dl_configs.rqe import RQEConfig
 from dl_configs.settings_submodels import RedisSettings
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     ProcessorType,
 )

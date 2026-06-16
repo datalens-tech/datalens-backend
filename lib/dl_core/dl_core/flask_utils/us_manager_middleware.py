@@ -12,7 +12,7 @@ from dl_api_commons.flask.required_resources import (
     get_required_resources,
 )
 from dl_configs.crypto_keys import CryptoKeysConfig
-from dl_constants.enums import USAuthMode
+from dl_constants import USAuthMode
 from dl_core.flask_utils.services_registry_middleware import ServicesRegistryMiddleware
 from dl_core.services_registry import ServicesRegistry
 from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory

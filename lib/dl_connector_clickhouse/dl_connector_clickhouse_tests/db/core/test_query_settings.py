@@ -8,7 +8,7 @@ from collections.abc import Callable
 
 import pytest
 
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.connection_executors import (
     AsyncConnExecutorBase,
     ConnExecutorQuery,

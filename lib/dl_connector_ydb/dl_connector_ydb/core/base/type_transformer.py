@@ -6,7 +6,7 @@ from frozendict import frozendict
 import sqlalchemy as sa
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 import dl_sqlalchemy_ydb.dialect
 import dl_sqlalchemy_ydb.dialect as ydb_dialect
 from dl_type_transformer.type_transformer import (

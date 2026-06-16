@@ -17,7 +17,7 @@ from dl_api_lib_testing.helpers.lookup_checkers import (
     read_date,
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import WhereClauseOperation
+from dl_constants import WhereClauseOperation
 from dl_core_testing.database import make_table
 
 

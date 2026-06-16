@@ -4,7 +4,7 @@ from collections.abc import Set
 
 import attr
 
-from dl_constants.enums import CalcMode
+from dl_constants import CalcMode
 from dl_core.components.dependencies.field_avatar_base import FieldAvatarDependencyManagerBase
 from dl_core.components.dependencies.field_deep_base import FieldDeepInterDependencyManagerBase
 from dl_core.components.ids import (

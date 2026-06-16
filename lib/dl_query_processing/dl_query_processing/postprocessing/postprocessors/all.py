@@ -11,7 +11,7 @@ from typing import (
     Any,
 )
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_formula.core.datatype import DataType
 from dl_query_processing.postprocessing.postprocessors.datetime import (
     make_postprocess_datetimetz,

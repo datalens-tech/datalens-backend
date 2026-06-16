@@ -19,7 +19,7 @@ from dl_api_connector.form_config.models.common import (
 )
 import dl_api_connector.form_config.models.rows as C
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.connectors.settings.base import ConnectorSettings
 
 from dl_connector_chyt.api.connection_info import CHYTConnectionInfoProvider

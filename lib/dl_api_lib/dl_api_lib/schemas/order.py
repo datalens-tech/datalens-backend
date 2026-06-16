@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from dl_constants.enums import OrderDirection
+from dl_constants import OrderDirection
 from dl_core.fields import OrderField
 from dl_model_tools.schema.base import DefaultSchema
 

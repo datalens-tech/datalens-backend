@@ -2,7 +2,7 @@ import abc
 
 import pytest
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 from dl_core.connection_executors import AsyncConnExecutorBase
 from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.testcases.connection_executor import BaseConnectionExecutorTestClass

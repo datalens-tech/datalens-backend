@@ -1,6 +1,6 @@
 import pytest
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.data_source_spec.sql import (
     StandardSchemaSQLDataSourceSpec,
     SubselectDataSourceSpec,

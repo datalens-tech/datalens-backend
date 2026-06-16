@@ -4,7 +4,7 @@ from typing import Any
 
 import marshmallow.fields as ma_fields
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.base_models import InternalMaterializationConnectionRef
 from dl_core.data_source.type_mapping import get_data_source_class
 from dl_core.data_source_spec.base import DataSourceSpec

@@ -11,7 +11,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawFilterFieldSpec,
 )
 from dl_api_lib.request_model.data import AddUpdateObligatoryFilter
-from dl_constants.enums import ManagedBy
+from dl_constants import ManagedBy
 from dl_core.base_models import DefaultWhereClause
 from dl_core.fields import FilterField
 from dl_model_tools.schema.base import (

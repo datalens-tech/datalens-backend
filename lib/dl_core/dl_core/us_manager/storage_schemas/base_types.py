@@ -9,7 +9,7 @@ from marshmallow import (
     post_load,
 )
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.db.elements import SchemaColumn
 from dl_type_transformer.native_type import GenericNativeType
 

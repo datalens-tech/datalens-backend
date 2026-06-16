@@ -5,7 +5,7 @@ import logging
 from marshmallow import fields as ma_fields
 
 from dl_api_lib.enums import WhereClauseOperation
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     BinaryJoinOperator,
     ConnectionType,

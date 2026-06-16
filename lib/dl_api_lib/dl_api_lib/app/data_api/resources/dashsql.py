@@ -21,7 +21,7 @@ from dl_api_lib.utils.base import (
     get_data_export_base_result,
 )
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.data_processing.dashsql import (
     DashSQLCachedSelector,
     DashSQLEvent,

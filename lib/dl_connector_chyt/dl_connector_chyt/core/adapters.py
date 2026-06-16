@@ -9,7 +9,7 @@ from typing import (
 import aiohttp
 import attr
 
-from dl_constants.enums import IndexKind
+from dl_constants import IndexKind
 from dl_core import exc
 from dl_core.connection_executors.models.db_adapter_data import RawIndexInfo
 from dl_core.connection_models import TableIdent

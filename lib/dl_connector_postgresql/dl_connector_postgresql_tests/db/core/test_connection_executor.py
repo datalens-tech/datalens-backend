@@ -6,7 +6,7 @@ import pytest
 import shortuuid
 from sqlalchemy.dialects import postgresql as pg_types
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connection_executors import AsyncConnExecutorBase
 from dl_core.connection_executors.sync_base import SyncConnExecutorBase
 from dl_core.connection_models.common_models import (

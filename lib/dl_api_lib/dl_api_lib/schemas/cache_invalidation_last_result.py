@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from dl_constants.enums import CacheInvalidationLastResultStatus
+from dl_constants import CacheInvalidationLastResultStatus
 from dl_model_tools.schema.base import BaseSchema
 
 

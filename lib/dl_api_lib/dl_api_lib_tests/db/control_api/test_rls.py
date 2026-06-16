@@ -10,7 +10,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawSelectFieldSpec,
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import RLSSubjectType
+from dl_constants import RLSSubjectType
 from dl_rls.testing.testing_data import (
     RLS_CONFIG_CASES,
     config_to_comparable,

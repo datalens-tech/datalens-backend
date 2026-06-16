@@ -14,7 +14,7 @@ from typing import (
 import attr
 import shortuuid
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core_testing.database import (
     C,
     Db,

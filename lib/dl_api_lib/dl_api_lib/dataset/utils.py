@@ -9,7 +9,7 @@ import logging
 
 from dl_api_lib import utils as bi_utils
 from dl_api_lib.enums import USPermissionKind
-from dl_constants.enums import (
+from dl_constants import (
     ComponentType,
     ConnectionType,
     DataSourceRole,

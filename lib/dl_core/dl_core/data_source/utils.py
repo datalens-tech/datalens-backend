@@ -3,7 +3,7 @@ from typing import Any
 
 import xxhash
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 
 _IGNORE_IN_HASH = frozenset(("db_version",))
 

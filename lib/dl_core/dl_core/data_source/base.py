@@ -17,7 +17,7 @@ import attr
 from sqlalchemy.sql import TableClause
 
 from dl_cache_engine.primitives import LocalKeyRepresentation
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DataSourceType,
     JoinType,

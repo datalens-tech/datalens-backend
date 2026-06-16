@@ -11,7 +11,7 @@ from typing import (
 import attr
 import marshmallow as ma
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.base_models import (
     ConnCacheableDataModelMixin,
     ConnRawSqlLevelDataModelMixin,

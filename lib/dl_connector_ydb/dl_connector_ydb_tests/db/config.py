@@ -6,7 +6,7 @@ import sqlalchemy as sa
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
 
 from dl_api_lib_testing.configuration import ApiTestEnvironmentConfiguration
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core_testing.configuration import CoreTestEnvironmentConfiguration
 import dl_sqlalchemy_ydb.dialect
 import dl_sqlalchemy_ydb.dialect as ydb_dialect

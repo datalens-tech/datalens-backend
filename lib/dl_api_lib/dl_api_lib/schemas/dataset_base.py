@@ -30,7 +30,7 @@ from dl_api_lib.schemas.filter import (
 from dl_api_lib.schemas.options import OptionsMixin
 from dl_api_lib.schemas.order import OrderFieldSchema
 from dl_api_lib.schemas.parameters import ParameterValueConstraintSchema
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     CacheInvalidationMode,
     CalcMode,

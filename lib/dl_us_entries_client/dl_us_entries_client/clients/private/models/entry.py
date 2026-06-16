@@ -24,6 +24,7 @@ class PrivateEntryGetRequest(BaseRequest):
     entry_id: EntryId
     include_permissions_info: bool = False
     component: str | None = "backend"
+    branch: dl_constants.USEntryBranch = dl_constants.USEntryBranch.published
 
     @property
     def path(self) -> str:
@@ -36,8 +37,12 @@ class PrivateEntryGetRequest(BaseRequest):
     @property
     def query_params(self) -> dict[str, str]:
         params = super().query_params
+
         if self.include_permissions_info:
             params["includePermissionsInfo"] = "1"
+
+        params["branch"] = self.branch.value
+
         return params
 
     @property
@@ -62,6 +67,7 @@ class PrivateDatasetEntryGetResponse(DatasetEntry, PrivateEntryGetResponse): ...
 @attrs.define(kw_only=True, frozen=True)
 class PrivateEntryPostRequest(BaseRequest):
     entry: EntryData
+    mode: dl_constants.USEntryMode = dl_constants.USEntryMode.publish
 
     @property
     def path(self) -> str:

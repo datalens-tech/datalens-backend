@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 
 _BI_TO_YQL = {
     UserDataType.string: "String",

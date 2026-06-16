@@ -11,7 +11,7 @@ import sqlalchemy as sa
 import sqlalchemy.exc as sa_exc
 from sqlalchemy.sql.elements import ClauseElement
 
-from dl_constants.enums import (
+from dl_constants import (
     DashSQLQueryType,
     UserDataType,
 )

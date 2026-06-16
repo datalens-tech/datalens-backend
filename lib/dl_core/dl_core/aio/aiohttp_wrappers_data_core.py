@@ -6,7 +6,7 @@ from dl_api_commons.aiohttp.aiohttp_wrappers import (
     DLRequestBase,
     DLRequestView,
 )
-from dl_constants.enums import (
+from dl_constants import (
     ProcessorType,
     RedisInstanceKind,
 )

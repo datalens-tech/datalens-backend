@@ -75,7 +75,7 @@ from dl_api_client.dsmaker.primitives import (
     WhereClause,
 )
 from dl_api_connector.api_schema.top_level import USEntryAnnotationMixin
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     BinaryJoinOperator,
     CacheInvalidationMode,

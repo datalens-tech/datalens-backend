@@ -18,7 +18,7 @@ from typing import (
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core import exc
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
 from dl_core.connection_executors.adapters.async_adapters_base import (

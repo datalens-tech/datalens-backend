@@ -36,11 +36,13 @@ import dl_api_lib.schemas.data
 import dl_api_lib.schemas.dataset_base
 import dl_api_lib.schemas.main
 import dl_api_lib.schemas.validation
-from dl_constants.api_constants import DLHeadersCommon
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceCreatedVia,
     ManagedBy,
+    USEntryBranch,
+    USEntryMode,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_constants.exc import CODE_OK
 from dl_core.base_models import (
     CollectionEntryLocation,
@@ -49,10 +51,6 @@ from dl_core.base_models import (
     WorkbookEntryLocation,
 )
 from dl_core.components.editor import DatasetComponentEditor
-from dl_core.enums import (
-    USEntryBranch,
-    USEntryMode,
-)
 from dl_core.us_dataset import Dataset
 from dl_core.utils import generate_revision_id
 import dl_query_processing.exc

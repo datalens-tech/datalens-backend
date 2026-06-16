@@ -1,6 +1,6 @@
 from collections.abc import Collection
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DataSourceType,
 )

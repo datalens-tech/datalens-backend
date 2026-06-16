@@ -7,7 +7,7 @@ from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_core.enums import USEntryMode
+from dl_constants import USEntryMode
 
 
 def _get_dataset(control_api, dataset_id: str):

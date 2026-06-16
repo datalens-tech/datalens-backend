@@ -10,7 +10,7 @@ from typing import (
 import attr
 from marshmallow import fields
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 from dl_core.connection_executors.adapters.common_base import CommonBaseDirectAdapter
 from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,

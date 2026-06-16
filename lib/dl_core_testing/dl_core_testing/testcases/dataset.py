@@ -6,7 +6,7 @@ from typing import ClassVar
 import pytest
 import sqlalchemy as sa
 
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     DataSourceRole,
     DataSourceType,

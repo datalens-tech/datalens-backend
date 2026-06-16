@@ -9,12 +9,12 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import OrderDirection
+from dl_constants import OrderDirection
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.elements import ClauseElement
 
-    from dl_constants.enums import (
+    from dl_constants import (
         JoinType,
         UserDataType,
     )

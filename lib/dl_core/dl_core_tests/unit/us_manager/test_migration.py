@@ -4,7 +4,7 @@ from typing import Any
 import attr
 import pytest
 
-from dl_constants.enums import MigrationStatus
+from dl_constants import MigrationStatus
 from dl_core.exc import UnknownEntryMigration
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,

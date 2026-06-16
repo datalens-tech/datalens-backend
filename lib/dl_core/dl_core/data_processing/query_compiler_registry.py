@@ -1,4 +1,4 @@
-from dl_constants.enums import SourceBackendType
+from dl_constants import SourceBackendType
 from dl_core.connectors.base.query_compiler import QueryCompiler
 
 _QUERY_COMPILER_CLS_BY_BACKEND: dict[SourceBackendType, type[QueryCompiler]] = {}

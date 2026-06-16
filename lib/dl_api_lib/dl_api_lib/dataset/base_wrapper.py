@@ -16,7 +16,7 @@ from dl_api_lib.query.registry import (
     is_compeng_enabled,
 )
 from dl_api_lib.service_registry.service_registry import ApiServiceRegistry
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceRole,
     SourceBackendType,
 )

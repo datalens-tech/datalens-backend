@@ -29,7 +29,7 @@ from dl_api_lib.dataset.component_abstraction import (
     DatasetComponentAbstraction,
     DatasetComponentRef,
 )
-from dl_constants.enums import ComponentType
+from dl_constants import ComponentType
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 

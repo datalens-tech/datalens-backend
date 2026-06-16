@@ -3,7 +3,7 @@ from __future__ import annotations
 import attr
 import shortuuid
 
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     BinaryJoinOperator,
     FieldType,

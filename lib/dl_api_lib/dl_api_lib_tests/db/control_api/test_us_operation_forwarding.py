@@ -7,7 +7,7 @@ import pytest
 from dl_api_client.dsmaker.api.dataset_api import SyncHttpDatasetApiV1
 from dl_api_client.dsmaker.primitives import Dataset
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_core.enums import USEntryMode
+from dl_constants import USEntryMode
 from dl_core.us_manager.us_manager_sync import SyncUSManager
 
 SAMPLE_OPERATION = {"id": "op-test-123", "done": False, "metadata": {}}

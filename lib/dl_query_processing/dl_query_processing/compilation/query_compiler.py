@@ -6,7 +6,7 @@ from typing import TypeVar
 
 import attr
 
-from dl_constants.enums import OrderDirection
+from dl_constants import OrderDirection
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.components.ids import (
     FieldId,

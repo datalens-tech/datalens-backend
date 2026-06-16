@@ -19,7 +19,7 @@ import attr
 
 from dl_api_commons.reporting.registry import ReportingRegistry
 from dl_configs.enums import RequiredService
-from dl_constants.enums import ProcessorType
+from dl_constants import ProcessorType
 from dl_core.services_registry.conn_executor_factory import DefaultConnExecutorFactory
 from dl_core.services_registry.data_processor_factory import DefaultDataProcessorFactory
 from dl_core.services_registry.file_uploader_client_factory import (

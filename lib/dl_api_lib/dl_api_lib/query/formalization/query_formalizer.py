@@ -16,7 +16,7 @@ from dl_api_lib.dataset.sys_parameters import resolve_sys_parameter_value_specs
 from dl_api_lib.query.formalization.avatar_tools import normalize_explicit_avatar_ids
 from dl_api_lib.query.formalization.field_resolver import FieldResolver
 from dl_api_lib.query.formalization.query_formalizer_base import QuerySpecFormalizerBase
-from dl_constants.enums import (
+from dl_constants import (
     CalcMode,
     DataSourceRole,
     FieldRole,

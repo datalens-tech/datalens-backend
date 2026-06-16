@@ -8,7 +8,7 @@ from typing import ClassVar
 
 import attr
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 
 
 @attr.s(frozen=True)

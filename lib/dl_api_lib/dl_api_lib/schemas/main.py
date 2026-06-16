@@ -15,11 +15,11 @@ from dl_api_lib.schemas.dataset_base import (
     DatasetContentInternalSchema,
     DatasetContentSchema,
 )
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceCreatedVia,
     NotificationLevel,
+    USEntryMode,
 )
-from dl_core.enums import USEntryMode
 from dl_model_tools.schema.base import BaseSchema
 from dl_model_tools.schema.dynamic_enum_field import DynamicEnumField
 

@@ -1,6 +1,6 @@
 from marshmallow import fields as ma_fields
 
-from dl_constants.enums import RawSQLLevel
+from dl_constants import RawSQLLevel
 from dl_core.base_models import ConnectionDataModelBase
 from dl_core.us_connection_base import (
     ConnectionBase,

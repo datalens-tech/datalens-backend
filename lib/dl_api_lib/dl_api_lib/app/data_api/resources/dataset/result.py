@@ -18,12 +18,12 @@ from dl_api_lib.query.formalization.raw_specs import RawQuerySpecUnion
 import dl_api_lib.schemas.data
 import dl_api_lib.schemas.main
 from dl_app_tools.profiling_base import generic_profiler_async
-from dl_constants.api_constants import DLHeadersCommon
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     FieldType,
     UserDataType,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_query_processing.enums import (
     EmptyQueryMode,
     GroupByPolicy,

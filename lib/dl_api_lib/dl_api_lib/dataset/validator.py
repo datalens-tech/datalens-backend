@@ -53,7 +53,7 @@ from dl_api_lib.request_model.data import (
     UpdateSettingAction,
 )
 from dl_app_tools.profiling_base import generic_profiler
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     BinaryJoinOperator,
     CacheInvalidationMode,

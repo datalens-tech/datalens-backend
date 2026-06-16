@@ -13,7 +13,7 @@ from dl_api_lib.query.formalization.query_formalizer import (
     ValueRangeSpecFormalizer,
 )
 from dl_api_lib.query.registry import get_filter_formula_compiler_cls
-from dl_constants.enums import (
+from dl_constants import (
     CalcMode,
     DataSourceRole,
     ProcessorType,

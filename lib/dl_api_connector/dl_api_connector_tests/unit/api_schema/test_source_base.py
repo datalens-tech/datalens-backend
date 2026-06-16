@@ -1,5 +1,5 @@
 from dl_api_connector.api_schema.source_base import DataSourceTemplateResponseField
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.us_connection_base import DataSourceTemplate
 
 SOURCE_TYPE = DataSourceType.declare("test_source_base_disabled_text")

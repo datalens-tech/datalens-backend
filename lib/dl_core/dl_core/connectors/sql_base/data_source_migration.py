@@ -2,7 +2,7 @@ from typing import ClassVar
 
 import attr
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.connectors.base.data_source_migration import (
     DataSourceMigrationInterface,
     MigrationKeyMappingItem,

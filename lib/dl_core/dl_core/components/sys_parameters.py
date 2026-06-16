@@ -14,7 +14,7 @@ from collections.abc import Callable
 import attr
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 
 SYS_PARAMETER_PREFIX = "_sys."
 

@@ -25,7 +25,7 @@ from dl_api_lib.connector_availability.base import ConnectorAvailabilityConfig
 from dl_cache_engine.primitives import CacheTTLConfig
 from dl_configs.enums import RequiredService
 from dl_configs.utils import get_multiple_root_certificates
-from dl_constants.enums import USAuthMode
+from dl_constants import USAuthMode
 from dl_core.services_registry.entity_checker import EntityUsageChecker
 from dl_core.services_registry.env_manager_factory import InsecureEnvManagerFactory
 from dl_core.services_registry.env_manager_factory_base import EnvManagerFactory

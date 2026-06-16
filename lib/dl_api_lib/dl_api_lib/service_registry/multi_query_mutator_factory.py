@@ -4,7 +4,7 @@ import logging
 import attr
 
 from dl_api_lib.query.registry import get_multi_query_mutator_factory_class
-from dl_constants.enums import (
+from dl_constants import (
     QueryProcessingMode,
     SourceBackendType,
 )

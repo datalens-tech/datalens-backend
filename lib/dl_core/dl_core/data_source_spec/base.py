@@ -1,6 +1,6 @@
 import attr
 
-from dl_constants.enums import DataSourceType
+from dl_constants import DataSourceType
 from dl_core.base_models import ConnectionRef
 from dl_core.db.elements import SchemaColumn
 

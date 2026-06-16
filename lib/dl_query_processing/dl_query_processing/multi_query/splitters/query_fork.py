@@ -7,7 +7,7 @@ LOGGER = logging.getLogger(__name__)
 
 import attr
 
-from dl_constants.enums import JoinType
+from dl_constants import JoinType
 from dl_formula.core.extract import NodeExtract
 import dl_formula.core.fork_nodes as formula_fork_nodes
 from dl_formula.core.index import NodeHierarchyIndex

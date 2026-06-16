@@ -16,7 +16,7 @@ from dl_api_commons.reporting.models import (
     QueryExecutionEndReportingRecord,
     QueryExecutionStartReportingRecord,
 )
-from dl_constants.enums import (
+from dl_constants import (
     ReportingQueryType,
     UserDataType,
 )
@@ -46,7 +46,7 @@ if TYPE_CHECKING:
 
     from dl_api_commons.base_models import RequestContextInfo
     from dl_cache_engine.primitives import LocalKeyRepresentation
-    from dl_constants.enums import DataSourceRole
+    from dl_constants import DataSourceRole
     from dl_constants.types import TBIDataValue
     from dl_core.base_models import ConnectionRef
     from dl_core.connections_security.base import ConnectionSecurityManager

@@ -1,6 +1,6 @@
 from typing import ClassVar
 
-from dl_constants.enums import DataPivotEngineType
+from dl_constants import DataPivotEngineType
 from dl_pivot.base.transformer_factory import PivotTransformerFactory
 
 

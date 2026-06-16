@@ -3,7 +3,7 @@ from collections.abc import Sequence
 import pytest
 from sqlalchemy.dialects import mssql as mssql_types
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.connection_models.common_models import DBIdent
 from dl_core_testing.database import (
     Db,

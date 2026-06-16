@@ -13,7 +13,7 @@ from trino.dbapi import connect
 from trino.exceptions import TrinoQueryError
 from trino.sqlalchemy.datatype import parse_sqltype
 
-from dl_constants.enums import SourceBackendType
+from dl_constants import SourceBackendType
 from dl_core_testing.database import (
     C,
     CoreDbConfig,

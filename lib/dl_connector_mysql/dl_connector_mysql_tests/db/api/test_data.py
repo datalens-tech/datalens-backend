@@ -13,7 +13,7 @@ from dl_api_lib_testing.connector.data_api_suites import (
     DefaultConnectorDataResultTestSuite,
 )
 from dl_api_lib_testing.data_api_base import DataApiTestParams
-from dl_constants.enums import WhereClauseOperation
+from dl_constants import WhereClauseOperation
 from dl_testing.regulated_test import RegulatedTestParams
 
 from dl_connector_mysql_tests.db.api.base import MySQLDataApiTestBase

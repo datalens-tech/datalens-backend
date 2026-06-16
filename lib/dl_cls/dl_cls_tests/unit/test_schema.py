@@ -8,7 +8,7 @@ from dl_cls.models import (
     FieldCLS,
 )
 from dl_cls.schema import FieldCLSSchema
-from dl_constants.enums import (
+from dl_constants import (
     CLSMode,
     CLSSubjectType,
 )

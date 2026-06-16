@@ -14,7 +14,7 @@ from dl_api_connector.form_config.models.common import (
 )
 from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.i18n.localizer import Translatable
-from dl_constants.enums import (
+from dl_constants import (
     RawSQLLevel,
     sort_raw_sql_levels,
 )

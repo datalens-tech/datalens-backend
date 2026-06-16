@@ -11,7 +11,7 @@ from dl_api_lib.query.formalization.raw_pivot_specs import (
     RawPivotRoleSpec,
     RawPivotSpec,
 )
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     FieldType,
     PivotItemType,

@@ -12,7 +12,7 @@ from typing import (
 
 from sqlalchemy.orm import Query
 
-from dl_constants.enums import SourceBackendType
+from dl_constants import SourceBackendType
 from dl_core.connections_security.base import ConnSecuritySettings
 from dl_core.connectors.base.data_source_migration import (
     DataSourceMigrator,
@@ -40,7 +40,7 @@ if TYPE_CHECKING:
     from marshmallow import Schema
     from sqlalchemy.types import TypeEngine
 
-    from dl_constants.enums import (
+    from dl_constants import (
         ConnectionType,
         DataSourceType,
     )

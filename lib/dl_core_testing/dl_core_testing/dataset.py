@@ -6,7 +6,7 @@ from typing import (
 )
 import uuid
 
-from dl_constants.enums import (
+from dl_constants import (
     DataSourceCreatedVia,
     DataSourceRole,
     DataSourceType,

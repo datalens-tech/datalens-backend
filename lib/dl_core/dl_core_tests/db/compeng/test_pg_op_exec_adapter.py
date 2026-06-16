@@ -14,7 +14,7 @@ import pytest_asyncio
 from dl_compeng_pg.compeng_aiopg.exec_adapter_aiopg import AiopgExecAdapter
 from dl_compeng_pg.compeng_asyncpg.exec_adapter_asyncpg import AsyncpgExecAdapter
 from dl_compeng_pg.compeng_pg_base.exec_adapter_base import PostgreSQLExecAdapterAsync
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core.data_processing.cache.utils import CompengOptionsBuilder
 from dl_core.data_processing.processing.context import OpExecutionContext
 from dl_core.services_registry.top_level import ServicesRegistry

@@ -5,7 +5,7 @@ import attr
 import marshmallow.fields as ma_fields
 from marshmallow.schema import Schema
 
-from dl_constants.enums import (
+from dl_constants import (
     DashSQLQueryType,
     UserDataType,
 )

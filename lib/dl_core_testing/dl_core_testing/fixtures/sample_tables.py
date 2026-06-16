@@ -1,4 +1,4 @@
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core_testing.fixtures.primitives import FixtureTableSpec
 
 TABLE_SPEC_SAMPLE_SUPERSTORE = FixtureTableSpec(

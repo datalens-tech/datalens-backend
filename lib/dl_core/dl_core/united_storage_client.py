@@ -36,17 +36,17 @@ from dl_api_commons.utils import (
     stringify_dl_headers,
 )
 import dl_auth
+from dl_constants import (
+    USEntryBranch,
+    USEntryMode,
+)
 from dl_constants.api_constants import (
     DLCookies,
     DLHeaders,
     DLHeadersCommon,
 )
 from dl_core.base_models import EntryLocation
-from dl_core.enums import (
-    USApiType,
-    USEntryBranch,
-    USEntryMode,
-)
+from dl_core.enums import USApiType
 import dl_core.exc as exc
 import dl_retrier
 

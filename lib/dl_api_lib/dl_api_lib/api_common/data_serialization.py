@@ -24,7 +24,7 @@ from dl_api_lib.utils.base import (
     enrich_resp_dict_with_data_export_info,
     get_data_export_base_result,
 )
-from dl_constants.enums import ManagedBy
+from dl_constants import ManagedBy
 from dl_constants.types import TJSONLike
 from dl_core.fields import FormulaCalculationSpec
 from dl_core.us_dataset import Dataset

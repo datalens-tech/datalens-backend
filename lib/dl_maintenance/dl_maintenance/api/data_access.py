@@ -47,7 +47,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawSelectFieldSpec,
 )
 from dl_api_lib.request_model.normalization.drm_normalizer_pivot import PivotSpecNormalizer
-from dl_constants.enums import PivotRole
+from dl_constants import PivotRole
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
 from dl_pivot.native.transformer import NativePivotTransformer

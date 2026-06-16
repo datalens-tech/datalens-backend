@@ -3,7 +3,7 @@ import abc
 import sqlalchemy as sa
 from sqlalchemy.types import TypeEngine
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_dashsql.exc import DashSQLError
 from dl_dashsql.types import IncomingDSQLParamTypeExt
 

@@ -1,4 +1,4 @@
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     FieldType,
     UserDataType,

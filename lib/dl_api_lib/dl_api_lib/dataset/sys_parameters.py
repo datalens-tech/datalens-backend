@@ -7,7 +7,7 @@ value for every registered system parameter present in the dataset.
 """
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_constants.enums import CalcMode
+from dl_constants import CalcMode
 from dl_core.components.sys_parameters import (
     is_registered_sys_name,
     is_sys_name,

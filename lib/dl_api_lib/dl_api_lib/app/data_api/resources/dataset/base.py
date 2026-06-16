@@ -79,20 +79,20 @@ from dl_app_tools.profiling_base import (
     generic_profiler,
     generic_profiler_async,
 )
-from dl_constants.api_constants import DLHeadersCommon
-from dl_constants.enums import (
+from dl_constants import (
     CacheInvalidationMode,
     DataSourceRole,
     FieldRole,
     NotificationType,
     RLSSubjectType,
+    USEntryBranch,
 )
+from dl_constants.api_constants import DLHeadersCommon
 from dl_core.cache_invalidation import CacheInvalidationError
 from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
-from dl_core.enums import USEntryBranch
 from dl_core.exc import USObjectNotFoundException
 from dl_core.fields import ResultSchema
 from dl_core.reporting.notifications import get_notification_record

@@ -5,7 +5,7 @@ from http import HTTPStatus
 import pytest
 
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 
 
 class TestUpdateId(DefaultApiTestBase):

@@ -26,7 +26,7 @@ from dl_api_client.dsmaker.primitives import (
     RequestPivotItem,
     WhereClause,
 )
-from dl_constants.enums import (
+from dl_constants import (
     FieldRole,
     FieldType,
     NotificationType,

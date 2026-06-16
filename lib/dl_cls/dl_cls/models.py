@@ -3,7 +3,7 @@ from typing import Any
 
 import attrs
 
-from dl_constants.enums import (
+from dl_constants import (
     CLSMode,
     CLSSubjectType,
 )

@@ -1,6 +1,6 @@
 import pytest
 
-from dl_constants.enums import RLSSubjectType
+from dl_constants import RLSSubjectType
 from dl_rls.models import (
     RLSEntry,
     RLSSubject,

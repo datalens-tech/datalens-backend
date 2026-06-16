@@ -25,7 +25,7 @@ from dl_configs.crypto_keys import (
     CryptoKeysConfig,
     get_crypto_keys_config_from_env,
 )
-from dl_constants.enums import (
+from dl_constants import (
     ConnectionType,
     MigrationStatus,
 )

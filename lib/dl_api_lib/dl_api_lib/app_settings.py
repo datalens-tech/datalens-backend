@@ -29,7 +29,7 @@ from dl_configs.utils import (
     get_root_certificates_path,
     split_by_comma,
 )
-from dl_constants.enums import (
+from dl_constants import (
     DataPivotEngineType,
     QueryProcessingMode,
     USAuthMode,

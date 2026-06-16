@@ -12,7 +12,7 @@ import dl_api_lib.app.data_api.resources.dataset.cache_invalidation_test as cach
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.utils.base import check_permission_on_entry
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import (
+from dl_constants import (
     CacheInvalidationMode,
     RawSQLLevel,
     WhereClauseOperation,

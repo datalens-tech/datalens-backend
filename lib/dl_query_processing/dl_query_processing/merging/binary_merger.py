@@ -8,7 +8,7 @@ from typing import Any
 
 import attr
 
-from dl_constants.enums import QueryBlockPlacementType
+from dl_constants import QueryBlockPlacementType
 from dl_query_processing.legend.block_legend import (
     AfterBlockPlacement,
     BlockPlacement,

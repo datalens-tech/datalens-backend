@@ -17,7 +17,7 @@ from dl_api_lib_testing.data_api_base import (
     StandardizedDataApiTestBase,
 )
 from dl_api_lib_testing.dataset_base import DatasetTestBase
-from dl_constants.enums import WhereClauseOperation
+from dl_constants import WhereClauseOperation
 from dl_sqlalchemy_metrica_api.api_info.appmetrica import AppMetricaFieldsNamespaces
 from dl_sqlalchemy_metrica_api.api_info.metrika import MetrikaApiCounterSource
 

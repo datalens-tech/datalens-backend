@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from dl_constants.enums import UserDataType
+from dl_constants import UserDataType
 from dl_core import data_source
 from dl_core.base_models import DefaultConnectionRef
 from dl_core.data_source_spec.sql import (

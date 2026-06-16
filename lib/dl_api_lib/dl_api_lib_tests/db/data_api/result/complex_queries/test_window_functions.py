@@ -16,7 +16,7 @@ from dl_api_lib_testing.helpers.multi_query import (
     count_joins,
 )
 from dl_api_lib_tests.db.base import DefaultApiTestBase
-from dl_constants.enums import (
+from dl_constants import (
     OrderDirection,
     UserDataType,
     WhereClauseOperation,

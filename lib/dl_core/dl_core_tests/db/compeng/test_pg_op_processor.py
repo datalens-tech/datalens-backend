@@ -19,7 +19,7 @@ from dl_compeng_pg.compeng_asyncpg.pool_asyncpg import AsyncpgPoolWrapper
 from dl_compeng_pg.compeng_asyncpg.processor_asyncpg import AsyncpgOperationProcessor
 from dl_compeng_pg.compeng_pg_base.pool_base import BasePgPoolWrapper
 from dl_compeng_pg.compeng_pg_base.processor_base import PostgreSQLOperationProcessor
-from dl_constants.enums import (
+from dl_constants import (
     JoinType,
     UserDataType,
 )

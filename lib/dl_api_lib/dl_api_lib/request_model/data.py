@@ -16,7 +16,7 @@ from dl_api_lib.query.formalization.raw_specs import (
     RawQuerySpecUnion,
     RawResultSpec,
 )
-from dl_constants.enums import (
+from dl_constants import (
     AggregationFunction,
     CalcMode,
     ExtractMode,

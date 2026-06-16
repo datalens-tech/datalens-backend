@@ -10,7 +10,7 @@ from typing import (
 
 import attr
 
-from dl_constants.enums import ProcessorType
+from dl_constants import ProcessorType
 from dl_core.data_processing.processing.db_base.processor_base import ExecutorBasedOperationProcessor
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.local_cache import USEntryBuffer

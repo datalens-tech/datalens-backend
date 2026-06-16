@@ -16,7 +16,7 @@ from typing import (
 import attr
 
 from dl_app_tools.profiling_base import GenericProfiler
-from dl_constants.enums import LegendItemType
+from dl_constants import LegendItemType
 from dl_query_processing.enums import QueryType
 from dl_query_processing.execution.primitives import ExecutedQuery
 from dl_query_processing.legend.block_legend import BlockSpec

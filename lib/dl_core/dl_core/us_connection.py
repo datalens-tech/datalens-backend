@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dl_constants.enums import ConnectionType
+from dl_constants import ConnectionType
 from dl_core.connectors.base.lifecycle import (
     ConnectionLifecycleManager,
     DefaultConnectionLifecycleManager,

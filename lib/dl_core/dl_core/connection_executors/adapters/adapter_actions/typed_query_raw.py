@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import attr
 
-from dl_constants.enums import DashSQLQueryType
+from dl_constants import DashSQLQueryType
 from dl_core.connection_executors.adapters.adapter_actions.async_base import AsyncTypedQueryRawAdapterAction
 from dl_core.connection_executors.adapters.async_adapters_base import AsyncRawJsonExecutionResult
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
