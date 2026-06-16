@@ -125,6 +125,6 @@ class Picklable(DynamicEnum):
 
 def test_pickle() -> None:
     data = pickle.dumps(Picklable.thing)
-    loaded = pickle.loads(data)
+    loaded = pickle.loads(data)  # noqa: S301
 
     assert loaded is Picklable.thing

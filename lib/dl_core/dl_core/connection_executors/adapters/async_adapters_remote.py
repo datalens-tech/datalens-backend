@@ -333,7 +333,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                 # This isn't a very correct way, but it's hard to use pickle in async differently.
                 if end_of_chunk and buf:
                     try:
-                        event = pickle.loads(buf)
+                        event = pickle.loads(buf)  # noqa: S301  # trusted internal RQE payload
                     except Exception as err:
                         raise QueryExecutorException("QE parse: failed to unpickle") from err
 
@@ -370,7 +370,7 @@ class RemoteAsyncAdapter(AsyncDBAdapter):
                 serializer = DLSafeMessagePackSerializer()
                 raw_events = serializer.loads(raw_data)
             else:
-                raw_events = pickle.loads(raw_data)
+                raw_events = pickle.loads(raw_data)  # noqa: S301  # trusted internal RQE payload
 
         async def event_gen() -> AsyncGenerator[tuple[RQEEventType, Any], None]:
             for raw_event in raw_events:
