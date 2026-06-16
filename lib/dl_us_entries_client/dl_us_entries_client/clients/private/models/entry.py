@@ -7,6 +7,7 @@ import dl_json
 import dl_pydantic
 import dl_us_entries_client.exceptions as exceptions
 from dl_us_entries_client.models.base import BaseRequest
+from dl_us_entries_client.models.dataset import DatasetEntry
 from dl_us_entries_client.models.entry import (
     Entry,
     EntryData,
@@ -50,6 +51,12 @@ class PrivateEntryGetRequest(BaseRequest):
 
 
 class PrivateEntryGetResponse(Entry, dl_httpx.BaseResponseSchema): ...
+
+
+class PrivateDatasetEntryGetRequest(PrivateEntryGetRequest): ...
+
+
+class PrivateDatasetEntryGetResponse(DatasetEntry, PrivateEntryGetResponse): ...
 
 
 @attrs.define(kw_only=True, frozen=True)

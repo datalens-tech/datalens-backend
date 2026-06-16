@@ -67,8 +67,6 @@ async def test_post_unversioned_data(
     us_entries_private_client: dl_us_entries_client.USEntriesPrivateAsyncClient,
     entry_in_us: dl_us_entries_client.Entry,
 ) -> None:
-    assert not entry_in_us.unversioned_data
-
     new_unversioned_data: dl_json.JsonSerializableMapping = {
         "foo": "bar",
         "answer": 42,
@@ -86,4 +84,5 @@ async def test_post_unversioned_data(
     fetched = await us_entries_private_client.get_entry(
         dl_us_entries_client.PrivateEntryGetRequest(entry_id=entry_in_us.entry_id),
     )
-    assert fetched.unversioned_data == new_unversioned_data
+    assert fetched.unversioned_data is not None
+    assert fetched.unversioned_data.model_dump() == new_unversioned_data

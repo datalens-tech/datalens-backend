@@ -1,4 +1,6 @@
 from .entry import (
+    PrivateDatasetEntryGetRequest,
+    PrivateDatasetEntryGetResponse,
     PrivateEntryDeleteRequest,
     PrivateEntryGetRequest,
     PrivateEntryGetResponse,
@@ -16,6 +18,8 @@ from .lock import (
 
 __all__ = [
     "PingRequest",
+    "PrivateDatasetEntryGetRequest",
+    "PrivateDatasetEntryGetResponse",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
     "PrivateEntryGetResponse",

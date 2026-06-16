@@ -36,9 +36,9 @@ class EntryData(dl_pydantic.BaseSchema):
     hidden: bool = False
     permissions: EntryPermissions | None = None
 
-    data: dl_pydantic.JsonableDict | None = None
-    unversioned_data: dl_pydantic.JsonableDict | None = pydantic.Field(
-        default_factory=dict,
+    data: Data | None = None
+    unversioned_data: UnversionedData | None = pydantic.Field(
+        default_factory=UnversionedData,
         alias="unversionedData",
     )
 

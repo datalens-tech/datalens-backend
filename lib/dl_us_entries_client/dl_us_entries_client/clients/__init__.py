@@ -1,5 +1,7 @@
 from .private import (
     US_ENTRIES_PRIVATE_AUTH_TARGET,
+    PrivateDatasetEntryGetRequest,
+    PrivateDatasetEntryGetResponse,
     PrivateEntryDeleteRequest,
     PrivateEntryGetRequest,
     PrivateEntryGetResponse,
@@ -35,6 +37,8 @@ __all__ = [
     "EntryGetResponse",
     "EntryPostRequest",
     "EntryPostResponse",
+    "PrivateDatasetEntryGetRequest",
+    "PrivateDatasetEntryGetResponse",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
     "PrivateEntryGetResponse",

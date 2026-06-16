@@ -5,6 +5,8 @@ from .client import (
     USEntriesPrivateClientSettings,
 )
 from .models import (
+    PrivateDatasetEntryGetRequest,
+    PrivateDatasetEntryGetResponse,
     PrivateEntryDeleteRequest,
     PrivateEntryGetRequest,
     PrivateEntryGetResponse,
@@ -20,6 +22,8 @@ from .models import (
 
 __all__ = [
     "US_ENTRIES_PRIVATE_AUTH_TARGET",
+    "PrivateDatasetEntryGetRequest",
+    "PrivateDatasetEntryGetResponse",
     "PrivateEntryDeleteRequest",
     "PrivateEntryGetRequest",
     "PrivateEntryGetResponse",

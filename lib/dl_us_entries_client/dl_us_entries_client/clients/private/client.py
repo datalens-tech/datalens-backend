@@ -3,6 +3,7 @@ import ssl
 from typing import (
     ClassVar,
     Self,
+    TypeVar,
 )
 
 import attrs
@@ -37,6 +38,9 @@ class USEntriesPrivateClientDependencies:
     retry_policy_factory: dl_retrier.BaseRetryPolicyFactory = attrs.field(factory=dl_retrier.DefaultRetryPolicyFactory)
     auth_provider: dl_auth.AuthProviderProtocol = attrs.field(factory=dl_auth.NoAuthProvider)
     debug_logging: bool = attrs.field(default=False)
+
+
+GetEntryResponseType = TypeVar("GetEntryResponseType", bound=private_models.PrivateEntryGetResponse)
 
 
 @attrs.define(kw_only=True)
@@ -86,13 +90,36 @@ class USEntriesPrivateAsyncClient:
         prepared = await self._base_client.prepare_request(request=request)
         await self._send(prepared)
 
-    async def get_entry(self, request: private_models.PrivateEntryGetRequest) -> private_models.PrivateEntryGetResponse:
+    async def _get_entry(
+        self,
+        request: private_models.PrivateEntryGetRequest,
+        response_type: type[GetEntryResponseType],
+    ) -> GetEntryResponseType:
         prepared = await self._base_client.prepare_request(request=request)
         response = await self._send(prepared, error_transformer=request.error_transformer)
-        result = private_models.PrivateEntryGetResponse.model_validate(response.json())
+        result = response_type.model_validate(response.json())
         if request.include_permissions_info and result.permissions is None:
             raise exceptions.UsEntriesClientException("Permissions requested but not returned by US")
         return result
+
+    async def get_entry(
+        self,
+        request: private_models.PrivateEntryGetRequest,
+    ) -> private_models.PrivateEntryGetResponse:
+        return await self._get_entry(
+            request=request,
+            response_type=private_models.PrivateEntryGetResponse,
+        )
+
+    async def get_dataset(
+        self,
+        request: private_models.PrivateDatasetEntryGetRequest,
+    ) -> private_models.PrivateDatasetEntryGetResponse:
+
+        return await self._get_entry(
+            request=request,
+            response_type=private_models.PrivateDatasetEntryGetResponse,
+        )
 
     async def post_entry(
         self, request: private_models.PrivateEntryPostRequest
