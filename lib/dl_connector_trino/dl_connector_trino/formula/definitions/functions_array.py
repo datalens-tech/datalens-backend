@@ -182,69 +182,57 @@ def replace_array(array: ColumnClause, old_value: BindParameter, new_value: Bind
 
 
 class FuncArrStr3Trino(base.FuncArrStr3):
-    variants = [
-        V(D.TRINO, lambda array, delimiter, null_str: sa.func.array_join(array, delimiter, null_str)),
-    ]
-    argument_types = [
+    variants = (V(D.TRINO, lambda array, delimiter, null_str: sa.func.array_join(array, delimiter, null_str)),)
+    argument_types = (
         ArgTypeSequence([DataType.ARRAY_INT, DataType.CONST_STRING, DataType.CONST_STRING]),
         ArgTypeSequence([DataType.ARRAY_STR, DataType.CONST_STRING, DataType.CONST_STRING]),
-    ]
+    )
 
 
 class FuncFloatArrStr3Trino(base.FuncArrStr3):
-    variants = [
+    variants = (
         V(
             D.TRINO,
             lambda array, delimiter, null_str: sa.func.array_join(format_float(array), delimiter, null_str),
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.CONST_STRING, DataType.CONST_STRING]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.CONST_STRING, DataType.CONST_STRING]),)
 
 
 class FuncArrStr2Trino(base.FuncArrStr2):
-    variants = [
-        V(D.TRINO, lambda array, delimiter: sa.func.array_join(drop_null(array), delimiter)),
-    ]
-    argument_types = [
+    variants = (V(D.TRINO, lambda array, delimiter: sa.func.array_join(drop_null(array), delimiter)),)
+    argument_types = (
         ArgTypeSequence([DataType.ARRAY_INT, DataType.CONST_STRING]),
         ArgTypeSequence([DataType.ARRAY_STR, DataType.CONST_STRING]),
-    ]
+    )
 
 
 class FuncFloatArrStr2Trino(base.FuncArrStr2):
-    variants = [
+    variants = (
         V(
             D.TRINO,
             lambda array, delimiter: sa.func.array_join(format_float(drop_null(array)), delimiter),
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.CONST_STRING]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([DataType.ARRAY_FLOAT, DataType.CONST_STRING]),)
 
 
 class FuncArrStr1Trino(base.FuncArrStr1):
-    variants = [
-        V(D.TRINO, lambda array: sa.func.array_join(drop_null(array), ",")),
-    ]
-    argument_types = [
+    variants = (V(D.TRINO, lambda array: sa.func.array_join(drop_null(array), ",")),)
+    argument_types = (
         ArgTypeSequence([DataType.ARRAY_INT]),
         ArgTypeSequence([DataType.ARRAY_STR]),
-    ]
+    )
 
 
 class FuncFloatArrStr1Trino(base.FuncArrStr1):
-    variants = [
+    variants = (
         V(
             D.TRINO,
             lambda array: sa.func.array_join(format_float(drop_null(array)), ","),
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.ARRAY_FLOAT]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([DataType.ARRAY_FLOAT]),)
 
 
 DEFINITIONS_ARRAY = [

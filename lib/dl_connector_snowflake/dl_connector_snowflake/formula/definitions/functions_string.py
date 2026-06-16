@@ -14,12 +14,12 @@ VW = TranslationVariantWrapped.make
 
 
 class FuncIEndswithNonConstSF(base.FuncIEndswithNonConst):
-    variants = [
+    variants = (
         VW(
             D.SNOWFLAKE,
             lambda s, substr: n.func.ENDSWITH(n.func.LOWER(s), n.func.LOWER(substr)),
         ),
-    ]
+    )
 
 
 DEFINITIONS_STRING = [

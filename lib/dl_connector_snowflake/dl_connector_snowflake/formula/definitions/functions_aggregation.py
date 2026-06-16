@@ -15,36 +15,32 @@ V = TranslationVariant.make
 
 class AggMedianIntSF(base.AggMedian):
     name = "median"
-    argument_types = [
-        ArgTypeSequence([{DataType.INTEGER}]),
-    ]
-    variants = [
+    argument_types = (ArgTypeSequence([{DataType.INTEGER}]),)
+    variants = (
         V(
             D.SNOWFLAKE,
             lambda expr: sa.func.TO_NUMBER(
                 within_group(sa.func.PERCENTILE_DISC(0.5), expr.desc()),
             ),
         ),
-    ]
+    )
 
 
 class AggMedianFloatSF(base.AggMedian):
     name = "median"
-    argument_types = [
-        ArgTypeSequence([{DataType.FLOAT}]),
-    ]
-    variants = [
+    argument_types = (ArgTypeSequence([{DataType.FLOAT}]),)
+    variants = (
         V(
             D.SNOWFLAKE,
             lambda expr: within_group(sa.func.PERCENTILE_DISC(0.5), expr.desc()),
         ),
-    ]
+    )
 
 
 class AggMedianDateSF(base.AggMedian):
     name = "median"
-    argument_types = [ArgTypeSequence([{DataType.DATE}])]
-    variants = [
+    argument_types = (ArgTypeSequence([{DataType.DATE}]),)
+    variants = (
         V(
             D.SNOWFLAKE,
             lambda expr: sa.func.TO_DATE(
@@ -56,13 +52,13 @@ class AggMedianDateSF(base.AggMedian):
                 )
             ),
         ),
-    ]
+    )
 
 
 class AggMedianDateTimeSF(base.AggMedian):
     name = "median"
-    argument_types = [ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}])]
-    variants = [
+    argument_types = (ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}]),)
+    variants = (
         V(
             D.SNOWFLAKE,
             lambda expr: sa.func.TO_TIMESTAMP(
@@ -72,7 +68,7 @@ class AggMedianDateTimeSF(base.AggMedian):
                 )
             ),
         ),
-    ]
+    )
 
 
 DEFINITIONS_AGG = [

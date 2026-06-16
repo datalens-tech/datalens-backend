@@ -24,14 +24,14 @@ V = TranslationVariant.make
 
 class FuncDatetime2SF(SingleVariantTranslationBase, base.FuncTypeGenericDatetime2Impl):
     dialects = D.SNOWFLAKE
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATETIME, DataType.GENERICDATETIME, DataType.INTEGER, DataType.FLOAT, DataType.STRING},
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
     name = "datetime"
 
     @classmethod
@@ -91,19 +91,13 @@ class FuncGenericDatetime2SF(FuncDatetime2SF):
 
 
 class FuncBoolFromNullSF(base.FuncBoolFromNull):
-    variants = [
-        V(D.SNOWFLAKE, lambda _: sa.null()),
-    ]
+    variants = (V(D.SNOWFLAKE, lambda _: sa.null()),)
     return_type = Fixed(DataType.NULL)
 
 
 class FuncFloatFromNullSF(base.FuncFloat):
-    variants = [
-        V(D.SNOWFLAKE, lambda _: sa.null()),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.NULL]),
-    ]
+    variants = (V(D.SNOWFLAKE, lambda _: sa.null()),)
+    argument_types = (ArgTypeSequence([DataType.NULL]),)
 
 
 DEFINITIONS_TYPE = [

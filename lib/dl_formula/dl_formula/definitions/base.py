@@ -4,6 +4,7 @@ import abc
 from collections.abc import (
     Callable,
     Iterable,
+    Sequence,
 )
 import inspect
 from typing import (
@@ -465,8 +466,8 @@ _MULTI_NODE_TRANS_TV = TypeVar("_MULTI_NODE_TRANS_TV", bound="MultiVariantTransl
 class MultiVariantTranslation(NodeTranslation):
     __slots__ = ("_inst_arg_transformer", "_inst_variants")
 
-    variants: ClassVar[list[TranslationVariant]] = []
-    argument_types: ClassVar[list[ArgTypeMatcher] | None] = None
+    variants: ClassVar[Sequence[TranslationVariant]] = ()
+    argument_types: ClassVar[Sequence[ArgTypeMatcher] | None] = None
     argument_flags: ClassVar[ArgFlagDispenser | None] = None
     return_type: ClassVar[TypeStrategy] = FromArgs()
     return_type_params: ClassVar[TypeParamsStrategy] = ParamsEmpty()
@@ -475,12 +476,12 @@ class MultiVariantTranslation(NodeTranslation):
     arg_transformer: ClassVar[ArgTransformer] = ArgTransformer()
 
     # Instance vars
-    _inst_variants: list[TranslationVariant]
+    _inst_variants: Sequence[TranslationVariant]
     _inst_arg_transformer: ArgTransformer
 
     def __init__(
         self,
-        variants: list[TranslationVariant] | None = None,
+        variants: Sequence[TranslationVariant] | None = None,
         arg_transformer: ArgTransformer | None = None,
     ) -> None:
         if variants is None:
@@ -495,7 +496,7 @@ class MultiVariantTranslation(NodeTranslation):
 
         super().__init__()
 
-    def get_variants(self) -> list[TranslationVariant]:
+    def get_variants(self) -> Sequence[TranslationVariant]:
         """Override point (to avoid making a class property or a metaclass)"""
         return self._inst_variants
 
@@ -666,7 +667,7 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         """Variant implementation"""
         raise NotImplementedError
 
-    def get_variants(self) -> list[TranslationVariant]:
+    def get_variants(self) -> Sequence[TranslationVariant]:
         """
         Semi-mockup for all supporting methods
         (e.g `match_dialect`, `variant.match`, `supported_dialects`).

@@ -37,24 +37,22 @@ class AggregationFunction(AggregationFunctionBase):
 
 class AggSum(AggregationFunction):
     name = "sum"
-    variants = [
-        V(D.DUMMY | D.SQLITE, sa.func.sum),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY | D.SQLITE, sa.func.sum),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = FromArgs()
 
 
 class AggSumIf(AggregationFunction):
     name = "sum_if"
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda expr, cond: n.func.SUM(n.func.IF(cond, expr, 0)),
         ),
-    ]
+    )
     arg_cnt = 2
     arg_names = ["expression", "condition"]
     # TODO: Check if really all types for conditions are allowed
@@ -63,10 +61,10 @@ class AggSumIf(AggregationFunction):
     #     *[[DataType.INTEGER, cond_type] for cond_type in DataType],
     #     *[[DataType.FLOAT, cond_type] for cond_type in DataType],
     # ]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER, DataType.BOOLEAN]),
         ArgTypeSequence([DataType.FLOAT, DataType.BOOLEAN]),
-    ]
+    )
     argument_flags = ArgFlagSequence([None, ContextFlag.REQ_CONDITION])
     return_type = FromArgs(0)
 
@@ -77,70 +75,66 @@ class AggAvg(AggregationFunction):
 
 
 class AggAvgFromNumber(AggAvg):
-    variants = [
-        V(D.DUMMY | D.SQLITE, sa.func.avg),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, sa.func.avg),)
     return_type = Fixed(DataType.FLOAT)
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
 
 
 class AggAvgFromDate(AggAvg):
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda date_val: n.func.DATE(n.func.AVG(n.func.INT(date_val))),
         ),
-    ]
+    )
     return_type = Fixed(DataType.DATE)
-    argument_types = [
-        ArgTypeSequence([DataType.DATE]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE]),)
 
 
 class AggAvgFromDatetime(AggAvg):
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda dt_val: n.func.DATETIME(n.func.AVG(n.func.INT(dt_val))),
         ),
-    ]
+    )
     return_type = FromArgs(0)
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([DataType.DATETIME]),
         ArgTypeSequence([DataType.GENERICDATETIME]),
-    ]
+    )
 
 
 class AggAvgFromDatetimeTZ(AggAvg):
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda dt: n.func.DATETIMETZ(n.func.AVG(n.func.INT(dt)), dt.data_type_params.timezone),
         ),
-    ]
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    )
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
 
 class AggAvgIf(AggregationFunction):
     name = "avg_if"
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda expr, cond: n.func.AVG(n.func.IF(cond, expr, None)),
         ),
-    ]
+    )
 
     arg_cnt = 2
     arg_names = ["expression", "condition"]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER, DataType.BOOLEAN]),
         ArgTypeSequence([DataType.FLOAT, DataType.BOOLEAN]),
-    ]
+    )
     argument_flags = ArgFlagSequence([None, ContextFlag.REQ_CONDITION])
     return_type = Fixed(DataType.FLOAT)
 
@@ -148,10 +142,8 @@ class AggAvgIf(AggregationFunction):
 class AggMax(AggregationFunction):
     name = "max"
     arg_names = ["value"]
-    variants = [
-        V(D.DUMMY | D.SQLITE, sa.func.max),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY | D.SQLITE, sa.func.max),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
         ArgTypeSequence([DataType.BOOLEAN]),
@@ -162,7 +154,7 @@ class AggMax(AggregationFunction):
         ArgTypeSequence([DataType.GENERICDATETIME]),
         ArgTypeSequence([DataType.UUID]),
         ArgTypeSequence([DataType.INTEGER]),
-    ]
+    )
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
@@ -170,10 +162,8 @@ class AggMax(AggregationFunction):
 class AggMin(AggregationFunction):
     name = "min"
     arg_names = ["value"]
-    variants = [
-        V(D.DUMMY | D.SQLITE, sa.func.min),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY | D.SQLITE, sa.func.min),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
         ArgTypeSequence([DataType.BOOLEAN]),
@@ -184,7 +174,7 @@ class AggMin(AggregationFunction):
         ArgTypeSequence([DataType.GENERICDATETIME]),
         ArgTypeSequence([DataType.UUID]),
         ArgTypeSequence([DataType.INTEGER]),
-    ]
+    )
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
@@ -197,54 +187,46 @@ class AggCount(AggregationFunction):
 
 class AggCount0(AggCount):
     arg_cnt = 0
-    variants = [
-        V(D.DUMMY | D.SQLITE, lambda: sa.func.count(1)),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, lambda: sa.func.count(1)),)
 
 
 class AggCount1(AggCount):
-    variants = [
-        V(D.DUMMY | D.SQLITE, sa.func.count),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, sa.func.count),)
 
 
 class AggCountIf(AggregationFunction):
     name = "count_if"
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda cond: n.func.COUNT(n.func.IF(cond, 1, None)),
-        )
-    ]
+        ),
+    )
 
     arg_names = ["condition"]
-    argument_types = [
-        ArgTypeSequence([DataType.BOOLEAN]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.BOOLEAN]),)
     argument_flags = ArgFlagSequence([ContextFlag.REQ_CONDITION])
     return_type = Fixed(DataType.INTEGER)
 
 
 class AggCountd(AggregationFunction):
     name = "countd"
-    variants = [
-        V(D.DUMMY | D.SQLITE, lambda x: sa.func.count(sa.distinct(x))),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, lambda x: sa.func.count(sa.distinct(x))),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class AggCountdIf(AggregationFunction):
     name = "countd_if"
-    variants = [
+    variants = (
         VW(
             D.DUMMY,
             lambda expr, cond: n.func.COUNTD(n.func.IF(cond, expr, None)),
         ),
-    ]
+    )
 
     arg_cnt = 2
     arg_names = ["expression", "condition"]
-    argument_types = [ArgTypeSequence([expr_type, DataType.BOOLEAN]) for expr_type in DataType]
+    argument_types = tuple(ArgTypeSequence([expr_type, DataType.BOOLEAN]) for expr_type in DataType)
     argument_flags = ArgFlagSequence([None, ContextFlag.REQ_CONDITION])
     return_type = Fixed(DataType.INTEGER)
 
@@ -256,63 +238,55 @@ class AggCountdApprox(AggregationFunction):
 
 class AggStdev(AggregationFunction):
     name = "stdev"
-    variants = [
-        V(D.DUMMY, sa.func.STDDEV_SAMP),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, sa.func.STDDEV_SAMP),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = Fixed(DataType.FLOAT)
 
 
 class AggStdevp(AggregationFunction):
     name = "stdevp"
-    variants = [
-        V(D.DUMMY, sa.func.STDDEV_POP),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, sa.func.STDDEV_POP),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = Fixed(DataType.FLOAT)
 
 
 class AggVar(AggregationFunction):
     name = "var"
-    variants = [
-        V(D.DUMMY, sa.func.VAR_SAMP),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, sa.func.VAR_SAMP),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = Fixed(DataType.FLOAT)
 
 
 class AggVarp(AggregationFunction):
     name = "varp"
-    variants = [
-        V(D.DUMMY, sa.func.VAR_POP),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, sa.func.VAR_POP),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = Fixed(DataType.FLOAT)
 
 
 class AggQuantileBase(AggregationFunction):
     arg_cnt = 2
     arg_names = ["value", "quant"]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.INTEGER, DataType.FLOAT, DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME},
                 DataType.FLOAT,
             ]
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
@@ -326,13 +300,13 @@ class AggQuantileApproximate(AggQuantileBase):
 
 class AggMedian(AggregationFunction):
     name = "median"
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.INTEGER, DataType.FLOAT, DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME},
             ]
         ),
-    ]
+    )
     return_type = FromArgs()
 
 
@@ -376,14 +350,14 @@ class AggAllConcatBase(AggregationFunction):
     name = "all_concat"
     arg_names = ["expression", "separator"]
     # (Any, ConstString) -> String
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 AGG_CONCAT_INPUT_TYPES,
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
     return_type = Fixed(DataType.STRING)
 
 
@@ -400,7 +374,7 @@ class AggTopConcatBase(AggregationFunction):
     # Doable for postgresql, but not performant, and very convoluted
     arg_names = ["expression", "amount", "separator"]
     # (Any, ConstInteger, ConstString) -> String
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 AGG_CONCAT_INPUT_TYPES,
@@ -408,7 +382,7 @@ class AggTopConcatBase(AggregationFunction):
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
     return_type = Fixed(DataType.STRING)
 
 

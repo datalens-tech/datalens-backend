@@ -188,9 +188,7 @@ class FuncDbCastYQLBase(base.FuncDbCastBase):
     # [4] - Possible only within the valid range.
     # [5] - Using the built-in function Yson::ConvertTo.
 
-    argument_types = [
-        YQLDbCastArgTypes(),
-    ]
+    argument_types = (YQLDbCastArgTypes(),)
 
     WHITELISTS = {
         yql_dialect: {

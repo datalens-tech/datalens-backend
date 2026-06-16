@@ -20,15 +20,13 @@ V = TranslationVariant.make
 class FuncRound2ConstCompeng(base.FuncRound2):
     _DECIMAL_SIZE: ClassVar[int] = 20
 
-    variants = [
+    variants = (
         V(
             D.COMPENG,
             lambda number, precision: FuncRound2ConstCompeng._do_round_with_const_arg(number, precision),
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT, DataType.CONST_INTEGER]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.CONST_INTEGER]),)
 
     @classmethod
     def _do_round_with_const_arg(self, number: Literal, precision: Literal) -> ClauseElement:

@@ -25,14 +25,14 @@ VW = TranslationVariantWrapped.make
 
 class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncTypeGenericDatetime2Impl):
     dialects = D.POSTGRESQL
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATETIME, DataType.GENERICDATETIME, DataType.INTEGER, DataType.FLOAT, DataType.STRING},
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
     @classmethod
     def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:
@@ -87,7 +87,7 @@ class FuncTypeGenericDatetime2PGImpl(SingleVariantTranslationBase, base.FuncType
 
 class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     dialects = D.POSTGRESQL
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {
@@ -102,7 +102,7 @@ class FuncDatetimeTZPG(SingleVariantTranslationBase, base.FuncDatetimeTZ):
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
     @classmethod
     def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:

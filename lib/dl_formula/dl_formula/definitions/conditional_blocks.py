@@ -102,9 +102,7 @@ class CaseBlock(CondBlock):
         )
 
     arg_cnt = None
-    variants = [
-        VW(D.DUMMY, lambda *args: CaseBlock.translation(*args)),
-    ]
+    variants = (VW(D.DUMMY, lambda *args: CaseBlock.translation(*args)),)
     return_type = CaseTypeStrategy()
 
 
@@ -115,23 +113,21 @@ class IfBlock(CondBlock):
 
 class IfBlock3(IfBlock):
     arg_cnt = 3
-    variants = [
-        V(D.DUMMY, lambda cond, expr, else_expr: sa.case(whens=[(cond, expr)], else_=else_expr)),
-    ]
+    variants = (V(D.DUMMY, lambda cond, expr, else_expr: sa.case(whens=[(cond, expr)], else_=else_expr)),)
     argument_flags = ArgFlagSequence([ContextFlag.REQ_CONDITION, None, None])
     return_type = FromArgs(1, 2)
 
 
 class IfBlockMulti(IfBlock):
     arg_cnt = None
-    variants = [
+    variants = (
         V(
             D.DUMMY | D.SQLITE,
             lambda *args: sa.case(
                 whens=[(args[ind], args[ind + 1]) for ind in range(0, len(args) - 1, 2)], else_=args[-1]
             ),
-        )
-    ]
+        ),
+    )
     argument_flags = IfFlagDispenser()
     return_type = IfTypeStrategy()
 

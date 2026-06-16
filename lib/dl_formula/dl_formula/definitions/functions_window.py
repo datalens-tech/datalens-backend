@@ -138,107 +138,91 @@ class WinGenericRankBase(WindowFunction):
 
 class WinRankBase(WinGenericRankBase):
     name = "rank"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda *args: sa.func.RANK(),
             translation_order_by=_order_by_from_args,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinRank1(WinRankBase):
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES]),)
 
 
 class WinRank2(WinRankBase):
     arg_cnt = 2
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),)
 
 
 class WinRankDenseBase(WinGenericRankBase):
     name = "rank_dense"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda *args: sa.func.DENSE_RANK(),
             translation_order_by=_order_by_from_args,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinRankDense1(WinRankDenseBase):
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES]),)
 
 
 class WinRankDense2(WinRankDenseBase):
     arg_cnt = 2
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),)
 
 
 class WinRankUniqueBase(WinGenericRankBase):
     name = "rank_unique"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda *args: sa.func.ROW_NUMBER(),
             translation_order_by=_order_by_from_args,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinRankUnique1(WinRankUniqueBase):
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES]),)
 
 
 class WinRankUnique2(WinRankUniqueBase):
     arg_cnt = 2
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),)
 
 
 class WinRankPercentileBase(WinGenericRankBase):
     name = "rank_percentile"
     return_type = Fixed(DataType.FLOAT)
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda *args: sa.func.PERCENT_RANK(),
             translation_order_by=_order_by_from_args,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinRankPercentile1(WinRankPercentileBase):
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES]),)
 
 
 class WinRankPercentile2(WinRankPercentileBase):
     arg_cnt = 2
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),)
 
 
 class WinAggBase(WindowFunction):
@@ -270,50 +254,46 @@ class WinAggBase(WindowFunction):
 class WinSum(WinAggBase):
     name = "sum"
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([NUMERIC_TYPES]),
-    ]
-    variants = [
+    argument_types = (ArgTypeSequence([NUMERIC_TYPES]),)
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.SUM(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
 class WinMinMaxBase(WinAggBase):
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES]),)
     return_type = FromArgs(0)
 
 
 class WinMin(WinMinMaxBase):
     name = "min"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.MIN(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinMax(WinMinMaxBase):
     name = "max"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.MAX(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinCountBase(WinAggBase):
@@ -323,40 +303,40 @@ class WinCountBase(WinAggBase):
 
 class WinCount0(WinCountBase):
     arg_cnt = 0
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda: sa.func.COUNT(sa.text("*")),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinCount1(WinCountBase):
     arg_cnt = 1
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.COUNT(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinAvg(WinAggBase):  # TODO: support DATE & DATETIME
     name = "avg"
     return_type = Fixed(DataType.FLOAT)
     arg_cnt = 1
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.AVG(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinAggIf(WindowFunction):
@@ -388,47 +368,45 @@ class WinAggIf(WindowFunction):
 
     arg_cnt = 2
     arg_names = ["expression", "condition"]
-    argument_types = [
-        ArgTypeSequence([NUMERIC_TYPES, DataType.BOOLEAN]),
-    ]
+    argument_types = (ArgTypeSequence([NUMERIC_TYPES, DataType.BOOLEAN]),)
 
 
 class WinSumIf(WinAggIf):
     name = "sum_if"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, condition: sa.func.SUM(x).filter(condition),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
 class WinCountIf(WinAggIf):
     name = "count_if"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, condition: sa.func.COUNT(x).filter(condition),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
 class WinAvgIf(WinAggIf):  # TODO: support DATE & DATETIME
     name = "avg_if"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, condition: sa.func.AVG(x).filter(condition),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
@@ -472,17 +450,15 @@ class WinRFuncBase(OrderedWinFuncBase):
 
 class WinRSumBase(WinRFuncBase):
     name = "rsum"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.sum(x),
             translation_rows=_rows_stretching_window,
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_STRING]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_STRING]),)
     return_type = FromArgs(0)
 
 
@@ -496,17 +472,15 @@ class WinRSum2(WinRSumBase):
 
 class WinRCountBase(WinRFuncBase):
     name = "rcount"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.COUNT(x),
             translation_rows=_rows_stretching_window,
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([ALL_TYPES, DataType.CONST_STRING]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([ALL_TYPES, DataType.CONST_STRING]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -519,22 +493,20 @@ class WinRCount2(WinRCountBase):
 
 
 class WinRMinMaxBase(WinRFuncBase):
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES, DataType.CONST_STRING]),)
     return_type = FromArgs(0)
 
 
 class WinRMinBase(WinRMinMaxBase):
     name = "rmin"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.MIN(x),
             translation_rows=_rows_stretching_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinRMin1(WinRMinBase):
@@ -547,14 +519,14 @@ class WinRMin2(WinRMinBase):
 
 class WinRMaxBase(WinRMinMaxBase):
     name = "rmax"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.MAX(x),
             translation_rows=_rows_stretching_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinRMax1(WinRMaxBase):
@@ -567,17 +539,15 @@ class WinRMax2(WinRMaxBase):
 
 class WinRAvgBase(WinRFuncBase):  # TODO: Add support for DATE & DATETIME
     name = "ravg"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.AVG(x),
             translation_rows=_rows_stretching_window,
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_STRING]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_STRING]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -665,17 +635,15 @@ class MFuncBase(OrderedWinFuncBase):
 
 class WinMSumBase(MFuncBase):
     name = "msum"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.sum(x),
             translation_rows=lambda _, *row_args: _resolve_mfunc_rows(*row_args),
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),)
     return_type = FromArgs(0)
 
 
@@ -689,17 +657,15 @@ class WinMSum3(WinMSumBase):
 
 class WinMCountBase(MFuncBase):
     name = "mcount"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.COUNT(x),
             translation_rows=lambda _, *row_args: _resolve_mfunc_rows(*row_args),
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([ALL_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([ALL_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),)
     return_type = FromArgs(0)
 
 
@@ -712,22 +678,20 @@ class WinMCount3(WinMCountBase):
 
 
 class WinMMinMaxBase(MFuncBase):
-    argument_types = [
-        ArgTypeSequence([RANKED_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([RANKED_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),)
     return_type = FromArgs(0)
 
 
 class WinMMinBase(WinMMinMaxBase):
     name = "mmin"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.MIN(x),
             translation_rows=lambda _, *row_args: _resolve_mfunc_rows(*row_args),
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinMMin2(WinMMinBase):
@@ -740,14 +704,14 @@ class WinMMin3(WinMMinBase):
 
 class WinMMaxBase(WinMMinMaxBase):
     name = "mmax"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.MAX(x),
             translation_rows=lambda _, *row_args: _resolve_mfunc_rows(*row_args),
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinMMax2(WinMMaxBase):
@@ -760,17 +724,15 @@ class WinMMax3(WinMMaxBase):
 
 class WinMAvgBase(MFuncBase):  # TODO: support DATE & DATETIME
     name = "mavg"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x, *_: sa.func.AVG(x),
             translation_rows=lambda _, *row_args: _resolve_mfunc_rows(*row_args),
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
-        ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),
-    ]
+    )
+    argument_types = (ArgTypeSequence([NUMERIC_TYPES, DataType.CONST_INTEGER, DataType.CONST_INTEGER]),)
     return_type = FromArgs(0)
 
 
@@ -802,7 +764,7 @@ def lag_implementation(
 class WinLagBase(OrderedWinFuncBase):
     name = "lag"
     arg_names = ["value", "offset", "default"]
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             # PostgreSQL requires offset and default to be constant,
@@ -813,10 +775,10 @@ class WinLagBase(OrderedWinFuncBase):
             translation_rows=lambda x, offset=sa.literal(1), *_: (None, None),  # noqa: B008
             as_winfunc=True,
         ),
-    ]
-    argument_types = [
+    )
+    argument_types = (
         ArgTypeSequence([set(DataType), DataType.CONST_INTEGER, {dtype for dtype in DataType if dtype.is_const}]),
-    ]
+    )
     return_type = FromArgs(0)
 
 
@@ -835,38 +797,38 @@ class WinLag3(WinLagBase):
 class WinFirstLastBase(OrderedWinFuncBase):
     arg_cnt = 1
     arg_names = ["value"]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 set(DataType),
             ]
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
 class WinFirst(WinFirstLastBase):
     name = "first"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.first_value(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinLast(WinFirstLastBase):
     name = "last"
-    variants = [
+    variants = (
         V(
             D.DUMMY,
             translation=lambda x: sa.func.last_value(x),
             translation_rows=_rows_full_window,
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 DEFINITIONS_WINDOW = [

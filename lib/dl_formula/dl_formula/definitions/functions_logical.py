@@ -30,9 +30,7 @@ class FuncIsnull(LogicalFunction):
     name = "isnull"
     arg_cnt = 1
     arg_names = ["expression"]
-    variants = [
-        V(D.DUMMY, lambda x: x.is_(None)),
-    ]
+    variants = (V(D.DUMMY, lambda x: x.is_(None)),)
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
 
@@ -64,16 +62,16 @@ class FuncZn(LogicalFunction):
     name = "zn"
     arg_cnt = 1
     arg_names = ["expression"]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = FromArgs()
 
 
 class FuncIfBase(LogicalFunction):
     scopes = LogicalFunction.scopes & ~Scope.DOCUMENTED  # Documented in _if_block_
-    variants = [VW(D.DUMMY, n.func._if_block_)]
+    variants = (VW(D.DUMMY, n.func._if_block_),)
     # Disable postprocessing of args so that it can be done when _if_block_ is being applied.
     # Otherwise we will lose the original context flags of these arguments
     postprocess_args = False
@@ -95,7 +93,7 @@ class FuncCase(LogicalFunction):
     name = "case"
     arg_cnt = None
     scopes = LogicalFunction.scopes & ~Scope.DOCUMENTED  # Documented in _case_block_
-    variants = [VW(D.DUMMY, n.func._case_block_)]  # noqa
+    variants = (VW(D.DUMMY, n.func._case_block_),)  # noqa
     return_type = CaseTypeStrategy()
 
 

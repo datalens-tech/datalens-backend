@@ -134,9 +134,7 @@ class FuncDatetrunc2DateMySQL(MySQLDatetruncBuildMixin, base.FuncDatetrunc2Date)
         "week": trunc_week,
     }
 
-    variants = [
-        V(D.MYSQL, lambda date, unit: FuncDatetrunc2DateMySQL.make_datetrunc(date, unit)),
-    ]
+    variants = (V(D.MYSQL, lambda date, unit: FuncDatetrunc2DateMySQL.make_datetrunc(date, unit)),)
 
 
 class FuncDatetrunc2DatetimeMySQL(MySQLDatetruncBuildMixin, base.FuncDatetrunc2Datetime):
@@ -151,12 +149,8 @@ class FuncDatetrunc2DatetimeMySQL(MySQLDatetruncBuildMixin, base.FuncDatetrunc2D
         "second": MySQLDatetruncRoundSecondsStep(1),
     }
 
-    variants = [
-        V(D.MYSQL, lambda date, unit: FuncDatetrunc2DatetimeMySQL.make_datetrunc(date, unit)),
-    ]
-    argument_types = [
-        ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}, DataType.CONST_STRING]),
-    ]
+    variants = (V(D.MYSQL, lambda date, unit: FuncDatetrunc2DatetimeMySQL.make_datetrunc(date, unit)),)
+    argument_types = (ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}, DataType.CONST_STRING]),)
 
 
 DEFINITIONS_DATETIME = [

@@ -30,18 +30,16 @@ VW = TranslationVariantWrapped.make
 
 
 class FuncDate2FromNumber(base.FuncDate2):
-    variants = [
-        V(D.CLICKHOUSE, lambda expr, tz: sa.func.toDate(expr, tz)),
-    ]
-    argument_types = [
+    variants = (V(D.CLICKHOUSE, lambda expr, tz: sa.func.toDate(expr, tz)),)
+    argument_types = (
         ArgTypeSequence([DataType.FLOAT, DataType.CONST_STRING]),
         ArgTypeSequence([DataType.INTEGER, DataType.CONST_STRING]),
-    ]
+    )
 
 
 class FuncDatetimeTZCH(SingleVariantTranslationBase, base.FuncDatetimeTZ):
     dialects = D.CLICKHOUSE
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {
@@ -56,7 +54,7 @@ class FuncDatetimeTZCH(SingleVariantTranslationBase, base.FuncDatetimeTZ):
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
     @classmethod
     def _translate_main(cls, value_ctx: TranslationCtx, tz_ctx: TranslationCtx) -> ClauseElement:
@@ -98,14 +96,14 @@ class FuncDatetimeTZToNaiveCH(base.FuncDatetimeTZToNaive):
 # custom `get_variants` implementation that plugs into `cls.dialects` and `cls._translate_main`.
 class FuncTypeGenericDatetime2CHImpl(SingleVariantTranslationBase, base.FuncTypeGenericDatetime2Impl):
     dialects = D.CLICKHOUSE
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATETIME, DataType.GENERICDATETIME, DataType.INTEGER, DataType.FLOAT, DataType.STRING},
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
     @classmethod
     def _translate_main(cls, expr: TranslationCtx, tz: TranslationCtx) -> ClauseElement:

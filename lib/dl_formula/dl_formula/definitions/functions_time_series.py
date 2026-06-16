@@ -17,7 +17,7 @@ VW = TranslationVariantWrapped.make
 class TimeSeriesFunction(Function):
     supports_ignore_dimensions = True
     supports_bfb = True
-    variants = [
+    variants = (
         # These functions are not translatable,
         # so raise an error if we ever reach the translator here.
         VW(
@@ -26,14 +26,14 @@ class TimeSeriesFunction(Function):
                 message="Lookup function should have been mutated",
                 err_code=exc.TranslationError.default_code,
             ),
-        )
-    ]
+        ),
+    )
 
 
 class FuncAgoBase(TimeSeriesFunction):
     name = "ago"
     arg_names = ["measure", "date_dimension", "unit", "number"]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 set(DataType),
@@ -42,7 +42,7 @@ class FuncAgoBase(TimeSeriesFunction):
                 DataType.CONST_INTEGER,
             ]
         ),
-    ]
+    )
     return_type = FromArgs(0)
 
 
@@ -58,7 +58,7 @@ class FuncAgo3Number(FuncAgoBase):
     """A variant with the number of days as the third argument with the units omitted"""
 
     arg_cnt = 3
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 set(DataType),
@@ -66,7 +66,7 @@ class FuncAgo3Number(FuncAgoBase):
                 DataType.CONST_INTEGER,
             ]
         ),
-    ]
+    )
 
 
 class FuncAgo4(FuncAgoBase):
@@ -76,11 +76,11 @@ class FuncAgo4(FuncAgoBase):
 class FuncAtDateBase(TimeSeriesFunction):
     name = "at_date"
     arg_names = ["measure", "date_dimension", "date_expr"]
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([set(DataType), DataType.DATE, DataType.DATE]),
         ArgTypeSequence([set(DataType), DataType.DATETIME, DataType.DATETIME]),
         ArgTypeSequence([set(DataType), DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
-    ]
+    )
     return_type = FromArgs(0)
 
 

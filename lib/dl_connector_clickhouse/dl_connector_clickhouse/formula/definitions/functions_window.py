@@ -30,7 +30,7 @@ SUPPORTED_DIALECTS = D.and_above(D.CLICKHOUSE_22_10)
 
 
 class WinLagClickHouseBase(base.WinLagBase):
-    variants = [
+    variants = (
         V(
             SUPPORTED_DIALECTS,
             translation=lambda x, offset=sa.literal(1), default=sa.null(), *_: (  # noqa: B008
@@ -45,7 +45,7 @@ class WinLagClickHouseBase(base.WinLagBase):
             translation_rows=lambda x, offset=sa.literal(1), *_: (None, None),  # noqa: B008
             as_winfunc=True,
         ),
-    ]
+    )
 
 
 class WinLag1ClickHouse(WinLagClickHouseBase):
@@ -89,12 +89,12 @@ class RankPercentileTranslationImplementation(FuncTranslationImplementationBase)
 
 
 class WinRankPercentileClickHouseBase(base.WinRankPercentileBase):
-    variants = [
+    variants = (
         TranslationVariant(
             dialects=SUPPORTED_DIALECTS,
             value=RankPercentileTranslationImplementation(),
         ),
-    ]
+    )
 
 
 class WinRankPercentile1ClickHouse(WinRankPercentileClickHouseBase):

@@ -19,7 +19,7 @@ class SpecialFunction(Function):
 class FuncMakeNan(SpecialFunction):
     name = "_make_nan"
     arg_cnt = 0
-    argument_types = [ArgTypeSequence([])]
+    argument_types = (ArgTypeSequence([]),)
     return_type = Fixed(DataType.FLOAT)
 
 

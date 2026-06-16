@@ -33,52 +33,46 @@ class UnaryNot(Unary):
 
 
 class UnaryNotBool(UnaryNot):
-    variants = [V(D.DUMMY | D.SQLITE, sa.not_)]
-    argument_types = [
-        ArgTypeSequence([DataType.BOOLEAN]),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, sa.not_),)
+    argument_types = (ArgTypeSequence([DataType.BOOLEAN]),)
     argument_flags = ArgFlagSequence([ContextFlag.REQ_CONDITION])
 
 
 class UnaryNotNumbers(UnaryNot):
-    variants = [V(D.DUMMY | D.SQLITE, lambda x: x == 0)]
-    argument_types = [
+    variants = (V(D.DUMMY | D.SQLITE, lambda x: x == 0),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
 
 
 class UnaryNotStringGeo(UnaryNot):
-    variants = [
-        V(D.DUMMY, lambda x: x == ""),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, lambda x: x == ""),)
+    argument_types = (
         ArgTypeSequence([DataType.STRING]),
         ArgTypeSequence([DataType.GEOPOINT]),
         ArgTypeSequence([DataType.GEOPOLYGON]),
-    ]
+    )
 
 
 class UnaryNotDateDatetime(UnaryNot):
-    variants = [
-        V(D.DUMMY, lambda x: sa.literal(False)),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, lambda x: sa.literal(False)),)
+    argument_types = (
         ArgTypeSequence([DataType.DATE]),
         ArgTypeSequence([DataType.DATETIME]),
         ArgTypeSequence([DataType.GENERICDATETIME]),
-    ]
+    )
     return_flags = 0
 
 
 class UnaryNegate(Unary):
     name = "neg"
-    variants = [V(D.DUMMY | D.SQLITE, lambda x: -x)]
+    variants = (V(D.DUMMY | D.SQLITE, lambda x: -x),)
     return_type = FromArgs()
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
 
 
 class UnaryIsOpBase(Unary):
@@ -92,45 +86,37 @@ class UnaryIsTrue(UnaryIsOpBase):
 
 
 class UnaryIsTrueStringGeo(UnaryIsTrue):
-    variants = [
+    variants = (
         # TODO?: use `n.func.NOT`?
         V(D.DUMMY, lambda x: x != ""),
-    ]
-    argument_types = [
+    )
+    argument_types = (
         ArgTypeSequence([DataType.STRING]),
         ArgTypeSequence([DataType.GEOPOINT]),
         ArgTypeSequence([DataType.GEOPOLYGON]),
-    ]
+    )
 
 
 class UnaryIsTrueNumbers(UnaryIsTrue):
     # TODO?: use `n.func.BOOL`?
-    variants = [V(D.DUMMY | D.SQLITE, lambda x: x != 0.0)]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT]),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, lambda x: x != 0.0),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT]),)
 
 
 class UnaryIsTrueDateTime(UnaryIsTrue):
     # TODO?: use `n.func.NOT`?
-    variants = [
-        V(D.DUMMY, lambda x: sa.literal(True)),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, lambda x: sa.literal(True)),)
+    argument_types = (
         ArgTypeSequence([DataType.DATE]),
         ArgTypeSequence([DataType.DATETIME]),
         ArgTypeSequence([DataType.GENERICDATETIME]),
-    ]
+    )
     return_flags = 0
 
 
 class UnaryIsTrueBoolean(UnaryIsTrue):
-    variants = [
-        V(D.DUMMY, lambda x: x.is_(True)),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.BOOLEAN]),
-    ]
+    variants = (V(D.DUMMY, lambda x: x.is_(True)),)
+    argument_types = (ArgTypeSequence([DataType.BOOLEAN]),)
 
 
 class UnaryIsFalse(UnaryIsOpBase):
@@ -139,43 +125,35 @@ class UnaryIsFalse(UnaryIsOpBase):
 
 
 class UnaryIsFalseStringGeo(UnaryIsFalse):
-    variants = [
+    variants = (
         # TODO?: use `n.func.NOT`?
         V(D.DUMMY, lambda x: x == ""),
-    ]
-    argument_types = [
+    )
+    argument_types = (
         ArgTypeSequence([DataType.STRING]),
         ArgTypeSequence([DataType.GEOPOINT]),
         ArgTypeSequence([DataType.GEOPOLYGON]),
-    ]
+    )
 
 
 class UnaryIsFalseNumbers(UnaryIsFalse):
-    variants = [V(D.DUMMY | D.SQLITE, lambda x: x == 0.0)]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT]),
-    ]
+    variants = (V(D.DUMMY | D.SQLITE, lambda x: x == 0.0),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT]),)
 
 
 class UnaryIsFalseDateTime(UnaryIsFalse):
-    variants = [
-        V(D.DUMMY, lambda x: sa.literal(False)),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, lambda x: sa.literal(False)),)
+    argument_types = (
         ArgTypeSequence([DataType.DATE]),
         ArgTypeSequence([DataType.DATETIME]),
         ArgTypeSequence([DataType.GENERICDATETIME]),
-    ]
+    )
     return_flags = 0
 
 
 class UnaryIsFalseBoolean(UnaryIsFalse):
-    variants = [
-        V(D.DUMMY, lambda x: x.is_(False)),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.BOOLEAN]),
-    ]
+    variants = (V(D.DUMMY, lambda x: x.is_(False)),)
+    argument_types = (ArgTypeSequence([DataType.BOOLEAN]),)
 
 
 DEFINITIONS_UNARY = [

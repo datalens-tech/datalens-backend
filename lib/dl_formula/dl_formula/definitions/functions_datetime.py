@@ -48,12 +48,8 @@ class FuncDateadd1Base(FuncDateaddBase):
 
 
 class FuncDateadd1(FuncDateadd1Base):
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date: n.func.DATEADD(date, "day", 1)),
-    ]
-    argument_types = [
-        ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}]),
-    ]
+    variants = (VW(D.DUMMY | D.SQLITE, lambda date: n.func.DATEADD(date, "day", 1)),)
+    argument_types = (ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}]),)
 
 
 class FuncDateadd2Base(FuncDateaddBase):
@@ -61,21 +57,13 @@ class FuncDateadd2Base(FuncDateaddBase):
 
 
 class FuncDateadd2Unit(FuncDateadd2Base):
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date, unit: n.func.DATEADD(date, unit, 1)),
-    ]
-    argument_types = [
-        ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}, DataType.CONST_STRING]),
-    ]
+    variants = (VW(D.DUMMY | D.SQLITE, lambda date, unit: n.func.DATEADD(date, unit, 1)),)
+    argument_types = (ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}, DataType.CONST_STRING]),)
 
 
 class FuncDateadd2Number(FuncDateadd2Base):
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date, number: n.func.DATEADD(date, "day", number)),
-    ]
-    argument_types = [
-        ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}, DataType.CONST_INTEGER]),
-    ]
+    variants = (VW(D.DUMMY | D.SQLITE, lambda date, number: n.func.DATEADD(date, "day", number)),)
+    argument_types = (ArgTypeSequence([{DataType.DATE, *_DATETIME_TYPES}, DataType.CONST_INTEGER]),)
 
 
 class FuncDateadd3Base(FuncDateaddBase):
@@ -85,50 +73,38 @@ class FuncDateadd3Base(FuncDateaddBase):
 class FuncDateadd3Legacy(FuncDateadd3Base):
     """Legacy version of the function with `date` as the last argument"""
 
-    variants = [VW(D.DUMMY | D.SQLITE, lambda what, num, date: n.func.DATEADD(date, what, num))]
-    argument_types = [
+    variants = (VW(D.DUMMY | D.SQLITE, lambda what, num, date: n.func.DATEADD(date, what, num)),)
+    argument_types = (
         ArgTypeSequence([DataType.STRING, DataType.INTEGER, DataType.DATE]),
         ArgTypeSequence([DataType.STRING, DataType.INTEGER, DataType.DATETIME]),
         ArgTypeSequence([DataType.STRING, DataType.INTEGER, DataType.GENERICDATETIME]),
-    ]
+    )
     return_type = FromArgs(2)
     return_flags = ContextFlag.DEPRECATED
 
 
 class FuncDateadd3DateConstNum(FuncDateadd3Base):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.CONST_STRING, DataType.CONST_INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.CONST_STRING, DataType.CONST_INTEGER]),)
 
 
 class FuncDateadd3DateNonConstNum(FuncDateadd3Base):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.CONST_STRING, DataType.INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.CONST_STRING, DataType.INTEGER]),)
 
 
 class FuncDateadd3DatetimeConstNum(FuncDateadd3Base):
-    argument_types = [
-        ArgTypeSequence([_DATETIME_TYPES, DataType.CONST_STRING, DataType.CONST_INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([_DATETIME_TYPES, DataType.CONST_STRING, DataType.CONST_INTEGER]),)
 
 
 class FuncDateadd3DatetimeNonConstNum(FuncDateadd3Base):
-    argument_types = [
-        ArgTypeSequence([DataType.DATETIME, DataType.CONST_STRING, DataType.INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATETIME, DataType.CONST_STRING, DataType.INTEGER]),)
 
 
 class FuncDateadd3GenericDatetimeNonConstNum(FuncDateadd3Base):
-    argument_types = [
-        ArgTypeSequence([DataType.GENERICDATETIME, DataType.CONST_STRING, DataType.INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.GENERICDATETIME, DataType.CONST_STRING, DataType.INTEGER]),)
 
 
 class FuncDateadd3DatetimeTZNonConstNum(FuncDateadd3Base):
-    argument_types = [
-        ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING, DataType.INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING, DataType.INTEGER]),)
 
 
 class FuncDatepart(DateFunction):
@@ -141,30 +117,26 @@ class FuncDatepart2Legacy(FuncDatepart):
     """Legacy version of the function with `date` as the last argument"""
 
     arg_cnt = 2
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda what, date: n.func.DATEPART(date, what)),
-    ]
-    argument_types = [
+    variants = (VW(D.DUMMY | D.SQLITE, lambda what, date: n.func.DATEPART(date, what)),)
+    argument_types = (
         ArgTypeSequence([DataType.STRING, DataType.DATE]),
         ArgTypeSequence([DataType.STRING, DataType.DATETIME]),
         ArgTypeSequence([DataType.STRING, DataType.GENERICDATETIME]),
-    ]
+    )
     return_flags = ContextFlag.DEPRECATED
 
 
 class FuncDatepart2(FuncDatepart):
     arg_cnt = 2
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date, part: n.func.DATEPART(date, part, "mon")),
-    ]
-    argument_types = [
+    variants = (VW(D.DUMMY | D.SQLITE, lambda date, part: n.func.DATEPART(date, part, "mon")),)
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
                 DataType.STRING,
             ]
         ),
-    ]
+    )
 
 
 @ensure_naive_first_arg
@@ -198,10 +170,8 @@ def _datepart_const_impl(date_ctx, part_ctx, firstday_ctx):  # type: ignore  # 2
 
 class FuncDatepart3Const(FuncDatepart):
     arg_cnt = 3
-    variants = [
-        VW(D.DUMMY | D.SQLITE, _datepart_const_impl),
-    ]
-    argument_types = [
+    variants = (VW(D.DUMMY | D.SQLITE, _datepart_const_impl),)
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
@@ -209,7 +179,7 @@ class FuncDatepart3Const(FuncDatepart):
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
 
 @ensure_naive_first_arg
@@ -236,10 +206,8 @@ def _datepart_nonconst_impl(date_ctx, part_ctx, firstday_ctx):  # type: ignore  
 
 class FuncDatepart3NonConst(FuncDatepart):
     arg_cnt = 3
-    variants = [
-        VW(D.DUMMY | D.SQLITE, _datepart_nonconst_impl),
-    ]
-    argument_types = [
+    variants = (VW(D.DUMMY | D.SQLITE, _datepart_nonconst_impl),)
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
@@ -247,7 +215,7 @@ class FuncDatepart3NonConst(FuncDatepart):
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
 
 def norm_datetrunc_unit(unit):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
@@ -266,19 +234,15 @@ class FuncDatetrunc2(FuncDatetrunc):
 
 
 class FuncDatetrunc2Date(FuncDatetrunc2):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.CONST_STRING]),)
 
 
 class FuncDatetrunc2Datetime(FuncDatetrunc2):
-    argument_types = [
-        ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}, DataType.CONST_STRING]),)
 
 
 class FuncDatetrunc2DatetimeTZ(FuncDatetrunc2Datetime):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING]),)
 
 
 class FuncDatetrunc3(FuncDatetrunc):
@@ -286,13 +250,11 @@ class FuncDatetrunc3(FuncDatetrunc):
 
 
 class FuncDatetrunc3Date(FuncDatetrunc3):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.CONST_STRING, DataType.CONST_INTEGER]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.CONST_STRING, DataType.CONST_INTEGER]),)
 
 
 class FuncDatetrunc3Datetime(FuncDatetrunc3):
-    argument_types = [
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ},
@@ -300,12 +262,12 @@ class FuncDatetrunc3Datetime(FuncDatetrunc3):
                 DataType.CONST_INTEGER,
             ]
         ),
-    ]
+    )
 
 
 class SpecificDatepartFunc(DateFunction):
     arg_cnt = 1
-    _zero_variants = [V(D.DUMMY | D.SQLITE, lambda x: sa.literal(0))]
+    _zero_variants = (V(D.DUMMY | D.SQLITE, lambda x: sa.literal(0)),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -315,20 +277,18 @@ class FuncSecond(SpecificDatepartFunc):
 
 
 class FuncSecondDate(FuncSecond):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE]),)
     variants = SpecificDatepartFunc._zero_variants
 
 
 class FuncSecondDatetime(FuncSecond):
     arg_cnt = 1
-    argument_types = [ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncSecondDatetimeTZ(FuncSecondDatetime):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -338,20 +298,18 @@ class FuncMinute(SpecificDatepartFunc):
 
 
 class FuncMinuteDate(FuncMinute):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE]),)
     variants = SpecificDatepartFunc._zero_variants
 
 
 class FuncMinuteDatetime(FuncMinute):
     arg_cnt = 1
-    argument_types = [ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncMinuteDatetimeTZ(FuncMinuteDatetime):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -361,20 +319,18 @@ class FuncHour(SpecificDatepartFunc):
 
 
 class FuncHourDate(FuncHour):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATE]),)
     variants = SpecificDatepartFunc._zero_variants
 
 
 class FuncHourDatetime(FuncHour):
     arg_cnt = 1
-    argument_types = [ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncHourDatetimeTZ(FuncHourDatetime):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -382,12 +338,12 @@ class FuncDay(SpecificDatepartFunc):
     name = "day"
     arg_cnt = 1
     arg_names = ["datetime"]
-    argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncDayDatetimeTZ(FuncDay):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -395,12 +351,12 @@ class FuncMonth(SpecificDatepartFunc):
     name = "month"
     arg_names = ["datetime"]
     arg_cnt = 1
-    argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncMonthDatetimeTZ(FuncMonth):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -408,12 +364,12 @@ class FuncQuarter(SpecificDatepartFunc):
     name = "quarter"
     arg_names = ["datetime"]
     arg_cnt = 1
-    argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncQuarterDatetimeTZ(FuncQuarter):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -421,12 +377,12 @@ class FuncYear(SpecificDatepartFunc):
     name = "year"
     arg_names = ["datetime"]
     arg_cnt = 1
-    argument_types = [ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}])]
+    argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncYearDatetimeTZ(FuncYear):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -466,12 +422,10 @@ norm_fd = FuncDayofweek._norm_fd
 
 class FuncDayofweek1(FuncDayofweek):
     arg_cnt = 1
-    variants = [
-        VW(D.DUMMY | D.SQLITE, lambda date: n.func.DAYOFWEEK(date.expression, "mon")),
-    ]
-    argument_types = [
+    variants = (VW(D.DUMMY | D.SQLITE, lambda date: n.func.DAYOFWEEK(date.expression, "mon")),)
+    argument_types = (
         ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME, DataType.DATETIMETZ}]),
-    ]
+    )
 
 
 def dow_firstday_shift(base_1_dow, firstday_expr):  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation  [no-untyped-def]
@@ -486,29 +440,25 @@ def dow_firstday_shift(base_1_dow, firstday_expr):  # type: ignore  # 2024-01-24
 
 class FuncDayofweek2(FuncDayofweek):
     arg_cnt = 2
-    argument_types = [
+    argument_types = (
         ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}, DataType.CONST_STRING]),
-    ]
+    )
 
 
 class FuncDayofweek2TZ(FuncDayofweek):
     arg_cnt = 2
-    argument_types = [
-        ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING]),
-    ]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING]),)
 
 
 class FuncWeek(SpecificDatepartFunc):
     name = "week"
     arg_cnt = 1
-    argument_types = [
-        ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),
-    ]
+    argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
 
 class FuncWeekTZ(FuncWeek):
-    argument_types = [ArgTypeSequence([DataType.DATETIMETZ])]
+    argument_types = (ArgTypeSequence([DataType.DATETIMETZ]),)
 
 
 class FuncTypeGenericDatetimeNowImpl(DateFunction):

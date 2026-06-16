@@ -13,106 +13,82 @@ V = TranslationVariant.make
 
 
 class FuncDivMSSQLInt(base.FuncDiv):
-    variants = [V(D.MSSQLSRV, lambda x, y: x / y)]
-    argument_types = [
-        ArgTypeSequence([DataType.INTEGER, DataType.INTEGER]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y: x / y),)
+    argument_types = (ArgTypeSequence([DataType.INTEGER, DataType.INTEGER]),)
 
 
 class FuncDivMSSQLFloat(base.FuncDiv):
-    variants = [V(D.MSSQLSRV, lambda x, y: sa.cast(x / y, sa.BIGINT))]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.cast(x / y, sa.BIGINT)),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
 
 
 class FuncDivSafe2MSSQLInt(base.FuncDivSafe2):
-    variants = [V(D.MSSQLSRV, lambda x, y: sa.func.IIF(y != 0, x / y, None))]
-    argument_types = [
-        ArgTypeSequence([DataType.INTEGER, DataType.INTEGER]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.func.IIF(y != 0, x / y, None)),)
+    argument_types = (ArgTypeSequence([DataType.INTEGER, DataType.INTEGER]),)
 
 
 class FuncDivSafe3MSSQLInt(base.FuncDivSafe3):
-    variants = [V(D.MSSQLSRV, lambda x, y, default: sa.func.IIF(y != 0, x / y, default))]
-    argument_types = [
-        ArgTypeSequence([DataType.INTEGER, DataType.INTEGER, DataType.INTEGER]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y, default: sa.func.IIF(y != 0, x / y, default)),)
+    argument_types = (ArgTypeSequence([DataType.INTEGER, DataType.INTEGER, DataType.INTEGER]),)
 
 
 class FuncDivSafe2MSSQLFloat(base.FuncDivSafe2):
-    variants = [V(D.MSSQLSRV, lambda x, y: sa.func.IIF(y != 0, sa.cast(x / y, sa.BIGINT), None))]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.func.IIF(y != 0, sa.cast(x / y, sa.BIGINT), None)),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
 
 
 class FuncDivSafe3MSSQLFloat(base.FuncDivSafe3):
-    variants = [V(D.MSSQLSRV, lambda x, y, default: sa.func.IIF(y != 0, sa.cast(x / y, sa.BIGINT), default))]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.INTEGER]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y, default: sa.func.IIF(y != 0, sa.cast(x / y, sa.BIGINT), default)),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.INTEGER]),)
 
 
 class FuncGreatestMSSQL(base.FuncGreatestBase):
-    variants = [V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x >= y, x, y))]
-    argument_types = [
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x >= y, x, y)),)
+    argument_types = (
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
         ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
-    ]
+    )
 
 
 class FuncGreatestDatesMSSQL(base.FuncGreatestBase):
-    variants = [
-        V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x >= y, x, y), sa.Date)),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.DATE]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x >= y, x, y), sa.Date)),)
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.DATE]),)
 
 
 class FuncGreatestDatetimesMSSQL(base.FuncGreatestBase):
-    variants = [
-        V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x >= y, x, y), sa.DateTime)),
-    ]
-    argument_types = [
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x >= y, x, y), sa.DateTime)),)
+    argument_types = (
         # Note: should not mix tz-naive and tz-aware datetimes together.
         ArgTypeSequence([DataType.DATETIME, DataType.DATETIME]),
         ArgTypeSequence([DataType.DATETIMETZ, DataType.DATETIMETZ]),
         ArgTypeSequence([DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
-    ]
+    )
     return_type_params = ParamsFromArgs(0)
 
 
 class FuncLeastMSSQL(base.FuncLeastBase):
-    variants = [V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x <= y, x, y))]
-    argument_types = [
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.func.IIF(x <= y, x, y)),)
+    argument_types = (
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
         ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
-    ]
+    )
 
 
 class FuncLeastDatesMSSQL(base.FuncLeastBase):
-    variants = [
-        V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x <= y, x, y), sa.Date)),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.DATE]),
-    ]
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x <= y, x, y), sa.Date)),)
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.DATE]),)
 
 
 class FuncLeastDatetimesMSSQL(base.FuncLeastBase):
-    variants = [
-        V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x <= y, x, y), sa.DateTime)),
-    ]
-    argument_types = [
+    variants = (V(D.MSSQLSRV, lambda x, y: sa.cast(sa.func.IIF(x <= y, x, y), sa.DateTime)),)
+    argument_types = (
         # Note: should not mix tz-naive and tz-aware datetimes together.
         ArgTypeSequence([DataType.DATETIME, DataType.DATETIME]),
         ArgTypeSequence([DataType.DATETIMETZ, DataType.DATETIMETZ]),
         ArgTypeSequence([DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
-    ]
+    )
     return_type_params = ParamsFromArgs(0)
 
 

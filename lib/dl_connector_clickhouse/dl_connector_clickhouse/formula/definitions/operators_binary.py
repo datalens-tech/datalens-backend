@@ -169,33 +169,27 @@ def _denullified_eq(
 
 
 class BinaryEqualDenullified(base.BinaryEqualDenullified):
-    variants = [
-        VW(D.CLICKHOUSE, lambda left, right, _env: _denullified_eq(left, right, _env)),
-    ]
+    variants = (VW(D.CLICKHOUSE, lambda left, right, _env: _denullified_eq(left, right, _env)),)
 
 
 class BinaryInDate(base.BinaryIn):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.DATE]),
-    ]
-    variants = [
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.DATE]),)
+    variants = (
         V(
             D.CLICKHOUSE_22_10,
             functools.partial(base._in_fix_null, stringify_values=True),  # noqa
         ),
-    ]
+    )
 
 
 class BinaryNotInDate(base.BinaryNotIn):
-    argument_types = [
-        ArgTypeSequence([DataType.DATE, DataType.DATE]),
-    ]
-    variants = [
+    argument_types = (ArgTypeSequence([DataType.DATE, DataType.DATE]),)
+    variants = (
         V(
             D.CLICKHOUSE_22_10,
             functools.partial(base._not_in_fix_null, stringify_values=True),
         ),
-    ]
+    )
 
 
 DEFINITIONS_BINARY = [

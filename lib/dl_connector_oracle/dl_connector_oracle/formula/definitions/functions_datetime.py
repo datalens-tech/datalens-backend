@@ -54,7 +54,7 @@ class FuncDatetrunc2Oracle(base.FuncDatetrunc2):
         "year": "YYYY",
     }
 
-    variants = [
+    variants = (
         V(
             D.ORACLE,
             lambda date, unit: (
@@ -65,15 +65,15 @@ class FuncDatetrunc2Oracle(base.FuncDatetrunc2):
                 else date
             ),
         ),
-    ]
-    argument_types = [
+    )
+    argument_types = (
         ArgTypeSequence(
             [
                 {DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME},  # TODO: DataType.DATETIMETZ
                 DataType.CONST_STRING,
             ]
         ),
-    ]
+    )
 
 
 DEFINITIONS_DATETIME = [

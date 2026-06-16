@@ -13,17 +13,17 @@ V = TranslationVariant.make
 
 
 class FuncDivSF(base.FuncDiv):
-    variants = [V(D.SNOWFLAKE, lambda x, y: sa.cast(sa.func.trunc(x / y, 0), sa.BIGINT))]
-    argument_types = [
+    variants = (V(D.SNOWFLAKE, lambda x, y: sa.cast(sa.func.trunc(x / y, 0), sa.BIGINT)),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER, DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.INTEGER, DataType.FLOAT]),
         ArgTypeSequence([DataType.FLOAT, DataType.INTEGER]),
-    ]
+    )
 
 
 class FuncDivSafe2SF(base.FuncDivSafe2):
-    variants = [
+    variants = (
         V(
             D.SNOWFLAKE,
             lambda x, y: sa.func.IFF(
@@ -31,18 +31,18 @@ class FuncDivSafe2SF(base.FuncDivSafe2):
                 sa.cast(sa.func.trunc(x / y, 0), sa.BIGINT),
                 None,
             ),
-        )
-    ]
-    argument_types = [
+        ),
+    )
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER, DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.INTEGER, DataType.FLOAT]),
         ArgTypeSequence([DataType.FLOAT, DataType.INTEGER]),
-    ]
+    )
 
 
 class FuncDivSafe3SF(base.FuncDivSafe3):
-    variants = [
+    variants = (
         V(
             D.SNOWFLAKE,
             lambda x, y, default: sa.func.IFF(
@@ -50,14 +50,14 @@ class FuncDivSafe3SF(base.FuncDivSafe3):
                 sa.cast(sa.func.trunc(x / y, 0), sa.BIGINT),
                 default,
             ),
-        )
-    ]
-    argument_types = [
+        ),
+    )
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER, DataType.INTEGER, DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.INTEGER]),
         ArgTypeSequence([DataType.INTEGER, DataType.FLOAT, DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT, DataType.INTEGER, DataType.INTEGER]),
-    ]
+    )
 
 
 DEFINITIONS_MATH = [

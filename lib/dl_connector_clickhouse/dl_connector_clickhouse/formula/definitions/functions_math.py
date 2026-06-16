@@ -16,47 +16,37 @@ VW = TranslationVariantWrapped.make
 
 
 class FuncGreatestCH(base.FuncGreatestBase):
-    variants = [V(D.CLICKHOUSE, lambda x, y: getattr(sa.func, "if")(x >= y, x, y))]
-    argument_types = [
+    variants = (V(D.CLICKHOUSE, lambda x, y: getattr(sa.func, "if")(x >= y, x, y)),)
+    argument_types = (
         ArgTypeSequence([DataType.DATE, DataType.DATE]),
         ArgTypeSequence([DataType.DATETIME, DataType.DATETIME]),
         ArgTypeSequence([DataType.DATETIMETZ, DataType.DATETIMETZ]),
         ArgTypeSequence([DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
         ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
-    ]
+    )
 
 
 class FuncGreatestNumbersCH(base.FuncGreatestBase):
-    variants = [
-        V(D.CLICKHOUSE, sa.func.greatest),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
-    ]
+    variants = (V(D.CLICKHOUSE, sa.func.greatest),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
 
 
 class FuncLeastCH(base.FuncLeastBase):
-    variants = [
-        V(D.CLICKHOUSE, sa.func.least),
-    ]
-    argument_types = [
+    variants = (V(D.CLICKHOUSE, sa.func.least),)
+    argument_types = (
         ArgTypeSequence([DataType.DATE, DataType.DATE]),
         ArgTypeSequence([DataType.DATETIME, DataType.DATETIME]),
         ArgTypeSequence([DataType.DATETIMETZ, DataType.DATETIMETZ]),
         ArgTypeSequence([DataType.GENERICDATETIME, DataType.GENERICDATETIME]),
         ArgTypeSequence([DataType.STRING, DataType.STRING]),
         ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),
-    ]
+    )
 
 
 class FuncLeastNumbersCH(base.FuncLeastBase):
-    variants = [
-        V(D.CLICKHOUSE, sa.func.least),
-    ]
-    argument_types = [
-        ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),
-    ]
+    variants = (V(D.CLICKHOUSE, sa.func.least),)
+    argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
 
 
 DEFINITIONS_MATH = [

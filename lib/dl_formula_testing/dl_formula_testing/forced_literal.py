@@ -26,7 +26,7 @@ class ForcedLiteral(MultiVariantTranslation):
 
     name = "__lit__"
     arg_cnt = 1
-    variants = [V(D.ANY, lambda x: x)]
+    variants = (V(D.ANY, lambda x: x),)
     return_type = FromArgs()  # will automatically convert from const to non-const type
 
     @classmethod

@@ -26,13 +26,11 @@ LOOKUP_FUNCTIONS = get_mutation_lookup_functions_names()
 class _TestFunction(AggregationFunction):
     scopes = Function.scopes
     name = "_test_super_func"
-    variants = [
-        V(D.DUMMY, sa.func.sum),
-    ]
-    argument_types = [
+    variants = (V(D.DUMMY, sa.func.sum),)
+    argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),
-    ]
+    )
     return_type = FromArgs()
 
 
