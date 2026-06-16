@@ -82,7 +82,7 @@ class UnaryIsOpBase(Unary):
 
 class UnaryIsTrue(UnaryIsOpBase):
     name = "istrue"
-    arg_names = ["value"]
+    arg_names = ("value",)
 
 
 class UnaryIsTrueStringGeo(UnaryIsTrue):
@@ -121,7 +121,7 @@ class UnaryIsTrueBoolean(UnaryIsTrue):
 
 class UnaryIsFalse(UnaryIsOpBase):
     name = "isfalse"
-    arg_names = ["value"]
+    arg_names = ("value",)
 
 
 class UnaryIsFalseStringGeo(UnaryIsFalse):

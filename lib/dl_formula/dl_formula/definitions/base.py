@@ -411,7 +411,7 @@ class NodeTranslation:
 
     scopes: ClassVar[int] = Scope.STABLE | Scope.EXPLICIT_USAGE | Scope.SUGGESTED | Scope.DOCUMENTED
 
-    arg_names: ClassVar[list[str] | None] = None
+    arg_names: ClassVar[Sequence[str] | None] = None
 
     @classmethod
     def match_types(cls, arg_types: list[DataType]) -> bool:

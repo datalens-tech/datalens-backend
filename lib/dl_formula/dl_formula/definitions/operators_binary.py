@@ -47,12 +47,12 @@ def as_bigint(value):  # type: ignore  # 2024-01-24 # TODO: Function is missing 
 class Binary(MultiVariantTranslation):
     arg_cnt = 2
     is_function = False
-    arg_names = ["left", "right"]
+    arg_names = ("left", "right")
 
 
 class BinaryPower(Binary):
     name = "^"
-    arg_names = ["base", "power"]
+    arg_names = ("base", "power")
     variants = (VW(D.DUMMY, lambda base, power: n.func.POWER(base, power)),)
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
     return_type = Fixed(DataType.FLOAT)
@@ -60,7 +60,7 @@ class BinaryPower(Binary):
 
 class BinaryMult(Binary):
     name = "*"
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
 
 
 class BinaryMultNumbers(BinaryMult):
@@ -99,7 +99,7 @@ class BinaryMultStringNonConst(BinaryMult):
 class BinaryDiv(Binary):
     name = "/"
     return_type = Fixed(DataType.FLOAT)
-    arg_names = ["number_1", "number_2"]
+    arg_names = ("number_1", "number_2")
 
 
 class BinaryDivInt(BinaryDiv):
@@ -114,7 +114,7 @@ class BinaryDivFloat(BinaryDiv):
 
 class BinaryMod(Binary):
     name = "%"
-    arg_names = ["number_1", "number_2"]
+    arg_names = ("number_1", "number_2")
 
 
 class BinaryModInteger(BinaryMod):
@@ -131,7 +131,7 @@ class BinaryModFloat(BinaryMod):
 
 class BinaryPlus(Binary):
     name = "+"
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
 
 
 class BinaryPlusNumbers(BinaryPlus):
@@ -232,7 +232,7 @@ class BinaryPlusGenericDatetimeNumber(BinaryPlus):
 
 class BinaryMinus(Binary):
     name = "-"
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
 
 
 class BinaryMinusNumbers(BinaryMinus):
@@ -292,7 +292,7 @@ class BinaryLike(BinaryComparison):
     name = "like"
     variants = (V(D.DUMMY | D.SQLITE, lambda x, y: x.like(y)),)
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.STRING]),)
-    arg_names = ["string_1", "string_2"]
+    arg_names = ("string_1", "string_2")
 
 
 class BinaryNotLike(BinaryComparison):
@@ -300,7 +300,7 @@ class BinaryNotLike(BinaryComparison):
     scopes = BinaryComparison.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     variants = (V(D.DUMMY | D.SQLITE, lambda x, y: x.notlike(y)),)
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.STRING]),)
-    arg_names = ["string_1", "string_2"]
+    arg_names = ("string_1", "string_2")
 
 
 class BinaryEqNEqOrderedBase(BinaryComparison):
@@ -358,7 +358,7 @@ class BinaryEqImpl(MultiVariantTranslation):
 
 class BinaryEqual(BinaryEqImpl, BinaryEqNEq):
     name = "=="
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
 
 
 class BinaryEqualInternal(BinaryEqImpl, BinaryEqNEqInternal):
@@ -430,7 +430,7 @@ class BinaryGreaterThanOrEqual(BinaryOrderedComparison):
 
 class BinaryAnd(Binary):  # FIXME: support other types
     name = "and"
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
     argument_types = (ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),)
     argument_flags = ArgFlagSequence([ContextFlag.REQ_CONDITION, ContextFlag.REQ_CONDITION])
     variants = (V(D.DUMMY | D.SQLITE, sa.and_),)
@@ -440,7 +440,7 @@ class BinaryAnd(Binary):  # FIXME: support other types
 
 class BinaryOr(Binary):  # FIXME: support other types
     name = "or"
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
     argument_types = (ArgTypeSequence([DataType.BOOLEAN, DataType.BOOLEAN]),)
     argument_flags = ArgFlagSequence([ContextFlag.REQ_CONDITION, ContextFlag.REQ_CONDITION])
     variants = (V(D.DUMMY | D.SQLITE, sa.or_),)
@@ -464,7 +464,7 @@ def _in_fix_null(left, right, stringify_values):  # type: ignore  # 2024-01-24 #
 
 class BinaryIn(Binary):
     name = "in"
-    arg_names = ["item", "list"]
+    arg_names = ("item", "list")
     variants = (
         V(
             D.DUMMY | D.SQLITE,
@@ -504,7 +504,7 @@ def _prepare_in_args(left, right, stringify_values: bool):  # type: ignore  # 20
 class BinaryNotIn(Binary):
     name = "notin"
     scopes = Binary.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
-    arg_names = ["item", "list"]
+    arg_names = ("item", "list")
     variants = (
         V(
             D.DUMMY | D.SQLITE,

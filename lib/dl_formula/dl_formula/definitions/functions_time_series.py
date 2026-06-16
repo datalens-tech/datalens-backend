@@ -32,7 +32,7 @@ class TimeSeriesFunction(Function):
 
 class FuncAgoBase(TimeSeriesFunction):
     name = "ago"
-    arg_names = ["measure", "date_dimension", "unit", "number"]
+    arg_names = ("measure", "date_dimension", "unit", "number")
     argument_types = (
         ArgTypeSequence(
             [
@@ -75,7 +75,7 @@ class FuncAgo4(FuncAgoBase):
 
 class FuncAtDateBase(TimeSeriesFunction):
     name = "at_date"
-    arg_names = ["measure", "date_dimension", "date_expr"]
+    arg_names = ("measure", "date_dimension", "date_expr")
     argument_types = (
         ArgTypeSequence([set(DataType), DataType.DATE, DataType.DATE]),
         ArgTypeSequence([set(DataType), DataType.DATETIME, DataType.DATETIME]),

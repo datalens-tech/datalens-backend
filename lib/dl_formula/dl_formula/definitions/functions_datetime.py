@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from frozendict import frozendict
 import sqlalchemy as sa
 
 from dl_formula.connectors.base.literal import Literal
@@ -38,7 +39,7 @@ class DateFunction(Function):
 
 class FuncDateaddBase(DateFunction):
     name = "dateadd"
-    arg_names = ["datetime", "unit", "number"]
+    arg_names = ("datetime", "unit", "number")
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
@@ -109,7 +110,7 @@ class FuncDateadd3DatetimeTZNonConstNum(FuncDateadd3Base):
 
 class FuncDatepart(DateFunction):
     name = "datepart"
-    arg_names = ["datetime", "unit", "firstday"]
+    arg_names = ("datetime", "unit", "firstday")
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -224,7 +225,7 @@ def norm_datetrunc_unit(unit):  # type: ignore  # 2024-01-24 # TODO: Function is
 
 class FuncDatetrunc(DateFunction):
     name = "datetrunc"
-    arg_names = ["datetime", "unit", "number"]
+    arg_names = ("datetime", "unit", "number")
     return_type = FromArgs(0)
     return_type_params = ParamsFromArgs(0)
 
@@ -273,7 +274,7 @@ class SpecificDatepartFunc(DateFunction):
 
 class FuncSecond(SpecificDatepartFunc):
     name = "second"
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
 
 
 class FuncSecondDate(FuncSecond):
@@ -294,7 +295,7 @@ class FuncSecondDatetimeTZ(FuncSecondDatetime):
 
 class FuncMinute(SpecificDatepartFunc):
     name = "minute"
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
 
 
 class FuncMinuteDate(FuncMinute):
@@ -315,7 +316,7 @@ class FuncMinuteDatetimeTZ(FuncMinuteDatetime):
 
 class FuncHour(SpecificDatepartFunc):
     name = "hour"
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
 
 
 class FuncHourDate(FuncHour):
@@ -337,7 +338,7 @@ class FuncHourDatetimeTZ(FuncHourDatetime):
 class FuncDay(SpecificDatepartFunc):
     name = "day"
     arg_cnt = 1
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
     argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
 
@@ -349,7 +350,7 @@ class FuncDayDatetimeTZ(FuncDay):
 
 class FuncMonth(SpecificDatepartFunc):
     name = "month"
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
     arg_cnt = 1
     argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
@@ -362,7 +363,7 @@ class FuncMonthDatetimeTZ(FuncMonth):
 
 class FuncQuarter(SpecificDatepartFunc):
     name = "quarter"
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
     arg_cnt = 1
     argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
@@ -375,7 +376,7 @@ class FuncQuarterDatetimeTZ(FuncQuarter):
 
 class FuncYear(SpecificDatepartFunc):
     name = "year"
-    arg_names = ["datetime"]
+    arg_names = ("datetime",)
     arg_cnt = 1
     argument_types = (ArgTypeSequence([{DataType.DATE, DataType.DATETIME, DataType.GENERICDATETIME}]),)
     return_type = Fixed(DataType.INTEGER)
@@ -388,25 +389,27 @@ class FuncYearDatetimeTZ(FuncYear):
 
 class FuncDayofweek(SpecificDatepartFunc):
     name = "dayofweek"
-    arg_names = ["datetime", "firstday"]
+    arg_names = ("datetime", "firstday")
     return_type = Fixed(DataType.INTEGER)
 
-    _fd_map = {
-        "mon": 1,
-        "monday": 1,
-        "tue": 2,
-        "tuesday": 2,
-        "wed": 3,
-        "wednesday": 3,
-        "thu": 4,
-        "thursday": 4,
-        "fri": 5,
-        "friday": 5,
-        "sat": 6,
-        "saturday": 6,
-        "sun": 7,
-        "sunday": 7,
-    }
+    _fd_map = frozendict(
+        {
+            "mon": 1,
+            "monday": 1,
+            "tue": 2,
+            "tuesday": 2,
+            "wed": 3,
+            "wednesday": 3,
+            "thu": 4,
+            "thursday": 4,
+            "fri": 5,
+            "friday": 5,
+            "sat": 6,
+            "saturday": 6,
+            "sun": 7,
+            "sunday": 7,
+        }
+    )
 
     @classmethod
     def _norm_fd(cls, firstday: Literal | None) -> int:

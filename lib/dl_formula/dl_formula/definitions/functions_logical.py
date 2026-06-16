@@ -29,7 +29,7 @@ class LogicalFunction(Function):
 class FuncIsnull(LogicalFunction):
     name = "isnull"
     arg_cnt = 1
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     variants = (V(D.DUMMY, lambda x: x.is_(None)),)
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -38,7 +38,7 @@ class FuncIsnull(LogicalFunction):
 class FuncIfnull(LogicalFunction):
     name = "ifnull"
     arg_cnt = 2
-    arg_names = ["check_value", "alt_value"]
+    arg_names = ("check_value", "alt_value")
     return_type = FromArgs()
 
 
@@ -46,7 +46,7 @@ class FuncIsnan(LogicalFunction):
     name = "isnan"
     scopes = LogicalFunction.scopes & ~Scope.DOCUMENTED  # FIXME: add to doc
     arg_cnt = 1
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     return_type = Fixed(DataType.BOOLEAN)
 
 
@@ -54,14 +54,14 @@ class FuncIfnan(LogicalFunction):
     name = "ifnan"
     scopes = LogicalFunction.scopes & ~Scope.DOCUMENTED  # FIXME: add to doc
     arg_cnt = 2
-    arg_names = ["check_value", "alt_value"]
+    arg_names = ("check_value", "alt_value")
     return_type = FromArgs()
 
 
 class FuncZn(LogicalFunction):
     name = "zn"
     arg_cnt = 1
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
         ArgTypeSequence([DataType.FLOAT]),

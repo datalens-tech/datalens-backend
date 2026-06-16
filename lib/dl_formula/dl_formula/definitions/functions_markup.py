@@ -83,7 +83,7 @@ class FuncInternalStrBase(Function):
     name = "__str"
     scopes = Function.scopes & ~Scope.EXPLICIT_USAGE & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     arg_cnt = 1
 
     # Markup is already a string value, so nothing to do.
@@ -188,7 +188,7 @@ class FuncMarkupUnary(FuncMarkup):
     # arguments, passing them to concat internally.
 
     arg_cnt = 1
-    arg_names = ["text"]
+    arg_names = ("text",)
     argument_types = (ArgTypeSequence([MARKUP_EFFECTIVELY]),)
 
 
@@ -205,7 +205,7 @@ class FuncItalics(FuncMarkupUnary):
 class FuncUrl(FuncMarkup):
     name = "url"
     arg_cnt = 2
-    arg_names = ["address", "text"]
+    arg_names = ("address", "text")
     argument_types = (
         # url(str, markup|str)
         ArgTypeSequence([DataType.STRING, MARKUP_EFFECTIVELY]),
@@ -237,7 +237,7 @@ class ConcatMultiMarkup(FuncMarkup):
 class FuncColor(FuncMarkup):
     name = "color"
     arg_cnt = 2
-    arg_names = ["text", "color"]
+    arg_names = ("text", "color")
     argument_types = (
         # color( markup|str, str)
         ArgTypeSequence([MARKUP_EFFECTIVELY, DataType.STRING]),
@@ -248,7 +248,7 @@ class FuncColor(FuncMarkup):
 class FuncSize(FuncMarkup):
     name = "size"
     arg_cnt = 2
-    arg_names = ["text", "size"]
+    arg_names = ("text", "size")
     argument_types = (
         # size( markup|str, str)
         ArgTypeSequence([MARKUP_EFFECTIVELY, DataType.STRING]),
@@ -269,7 +269,7 @@ class FuncTooltipBase(FuncMarkup):
 
 class FuncTooltip2(FuncTooltipBase):
     arg_cnt = 2
-    arg_names = ["text", "tooltip"]
+    arg_names = ("text", "tooltip")
     argument_types = (
         # tooltip(markup|str, markup|str)
         ArgTypeSequence([MARKUP_EFFECTIVELY, MARKUP_EFFECTIVELY]),
@@ -278,7 +278,7 @@ class FuncTooltip2(FuncTooltipBase):
 
 class FuncTooltip3(FuncTooltipBase):
     arg_cnt = 3
-    arg_names = ["text", "tooltip", "placement"]
+    arg_names = ("text", "tooltip", "placement")
     argument_types = (
         # tooltip(markup|str, markup|str, str)
         ArgTypeSequence([MARKUP_EFFECTIVELY, MARKUP_EFFECTIVELY, DataType.STRING]),
@@ -299,7 +299,7 @@ class FuncImageBase(FuncMarkup):
 
 class FuncImage1(FuncImageBase):
     arg_cnt = 1
-    arg_names = ["src"]
+    arg_names = ("src",)
     argument_types = (
         # image( null|str)
         ArgTypeSequence(
@@ -318,7 +318,7 @@ class FuncImage1(FuncImageBase):
 
 class FuncImage2(FuncImageBase):
     arg_cnt = 2
-    arg_names = ["src", "width"]
+    arg_names = ("src", "width")
     argument_types = (
         # image( null|str, null|int)
         ArgTypeSequence(
@@ -338,7 +338,7 @@ class FuncImage2(FuncImageBase):
 
 class FuncImage3(FuncImageBase):
     arg_cnt = 3
-    arg_names = ["src", "width", "height"]
+    arg_names = ("src", "width", "height")
     argument_types = (
         # image( null|str, null|int, null|int)
         ArgTypeSequence(
@@ -359,7 +359,7 @@ class FuncImage3(FuncImageBase):
 
 class FuncImage4(FuncImageBase):
     arg_cnt = 4
-    arg_names = ["src", "width", "height", "alt"]
+    arg_names = ("src", "width", "height", "alt")
     argument_types = (
         # image( null|str, null|int, null|int, null|str)
         ArgTypeSequence(
@@ -377,7 +377,7 @@ class FuncImage4(FuncImageBase):
 class FuncUserInfo(FuncMarkup):
     name = "user_info"
     arg_cnt = 2
-    arg_names = ["user_id", "user_info_type"]
+    arg_names = ("user_id", "user_info_type")
     argument_types = (
         # user_info(str, str)
         ArgTypeSequence([DataType.STRING, DataType.STRING]),

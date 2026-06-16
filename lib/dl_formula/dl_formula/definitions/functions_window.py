@@ -132,7 +132,7 @@ class WinGenericRankBase(WindowFunction):
         )
     """
 
-    arg_names = ["value", "direction"]
+    arg_names = ("value", "direction")
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -367,7 +367,7 @@ class WinAggIf(WindowFunction):
     """
 
     arg_cnt = 2
-    arg_names = ["expression", "condition"]
+    arg_names = ("expression", "condition")
     argument_types = (ArgTypeSequence([NUMERIC_TYPES, DataType.BOOLEAN]),)
 
 
@@ -445,7 +445,7 @@ class WinRFuncBase(OrderedWinFuncBase):
         )
     """
 
-    arg_names = ["value", "direction"]
+    arg_names = ("value", "direction")
 
 
 class WinRSumBase(WinRFuncBase):
@@ -630,7 +630,7 @@ class MFuncBase(OrderedWinFuncBase):
         )
     """
 
-    arg_names = ["value", "rows_1", "rows_2"]
+    arg_names = ("value", "rows_1", "rows_2")
 
 
 class WinMSumBase(MFuncBase):
@@ -763,7 +763,7 @@ def lag_implementation(
 
 class WinLagBase(OrderedWinFuncBase):
     name = "lag"
-    arg_names = ["value", "offset", "default"]
+    arg_names = ("value", "offset", "default")
     variants = (
         V(
             D.DUMMY,
@@ -796,7 +796,7 @@ class WinLag3(WinLagBase):
 
 class WinFirstLastBase(OrderedWinFuncBase):
     arg_cnt = 1
-    arg_names = ["value"]
+    arg_names = ("value",)
     argument_types = (
         ArgTypeSequence(
             [

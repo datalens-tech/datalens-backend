@@ -22,7 +22,7 @@ class Ternary(MultiVariantTranslation):
 
 
 class TernaryBetweenBase(Ternary):
-    arg_names = ["value", "low", "high"]
+    arg_names = ("value", "low", "high")
     argument_types = (
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.FLOAT]),
         ArgTypeSequence([DataType.DATE, DataType.DATE, DataType.DATE]),

@@ -29,7 +29,7 @@ class StringFunction(Function):
 
 class FuncAscii(StringFunction):
     name = "ascii"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.ASCII),)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -38,7 +38,7 @@ class FuncAscii(StringFunction):
 
 class FuncChar(StringFunction):
     name = "char"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.CHAR),)
     argument_types = (ArgTypeSequence([DataType.INTEGER]),)
@@ -110,7 +110,7 @@ class ConcatMultiAny(ConcatMulti):
 
 class FuncContains(StringFunction):
     name = "contains"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -157,7 +157,7 @@ class FuncContainsNonString(FuncContains):
 
 class FuncNotContains(StringFunction):
     name = "notcontains"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -178,7 +178,7 @@ class FuncNotContainsNonString(FuncNotContains):
 
 class FuncIContains(StringFunction):
     name = "icontains"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -217,7 +217,7 @@ class FuncIContainsNonString(FuncIContains):
 
 class FuncEndswith(StringFunction):
     name = "endswith"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -239,7 +239,7 @@ class FuncEndswithNonString(FuncEndswith):
 
 class FuncIEndswith(StringFunction):
     name = "iendswith"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -267,7 +267,7 @@ class FuncIEndswithNonString(FuncIEndswith):
 
 class FuncStartswith(StringFunction):
     name = "startswith"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -289,7 +289,7 @@ class FuncStartswithNonString(FuncStartswith):
 
 class FuncIStartswith(StringFunction):
     name = "istartswith"
-    arg_names = ["string", "substring"]
+    arg_names = ("string", "substring")
     arg_cnt = 2
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -317,7 +317,7 @@ class FuncIStartswithNonString(FuncIStartswith):
 
 class FuncFind(StringFunction):
     name = "find"
-    arg_names = ["string", "substring", "start_index"]
+    arg_names = ("string", "substring", "start_index")
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -334,7 +334,7 @@ class FuncFind3(FuncFind):
 class FuncLeft(StringFunction):
     name = "left"
     arg_cnt = 2
-    arg_names = ["string", "number"]
+    arg_names = ("string", "number")
     variants = (V(D.DUMMY, sa.func.LEFT),)
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.INTEGER]),)
     return_type = Fixed(DataType.STRING)
@@ -343,7 +343,7 @@ class FuncLeft(StringFunction):
 class FuncRight(StringFunction):
     name = "right"
     arg_cnt = 2
-    arg_names = ["string", "number"]
+    arg_names = ("string", "number")
     variants = (V(D.DUMMY, sa.func.RIGHT),)
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.INTEGER]),)
     return_type = Fixed(DataType.STRING)
@@ -351,7 +351,7 @@ class FuncRight(StringFunction):
 
 class FuncLen(StringFunction):
     name = "len"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
 
@@ -362,7 +362,7 @@ class FuncLenString(FuncLen):
 
 class FuncLower(StringFunction):
     name = "lower"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
 
 
@@ -380,7 +380,7 @@ class FuncLowerNonConst(FuncLower):
 
 class FuncUpper(StringFunction):
     name = "upper"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
 
 
@@ -398,7 +398,7 @@ class FuncUpperNonConst(FuncUpper):
 
 class FuncLtrim(StringFunction):
     name = "ltrim"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.LTRIM),)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -407,7 +407,7 @@ class FuncLtrim(StringFunction):
 
 class FuncRtrim(StringFunction):
     name = "rtrim"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.RTRIM),)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -416,7 +416,7 @@ class FuncRtrim(StringFunction):
 
 class FuncTrim(StringFunction):
     name = "trim"
-    arg_names = ["string"]
+    arg_names = ("string",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.TRIM),)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -425,7 +425,7 @@ class FuncTrim(StringFunction):
 
 class FuncSubstr(StringFunction):
     name = "substr"
-    arg_names = ["string", "from_index", "length"]
+    arg_names = ("string", "from_index", "length")
 
 
 class FuncSubstr2(FuncSubstr):
@@ -445,7 +445,7 @@ class FuncSubstr3(FuncSubstr):
 class FuncRegexpExtract(StringFunction):
     name = "regexp_extract"
     arg_cnt = 2
-    arg_names = ["string", "pattern"]
+    arg_names = ("string", "pattern")
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),)
     return_type = Fixed(DataType.STRING)
 
@@ -453,7 +453,7 @@ class FuncRegexpExtract(StringFunction):
 class FuncRegexpExtractAll(StringFunction):
     name = "regexp_extract_all"
     arg_cnt = 2
-    arg_names = ["string", "pattern"]
+    arg_names = ("string", "pattern")
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.CONST_STRING]),)
     return_type = Fixed(DataType.ARRAY_STR)
 
@@ -464,7 +464,7 @@ class FuncRegexpExtractAll(StringFunction):
 class FuncRegexpExtractNth(StringFunction):
     name = "regexp_extract_nth"
     arg_cnt = 3
-    arg_names = ["string", "pattern", "match_index"]
+    arg_names = ("string", "pattern", "match_index")
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.CONST_STRING, DataType.INTEGER]),)
     return_type = Fixed(DataType.STRING)
 
@@ -472,7 +472,7 @@ class FuncRegexpExtractNth(StringFunction):
 class FuncRegexpMatch(StringFunction):
     name = "regexp_match"
     arg_cnt = 2
-    arg_names = ["string", "pattern"]
+    arg_names = ("string", "pattern")
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.STRING]),)
     return_type = Fixed(DataType.BOOLEAN)
     return_flags = ContextFlag.IS_CONDITION
@@ -481,7 +481,7 @@ class FuncRegexpMatch(StringFunction):
 class FuncRegexpReplace(StringFunction):
     name = "regexp_replace"
     arg_cnt = 3
-    arg_names = ["string", "pattern", "replace_with"]
+    arg_names = ("string", "pattern", "replace_with")
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.STRING, DataType.STRING]),)
     return_type = Fixed(DataType.STRING)
 
@@ -489,7 +489,7 @@ class FuncRegexpReplace(StringFunction):
 class FuncReplace(StringFunction):
     name = "replace"
     arg_cnt = 3
-    arg_names = ["string", "substring", "replace_with"]
+    arg_names = ("string", "substring", "replace_with")
     variants = (V(D.DUMMY, sa.func.REPLACE),)
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.STRING, DataType.STRING]),)
     return_type = Fixed(DataType.STRING)
@@ -514,7 +514,7 @@ class FuncSpaceNonConst(FuncSpace):
 
 class FuncSplit(StringFunction):
     name = "split"
-    arg_names = ["orig_string", "delimiter", "part_index"]
+    arg_names = ("orig_string", "delimiter", "part_index")
 
 
 class FuncSplit1(FuncSplit):
@@ -538,7 +538,7 @@ class FuncSplit3(FuncSplit):
 class FuncUtf8(StringFunction):
     name = "utf8"
     arg_cnt = 2
-    arg_names = ["string", "old_encoding"]
+    arg_names = ("string", "old_encoding")
     argument_types = (ArgTypeSequence([DataType.STRING, DataType.STRING]),)
     return_type = Fixed(DataType.STRING)
 

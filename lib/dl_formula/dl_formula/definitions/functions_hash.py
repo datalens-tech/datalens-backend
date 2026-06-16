@@ -18,7 +18,7 @@ class HashFunction(Function):
 
 class MD5(HashFunction):
     name = "md5"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.STRING)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -27,7 +27,7 @@ class MD5(HashFunction):
 
 class SHA1(HashFunction):
     name = "sha1"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.STRING)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -36,7 +36,7 @@ class SHA1(HashFunction):
 
 class SHA256(HashFunction):
     name = "sha256"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.STRING)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -45,7 +45,7 @@ class SHA256(HashFunction):
 
 class MurmurHash2_64(HashFunction):
     name = "murmurhash2_64"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -54,7 +54,7 @@ class MurmurHash2_64(HashFunction):
 
 class SipHash64(HashFunction):
     name = "siphash64"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     argument_types = (ArgTypeSequence([DataType.STRING]),)
@@ -63,7 +63,7 @@ class SipHash64(HashFunction):
 
 class IntHash64(HashFunction):
     name = "inthash64"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     argument_types = (ArgTypeSequence([DataType.INTEGER]),)
@@ -72,7 +72,7 @@ class IntHash64(HashFunction):
 
 class CityHash64(HashFunction):
     name = "cityhash64"
-    arg_names = ["value"]
+    arg_names = ("value",)
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
     argument_types = (ArgTypeSequence([DataType.STRING]),)

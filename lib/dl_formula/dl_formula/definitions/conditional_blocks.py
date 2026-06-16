@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from frozendict import frozendict
 import sqlalchemy as sa
 from sqlalchemy.sql.elements import (
     ClauseElement,
@@ -42,16 +43,18 @@ class CondBlock(MultiVariantTranslation):
 
 class CaseBlock(CondBlock):
     name = "_case_block_"
-    arg_names = ["expression", "value_1", "result_1", "value_2", "result_2", "default_result"]
+    arg_names = ("expression", "value_1", "result_1", "value_2", "result_2", "default_result")
 
-    _null_replace_map = {
-        DataType.INTEGER: sa.literal(0),
-        DataType.FLOAT: sa.literal(0.0),
-        DataType.BOOLEAN: sa.literal(0),
-        DataType.STRING: sa.literal(""),
-        DataType.MARKUP: sa.literal(""),
-        # Note that datetime types are not supported in this case
-    }
+    _null_replace_map = frozendict(
+        {
+            DataType.INTEGER: sa.literal(0),
+            DataType.FLOAT: sa.literal(0.0),
+            DataType.BOOLEAN: sa.literal(0),
+            DataType.STRING: sa.literal(""),
+            DataType.MARKUP: sa.literal(""),
+            # Note that datetime types are not supported in this case
+        }
+    )
 
     @staticmethod
     def _ifnull(value, data_type: DataType) -> bool:  # type: ignore  # 2024-01-24 # TODO: Function is missing a type annotation for one or more arguments  [no-untyped-def]
@@ -108,7 +111,7 @@ class CaseBlock(CondBlock):
 
 class IfBlock(CondBlock):
     name = "_if_block_"
-    arg_names = ["condition_1", "result_1", "condition_2", "result_2", "default_result"]
+    arg_names = ("condition_1", "result_1", "condition_2", "result_2", "default_result")
 
 
 class IfBlock3(IfBlock):

@@ -34,7 +34,7 @@ class MathFunction(Function):
 
 class FuncAbs(MathFunction):
     name = "abs"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY | D.SQLITE, sa.func.ABS),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -43,7 +43,7 @@ class FuncAbs(MathFunction):
 
 class FuncAcos(MathFunction):
     name = "acos"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.ACOS),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -52,7 +52,7 @@ class FuncAcos(MathFunction):
 
 class FuncAsin(MathFunction):
     name = "asin"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.ASIN),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -61,7 +61,7 @@ class FuncAsin(MathFunction):
 
 class FuncAtan(MathFunction):
     name = "atan"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.ATAN),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -71,7 +71,7 @@ class FuncAtan(MathFunction):
 class FuncAtan2(MathFunction):
     name = "atan2"
     arg_cnt = 2
-    arg_names = ["x", "y"]
+    arg_names = ("x", "y")
     variants = (V(D.DUMMY, sa.func.ATAN2),)
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
     return_type = Fixed(DataType.FLOAT)
@@ -79,7 +79,7 @@ class FuncAtan2(MathFunction):
 
 class FuncCeiling(MathFunction):
     name = "ceiling"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.CEIL),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -88,7 +88,7 @@ class FuncCeiling(MathFunction):
 
 class FuncFloor(MathFunction):
     name = "floor"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.FLOOR),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -97,7 +97,7 @@ class FuncFloor(MathFunction):
 
 class FuncCos(MathFunction):
     name = "cos"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.COS),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -106,7 +106,7 @@ class FuncCos(MathFunction):
 
 class FuncCot(MathFunction):
     name = "cot"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.COT),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -116,7 +116,7 @@ class FuncCot(MathFunction):
 class FuncDegrees(MathFunction):
     name = "degrees"
     arg_cnt = 1
-    arg_names = ["radians"]
+    arg_names = ("radians",)
     variants = (V(D.DUMMY, sa.func.DEGREES),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
     return_type = Fixed(DataType.FLOAT)
@@ -125,7 +125,7 @@ class FuncDegrees(MathFunction):
 class FuncDiv(MathFunction):
     name = "div"
     arg_cnt = 2
-    arg_names = ["number_1", "number_2"]
+    arg_names = ("number_1", "number_2")
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -140,14 +140,14 @@ class FuncDivSafeBase(MathFunction):
 
 
 class FuncDivSafe2(FuncDivSafeBase):
-    arg_names = ["numerator", "denominator"]
+    arg_names = ("numerator", "denominator")
     arg_cnt = 2
     argument_types: ClassVar[tuple[ArgTypeMatcher, ...]] = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
     variants = (V(D.DUMMY, lambda x, y: sa.func.div(x, sa.func.nullif(y, 0))),)
 
 
 class FuncDivSafe3(FuncDivSafeBase):
-    arg_names = ["numerator", "denominator", "fallback_value"]
+    arg_names = ("numerator", "denominator", "fallback_value")
     arg_cnt = 3
     argument_types: ClassVar[tuple[ArgTypeMatcher, ...]] = (
         ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.INTEGER]),
@@ -161,14 +161,14 @@ class FuncFDivSafeBase(MathFunction):
 
 
 class FuncFDivSafe2(FuncFDivSafeBase):
-    arg_names = ["numerator", "denominator"]
+    arg_names = ("numerator", "denominator")
     arg_cnt = 2
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
     variants = (V(D.DUMMY, lambda x, y: x / sa.func.nullif(y, 0)),)
 
 
 class FuncFDivSafe3(FuncFDivSafeBase):
-    arg_names = ["numerator", "denominator", "fallback_value"]
+    arg_names = ("numerator", "denominator", "fallback_value")
     arg_cnt = 3
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.FLOAT]),)
     variants = (V(D.DUMMY, lambda x, y, default: sa.func.coalesce(x / sa.func.nullif(y, 0), default)),)
@@ -176,7 +176,7 @@ class FuncFDivSafe3(FuncFDivSafeBase):
 
 class FuncExp(MathFunction):
     name = "exp"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.EXP),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -185,7 +185,7 @@ class FuncExp(MathFunction):
 
 class FuncLn(MathFunction):
     name = "ln"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.LN),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -194,7 +194,7 @@ class FuncLn(MathFunction):
 
 class FuncLog10(MathFunction):
     name = "log10"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.LOG10),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -204,7 +204,7 @@ class FuncLog10(MathFunction):
 class FuncLog(MathFunction):
     name = "log"
     arg_cnt = 2
-    arg_names = ["value", "base"]
+    arg_names = ("value", "base")
     variants = (V(D.DUMMY, lambda x, base: sa.func.LOG(base, x)),)
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
     return_type = Fixed(DataType.FLOAT)
@@ -224,7 +224,7 @@ _COMPARABLE_TYPES = [
 
 class FuncGreatestBase(MathFunction):
     name = "greatest"
-    arg_names = ["value_1", "value_2", "value_3"]
+    arg_names = ("value_1", "value_2", "value_3")
     arg_cnt = 2
     # TODO: sqlite3: just `max(a, b, ...)` works
     return_type = FromArgs()
@@ -272,7 +272,7 @@ class GreatestMulti(FuncGreatestBase):
 
 class FuncLeastBase(MathFunction):
     name = "least"
-    arg_names = ["value_1", "value_2", "value_3"]
+    arg_names = ("value_1", "value_2", "value_3")
     arg_cnt = 2
     return_type = FromArgs()
     return_type_params = ParamsFromArgs(0)
@@ -327,7 +327,7 @@ class FuncPi(MathFunction):
 class FuncPower(MathFunction):
     name = "power"
     arg_cnt = 2
-    arg_names = ["base", "power"]
+    arg_names = ("base", "power")
     variants = (V(D.DUMMY, sa.func.POWER),)
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT]),)
     return_type = Fixed(DataType.FLOAT)
@@ -336,7 +336,7 @@ class FuncPower(MathFunction):
 class FuncRadians(MathFunction):
     name = "radians"
     arg_cnt = 1
-    arg_names = ["degrees"]
+    arg_names = ("degrees",)
     variants = (V(D.DUMMY, sa.func.RADIANS),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
     return_type = Fixed(DataType.FLOAT)
@@ -344,7 +344,7 @@ class FuncRadians(MathFunction):
 
 class FuncRoundBase(MathFunction):
     name = "round"
-    arg_names = ["number", "precision"]
+    arg_names = ("number", "precision")
 
 
 class FuncRound1(FuncRoundBase):
@@ -363,7 +363,7 @@ class FuncRound2(FuncRoundBase):
 
 class FuncSign(MathFunction):
     name = "sign"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.SIGN),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -372,7 +372,7 @@ class FuncSign(MathFunction):
 
 class FuncSin(MathFunction):
     name = "sin"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.SIN),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -381,7 +381,7 @@ class FuncSin(MathFunction):
 
 class FuncSqrt(MathFunction):
     name = "sqrt"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.SQRT),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -390,7 +390,7 @@ class FuncSqrt(MathFunction):
 
 class FuncSquare(MathFunction):
     name = "square"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
     return_type = FromArgs()
@@ -398,7 +398,7 @@ class FuncSquare(MathFunction):
 
 class FuncTan(MathFunction):
     name = "tan"
-    arg_names = ["number"]
+    arg_names = ("number",)
     arg_cnt = 1
     variants = (V(D.DUMMY, sa.func.TAN),)
     argument_types = (ArgTypeSequence([DataType.FLOAT]),)
@@ -407,7 +407,7 @@ class FuncTan(MathFunction):
 
 class FuncCompare(MathFunction):
     name = "compare"
-    arg_names = ["left", "right", "epsilon"]
+    arg_names = ("left", "right", "epsilon")
     arg_cnt = 3
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.FLOAT, DataType.FLOAT]),)
     return_type = Fixed(DataType.INTEGER)

@@ -64,7 +64,7 @@ class TypeConvFunction(Function):
 
 class FuncDate(TypeConvFunction):
     name = "date"
-    arg_names = ["expression", "timezone"]
+    arg_names = ("expression", "timezone")
     return_type = Fixed(DataType.DATE)
 
 
@@ -111,7 +111,7 @@ class FuncDatetimeImpl(TypeConvFunction):
     # WARNING: the `{arg:1}` in this description requires there to be at least
     # one `arg_cnt = 2` registered subclass translation, such as
     # `FuncDatetime2FromCHStuff`.
-    arg_names = ["expression", "timezone"]
+    arg_names = ("expression", "timezone")
 
 
 class FuncTypeGenericDatetimeImpl(FuncDatetimeImpl):
@@ -204,7 +204,7 @@ class FuncDatetimeTZ(TypeConvFunction):
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
 
     arg_cnt = 2
-    arg_names = ["expression", "timezone"]
+    arg_names = ("expression", "timezone")
 
     return_type = Fixed(DataType.DATETIMETZ)
     return_type_params = ParamsCustom(
@@ -252,7 +252,7 @@ class FuncDatetimeTZToNaive(SingleVariantTranslationBase, TypeConvFunction):
     name = "datetimetz_to_naive"  # TODO: consider having `datetime(datetimetz_value)` for this.
     scopes = Function.scopes & ~Scope.SUGGESTED & ~Scope.DOCUMENTED
     arg_cnt = 1
-    arg_names = ["datetimetz"]
+    arg_names = ("datetimetz",)
     argument_types = (ArgTypeSequence([DataType.DATETIMETZ, DataType.CONST_STRING]),)
 
     return_type = Fixed(DataType.DATETIME)
@@ -261,7 +261,7 @@ class FuncDatetimeTZToNaive(SingleVariantTranslationBase, TypeConvFunction):
 
 class FuncFloat(TypeConvFunction):
     name = "float"
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     arg_cnt = 1
     return_type = Fixed(DataType.FLOAT)
 
@@ -295,7 +295,7 @@ class FuncFloatFromGenericDatetime(FuncFloat):
 
 class FuncInt(TypeConvFunction):
     name = "int"
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     arg_cnt = 1
     return_type = Fixed(DataType.INTEGER)
 
@@ -344,7 +344,7 @@ class FuncIntFromDatetimeTZ(FuncInt):
 
 class FuncBool(TypeConvFunction):
     name = "bool"
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     arg_cnt = 1
     return_type = Fixed(DataType.BOOLEAN)
 
@@ -386,7 +386,7 @@ class FuncBoolFromDateDatetime(FuncBool):
 
 class FuncStr(TypeConvFunction):
     name = "str"
-    arg_names = ["expression"]
+    arg_names = ("expression",)
     arg_cnt = 1
     return_type = Fixed(DataType.STRING)
 
@@ -483,7 +483,7 @@ class FuncDateParse(TypeConvFunction):
 
 class FuncGeopoint(TypeConvFunction):
     name = "geopoint"
-    arg_names = ["value_1", "value_2"]
+    arg_names = ("value_1", "value_2")
     return_type = Fixed(DataType.GEOPOINT)
 
 
@@ -522,7 +522,7 @@ class FuncGeopolygon(FuncGeopolygonBase):
 class FuncTreeBase(TypeConvFunction):
     arg_cnt = 1
     name = "tree"
-    arg_names = ["array"]
+    arg_names = ("array",)
     variants = (V(D.DUMMY, lambda val: val),)
 
 
@@ -582,7 +582,7 @@ CHAR_CAST_ARG_T = (DataType.CONST_INTEGER,)
 
 class FuncDbCastBase(TypeConvFunction):
     name = "db_cast"
-    arg_names = ["expression", "native_type", "param_1", "param_2", "param_3"]
+    arg_names = ("expression", "native_type", "param_1", "param_2", "param_3")
     argument_types = (DbCastArgTypes(),)
     return_type = FromArgs(0)
 

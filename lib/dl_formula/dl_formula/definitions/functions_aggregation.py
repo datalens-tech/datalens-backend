@@ -54,7 +54,7 @@ class AggSumIf(AggregationFunction):
         ),
     )
     arg_cnt = 2
-    arg_names = ["expression", "condition"]
+    arg_names = ("expression", "condition")
     # TODO: Check if really all types for conditions are allowed
     # TODO: Check for case: bi-formula-cli translate --dialect ORACLE "SUM_IF([int_value], [int_value])"
     # argument_types = [
@@ -71,7 +71,7 @@ class AggSumIf(AggregationFunction):
 
 class AggAvg(AggregationFunction):
     name = "avg"
-    arg_names = ["value"]
+    arg_names = ("value",)
 
 
 class AggAvgFromNumber(AggAvg):
@@ -130,7 +130,7 @@ class AggAvgIf(AggregationFunction):
     )
 
     arg_cnt = 2
-    arg_names = ["expression", "condition"]
+    arg_names = ("expression", "condition")
     argument_types = (
         ArgTypeSequence([DataType.INTEGER, DataType.BOOLEAN]),
         ArgTypeSequence([DataType.FLOAT, DataType.BOOLEAN]),
@@ -141,7 +141,7 @@ class AggAvgIf(AggregationFunction):
 
 class AggMax(AggregationFunction):
     name = "max"
-    arg_names = ["value"]
+    arg_names = ("value",)
     variants = (V(D.DUMMY | D.SQLITE, sa.func.max),)
     argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
@@ -161,7 +161,7 @@ class AggMax(AggregationFunction):
 
 class AggMin(AggregationFunction):
     name = "min"
-    arg_names = ["value"]
+    arg_names = ("value",)
     variants = (V(D.DUMMY | D.SQLITE, sa.func.min),)
     argument_types = (
         ArgTypeSequence([DataType.INTEGER]),
@@ -181,7 +181,7 @@ class AggMin(AggregationFunction):
 
 class AggCount(AggregationFunction):
     name = "count"
-    arg_names = ["value"]
+    arg_names = ("value",)
     return_type = Fixed(DataType.INTEGER)
 
 
@@ -203,7 +203,7 @@ class AggCountIf(AggregationFunction):
         ),
     )
 
-    arg_names = ["condition"]
+    arg_names = ("condition",)
     argument_types = (ArgTypeSequence([DataType.BOOLEAN]),)
     argument_flags = ArgFlagSequence([ContextFlag.REQ_CONDITION])
     return_type = Fixed(DataType.INTEGER)
@@ -225,7 +225,7 @@ class AggCountdIf(AggregationFunction):
     )
 
     arg_cnt = 2
-    arg_names = ["expression", "condition"]
+    arg_names = ("expression", "condition")
     argument_types = tuple(ArgTypeSequence([expr_type, DataType.BOOLEAN]) for expr_type in DataType)
     argument_flags = ArgFlagSequence([None, ContextFlag.REQ_CONDITION])
     return_type = Fixed(DataType.INTEGER)
@@ -278,7 +278,7 @@ class AggVarp(AggregationFunction):
 
 class AggQuantileBase(AggregationFunction):
     arg_cnt = 2
-    arg_names = ["value", "quant"]
+    arg_names = ("value", "quant")
     argument_types = (
         ArgTypeSequence(
             [
@@ -327,13 +327,13 @@ class AggArgMinMax(AggregationFunction):
 class AggArgMin(AggArgMinMax):
     name = "arg_min"
     arg_cnt = 2
-    arg_names = ["value", "expression_to_minimize"]
+    arg_names = ("value", "expression_to_minimize")
 
 
 class AggArgMax(AggArgMinMax):
     name = "arg_max"
     arg_cnt = 2
-    arg_names = ["value", "expression_to_maximize"]
+    arg_names = ("value", "expression_to_maximize")
 
 
 # Blacklist of types,
@@ -348,7 +348,7 @@ AGG_CONCAT_INPUT_TYPES = set(DataType) - {DataType.MARKUP, DataType.CONST_MARKUP
 
 class AggAllConcatBase(AggregationFunction):
     name = "all_concat"
-    arg_names = ["expression", "separator"]
+    arg_names = ("expression", "separator")
     # (Any, ConstString) -> String
     argument_types = (
         ArgTypeSequence(
@@ -372,7 +372,7 @@ class AggAllConcat2(AggAllConcatBase):
 class AggTopConcatBase(AggregationFunction):
     name = "top_concat"
     # Doable for postgresql, but not performant, and very convoluted
-    arg_names = ["expression", "amount", "separator"]
+    arg_names = ("expression", "amount", "separator")
     # (Any, ConstInteger, ConstString) -> String
     argument_types = (
         ArgTypeSequence(
