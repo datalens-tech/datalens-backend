@@ -122,7 +122,7 @@ class BaseEntrySchemaMigration:
         if not isinstance(entry_data, dict):
             raise ValueError(f"Invalid entry: 'data' should be a dict, got {type(entry_data).__name__}")
 
-        schema_version = entry_data.get("schema_version", "")
+        schema_version = entry_data.get("schema_version", "1")
         entry_schema_id = 1
         if schema_version != "1":
             entry_schema_id = int(datetime.fromisoformat(schema_version).timestamp())
