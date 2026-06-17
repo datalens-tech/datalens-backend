@@ -272,7 +272,7 @@ class FieldLine(DocUnit):
         return f"{type_text} {'*' if self.required else ''}"
 
     @classmethod
-    def get_table_header(self) -> DocTableHeader:
+    def get_table_header(cls) -> DocTableHeader:
         return DocTableHeader(
             [
                 MText(ru="Поле", en="Field"),

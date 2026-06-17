@@ -29,9 +29,9 @@ class FuncRound2ConstCompeng(base.FuncRound2):
     argument_types = (ArgTypeSequence([DataType.FLOAT, DataType.CONST_INTEGER]),)
 
     @classmethod
-    def _do_round_with_const_arg(self, number: Literal, precision: Literal) -> ClauseElement:
+    def _do_round_with_const_arg(cls, number: Literal, precision: Literal) -> ClauseElement:
         precision_value = un_literal(precision)
-        dec_precision = self._DECIMAL_SIZE
+        dec_precision = cls._DECIMAL_SIZE
         dec_scale = precision_value + 5
         return sa.func.ROUND(sa.cast(number, sa.Numeric(precision=dec_precision, scale=dec_scale)), precision)
 

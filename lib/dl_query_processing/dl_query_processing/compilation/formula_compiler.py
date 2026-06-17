@@ -257,10 +257,14 @@ class StageProcCallable(Protocol):
     def __call__(self, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula: ...
 
 
-# https://github.com/python/typing/discussions/1040
-# and all of this just for the positional argument...
 class StageProcType(Protocol):
-    def __call__(_, self: FormulaCompiler, field: BIField, collect_errors: bool = False) -> formula_nodes.Formula: ...
+    def __call__(
+        self,
+        compiler: FormulaCompiler,
+        /,
+        field: BIField,
+        collect_errors: bool = False,
+    ) -> formula_nodes.Formula: ...
 
     @overload
     def __get__(self, obj: FormulaCompiler, objtype: type[FormulaCompiler] | None = None) -> StageProcCallable: ...

@@ -133,6 +133,8 @@ select = [
   "FURB", # refurb
   "G", # flake8-logging-format
   "LOG", # flake8-logging
+  "N804", # pep8-naming (sub-rule): invalid-first-argument-name-for-class-method
+  "N805", # pep8-naming (sub-rule): invalid-first-argument-name-for-method
   "PERF", # Perflint
   "PIE", # flake8-pie
   "PT", # flake8-pytest-style

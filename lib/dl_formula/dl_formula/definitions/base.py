@@ -663,7 +663,7 @@ class SingleVariantTranslationBase(MultiVariantTranslation):
         self._inst_dialects = dialects
         super().__init__(arg_transformer=arg_transformer)
 
-    def _translate_main(cls, *args: Any) -> TransCallResult:
+    def _translate_main(self, *args: Any) -> TransCallResult:
         """Variant implementation"""
         raise NotImplementedError
 
