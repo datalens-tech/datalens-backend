@@ -82,7 +82,6 @@ def uwsgi_collect_sensors(data, add_sensor):
     if avg_rts:
         add_sensor("max_avg_rt_sec", float(max(avg_rts)) / 1e6)
 
-    # pylint: disable=invalid-name
     GiB = 2**30  # Gibi- (for gibibytes)
     page_size = 4096  # 4KiB, linux constant
     pages_per_gib = GiB / page_size  # 262144
@@ -139,7 +138,6 @@ def process_uwsgi_data_for_unistat(data, common_prefix=None, line_prefix=None):
 def process_uwsgi_data_for_prometheus(data, label_prefix=""):
     results = []
 
-    # pylint: disable=unused-argument
     def add_sensor(label, value, suffixes=None):
         results.append((label_prefix + label, value))
 
@@ -162,7 +160,6 @@ def uwsgi_prometheus(sock_path=None, label_prefix=""):
     return process_uwsgi_data_for_prometheus(data, label_prefix=label_prefix)
 
 
-# pylint: disable=too-many-locals
 def uwsgi_unistat(sock_path=None, common_prefix=None, line_prefix=None):
     data = _get_uwsgi_data(sock_path=sock_path)
     return process_uwsgi_data_for_unistat(data, common_prefix=common_prefix, line_prefix=line_prefix)

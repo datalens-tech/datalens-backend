@@ -327,7 +327,7 @@ class TaggedSysLogHandlerBase(logging.handlers.SysLogHandler):
         self.syslog_tag = kwargs.pop("syslog_tag")
         super().__init__(*args, **kwargs)
 
-    def format(self, *args: Any, **kwargs: Any):  # pylint: disable=arguments-differ
+    def format(self, *args: Any, **kwargs: Any):
         res = super().format(*args, **kwargs)
         return self.syslog_tag + " " + res
 

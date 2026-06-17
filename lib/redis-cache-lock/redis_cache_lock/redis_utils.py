@@ -12,7 +12,7 @@ import attr
 from .types import Protocol
 
 if TYPE_CHECKING:
-    from contextlib import AsyncExitStack  # pylint: disable=ungrouped-imports
+    from contextlib import AsyncExitStack
 
     from redis.asyncio import Redis
 
@@ -63,7 +63,6 @@ def make_sentinel_cli_acm(sentinel_cli: TSentinel, service_name: str) -> TClient
         master: bool = True,
         # aioredis does its own tracking of client reusability, so no need
         # to consider the `exclusive` flag.
-        # pylint: disable=unused-argument
         exclusive: bool = True,
     ) -> AsyncGenerator[Redis, None]:
         if master:
@@ -85,10 +84,10 @@ class SubscriptionManagerBase:
     @staticmethod
     @asynccontextmanager
     async def _psub_acm(
-            cli: Redis,  # pylint: disable=unused-argument
-            channel_key: str,  # pylint: disable=unused-argument
+            cli: Redis,
+            channel_key: str,
     ) -> AsyncGenerator[Any, None]:
-        if False:  # ensure this is a generator (for mypy)  # pylint: disable=using-constant-test
+        if False:  # ensure this is a generator (for mypy)
             yield None
         raise NotImplementedError
 

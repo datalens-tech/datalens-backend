@@ -271,7 +271,7 @@ class HistoryHolder:
             self.history.pop(0)
         self.history.append((monotime(), msg, details))
         if self.func is not None:
-            self.func(msg, details)  # pylint: disable=not-callable
+            self.func(msg, details)
 
     def __iter__(self) -> Iterable[Tuple[float, str, Dict[str, Any]]]:
         return iter(list(self.history))

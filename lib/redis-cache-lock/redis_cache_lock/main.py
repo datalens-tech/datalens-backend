@@ -98,7 +98,7 @@ class RedisCacheLock:
 
     def clone(self, **kwargs: Any) -> RedisCacheLock:
         result = attr.evolve(self, **kwargs)
-        result._cleanup()  # pylint: disable=protected-access
+        result._cleanup()
         return result
 
     def _cleanup(self) -> None:
@@ -109,7 +109,7 @@ class RedisCacheLock:
 
     def _log(self, msg: str, *args: Any, **details: Any) -> None:
         if self.debug_log is not None:
-            self.debug_log(  # pylint: disable=not-callable
+            self.debug_log(
                 msg % args,
                 dict(
                     details,
@@ -150,14 +150,14 @@ class RedisCacheLock:
         async def background_wrapper() -> Any:
             try:
                 return await coro
-            except Exception as err:  # pylint: disable=broad-except
+            except Exception as err:
                 self._log("Exception in background task %r: %r", name, err)
                 return None
 
         task = asyncio.create_task(background_wrapper(), name=name)
         callback = self.bg_task_callback
         if callback is not None:
-            callback(task)  # pylint: disable=not-callable
+            callback(task)
         return task
 
     async def _wait_network_call(self, coro: Awaitable[_WNC_RET_T]) -> _WNC_RET_T:
@@ -365,7 +365,7 @@ class RedisCacheLock:
                 self._log(
                     "renew script result: %r", renew_res, renew_interval=renew_interval
                 )
-            except Exception as err:  # pylint: disable=broad-except
+            except Exception as err:
                 self._log("lock_pinger error: %r", err, renew_interval=renew_interval)
 
     async def _save_data(
@@ -510,7 +510,7 @@ class RedisCacheLock:
             result=result,
         )
 
-    def decide_force_save(  # pylint: disable=unused-argument:
+    def decide_force_save(
         self,
         situation: ReqResultInternal,
     ) -> bool:
