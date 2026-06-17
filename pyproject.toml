@@ -101,6 +101,7 @@ ignore = [
   "RUF012", # Later: mutable-class-default
   "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
   "S101", # Never: assert — `assert` is an accepted inline invariant/precondition idiom repo-wide (incl. non-test source) and ubiquitous in tests; flake8-bandit's assert ban would only add noqa noise. Preliminary disposition for the `S` category (migrated incrementally in BI-7445; security-relevant `S` sub-rules handled separately).
+  "S104", # Never: hardcoded-bind-all-interfaces — binding to 0.0.0.0 is intentional for containerized services (exposure is controlled by the orchestrator, not the app); the rule would only add noqa noise.
   "SIM108", # Never: if-else-block-instead-of-if-exp — forcing ternaries hurts readability; many sites carry explanatory comments / type-ignores that don't survive the (unsafe-only) autofix
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
 ]
