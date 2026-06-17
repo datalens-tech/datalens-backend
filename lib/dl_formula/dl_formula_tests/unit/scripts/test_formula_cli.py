@@ -115,12 +115,6 @@ def test_dialects(tool):
     assert "DUMMY" in stdout
 
 
-def test_goto(tool):
-    stdout, stderr = tool.run(["goto", "--show", "avg"])
-    assert stderr == ""
-    assert "functions_aggregation.py" in stdout
-
-
 def test_slice(tool):
     stdout, _stderr = tool.run(
         [

@@ -4,7 +4,6 @@ import argparse
 from collections import defaultdict
 from collections.abc import Generator
 import inspect
-import os
 import sys
 from typing import TYPE_CHECKING
 
@@ -16,10 +15,7 @@ from dl_formula.core.dialect import (
 )
 from dl_formula.core.dialect import DialectCombo
 from dl_formula.core.dialect import StandardDialect as D
-from dl_formula.definitions.base import (
-    MultiVariantTranslation,
-    NodeTranslation,
-)
+from dl_formula.definitions.base import NodeTranslation
 from dl_formula.definitions.registry import OPERATION_REGISTRY
 import dl_formula.dot
 import dl_formula.inspect.expression
@@ -112,10 +108,6 @@ graph_parser.add_argument("--view", action="store_true", help="Show rendered gra
 graph_parser.add_argument("--render-to", help="Render graph to specified file", default=None)
 
 dialect_parser = subparsers.add_parser("dialects", help="List available basic dialects")
-
-goto_parser = subparsers.add_parser("goto", help="Open PyCharm at the function definition")
-goto_parser.add_argument("func", help="function name")
-goto_parser.add_argument("--show", action="store_true", help="just print file name and line number")
 
 slice_parser = subparsers.add_parser(
     "slice", parents=[text_parser, diff_parser], help="Parse formula slice it into translation levels"
@@ -249,43 +241,6 @@ class FormulaCliTool:
             )
         )
 
-    @staticmethod
-    def _get_func_base_class(name: str) -> type | None:
-        """Find the first (base) class for the given function"""
-        name = name.lower()
-        for definition in OPERATION_REGISTRY.values():
-            if definition.name.lower() == name:  # type: ignore  # TODO: fix
-                item = definition
-                break
-        else:
-            return None
-
-        mro = inspect.getmro(type(item))  # `cls` itself plus all its bases
-        for earliest_super_cls in reversed(mro):
-            if (
-                issubclass(earliest_super_cls, MultiVariantTranslation)
-                and (earliest_super_cls.name or "").lower() == name
-            ):
-                return earliest_super_cls
-        return None
-
-    @classmethod
-    def _get_func_source_info(cls, name: str) -> tuple[str, int]:
-        """Get file name and line number for given function"""
-        func_cls = cls._get_func_base_class(name)
-        filename = inspect.getsourcefile(func_cls)  # type: ignore  # TODO: fix
-        lineno = inspect.getsourcelines(func_cls)[1]  # type: ignore  # TODO: fix
-        return filename, lineno  # type: ignore  # TODO: fix
-
-    @classmethod
-    def goto_func(cls, name: str, show: bool) -> None:
-        editor_exe = os.environ.get("PYCHARM", "pycharm")
-        filename, lineno = cls._get_func_source_info(name)
-        if show:
-            print(filename, lineno)
-        else:
-            os.system(f'{editor_exe} --line {lineno} "{filename}"')
-
     @classmethod
     def slice(cls, text: str, levels: list[str], diff: bool = False) -> None:
         boundaries = {
@@ -369,9 +324,6 @@ class FormulaCliTool:
 
         elif args.command == "dialects":
             tool.list_dialects()
-
-        elif args.command == "goto":
-            tool.goto_func(name=args.func, show=args.show)
 
         elif args.command == "slice":
             tool.slice(text=args.text, levels=args.levels, diff=args.diff)

@@ -149,6 +149,7 @@ select = [
   "S113", # flake8-bandit (sub-rule): request-without-timeout (HTTP call can hang forever)
   "S301", # flake8-bandit (sub-rule): suspicious-pickle-usage (deserializing untrusted data)
   "S303", # flake8-bandit (sub-rule): suspicious-insecure-hash-usage (MD2/MD4/MD5/SHA1)
+  "S605", # flake8-bandit (sub-rule): start-process-with-a-shell (shell injection via os.system)
   "S701", # flake8-bandit (sub-rule): jinja2-autoescape-false (XSS via unescaped template output)
   "SIM", # flake8-simplify
   "UP", # pyupgrade
