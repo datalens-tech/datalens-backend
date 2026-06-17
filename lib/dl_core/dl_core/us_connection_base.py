@@ -720,7 +720,7 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
         return []
 
     def get_import_warnings_list(self, localizer: Localizer) -> list[dict]:
-        CODE_PREFIX = "NOTIF.WB_IMPORT.CONN."
+        code_prefix = "NOTIF.WB_IMPORT.CONN."
         warnings = []
         with_fake_creds = False
         for data_key in self.data.get_secret_keys():
@@ -733,20 +733,20 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
                 {
                     "message": localizer.translate(Translatable("notif_check-creds")),
                     "level": NotificationLevel.info,
-                    "code": CODE_PREFIX + "CHECK_CREDENTIALS",
+                    "code": code_prefix + "CHECK_CREDENTIALS",
                 }
             )
         return warnings
 
     def get_export_warnings_list(self, localizer: Localizer) -> list[dict]:
-        CODE_PREFIX = "NOTIF.WB_EXPORT.CONN."
+        code_prefix = "NOTIF.WB_EXPORT.CONN."
         warnings = []
         if self.data.get_secret_keys():
             warnings.append(
                 {
                     "message": localizer.translate(Translatable("notif_check-creds")),
                     "level": NotificationLevel.info,
-                    "code": CODE_PREFIX + "CHECK_CREDENTIALS",
+                    "code": code_prefix + "CHECK_CREDENTIALS",
                 }
             )
         return warnings

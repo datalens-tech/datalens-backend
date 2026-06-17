@@ -223,8 +223,8 @@ class Dataset(USEntry):
             title = resolve_id_collisions(item=title, existing_items=existing_titles, formatter="{} ({})")
 
         if field_id_generator is None:
-            FieldIdGeneratorClass = FIELD_ID_GENERATOR_MAP[DEFAULT_FIELD_ID_GENERATOR_TYPE]
-            field_id_generator = FieldIdGeneratorClass(dataset=self)
+            field_id_generator_class = FIELD_ID_GENERATOR_MAP[DEFAULT_FIELD_ID_GENERATOR_TYPE]
+            field_id_generator = field_id_generator_class(dataset=self)
 
         guid = field_id_generator.make_field_id(title=title)
 
@@ -297,28 +297,28 @@ class Dataset(USEntry):
 
     def get_import_warnings_list(self, localizer: Localizer) -> list[dict]:
         warnings_list = []
-        CODE_PREFIX = "NOTIF.WB_IMPORT.DS."
+        code_prefix = "NOTIF.WB_IMPORT.DS."
 
         if self.rls.items:
             warnings_list.append(
                 {
                     "message": localizer.translate(Translatable("notif_rls")),
                     "level": NotificationLevel.info,
-                    "code": CODE_PREFIX + "RLS",
+                    "code": code_prefix + "RLS",
                 }
             )
         return warnings_list
 
     def get_export_warnings_list(self, localizer: Localizer) -> list[dict]:
         warnings_list = []
-        CODE_PREFIX = "NOTIF.WB_EXPORT.DS."
+        code_prefix = "NOTIF.WB_EXPORT.DS."
 
         if self.rls.items:
             warnings_list.append(
                 {
                     "message": localizer.translate(Translatable("notif_rls")),
                     "level": NotificationLevel.info,
-                    "code": CODE_PREFIX + "RLS",
+                    "code": code_prefix + "RLS",
                 }
             )
         return warnings_list

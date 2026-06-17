@@ -29,13 +29,13 @@ def test_from_string() -> None:
 
 
 def test_declared_value() -> None:
-    YELLOW = Color.declare("yellow")
+    yellow = Color.declare("yellow")
 
     model = ColorModel(color="yellow")  # type: ignore[arg-type]
-    assert model.color is YELLOW
+    assert model.color is yellow
 
-    model = ColorModel(color=YELLOW)
-    assert model.color is YELLOW
+    model = ColorModel(color=yellow)
+    assert model.color is yellow
 
 
 def test_invalid_value() -> None:

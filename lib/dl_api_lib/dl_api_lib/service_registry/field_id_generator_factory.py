@@ -23,5 +23,5 @@ class FieldIdGeneratorFactory:
         self,
         ds: Dataset,
     ) -> FieldIdGenerator:
-        FieldIdGeneratorClass = FIELD_ID_GENERATOR_MAP[self.field_id_generator_type]
-        return FieldIdGeneratorClass(dataset=ds)
+        field_id_generator_class = FIELD_ID_GENERATOR_MAP[self.field_id_generator_type]
+        return field_id_generator_class(dataset=ds)

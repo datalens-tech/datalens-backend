@@ -82,14 +82,14 @@ def uwsgi_collect_sensors(data, add_sensor):
     if avg_rts:
         add_sensor("max_avg_rt_sec", float(max(avg_rts)) / 1e6)
 
-    GiB = 2**30  # Gibi- (for gibibytes)
+    gib = 2**30  # Gibi- (for gibibytes)
     page_size = 4096  # 4KiB, linux constant
-    pages_per_gib = GiB / page_size  # 262144
+    pages_per_gib = gib / page_size  # 262144
 
     mem_datas = [  # all values in GiB
         {
-            "rss_gib": maybe_float_size(worker["rss"], GiB),
-            "vsz_gib": maybe_float_size(worker["vsz"], GiB),
+            "rss_gib": maybe_float_size(worker["rss"], gib),
+            "vsz_gib": maybe_float_size(worker["vsz"], gib),
             "vmsize_gib": maybe_float_size(worker.get("sys_memstatus", {}).get("size"), pages_per_gib),
             "vmrss_gib": maybe_float_size(worker.get("sys_memstatus", {}).get("resident"), pages_per_gib),
         }

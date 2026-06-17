@@ -55,8 +55,8 @@ class CustomSession(Session):
 def get_db_session(db_engine: Engine, backend_type: SourceBackendType) -> Session:
     session_kwargs = {}
     session_kwargs["query_cls"] = get_sa_query_cls(backend_type=backend_type)
-    SessionCls = sessionmaker(bind=db_engine, class_=CustomSession)
-    return SessionCls(**session_kwargs)
+    session_cls = sessionmaker(bind=db_engine, class_=CustomSession)
+    return session_cls(**session_kwargs)
 
 
 _QUERY_FAIL_EXCEPTIONS: set[type[Exception]] = {

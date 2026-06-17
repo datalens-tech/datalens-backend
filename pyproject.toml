@@ -134,6 +134,7 @@ select = [
   "LOG", # flake8-logging
   "N804", # pep8-naming (sub-rule): invalid-first-argument-name-for-class-method
   "N805", # pep8-naming (sub-rule): invalid-first-argument-name-for-method
+  "N806", # pep8-naming (sub-rule): non-lowercase-variable-in-function
   "N811", # pep8-naming (sub-rule): constant-imported-as-non-constant
   "N812", # pep8-naming (sub-rule): lowercase-imported-as-non-lowercase
   "N813", # pep8-naming (sub-rule): camelcase-imported-as-lowercase

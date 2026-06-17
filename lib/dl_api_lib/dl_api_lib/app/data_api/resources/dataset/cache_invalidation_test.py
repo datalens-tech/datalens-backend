@@ -294,14 +294,14 @@ class DatasetCacheInvalidationTestView(DatasetDataBaseView):
         ce_factory = sr.get_conn_executor_factory()
         conn_executor = ce_factory.get_async_conn_executor(connection)
 
-        _MAX_ROWS_TO_FETCH = 3
+        max_rows_to_fetch = 3
 
         try:
             exec_result = await conn_executor.execute(ce_query)
             rows: list = []
             async for chunk in exec_result.result:
                 rows.extend(chunk)
-                if len(rows) >= _MAX_ROWS_TO_FETCH:
+                if len(rows) >= max_rows_to_fetch:
                     break
         except Exception as ex:
             LOGGER.exception("Cache invalidation SQL query execution failed")
