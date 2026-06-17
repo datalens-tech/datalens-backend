@@ -135,7 +135,7 @@ API_TEST_CONFIG = ApiTestEnvironmentConfiguration(
 
 def fetch_ca_certificate() -> str:
     uri = f"{CoreSSLConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
-    response = requests.get(uri)
+    response = requests.get(uri, timeout=30)
     assert response.status_code == 200, response.text
 
     return response.text

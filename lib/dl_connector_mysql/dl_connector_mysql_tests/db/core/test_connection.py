@@ -90,7 +90,7 @@ class TestSslMySQLConnection(
 
         uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/{ssl_ca_filename}"
         try:
-            response = requests.get(uri)
+            response = requests.get(uri, timeout=30)
             response.raise_for_status()
             assert response.text
         except Exception as e:

@@ -166,7 +166,7 @@ class BaseTrinoSslTestClass(BaseTrinoTestClass):
     @pytest.fixture(scope="session")
     def ssl_ca(self) -> str:
         uri = f"{test_config.CoreSslConnectionSettings.CERT_PROVIDER_URL}/ca.pem"
-        response = requests.get(uri)
+        response = requests.get(uri, timeout=30)
         assert response.status_code == 200, response.text
 
         return response.text

@@ -31,7 +31,7 @@ CERT_PROVIDER_URL = f"http://{get_test_container_hostport('db-ydb', fallback_por
 
 def fetch_ca_certificate() -> str:
     uri = f"{CERT_PROVIDER_URL}/ca.pem"
-    response = requests.get(uri)
+    response = requests.get(uri, timeout=30)
     assert response.status_code == 200, response.text
 
     return response.text
