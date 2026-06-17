@@ -6,6 +6,7 @@ from typing import (
     ClassVar,
 )
 
+from frozendict import frozendict
 import oracledb
 import sqlalchemy as sa
 import sqlalchemy.dialects.oracle.base as sa_ora  # not all data types are imported in init in older SA versions
@@ -86,46 +87,48 @@ class OracleDefaultAdapter(BaseClassicAdapter[OracleConnTargetDTO]):
 
         return sa_exists_result
 
-    _type_code_to_sa = {
-        oracledb.NUMBER: sa_ora.NUMBER,
-        oracledb.STRING: sa_ora.VARCHAR,  # e.g. 'VARCHAR2(44)'
-        oracledb.NATIVE_FLOAT: sa_ora.BINARY_FLOAT,  # ... or `sa_ora.BINARY_FLOAT`
-        oracledb.FIXED_CHAR: sa_ora.CHAR,  # e.g. 'CHAR(1)'
-        oracledb.FIXED_NCHAR: sa_ora.NCHAR,  # e.g. 'NCHAR(1)'
-        oracledb.NCHAR: sa_ora.NVARCHAR,  # e.g. 'NVARCHAR(5)'
-        oracledb.DATETIME: sa_ora.DATE,
-        oracledb.TIMESTAMP: sa_ora.TIMESTAMP,  # e.g. 'TIMESTAMP(9)', 'TIMESTAMP(9) WITH TIME ZONE'
-        # # For newer versions of oracledb, just in case.
-        # # Listed are all types from 8.1.0,
-        # # Enabled are types listed in `dl_core.db.conversions`.
-        # getattr(oracledb, 'DB_TYPE_BFILE', None): sa_ora.NULL,
-        getattr(oracledb, "DB_TYPE_BINARY_DOUBLE", None): sa_ora.BINARY_DOUBLE,
-        getattr(oracledb, "DB_TYPE_BINARY_FLOAT", None): sa_ora.BINARY_FLOAT,
-        # getattr(oracledb, 'DB_TYPE_BINARY_INTEGER', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_BLOB', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_BOOLEAN', None): sa_ora.NULL,
-        getattr(oracledb, "DB_TYPE_CHAR", None): sa_ora.CHAR,
-        # getattr(oracledb, 'DB_TYPE_CLOB', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_CURSOR', None): sa_ora.NULL,
-        getattr(oracledb, "DB_TYPE_DATE", None): sa_ora.DATE,
-        # getattr(oracledb, 'DB_TYPE_INTERVAL_DS', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_INTERVAL_YM', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_JSON', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_LONG', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_LONG_RAW', None): sa_ora.NULL,
-        getattr(oracledb, "DB_TYPE_NCHAR", None): sa_ora.NCHAR,
-        # getattr(oracledb, 'DB_TYPE_NCLOB', None): sa_ora.NULL,
-        getattr(oracledb, "DB_TYPE_NUMBER", None): sa_ora.NUMBER,
-        getattr(oracledb, "DB_TYPE_NVARCHAR", None): sa_ora.NVARCHAR,
-        # getattr(oracledb, 'DB_TYPE_OBJECT', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_RAW', None): sa_ora.NULL,
-        # getattr(oracledb, 'DB_TYPE_ROWID', None): sa_ora.NULL,
-        getattr(oracledb, "DB_TYPE_TIMESTAMP", None): sa_ora.TIMESTAMP,
-        # getattr(oracledb, 'DB_TYPE_TIMESTAMP_LTZ', None): sa_ora.NULL,
-        # # NOTE: not `timestamptz` here; matches the view schema, somehow.
-        getattr(oracledb, "DB_TYPE_TIMESTAMP_TZ", None): sa_ora.TIMESTAMP,
-        getattr(oracledb, "DB_TYPE_VARCHAR", None): sa_ora.VARCHAR,
-    }
+    _type_code_to_sa = frozendict(
+        {
+            oracledb.NUMBER: sa_ora.NUMBER,
+            oracledb.STRING: sa_ora.VARCHAR,  # e.g. 'VARCHAR2(44)'
+            oracledb.NATIVE_FLOAT: sa_ora.BINARY_FLOAT,  # ... or `sa_ora.BINARY_FLOAT`
+            oracledb.FIXED_CHAR: sa_ora.CHAR,  # e.g. 'CHAR(1)'
+            oracledb.FIXED_NCHAR: sa_ora.NCHAR,  # e.g. 'NCHAR(1)'
+            oracledb.NCHAR: sa_ora.NVARCHAR,  # e.g. 'NVARCHAR(5)'
+            oracledb.DATETIME: sa_ora.DATE,
+            oracledb.TIMESTAMP: sa_ora.TIMESTAMP,  # e.g. 'TIMESTAMP(9)', 'TIMESTAMP(9) WITH TIME ZONE'
+            # # For newer versions of oracledb, just in case.
+            # # Listed are all types from 8.1.0,
+            # # Enabled are types listed in `dl_core.db.conversions`.
+            # getattr(oracledb, 'DB_TYPE_BFILE', None): sa_ora.NULL,
+            getattr(oracledb, "DB_TYPE_BINARY_DOUBLE", None): sa_ora.BINARY_DOUBLE,
+            getattr(oracledb, "DB_TYPE_BINARY_FLOAT", None): sa_ora.BINARY_FLOAT,
+            # getattr(oracledb, 'DB_TYPE_BINARY_INTEGER', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_BLOB', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_BOOLEAN', None): sa_ora.NULL,
+            getattr(oracledb, "DB_TYPE_CHAR", None): sa_ora.CHAR,
+            # getattr(oracledb, 'DB_TYPE_CLOB', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_CURSOR', None): sa_ora.NULL,
+            getattr(oracledb, "DB_TYPE_DATE", None): sa_ora.DATE,
+            # getattr(oracledb, 'DB_TYPE_INTERVAL_DS', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_INTERVAL_YM', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_JSON', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_LONG', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_LONG_RAW', None): sa_ora.NULL,
+            getattr(oracledb, "DB_TYPE_NCHAR", None): sa_ora.NCHAR,
+            # getattr(oracledb, 'DB_TYPE_NCLOB', None): sa_ora.NULL,
+            getattr(oracledb, "DB_TYPE_NUMBER", None): sa_ora.NUMBER,
+            getattr(oracledb, "DB_TYPE_NVARCHAR", None): sa_ora.NVARCHAR,
+            # getattr(oracledb, 'DB_TYPE_OBJECT', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_RAW', None): sa_ora.NULL,
+            # getattr(oracledb, 'DB_TYPE_ROWID', None): sa_ora.NULL,
+            getattr(oracledb, "DB_TYPE_TIMESTAMP", None): sa_ora.TIMESTAMP,
+            # getattr(oracledb, 'DB_TYPE_TIMESTAMP_LTZ', None): sa_ora.NULL,
+            # # NOTE: not `timestamptz` here; matches the view schema, somehow.
+            getattr(oracledb, "DB_TYPE_TIMESTAMP_TZ", None): sa_ora.TIMESTAMP,
+            getattr(oracledb, "DB_TYPE_VARCHAR", None): sa_ora.VARCHAR,
+        }
+    )
 
     def _cursor_column_to_name(self, cursor_col, dialect=None) -> str:  # type: ignore  # TODO: fix
         assert dialect, "required in this case"

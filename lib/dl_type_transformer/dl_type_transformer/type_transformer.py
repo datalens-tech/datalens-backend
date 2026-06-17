@@ -213,7 +213,7 @@ class LowercaseTypeCaster(TypeCaster):
 class TypeTransformer:
     native_to_user_map: ClassVar[Mapping[GenericNativeType, UserDataType]] = frozendict({})
     user_to_native_map: ClassVar[Mapping[UserDataType, GenericNativeType]] = frozendict({})
-    casters: ClassVar[dict[UserDataType, TypeCaster]] = {
+    casters: ClassVar[Mapping[UserDataType, TypeCaster]] = {
         UserDataType.integer: IntegerTypeCaster(),
         UserDataType.float: FloatTypeCaster(),
         UserDataType.boolean: BooleanTypeCaster(),

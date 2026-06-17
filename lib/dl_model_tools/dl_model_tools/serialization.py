@@ -21,6 +21,8 @@ from typing import (
 )
 import uuid
 
+from frozendict import frozendict
+
 from dl_constants.types import (
     TJSONExt,
     TJSONLike,
@@ -299,7 +301,7 @@ assert len({cls.typename for cls in COMMON_SERIALIZERS}) == len(COMMON_SERIALIZE
 
 
 class DataLensJSONEncoder(json.JSONEncoder):
-    JSONABLERS_MAP = {cls.typeobj(): cls for cls in COMMON_SERIALIZERS}
+    JSONABLERS_MAP = frozendict({cls.typeobj(): cls for cls in COMMON_SERIALIZERS})
 
     def _get_preprocessor(self, typeobj: type) -> type[TypeSerializer] | None:
         if issubclass(typeobj, GenericNativeType):
@@ -323,7 +325,7 @@ class SafeDataLensJSONEncoder(DataLensJSONEncoder):
 
 
 class DataLensJSONDecoder(json.JSONDecoder):
-    DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}
+    DEJSONABLERS_MAP = frozendict({cls.typename: cls for cls in COMMON_SERIALIZERS})
 
     def __init__(
         self,

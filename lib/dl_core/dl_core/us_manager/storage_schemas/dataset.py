@@ -125,7 +125,7 @@ class ConditionPartFormulaSchema(ConditionPartBaseSchema):
 class ConditionPartSchema(OneOfSchema):
     type_field = "calc_mode"
     type_field_remove = False
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         k.name: v
         for k, v in {
             ConditionPartCalcMode.direct: ConditionPartDirectSchema,
@@ -246,7 +246,7 @@ class TreeStrValueSchema(BaseValueSchema):
 
 class ValueSchema(OneOfSchema):
     type_field = "type"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         UserDataType.string.name: StringValueSchema,
         UserDataType.integer.name: IntegerValueSchema,
         UserDataType.float.name: FloatValueSchema,
@@ -322,7 +322,7 @@ class CollectionParameterValueConstraintSchema(BaseParameterValueConstraintSchem
 
 class ParameterValueConstraintSchema(OneOfSchema):
     type_field = "type"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.all.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
@@ -386,7 +386,7 @@ class ResultSchemaStorageSchema(DefaultStorageSchema):
         class CalculationSpecSchema(OneOfSchema):
             type_field = "mode"
             type_field_remove = False
-            type_schemas = {
+            type_schemas = {  # noqa: RUF012
                 CalcMode.direct.name: DirectCalculationSpecSchema,
                 CalcMode.formula.name: FormulaCalculationSpecSchema,
                 CalcMode.parameter.name: ParameterCalculationSpecSchema,

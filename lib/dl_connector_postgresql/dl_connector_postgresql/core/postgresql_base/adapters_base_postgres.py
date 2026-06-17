@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import (
     Any,
     ClassVar,
@@ -457,7 +458,7 @@ class BasePostgresAdapter(BaseSSLCertAdapter, PostgresQueryConstructorMixin):
     # It is potentially possible to plug into the sqlalchemy logic
     # (with a few extra raw sql queries),
     # but for now, a more simple mapping is preferred.
-    _type_code_to_sa: ClassVar[dict[Any, SATypeSpec] | None] = {
+    _type_code_to_sa: ClassVar[Mapping[Any, SATypeSpec] | None] = {
         16: sa_pg.BOOLEAN,
         17: sa_pg.BYTEA,  # unsupported
         # 19: 'name',

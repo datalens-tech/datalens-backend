@@ -187,7 +187,7 @@ class ArrayFloatValueSchema(DefaultSchema[ArrayFloatParameterValue]):
 class ValueSchema(OneOfSchemaWithDumpLoadHooks):
     CONTEXT_KEY = "bi_value_type"
     type_field = "type"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         UserDataType.string.name: StringValueSchema,
         UserDataType.integer.name: IntegerValueSchema,
         UserDataType.float.name: FloatValueSchema,
@@ -267,7 +267,7 @@ class CollectionParameterValueConstraintSchema(DefaultSchema[CollectionParameter
 
 class ParameterValueConstraintSchema(OneOfSchema):
     type_field = "type"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.all.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,
@@ -412,7 +412,7 @@ class ConditionPartGenericSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "calc_mode"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         ConditionPartCalcMode.direct.name: ConditionPartDirectSchema,
         ConditionPartCalcMode.formula.name: ConditionPartFormulaSchema,
         ConditionPartCalcMode.result_field.name: ConditionPartResultFieldSchema,

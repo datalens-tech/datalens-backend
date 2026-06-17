@@ -17,7 +17,7 @@ class MetricaFormulaRefPlugin(FormulaRefPlugin):
     any_dialects = frozenset((*MetricaDialect.METRIKAAPI.to_list(),))
     human_dialects = HUMAN_DIALECTS
     translation_configs = frozenset(CONFIGS)
-    function_extensions = [
+    function_extensions = (
         FUNCTION_OP_PLUS.extend(
             dialect=MetricaDialect.METRIKAAPI,
             notes=[  # type: ignore  # 2024-01-24 # TODO: Argument "notes" to "extend" of "FunctionDocRegistryItem" has incompatible type "list[Note]"; expected "tuple[Note, ...]"  [arg-type]
@@ -27,4 +27,4 @@ class MetricaFormulaRefPlugin(FormulaRefPlugin):
                 )
             ],
         ),
-    ]
+    )

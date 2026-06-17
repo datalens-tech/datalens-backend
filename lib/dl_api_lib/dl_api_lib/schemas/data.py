@@ -343,7 +343,7 @@ class ItemRefSchema(OneOfSchema):
     type_field_remove = True
     type_field = "type"
 
-    type_schemas: dict[str, Any] = {
+    type_schemas: dict[str, Any] = {  # noqa: RUF012
         QueryItemRefType.id.name: IdRefSchema,
         QueryItemRefType.title.name: TitleRefSchema,
         QueryItemRefType.measure_name.name: MeasureNameRefSchema,
@@ -410,7 +410,7 @@ class RoleSpecSchema(OneOfSchema):
             data["prefix"] = json.dumps(data["prefix"])
             return data
 
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         FieldRole.row.name: RowRoleSpecSchemaVariant,
         FieldRole.measure.name: RoleSpecSchemaVariant,
         FieldRole.info.name: RoleSpecSchemaVariant,
@@ -486,7 +486,7 @@ class BlockPlacementSchema(OneOfSchema):
     type_field_remove = True
     type_field = "type"
 
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         QueryBlockPlacementType.root.name: RootBlockPlacementSchema,
         QueryBlockPlacementType.after.name: AfterBlockPlacementSchema,
     }

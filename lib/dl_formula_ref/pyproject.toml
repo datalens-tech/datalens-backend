@@ -15,6 +15,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 jinja2 = "*"
 python = ">=3.12, <3.13"
 sqlalchemy = "*"

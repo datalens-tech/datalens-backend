@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from frozendict import frozendict
 from sqlalchemy import util
 from sqlalchemy.dialects.postgresql import (
     INTERVAL,
@@ -77,27 +78,29 @@ class DBAPIMock:
     DATETIME = TIMESTAMP
     BINARY = BYTEA
 
-    pg_types = {
-        STRING: "varchar",
-        TIMESTAMP: "timestamp",
-        TIMESTAMP_W_TZ: "timestamp with time zone",
-        DATE: "date",
-        TIME: "time",
-        INTERVAL: "interval",
-        NUMBER: "numeric",
-        FLOAT: "float",
-        BOOLEAN: "bool",
-        INTEGER: "integer",
-        BIGINTEGER: "bigint",
-        BYTES: "bytes",
-        DECIMAL: "decimal",
-        JSON: "json",
-        JSONB: "jsonb",
-        ENUM: "enum",
-        UUID: "uuid",
-        BYTEA: "bytea",
-        CITEXT: "citext",
-    }
+    pg_types = frozendict(
+        {
+            STRING: "varchar",
+            TIMESTAMP: "timestamp",
+            TIMESTAMP_W_TZ: "timestamp with time zone",
+            DATE: "date",
+            TIME: "time",
+            INTERVAL: "interval",
+            NUMBER: "numeric",
+            FLOAT: "float",
+            BOOLEAN: "bool",
+            INTEGER: "integer",
+            BIGINTEGER: "bigint",
+            BYTES: "bytes",
+            DECIMAL: "decimal",
+            JSON: "json",
+            JSONB: "jsonb",
+            ENUM: "enum",
+            UUID: "uuid",
+            BYTEA: "bytea",
+            CITEXT: "citext",
+        }
+    )
 
 
 # special dialect for asyncpg adapter

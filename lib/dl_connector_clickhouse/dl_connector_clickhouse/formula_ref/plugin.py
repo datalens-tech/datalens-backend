@@ -27,7 +27,7 @@ class ClickHouseFormulaRefPlugin(FormulaRefPlugin):
     db_cast_extension = DbCastExtension(
         type_whitelists=FuncDbCastClickHouseBase.WHITELISTS,
     )
-    function_extensions = [
+    function_extensions = (
         FUNCTION_DATETRUNC.extend(
             dialect=ClickHouseDialect.CLICKHOUSE,
             notes=(
@@ -68,4 +68,4 @@ class ClickHouseFormulaRefPlugin(FormulaRefPlugin):
                 ),
             ),
         ),
-    ]
+    )

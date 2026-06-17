@@ -281,7 +281,7 @@ class ActionSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "action"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         # legacy  TODO: remove
         DatasetAction.add.name: AddFieldActionSchema,
         DatasetAction.update.name: UpdateFieldActionSchema,

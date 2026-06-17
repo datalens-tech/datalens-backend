@@ -10,6 +10,7 @@ from typing import Any
 from aiohttp import web
 from aiohttp.typedefs import Handler
 import attr
+from frozendict import frozendict
 import sentry_sdk
 
 from dl_api_commons.aio.middlewares.commons import (
@@ -45,7 +46,7 @@ class SentryRequestLoggingContextController(RequestLoggingContextController):
         )
     )
 
-    user_info_remap = {"user_name": "username", "user_id": "id"}
+    user_info_remap = frozendict({"user_name": "username", "user_id": "id"})
 
     def put_to_context(self, key: str, value: Any) -> None:
         val_to_write: Any

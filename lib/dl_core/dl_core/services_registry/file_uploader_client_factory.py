@@ -176,8 +176,7 @@ class UpdateConnectionDataRequestSchemaYaDocs(UpdateConnectionDataRequestSchemaB
 
 
 class UpdateConnectionDataRequestSchema(FileTypeOneOfSchema):
-    type_schemas: dict[str, type[UpdateConnectionDataRequestSchemaBase]] = {
-        # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[UpdateConnectionDataRequestSchemaBase]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas = {  # noqa: RUF012
         FileType.gsheets.name: UpdateConnectionDataRequestSchemaGSheets,
         FileType.yadocs.name: UpdateConnectionDataRequestSchemaYaDocs,
     }

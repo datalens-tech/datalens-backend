@@ -8,6 +8,8 @@ from typing import (
     TypeVar,
 )
 
+from frozendict import frozendict
+
 from dl_formula.core.exc import ValidationError
 
 NODE_TV = TypeVar("NODE_TV")
@@ -39,7 +41,7 @@ class MarkupProcessingBase[NODE_TV]:
 
     _dbg: bool = False
 
-    empty_verbose_node = {"type": "concat", "children": []}
+    empty_verbose_node = frozendict({"type": "concat", "children": ()})
 
     def _dbg_print(self, msg: str, *args: Any) -> None:
         if not self._dbg:
@@ -252,19 +254,21 @@ class MarkupProcessingBase[NODE_TV]:
         assert isinstance(node, self._node_cls)
         return node
 
-    _verbalized_info = {
-        node_text: {"name": "text", "arg": "content"},
-        node_concat: {"name": "concat", "args": "children"},
-        node_url: {"name": "url", "argnames": ("url", "content")},
-        node_i: {"name": "italics", "arg": "content"},
-        node_b: {"name": "bold", "arg": "content"},
-        node_sz: {"name": "size", "argnames": ("content", "size")},
-        node_cl: {"name": "color", "argnames": ("content", "color")},
-        node_br: {"name": "br"},
-        node_userinfo: {"name": "user_info", "argnames": ("content", "user_info")},
-        node_image: {"name": "image", "argnames": ("src", "width", "height", "alt")},
-        node_tooltip: {"name": "tooltip", "argnames": ("text", "tooltip", "placement")},
-    }
+    _verbalized_info = frozendict(
+        {
+            node_text: {"name": "text", "arg": "content"},
+            node_concat: {"name": "concat", "args": "children"},
+            node_url: {"name": "url", "argnames": ("url", "content")},
+            node_i: {"name": "italics", "arg": "content"},
+            node_b: {"name": "bold", "arg": "content"},
+            node_sz: {"name": "size", "argnames": ("content", "size")},
+            node_cl: {"name": "color", "argnames": ("content", "color")},
+            node_br: {"name": "br"},
+            node_userinfo: {"name": "user_info", "argnames": ("content", "user_info")},
+            node_image: {"name": "image", "argnames": ("src", "width", "height", "alt")},
+            node_tooltip: {"name": "tooltip", "argnames": ("text", "tooltip", "placement")},
+        }
+    )
 
     def _argcount_mismatch(self, node: NODE_TV, **kwargs: Any) -> Any:
         # Would be nice to do `self.DumpError("Argcount mismatch", node)` here,

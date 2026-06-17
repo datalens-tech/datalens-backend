@@ -8,6 +8,7 @@ readme = "README.md"
 version = "0.0.1"
 
 [tool.poetry.dependencies]
+frozendict = "*"
 python = ">=3.12, <3.13"
 sqlalchemy = "*"
 

@@ -41,7 +41,7 @@ class OnOffField(fields.Field):
     ON = "on"
     OFF = "off"
 
-    default_error_messages = {"invalid": "Not a valid boolean."}
+    default_error_messages = {"invalid": "Not a valid boolean."}  # noqa: RUF012
 
     def _serialize(self, value: Any, attr: str | None, obj: Any, **kwargs: Any) -> str:
         if value:
@@ -59,7 +59,7 @@ class OnOffField(fields.Field):
 
 
 class Base64StringField(fields.Field):
-    default_error_messages = {
+    default_error_messages = {  # noqa: RUF012
         "invalid": "Not a valid string.",
         "invalid_utf8": "Not a valid utf-8 string.",
         "invalid_format": "Not a valid file data string",

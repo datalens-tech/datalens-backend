@@ -17,13 +17,15 @@ PG_TYPES_STRING = frozenset((pg_types.CHAR, pg_types.VARCHAR, pg_types.TEXT, CIT
 
 
 class PostgreSQLTypeTransformer(TypeTransformer):
-    casters = {
-        **TypeTransformer.casters,
-        # Preliminary asyncpg-related hack: before inserting, make all datetimes UTC-naive.
-        # A correct fix would require different BI-types for naive/aware datetimes.
-        UserDataType.datetime: UTCDatetimeTypeCaster(),
-        UserDataType.genericdatetime: UTCTimezoneDatetimeTypeCaster(),
-    }
+    casters = frozendict(
+        {
+            **TypeTransformer.casters,
+            # Preliminary asyncpg-related hack: before inserting, make all datetimes UTC-naive.
+            # A correct fix would require different BI-types for naive/aware datetimes.
+            UserDataType.datetime: UTCDatetimeTypeCaster(),
+            UserDataType.genericdatetime: UTCTimezoneDatetimeTypeCaster(),
+        }
+    )
     native_to_user_map = frozendict(
         {
             **{make_native_type(t): UserDataType.integer for t in PG_TYPES_INT},

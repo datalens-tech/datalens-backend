@@ -93,7 +93,7 @@ class PivotRoleSpecSchema(OneOfSchema):
         role = ma_fields.Enum(PivotRole, required=True)
         sorting = ma_fields.Nested(PivotMeasureSortingSchema, allow_none=True, load_default=None)
 
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         PivotRole.pivot_row.name: DimensionPivotRoleSpecSchemaVariant,
         PivotRole.pivot_column.name: DimensionPivotRoleSpecSchemaVariant,
         PivotRole.pivot_measure.name: MeasurePivotRoleSpecSchemaVariant,

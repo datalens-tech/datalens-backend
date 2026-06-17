@@ -6,6 +6,7 @@ import datetime
 import antlr4
 from antlr4.Token import Token
 from antlr4.tree.Tree import TerminalNodeImpl
+from frozendict import frozendict
 
 import dl_formula.core.exc as exc
 import dl_formula.core.nodes as nodes
@@ -29,7 +30,7 @@ COMPARISON_OP_RAW_NAMES = ("=", "!=", "<>", ">", ">=", "<", "<=")
 
 
 class CustomDataLensVisitor(DataLensVisitor):
-    _BOOL = {"true": True, "false": False}
+    _BOOL = frozendict({"true": True, "false": False})
 
     def __init__(self, text: str) -> None:
         self._text = text

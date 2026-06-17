@@ -12,6 +12,7 @@ attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 msgpack = "*"

@@ -60,9 +60,11 @@ class SnowFlakeTypeTransformer(TypeTransformer):
             UserDataType.boolean: make_native_type(ssa.BOOLEAN),
         }
     )
-    casters = {
-        **TypeTransformer.casters,
-        # UserDataType.date: GSheetsDateTypeCaster(),
-        # UserDataType.datetime: GSheetsDatetimeTypeCaster(),
-        # UserDataType.genericdatetime: GSheetsGenericDatetimeTypeCaster(),
-    }
+    casters = frozendict(
+        {
+            **TypeTransformer.casters,
+            # UserDataType.date: GSheetsDateTypeCaster(),
+            # UserDataType.datetime: GSheetsDatetimeTypeCaster(),
+            # UserDataType.genericdatetime: GSheetsGenericDatetimeTypeCaster(),
+        }
+    )

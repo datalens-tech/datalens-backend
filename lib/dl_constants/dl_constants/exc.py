@@ -1,4 +1,7 @@
-from collections.abc import Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 from typing import (
     Any,
     ClassVar,
@@ -22,7 +25,7 @@ class DLBaseException(Exception):
     _message: str
 
     default_message = "Internal Server Error"
-    formatting_messages: dict[frozenset[str], str] | None = None
+    formatting_messages: Mapping[frozenset[str], str] | None = None
 
     # Auxiliary error info. Will not be shown to user (or will be shown as is only in intranet)
     debug_info: dict[str, Any]

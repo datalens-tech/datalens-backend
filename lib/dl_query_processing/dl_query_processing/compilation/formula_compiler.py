@@ -22,6 +22,8 @@ from typing import (
 )
 import uuid
 
+from frozendict import frozendict
+
 from dl_constants import (
     AggregationFunction,
     BinaryJoinOperator,
@@ -130,11 +132,13 @@ class FieldProcessingStageManager:
     """
 
     default_type_on_error = DEFAULT_DATA_TYPE
-    save_type_stages = {
-        ProcessingStage.substitution,
-        ProcessingStage.aggregation,
-        ProcessingStage.final,
-    }
+    save_type_stages = frozenset(
+        {
+            ProcessingStage.substitution,
+            ProcessingStage.aggregation,
+            ProcessingStage.final,
+        }
+    )
 
     def __init__(self, columns: ColumnRegistry, inspect_env: InspectionEnvironment) -> None:
         self._columns = columns
@@ -347,22 +351,26 @@ _ALLOWED_PARAMETER_TYPES = {
 
 
 class FormulaCompiler:
-    _agg_functions = {
-        AggregationFunction.countunique: "countd",
-        AggregationFunction.count: "count",
-        AggregationFunction.sum: "sum",
-        AggregationFunction.avg: "avg",
-        AggregationFunction.max: "max",
-        AggregationFunction.min: "min",
-    }
-    _join_condition_operators = {
-        BinaryJoinOperator.eq: "_==",
-        BinaryJoinOperator.ne: "_!=",
-        BinaryJoinOperator.gt: ">",
-        BinaryJoinOperator.gte: ">=",
-        BinaryJoinOperator.lt: "<",
-        BinaryJoinOperator.lte: "<=",
-    }
+    _agg_functions = frozendict(
+        {
+            AggregationFunction.countunique: "countd",
+            AggregationFunction.count: "count",
+            AggregationFunction.sum: "sum",
+            AggregationFunction.avg: "avg",
+            AggregationFunction.max: "max",
+            AggregationFunction.min: "min",
+        }
+    )
+    _join_condition_operators = frozendict(
+        {
+            BinaryJoinOperator.eq: "_==",
+            BinaryJoinOperator.ne: "_!=",
+            BinaryJoinOperator.gt: ">",
+            BinaryJoinOperator.gte: ">=",
+            BinaryJoinOperator.lt: "<",
+            BinaryJoinOperator.lte: "<=",
+        }
+    )
 
     def __init__(
         self,

@@ -138,7 +138,7 @@ class ValueSchema(OneOfSchemaWithDumpLoadHooks):
         TARGET_CLS = ArrayStrValue
         value = ma_fields.List(ma_fields.String())
 
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         UserDataType.string.name: StringValueSchema,
         UserDataType.integer.name: IntegerValueSchema,
         UserDataType.float.name: FloatValueSchema,

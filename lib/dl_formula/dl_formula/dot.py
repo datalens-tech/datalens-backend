@@ -4,6 +4,7 @@ from functools import singledispatchmethod
 import textwrap
 import uuid
 
+from frozendict import frozendict
 import graphviz
 
 from dl_formula.core import nodes
@@ -14,13 +15,15 @@ def make_name() -> str:
 
 
 class DotTranslator:
-    terminal_opts = {"shape": "rectangle", "style": "filled", "margin": "0"}
-    literal_colors = {
-        str: "#fff6c1",
-        int: "#b2dee6",
-        float: "#c4b4e6",
-        bool: "#d7e6df",
-    }
+    terminal_opts = frozendict({"shape": "rectangle", "style": "filled", "margin": "0"})
+    literal_colors = frozendict(
+        {
+            str: "#fff6c1",
+            int: "#b2dee6",
+            float: "#c4b4e6",
+            bool: "#d7e6df",
+        }
+    )
 
     def __init__(self) -> None:
         pass

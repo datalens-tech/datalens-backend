@@ -15,6 +15,7 @@ from typing import (
 import uuid
 
 import attr
+from frozendict import frozendict
 import shortuuid
 import sqlalchemy as sa
 from sqlalchemy.sql.type_api import TypeEngine
@@ -122,19 +123,21 @@ class C:
     _sa_type: TypeEngine = attr.ib(default=None)
     _vg: Callable[[int, datetime.datetime], Any] = attr.ib(default=None)
 
-    DEFAULT_VALUE_GENERATORS = {
-        UserDataType.string: lambda rn, **kwargs: f"str_value_{rn}",
-        UserDataType.integer: lambda rn, **kwargs: rn,
-        UserDataType.float: lambda rn, **kwargs: rn + (rn / 10),
-        UserDataType.date: lambda rn, ts, **kwargs: ts.date() + datetime.timedelta(days=rn),
-        UserDataType.datetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
-        UserDataType.genericdatetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
-        UserDataType.boolean: lambda rn, **kwargs: bool(int(rn) % 2),
-        UserDataType.uuid: lambda rn, **kwargs: str(uuid.UUID(int=rn)),
-        UserDataType.array_int: lambda rn, **kwargs: [rn * idx for idx in range(5)],
-        UserDataType.array_str: lambda rn, **kwargs: [f"str_{rn * idx!s}" for idx in range(5)],
-        UserDataType.array_float: lambda rn, **kwargs: [float(rn * idx) * 1.1 for idx in range(5)],
-    }
+    DEFAULT_VALUE_GENERATORS = frozendict(
+        {
+            UserDataType.string: lambda rn, **kwargs: f"str_value_{rn}",
+            UserDataType.integer: lambda rn, **kwargs: rn,
+            UserDataType.float: lambda rn, **kwargs: rn + (rn / 10),
+            UserDataType.date: lambda rn, ts, **kwargs: ts.date() + datetime.timedelta(days=rn),
+            UserDataType.datetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
+            UserDataType.genericdatetime: lambda rn, ts, **kwargs: ts + datetime.timedelta(days=rn / math.pi),
+            UserDataType.boolean: lambda rn, **kwargs: bool(int(rn) % 2),
+            UserDataType.uuid: lambda rn, **kwargs: str(uuid.UUID(int=rn)),
+            UserDataType.array_int: lambda rn, **kwargs: [rn * idx for idx in range(5)],
+            UserDataType.array_str: lambda rn, **kwargs: [f"str_{rn * idx!s}" for idx in range(5)],
+            UserDataType.array_float: lambda rn, **kwargs: [float(rn * idx) * 1.1 for idx in range(5)],
+        }
+    )
 
     @attr.s(auto_attribs=True, frozen=True)
     class ArrayDataGetter:

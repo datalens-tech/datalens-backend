@@ -89,7 +89,7 @@ class BaseSchema[TARGET_OBJECT_BASE_TV](marshmallow.Schema):
 class BaseOneOfSchema(OneOfSchema):
     type_field = "type"
 
-    type_schemas: dict[str, type[BaseSchema]] = {}  # type: ignore  # 2024-01-29 # TODO: Incompatible types in assignment (expression has type "dict[str, type[BaseSchema[Any]]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas = {}  # noqa: RUF012
     _map_cls_type_discriminator: ClassVar[dict[type, str]] = {}
 
     @classmethod
@@ -116,7 +116,7 @@ class BaseOneOfSchema(OneOfSchema):
         # TODO FIX: Generate mnemonic class name
         class GeneratedOneOfSchema(BaseOneOfSchema):
             type_field = type_discriminator_field_name
-            type_schemas: dict[str, type[BaseSchema]] = {}
+            type_schemas = {}  # noqa: RUF012
             _map_cls_type_discriminator: ClassVar[dict[type, str]] = {}
 
         return GeneratedOneOfSchema

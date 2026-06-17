@@ -1,5 +1,8 @@
 import abc
-from collections.abc import Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 import logging
 from typing import (
     Any,
@@ -91,7 +94,7 @@ class ClassicSQLConnLineConstructor[DBA_CLASSIC_SA_DTO_TV: "BaseSQLConnTargetDTO
 @attr.s(cmp=False)
 class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[CONN_DTO_TV]):
     dsn_template: ClassVar[str] = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
-    execution_options: ClassVar[dict[str, Any]] = {}
+    execution_options: ClassVar[Mapping[str, Any]] = {}
     conn_line_constructor_type: ClassVar[type[BaseConnLineConstructor]] = ClassicSQLConnLineConstructor
 
     # Instance attributes
@@ -121,9 +124,8 @@ class BaseClassicAdapter(WithMinimalCursorInfo, BaseSAAdapter[CONN_DTO_TV]):
     def _get_db_engine(self, db_name: str, disable_streaming: bool = False) -> Engine:
         conn_line = self.get_conn_line(db_name=db_name)
 
-        execution_options = self.execution_options
+        execution_options = dict(self.execution_options)
         if disable_streaming:
-            execution_options = execution_options.copy()
             execution_options.pop("stream_results", None)
 
         engine = sa.create_engine(

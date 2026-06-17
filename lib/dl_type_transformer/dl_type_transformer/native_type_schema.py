@@ -108,7 +108,7 @@ class OneOfNativeTypeSchemaBase(OneOfSchema):
         unknown = EXCLUDE
 
     type_field = "native_type_class_name"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         schema.TARGET_CLS.native_type_class_name: schema
         for schema in (
             GenericNativeTypeSchema,

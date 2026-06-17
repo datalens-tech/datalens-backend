@@ -1,3 +1,5 @@
+from frozendict import frozendict
+
 from dl_core import exc
 
 
@@ -19,13 +21,13 @@ class CHYTCliqueError(exc.DatabaseQueryError):
 class CHYTCliqueIsNotRunning(CHYTCliqueError):
     err_code = (*CHYTCliqueError.err_code, "NOT_RUNNING")
     default_message = "Clique is not running."
-    formatting_messages = {frozenset({"clique"}): "Clique {clique} is not running."}
+    formatting_messages = frozendict({frozenset({"clique"}): "Clique {clique} is not running."})
 
 
 class CHYTCliqueIsSuspended(CHYTCliqueError):
     err_code = (*CHYTCliqueError.err_code, "SUSPENDED")
     default_message = "Clique is suspended."
-    formatting_messages = {frozenset({"clique"}): "Clique {clique} is suspended."}
+    formatting_messages = frozendict({frozenset({"clique"}): "Clique {clique} is suspended."})
 
 
 class CHYTCliqueNotExists(CHYTCliqueError):
@@ -36,16 +38,20 @@ class CHYTCliqueNotExists(CHYTCliqueError):
 class CHYTCliqueGuidParsingError(CHYTCliqueError):
     err_code = (*CHYTCliqueError.err_code, "INVALID_GUID")
     default_message = "Invalid clique guid."
-    formatting_messages = {
-        frozenset({"clique"}): "Unable to parse clique GUID {clique}. Make sure that GUID conforms to "
-        'a pattern "*<click_name>"'
-    }
+    formatting_messages = frozendict(
+        {
+            frozenset({"clique"}): "Unable to parse clique GUID {clique}. Make sure that GUID conforms to "
+            'a pattern "*<click_name>"'
+        }
+    )
 
 
 class CHYTCliqueAccessDenied(CHYTCliqueError):
     err_code = (*CHYTCliqueError.err_code, "ACCESS_DENIED")
     default_message = "Access to clique was denied."
-    formatting_messages = {frozenset({"clique", "user"}): "Access to clique {clique} for user {user} was denied."}
+    formatting_messages = frozendict(
+        {frozenset({"clique", "user"}): "Access to clique {clique} for user {user} was denied."}
+    )
 
 
 class CHYTTableHasNoSchema(CHYTQueryError):
@@ -66,7 +72,7 @@ class CHYTInvalidSortedJoin(CHYTQueryError):
 class CHYTInvalidSortedJoinNotAKeyColumn(CHYTInvalidSortedJoin):
     err_code = (*CHYTInvalidSortedJoin.err_code, "NOT_A_KEY_COLUMN")
     default_message = "Column used in join expression is not a key column."
-    formatting_messages = {frozenset({"col"}): "Column {col} used in join expression is not a key column."}
+    formatting_messages = frozendict({frozenset({"col"}): "Column {col} used in join expression is not a key column."})
 
 
 class CHYTInvalidSortedJoinNotKeyPrefixColumn(CHYTInvalidSortedJoin):
@@ -84,7 +90,7 @@ class CHYTInvalidSortedJoinMoreThanOneTable(CHYTInvalidSortedJoin):
 class CHYTInvalidSortedJoinTableNotSorted(CHYTInvalidSortedJoin):
     err_code = (*CHYTInvalidSortedJoin.err_code, "TABLE_NOT_SORTED")
     default_message = "Tables should be sorted"
-    formatting_messages = {frozenset({"table"}): "Table {table} should be sorted."}
+    formatting_messages = frozendict({frozenset({"table"}): "Table {table} should be sorted."})
 
 
 class CHYTInvalidSortedJoinCompoundExpressionsNotSupported(CHYTInvalidSortedJoin):
@@ -105,10 +111,12 @@ class CHYTInvalidSortedJoinConcatNotSupported(CHYTInvalidSortedJoin):
 class CHYTInvalidSortedJoinNotSameKeyPosition(CHYTInvalidSortedJoin):
     err_code = (*CHYTInvalidSortedJoin.err_code, "NOT_SAME_KEY_POSITION")
     default_message = "Joined columns do not occupy same positions in key columns of joined tables"
-    formatting_messages = {
-        frozenset({"col1", "col2"}): "Joined columns {col1} and {col2}"
-        " do not occupy same positions in key columns of joined tables",
-    }
+    formatting_messages = frozendict(
+        {
+            frozenset({"col1", "col2"}): "Joined columns {col1} and {col2}"
+            " do not occupy same positions in key columns of joined tables",
+        }
+    )
 
 
 class CHYTMultipleDynamicTablesNotSupported(CHYTQueryError):

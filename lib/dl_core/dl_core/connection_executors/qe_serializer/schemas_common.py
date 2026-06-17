@@ -4,10 +4,14 @@ from base64 import (
     b64decode,
     b64encode,
 )
-from collections.abc import Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 import json
 from typing import Any
 
+from frozendict import frozendict
 from marshmallow import fields
 from marshmallow_oneofschema import OneOfSchema
 from multidict import CIMultiDict
@@ -137,7 +141,7 @@ class DBAdapterQuerySQLASchema(DBAdapterQueryStrSchema):
 
 class GenericDBAQuerySchema(OneOfSchema):
     type_field = "mode"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         t.name: s
         for t, s in {
             QueryExecutorMode.sqla_dump: DBAdapterQuerySQLASchema,
@@ -217,11 +221,15 @@ class SATextTableDefinitionSchema(BaseQEAPISchema):
 
 class TableDefinitionSchema(OneOfSchema):
     type_field = "mode"
-    supported_types = {
-        TableIdent: TableIdentSchema,
-        SATextTableDefinition: SATextTableDefinitionSchema,
+    supported_types: Mapping[type[TableDefinition], type[BaseQEAPISchema]] = frozendict(
+        {
+            TableIdent: TableIdentSchema,
+            SATextTableDefinition: SATextTableDefinitionSchema,
+        }
+    )
+    type_schemas = {  # noqa: RUF012
+        type_obj.def_type.name: schema_cls for type_obj, schema_cls in supported_types.items()
     }
-    type_schemas = {type_obj.def_type.name: schema_cls for type_obj, schema_cls in supported_types.items()}  # type: ignore  # TODO: fix
 
     def get_obj_type(self, obj: TableDefinition) -> str:
         if type(obj) in self.supported_types:

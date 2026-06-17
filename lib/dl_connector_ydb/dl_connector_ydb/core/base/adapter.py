@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+    Mapping,
+)
 import logging
 from typing import (
     TYPE_CHECKING,
@@ -10,6 +13,7 @@ from typing import (
 )
 
 import attr
+from frozendict import frozendict
 import sqlalchemy as sa
 import ydb
 import ydb_sqlalchemy.sqlalchemy as ydb_sa
@@ -45,7 +49,7 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
     use_literal_binds: ClassVar[bool] = False
     use_literal_binds_for_dashsql: ClassVar[bool] = True
 
-    execution_options: ClassVar[dict[str, Any]] = {
+    execution_options: ClassVar[Mapping[str, Any]] = {
         "ydb_retry_settings": ydb.RetrySettings(retry_cancelled=True),
         "ydb_request_settings": (
             ydb.BaseRequestSettings()
@@ -62,43 +66,49 @@ class YQLAdapterBase(BaseClassicAdapter[_DBA_YQL_BASE_DTO_TV]):
         # TODO?: use get_columns for this.
         return True
 
-    _type_code_to_sa = {
-        None: sa.TEXT,  # fallback
-        "Int8": ydb_sa.types.Int8,
-        "Int16": ydb_sa.types.Int16,
-        "Int32": ydb_sa.types.Int32,
-        "Int64": ydb_sa.types.Int64,
-        "Uint8": ydb_sa.types.UInt8,
-        "Uint16": ydb_sa.types.UInt16,
-        "Uint32": ydb_sa.types.UInt32,
-        "Uint64": ydb_sa.types.UInt64,
-        "Float": dl_sqlalchemy_ydb.dialect.YqlFloat,
-        "Double": dl_sqlalchemy_ydb.dialect.YqlDouble,
-        "String": dl_sqlalchemy_ydb.dialect.YqlString,
-        "Utf8": dl_sqlalchemy_ydb.dialect.YqlUtf8,
-        "DyNumber": sa.FLOAT,
-        "Json": sa.TEXT,
-        "Yson": sa.TEXT,
-        "Uuid": dl_sqlalchemy_ydb.dialect.YqlUuid,
-        "UUID": dl_sqlalchemy_ydb.dialect.YqlUuid,
-        "Date": ydb_sa.types.YqlDate,
-        "Date32": ydb_sa.types.YqlDate32,
-        "Timestamp": ydb_dialect.YqlTimestamp,
-        "Timestamp64": ydb_dialect.YqlTimestamp64,
-        "Datetime": ydb_dialect.YqlDateTime,
-        "Datetime64": ydb_dialect.YqlDateTime64,
-        "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
-        "Interval64": dl_sqlalchemy_ydb.dialect.YqlInterval64,
-        "Bool": sa.BOOLEAN,
-    }
-    _type_code_to_sa = {
-        **_type_code_to_sa,
-        # Nullable types:
-        **{name + "?": sa_type for name, sa_type in _type_code_to_sa.items() if name},
-    }
-    _type_code_to_sa_prefixes = {
-        "Decimal(": sa.FLOAT,
-    }
+    _type_code_to_sa = frozendict(
+        {
+            None: sa.TEXT,  # fallback
+            "Int8": ydb_sa.types.Int8,
+            "Int16": ydb_sa.types.Int16,
+            "Int32": ydb_sa.types.Int32,
+            "Int64": ydb_sa.types.Int64,
+            "Uint8": ydb_sa.types.UInt8,
+            "Uint16": ydb_sa.types.UInt16,
+            "Uint32": ydb_sa.types.UInt32,
+            "Uint64": ydb_sa.types.UInt64,
+            "Float": dl_sqlalchemy_ydb.dialect.YqlFloat,
+            "Double": dl_sqlalchemy_ydb.dialect.YqlDouble,
+            "String": dl_sqlalchemy_ydb.dialect.YqlString,
+            "Utf8": dl_sqlalchemy_ydb.dialect.YqlUtf8,
+            "DyNumber": sa.FLOAT,
+            "Json": sa.TEXT,
+            "Yson": sa.TEXT,
+            "Uuid": dl_sqlalchemy_ydb.dialect.YqlUuid,
+            "UUID": dl_sqlalchemy_ydb.dialect.YqlUuid,
+            "Date": ydb_sa.types.YqlDate,
+            "Date32": ydb_sa.types.YqlDate32,
+            "Timestamp": ydb_dialect.YqlTimestamp,
+            "Timestamp64": ydb_dialect.YqlTimestamp64,
+            "Datetime": ydb_dialect.YqlDateTime,
+            "Datetime64": ydb_dialect.YqlDateTime64,
+            "Interval": dl_sqlalchemy_ydb.dialect.YqlInterval,
+            "Interval64": dl_sqlalchemy_ydb.dialect.YqlInterval64,
+            "Bool": sa.BOOLEAN,
+        }
+    )
+    _type_code_to_sa = frozendict(
+        {
+            **_type_code_to_sa,
+            # Nullable types:
+            **{name + "?": sa_type for name, sa_type in _type_code_to_sa.items() if name},
+        }
+    )
+    _type_code_to_sa_prefixes = frozendict(
+        {
+            "Decimal(": sa.FLOAT,
+        }
+    )
 
     def _cursor_column_to_sa(self, cursor_col: tuple[Any, ...], require: bool = True) -> SATypeSpec | None:
         result = super()._cursor_column_to_sa(cursor_col)

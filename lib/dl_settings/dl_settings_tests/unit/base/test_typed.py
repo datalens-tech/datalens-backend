@@ -1,5 +1,6 @@
 import typing
 
+from frozendict import frozendict
 import pydantic
 import pytest
 
@@ -405,7 +406,7 @@ def test_typed_dict_settings_with_env_and_upper_and_lower_key(
     class Root(dl_settings.WithFallbackEnvSource, dl_settings.BaseRootSettings):
         CHILDREN: dl_settings.TypedDictWithTypeKeyAnnotation[Base] = pydantic.Field(default_factory=dict)
 
-        fallback_env_keys = {"CHILDREN__CHILD__VALUE": "CHILDREN_CHILD_VALUE"}
+        fallback_env_keys = frozendict({"CHILDREN__CHILD__VALUE": "CHILDREN_CHILD_VALUE"})
 
     with tmp_configs_utils.TmpConfigs() as tmp_configs:
         # without env

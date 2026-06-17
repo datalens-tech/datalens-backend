@@ -86,7 +86,7 @@ def chunked_wrap(iterable: Iterable[bytes | str]) -> Iterable[bytes]:
 
 
 class ActionHandlingView(flask.views.View):
-    methods = ["POST"]
+    methods = ("POST",)
 
     def get_action(self) -> act.RemoteDBAdapterAction:
         action = ActionSerializer().deserialize_action(flask.request.json, allowed_dba_classes=SUPPORTED_ADAPTER_CLS)  # type: ignore  # 2024-01-30 # TODO: Argument 1 to "deserialize_action" of "ActionSerializer" has incompatible type "Any | None"; expected "dict[Any, Any]"  [arg-type]

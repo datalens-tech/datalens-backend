@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from frozendict import frozendict
+
 from dl_api_lib.error_handling import (
     BIError,
     PublicAPIErrorSchema,
@@ -55,8 +57,8 @@ def test_regular_bi_error_building():
 
     class NonDLExc2(Exception):
         message = "Some message"
-        details = {"some": "detail"}
-        debug_info = {"some": "debug_info"}
+        details = frozendict({"some": "detail"})
+        debug_info = frozendict({"some": "debug_info"})
 
     exc_to_status = {
         ExcA: 400,

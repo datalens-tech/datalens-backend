@@ -140,7 +140,7 @@ class ResultSchemaBase(WithNestedValueSchema, DefaultSchema[BIField]):
 class ResultSchemaSchema(ResultSchemaBase):
     class CalculationSpecSchema(OneOfSchema):
         type_field = "mode"
-        type_schemas = {
+        type_schemas = {  # noqa: RUF012
             CalcMode.direct.name: DirectCalculationSpecSchema,
             CalcMode.formula.name: FormulaCalculationSpecSchema,
             CalcMode.parameter.name: ParameterCalculationSpecSchema,

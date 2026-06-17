@@ -1,5 +1,8 @@
 import abc
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+    Mapping,
+)
 from functools import cached_property
 import operator
 from typing import (
@@ -7,13 +10,15 @@ from typing import (
     ClassVar,
 )
 
+from frozendict import frozendict
+
 from dl_formula.core.dialect import DialectCombo
 import dl_formula.core.nodes as nodes
 from dl_formula.mutation.mutation import FormulaMutation
 
 
 class OptimizeConstOperatorMutation(FormulaMutation, abc.ABC):
-    _opt_ops: ClassVar[dict[str, Callable[[Any, Any], Any]]]
+    _opt_ops: ClassVar[Mapping[str, Callable[[Any, Any], Any]]]
 
     def _get_value(self, node: nodes.FormulaItem) -> Any:
         assert isinstance(node, nodes.Binary)
@@ -29,12 +34,14 @@ class OptimizeConstComparisonMutation(OptimizeConstOperatorMutation):
     and replaces them with the in-Python evaluation result.
     """
 
-    _opt_ops = {
-        "==": operator.eq,
-        "_==": operator.eq,
-        "!=": operator.ne,
-        "_!=": operator.ne,
-    }
+    _opt_ops = frozendict(
+        {
+            "==": operator.eq,
+            "_==": operator.eq,
+            "!=": operator.ne,
+            "_!=": operator.ne,
+        }
+    )
 
     def match_node(
         self,
@@ -68,12 +75,14 @@ class OptimizeConstMathOperatorMutation(OptimizeConstOperatorMutation):
     and replaces them with the in-Python evaluation result.
     """
 
-    _opt_ops = {
-        "+": operator.add,
-        "-": operator.sub,
-        "*": operator.mul,
-        "/": operator.truediv,
-    }
+    _opt_ops = frozendict(
+        {
+            "+": operator.add,
+            "-": operator.sub,
+            "*": operator.mul,
+            "/": operator.truediv,
+        }
+    )
 
     def match_node(
         self,
@@ -154,16 +163,18 @@ class OptimizeBinaryOperatorComparisonMutation(OptimizeZeroOneComparisonMutation
     - WHERE (A != B) == 0 -> WHERE A == B. Also works for "== false".
     """
 
-    _opt_inversions = {
-        ">": "<=",
-        ">=": "<",
-        "<": ">=",
-        "<=": ">",
-        "==": "!=",
-        "!=": "==",
-        "in": "notin",
-        "notin": "in",
-    }
+    _opt_inversions = frozendict(
+        {
+            ">": "<=",
+            ">=": "<",
+            "<": ">=",
+            "<=": ">",
+            "==": "!=",
+            "!=": "==",
+            "in": "notin",
+            "notin": "in",
+        }
+    )
     _supported_operators = tuple(_opt_inversions.keys())
 
     def _make_negative_replacement(self, opt: nodes.Binary) -> nodes.FormulaItem:
@@ -190,9 +201,11 @@ class OptimizeAndOrComparisonMutation(OptimizeZeroOneComparisonMutation):
 
 
 class OptimizeUnaryBoolFunctions(FormulaMutation):
-    _opt_ops: dict[str, dict[DialectCombo | None, Callable[[Any], bool]]] = {
-        "isnull": {None: lambda node: node is None},
-    }
+    _opt_ops: ClassVar[Mapping[str, Mapping[DialectCombo | None, Callable[[Any], bool]]]] = frozendict(
+        {
+            "isnull": frozendict({None: lambda node: node is None}),
+        }
+    )
 
     def __init__(self, dialects: DialectCombo) -> None:
         self.dialects = dialects
@@ -234,8 +247,16 @@ class OptimizeUnaryBoolFunctions(FormulaMutation):
 
     @classmethod
     def register_dialect(cls, func_name: str, dialects: DialectCombo, f: Callable[[Any], bool]) -> None:
-        for dialect in dialects.to_list(with_self=True):
-            cls._opt_ops[func_name][dialect] = f
+        updated_func_ops: dict[DialectCombo | None, Callable[[Any], bool]] = {
+            **cls._opt_ops.get(func_name, {}),
+            **dict.fromkeys(dialects.to_list(with_self=True), f),
+        }
+        cls._opt_ops = frozendict(
+            {
+                **cls._opt_ops,
+                func_name: frozendict(updated_func_ops),
+            }
+        )
 
 
 class OptimizeConstAndOrMutation(FormulaMutation):
@@ -245,16 +266,18 @@ class OptimizeConstAndOrMutation(FormulaMutation):
     - <expr> OR <const>
     """
 
-    _opt_ops = {
-        "and": {
-            True: lambda node, meta: node,
-            False: lambda node, meta: nodes.LiteralBoolean.make(value=False, meta=meta),
-        },
-        "or": {
-            True: lambda node, meta: nodes.LiteralBoolean.make(value=True, meta=meta),
-            False: lambda node, meta: node,
-        },
-    }
+    _opt_ops = frozendict(
+        {
+            "and": {
+                True: lambda node, meta: node,
+                False: lambda node, meta: nodes.LiteralBoolean.make(value=False, meta=meta),
+            },
+            "or": {
+                True: lambda node, meta: nodes.LiteralBoolean.make(value=True, meta=meta),
+                False: lambda node, meta: node,
+            },
+        }
+    )
 
     def match_node(
         self,
@@ -393,10 +416,12 @@ class OptimizeConstFuncMutation(FormulaMutation):
 
             return nodes.FuncCall.make("case", args=new_args, meta=node.meta)
 
-    _func_optimizers: dict[str, ConstFuncOptimizer] = {
-        "if": IfFuncOptimizer(),
-        "case": CaseFuncOptimizer(),
-    }
+    _func_optimizers: Mapping[str, ConstFuncOptimizer] = frozendict(
+        {
+            "if": IfFuncOptimizer(),
+            "case": CaseFuncOptimizer(),
+        }
+    )
 
     def match_node(
         self,

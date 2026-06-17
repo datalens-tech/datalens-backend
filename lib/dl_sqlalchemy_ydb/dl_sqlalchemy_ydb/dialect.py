@@ -3,6 +3,7 @@ import typing
 from typing import Any
 import uuid
 
+from frozendict import frozendict
 import sqlalchemy as sa
 from sqlalchemy.engine import reflection
 from sqlalchemy.exc import CompileError
@@ -480,21 +481,23 @@ class CustomYqlDialect(ydb_sa.YqlDialect):
     type_compiler = CustomYqlTypeCompiler
     statement_compiler = CustomYqlCompiler
 
-    colspecs = {
-        **ydb_sa.YqlDialect.colspecs,
-        sa.types.INTEGER: ydb_sa.types.Int32,
-        sa.types.Integer: ydb_sa.types.Int32,
-        sa.types.BIGINT: ydb_sa.types.Int64,
-        sa.types.BigInteger: ydb_sa.types.Int64,
-        sa.types.SMALLINT: ydb_sa.types.Int16,
-        sa.types.SmallInteger: ydb_sa.types.Int16,
-        sa.types.Date: YqlDate,
-        sa.types.DATE: YqlDate,
-        sa.types.DateTime: ydb_sa.types.YqlDateTime,
-        sa.types.DATETIME: ydb_sa.types.YqlDateTime,
-        sa.types.TIMESTAMP: ydb_sa.types.YqlTimestamp,
-        sa.types.Interval: YqlInterval,
-    }
+    colspecs = frozendict(
+        {
+            **ydb_sa.YqlDialect.colspecs,
+            sa.types.INTEGER: ydb_sa.types.Int32,
+            sa.types.Integer: ydb_sa.types.Int32,
+            sa.types.BIGINT: ydb_sa.types.Int64,
+            sa.types.BigInteger: ydb_sa.types.Int64,
+            sa.types.SMALLINT: ydb_sa.types.Int16,
+            sa.types.SmallInteger: ydb_sa.types.Int16,
+            sa.types.Date: YqlDate,
+            sa.types.DATE: YqlDate,
+            sa.types.DateTime: ydb_sa.types.YqlDateTime,
+            sa.types.DATETIME: ydb_sa.types.YqlDateTime,
+            sa.types.TIMESTAMP: ydb_sa.types.YqlTimestamp,
+            sa.types.Interval: YqlInterval,
+        }
+    )
 
     def __init__(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         super().__init__(

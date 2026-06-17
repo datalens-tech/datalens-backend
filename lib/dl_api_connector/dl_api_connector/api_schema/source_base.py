@@ -254,7 +254,7 @@ class ConditionPartGenericSchema(OneOfSchema):
 
     type_field_remove = False
     type_field = "calc_mode"
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         ConditionPartCalcMode.direct.name: ConditionPartDirectSchema,
         ConditionPartCalcMode.formula.name: ConditionPartFormulaSchema,
         ConditionPartCalcMode.result_field.name: ConditionPartResultFieldSchema,

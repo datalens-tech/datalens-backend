@@ -58,7 +58,9 @@ class MSSQLServerTypeTransformer(TypeTransformer):
             UserDataType.unsupported: make_native_type(sa.sql.sqltypes.NullType),
         }
     )
-    casters = {
-        **TypeTransformer.casters,
-        UserDataType.uuid: LowercaseTypeCaster(),
-    }
+    casters = frozendict(
+        {
+            **TypeTransformer.casters,
+            UserDataType.uuid: LowercaseTypeCaster(),
+        }
+    )

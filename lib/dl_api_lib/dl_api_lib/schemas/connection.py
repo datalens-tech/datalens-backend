@@ -4,6 +4,7 @@ import logging
 from typing import (
     Any,
     ClassVar,
+    cast,
 )
 
 from marshmallow import fields as ma_fields
@@ -91,7 +92,7 @@ class ConnectionTemplateResponseSchema(BaseSchema):
 
 
 class GenericConnectionSchema(OneOfSchema):
-    type_schemas: dict[str, type[ConnectionSchema]] = {}  # type: ignore  # 2024-01-24 # TODO: Incompatible types in assignment (expression has type "dict[str, type[ConnectionSchema]]", base class "OneOfSchema" defined the type as "dict[str, type[Schema]]")  [assignment]
+    type_schemas = {}  # noqa: RUF012
     supported_connections: ClassVar[set[type[ConnectionBase]]] = set()
 
     def get_data_type(self, data):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
@@ -117,7 +118,7 @@ class GenericConnectionSchema(OneOfSchema):
         :return: Schema class that will modify connection on `load`
         """
         type_discriminator = self.get_obj_type(obj)
-        return self.type_schemas[type_discriminator]
+        return cast(type[ConnectionSchema], self.type_schemas[type_discriminator])
 
     # TODO FIX: remove after type discriminator key will be normalized now we use 'db_type' in GET and 'type' in POST
     def _dump(self, obj: ConnectionBase, *, update_fields: bool = True, **kwargs: Any) -> dict[str, Any]:

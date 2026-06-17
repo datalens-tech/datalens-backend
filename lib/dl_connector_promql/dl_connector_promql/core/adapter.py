@@ -18,6 +18,7 @@ from aiohttp.client import ClientResponse
 from aiohttp.helpers import BasicAuth
 from aiohttp.web import HTTPBadRequest
 import attr
+from frozendict import frozendict
 import sqlalchemy as sa
 
 from dl_app_tools.profiling_base import generic_profiler_async
@@ -87,12 +88,14 @@ class PromQLAdapter(BaseClassicAdapter["PromQLConnTargetDTO"]):
     conn_type: ClassVar[ConnectionType] = CONNECTION_TYPE_PROMQL
     conn_line_constructor_type: ClassVar[type[PromQLConnLineConstructor]] = PromQLConnLineConstructor
 
-    _type_code_to_sa = {
-        None: sa.TEXT,  # fallback
-        "float64": sa.FLOAT,
-        "string": sa.TEXT,
-        "unix_timestamp": sa.DATETIME,
-    }
+    _type_code_to_sa = frozendict(
+        {
+            None: sa.TEXT,  # fallback
+            "float64": sa.FLOAT,
+            "string": sa.TEXT,
+            "unix_timestamp": sa.DATETIME,
+        }
+    )
 
     def _test(self) -> None:
         engine = self.get_db_engine(db_name="")

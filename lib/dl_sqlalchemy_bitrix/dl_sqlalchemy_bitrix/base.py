@@ -1,6 +1,8 @@
+from collections.abc import Mapping
 import datetime
 from typing import Any
 
+from frozendict import frozendict
 import sqlalchemy as sa
 from sqlalchemy.engine import default
 
@@ -92,7 +94,7 @@ class BitrixDialect(default.DefaultDialect):
     supports_for_update_of = False
 
     # Clear out:
-    ischema_names: dict[str, Any] = {}
+    ischema_names: Mapping[str, Any] = frozendict({})
 
     @classmethod
     def dbapi(cls) -> None:

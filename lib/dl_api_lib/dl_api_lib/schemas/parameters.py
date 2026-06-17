@@ -70,7 +70,7 @@ class ParameterValueConstraintSchema(OneOfSchema):
         # using lambda to avoid circular import in recursive schema
         constraints = ma_fields.List(ma_fields.Nested(lambda: ParameterValueConstraintSchema()))
 
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         ParameterValueConstraintType.null.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.all.name: NullParameterValueConstraintSchema,
         ParameterValueConstraintType.range.name: RangeParameterValueConstraintSchema,

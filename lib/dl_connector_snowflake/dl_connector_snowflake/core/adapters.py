@@ -4,6 +4,7 @@ from collections.abc import Callable
 from typing import Any
 
 import attr
+from frozendict import frozendict
 from snowflake import sqlalchemy as ssa
 from snowflake.connector import connect as sf_connect
 import sqlalchemy as sa
@@ -59,22 +60,24 @@ class SnowFlakeDefaultAdapter(BaseClassicAdapter, BaseSAAdapter[SnowFlakeConnTar
     _error_transformer = snowflake_error_transformer
 
     # https://docs.snowflake.com/en/user-guide/python-connector-api#type-codes
-    _type_code_to_sa = {
-        0: ssa.DECIMAL,
-        1: ssa.REAL,
-        2: ssa.STRING,
-        3: ssa.DATE,
-        4: ssa.TIMESTAMP,
-        5: ssa.VARIANT,
-        6: ssa.TIMESTAMP_LTZ,
-        7: ssa.TIMESTAMP_TZ,
-        8: ssa.TIMESTAMP_TZ,
-        9: ssa.OBJECT,
-        10: ssa.ARRAY,
-        11: ssa.BINARY,
-        12: ssa.TIME,
-        13: ssa.BOOLEAN,
-    }
+    _type_code_to_sa = frozendict(
+        {
+            0: ssa.DECIMAL,
+            1: ssa.REAL,
+            2: ssa.STRING,
+            3: ssa.DATE,
+            4: ssa.TIMESTAMP,
+            5: ssa.VARIANT,
+            6: ssa.TIMESTAMP_LTZ,
+            7: ssa.TIMESTAMP_TZ,
+            8: ssa.TIMESTAMP_TZ,
+            9: ssa.OBJECT,
+            10: ssa.ARRAY,
+            11: ssa.BINARY,
+            12: ssa.TIME,
+            13: ssa.BOOLEAN,
+        }
+    )
 
     def _cursor_column_to_sa(self, cursor_col, require: bool = True) -> SATypeSpec | None:  # type: ignore  # TODO: fix
         """

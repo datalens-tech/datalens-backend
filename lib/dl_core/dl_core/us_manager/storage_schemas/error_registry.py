@@ -30,7 +30,7 @@ class GenericComponentErrorPackSchema(DefaultStorageSchema):
 class ComponentErrorPackSchema(OneOfSchema):
     type_field = "type"
     type_field_remove = False
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         k.name: v
         for k, v in {
             ComponentType.data_source: GenericComponentErrorPackSchema,

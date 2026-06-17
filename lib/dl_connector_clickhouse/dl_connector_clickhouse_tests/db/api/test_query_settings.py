@@ -8,9 +8,11 @@ data sources are flagged with a component error, so the dataset persists in an "
 The data API then refuses to run queries against such a dataset at execution time.
 """
 
+from collections.abc import Mapping
 from http import HTTPStatus
 from typing import ClassVar
 
+from frozendict import frozendict
 import pytest
 
 from dl_api_client.dsmaker.api.data_api import SyncHttpDataApiV2
@@ -119,7 +121,7 @@ class _BaseSaveRecordsInvalidAndDataApiRejects(_BaseClickHouseQuerySettingsApiTe
     """Shared behavior: save with invalid query_settings → 200 with component error on each source,
     then a data API call → 400 with the matching `bi_status_code`."""
 
-    invalid_query_settings: ClassVar[dict[str, str]]
+    invalid_query_settings: ClassVar[Mapping[str, str]]
     expected_bi_status_code: ClassVar[str]
 
     def test_save_records_component_error(
@@ -161,21 +163,21 @@ class TestClickHouseQuerySettingsInvalidWhenFeatureOff(_BaseSaveRecordsInvalidAn
     raw_sql_level: ClassVar[RawSQLLevel | None] = RawSQLLevel.off
     expected_query_settings_enabled = False
 
-    invalid_query_settings = {"max_threads": "4"}
+    invalid_query_settings = frozendict({"max_threads": "4"})
     expected_bi_status_code = "ERR.DS_API.DS_CONFIG.QUERY_SETTINGS.NOT_SUPPORTED"
 
 
 class TestClickHouseQuerySettingsInvalidWhenForbidden(_BaseSaveRecordsInvalidAndDataApiRejects):
     """A FORBIDDEN name (e.g. `readonly`) is recorded invalid even when the feature is on."""
 
-    invalid_query_settings = {"readonly": "0"}
+    invalid_query_settings = frozendict({"readonly": "0"})
     expected_bi_status_code = "ERR.DS_API.DS_CONFIG.QUERY_SETTINGS.FORBIDDEN"
 
 
 class TestClickHouseQuerySettingsInvalidWhenNotInWhitelist(_BaseSaveRecordsInvalidAndDataApiRejects):
     """With a restricted `ALLOWED` set, names outside it are recorded invalid."""
 
-    invalid_query_settings = {"max_block_size": "1024"}
+    invalid_query_settings = frozendict({"max_block_size": "1024"})
     expected_bi_status_code = "ERR.DS_API.DS_CONFIG.QUERY_SETTINGS.NOT_ALLOWED"
 
     @pytest.fixture(scope="class")

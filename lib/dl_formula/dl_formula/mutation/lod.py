@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import attr
+from frozendict import frozendict
 
 import dl_formula.core.aux_nodes as aux_nodes
 import dl_formula.core.exc as exc
@@ -83,16 +84,18 @@ class DoubleAggregationCollapsingMutation(FormulaMutation):
 
     # TODO: Add warnings when such optimizations are made
 
-    _AGG_TRANSFORM_MAP = {
-        # <parent agg> -> what to replace with
-        "sum": lambda child, meta: child,
-        "any": lambda child, meta: child,
-        "max": lambda child, meta: child,
-        "min": lambda child, meta: child,
-        "count": lambda child, meta: n.func.INT(n.not_(n.func.ISNULL(child, meta=meta), meta=meta), meta=meta),
-        "countd": lambda child, meta: n.func.INT(n.not_(n.func.ISNULL(child, meta=meta), meta=meta), meta=meta),
-        # 'min' is a bit tricky (converts int -> float)
-    }
+    _AGG_TRANSFORM_MAP = frozendict(
+        {
+            # <parent agg> -> what to replace with
+            "sum": lambda child, meta: child,
+            "any": lambda child, meta: child,
+            "max": lambda child, meta: child,
+            "min": lambda child, meta: child,
+            "count": lambda child, meta: n.func.INT(n.not_(n.func.ISNULL(child, meta=meta), meta=meta), meta=meta),
+            "countd": lambda child, meta: n.func.INT(n.not_(n.func.ISNULL(child, meta=meta), meta=meta), meta=meta),
+            # 'min' is a bit tricky (converts int -> float)
+        }
+    )
 
     def match_node(self, node: nodes.FormulaItem, parent_stack: tuple[nodes.FormulaItem, ...]) -> bool:
         """

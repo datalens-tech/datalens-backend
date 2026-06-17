@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 import aiohttp
+from frozendict import frozendict
 import requests
 
 from dl_constants.exc import DLBaseException
@@ -46,7 +47,6 @@ class DataSourceConfigurationError(DLBaseException):
 class TableNameNotConfiguredError(DataSourceConfigurationError):
     err_code = (*DataSourceConfigurationError.err_code, "TABLE_NOT_CONFIGURED")
     default_message = "Table is not ready yet"
-    details = {"info": "No table for data source"}
 
 
 class TableNameInvalidError(DataSourceConfigurationError):
@@ -287,23 +287,27 @@ class USValidationException(USReqException):
 class USConnectionNotFound(USObjectNotFoundException):
     err_code = (*USObjectNotFoundException.err_code, "CONNECTION")
     default_message = "Connection not found"
-    formatting_messages = {
-        frozenset(
-            {"entry_id"}
-        ): "Connection with ID `{entry_id}` not found. Please check that the connection ID is correct."
-    }
+    formatting_messages = frozendict(
+        {
+            frozenset(
+                {"entry_id"}
+            ): "Connection with ID `{entry_id}` not found. Please check that the connection ID is correct."
+        }
+    )
 
 
 class USConnectionAccessDenied(USAccessDeniedException):
     err_code = (*USAccessDeniedException.err_code, "CONNECTION")
     default_message = "Access to the connection was denied"
-    formatting_messages = {frozenset({"entry_id"}): "Access to the connection with ID `{entry_id}` was denied."}
+    formatting_messages = frozendict(
+        {frozenset({"entry_id"}): "Access to the connection with ID `{entry_id}` was denied."}
+    )
 
 
 class USInvalidConnectionID(USValidationException):
     err_code = (*USValidationException.err_code, "CONNECTION")
     default_message = "Invalid connection ID"
-    formatting_messages = {frozenset({"entry_id"}): "Invalid connection ID: `{entry_id}`."}
+    formatting_messages = frozendict({frozenset({"entry_id"}): "Invalid connection ID: `{entry_id}`."})
 
 
 class USWorkbookIsolationInterruptionException(USReqException):
@@ -455,9 +459,9 @@ class ResultRowCountLimitExceeded(DLBaseException):
 class SourceDoesNotExist(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "SOURCE_DOES_NOT_EXIST")
     default_message = "Data source (table) does not exist."
-    formatting_messages = {
-        frozenset({"table_definition"}): "Data source (table) identified by: `{table_definition}` does not exist."
-    }
+    formatting_messages = frozendict(
+        {frozenset({"table_definition"}): "Data source (table) identified by: `{table_definition}` does not exist."}
+    )
 
     def __init__(
         self,

@@ -25,6 +25,7 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 docker = "*"
 Flask = "*"
+frozendict = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
 pytest = "*"

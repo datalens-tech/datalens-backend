@@ -275,7 +275,7 @@ class UStorageClientBase:
         def json(self) -> dict:
             pass
 
-    ERROR_MAP: list[tuple[int, re.Pattern | None, type[exc.USReqException]]] = [
+    ERROR_MAP: tuple[tuple[int, re.Pattern | None, type[exc.USReqException]], ...] = (
         (400, re.compile("Validation error"), exc.USValidationException),
         (400, None, exc.USBadRequestException),
         (403, None, exc.USAccessDeniedException),
@@ -287,7 +287,7 @@ class UStorageClientBase:
         (423, None, exc.USLockUnacquiredException),
         (451, None, exc.USReadOnlyModeEnabledException),
         (530, None, exc.USPermissionCheckError),
-    ]
+    )
 
     class RequestData(NamedTuple):
         method: str

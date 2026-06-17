@@ -6,6 +6,7 @@ import typing
 from typing import Any
 
 import attr
+from frozendict import frozendict
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.models.db_adapter_data import ExecutionStepCursorInfo
@@ -27,9 +28,11 @@ from dl_connector_postgresql.core.postgresql_base.target_dto import PostgresConn
 class PostgresAdapter(BasePostgresAdapter, BaseClassicAdapter[PostgresConnTargetDTO]):
     _error_transformer = sync_pg_db_error_transformer
 
-    execution_options = {
-        "stream_results": True,
-    }
+    execution_options = frozendict(
+        {
+            "stream_results": True,
+        }
+    )
 
     def get_connect_args(self) -> dict:
         return dict(

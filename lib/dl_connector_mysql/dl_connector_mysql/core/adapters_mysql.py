@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 import attr
+from frozendict import frozendict
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connectors.base.error_transformer import DbErrorTransformer
@@ -16,9 +17,11 @@ from dl_connector_mysql.core.target_dto import MySQLConnTargetDTO
 class MySQLAdapter(BaseMySQLAdapter, BaseClassicAdapter[MySQLConnTargetDTO]):
     _target_dto: MySQLConnTargetDTO = attr.ib()
 
-    execution_options = {
-        "stream_results": True,
-    }
+    execution_options = frozendict(
+        {
+            "stream_results": True,
+        }
+    )
     _error_transformer: ClassVar[DbErrorTransformer] = sync_mysql_db_error_transformer
 
     def get_connect_args(self) -> dict:

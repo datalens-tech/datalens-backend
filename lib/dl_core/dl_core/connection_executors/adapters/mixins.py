@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import abc
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+    Mapping,
+)
 import logging
 from typing import (
     Any,
@@ -26,7 +29,7 @@ class SAColumnTypeNormalizer:
 
 
 class SATypeTransformer(SAColumnTypeNormalizer):
-    _type_code_to_sa: ClassVar[dict[Any, SATypeSpec] | None] = None
+    _type_code_to_sa: ClassVar[Mapping[Any, SATypeSpec] | None] = None
     conn_type: ClassVar[ConnectionType]
 
     @staticmethod

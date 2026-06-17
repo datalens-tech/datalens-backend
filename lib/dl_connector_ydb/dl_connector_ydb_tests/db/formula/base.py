@@ -85,11 +85,13 @@ class YQLTestBase(FormulaConnectorTestBase):
     db_dispenser = YqlDbDispenser()
 
     # YDB-specific field types for formula testing
-    YDB_FIELD_TYPES = {
-        "integer_value": DataType.INTEGER,
-        "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
-        "datetime_value": DataType.DATETIME,
-    }
+    YDB_FIELD_TYPES = frozendict(
+        {
+            "integer_value": DataType.INTEGER,
+            "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
+            "datetime_value": DataType.DATETIME,
+        }
+    )
 
     @pytest.fixture(scope="class")
     def db_url(self) -> str:

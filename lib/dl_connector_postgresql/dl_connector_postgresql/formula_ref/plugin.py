@@ -30,7 +30,7 @@ class PostgresSQLFormulaRefPlugin(FormulaRefPlugin):
             (PostgreSQLDialect.NON_COMPENG_POSTGRESQL, "varchar"): Translatable("Alias for `character varying`"),
         },
     )
-    function_extensions = [
+    function_extensions = (
         FUNCTION_UNNEST.extend(
             dialect=PostgreSQLDialect.NON_COMPENG_POSTGRESQL,
             notes=(
@@ -43,4 +43,4 @@ class PostgresSQLFormulaRefPlugin(FormulaRefPlugin):
                 ),
             ),
         ),
-    ]
+    )

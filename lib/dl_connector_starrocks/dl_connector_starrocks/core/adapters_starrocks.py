@@ -1,6 +1,7 @@
 from urllib.parse import quote
 
 import attr
+from frozendict import frozendict
 
 from dl_core.connection_executors.adapters.adapters_base_sa_classic import BaseClassicAdapter
 from dl_core.connection_executors.adapters.common_base import get_dialect_string
@@ -26,9 +27,11 @@ from dl_connector_starrocks.core.target_dto import StarRocksConnTargetDTO
 class StarRocksAdapter(BaseStarRocksAdapter, BaseClassicAdapter[StarRocksConnTargetDTO]):
     _target_dto: StarRocksConnTargetDTO = attr.ib()
 
-    execution_options = {
-        "stream_results": True,
-    }
+    execution_options = frozendict(
+        {
+            "stream_results": True,
+        }
+    )
 
     _error_transformer = sync_starrocks_db_error_transformer
 

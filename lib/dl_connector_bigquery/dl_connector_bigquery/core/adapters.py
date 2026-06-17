@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 
+from frozendict import frozendict
 from google.api_core.exceptions import GoogleAPIError
 from google.auth.credentials import Credentials as BQCredentials
 from google.cloud.bigquery import Client as BQClient
@@ -50,20 +51,22 @@ class BigQueryDefaultAdapter(BaseClassicAdapter[BigQueryConnTargetDTO]):
     conn_line_constructor_type = BigQueryConnLineConstructor
     _error_transformer = big_query_db_error_transformer
 
-    _type_code_to_sa = {
-        "STRING": bq_types.STRING,
-        "DATE": bq_types.DATE,
-        "DATETIME": bq_types.DATETIME,
-        "BOOL": bq_types.BOOL,
-        "BOOLEAN": bq_types.BOOLEAN,
-        "INTEGER": bq_types.INTEGER,
-        "INT64": bq_types.INT64,
-        "FLOAT": bq_types.FLOAT,
-        "FLOAT64": bq_types.FLOAT64,
-        "NUMERIC": bq_types.NUMERIC,
-        "BIGNUMERIC": bq_types.BIGNUMERIC,
-        # TODO: ARRAY
-    }
+    _type_code_to_sa = frozendict(
+        {
+            "STRING": bq_types.STRING,
+            "DATE": bq_types.DATE,
+            "DATETIME": bq_types.DATETIME,
+            "BOOL": bq_types.BOOL,
+            "BOOLEAN": bq_types.BOOLEAN,
+            "INTEGER": bq_types.INTEGER,
+            "INT64": bq_types.INT64,
+            "FLOAT": bq_types.FLOAT,
+            "FLOAT64": bq_types.FLOAT64,
+            "NUMERIC": bq_types.NUMERIC,
+            "BIGNUMERIC": bq_types.BIGNUMERIC,
+            # TODO: ARRAY
+        }
+    )
 
     def get_default_db_name(self) -> str | None:
         return self._target_dto.project_id

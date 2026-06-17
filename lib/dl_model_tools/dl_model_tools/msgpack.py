@@ -1,5 +1,6 @@
 from typing import Any
 
+from frozendict import frozendict
 import msgpack
 
 from dl_model_tools.serialization import (
@@ -12,8 +13,8 @@ from dl_type_transformer.native_type import GenericNativeType
 
 
 class DLMessagePackSerializer:
-    JSONABLERS_MAP = {cls.typeobj(): cls for cls in COMMON_SERIALIZERS}
-    DEJSONABLERS_MAP = {cls.typename: cls for cls in COMMON_SERIALIZERS}
+    JSONABLERS_MAP = frozendict({cls.typeobj(): cls for cls in COMMON_SERIALIZERS})
+    DEJSONABLERS_MAP = frozendict({cls.typename: cls for cls in COMMON_SERIALIZERS})
 
     def _get_preprocessor(self, typeobj: type) -> type[TypeSerializer] | None:
         if issubclass(typeobj, GenericNativeType):

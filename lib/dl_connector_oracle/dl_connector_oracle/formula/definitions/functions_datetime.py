@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from frozendict import frozendict
 import sqlalchemy as sa
 
 from dl_formula.core.datatype import DataType
@@ -44,15 +45,17 @@ def _oracle_dateadd_impl(date_expr: ColumnElement, unit: str, num: int) -> Colum
 
 
 class FuncDatetrunc2Oracle(base.FuncDatetrunc2):
-    _oracle_fmt_map = {
-        "minute": "MI",
-        "hour": "HH",
-        "day": "DDD",
-        "week": "IW",
-        "month": "MM",
-        "quarter": "Q",
-        "year": "YYYY",
-    }
+    _oracle_fmt_map = frozendict(
+        {
+            "minute": "MI",
+            "hour": "HH",
+            "day": "DDD",
+            "week": "IW",
+            "month": "MM",
+            "quarter": "Q",
+            "year": "YYYY",
+        }
+    )
 
     variants = (
         V(

@@ -78,7 +78,7 @@ class TestTableDataApiSourceTemplate(
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     YDBDataApiTestBase,
 ):
-    field_names = ["id"]
+    field_names = ("id",)
 
 
 class BaseSubselectTestSourceTemplate(
@@ -114,4 +114,4 @@ class TestSubselectDataApiSourceTemplate(
     dl_api_lib_testing.BaseTestDataApiSourceTemplate,
     YDBDataApiTestBase,
 ):
-    field_names = ["id"]
+    field_names = ("id",)

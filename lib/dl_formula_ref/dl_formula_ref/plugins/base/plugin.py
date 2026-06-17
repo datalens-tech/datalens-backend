@@ -1,3 +1,7 @@
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 from typing import ClassVar
 
 from dl_formula.core.dialect import DialectCombo
@@ -12,7 +16,7 @@ from dl_i18n.localizer_base import TranslationConfig
 
 
 class FormulaRefPlugin:
-    configs: ClassVar[dict[ConfigVersion, RefDocGeneratorConfig]] = {}
+    configs: ClassVar[Mapping[ConfigVersion, RefDocGeneratorConfig]] = {}
     translation_configs: ClassVar[frozenset[TranslationConfig]] = frozenset()
 
     # Dialects to include whenever ANY is used instead of implicit dialect list
@@ -28,4 +32,4 @@ class FormulaRefPlugin:
     db_cast_extension: ClassVar[DbCastExtension] = DbCastExtension()
 
     # Dialect-specific extensions for functions
-    function_extensions: list[FunctionExtension] = []
+    function_extensions: ClassVar[Sequence[FunctionExtension]] = ()

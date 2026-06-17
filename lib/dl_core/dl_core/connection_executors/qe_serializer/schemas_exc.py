@@ -37,7 +37,7 @@ class OtherExcSchema(Schema):
 
 
 class GenericExcSchema(OneOfSchema):
-    type_schemas = {
+    type_schemas = {  # noqa: RUF012
         "dl_exc": DLExcSchema,
         "other_exc": OtherExcSchema,
     }

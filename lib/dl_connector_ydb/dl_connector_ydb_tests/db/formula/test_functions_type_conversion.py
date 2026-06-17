@@ -2,6 +2,7 @@ from collections.abc import Generator
 import contextlib
 import datetime
 
+from frozendict import frozendict
 import pytest
 import sqlalchemy as sa
 
@@ -449,15 +450,17 @@ class DbCastYQLTestSuiteBase(YQLTestBase):
             yield table
 
     # YDB-specific field types for formula testing
-    YDB_TYPE_FIELD_TYPES = {
-        "bool_value": DataType.BOOLEAN,
-        "int64_value": DataType.INTEGER,
-        "double_value": DataType.FLOAT,
-        "string_value": DataType.STRING,
-        "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
-        "date_value": DataType.DATE,
-        "datetime_value": DataType.DATETIME,
-    }
+    YDB_TYPE_FIELD_TYPES = frozendict(
+        {
+            "bool_value": DataType.BOOLEAN,
+            "int64_value": DataType.INTEGER,
+            "double_value": DataType.FLOAT,
+            "string_value": DataType.STRING,
+            "timestamp_value": DataType.DATETIME,  # YDB TIMESTAMP maps to DATETIME in formula system
+            "date_value": DataType.DATE,
+            "datetime_value": DataType.DATETIME,
+        }
+    )
 
     @pytest.fixture
     def ydb_data_test_table_field_types(self) -> dict[str, DataType]:
