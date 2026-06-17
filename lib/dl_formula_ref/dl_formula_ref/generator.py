@@ -86,10 +86,9 @@ except exc.ParserNotFoundError:
 
 
 def get_jinja_env(gen_config: RefDocGeneratorConfig) -> jinja2.Environment:
-    import dl_formula_ref as top
-
-    return jinja2.Environment(
-        loader=jinja2.PackageLoader(top.__name__, gen_config.template_dir_rel),
+    # S701: renders internal formula-reference doc templates (markdown/text from trusted repo data), not user-facing HTML — autoescape not needed.
+    return jinja2.Environment(  # noqa: S701
+        loader=jinja2.PackageLoader("dl_formula_ref", gen_config.template_dir_rel),
     )
 
 

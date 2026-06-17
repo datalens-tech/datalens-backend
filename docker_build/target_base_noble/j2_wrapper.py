@@ -14,10 +14,7 @@ pypi.yandex-team.ru. This wrapper avoids both problems.
 import os
 import sys
 
-from jinja2 import (
-    Environment,
-    FileSystemLoader,
-)
+import jinja2
 
 
 def main() -> None:
@@ -25,8 +22,9 @@ def main() -> None:
         sys.stderr.write("usage: j2 TEMPLATE_FILE\n")
         sys.exit(2)
     path = sys.argv[1]
-    env = Environment(
-        loader=FileSystemLoader(os.path.dirname(os.path.abspath(path))),
+    # S701: build-time config templating from trusted env vars; output is shell/config text, not HTML — autoescape would corrupt it.
+    env = jinja2.Environment(  # noqa: S701
+        loader=jinja2.FileSystemLoader(os.path.dirname(os.path.abspath(path))),
         keep_trailing_newline=True,
     )
     sys.stdout.write(env.get_template(os.path.basename(path)).render(os.environ))
