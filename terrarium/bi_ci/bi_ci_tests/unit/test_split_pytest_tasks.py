@@ -3,6 +3,7 @@ import dataclasses
 import os
 import shutil
 import sys
+import tempfile
 import typing
 import unittest.mock as mock
 import uuid
@@ -26,7 +27,7 @@ def fixture_folder_context() -> FolderContext:
     @contextlib.contextmanager
     def context(path: str | None = None) -> typing.ContextManager[str]:
         if path is None:
-            path = f"/tmp/{uuid.uuid4()}"
+            path = os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
 
         os.makedirs(path)
 
@@ -43,7 +44,7 @@ def fixture_file_context() -> FileContext:
     @contextlib.contextmanager
     def context(path: str | None = None, data: str | None = None) -> typing.ContextManager[str]:
         if path is None:
-            path = f"/tmp/{uuid.uuid4()}"
+            path = os.path.join(tempfile.gettempdir(), str(uuid.uuid4()))
 
         os.makedirs(os.path.dirname(path), exist_ok=True)
 

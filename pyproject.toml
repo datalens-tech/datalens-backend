@@ -145,6 +145,7 @@ select = [
   "PT", # flake8-pytest-style
   "RET", # flake8-return
   "RUF", # Ruff-specific rules
+  "S108", # flake8-bandit (sub-rule): hardcoded-temp-file (temp paths under /tmp etc.)
   "S110", # flake8-bandit (sub-rule): try-except-pass (silently swallowed exceptions)
   "S113", # flake8-bandit (sub-rule): request-without-timeout (HTTP call can hang forever)
   "S301", # flake8-bandit (sub-rule): suspicious-pickle-usage (deserializing untrusted data)

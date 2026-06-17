@@ -36,6 +36,8 @@ async def uwsgi_unistat(path):  # type: ignore  # TODO: fix
 @requires(RequiredResourceCommon.SKIP_AUTH)
 class UnistatView(BaseView):
     async def get(self) -> web.Response:
-        result = await uwsgi_unistat("/tmp/uwsgi_stats_rqe_int_sync.sock")
+        result = await uwsgi_unistat(
+            "/tmp/uwsgi_stats_rqe_int_sync.sock"  # noqa: S108  # uWSGI stats socket pinned to the deploy config
+        )
         result = list(result.items())
         return web.json_response(result)
