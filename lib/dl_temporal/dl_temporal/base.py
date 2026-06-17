@@ -6,6 +6,7 @@ from typing import (
     Any,
     ClassVar,
     Protocol,
+    Self,
     TypeVar,
 )
 
@@ -107,6 +108,17 @@ class BaseActivityParams(BaseModel):
     # timeout before activity is started
     schedule_to_start_timeout: dl_pydantic.JsonableTimedelta = dl_pydantic.JsonableTimedelta(minutes=10)
     parent_context: ParentContext = pydantic.Field(default_factory=ParentContext)
+
+    @pydantic.model_validator(mode="after")
+    def _validate_retryable_timeouts(self) -> Self:
+        if self.schedule_to_close_timeout <= self.start_to_close_timeout:
+            raise ValueError(
+                "schedule_to_close_timeout must be greater than start_to_close_timeout "
+                f"(got schedule_to_close_timeout={self.schedule_to_close_timeout}, "
+                f"start_to_close_timeout={self.start_to_close_timeout}); "
+                "an equal or smaller overall deadline makes per-try timeouts non-retryable",
+            )
+        return self
 
 
 class BaseActivityResult(BaseResultModel):

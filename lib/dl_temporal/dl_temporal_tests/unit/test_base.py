@@ -1,5 +1,9 @@
+import datetime
 import json
 from typing import Annotated
+
+import pydantic
+import pytest
 
 import dl_temporal
 
@@ -41,3 +45,11 @@ def test_model_dump_for_logging_exclusion_does_not_recurse() -> None:
     model = _Outer(name="outer", inner=_Inner(secret="hide-me", visible="show-me"))
     result = json.loads(model.model_dump_for_logging())
     assert result == {"name": "outer", "inner": {"secret": "hide-me", "visible": "show-me"}}
+
+
+def test_activity_params_reject_close_smaller_than_start_timeout() -> None:
+    with pytest.raises(pydantic.ValidationError):
+        dl_temporal.BaseActivityParams(
+            start_to_close_timeout=datetime.timedelta(minutes=5),
+            schedule_to_close_timeout=datetime.timedelta(minutes=1),
+        )
