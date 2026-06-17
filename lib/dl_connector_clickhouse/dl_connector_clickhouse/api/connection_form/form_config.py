@@ -4,7 +4,6 @@ import typing
 import attr
 
 from dl_api_commons.base_models import TenantDef
-from dl_api_connector.form_config.models import rows as C
 from dl_api_connector.form_config.models.api_schema import (
     FormActionApiSchema,
     FormApiSchema,
@@ -20,6 +19,15 @@ from dl_api_connector.form_config.models.common import (
     BooleanField,
     CommonFieldName,
     FormFieldName,
+)
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CustomizableRow,
+    LabelRowItem,
+    RadioButtonRowItem,
+    SelectableOption,
+    SelectOption,
+    SelectRowItem,
 )
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
@@ -43,44 +51,44 @@ class ClickHouseFieldName(FormFieldName):
 class ClickHouseRowConstructor:
     _localizer: Localizer = attr.ib()
 
-    def readonly_mode_row(self) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def readonly_mode_row(self) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     align="start",
                     text=self._localizer.translate(Translatable("field_readonly-mode")),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                 ),
-                C.SelectRowItem(
+                SelectRowItem(
                     name=ClickHouseFieldName.readonly,
                     width="s",
                     available_values=[
-                        C.SelectOption(content="0", value="0"),
-                        C.SelectOption(content="1", value="1"),
-                        C.SelectOption(content="2", value="2"),
+                        SelectOption(content="0", value="0"),
+                        SelectOption(content="1", value="1"),
+                        SelectOption(content="2", value="2"),
                     ],
                     default_value="2",
-                    control_props=C.SelectRowItem.Props(show_search=False),
+                    control_props=SelectRowItem.Props(show_search=False),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                 ),
             ]
         )
 
-    def experimental_features_row(self) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def experimental_features_row(self) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("label_experimental-features")),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=ClickHouseFieldName.experimental_features,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_experimental-features-off")),
                             value=BooleanField.off.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_experimental-features-on")),
                             value=BooleanField.on.value,
                         ),
@@ -91,24 +99,24 @@ class ClickHouseRowConstructor:
             ]
         )
 
-    def ssl_ca_verify_row(self) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def ssl_ca_verify_row(self) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("label_clickhouse-ssl-ca-verify")),
                     display_conditions={
                         CommonFieldName.advanced_settings: "opened",
                         CommonFieldName.secure: BooleanField.on.value,
                     },
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=ClickHouseFieldName.ssl_ca_verify,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_ssl-ca-verify-off")),
                             value=BooleanField.off.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_ssl-ca-verify-on")),
                             value=BooleanField.on.value,
                         ),
@@ -257,7 +265,7 @@ class ClickHouseConnectionFormFactory(ConnectionFormFactory):
         is_invalidation_cache_enabled = form_params.feature_flags.is_invalidation_cache_enabled
 
         rows = [
-            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+            CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             *(rc.cache_rows() if is_invalidation_cache_enabled else []),
             rc.collapse_advanced_settings_row(),

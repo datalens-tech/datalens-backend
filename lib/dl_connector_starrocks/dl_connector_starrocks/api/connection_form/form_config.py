@@ -17,7 +17,13 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CustomizableRow,
+    LabelRowItem,
+    RadioButtonRowItem,
+    SelectableOption,
+)
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_constants import RawSQLLevel
@@ -40,22 +46,22 @@ class StarRocksRowConstructor(RowConstructor):
         super().__init__(localizer=localizer)
         self._localizer = localizer
 
-    def listing_sources_row(self) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def listing_sources_row(self) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_listing-sources")),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                     help_text=self._localizer.translate(Translatable("label_listing-sources-tooltip")),
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=StarRocksFormFieldName.listing_sources,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_listing-sources-off")),
                             value=ListingSources.off.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_listing-sources-on")),
                             value=ListingSources.on.value,
                         ),
@@ -116,7 +122,7 @@ class StarRocksConnectionFormFactory(ConnectionFormFactory):
         form_params = self._get_form_params()
 
         return [
-            C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
+            CacheTTLRow(name=CommonFieldName.cache_ttl_sec),
             rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
             rc.collapse_advanced_settings_row(),
             *rc.ssl_rows(

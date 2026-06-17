@@ -2,7 +2,6 @@ import typing
 
 import attr
 
-from dl_api_connector.form_config.models import rows as C
 from dl_api_connector.form_config.models.base import (
     ConnectionFormMode,
     FormRow,
@@ -11,6 +10,21 @@ from dl_api_connector.form_config.models.common import (
     BooleanField,
     CommonFieldName,
     MarkdownStr,
+)
+from dl_api_connector.form_config.models.rows import (
+    CacheInvalidationRow,
+    CacheTTLRow,
+    CheckboxRowItem,
+    CollapseRow,
+    CustomizableRow,
+    FileInputRowItem,
+    InputRowItem,
+    LabelRowItem,
+    RadioButtonRowItem,
+    RadioGroupRowItem,
+    RadioGroupRowItemOption,
+    RawSqlLevelRow,
+    SelectableOption,
 )
 from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.i18n.localizer import Translatable
@@ -32,15 +46,15 @@ class RowConstructor:
         display_conditions: TDisplayConditions | None = None,
         label_help_text: str | None = None,
         disabled: bool | None = None,
-    ) -> C.CustomizableRow:
+    ) -> CustomizableRow:
         text = self._localizer.translate(Translatable("field_host"))
-        return C.CustomizableRow(
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=text, display_conditions=display_conditions, help_text=label_help_text),
-                C.InputRowItem(
+                LabelRowItem(text=text, display_conditions=display_conditions, help_text=label_help_text),
+                InputRowItem(
                     name=CommonFieldName.host,
                     width="l",
-                    control_props=C.InputRowItem.Props(disabled=disabled),
+                    control_props=InputRowItem.Props(disabled=disabled),
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
@@ -53,20 +67,20 @@ class RowConstructor:
         default_value: str | None = None,
         display_conditions: TDisplayConditions | None = None,
         disabled: bool | None = None,
-    ) -> C.CustomizableRow:
+    ) -> CustomizableRow:
         if label_text is None:
             label_text = Translatable("field_port")
         text = self._localizer.translate(label_text)
-        return C.CustomizableRow(
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=text,
                     display_conditions=display_conditions,
                 ),
-                C.InputRowItem(
+                InputRowItem(
                     name=CommonFieldName.port,
                     width="s",
-                    control_props=C.InputRowItem.Props(type="number", disabled=disabled),
+                    control_props=InputRowItem.Props(type="number", disabled=disabled),
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
@@ -79,15 +93,15 @@ class RowConstructor:
         display_conditions: TDisplayConditions | None = None,
         label_help_text: str | None = None,
         disabled: bool | None = None,
-    ) -> C.CustomizableRow:
+    ) -> CustomizableRow:
         text = self._localizer.translate(Translatable("field_path"))
-        return C.CustomizableRow(
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=text, display_conditions=display_conditions, help_text=label_help_text),
-                C.InputRowItem(
+                LabelRowItem(text=text, display_conditions=display_conditions, help_text=label_help_text),
+                InputRowItem(
                     name=CommonFieldName.path,
                     width="l",
-                    control_props=C.InputRowItem.Props(disabled=disabled),
+                    control_props=InputRowItem.Props(disabled=disabled),
                     default_value=default_value,
                     display_conditions=display_conditions,
                 ),
@@ -99,13 +113,13 @@ class RowConstructor:
         label_text: BaseTranslatable = Translatable("field_username"),  # noqa: B008
         default_value: str | None = None,
         display_conditions: TDisplayConditions | None = None,
-        control_props: C.InputRowItem.Props | None = None,
+        control_props: InputRowItem.Props | None = None,
         inner: bool | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=self._localizer.translate(label_text), display_conditions=display_conditions),
-                C.InputRowItem(
+                LabelRowItem(text=self._localizer.translate(label_text), display_conditions=display_conditions),
+                InputRowItem(
                     name=CommonFieldName.username,
                     default_value=default_value,
                     display_conditions=display_conditions,
@@ -120,19 +134,19 @@ class RowConstructor:
         self,
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_password")),
                     display_conditions=display_conditions,
                 ),
-                C.InputRowItem(
+                InputRowItem(
                     name=CommonFieldName.password,
                     width="m",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
-                    control_props=C.InputRowItem.Props(type="password"),
+                    control_props=InputRowItem.Props(type="password"),
                     display_conditions=display_conditions,
                 ),
             ]
@@ -143,11 +157,11 @@ class RowConstructor:
         label_text: BaseTranslatable = Translatable("field_db-name"),  # noqa: B008
         default_value: str | None = None,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=self._localizer.translate(label_text), display_conditions=display_conditions),
-                C.InputRowItem(
+                LabelRowItem(text=self._localizer.translate(label_text), display_conditions=display_conditions),
+                InputRowItem(
                     name=CommonFieldName.db_name,
                     width="l",
                     default_value=default_value,
@@ -192,11 +206,11 @@ class RowConstructor:
     def _get_raw_sql_level_radio_group_option_text_end_icon(
         self,
         raw_sql_level: RawSQLLevel,
-    ) -> C.RadioGroupRowItemOption.ValueContent.TextEndIcon | None:
+    ) -> RadioGroupRowItemOption.ValueContent.TextEndIcon | None:
         if raw_sql_level in (RawSQLLevel.dashsql, RawSQLLevel.readwrite):
-            return C.RadioGroupRowItemOption.ValueContent.TextEndIcon(
-                name=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.Name.circle_exclamation,
-                view=C.RadioGroupRowItemOption.ValueContent.TextEndIcon.View.error,
+            return RadioGroupRowItemOption.ValueContent.TextEndIcon(
+                name=RadioGroupRowItemOption.ValueContent.TextEndIcon.Name.circle_exclamation,
+                view=RadioGroupRowItemOption.ValueContent.TextEndIcon.View.error,
             )
 
         return None
@@ -206,11 +220,11 @@ class RowConstructor:
         raw_sql_level: RawSQLLevel,
         all_raw_sql_levels: list[RawSQLLevel],
         with_text_end_icon: bool = True,
-    ) -> C.RadioGroupRowItemOption:
+    ) -> RadioGroupRowItemOption:
         if raw_sql_level == RawSQLLevel.off:
-            return C.RadioGroupRowItemOption(
+            return RadioGroupRowItemOption(
                 value=raw_sql_level.value,
-                content=C.RadioGroupRowItemOption.ValueContent(
+                content=RadioGroupRowItemOption.ValueContent(
                     text=self._localizer.translate(Translatable("value_raw-sql-level-off")),
                 ),
             )
@@ -224,9 +238,9 @@ class RowConstructor:
         else:
             text_end_icon = None
 
-        return C.RadioGroupRowItemOption(
+        return RadioGroupRowItemOption(
             value=raw_sql_level.value,
-            content=C.RadioGroupRowItemOption.ValueContent(
+            content=RadioGroupRowItemOption.ValueContent(
                 text=content_text,
                 hint_text=content_hint_text,
                 text_end_icon=text_end_icon,
@@ -237,7 +251,7 @@ class RowConstructor:
         self,
         raw_sql_levels: list[RawSQLLevel],
         with_text_end_icon: bool = True,
-    ) -> list[C.RadioGroupRowItemOption]:
+    ) -> list[RadioGroupRowItemOption]:
         return [
             self._raw_sql_level_to_radio_group_option(
                 raw_sql_level=raw_sql_level,
@@ -252,7 +266,7 @@ class RowConstructor:
         default_value: RawSQLLevel = RawSQLLevel.off,
         switch_off_value: RawSQLLevel = RawSQLLevel.off,
         raw_sql_levels: list[RawSQLLevel] | None = None,
-    ) -> C.RawSqlLevelRow:
+    ) -> RawSqlLevelRow:
         if raw_sql_levels is None:
             raw_sql_levels = [RawSQLLevel.subselect, RawSQLLevel.template, RawSQLLevel.dashsql]
 
@@ -267,16 +281,16 @@ class RowConstructor:
         label_allow_subselect_hint_2 = self._localizer.translate(Translatable("label_allow-subselect-hint-2"))
         label_allow_subselect_hint_3 = self._localizer.translate(Translatable("label_allow-subselect-hint-3"))
 
-        return C.RawSqlLevelRow(
+        return RawSqlLevelRow(
             name=CommonFieldName.raw_sql_level,
             default_value=default_value.value,
             switch_off_value=switch_off_value.value,
-            label=C.LabelRowItem(
+            label=LabelRowItem(
                 align="start",
                 text=self._localizer.translate(Translatable("field_raw-sql-level")),
                 help_text=f"- {label_allow_subselect_hint_2}\n- {label_allow_subselect_hint_3}",
             ),
-            radio_group=C.RadioGroupRowItem(
+            radio_group=RadioGroupRowItem(
                 name=CommonFieldName.raw_sql_level,
                 options=self._get_raw_sql_level_radio_group_options(raw_sql_levels),
             ),
@@ -286,37 +300,37 @@ class RowConstructor:
         self,
         mode: ConnectionFormMode,
         label_help_text: MarkdownStr | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_access-token")),
                     help_text=label_help_text,
                 ),
-                C.InputRowItem(
+                InputRowItem(
                     name=CommonFieldName.access_token,
                     width="l",
-                    control_props=C.InputRowItem.Props(multiline=True),
+                    control_props=InputRowItem.Props(multiline=True),
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
                 ),
             ]
         )
 
-    def auto_create_dash_row(self, default_value: bool | None = True) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def auto_create_dash_row(self, default_value: bool | None = True) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.CheckboxRowItem(
+                CheckboxRowItem(
                     name=CommonFieldName.is_auto_create_dashboard,
                     text=self._localizer.translate(Translatable("field_auto-create-dashboard")),
                     inner=True,
                     default_value=default_value,
-                    control_props=C.CheckboxRowItem.Props(qa="conn-auto-create-dash-checkbox"),
+                    control_props=CheckboxRowItem.Props(qa="conn-auto-create-dash-checkbox"),
                 ),
             ]
         )
 
-    def collapse_advanced_settings_row(self) -> C.CollapseRow:
-        return C.CollapseRow(
+    def collapse_advanced_settings_row(self) -> CollapseRow:
+        return CollapseRow(
             inner=True,
             name=CommonFieldName.advanced_settings,
             text=self._localizer.translate(Translatable("label_advanced-settings")),
@@ -328,25 +342,25 @@ class RowConstructor:
         enabled_help_text: str,
         enabled_default_value: bool,
         display_conditions: TDisplayConditions | None = None,
-    ) -> typing.Sequence[C.CustomizableRow]:
+    ) -> typing.Sequence[CustomizableRow]:
         if display_conditions is None:
             display_conditions = {}
         return [
-            C.CustomizableRow(
+            CustomizableRow(
                 items=[
-                    C.LabelRowItem(
+                    LabelRowItem(
                         text=self._localizer.translate(Translatable("label_ssl-enabled")),
                         display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                         help_text=enabled_help_text,
                     ),
-                    C.RadioButtonRowItem(
+                    RadioButtonRowItem(
                         name=enabled_name,
                         options=[
-                            C.SelectableOption(
+                            SelectableOption(
                                 text=self._localizer.translate(Translatable("value_ssl-enabled-off")),
                                 value=BooleanField.off.value,
                             ),
-                            C.SelectableOption(
+                            SelectableOption(
                                 text=self._localizer.translate(Translatable("value_ssl-enabled-on")),
                                 value=BooleanField.on.value,
                             ),
@@ -356,13 +370,13 @@ class RowConstructor:
                     ),
                 ]
             ),
-            C.CustomizableRow(
+            CustomizableRow(
                 items=[
-                    C.LabelRowItem(
+                    LabelRowItem(
                         text=self._localizer.translate(Translatable("label_ssl-ca")),
                         display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                     ),
-                    C.FileInputRowItem(
+                    FileInputRowItem(
                         name=CommonFieldName.ssl_ca,
                         display_conditions={CommonFieldName.advanced_settings: "opened"} | display_conditions,
                     ),
@@ -383,22 +397,22 @@ class RowConstructor:
         conn_id: str | None = None,
         exports_history_url_path: str | None = None,
         mode: ConnectionFormMode = ConnectionFormMode.create,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("label_data-export-forbidden")),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                     help_text=self._localizer.translate(Translatable("help_text_data-export-forbidden")),
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=CommonFieldName.data_export_forbidden,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_data-export-forbidden-off")),
                             value=BooleanField.off.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_data-export-forbidden-on")),
                             value=BooleanField.on.value,
                         ),
@@ -416,16 +430,16 @@ class RowConstructor:
 
     def cache_rows(self) -> list[FormRow]:
         return [
-            C.CollapseRow(
+            CollapseRow(
                 inner=True,
                 name=CommonFieldName.cache_settings,
                 text=self._localizer.translate(Translatable("label_cache-settings")),
             ),
-            C.CacheTTLRow(
+            CacheTTLRow(
                 name=CommonFieldName.cache_ttl_sec,
                 display_conditions={CommonFieldName.cache_settings: "opened"},
             ),
-            C.CacheInvalidationRow(
+            CacheInvalidationRow(
                 name=CommonFieldName.cache_invalidation_throttling_interval_sec,
                 display_conditions={CommonFieldName.cache_settings: "opened"},
             ),

@@ -17,7 +17,13 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CustomizableRow,
+    FileInputRowItem,
+    InputRowItem,
+    LabelRowItem,
+)
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_constants import RawSQLLevel
 from dl_core.connectors.settings.base import ConnectorSettings
@@ -83,20 +89,20 @@ class BigQueryConnectionFormFactory(ConnectionFormFactory):
             title=BigQueryConnectionInfoProvider.get_title(self._localizer),
             rows=self._filter_nulls(
                 [
-                    C.CustomizableRow(
+                    CustomizableRow(
                         items=[
-                            C.LabelRowItem(text=self._localizer.translate(Translatable("label_project-id"))),
-                            C.InputRowItem(name=BigQueryFieldName.project_id, width="m"),
+                            LabelRowItem(text=self._localizer.translate(Translatable("label_project-id"))),
+                            InputRowItem(name=BigQueryFieldName.project_id, width="m"),
                         ]
                     ),
-                    C.CustomizableRow(
+                    CustomizableRow(
                         items=[
-                            C.LabelRowItem(text=self._localizer.translate(Translatable("label_service-acc-key-file"))),
-                            C.FileInputRowItem(name=BigQueryFieldName.credentials),
+                            LabelRowItem(text=self._localizer.translate(Translatable("label_service-acc-key-file"))),
+                            FileInputRowItem(name=BigQueryFieldName.credentials),
                         ]
                     ),
                     rc.raw_sql_level_row_v2(raw_sql_levels=[RawSQLLevel.subselect]),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                 ]
             ),

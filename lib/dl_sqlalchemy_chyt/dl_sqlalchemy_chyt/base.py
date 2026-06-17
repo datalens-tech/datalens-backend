@@ -5,14 +5,14 @@ from typing import Any
 import sqlalchemy as sa
 
 import dl_sqlalchemy_chyt.types as chyt_types
-from dl_sqlalchemy_clickhouse.base import BIClickHouseDialect as UPSTREAM
+from dl_sqlalchemy_clickhouse.base import BIClickHouseDialect
 
-quote_identifier = UPSTREAM().identifier_preparer.quote
+quote_identifier = BIClickHouseDialect().identifier_preparer.quote
 
 
 # Type converters
 ischema_names = {
-    **UPSTREAM.ischema_names,
+    **BIClickHouseDialect.ischema_names,
     "YtBoolean": chyt_types.YtBoolean,
 }
 
@@ -66,12 +66,12 @@ class CHYTTableSubselect(CHYTTableExpression):
         super().__init__(text, **kwargs)
 
 
-class BICHYTTypeCompiler(UPSTREAM.type_compiler):
+class BICHYTTypeCompiler(BIClickHouseDialect.type_compiler):
     def visit_ytboolean(self, type_, **kw: Any):
         return "YtBoolean"
 
 
-class BICHYTDialect(UPSTREAM):
+class BICHYTDialect(BIClickHouseDialect):
     # Add YT-only types
     ischema_names = ischema_names
     type_compiler = BICHYTTypeCompiler

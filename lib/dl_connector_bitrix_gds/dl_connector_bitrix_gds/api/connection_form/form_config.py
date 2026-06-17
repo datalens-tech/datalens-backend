@@ -17,7 +17,11 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CustomizableRow,
+    InputRowItem,
+    LabelRowItem,
+)
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_core.connectors.settings.base import ConnectorSettings
@@ -39,23 +43,23 @@ class BitrixGDSConnectionFormFactory(ConnectionFormFactory):
     ) -> ConnectionForm:
         rc = RowConstructor(localizer=self._localizer)
 
-        token_row = C.CustomizableRow(
+        token_row = CustomizableRow(
             items=[
-                C.LabelRowItem(text=self._localizer.translate(Translatable("label_token"))),
-                C.InputRowItem(
+                LabelRowItem(text=self._localizer.translate(Translatable("label_token"))),
+                InputRowItem(
                     name=CommonFieldName.token,
                     width="l",
-                    control_props=C.InputRowItem.Props(type="password"),
+                    control_props=InputRowItem.Props(type="password"),
                     default_value="" if self.mode == ConnectionFormMode.create else None,
                     fake_value=None if self.mode == ConnectionFormMode.create else "******",
                 ),
             ]
         )
 
-        portal_row = C.CustomizableRow(
+        portal_row = CustomizableRow(
             items=[
-                C.LabelRowItem(text=self._localizer.translate(Translatable("label_portal"))),
-                C.InputRowItem(name=BitrixGDSFieldName.portal),
+                LabelRowItem(text=self._localizer.translate(Translatable("label_portal"))),
+                InputRowItem(name=BitrixGDSFieldName.portal),
             ]
         )
 

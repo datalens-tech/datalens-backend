@@ -13,14 +13,14 @@ from dl_pivot.pivot_legend import (
     PivotMeasureRoleSpec,
 )
 from dl_pivot.primitives import (
+    DataCell,
+    DataCellVector,
+    MeasureNameValue,
     PivotHeaderRoleSpec,
     PivotHeaderValue,
     PivotMeasureSorting,
     PivotMeasureSortingSettings,
 )
-from dl_pivot.primitives import DataCell as DC
-from dl_pivot.primitives import DataCellVector as DV
-from dl_pivot.primitives import MeasureNameValue as MNV
 from dl_pivot_pandas.pandas.transformer import PdPivotTransformer
 from dl_query_processing.legend.field_legend import (
     FieldObjSpec,
@@ -156,10 +156,10 @@ def test_paginate():
 
     # check that paginator preserves headers' info
     sorting_headers = [
-        (DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),),
+        (DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),),
         (
-            DV(cells=(DC("Moscow", liid_city, piid_city),)),
-            DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+            DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+            DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
         ),
     ]
     # (Moscow, Sales) header is paginated, so the check is a bit hacky

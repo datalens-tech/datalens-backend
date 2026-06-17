@@ -17,7 +17,7 @@ from dl_api_connector.api_schema.source_base import (
 )
 from dl_api_lib.schemas.main import NotificationContentSchema
 from dl_api_lib.schemas.options import SourceListingSchema
-from dl_constants import ConnectionType as CT
+from dl_constants import ConnectionType
 from dl_core.us_connection_base import (
     ConnectionBase,
     UnknownConnection,
@@ -126,7 +126,7 @@ class GenericConnectionSchema(OneOfSchema):
         return ret
 
 
-def register_sub_schema_class(conn_type: CT, schema_cls: type[ConnectionSchema]) -> None:
+def register_sub_schema_class(conn_type: ConnectionType, schema_cls: type[ConnectionSchema]) -> None:
     if conn_type.name in GenericConnectionSchema.type_schemas:
         registered_schema = GenericConnectionSchema.type_schemas[conn_type.name]
         assert (
@@ -141,4 +141,4 @@ class UnknownConnectionSchema(ConnectionSchema):
     TARGET_CLS = UnknownConnection
 
 
-register_sub_schema_class(CT.unknown, UnknownConnectionSchema)
+register_sub_schema_class(ConnectionType.unknown, UnknownConnectionSchema)

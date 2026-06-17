@@ -21,7 +21,13 @@ from dl_api_connector.form_config.models.common import (
     MarkdownStr,
     remap_skip_if_null,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CollapseRow,
+    CustomizableRow,
+    HiddenRowItem,
+    InputRowItem,
+    LabelRowItem,
+)
 from dl_api_connector.form_config.models.rows.base import (
     DisplayConditionsMixin,
     FormRow,
@@ -74,19 +80,19 @@ def _basic_input_row(
     display_conditions: TDisplayConditions | None = None,
     password_input: bool = False,
     fake_value: str | None = None,
-) -> C.CustomizableRow:
-    return C.CustomizableRow(
+) -> CustomizableRow:
+    return CustomizableRow(
         items=[
-            C.LabelRowItem(
+            LabelRowItem(
                 text=label_text,
                 help_text=help_text,
                 display_conditions=display_conditions,
             ),
-            C.InputRowItem(
+            InputRowItem(
                 name=field,
                 width="m",
                 display_conditions=display_conditions,
-                control_props=C.InputRowItem.Props(type="password") if password_input else None,
+                control_props=InputRowItem.Props(type="password") if password_input else None,
                 fake_value=fake_value,
             ),
         ]
@@ -186,9 +192,9 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
                 display_conditions=on_auth_opened,
                 fake_value="******" if self.mode == ConnectionFormMode.edit else None,
             ),
-            C.CustomizableRow(
+            CustomizableRow(
                 items=[
-                    C.HiddenRowItem(name=OAuthSnowFlakeRow.Inner.refresh_token_expire_time),
+                    HiddenRowItem(name=OAuthSnowFlakeRow.Inner.refresh_token_expire_time),
                 ]
             ),
         ]
@@ -231,16 +237,16 @@ class SnowFlakeConnectionFormFactory(ConnectionFormFactory):
         return ConnectionForm(
             title=SnowflakeConnectionInfoProvider.get_title(self._localizer),
             rows=[
-                C.CollapseRow(
+                CollapseRow(
                     name=SnowFlakeFieldName.snowflake_auth,
                     text=self._localizer.translate(Translatable("label_showflake-auth-section-title")),
-                    component_props=C.CollapseRow.Props(default_expanded=self.mode == ConnectionFormMode.create),
+                    component_props=CollapseRow.Props(default_expanded=self.mode == ConnectionFormMode.create),
                 ),
                 *auth_section,
-                C.CollapseRow(
+                CollapseRow(
                     name=SnowFlakeFieldName.snowflake_db_details,
                     text=self._localizer.translate(Translatable("label_showflake-db-details-section-title")),
-                    component_props=C.CollapseRow.Props(default_expanded=self.mode == ConnectionFormMode.edit),
+                    component_props=CollapseRow.Props(default_expanded=self.mode == ConnectionFormMode.edit),
                 ),
                 *db_section,
                 rc.collapse_advanced_settings_row(),

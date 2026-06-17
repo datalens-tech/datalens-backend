@@ -28,7 +28,15 @@ from dl_api_connector.form_config.models.common import (
     FormFieldName,
     OAuthApplication,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CustomizableRow,
+    InputRowItem,
+    LabelRowItem,
+    OAuthTokenRow,
+    RadioButtonRowItem,
+    SelectableOption,
+)
 from dl_api_connector.form_config.models.rows.base import (
     FormRow,
     TDisplayConditions,
@@ -57,24 +65,24 @@ class YDBFieldName(FormFieldName):
 class YDBRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
-    def auth_type_row(self, mode: ConnectionFormMode) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def auth_type_row(self, mode: ConnectionFormMode) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_auth-type")),
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=YDBFieldName.auth_type,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-anonymous")),
                             value=YDBAuthTypeMode.anonymous.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-password")),
                             value=YDBAuthTypeMode.password.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_auth-type-oauth")),
                             value=YDBAuthTypeMode.oauth.value,
                         ),
@@ -86,17 +94,17 @@ class YDBRowConstructor(RowConstructor):
 
     def password_row(
         self, mode: ConnectionFormMode, display_conditions: TDisplayConditions | None = None
-    ) -> C.CustomizableRow:
+    ) -> CustomizableRow:
         label_text = self._localizer.translate(Translatable("field_password"))
-        return C.CustomizableRow(
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=label_text, display_conditions=display_conditions),
-                C.InputRowItem(
+                LabelRowItem(text=label_text, display_conditions=display_conditions),
+                InputRowItem(
                     name=CommonFieldName.token,
                     width="m",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
-                    control_props=C.InputRowItem.Props(type="password"),
+                    control_props=InputRowItem.Props(type="password"),
                     display_conditions=display_conditions,
                 ),
             ]
@@ -116,26 +124,26 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
 
     def _get_default_db_section(self, rc: RowConstructor, connector_settings: YDBConnectorSettings) -> list[FormRow]:
         oauth_row = (
-            C.OAuthTokenRow(
+            OAuthTokenRow(
                 name=CommonFieldName.token,
                 fake_value="******" if self.mode == ConnectionFormMode.edit else None,
                 application=YDBOAuthApplication.ydb,
             )
             if not connector_settings.ENABLE_AUTH_TYPE_PICKER
-            else C.CustomizableRow(
+            else CustomizableRow(
                 items=[
-                    C.LabelRowItem(
+                    LabelRowItem(
                         text=self._localizer.translate(
                             Translatable("field_oauth_row"),
                         ),
                         display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.oauth.value},
                     ),
-                    C.InputRowItem(
+                    InputRowItem(
                         name=CommonFieldName.token,
                         width="l",
                         default_value=None,
                         fake_value="******" if self.mode == ConnectionFormMode.edit else None,
-                        control_props=C.InputRowItem.Props(type="password"),
+                        control_props=InputRowItem.Props(type="password"),
                         display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.oauth.value},
                     ),
                 ]
@@ -214,7 +222,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
                 ydb_rc.password_row(
                     display_conditions={YDBFieldName.auth_type: YDBAuthTypeMode.password.value}, mode=self.mode
                 ),
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                 rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                 rc.collapse_advanced_settings_row(),
@@ -232,7 +240,7 @@ class YDBConnectionFormFactory(ConnectionFormFactory):
         else:
             rows = [
                 *db_section_rows,
-                C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                 rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                 *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                 rc.collapse_advanced_settings_row(),

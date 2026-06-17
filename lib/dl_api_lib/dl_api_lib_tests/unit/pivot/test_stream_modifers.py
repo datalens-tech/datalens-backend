@@ -5,8 +5,10 @@ from dl_constants import (
     PivotRole,
     UserDataType,
 )
-from dl_pivot.hashable_packing import JsonHashableValuePacker
-from dl_pivot.hashable_packing import JsonWrapper as JW
+from dl_pivot.hashable_packing import (
+    JsonHashableValuePacker,
+    JsonWrapper,
+)
 from dl_pivot.pivot_legend import (
     PivotAnnotationRoleSpec,
     PivotDimensionRoleSpec,
@@ -14,9 +16,11 @@ from dl_pivot.pivot_legend import (
     PivotLegendItem,
     PivotMeasureRoleSpec,
 )
-from dl_pivot.primitives import DataCell as DC
-from dl_pivot.primitives import DataCellVector as DV
-from dl_pivot.primitives import MeasureNameValue as MNV
+from dl_pivot.primitives import (
+    DataCell,
+    DataCellVector,
+    MeasureNameValue,
+)
 from dl_pivot.stream_modifiers import (
     DataCellConverter,
     MeasureDataTransposer,
@@ -117,28 +121,28 @@ def test_data_cell_converter():
     converted_data = list(dcell_stream)
     expected_data = [
         [
-            DC("Detroit", liid_city, piid_city),
-            DC("Furniture", liid_ctgry, piid_ctgry),
-            DC(100, liid_sales, piid_sales),
-            DC(10, liid_profit, piid_profit),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell("Furniture", liid_ctgry, piid_ctgry),
+            DataCell(100, liid_sales, piid_sales),
+            DataCell(10, liid_profit, piid_profit),
         ],
         [
-            DC("Portland", liid_city, piid_city),
-            DC("Furniture", liid_ctgry, piid_ctgry),
-            DC(200, liid_sales, piid_sales),
-            DC(20, liid_profit, piid_profit),
+            DataCell("Portland", liid_city, piid_city),
+            DataCell("Furniture", liid_ctgry, piid_ctgry),
+            DataCell(200, liid_sales, piid_sales),
+            DataCell(20, liid_profit, piid_profit),
         ],
         [
-            DC("Moscow", liid_city, piid_city),
-            DC("Plants", liid_ctgry, piid_ctgry),
-            DC(300, liid_sales, piid_sales),
-            DC(30, liid_profit, piid_profit),
+            DataCell("Moscow", liid_city, piid_city),
+            DataCell("Plants", liid_ctgry, piid_ctgry),
+            DataCell(300, liid_sales, piid_sales),
+            DataCell(30, liid_profit, piid_profit),
         ],
         [
-            DC("Detroit", liid_city, piid_city),
-            DC("Plants", liid_ctgry, piid_ctgry),
-            DC(400, liid_sales, piid_sales),
-            DC(40, liid_profit, piid_profit),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell("Plants", liid_ctgry, piid_ctgry),
+            DataCell(400, liid_sales, piid_sales),
+            DataCell(40, liid_profit, piid_profit),
         ],
     ]
     assert converted_data == expected_data
@@ -197,28 +201,28 @@ def test_measure_data_transposer():
 
     dcell_stream = [
         [
-            DC("Detroit", liid_city, piid_city),
-            DC("Furniture", liid_ctgry, piid_ctgry),
-            DC(100, liid_sales, piid_sales),
-            DC(10, liid_profit, piid_profit),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell("Furniture", liid_ctgry, piid_ctgry),
+            DataCell(100, liid_sales, piid_sales),
+            DataCell(10, liid_profit, piid_profit),
         ],
         [
-            DC("Portland", liid_city, piid_city),
-            DC("Furniture", liid_ctgry, piid_ctgry),
-            DC(200, liid_sales, piid_sales),
-            DC(20, liid_profit, piid_profit),
+            DataCell("Portland", liid_city, piid_city),
+            DataCell("Furniture", liid_ctgry, piid_ctgry),
+            DataCell(200, liid_sales, piid_sales),
+            DataCell(20, liid_profit, piid_profit),
         ],
         [
-            DC("Moscow", liid_city, piid_city),
-            DC("Plants", liid_ctgry, piid_ctgry),
-            DC(300, liid_sales, piid_sales),
-            DC(30, liid_profit, piid_profit),
+            DataCell("Moscow", liid_city, piid_city),
+            DataCell("Plants", liid_ctgry, piid_ctgry),
+            DataCell(300, liid_sales, piid_sales),
+            DataCell(30, liid_profit, piid_profit),
         ],
         [
-            DC("Detroit", liid_city, piid_city),
-            DC("Plants", liid_ctgry, piid_ctgry),
-            DC(400, liid_sales, piid_sales),
-            DC(40, liid_profit, piid_profit),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell("Plants", liid_ctgry, piid_ctgry),
+            DataCell(400, liid_sales, piid_sales),
+            DataCell(40, liid_profit, piid_profit),
         ],
     ]
 
@@ -231,67 +235,67 @@ def test_measure_data_transposer():
     expected_data = [
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(100, liid_sales, piid_sales),)),
+            value=DataCellVector(cells=(DataCell(100, liid_sales, piid_sales),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(10, liid_profit, piid_profit),)),
+            value=DataCellVector(cells=(DataCell(10, liid_profit, piid_profit),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Portland", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Portland", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(200, liid_sales, piid_sales),)),
+            value=DataCellVector(cells=(DataCell(200, liid_sales, piid_sales),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Portland", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Portland", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(20, liid_profit, piid_profit),)),
+            value=DataCellVector(cells=(DataCell(20, liid_profit, piid_profit),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(300, liid_sales, piid_sales),)),
+            value=DataCellVector(cells=(DataCell(300, liid_sales, piid_sales),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(30, liid_profit, piid_profit),)),
+            value=DataCellVector(cells=(DataCell(30, liid_profit, piid_profit),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(400, liid_sales, piid_sales),)),
+            value=DataCellVector(cells=(DataCell(400, liid_sales, piid_sales),)),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(cells=(DC(40, liid_profit, piid_profit),)),
+            value=DataCellVector(cells=(DataCell(40, liid_profit, piid_profit),)),
         ),
     ]
     assert transposed_data == expected_data
@@ -368,36 +372,36 @@ def test_measure_data_transposer_with_annotations():
     )
     dcell_stream = [
         [
-            DC("Detroit", liid_city, piid_city),
-            DC("Furniture", liid_ctgry, piid_ctgry),
-            DC(100, liid_sales, piid_sales),
-            DC(10, liid_profit, piid_profit),
-            DC(3, liid_customers, piid_customers),
-            DC(4, liid_orders, piid_orders),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell("Furniture", liid_ctgry, piid_ctgry),
+            DataCell(100, liid_sales, piid_sales),
+            DataCell(10, liid_profit, piid_profit),
+            DataCell(3, liid_customers, piid_customers),
+            DataCell(4, liid_orders, piid_orders),
         ],
         [
-            DC("Portland", liid_city, piid_city),
-            DC("Furniture", liid_ctgry, piid_ctgry),
-            DC(200, liid_sales, piid_sales),
-            DC(20, liid_profit, piid_profit),
-            DC(5, liid_customers, piid_customers),
-            DC(6, liid_orders, piid_orders),
+            DataCell("Portland", liid_city, piid_city),
+            DataCell("Furniture", liid_ctgry, piid_ctgry),
+            DataCell(200, liid_sales, piid_sales),
+            DataCell(20, liid_profit, piid_profit),
+            DataCell(5, liid_customers, piid_customers),
+            DataCell(6, liid_orders, piid_orders),
         ],
         [
-            DC("Moscow", liid_city, piid_city),
-            DC("Plants", liid_ctgry, piid_ctgry),
-            DC(300, liid_sales, piid_sales),
-            DC(30, liid_profit, piid_profit),
-            DC(7, liid_customers, piid_customers),
-            DC(10, liid_orders, piid_orders),
+            DataCell("Moscow", liid_city, piid_city),
+            DataCell("Plants", liid_ctgry, piid_ctgry),
+            DataCell(300, liid_sales, piid_sales),
+            DataCell(30, liid_profit, piid_profit),
+            DataCell(7, liid_customers, piid_customers),
+            DataCell(10, liid_orders, piid_orders),
         ],
         [
-            DC("Detroit", liid_city, piid_city),
-            DC("Plants", liid_ctgry, piid_ctgry),
-            DC(400, liid_sales, piid_sales),
-            DC(40, liid_profit, piid_profit),
-            DC(9, liid_customers, piid_customers),
-            DC(23, liid_orders, piid_orders),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell("Plants", liid_ctgry, piid_ctgry),
+            DataCell(400, liid_sales, piid_sales),
+            DataCell(40, liid_profit, piid_profit),
+            DataCell(9, liid_customers, piid_customers),
+            DataCell(23, liid_orders, piid_orders),
         ],
     ]
     transposed_stream = MeasureDataTransposer(
@@ -409,109 +413,109 @@ def test_measure_data_transposer_with_annotations():
     expected_data = [
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(100, liid_sales, piid_sales),
-                    DC(3, liid_customers, piid_customers),
+                    DataCell(100, liid_sales, piid_sales),
+                    DataCell(3, liid_customers, piid_customers),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(10, liid_profit, piid_profit),
-                    DC(3, liid_customers, piid_customers),
-                    DC(4, liid_orders, piid_orders),
+                    DataCell(10, liid_profit, piid_profit),
+                    DataCell(3, liid_customers, piid_customers),
+                    DataCell(4, liid_orders, piid_orders),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Portland", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Portland", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(200, liid_sales, piid_sales),
-                    DC(5, liid_customers, piid_customers),
+                    DataCell(200, liid_sales, piid_sales),
+                    DataCell(5, liid_customers, piid_customers),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Portland", liid_city, piid_city),)),
-                DV(cells=(DC("Furniture", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Portland", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Furniture", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(20, liid_profit, piid_profit),
-                    DC(5, liid_customers, piid_customers),
-                    DC(6, liid_orders, piid_orders),
+                    DataCell(20, liid_profit, piid_profit),
+                    DataCell(5, liid_customers, piid_customers),
+                    DataCell(6, liid_orders, piid_orders),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(300, liid_sales, piid_sales),
-                    DC(7, liid_customers, piid_customers),
+                    DataCell(300, liid_sales, piid_sales),
+                    DataCell(7, liid_customers, piid_customers),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(30, liid_profit, piid_profit),
-                    DC(7, liid_customers, piid_customers),
-                    DC(10, liid_orders, piid_orders),
+                    DataCell(30, liid_profit, piid_profit),
+                    DataCell(7, liid_customers, piid_customers),
+                    DataCell(10, liid_orders, piid_orders),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(400, liid_sales, piid_sales),
-                    DC(9, liid_customers, piid_customers),
+                    DataCell(400, liid_sales, piid_sales),
+                    DataCell(9, liid_customers, piid_customers),
                 )
             ),
         ),
         TransposedDataRow(
             dimensions=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC("Plants", liid_ctgry, piid_ctgry),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell("Plants", liid_ctgry, piid_ctgry),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             ),
-            value=DV(
+            value=DataCellVector(
                 cells=(
-                    DC(40, liid_profit, piid_profit),
-                    DC(9, liid_customers, piid_customers),
-                    DC(23, liid_orders, piid_orders),
+                    DataCell(40, liid_profit, piid_profit),
+                    DataCell(9, liid_customers, piid_customers),
+                    DataCell(23, liid_orders, piid_orders),
                 ),
             ),
         ),
@@ -570,20 +574,20 @@ def test_data_cell_converter_with_dicts():
     converted_data = list(dcell_stream)
     expected_data = [
         [
-            DC("Detroit", liid_city, piid_city),
-            DC(JW('{"a": 1, "f": 6}'), liid_value, piid_value),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell(JsonWrapper('{"a": 1, "f": 6}'), liid_value, piid_value),
         ],
         [
-            DC("Portland", liid_city, piid_city),
-            DC(JW('{"c": 2, "s": 7}'), liid_value, piid_value),
+            DataCell("Portland", liid_city, piid_city),
+            DataCell(JsonWrapper('{"c": 2, "s": 7}'), liid_value, piid_value),
         ],
         [
-            DC("Moscow", liid_city, piid_city),
-            DC(JW('{"q": {"some": "thing"}, "z": 3}'), liid_value, piid_value),
+            DataCell("Moscow", liid_city, piid_city),
+            DataCell(JsonWrapper('{"q": {"some": "thing"}, "z": 3}'), liid_value, piid_value),
         ],
         [
-            DC("Detroit", liid_city, piid_city),
-            DC(JW('{"k": 100500, "y": 4}'), liid_value, piid_value),
+            DataCell("Detroit", liid_city, piid_city),
+            DataCell(JsonWrapper('{"k": 100500, "y": 4}'), liid_value, piid_value),
         ],
     ]
     assert converted_data == expected_data

@@ -17,7 +17,12 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CustomizableRow,
+    RadioButtonRowItem,
+    SelectableOption,
+)
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_constants import RawSQLLevel
 from dl_core.connectors.settings.base import ConnectorSettings
@@ -89,17 +94,17 @@ class OracleConnectionFormFactory(ConnectionFormFactory):
             ]
         )
 
-        db_name_row = C.CustomizableRow(
+        db_name_row = CustomizableRow(
             items=[
                 *rc.db_name_row().items,
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=OracleFieldName.db_connect_method,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_db-connect-method-service-name")),
                             value=OracleDbNameType.service_name.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_db-connect-method-sid")),
                             value=OracleDbNameType.sid.value,
                         ),
@@ -122,7 +127,7 @@ class OracleConnectionFormFactory(ConnectionFormFactory):
                     db_name_row,
                     rc.username_row(),
                     rc.password_row(self.mode),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                     *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),

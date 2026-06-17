@@ -5,14 +5,12 @@ from dl_formula_ref.rich_text.elements import (
     ExtMacroTextElement,
     LinkTextElement,
     ListTextElement,
-)
-from dl_formula_ref.rich_text.elements import (
+    MacroReplacementKey,
     NoteBlock,
     RichText,
     TableTextElement,
     TermTextElement,
 )
-from dl_formula_ref.rich_text.elements import MacroReplacementKey as MRK
 from dl_formula_ref.rich_text.renderer import (
     MdRichTextRenderer,
     RichTextRenderEnvironment,
@@ -21,23 +19,31 @@ from dl_formula_ref.rich_text.renderer import (
 
 def test_term():
     renderer = MdRichTextRenderer()
-    text = renderer.render(RichText(text="Hi ", replacements={MRK(3, 3): TermTextElement(term="int")}))
+    text = renderer.render(RichText(text="Hi ", replacements={MacroReplacementKey(3, 3): TermTextElement(term="int")}))
     assert text == "Hi `int`"
-    text = renderer.render(RichText(text="Hi ", replacements={MRK(3, 3): TermTextElement(term="int", wrap=False)}))
+    text = renderer.render(
+        RichText(text="Hi ", replacements={MacroReplacementKey(3, 3): TermTextElement(term="int", wrap=False)})
+    )
     assert text == "Hi int"
 
 
 def test_code_span():
     renderer = MdRichTextRenderer()
-    text = renderer.render(RichText(text="Hi ", replacements={MRK(3, 3): CodeSpanTextElement(text="int", wrap=True)}))
+    text = renderer.render(
+        RichText(text="Hi ", replacements={MacroReplacementKey(3, 3): CodeSpanTextElement(text="int", wrap=True)})
+    )
     assert text == "Hi `int`"
-    text = renderer.render(RichText(text="Hi ", replacements={MRK(3, 3): CodeSpanTextElement(text="int", wrap=False)}))
+    text = renderer.render(
+        RichText(text="Hi ", replacements={MacroReplacementKey(3, 3): CodeSpanTextElement(text="int", wrap=False)})
+    )
     assert text == "Hi int"
 
 
 def test_ext_macro():
     renderer = MdRichTextRenderer()
-    text = renderer.render(RichText(text="Hi ", replacements={MRK(3, 3): ExtMacroTextElement(macro_name="the_macro")}))
+    text = renderer.render(
+        RichText(text="Hi ", replacements={MacroReplacementKey(3, 3): ExtMacroTextElement(macro_name="the_macro")})
+    )
     assert text == "Hi {{ the_macro }}"
 
 
@@ -47,7 +53,7 @@ def test_list():
         RichText(
             text="Hi ",
             replacements={
-                MRK(3, 3): ListTextElement(
+                MacroReplacementKey(3, 3): ListTextElement(
                     items=[
                         TermTextElement(term="int"),
                         ExtMacroTextElement(macro_name="my_macro"),
@@ -63,7 +69,7 @@ def test_list():
         RichText(
             text="Hi ",
             replacements={
-                MRK(3, 3): ListTextElement(
+                MacroReplacementKey(3, 3): ListTextElement(
                     items=[
                         TermTextElement(term="int", wrap=False),
                         ExtMacroTextElement(macro_name="my_macro"),
@@ -80,7 +86,7 @@ def test_list():
 def test_link():
     renderer = MdRichTextRenderer()
     text = renderer.render(
-        RichText(text="Hi ", replacements={MRK(3, 3): LinkTextElement(text="Whatever", url="site.com")})
+        RichText(text="Hi ", replacements={MacroReplacementKey(3, 3): LinkTextElement(text="Whatever", url="site.com")})
     )
     assert text == "Hi [Whatever](site.com)"
 
@@ -91,7 +97,7 @@ def test_table():
         RichText(
             text="Hi\n",
             replacements={
-                MRK(3, 3): TableTextElement(
+                MacroReplacementKey(3, 3): TableTextElement(
                     table_body=[
                         [RichText("My"), RichText("friend")],
                         [TermTextElement(term="smth"), RichText("")],
@@ -112,12 +118,12 @@ def test_conditional_block():
     rich_text = RichText(
         text="qwerty {if some_cond} uio{if smth_else}pp{end}p{end}",
         replacements={
-            MRK(7, 52): ConditionalBlock(
+            MacroReplacementKey(7, 52): ConditionalBlock(
                 condition="some_cond",
                 rich_text=RichText(
                     text=" uio{if smth_else}pp{end}p",
                     replacements={
-                        MRK(4, 25): ConditionalBlock(
+                        MacroReplacementKey(4, 25): ConditionalBlock(
                             condition="smth_else",
                             rich_text=RichText(text="pp", replacements={}),
                         ),
@@ -145,11 +151,11 @@ def test_note_block():
     rich_text = RichText(
         text="qwerty {note} uio{end}{note warning}pp{end}",
         replacements={
-            MRK(7, 21): NoteBlock(
+            MacroReplacementKey(7, 21): NoteBlock(
                 level="info",
                 rich_text=RichText(text=" uio", replacements={}),
             ),
-            MRK(21, 43): NoteBlock(
+            MacroReplacementKey(21, 43): NoteBlock(
                 level="warning",
                 rich_text=RichText(text="pp", replacements={}),
             ),
@@ -167,11 +173,11 @@ def test_audience_block():
     rich_text = RichText(
         text="qwerty {audience internal} uio{end}{audience this,that} pp{end}",
         replacements={
-            MRK(7, 35): AudienceBlock(
+            MacroReplacementKey(7, 35): AudienceBlock(
                 audience_types=["internal"],
                 rich_text=RichText(text=" uio", replacements={}),
             ),
-            MRK(35, 63): AudienceBlock(
+            MacroReplacementKey(35, 63): AudienceBlock(
                 audience_types=["this", "that"],
                 rich_text=RichText(text=" pp", replacements={}),
             ),

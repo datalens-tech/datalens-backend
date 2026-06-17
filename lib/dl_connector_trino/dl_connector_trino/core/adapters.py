@@ -13,7 +13,7 @@ from trino.auth import (
     BasicAuthentication,
     JWTAuthentication,
 )
-from trino.sqlalchemy import URL as trino_url
+from trino.sqlalchemy import URL
 from trino.sqlalchemy.compiler import TrinoSQLCompiler
 from trino.sqlalchemy.datatype import parse_sqltype
 from trino.sqlalchemy.dialect import TrinoDialect
@@ -146,7 +146,7 @@ class TrinoDefaultAdapter(BaseClassicAdapter[TrinoConnTargetDTO]):
 
     def get_conn_line(self, db_name: str | None = None, params: dict[str, Any] | None = None) -> str:
         params = params or {}
-        return trino_url(
+        return URL(
             host=self._target_dto.host,
             port=self._target_dto.port,
             user=self._target_dto.username,

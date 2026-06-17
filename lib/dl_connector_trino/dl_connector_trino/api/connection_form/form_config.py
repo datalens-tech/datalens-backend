@@ -22,7 +22,14 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CustomizableRow,
+    InputRowItem,
+    LabelRowItem,
+    RadioButtonRowItem,
+    SelectableOption,
+)
 from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_constants import RawSQLLevel
@@ -49,17 +56,17 @@ class TrinoFormFieldName(FormFieldName):
 class TrinoRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
-    def _auth_type_options(self) -> list[C.SelectableOption]:
+    def _auth_type_options(self) -> list[SelectableOption]:
         return [
-            C.SelectableOption(
+            SelectableOption(
                 text=self._localizer.translate(Translatable("value_auth-type-none")),
                 value=TrinoAuthType.none.value,
             ),
-            C.SelectableOption(
+            SelectableOption(
                 text=self._localizer.translate(Translatable("value_auth-type-password")),
                 value=TrinoAuthType.password.value,
             ),
-            C.SelectableOption(
+            SelectableOption(
                 text=self._localizer.translate(Translatable("value_auth-type-jwt")),
                 value=TrinoAuthType.jwt.value,
             ),
@@ -69,14 +76,14 @@ class TrinoRowConstructor(RowConstructor):
         self,
         default_value: str = TrinoAuthType.password.value,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_auth-type")),
                     display_conditions=display_conditions,
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=TrinoFormFieldName.auth_type,
                     options=self._auth_type_options(),
                     default_value=default_value,
@@ -89,17 +96,17 @@ class TrinoRowConstructor(RowConstructor):
         self,
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
+    ) -> CustomizableRow:
         label_text = self._localizer.translate(Translatable("field_password"))
-        return C.CustomizableRow(
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=label_text, display_conditions=display_conditions),
-                C.InputRowItem(
+                LabelRowItem(text=label_text, display_conditions=display_conditions),
+                InputRowItem(
                     name=CommonFieldName.password,
                     width="m",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
-                    control_props=C.InputRowItem.Props(type="password"),
+                    control_props=InputRowItem.Props(type="password"),
                     display_conditions=display_conditions,
                 ),
             ]
@@ -109,17 +116,17 @@ class TrinoRowConstructor(RowConstructor):
         self,
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
+    ) -> CustomizableRow:
         label_text = self._localizer.translate(Translatable("field_jwt"))
-        return C.CustomizableRow(
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(text=label_text, display_conditions=display_conditions),
-                C.InputRowItem(
+                LabelRowItem(text=label_text, display_conditions=display_conditions),
+                InputRowItem(
                     name=TrinoFormFieldName.jwt,
                     width="l",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
-                    control_props=C.InputRowItem.Props(type="password"),
+                    control_props=InputRowItem.Props(type="password"),
                     display_conditions=display_conditions,
                 ),
             ]
@@ -128,7 +135,7 @@ class TrinoRowConstructor(RowConstructor):
     def trino_ssl_rows(
         self,
         display_conditions: TDisplayConditions | None = None,
-    ) -> list[C.CustomizableRow]:
+    ) -> list[CustomizableRow]:
         return list(
             self.ssl_rows(
                 enabled_name=CommonFieldName.ssl_enable,
@@ -138,22 +145,22 @@ class TrinoRowConstructor(RowConstructor):
             )
         )
 
-    def listing_sources_row(self) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    def listing_sources_row(self) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_listing-sources")),
                     display_conditions={CommonFieldName.advanced_settings: "opened"},
                     help_text=self._localizer.translate(Translatable("label_listing-sources-tooltip")),
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=TrinoFormFieldName.listing_sources,
                     options=[
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_listing-sources-off")),
                             value=ListingSources.off.value,
                         ),
-                        C.SelectableOption(
+                        SelectableOption(
                             text=self._localizer.translate(Translatable("value_listing-sources-on")),
                             value=ListingSources.on.value,
                         ),
@@ -295,7 +302,7 @@ class TrinoConnectionFormFactory(ConnectionFormFactory):
                     rc.jwt_row(
                         mode=self.mode, display_conditions={TrinoFormFieldName.auth_type: TrinoAuthType.jwt.value}
                     ),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                     *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),

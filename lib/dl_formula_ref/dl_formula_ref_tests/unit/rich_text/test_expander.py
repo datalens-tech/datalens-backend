@@ -13,14 +13,12 @@ from dl_formula_ref.rich_text.elements import (
     ExtMacroTextElement,
     LinkTextElement,
     ListTextElement,
-)
-from dl_formula_ref.rich_text.elements import (
+    MacroReplacementKey,
     NoteBlock,
     RichText,
     TableTextElement,
     TermTextElement,
 )
-from dl_formula_ref.rich_text.elements import MacroReplacementKey as MRK
 from dl_formula_ref.rich_text.expander import MacroExpander
 
 
@@ -31,7 +29,7 @@ def test_expand_macro_dialects():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 29): ListTextElement(
+            MacroReplacementKey(7, 29): ListTextElement(
                 items=[TermTextElement(term="ClickHouse")],
                 sep=", ",
             ),
@@ -47,7 +45,7 @@ def test_expand_macro_type():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 31): ListTextElement(
+            MacroReplacementKey(7, 31): ListTextElement(
                 items=[TermTextElement(term="Integer", wrap=False), TermTextElement(term="String", wrap=False)],
                 sep=" | ",
                 wrap=True,
@@ -64,7 +62,7 @@ def test_expand_macro_ext_macro():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 32): ExtMacroTextElement(macro_name="some_cloud_macro"),
+            MacroReplacementKey(7, 32): ExtMacroTextElement(macro_name="some_cloud_macro"),
         },
     )
     assert actual_res == exp_res
@@ -83,10 +81,10 @@ def test_expand_macro_text():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 22): RichText(
+            MacroReplacementKey(7, 22): RichText(
                 "Some {text: nested_text} Text",
                 replacements={
-                    MRK(5, 24): RichText("Nested"),
+                    MacroReplacementKey(5, 24): RichText("Nested"),
                 },
             ),
         },
@@ -106,7 +104,7 @@ def test_expand_macro_link():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 31): LinkTextElement(url="http://some.url", text="My Link"),
+            MacroReplacementKey(7, 31): LinkTextElement(url="http://some.url", text="My Link"),
         },
     )
     assert actual_res == exp_res
@@ -125,10 +123,13 @@ def test_expand_macro_table():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 24): TableTextElement(
+            MacroReplacementKey(7, 24): TableTextElement(
                 table_body=[
                     [
-                        RichText("Some {text: nested_text} Text", replacements={MRK(5, 24): RichText("Nested")}),
+                        RichText(
+                            "Some {text: nested_text} Text",
+                            replacements={MacroReplacementKey(5, 24): RichText("Nested")},
+                        ),
                         RichText("Something"),
                     ],
                 ]
@@ -150,8 +151,8 @@ def test_expand_macro_arg_argn():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 16): CodeSpanTextElement(text="second_arg", wrap=False),
-            MRK(22, 30): CodeSpanTextElement(text="first_arg", wrap=True),
+            MacroReplacementKey(7, 16): CodeSpanTextElement(text="second_arg", wrap=False),
+            MacroReplacementKey(22, 30): CodeSpanTextElement(text="first_arg", wrap=True),
         },
     )
     assert actual_res == exp_res
@@ -173,9 +174,9 @@ def test_expand_macro_ref():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 17): LinkTextElement(url="https://sum.funcs.com", text="SUM"),
-            MRK(23, 40): LinkTextElement(url="https://avg-win.funcs.com", text="AVG"),
-            MRK(46, 87): LinkTextElement(url="https://avg.funcs.com", text="aggregate function"),
+            MacroReplacementKey(7, 17): LinkTextElement(url="https://sum.funcs.com", text="SUM"),
+            MacroReplacementKey(23, 40): LinkTextElement(url="https://avg-win.funcs.com", text="AVG"),
+            MacroReplacementKey(46, 87): LinkTextElement(url="https://avg.funcs.com", text="aggregate function"),
         },
     )
     assert actual_res == exp_res
@@ -188,7 +189,7 @@ def test_conditional_block():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 31): ConditionalBlock(
+            MacroReplacementKey(7, 31): ConditionalBlock(
                 condition="some_cond",
                 rich_text=RichText(text=" uiop", replacements={}),
             ),
@@ -204,12 +205,12 @@ def test_nested_conditional_block():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 52): ConditionalBlock(
+            MacroReplacementKey(7, 52): ConditionalBlock(
                 condition="some_cond",
                 rich_text=RichText(
                     text=" uio{if smth_else}pp{end}p",
                     replacements={
-                        MRK(4, 25): ConditionalBlock(
+                        MacroReplacementKey(4, 25): ConditionalBlock(
                             condition="smth_else",
                             rich_text=RichText(text="pp", replacements={}),
                         ),
@@ -228,7 +229,7 @@ def test_note_block():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 31): NoteBlock(
+            MacroReplacementKey(7, 31): NoteBlock(
                 level="warning",
                 rich_text=RichText(text=" uiop", replacements={}),
             ),
@@ -244,7 +245,7 @@ def test_audience_block():
     exp_res = RichText(
         text=text,
         replacements={
-            MRK(7, 36): AudienceBlock(
+            MacroReplacementKey(7, 36): AudienceBlock(
                 audience_types=["internal"],
                 rich_text=RichText(text=" uiop", replacements={}),
             ),

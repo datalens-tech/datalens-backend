@@ -14,7 +14,7 @@ from dl_api_connector.form_config.models.base import (
     ConnectionFormMode,
 )
 from dl_api_connector.form_config.models.common import CommonFieldName
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import CacheTTLRow
 from dl_api_connector.form_config.models.rows.base import FormRow
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_constants import RawSQLLevel
@@ -116,7 +116,7 @@ class GreenplumConnectionFormFactory(ConnectionFormFactory):
                     *db_name_section,
                     *username_section,
                     rc.password_row(mode=self.mode),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
                     rc.raw_sql_level_row_v2(raw_sql_levels=raw_sql_levels),
                     *(rc.cache_rows() if is_invalidation_cache_enabled else []),
                     rc.collapse_advanced_settings_row(),

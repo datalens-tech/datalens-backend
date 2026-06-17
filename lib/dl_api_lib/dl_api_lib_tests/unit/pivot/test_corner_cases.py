@@ -12,11 +12,13 @@ from dl_pivot.pivot_legend import (
     PivotLegendItem,
     PivotMeasureRoleSpec,
 )
-from dl_pivot.primitives import DataCell as DC
-from dl_pivot.primitives import DataCellVector as DV
-from dl_pivot.primitives import DataRow
-from dl_pivot.primitives import MeasureNameValue as MNV
-from dl_pivot.primitives import PivotHeader
+from dl_pivot.primitives import (
+    DataCell,
+    DataCellVector,
+    DataRow,
+    MeasureNameValue,
+    PivotHeader,
+)
 from dl_pivot.table import PivotTable
 from dl_pivot_pandas.pandas.transformer import PdPivotTransformer
 import dl_query_processing.exc
@@ -273,56 +275,62 @@ def test_pivot_only_row_dims_multiple_measures():
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                    DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                    DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
                 )
             ),
-            values=(DV(cells=(DC(100, liid_sales, piid_sales),)),),
+            values=(DataCellVector(cells=(DataCell(100, liid_sales, piid_sales),)),),
         ),
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                    DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                    DataCellVector(
+                        cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)
+                    ),
                 )
             ),
-            values=(DV(cells=(DC(10, liid_profit, piid_profit),)),),
+            values=(DataCellVector(cells=(DataCell(10, liid_profit, piid_profit),)),),
         ),
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                    DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                    DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
                 )
             ),
-            values=(DV(cells=(DC(300, liid_sales, piid_sales),)),),
+            values=(DataCellVector(cells=(DataCell(300, liid_sales, piid_sales),)),),
         ),
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                    DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                    DataCellVector(
+                        cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)
+                    ),
                 )
             ),
-            values=(DV(cells=(DC(30, liid_profit, piid_profit),)),),
+            values=(DataCellVector(cells=(DataCell(30, liid_profit, piid_profit),)),),
         ),
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
-                    DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                    DataCellVector(cells=(DataCell("San Francisco", liid_city, piid_city),)),
+                    DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
                 )
             ),
-            values=(DV(cells=(DC(200, liid_sales, piid_sales),)),),
+            values=(DataCellVector(cells=(DataCell(200, liid_sales, piid_sales),)),),
         ),
         DataRow(
             header=PivotHeader(
                 values=(
-                    DV(cells=(DC("San Francisco", liid_city, piid_city),)),
-                    DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                    DataCellVector(cells=(DataCell("San Francisco", liid_city, piid_city),)),
+                    DataCellVector(
+                        cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)
+                    ),
                 )
             ),
-            values=(DV(cells=(DC(20, liid_profit, piid_profit),)),),
+            values=(DataCellVector(cells=(DataCell(20, liid_profit, piid_profit),)),),
         ),
     ]
     actual_pivot_rows = list(actual_pivot_table.get_rows())
@@ -416,38 +424,38 @@ def test_pivot_only_column_dims_multiple_measures():
     expected_pivot_columns = [
         PivotHeader(
             values=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             )
         ),
         PivotHeader(
             values=(
-                DV(cells=(DC("Detroit", liid_city, piid_city),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             )
         ),
         PivotHeader(
             values=(
-                DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             )
         ),
         PivotHeader(
             values=(
-                DV(cells=(DC("Moscow", liid_city, piid_city),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             )
         ),
         PivotHeader(
             values=(
-                DV(cells=(DC("San Francisco", liid_city, piid_city),)),
-                DV(cells=(DC(MNV("Sales", piid_sales), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("San Francisco", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Sales", piid_sales), liid_mnames, piid_mnames),)),
             )
         ),
         PivotHeader(
             values=(
-                DV(cells=(DC("San Francisco", liid_city, piid_city),)),
-                DV(cells=(DC(MNV("Profit", piid_profit), liid_mnames, piid_mnames),)),
+                DataCellVector(cells=(DataCell("San Francisco", liid_city, piid_city),)),
+                DataCellVector(cells=(DataCell(MeasureNameValue("Profit", piid_profit), liid_mnames, piid_mnames),)),
             )
         ),
     ]
@@ -458,12 +466,12 @@ def test_pivot_only_column_dims_multiple_measures():
         DataRow(
             header=PivotHeader(),
             values=(
-                DV(cells=(DC(100, liid_sales, piid_sales),)),
-                DV(cells=(DC(10, liid_profit, piid_profit),)),
-                DV(cells=(DC(300, liid_sales, piid_sales),)),
-                DV(cells=(DC(30, liid_profit, piid_profit),)),
-                DV(cells=(DC(200, liid_sales, piid_sales),)),
-                DV(cells=(DC(20, liid_profit, piid_profit),)),
+                DataCellVector(cells=(DataCell(100, liid_sales, piid_sales),)),
+                DataCellVector(cells=(DataCell(10, liid_profit, piid_profit),)),
+                DataCellVector(cells=(DataCell(300, liid_sales, piid_sales),)),
+                DataCellVector(cells=(DataCell(30, liid_profit, piid_profit),)),
+                DataCellVector(cells=(DataCell(200, liid_sales, piid_sales),)),
+                DataCellVector(cells=(DataCell(20, liid_profit, piid_profit),)),
             ),
         ),
     ]
@@ -520,15 +528,15 @@ def test_pivot_only_row_dims_no_measures():
 
     expected_pivot_rows = [
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC("Detroit", liid_city, piid_city),)),)),
+            header=PivotHeader(values=(DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),)),
             values=(None,),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC("Moscow", liid_city, piid_city),)),)),
+            header=PivotHeader(values=(DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),)),
             values=(None,),
         ),
         DataRow(
-            header=PivotHeader(values=(DV(cells=(DC("San Francisco", liid_city, piid_city),)),)),
+            header=PivotHeader(values=(DataCellVector(cells=(DataCell("San Francisco", liid_city, piid_city),)),)),
             values=(None,),
         ),
     ]
@@ -581,9 +589,9 @@ def test_pivot_only_column_dims_no_measures():
     actual_pivot_table.facade.sort()
 
     expected_pivot_columns = [
-        PivotHeader(values=(DV(cells=(DC("Detroit", liid_city, piid_city),)),)),
-        PivotHeader(values=(DV(cells=(DC("Moscow", liid_city, piid_city),)),)),
-        PivotHeader(values=(DV(cells=(DC("San Francisco", liid_city, piid_city),)),)),
+        PivotHeader(values=(DataCellVector(cells=(DataCell("Detroit", liid_city, piid_city),)),)),
+        PivotHeader(values=(DataCellVector(cells=(DataCell("Moscow", liid_city, piid_city),)),)),
+        PivotHeader(values=(DataCellVector(cells=(DataCell("San Francisco", liid_city, piid_city),)),)),
     ]
     actual_pivot_columns = actual_pivot_table.get_columns()
     assert actual_pivot_columns == expected_pivot_columns

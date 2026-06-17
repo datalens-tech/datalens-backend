@@ -24,7 +24,15 @@ from dl_api_connector.form_config.models.common import (
     CommonFieldName,
     FormFieldName,
 )
-import dl_api_connector.form_config.models.rows as C
+from dl_api_connector.form_config.models.rows import (
+    CacheTTLRow,
+    CheckboxRowItem,
+    CustomizableRow,
+    InputRowItem,
+    LabelRowItem,
+    RadioButtonRowItem,
+    SelectableOption,
+)
 from dl_api_connector.form_config.models.rows.base import TDisplayConditions
 from dl_api_connector.form_config.models.shortcuts.rows import RowConstructor
 from dl_core.connectors.settings.base import ConnectorSettings
@@ -45,13 +53,13 @@ class PromQLFormFieldName(FormFieldName):
 class PromQLRowConstructor(RowConstructor):
     _localizer: Localizer = attr.ib()
 
-    def _auth_type_options(self) -> list[C.SelectableOption]:
+    def _auth_type_options(self) -> list[SelectableOption]:
         return [
-            C.SelectableOption(
+            SelectableOption(
                 text=self._localizer.translate(Translatable("value_auth-type-password")),
                 value=PromQLAuthType.password.value,
             ),
-            C.SelectableOption(
+            SelectableOption(
                 text=self._localizer.translate(Translatable("value_auth-type-header")),
                 value=PromQLAuthType.header.value,
             ),
@@ -61,14 +69,14 @@ class PromQLRowConstructor(RowConstructor):
         self,
         default_value: str = PromQLAuthType.password.value,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_auth-type")),
                     display_conditions=display_conditions,
                 ),
-                C.RadioButtonRowItem(
+                RadioButtonRowItem(
                     name=PromQLFormFieldName.auth_type,
                     options=self._auth_type_options(),
                     default_value=default_value,
@@ -81,21 +89,21 @@ class PromQLRowConstructor(RowConstructor):
         self,
         mode: ConnectionFormMode,
         display_conditions: TDisplayConditions | None = None,
-    ) -> C.CustomizableRow:
-        return C.CustomizableRow(
+    ) -> CustomizableRow:
+        return CustomizableRow(
             items=[
-                C.LabelRowItem(
+                LabelRowItem(
                     text=self._localizer.translate(Translatable("field_auth-header")),
                     display_conditions=display_conditions,
                     # TODO: add with docs
                     # help_text=self._localizer.translate(Translatable("help_text_field-auth-header")),
                 ),
-                C.InputRowItem(
+                InputRowItem(
                     name=PromQLFormFieldName.auth_header,
                     width="l",
                     default_value="" if mode == ConnectionFormMode.create else None,
                     fake_value="******" if mode == ConnectionFormMode.edit else None,
-                    control_props=C.InputRowItem.Props(type="password"),
+                    control_props=InputRowItem.Props(type="password"),
                     display_conditions=display_conditions,
                 ),
             ]
@@ -233,10 +241,10 @@ class PromQLConnectionFormFactory(ConnectionFormFactory):
                     rc.auth_header_row(
                         self.mode, display_conditions={PromQLFormFieldName.auth_type: PromQLAuthType.header.value}
                     ),
-                    C.CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
-                    C.CustomizableRow(
+                    CacheTTLRow(name=CommonFieldName.cache_ttl_sec) if not is_invalidation_cache_enabled else None,
+                    CustomizableRow(
                         items=[
-                            C.CheckboxRowItem(name=CommonFieldName.secure, text="HTTPS", default_value=True),
+                            CheckboxRowItem(name=CommonFieldName.secure, text="HTTPS", default_value=True),
                         ]
                     ),
                     *(rc.cache_rows() if is_invalidation_cache_enabled else []),

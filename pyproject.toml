@@ -110,7 +110,7 @@ ignore = [
 #
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
-# "N",     # pep8-naming — Later: 770+ hits, breaking API renames — own ticket(s)
+# "N",     # pep8-naming — Later: 770+ hits, breaking API renames — migrated incrementally (per sub-rule / package) in BI-7445
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, enabled incrementally per sub-rule in BI-7445 (see ANN* entries in select); the full category is still deferred
 # "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
 #
@@ -135,6 +135,11 @@ select = [
   "LOG", # flake8-logging
   "N804", # pep8-naming (sub-rule): invalid-first-argument-name-for-class-method
   "N805", # pep8-naming (sub-rule): invalid-first-argument-name-for-method
+  "N811", # pep8-naming (sub-rule): constant-imported-as-non-constant
+  "N812", # pep8-naming (sub-rule): lowercase-imported-as-non-lowercase
+  "N813", # pep8-naming (sub-rule): camelcase-imported-as-lowercase
+  "N814", # pep8-naming (sub-rule): camelcase-imported-as-constant
+  "N817", # pep8-naming (sub-rule): camelcase-imported-as-acronym
   "PERF", # Perflint
   "PIE", # flake8-pie
   "PT", # flake8-pytest-style
