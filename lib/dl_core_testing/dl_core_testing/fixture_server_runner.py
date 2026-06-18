@@ -185,7 +185,7 @@ class WSGIRunner:
             **(self._env or {}),
             **os.environ,
         }
-        self._proc = subprocess.Popen(cmd, env=env)
+        self._proc = subprocess.Popen(cmd, env=env)  # noqa: S603
 
     def _run_fork_child_code(self) -> None:
         self._debug("child: running uwsgi")

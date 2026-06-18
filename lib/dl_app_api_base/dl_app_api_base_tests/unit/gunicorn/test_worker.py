@@ -210,7 +210,7 @@ def fixture_app_context(
         monkeypatch.setenv("SHUTDOWN_CALLBACK_SIDE_EFFECT", shutdown_callback_side_effect.value)
 
         # real subprocess: the test spawns an actual gunicorn process to exercise worker lifecycle
-        gunicorn_process = subprocess.Popen(  # noqa: ASYNC220
+        gunicorn_process = subprocess.Popen(  # noqa: ASYNC220, S603
             [
                 sys.executable,
                 "-m",

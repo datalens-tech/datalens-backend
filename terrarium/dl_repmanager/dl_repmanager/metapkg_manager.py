@@ -112,7 +112,7 @@ class MetaPackageManager:
         return ret
 
     def export_dependencies_raw(self, group: str) -> str:
-        proc = subprocess.run(
+        proc = subprocess.run(  # noqa: S603
             [  # noqa: S607
                 "poetry",
                 "export",

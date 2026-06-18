@@ -25,7 +25,7 @@ class GitManager:  # type: ignore
         else:
             stdout_target = None
 
-        return subprocess.run(
+        return subprocess.run(  # noqa: S603
             ["git", *args],  # noqa: S607
             cwd=actual_cwd,
             stdout=stdout_target,
