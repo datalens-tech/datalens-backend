@@ -5,7 +5,7 @@ class PromQLError(Exception):
     """..."""
 
 
-class Warning(PromQLError):
+class Warning(PromQLError):  # noqa: N818
     pass
 
 

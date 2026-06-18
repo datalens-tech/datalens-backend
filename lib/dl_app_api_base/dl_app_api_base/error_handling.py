@@ -72,7 +72,7 @@ class ErrorHandlingMiddleware:
     ) -> aiohttp.web.StreamResponse:
         try:
             return await handler(request)
-        except dl_app_api_base.handlers.ResponseException as e:
+        except dl_app_api_base.handlers.ResponseError as e:
             return e
         except Exception as exc:
             return self.handle_error(exc)

@@ -104,9 +104,9 @@ class NativePivotSorter(PivotSorter):
                     sorting_dim_values = header.values
                     header.info.sorting_direction = settings.direction
                 else:  # should never actually occur, as header_values + role_spec uniquely identify sorting_idx
-                    raise exc.PivotSortingRowOrColumnIsAmbiguous()
+                    raise exc.PivotSortingRowOrColumnIsAmbiguousError()
         if sorting_dim_values is None:
-            raise exc.PivotSortingRowOrColumnNotFound()
+            raise exc.PivotSortingRowOrColumnNotFoundError()
 
         normalizer = self._measure_sort_strategy.get_normalizer(
             pivot_item_id=sorting_piid, direction=settings.direction

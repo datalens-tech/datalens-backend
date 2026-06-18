@@ -275,7 +275,7 @@ class BaseCHYTTableSubselectDataSource(BaseCHYTSpecialDataSource, CommonClickHou
 
     def get_sql_source(self, alias: str | None = None) -> TextClause:
         if not self.connection.is_subselect_allowed:
-            raise exc.SubselectNotAllowed()
+            raise exc.SubselectNotAllowedError()
 
         subsql = self.subsql
         if not subsql:

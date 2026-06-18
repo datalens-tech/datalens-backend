@@ -60,7 +60,7 @@ class DatasetComponentAccessor:
     def get_avatar_strict(self, avatar_id: str) -> SourceAvatar:
         avatar = self.get_avatar_opt(avatar_id=avatar_id)
         if avatar is None:
-            raise exc.SourceAvatarNotFound(f"Unknown source avatar: {avatar_id}")
+            raise exc.SourceAvatarNotFoundError(f"Unknown source avatar: {avatar_id}")
         return avatar
 
     def get_root_avatar_opt(self) -> SourceAvatar | None:
@@ -147,7 +147,7 @@ class DatasetComponentAccessor:
     def get_data_source_coll_spec_strict(self, source_id: str) -> DataSourceCollectionSpec:
         dsrc_coll_spec = self.get_data_source_coll_spec_opt(source_id=source_id)
         if dsrc_coll_spec is None:
-            raise exc.DataSourceNotFound(f"Unknown data source: {source_id}")
+            raise exc.DataSourceNotFoundError(f"Unknown data source: {source_id}")
         return dsrc_coll_spec
 
     def get_avatar_relation_list(
@@ -206,7 +206,9 @@ class DatasetComponentAccessor:
             right_avatar_id=right_avatar_id,
         )
         if relation is None:
-            raise exc.AvatarRelationNotFound(f"Unknown avatar relation: {relation_id, left_avatar_id, right_avatar_id}")
+            raise exc.AvatarRelationNotFoundError(
+                f"Unknown avatar relation: {relation_id, left_avatar_id, right_avatar_id}"
+            )
         return relation
 
     def get_obligatory_filter_list(self) -> list[ObligatoryFilter]:
@@ -250,7 +252,7 @@ class DatasetComponentAccessor:
     ) -> ObligatoryFilter:
         obfilter = self.get_obligatory_filter_opt(obfilter_id=obfilter_id, field_guid=field_guid)
         if obfilter is None:
-            raise exc.ObligatoryFilterNotFound(f"Unknown obligatory filter: {obfilter_id, field_guid}")
+            raise exc.ObligatoryFilterNotFoundError(f"Unknown obligatory filter: {obfilter_id, field_guid}")
         return obfilter
 
     def get_parameter_values(self) -> dict[str, BIValue]:

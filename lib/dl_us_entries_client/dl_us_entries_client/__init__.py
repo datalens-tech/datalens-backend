@@ -27,10 +27,10 @@ from .clients import (
     USEntriesPrivateClientSettings,
 )
 from .exceptions import (
-    BadRequest,
+    BadRequestError,
     EntryLockedError,
     NotFoundError,
-    UsEntriesClientException,
+    UsEntriesClientError,
 )
 from .models import (
     BaseRequest,
@@ -54,7 +54,7 @@ from .protocols import TenantProtocol
 __all__ = [
     "US_ENTRIES_AUTH_TARGET",
     "US_ENTRIES_PRIVATE_AUTH_TARGET",
-    "BadRequest",
+    "BadRequestError",
     "BaseRequest",
     "Data",
     "DatasetData",
@@ -97,5 +97,5 @@ __all__ = [
     "USEntriesPrivateClientSettings",
     "UnversionedData",
     "UnversionedExtractProperties",
-    "UsEntriesClientException",
+    "UsEntriesClientError",
 ]

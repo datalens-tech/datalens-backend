@@ -32,9 +32,9 @@ from dl_sqlalchemy_metrica_api import (
 from dl_sqlalchemy_metrica_api.api_info import appmetrica as appmetrica_api_info
 from dl_sqlalchemy_metrica_api.api_info import metrika as metrika_api_info
 from dl_sqlalchemy_metrica_api.exceptions import (
-    MetrikaApiDimensionInCalc,
-    MetrikaApiGroupByNotSupported,
-    MetrikaApiNoMetricsNorGroupBy,
+    MetrikaApiDimensionInCalcError,
+    MetrikaApiGroupByNotSupportedError,
+    MetrikaApiNoMetricsNorGroupByError,
     NotSupportedError,
 )
 
@@ -284,7 +284,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
         for cla in clauses:
             cla_name = self._get_clause_name(cla, **kwargs)
             if cla_name in self.api_info.fields_by_name and self.api_info.fields_by_name[cla_name]["is_dim"]:
-                raise MetrikaApiDimensionInCalc(f'Not able to use dimensions in calculations: "{cla_name}"')
+                raise MetrikaApiDimensionInCalcError(f'Not able to use dimensions in calculations: "{cla_name}"')
 
         return " + ".join([cla._compiler_dispatch(self, **kwargs) for cla in clauses])
 
@@ -309,7 +309,7 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
             for cla in clauses:
                 cla_name = self._get_clause_name(cla, **kwargs)
                 if cla_name not in self.api_info.fields_by_name or not self.api_info.fields_by_name[cla_name]["is_dim"]:
-                    raise MetrikaApiGroupByNotSupported(f'Grouping by field "{cla_name}" is not possible')
+                    raise MetrikaApiGroupByNotSupportedError(f'Grouping by field "{cla_name}" is not possible')
 
             self._group_by_fields = [name for name in (self._get_clause_name(cla, **kwargs) for cla in clauses) if name]
         else:
@@ -404,7 +404,9 @@ class MetrikaApiReqCompiler(compiler.SQLCompiler):
                 any_metric = self.api_info.metrics_by_namespace[fields_namespace][0]["name"]
                 metrics_cols.append(any_metric)
             else:
-                raise MetrikaApiNoMetricsNorGroupBy("Not found neither metrics to select nor dimensions for group by.")
+                raise MetrikaApiNoMetricsNorGroupByError(
+                    "Not found neither metrics to select nor dimensions for group by."
+                )
         query_params.update(metrics=",".join(metrics_cols))
 
         if self._group_by_fields:

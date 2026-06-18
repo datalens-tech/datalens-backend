@@ -29,9 +29,11 @@ class USEntryBuffer:
         if isinstance(entry, BrokenUSLink):
             if isinstance(entry.reference, DefaultConnectionRef):
                 if entry.error_kind == BrokenUSLinkErrorKind.NOT_FOUND:
-                    raise exc.ReferencedUSEntryNotFound(f"Referenced connection {entry.reference.conn_id} was deleted")
+                    raise exc.ReferencedUSEntryNotFoundError(
+                        f"Referenced connection {entry.reference.conn_id} was deleted"
+                    )
                 if entry.error_kind == BrokenUSLinkErrorKind.ACCESS_DENIED:
-                    raise exc.ReferencedUSEntryAccessDenied(
+                    raise exc.ReferencedUSEntryAccessDeniedError(
                         f"Referenced connection {entry.reference.conn_id} cannot be loaded: access denied",
                         details={"scope": "connection", "entry_id": entry.reference.conn_id},
                     )

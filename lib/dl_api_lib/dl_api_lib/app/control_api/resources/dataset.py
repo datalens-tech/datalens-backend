@@ -101,7 +101,7 @@ class DatasetCollection(DatasetResource):
         result_schema = body["dataset"].get("result_schema", [])
         constraints = self.get_service_registry().get_constraints()
         if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
-            raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
+            raise dl_query_processing.exc.DatasetTooManyFieldsFatalError()
 
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=body["dataset"], us_manager=us_manager)
@@ -195,7 +195,7 @@ class DatasetCopy(DatasetResource):
         if isinstance(orig_ds_loc, PathEntryLocation):
             copy_ds_loc = PathEntryLocation(copy_us_key)
         else:
-            raise exc.FeatureNotAvailable(message="Dataset copy in workbooks is not supported yet")
+            raise exc.FeatureNotAvailableError(message="Dataset copy in workbooks is not supported yet")
 
         utils.need_permission_on_entry(ds, USPermissionKind.edit)
 
@@ -300,7 +300,7 @@ class DatasetVersionItem(DatasetResource):
             result_schema = body["dataset"].get("result_schema", [])
             constraints = self.get_service_registry().get_constraints()
             if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
-                raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
+                raise dl_query_processing.exc.DatasetTooManyFieldsFatalError()
 
             # Locked entry is loaded from the published branch; consult the saved branch for the actual latest revision_id
             ds_raw_saved = us_manager.get_migrated_entry(dataset_id, branch=USEntryBranch.saved)
@@ -496,7 +496,7 @@ class DatasetImportCollection(DatasetResource):
         service_registry = self.get_service_registry()
         constraints = service_registry.get_constraints()
         if len(result_schema) > constraints.FIELD_COUNT_LIMIT_SOFT:
-            raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
+            raise dl_query_processing.exc.DatasetTooManyFieldsFatalError()
 
         loader = self.create_dataset_api_loader()
         loader.populate_dataset_from_body(dataset=dataset, body=data["dataset"], us_manager=us_manager)
@@ -569,7 +569,7 @@ class DatasetVersionValidator(DatasetResource):
         # apply updates
         try:
             ds_validator.apply_batch(action_batch=body.get("updates", ()))
-        except exc.DLValidationFatal as err:
+        except exc.DLValidationFatalError as err:
             any_errors = True
             code = self._make_api_err_code(err.err_code)
             message = err.message

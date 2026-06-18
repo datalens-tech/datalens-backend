@@ -4,7 +4,7 @@ from typing import Any
 from dl_core import exc as exc
 
 
-class MysqlSourceDoesNotExistError(exc.SourceDoesNotExist):
+class MysqlSourceDoesNotExistError(exc.SourceDoesNotExistError):
     ERR_RE = re.compile(r".*Table\s'(?P<table>.*)'\sdoesn't exist.*")
 
     def __init__(

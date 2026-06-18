@@ -15,7 +15,7 @@ from dl_api_lib.app.data_api.resources.base import (
 from dl_api_lib.enums import USPermissionKind
 from dl_api_lib.utils.base import need_permission_on_entry
 from dl_constants.types import TJSONLike
-from dl_core.exc import UnexpectedUSEntryType
+from dl_core.exc import UnexpectedUSEntryTypeError
 from dl_core.us_connection_base import (
     ConnectionBase,
     RawSqlLevelConnectionMixin,
@@ -55,7 +55,7 @@ class SQLBaseView(BaseView):
         self._enrich_logging_context_with_conn(conn)
 
         if not isinstance(conn, RawSqlLevelConnectionMixin):
-            raise UnexpectedUSEntryType("Expecting a subselect-compatible connection")
+            raise UnexpectedUSEntryTypeError("Expecting a subselect-compatible connection")
 
         need_permission_on_entry(conn, USPermissionKind.execute)
         return conn_id, conn

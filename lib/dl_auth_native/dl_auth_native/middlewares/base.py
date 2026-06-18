@@ -65,26 +65,26 @@ class BaseMiddleware:
         )
 
     @attr.s(frozen=True)
-    class Unauthorized(Exception):
+    class UnauthorizedError(Exception):
         message: str = attr.ib()
 
     @attr.s(frozen=True)
-    class Forbidden(Exception):
+    class ForbiddenError(Exception):
         message: str = attr.ib()
 
     def _auth(self, user_access_header: str | None) -> AuthResult:
         if user_access_header is None:
-            raise self.Unauthorized("User access token header is missing")
+            raise self.UnauthorizedError("User access token header is missing")
 
         if not user_access_header.startswith(self._token_type):
-            raise self.Unauthorized("Bad token type")
+            raise self.UnauthorizedError("Bad token type")
 
         user_access_token = user_access_header.removeprefix(self._token_type).strip()
 
         try:
             payload = self._token_decoder.decode(user_access_token)
         except token.TokenError as exc:
-            raise self.Unauthorized(f"Invalid user access token: {exc.message}") from exc
+            raise self.UnauthorizedError(f"Invalid user access token: {exc.message}") from exc
 
         return AuthResult(
             user_id=payload.user_id,
@@ -98,13 +98,13 @@ class BaseMiddleware:
 
     def _service_auth(self, service_token_header: str | None) -> None:
         if self._master_token is None:
-            raise self.Unauthorized("Service auth is not configured")
+            raise self.UnauthorizedError("Service auth is not configured")
 
         if service_token_header is None:
-            raise self.Unauthorized("Service token header is missing")
+            raise self.UnauthorizedError("Service token header is missing")
 
         if not hmac.compare_digest(service_token_header, self._master_token):
-            raise self.Forbidden("Invalid service token")
+            raise self.ForbiddenError("Invalid service token")
 
 
 __all__ = [

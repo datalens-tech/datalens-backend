@@ -1,14 +1,14 @@
-class I18nException(Exception):
+class I18nError(Exception):
     pass
 
 
-class UnknownLocale(I18nException):
+class UnknownLocaleError(I18nError):
     pass
 
 
-class UnknownDomain(I18nException):
+class UnknownDomainError(I18nError):
     pass
 
 
-class InvalidLocaleConfig(I18nException):
+class InvalidLocaleConfigError(I18nError):
     pass

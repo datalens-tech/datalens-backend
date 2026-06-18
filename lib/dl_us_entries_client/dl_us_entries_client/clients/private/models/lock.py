@@ -22,7 +22,7 @@ class PrivateEntryLockPostRequest(BaseRequest):
         status_map={
             423: exceptions.EntryLockedError.from_httpx_exception,
             404: exceptions.NotFoundError.from_httpx_exception,
-            400: exceptions.BadRequest.from_httpx_exception,
+            400: exceptions.BadRequestError.from_httpx_exception,
         },
     )
 

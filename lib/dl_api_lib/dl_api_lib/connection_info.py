@@ -2,7 +2,7 @@ from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_constants import ConnectionType
 
 
-class InfoProviderNotFound(Exception):
+class InfoProviderNotFoundError(Exception):
     pass
 
 
@@ -19,4 +19,4 @@ def register_connector_info_provider_cls(
 def get_connector_info_provider(conn_type: ConnectionType) -> ConnectionInfoProvider:
     if (conn_info_provider := CONNECTOR_INFO_PROVIDER_CLS_BY_TYPE.get(conn_type)) is not None:
         return conn_info_provider
-    raise InfoProviderNotFound(conn_type)
+    raise InfoProviderNotFoundError(conn_type)

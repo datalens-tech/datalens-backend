@@ -42,10 +42,10 @@ from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
     DatasetConfigurationError,
-    ReferencedUSEntryAccessDenied,
-    ReferencedUSEntryNotFound,
-    UnexpectedUSEntryType,
-    USObjectNotFoundException,
+    ReferencedUSEntryAccessDeniedError,
+    ReferencedUSEntryNotFoundError,
+    UnexpectedUSEntryTypeError,
+    USObjectNotFoundError,
 )
 from dl_core.services_registry.top_level import ServicesRegistry
 from dl_core.us_connection import get_connection_class
@@ -108,8 +108,8 @@ class DatasetResource(BIResource):
                 # raw entry to avoid double deserialization
                 ds_raw = us_manager.get_migrated_entry(dataset_id, branch=USEntryBranch.saved, context_name="dataset")
                 latest_revision_id = ds_raw["data"].get("revision_id")
-            except UnexpectedUSEntryType as e:
-                raise USObjectNotFoundException(f"Dataset with id {dataset_id} does not exist") from e
+            except UnexpectedUSEntryTypeError as e:
+                raise USObjectNotFoundError(f"Dataset with id {dataset_id} does not exist") from e
         else:
             dataset = Dataset.create_from_dict(
                 Dataset.DataModel(name=""),  # TODO: Remove name - it's not used, but is required
@@ -278,7 +278,7 @@ class DatasetResource(BIResource):
             try:
                 if not dsrc.is_cache_invalidation_enabled:
                     return False
-            except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied):
+            except (ReferencedUSEntryNotFoundError, ReferencedUSEntryAccessDeniedError):
                 return False
         return True
 
@@ -352,7 +352,7 @@ class DatasetResource(BIResource):
                 )
                 dsrc = dsrc_coll.get_strict(role=role)
                 db_info = dsrc.get_cached_db_info()
-            except ReferencedUSEntryNotFound:
+            except ReferencedUSEntryNotFoundError:
                 db_info = None
 
             if db_info is not None:

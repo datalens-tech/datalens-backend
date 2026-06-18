@@ -5,7 +5,7 @@ import attr
 import pytest
 
 from dl_constants import MigrationStatus
-from dl_core.exc import UnknownEntryMigration
+from dl_core.exc import UnknownEntryMigrationError
 from dl_core.us_manager.schema_migration.base import (
     BaseEntrySchemaMigration,
     Migration,
@@ -325,5 +325,5 @@ def test_unknown_entry_migration(l2_downgrade_migrator):
             "schema_version": "2022-12-06T13:00:00",
         }
     }
-    with pytest.raises(UnknownEntryMigration):
+    with pytest.raises(UnknownEntryMigrationError):
         l2_downgrade_migrator.migrate(entry)

@@ -64,7 +64,7 @@ class DefaultDataSourceMigrator(DataSourceMigrator):
         self,
         migration_dtos: Sequence[DataSourceMigrationInterface],
     ) -> DataSourceMigrationInterface:
-        raise exc.DataSourceMigrationImpossible()
+        raise exc.DataSourceMigrationImpossibleError()
 
     def _load_migration_dto(
         self,
@@ -137,7 +137,7 @@ class SpecBasedSourceMigrator(DataSourceMigrator):
                 if type(dto) is migration_spec.dto_cls:
                     return dto
 
-        raise exc.DataSourceMigrationImpossible()
+        raise exc.DataSourceMigrationImpossibleError()
 
     def _load_migration_dto(
         self,

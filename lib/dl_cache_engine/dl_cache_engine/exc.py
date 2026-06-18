@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 
-class CacheException(Exception):
+class CacheError(Exception):
     pass
 
 
-class CachedEntryPackageVersionMismatch(CacheException):
+class CachedEntryPackageVersionMismatchError(CacheError):
     pass
 
 
-class CacheKeyValidationError(CacheException):
+class CacheKeyValidationError(CacheError):
     pass
 
 
-class CachePreparationFailed(CacheException):
+class CachePreparationFailedError(CacheError):
     pass

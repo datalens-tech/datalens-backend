@@ -4,8 +4,8 @@ import responses
 
 from dl_core.base_models import PathEntryLocation
 from dl_core.exc import (
-    USBadRequestException,
-    USReqException,
+    USBadRequestError,
+    USReqError,
 )
 from dl_core.united_storage_client import (
     USAuthContextMaster,
@@ -38,7 +38,7 @@ async def test_fields_masking(aiohttp_client, caplog, root_certificates):
     secret_value = "some_cypher_text_898"
     non_secret_value = "some_non_secret_value_989"
 
-    with pytest.raises(USBadRequestException):
+    with pytest.raises(USBadRequestError):
         await us_client.create_entry(
             key=PathEntryLocation("fake_key"),
             scope="connection",
@@ -79,7 +79,7 @@ def test_us_sync_client_retry_count_matches_policy() -> None:
         retry_policy_factory=factory,
     )
     try:
-        with pytest.raises(USReqException):
+        with pytest.raises(USReqError):
             client._request(
                 UStorageClient.RequestData(
                     method="get",

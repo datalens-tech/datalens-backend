@@ -452,7 +452,7 @@ class AsyncUSManager(USManagerBase):
                     ConnectionBase,
                     context_name="connection",
                 )
-            except (exc.USObjectNotFoundException, exc.USAccessDeniedException) as err:
+            except (exc.USObjectNotFoundError, exc.USAccessDeniedError) as err:
                 r_scope = referrer.scope if referrer is not None else "unk"
                 r_uuid = referrer.uuid if referrer is not None else "unk"
                 LOGGER.info(
@@ -463,8 +463,8 @@ class AsyncUSManager(USManagerBase):
                     err.message,
                 )
                 err_kind = {
-                    exc.USObjectNotFoundException: BrokenUSLinkErrorKind.NOT_FOUND,
-                    exc.USAccessDeniedException: BrokenUSLinkErrorKind.ACCESS_DENIED,
+                    exc.USObjectNotFoundError: BrokenUSLinkErrorKind.NOT_FOUND,
+                    exc.USAccessDeniedError: BrokenUSLinkErrorKind.ACCESS_DENIED,
                 }.get(type(err), BrokenUSLinkErrorKind.OTHER)
                 conn = BrokenUSLink(reference=conn_ref, error_kind=err_kind)
             self._loaded_entries[conn_ref] = conn

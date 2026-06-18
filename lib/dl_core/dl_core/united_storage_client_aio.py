@@ -26,12 +26,12 @@ from dl_constants import (
 )
 from dl_core.base_models import EntryLocation
 from dl_core.exc import (
-    USLockUnacquiredException,
-    USReqException,
+    USLockUnacquiredError,
+    USReqError,
 )
 from dl_core.united_storage_client import (
     USAuthContextBase,
-    USClientHTTPExceptionWrapper,
+    USClientHTTPExceptionWrapperError,
     UStorageClientBase,
 )
 import dl_retrier
@@ -80,7 +80,7 @@ class UStorageClientAIO(UStorageClientBase):
                 self._response.raise_for_status()
             except aiohttp.ClientResponseError as err:
                 if err.status is not None:
-                    raise USClientHTTPExceptionWrapper(str(err)) from err
+                    raise USClientHTTPExceptionWrapperError(str(err)) from err
                 raise
 
         def json(self) -> dict:
@@ -380,7 +380,7 @@ class UStorageClientAIO(UStorageClientBase):
                 lock = resp["lockToken"]
                 LOGGER.info('Acquired lock "%s" for object "%s"', lock, entry_id)
                 return lock
-            except USLockUnacquiredException:
+            except USLockUnacquiredError:
                 if wait_timeout and time.time() - start_ts < wait_timeout:
                     await asyncio.sleep(0.25)
                 else:
@@ -392,7 +392,7 @@ class UStorageClientAIO(UStorageClientBase):
                 self._req_data_release_lock(entry_id, lock=lock),
                 retry_policy_name="release_lock",
             )
-        except USReqException:
+        except USReqError:
             LOGGER.exception('Unable to release lock "%s"', lock)
 
     async def close(self) -> None:

@@ -211,7 +211,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
 
         elif isinstance(orig_exc, requests.exceptions.ReadTimeout):
             LOGGER.info("ClickHouse timed out")
-            exc_cls = exc.SourceTimeout
+            exc_cls = exc.SourceTimeoutError
 
         elif isinstance(orig_exc, requests.exceptions.ConnectionError):
             exc_cls = exc.SourceConnectError

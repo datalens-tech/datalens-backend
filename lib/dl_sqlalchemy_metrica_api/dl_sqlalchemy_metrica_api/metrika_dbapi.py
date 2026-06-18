@@ -33,18 +33,18 @@ from dl_sqlalchemy_metrica_api.api_info.metrika import (
     fields_by_namespace,
 )
 from dl_sqlalchemy_metrica_api.exceptions import (  # noqa
-    ConnectionClosedException,
-    CursorClosedException,
+    ConnectionClosedError,
+    CursorClosedError,
     DatabaseError,
     DataError,
     Error,
     IntegrityError,
     InterfaceError,
     InternalError,
-    MetrikaApiAccessDeniedException,
-    MetrikaApiException,
-    MetrikaApiObjectNotFoundException,
-    MetrikaHttpApiException,
+    MetrikaApiAccessDeniedError,
+    MetrikaApiError,
+    MetrikaApiObjectNotFoundError,
+    MetrikaHttpApiError,
     NotSupportedError,
     OperationalError,
     ProgrammingError,
@@ -97,7 +97,7 @@ def check_connected(func):
     @wraps(func)
     def func_wrapper(self, *args: Any, **kwargs: Any):
         if self.is_connected is False:
-            raise ConnectionClosedException("Connection object is closed")
+            raise ConnectionClosedError("Connection object is closed")
         return func(self, *args, **kwargs)
 
     return func_wrapper
@@ -115,7 +115,7 @@ class Connection:
         self._cli = MetrikaApiClient(oauth_token, **client_kwargs)
         if fields_namespace:
             if not hasattr(self.metrica_fields_namespaces_enum, fields_namespace):
-                raise MetrikaApiException(f"Unknown fields namespace: {fields_namespace}")
+                raise MetrikaApiError(f"Unknown fields namespace: {fields_namespace}")
             self.fields_namespace = self.metrica_fields_namespaces_enum[fields_namespace]
         self.accuracy = accuracy
 
@@ -169,9 +169,9 @@ def check_cursor_connected(func):
     @wraps(func)
     def func_wrapper(self, *args: Any, **kwargs: Any):
         if not self._connected:
-            raise CursorClosedException("Cursor object is closed")
+            raise CursorClosedError("Cursor object is closed")
         if not self.connection.is_connected:
-            raise ConnectionClosedException("Connection object is closed")
+            raise ConnectionClosedError("Connection object is closed")
         return func(self, *args, **kwargs)
 
     return func_wrapper

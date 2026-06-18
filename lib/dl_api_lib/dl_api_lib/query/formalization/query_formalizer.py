@@ -86,7 +86,7 @@ def need_permission_on_entry(us_entry: USEntry, permission: str) -> None:
     assert us_entry.permissions is not None
     assert us_entry.uuid is not None
     if not us_entry.permissions[permission]:
-        raise dl_core.exc.USPermissionRequired(us_entry.uuid, permission)
+        raise dl_core.exc.USPermissionRequiredError(us_entry.uuid, permission)
 
 
 @attr.s
@@ -218,7 +218,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
             assert isinstance(filter_role_spec, FilterRoleSpec)
             try:
                 field_id = legend_filter_spec.id
-            except dl_core.exc.FieldNotFound:
+            except dl_core.exc.FieldNotFoundError:
                 if block_spec.ignore_nonexistent_filters:
                     self._log_info("Skipping filter for unknown field %s", legend_filter_spec)
                     continue
@@ -283,7 +283,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
             assert isinstance(parameter_role_spec, ParameterRoleSpec)
             try:
                 field_id = legend_parameter_spec.id
-            except dl_core.exc.FieldNotFound:
+            except dl_core.exc.FieldNotFoundError:
                 if block_spec.ignore_nonexistent_filters:
                     self._log_info("Skipping parameter value for unknown field %s", legend_parameter_spec)
                     continue
@@ -382,7 +382,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
             avatar_id = field.avatar_id
             assert avatar_id is not None
             if not self._avatar_exists(avatar_id=avatar_id):
-                raise dl_core.exc.UnknownReferencedAvatar(
+                raise dl_core.exc.UnknownReferencedAvatarError(
                     f"Field {field.title!r} ({field_id}) references unknown source avatar {field.avatar_id}."
                 )
 
@@ -483,7 +483,7 @@ class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
         elif block_spec.group_by_policy == GroupByPolicy.disable:
             # GROUP BY is disabled. If there are measures in the query, it is not valid
             if has_measures:
-                raise dl_query_processing.exc.InvalidGroupByConfiguration(
+                raise dl_query_processing.exc.InvalidGroupByConfigurationError(
                     "Invalid parameter disable_group_by for dataset with measure fields"
                 )
             return []

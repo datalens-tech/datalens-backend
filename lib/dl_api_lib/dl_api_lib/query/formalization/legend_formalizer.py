@@ -76,15 +76,15 @@ class LegendFormalizer(abc.ABC):
     def validate_legend_item(self, item: LegendItem) -> None:
         """Redefine this to impose restrictions on legend items"""
         if item.role_spec.role not in self.SUPPORTS_ROLES:
-            raise dl_query_processing.exc.UnsopportedRoleInLegend(
+            raise dl_query_processing.exc.UnsopportedRoleInLegendError(
                 f"Legend role {item.role_spec.role.name} is not supported"
             )
 
         if not self.SUPPORTS_MEASURE_NAME and isinstance(item.obj, MeasureNameObjSpec):
-            raise dl_query_processing.exc.MeasureNameUnsupported()
+            raise dl_query_processing.exc.MeasureNameUnsupportedError()
 
         if item.role_spec.role == FieldRole.tree and item.data_type not in DATA_TYPES_SUPPORTING_TREE:
-            raise dl_query_processing.exc.RoleDataTypeMismatch("Unsupported data type for tree role")
+            raise dl_query_processing.exc.RoleDataTypeMismatchError("Unsupported data type for tree role")
 
     def validate_legend(self, legend: Legend) -> None:
         for item in legend:
@@ -167,7 +167,7 @@ class LegendFormalizer(abc.ABC):
         else:
             try:
                 field_id = self._field_resolver.field_id_from_spec(item_spec.ref)
-            except core_exc.FieldNotFound:
+            except core_exc.FieldNotFoundError:
                 if role_spec.role == FieldRole.filter and ignore_nonexistent_filters:
                     return None
                 raise

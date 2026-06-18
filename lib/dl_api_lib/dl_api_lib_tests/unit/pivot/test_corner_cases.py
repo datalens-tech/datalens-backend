@@ -162,7 +162,7 @@ def test_pivot_duplicate_dimension_values():
     )
 
     transformer = PdPivotTransformer(legend=legend, pivot_legend=pivot_legend)
-    with pytest.raises(dl_query_processing.exc.PivotDuplicateDimensionValue):
+    with pytest.raises(dl_query_processing.exc.PivotDuplicateDimensionValueError):
         transformer.pivot(data)
 
 

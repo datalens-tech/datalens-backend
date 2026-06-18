@@ -25,7 +25,7 @@ from statcommons.unistat.uwsgi import (
 from dl_api_commons.flask.required_resources import RequiredResourceCommon
 from dl_api_lib.app.control_api.resources import API
 from dl_api_lib.app.control_api.resources.base import BIResource
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,10 +33,10 @@ ns = API.namespace("Monitoring", path="/", description="Monitoring endpoints")
 
 
 def _handle_monitoring_exc(exception: Exception) -> NoReturn:
-    if isinstance(exception, DLBaseException):
+    if isinstance(exception, DLBaseError):
         raise exception
     LOGGER.exception("Got unhandled monitoring exception")
-    raise DLBaseException("Service monitoring failed") from exception
+    raise DLBaseError("Service monitoring failed") from exception
 
 
 class MonitoringResourceBase(BIResource):

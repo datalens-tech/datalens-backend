@@ -9,7 +9,7 @@ import weakref
 import attr
 
 from dl_api_commons.aio.async_wrapper_for_sync_generator import (
-    EndOfStream,
+    EndOfStreamError,
     Job,
 )
 from dl_core.connection_executors.adapters.adapters_base import SyncDirectDBAdapter
@@ -85,7 +85,7 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
                     else:
                         # TODO FIX: Custom exception
                         raise ValueError(f"Unexpected type of execution message in queue: {type(msg)}")
-            except EndOfStream:
+            except EndOfStreamError:
                 return
             finally:
                 await gen_wrapper.cancel()

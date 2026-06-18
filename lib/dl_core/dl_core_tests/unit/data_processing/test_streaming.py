@@ -41,7 +41,7 @@ async def test_async_chunked_limited():
     chunked = AsyncChunkedLimited(
         chunked=AsyncChunked.from_chunked_iterable(chunked_range(97, 10)),
         max_count=53,
-        limit_exc_to_raise=exc.ResultRowCountLimitExceeded,
+        limit_exc_to_raise=exc.ResultRowCountLimitExceededError,
     )
     data: list[int] = []
 
@@ -49,7 +49,7 @@ async def test_async_chunked_limited():
         async for chunk in chunked.chunks:
             data.extend(chunk)
 
-    with pytest.raises(exc.ResultRowCountLimitExceeded):
+    with pytest.raises(exc.ResultRowCountLimitExceededError):
         await _consume_chunks()
     # Data is appended in whole chunks,
     # so the chunk that reaches the limit is never returned,
@@ -60,7 +60,7 @@ async def test_async_chunked_limited():
     chunked = AsyncChunkedLimited(
         chunked=AsyncChunked.from_chunked_iterable(chunked_range(97, 10)),
         max_count=53,
-        limit_exc_to_raise=exc.ResultRowCountLimitExceeded,
+        limit_exc_to_raise=exc.ResultRowCountLimitExceededError,
     )
     data: list[int] = []
 
@@ -68,7 +68,7 @@ async def test_async_chunked_limited():
         async for item in chunked.items:
             data.append(item)
 
-    with pytest.raises(exc.ResultRowCountLimitExceeded):
+    with pytest.raises(exc.ResultRowCountLimitExceededError):
         await _consume_items()
     assert data == list(range(53))
 
@@ -76,9 +76,9 @@ async def test_async_chunked_limited():
     chunked = AsyncChunkedLimited(
         chunked=AsyncChunked.from_chunked_iterable(chunked_range(97, 10)),
         max_count=53,
-        limit_exc_to_raise=exc.ResultRowCountLimitExceeded,
+        limit_exc_to_raise=exc.ResultRowCountLimitExceededError,
     )
-    with pytest.raises(exc.ResultRowCountLimitExceeded):
+    with pytest.raises(exc.ResultRowCountLimitExceededError):
         await chunked.all()
 
 

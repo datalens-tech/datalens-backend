@@ -20,7 +20,7 @@ from dl_cache_engine.cache_invalidation.primitives import (
 from dl_constants import CacheInvalidationLastResultStatus
 from dl_constants.exc import (
     DEFAULT_GLOBAL_ERR_CODE_API_PREFIX,
-    DLBaseException,
+    DLBaseError,
 )
 from dl_core.base_models import ConnCacheableDataModelMixin
 from dl_core.components.accessor import DatasetComponentAccessor
@@ -54,7 +54,7 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
     def _format_timestamp(executed_at: float) -> str:
         return datetime.datetime.fromtimestamp(executed_at, tz=datetime.UTC).isoformat()
 
-    def _exc_to_last_result_error(self, dl_exc: DLBaseException) -> dict[str, Any]:
+    def _exc_to_last_result_error(self, dl_exc: DLBaseError) -> dict[str, Any]:
         error_code = ".".join((*DEFAULT_GLOBAL_ERR_CODE_API_PREFIX, *dl_exc.err_code))
         return {
             "code": error_code,
@@ -91,7 +91,7 @@ class DatasetCacheInvalidationLastResultView(DatasetDataBaseView):
 
     def _make_error_response(
         self,
-        dl_exc: DLBaseException,
+        dl_exc: DLBaseError,
         timestamp: str | None = None,
     ) -> Response:
         data = _response_schema.dump(

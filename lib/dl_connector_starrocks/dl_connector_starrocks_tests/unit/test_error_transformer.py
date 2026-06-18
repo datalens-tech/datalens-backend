@@ -2,8 +2,8 @@ import pymysql
 import sqlalchemy.exc
 
 from dl_core.exc import (
-    InvalidQuery,
-    SourceDoesNotExist,
+    InvalidQueryError,
+    SourceDoesNotExistError,
 )
 
 from dl_connector_starrocks.core.error_transformer import (
@@ -18,7 +18,7 @@ def test_table_does_not_exist_async() -> None:
     wrapper_exc = pymysql.OperationalError(1051, "Unknown table 'test_db.test_table'")
     parameters = transformer.make_bi_error_parameters(wrapper_exc=wrapper_exc)
 
-    assert parameters[0] == SourceDoesNotExist
+    assert parameters[0] == SourceDoesNotExistError
 
 
 def test_table_does_not_exist_sync() -> None:
@@ -32,7 +32,7 @@ def test_table_does_not_exist_sync() -> None:
     )
     parameters = transformer.make_bi_error_parameters(wrapper_exc=wrapper_exc)
 
-    assert parameters[0] == SourceDoesNotExist
+    assert parameters[0] == SourceDoesNotExistError
 
 
 def test_sql_syntax_error_async() -> None:
@@ -41,7 +41,7 @@ def test_sql_syntax_error_async() -> None:
     wrapper_exc = pymysql.ProgrammingError(1064, "You have an error in your SQL syntax")
     parameters = transformer.make_bi_error_parameters(wrapper_exc=wrapper_exc)
 
-    assert parameters[0] == InvalidQuery
+    assert parameters[0] == InvalidQueryError
 
 
 def test_sql_syntax_error_sync() -> None:
@@ -55,4 +55,4 @@ def test_sql_syntax_error_sync() -> None:
     )
     parameters = transformer.make_bi_error_parameters(wrapper_exc=wrapper_exc)
 
-    assert parameters[0] == InvalidQuery
+    assert parameters[0] == InvalidQueryError

@@ -138,7 +138,7 @@ class DatasetApiLoader:
                         source_type=source_data.get("source_type"),
                         referrer=None,
                     )
-                except core_exc.ReferencedUSEntryNotFound:
+                except core_exc.ReferencedUSEntryNotFoundError:
                     # Ignore deleted connections here - an error will be raised
                     # when it is fetched from the buffer
                     LOGGER.info("Referenced US entry not found while preloading source %s, skipping", connection_id)
@@ -429,16 +429,20 @@ class DatasetApiLoader:
 
         # Validate sorting fields
         if extract.mode != ExtractMode.disabled and len(extract.sorting) == 0:
-            raise core_exc.ExtractSortingEmpty("Extract sorting is empty")
+            raise core_exc.ExtractSortingEmptyError("Extract sorting is empty")
 
         for sort in extract.sorting:
             if sort.field_guid not in schema_guids:
-                raise core_exc.ExtractSortingFieldMissing(f"Extract sorting field {sort.field_guid} does not exist")
+                raise core_exc.ExtractSortingFieldMissingError(
+                    f"Extract sorting field {sort.field_guid} does not exist"
+                )
 
         # Validate filter fields
         for filter in extract.filters:
             if filter.field_guid not in schema_guids:
-                raise core_exc.ExtractFilterFieldMissing(f"Extract filter field {filter.field_guid} does not exist")
+                raise core_exc.ExtractFilterFieldMissingError(
+                    f"Extract filter field {filter.field_guid} does not exist"
+                )
 
         ds_editor.set_extract_mode(extract.mode)
         ds_editor.set_extract_filters(extract.filters)
@@ -471,7 +475,7 @@ class DatasetApiLoader:
 
         if latest_revision_id != body["revision_id"]:
             # A newer revision (saved or published) appeared while the user was editing
-            raise exc.DatasetRevisionMismatch()
+            raise exc.DatasetRevisionMismatchError()
         # Otherwise - continue with revision_id from request body
         # Regardless of what we fetched from US, revision_id should travel through all client requests, it changes only when dataset is saved
         ds_editor.set_revision_id(body["revision_id"])

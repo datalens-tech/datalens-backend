@@ -205,19 +205,19 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
     _EXC_CODE_MAP = frozendict(
         {
             # [42S22] Invalid column name '.+'. (207)
-            207: exc.ColumnDoesNotExist,
+            207: exc.ColumnDoesNotExistError,
             # [42S02] Invalid object name '.+'. (208)
             208: SyncMssqlSourceDoesNotExistError,
             # [22007] Conversion failed when converting date and/or time from character string. (241)
             241: exc.DataParseError,
             # [22012] Divide by zero error encountered. (8134)
-            8134: exc.DivisionByZero,
+            8134: exc.DivisionByZeroError,
             # [08S01] Read from the server failed (20004)
             20004: exc.SourceConnectError,
             # [08S01] Write to the server failed (20006)
             20006: exc.SourceConnectError,
             # [01000] Unexpected EOF from the server (20017)
-            20017: exc.SourceClosedPrematurely,
+            20017: exc.SourceClosedPrematurelyError,
             # ?
             # [23000] The statement terminated. The maximum recursion 100
             #         has been exhausted before statement completion. (530)
@@ -236,7 +236,7 @@ class MSSQLDefaultAdapter(BaseClassicAdapter):
             # [HY000] Could not perform COMMIT or ROLLBACK (0)
             "HY000": CommitOrRollbackFailed,
             # [HYT00] Query timeout expired (0)
-            "HYT00": exc.SourceTimeout,
+            "HYT00": exc.SourceTimeoutError,
         }
     )
 

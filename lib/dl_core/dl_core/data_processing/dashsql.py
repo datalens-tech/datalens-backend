@@ -99,7 +99,7 @@ class DashSQLSelector(BaseSQLSelector):
                 ]
             )
         except sa.exc.ArgumentError as e:
-            raise exc.WrongQueryParameterization() from e
+            raise exc.WrongQueryParameterizationError() from e
 
         return sa_text
 
@@ -143,7 +143,7 @@ class DashSQLSelector(BaseSQLSelector):
 
     async def execute(self) -> TResultEvents:
         if not self.conn.is_dashsql_allowed:
-            raise exc.DashSQLNotAllowed()
+            raise exc.DashSQLNotAllowedError()
         return await super().execute()
 
 

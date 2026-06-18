@@ -1,5 +1,5 @@
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 
 
-class CLSError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "CLS")
+class CLSError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "CLS")

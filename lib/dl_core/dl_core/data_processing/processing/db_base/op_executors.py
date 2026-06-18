@@ -131,7 +131,7 @@ class DownloadOpExecutorAsync(OpExecutorAsync):
         if op.row_count_hard_limit is not None:
             data = data.limit(
                 max_count=op.row_count_hard_limit,
-                limit_exception=exc.ResultRowCountLimitExceeded,
+                limit_exception=exc.ResultRowCountLimitExceededError,
             )
 
         self.db_ex_adapter.post_query_execute(

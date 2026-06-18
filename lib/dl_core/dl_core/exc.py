@@ -6,7 +6,7 @@ import aiohttp
 from frozendict import frozendict
 import requests
 
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 from dl_constants.types import TJSONLike
 
 
@@ -26,22 +26,22 @@ class AIOHttpConnTimeoutError(Exception):
     """
 
 
-class SourceAccessDenied(DLBaseException):
-    err_code = (*DLBaseException.err_code, "SOURCE_ACCESS_DENIED")
+class SourceAccessDeniedError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "SOURCE_ACCESS_DENIED")
 
 
-class SourceAccessInvalidToken(SourceAccessDenied):
-    err_code = (*SourceAccessDenied.err_code, "INVALID_TOKEN")
+class SourceAccessInvalidTokenError(SourceAccessDeniedError):
+    err_code = (*SourceAccessDeniedError.err_code, "INVALID_TOKEN")
     default_message = "Invalid user token"
 
 
-class DatabaseUnavailable(DLBaseException):
-    err_code = (*DLBaseException.err_code, "DATABASE_UNAVAILABLE")
+class DatabaseUnavailableError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "DATABASE_UNAVAILABLE")
     default_message = "Data source is unavailable"
 
 
-class DataSourceConfigurationError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "SOURCE_CONFIG")
+class DataSourceConfigurationError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "SOURCE_CONFIG")
 
 
 class TableNameNotConfiguredError(DataSourceConfigurationError):
@@ -93,8 +93,8 @@ class SystemParameterTypeMismatchError(DataSourceConfigurationError):
     default_message = "System parameter has an unexpected type"
 
 
-class DatasetConfigurationError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "DS_CONFIG")
+class DatasetConfigurationError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "DS_CONFIG")
 
 
 class QuerySettingsError(DatasetConfigurationError):
@@ -102,34 +102,34 @@ class QuerySettingsError(DatasetConfigurationError):
     default_message = "Query settings are invalid"
 
 
-class QuerySettingsNotSupported(QuerySettingsError):
+class QuerySettingsNotSupportedError(QuerySettingsError):
     err_code = (*QuerySettingsError.err_code, "NOT_SUPPORTED")
     default_message = "Query settings are not supported for this connection"
 
 
-class QuerySettingForbidden(QuerySettingsError):
+class QuerySettingForbiddenError(QuerySettingsError):
     err_code = (*QuerySettingsError.err_code, "FORBIDDEN")
     default_message = "Setting is forbidden and cannot be set"
 
 
-class QuerySettingNotAllowed(QuerySettingsError):
+class QuerySettingNotAllowedError(QuerySettingsError):
     err_code = (*QuerySettingsError.err_code, "NOT_ALLOWED")
     default_message = "Setting is not allowed and cannot be set"
 
 
-class NoCommonRoleError(DLBaseException):
+class NoCommonRoleError(DLBaseError):
     err_code = (*DatasetConfigurationError.err_code, "NO_COMMON_ROLE")
 
 
 # Data sources
 
 
-class DataSourceError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "SOURCE")
+class DataSourceError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "SOURCE")
     default_message = "Data source error"
 
 
-class DataSourceNotFound(DataSourceError):
+class DataSourceNotFoundError(DataSourceError):
     err_code = (*DataSourceError.err_code, "NOT_FOUND")
     default_message = "Data source not found"
 
@@ -139,12 +139,12 @@ class DataSourceTitleError(DataSourceError):
     default_message = "Invalid data source title"
 
 
-class DataSourceTitleConflict(DataSourceTitleError):
+class DataSourceTitleConflictError(DataSourceTitleError):
     err_code = (*DataSourceTitleError.err_code, "CONFLICT")
     default_message = "Data source title conflicts with another source"
 
 
-class DataSourcesInconsistent(DataSourceError):
+class DataSourcesInconsistentError(DataSourceError):
     err_code = (*DataSourceError.err_code, "INCONSISTENT")
     default_message = "Data sources are inconsistent"
 
@@ -156,12 +156,12 @@ class DataSourceErrorFromComponentError(DataSourceError):
 # Source avatars
 
 
-class SourceAvatarError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "AVATAR")
+class SourceAvatarError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "AVATAR")
     default_message = "Source avatar error"
 
 
-class SourceAvatarNotFound(SourceAvatarError):
+class SourceAvatarNotFoundError(SourceAvatarError):
     err_code = (*SourceAvatarError.err_code, "NOT_FOUND")
     default_message = "Source avatar not found"
 
@@ -171,13 +171,13 @@ class SourceAvatarTitleError(SourceAvatarError):
     default_message = "Invalid source avatar title"
 
 
-class SourceAvatarTitleConflict(SourceAvatarTitleError):
+class SourceAvatarTitleConflictError(SourceAvatarTitleError):
     err_code = (*SourceAvatarTitleError.err_code, "CONFLICT")
     default_message = "Source avatar title conflicts with another avatar"
 
 
-class UnknownReferencedAvatar(SourceAvatarNotFound):
-    err_code = (*SourceAvatarNotFound.err_code, "FIELD_REF")
+class UnknownReferencedAvatarError(SourceAvatarNotFoundError):
+    err_code = (*SourceAvatarNotFoundError.err_code, "FIELD_REF")
     default_message = "Field references an unknown source avatar"
 
 
@@ -188,12 +188,12 @@ class UnboundAvatarError(DatasetConfigurationError):
 # Avatar relations
 
 
-class AvatarRelationError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "RELATION")
+class AvatarRelationError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "RELATION")
     default_message = "Avatar relation error"
 
 
-class AvatarRelationNotFound(AvatarRelationError):
+class AvatarRelationNotFoundError(AvatarRelationError):
     err_code = (*AvatarRelationError.err_code, "NOT_FOUND")
     default_message = "Avatar relation not found"
 
@@ -206,12 +206,12 @@ class AvatarRelationJoinTypeError(AvatarRelationError):
 # Obligatory filters
 
 
-class ObligatoryFilterError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "OBLIG_FILTER")
+class ObligatoryFilterError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "OBLIG_FILTER")
     default_message = "Obligatory filter error"
 
 
-class ObligatoryFilterNotFound(ObligatoryFilterError):
+class ObligatoryFilterNotFoundError(ObligatoryFilterError):
     err_code = (*ObligatoryFilterError.err_code, "NOT_FOUND")
     default_message = "Obligatory filter not found"
 
@@ -219,8 +219,8 @@ class ObligatoryFilterNotFound(ObligatoryFilterError):
 # Fields
 
 
-class FieldError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "FIELD")
+class FieldError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "FIELD")
     default_message = "Field error"
 
 
@@ -229,7 +229,7 @@ class InvalidFieldError(FieldError):
     default_message = "Field is invalid"
 
 
-class FieldNotFound(FieldError):
+class FieldNotFoundError(FieldError):
     err_code = (*FieldError.err_code, "NOT_FOUND")
     default_message = "Unknown field"
 
@@ -239,7 +239,7 @@ class FieldTitleError(FieldError):
     default_message = "Invalid field title"
 
 
-class FieldTitleConflict(FieldTitleError):
+class FieldTitleConflictError(FieldTitleError):
     err_code = (*FieldTitleError.err_code, "CONFLICT")
     default_message = "Field title conflicts with another field"
 
@@ -247,8 +247,8 @@ class FieldTitleConflict(FieldTitleError):
 # US Client errors
 
 
-class USReqException(DLBaseException):
-    err_code = (*DLBaseException.err_code, "US")
+class USReqError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "US")
 
     def __init__(
         self,
@@ -269,23 +269,23 @@ class USReqException(DLBaseException):
         )
 
 
-class USObjectNotFoundException(USReqException):
-    err_code = (*USReqException.err_code, "OBJ_NOT_FOUND")
+class USObjectNotFoundError(USReqError):
+    err_code = (*USReqError.err_code, "OBJ_NOT_FOUND")
     default_message = "Object not found"
 
 
-class USAccessDeniedException(USReqException):
-    err_code = (*USReqException.err_code, "ACCESS_DENIED")
+class USAccessDeniedError(USReqError):
+    err_code = (*USReqError.err_code, "ACCESS_DENIED")
     default_message = "Access denied"
 
 
-class USValidationException(USReqException):
-    err_code = (*USReqException.err_code, "VALIDATION_FAILED")
+class USValidationError(USReqError):
+    err_code = (*USReqError.err_code, "VALIDATION_FAILED")
     default_message = "Invalid input data: validation failed"
 
 
-class USConnectionNotFound(USObjectNotFoundException):
-    err_code = (*USObjectNotFoundException.err_code, "CONNECTION")
+class USConnectionNotFoundError(USObjectNotFoundError):
+    err_code = (*USObjectNotFoundError.err_code, "CONNECTION")
     default_message = "Connection not found"
     formatting_messages = frozendict(
         {
@@ -296,48 +296,48 @@ class USConnectionNotFound(USObjectNotFoundException):
     )
 
 
-class USConnectionAccessDenied(USAccessDeniedException):
-    err_code = (*USAccessDeniedException.err_code, "CONNECTION")
+class USConnectionAccessDeniedError(USAccessDeniedError):
+    err_code = (*USAccessDeniedError.err_code, "CONNECTION")
     default_message = "Access to the connection was denied"
     formatting_messages = frozendict(
         {frozenset({"entry_id"}): "Access to the connection with ID `{entry_id}` was denied."}
     )
 
 
-class USInvalidConnectionID(USValidationException):
-    err_code = (*USValidationException.err_code, "CONNECTION")
+class USInvalidConnectionIDError(USValidationError):
+    err_code = (*USValidationError.err_code, "CONNECTION")
     default_message = "Invalid connection ID"
     formatting_messages = frozendict({frozenset({"entry_id"}): "Invalid connection ID: `{entry_id}`."})
 
 
-class USWorkbookIsolationInterruptionException(USReqException):
-    err_code = (*USReqException.err_code, "WORKBOOK_ISOLATION_INTERRUPTION")
+class USWorkbookIsolationInterruptionError(USReqError):
+    err_code = (*USReqError.err_code, "WORKBOOK_ISOLATION_INTERRUPTION")
     default_message = "Workbook isolation interruption"
 
 
-class USLockUnacquiredException(USReqException):
-    err_code = (*USReqException.err_code, "ENTRY_LOCKED")
+class USLockUnacquiredError(USReqError):
+    err_code = (*USReqError.err_code, "ENTRY_LOCKED")
     default_message = "Object locked"
 
 
-class USPermissionCheckError(USReqException):
-    err_code = (*USReqException.err_code, "PERMISSIONS_ERROR")
+class USPermissionCheckError(USReqError):
+    err_code = (*USReqError.err_code, "PERMISSIONS_ERROR")
 
     @property
     def message(self) -> str:
         return "US permission check error"
 
 
-class USReadOnlyModeEnabledException(USReqException):
-    err_code = (*USReqException.err_code, "READ_ONLY")
+class USReadOnlyModeEnabledError(USReqError):
+    err_code = (*USReqError.err_code, "READ_ONLY")
 
     @property
     def message(self) -> str:
         return "The service is currently in read-only mode"
 
 
-class USBadRequestException(USReqException):
-    err_code = (*USReqException.err_code, "BAD_REQUEST")
+class USBadRequestError(USReqError):
+    err_code = (*USReqError.err_code, "BAD_REQUEST")
 
     @property
     def message(self) -> str:
@@ -350,47 +350,47 @@ class USBadRequestException(USReqException):
         return super().message
 
 
-class USAlreadyExistsException(USBadRequestException):
-    err_code = (*USBadRequestException.err_code, "ALREADY_EXISTS")
+class USAlreadyExistsError(USBadRequestError):
+    err_code = (*USBadRequestError.err_code, "ALREADY_EXISTS")
 
 
-class USIncorrectEntryIdForEmbed(USBadRequestException):
-    err_code = (*USBadRequestException.err_code, "INCORRECT_ENTRY_ID_FOR_EMBED")
+class USIncorrectEntryIdForEmbedError(USBadRequestError):
+    err_code = (*USBadRequestError.err_code, "INCORRECT_ENTRY_ID_FOR_EMBED")
     forward_for_anonymous = True
 
 
-class USIncorrectTenantIdException(USReqException):
+class USIncorrectTenantIdError(USReqError):
     @property
     def message(self) -> str:
         return "Incorrect tenant_id"
 
 
-class USInteractionDisabled(USReqException):
+class USInteractionDisabledError(USReqError):
     pass
 
 
-class USInvalidResponse(USReqException):
+class USInvalidResponseError(USReqError):
     pass
 
 
 # TODO FIX: Validate err_code/message (and think about should this exception be thrown up to user)
-class UnexpectedUSEntryType(DLBaseException):
+class UnexpectedUSEntryTypeError(DLBaseError):
     """Should be thrown by USM if expected type does not match actual US entry type"""
 
-    err_code = (*DLBaseException.err_code, "UNEXPECTED_ENTRY_TYPE")
+    err_code = (*DLBaseError.err_code, "UNEXPECTED_ENTRY_TYPE")
     default_message = "Unexpected entry type"
 
 
 # Other
 
 
-class FailedToLoadSchema(DLBaseException):
-    err_code = (*DLBaseException.err_code, "COLUMN_SCHEMA_FAILED")
+class FailedToLoadSchemaError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "COLUMN_SCHEMA_FAILED")
     default_message = "Failed to load description of table columns."
 
 
-class DatabaseQueryError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "DB")
+class DatabaseQueryError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "DB")
     default_message = "Database error."
 
     db_message: str | None = None
@@ -423,7 +423,7 @@ class DatabaseQueryError(DLBaseException):
         self.debug_info.setdefault("query", inspector_query)
 
     @classmethod
-    def _from_jsonable_dict(cls, data: dict) -> DLBaseException:
+    def _from_jsonable_dict(cls, data: dict) -> DLBaseError:
         new_exc = cls(
             db_message=data.pop("db_message"),
             query=data.pop("query"),
@@ -451,12 +451,12 @@ class DatabaseReadOnlyTransactionError(DatabaseQueryError):
     default_message = "Cannot execute a write operation in a read-only transaction."
 
 
-class ResultRowCountLimitExceeded(DLBaseException):
-    err_code = (*DLBaseException.err_code, "ROW_COUNT_LIMIT")
+class ResultRowCountLimitExceededError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "ROW_COUNT_LIMIT")
     default_message = "Received too many result data rows."
 
 
-class SourceDoesNotExist(DatabaseQueryError):
+class SourceDoesNotExistError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "SOURCE_DOES_NOT_EXIST")
     default_message = "Data source (table) does not exist."
     formatting_messages = frozendict(
@@ -489,17 +489,17 @@ class SourceDoesNotExist(DatabaseQueryError):
             return
 
 
-class DatabaseDoesNotExist(DatabaseQueryError):
+class DatabaseDoesNotExistError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "DATABASE_DOES_NOT_EXIST")
     default_message = "Data source database does not exist."
 
 
-class ColumnDoesNotExist(DatabaseQueryError):
+class ColumnDoesNotExistError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "COLUMN_DOES_NOT_EXIST")
     default_message = "Requested database column does not exist."
 
 
-class InvalidQuery(DatabaseQueryError):
+class InvalidQueryError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "INVALID_QUERY")
     default_message = "Invalid SQL query to the database."
 
@@ -509,12 +509,12 @@ class SourceResponseError(DatabaseQueryError):
     default_message = "Data source failed to respond correctly."
 
 
-class SourceTimeout(SourceResponseError):
+class SourceTimeoutError(SourceResponseError):
     err_code = (*SourceResponseError.err_code, "TIMEOUT")
     default_message = "Data source timed out."
 
 
-class SourceClosedPrematurely(SourceResponseError):
+class SourceClosedPrematurelyError(SourceResponseError):
     err_code = (*SourceResponseError.err_code, "CLOSED_PREMATURELY")
     default_message = "Data source ended the response prematurely (disconnected or dropped the connection)."
 
@@ -524,12 +524,12 @@ class SourceProtocolError(SourceResponseError):
     default_message = "Data source failed to respond correctly (invalid HTTP or higher protocol response)."
 
 
-class InvalidArgumentType(DatabaseQueryError):
+class InvalidArgumentTypeError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "INVALID_ARGUMENT_TYPE")
     default_message = "Invalid argument type."
 
 
-class UnknownFunction(DatabaseQueryError):
+class UnknownFunctionError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "INVALID_FUNCTION")
     default_message = "Unknown function."
 
@@ -548,23 +548,23 @@ class DatabaseOperationalError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "DB_OPERATIONAL_ERROR")
 
 
-class MaterializationNotFinished(DatabaseQueryError):
+class MaterializationNotFinishedError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "MATERIALIZATION_NOT_FINISHED")
     default_message = "Data is not available because materialization is not yet complete."
     forward_for_anonymous = True
 
 
-class DbMemoryLimitExceeded(DatabaseQueryError):
+class DbMemoryLimitExceededError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "MEMORY_LIMIT_EXCEEDED")
     default_message = "Memory limit has been exceeded during query execution."
 
 
-class DbAuthenticationFailed(DatabaseQueryError):
+class DbAuthenticationFailedError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "AUTHENTICATION_FAILED")
     default_message = "Database authentication failed."
 
 
-class DBIndexNotUsed(DatabaseQueryError):
+class DBIndexNotUsedError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "INDEX_NOT_USED")
     default_message = "Filtration by any of indexed columns required."
 
@@ -574,47 +574,47 @@ class DataParseError(DatabaseQueryError):
     default_message = "Cannot parse value."
 
 
-class CannotParseNumber(DataParseError):
+class CannotParseNumberError(DataParseError):
     err_code = (*DataParseError.err_code, "NUMBER")
     default_message = "Cannot parse number."
 
 
-class CannotParseDateTime(DataParseError):
+class CannotParseDateTimeError(DataParseError):
     err_code = (*DataParseError.err_code, "DATETIME")
     default_message = "Cannot parse datetime."
 
 
-class NumberOutOfRange(DatabaseQueryError):
+class NumberOutOfRangeError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "NUMBER_OUT_OF_RANGE")
     default_message = "Number out of range."
 
 
-class UnexpectedInfOrNan(DatabaseQueryError):
+class UnexpectedInfOrNanError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "UNEXPECTED_INF_OR_NAN")
     default_message = "Unexpected inf or nan to integer conversion."
 
 
-class JoinColumnTypeMismatch(DatabaseQueryError):
+class JoinColumnTypeMismatchError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "JOIN_COLUMN_TYPE_MISMATCH")
     default_message = "Columns in JOIN have different types."
 
 
-class NoSpaceLeft(DatabaseQueryError):
+class NoSpaceLeftError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "NO_SPACE_LEFT")
     default_message = "No space left on device."
 
 
-class DivisionByZero(DatabaseQueryError):
+class DivisionByZeroError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "ZERO_DIVISION")
     default_message = "Division by zero."
 
 
-class UserQueryAccessDenied(DatabaseQueryError):
+class UserQueryAccessDeniedError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "USER_QUERY_ACCESS_DENIED")
     default_message = "Query access denied to user"
 
 
-class WrongQueryParameterization(DatabaseQueryError):
+class WrongQueryParameterizationError(DatabaseQueryError):
     err_code = (*DatabaseQueryError.err_code, "WRONG_QUERY_PARAMETERIZATION")
     default_message = "Wrong query parameterization. Parameter was not found"
 
@@ -679,60 +679,60 @@ class DataStreamValidationError(Exception):
         }
 
 
-class ReferencedUSEntryNotFound(DLBaseException):
-    err_code = (*DLBaseException.err_code, "REFERENCED_ENTRY_NOT_FOUND")
+class ReferencedUSEntryNotFoundError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "REFERENCED_ENTRY_NOT_FOUND")
     default_message = "Some referenced entries not found"
 
 
-class ReferencedUSEntryAccessDenied(DLBaseException):
-    err_code = (*DLBaseException.err_code, "REFERENCED_ENTRY_ACCESS_DENIED")
+class ReferencedUSEntryAccessDeniedError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "REFERENCED_ENTRY_ACCESS_DENIED")
     default_message = "Some referenced entries cannot be loaded: access denied"
 
 
-class ConnectionConfigurationError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "CONNECTION_CONFIG")
+class ConnectionConfigurationError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "CONNECTION_CONFIG")
 
 
-class SubselectNotAllowed(ConnectionConfigurationError):
+class SubselectNotAllowedError(ConnectionConfigurationError):
     err_code = (*ConnectionConfigurationError.err_code, "SUBSELECT_NOT_ALLOWED")
     default_message = "Subquery source is disallowed in the connection settings"
 
 
-class DashSQLNotAllowed(ConnectionConfigurationError):
+class DashSQLNotAllowedError(ConnectionConfigurationError):
     err_code = (*ConnectionConfigurationError.err_code, "DASHSQL_NOT_ALLOWED")
     default_message = "DashSQL API is disallowed in the connection settings"
 
 
-class ManualSourceNotAllowed(ConnectionConfigurationError):
+class ManualSourceNotAllowedError(ConnectionConfigurationError):
     err_code = (*ConnectionConfigurationError.err_code, "MANUAL_SOURCE_NOT_ALLOWED")
     default_message = "Manual source is disallowed in the connection settings"
 
 
-class NonManualSourceUnsupported(DataSourceConfigurationError):
+class NonManualSourceUnsupportedError(DataSourceConfigurationError):
     err_code = (*DataSourceConfigurationError.err_code, "NON_MANUAL_SOURCE_UNSUPPORTED")
     default_message = "Source kind cannot be used with manual=False"
 
 
-class NotAvailableError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "NOT_AVAILABLE")
+class NotAvailableError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "NOT_AVAILABLE")
     default_message = "Not available"
 
 
-class InvalidColumnError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "INVALID_COLUMN")
+class InvalidColumnError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "INVALID_COLUMN")
 
 
-class PlatformPermissionRequired(DLBaseException):
-    err_code = (*DLBaseException.err_code, "PLATFORM_PERMISSION_REQUIRED")
+class PlatformPermissionRequiredError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "PLATFORM_PERMISSION_REQUIRED")
 
 
-class EntityUsageNotAllowed(DLBaseException):
-    err_code = (*DLBaseException.err_code, "ENTITY_USAGE_NOT_ALLOWED")
+class EntityUsageNotAllowedError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "ENTITY_USAGE_NOT_ALLOWED")
     default_message = "Some of the entities cannot be used in this context"
 
 
-class USPermissionRequired(USReqException):
-    err_code = (*USReqException.err_code, "PERMISSION_REQUIRED")
+class USPermissionRequiredError(USReqError):
+    err_code = (*USReqError.err_code, "PERMISSION_REQUIRED")
 
     entry_id: str
     permission: str
@@ -748,16 +748,16 @@ class USPermissionRequired(USReqException):
         return f"No permission {self.permission} for entry {self.entry_id}"
 
 
-class DataSourceMigrationImpossible(DLBaseException):
-    err_code = (*DLBaseException.err_code, "DSRC_MIGRATION_IMPOSSIBLE")
+class DataSourceMigrationImpossibleError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "DSRC_MIGRATION_IMPOSSIBLE")
 
 
-class UnknownEntryMigration(DLBaseException):
-    err_code = (*DLBaseException.err_code, "UNKNOWN_ENTRY_MIGRATION")
+class UnknownEntryMigrationError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "UNKNOWN_ENTRY_MIGRATION")
 
 
-class InvalidRequestError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "INVALID_REQUEST")
+class InvalidRequestError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "INVALID_REQUEST")
     default_message = "Invalid request"
 
 
@@ -765,13 +765,13 @@ class ExtractError(DatasetConfigurationError):
     err_code = (*DatasetConfigurationError.err_code, "EXTRACT")
 
 
-class ExtractFilterFieldMissing(ExtractError):
+class ExtractFilterFieldMissingError(ExtractError):
     err_code = (*ExtractError.err_code, "FILTER_FIELD_MISSING")
 
 
-class ExtractSortingFieldMissing(ExtractError):
+class ExtractSortingFieldMissingError(ExtractError):
     err_code = (*ExtractError.err_code, "SORTING_FIELD_MISSING")
 
 
-class ExtractSortingEmpty(ExtractError):
+class ExtractSortingEmptyError(ExtractError):
     err_code = (*ExtractError.err_code, "SORTING_EMPTY")

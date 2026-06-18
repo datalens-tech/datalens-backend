@@ -18,7 +18,7 @@ CODE_OK = "OK"
 
 # TODO FIX: Simplify exc data structures to simplify serialization
 #  Make only 2 arguments in constructor: data & orig
-class DLBaseException(Exception):
+class DLBaseError(Exception):
     # code parts joining by dots on api response preparing.
     err_code: ClassVar[Sequence[str]] = ()  # TODO: Implement automatic hierarchial code inheritance
     forward_for_anonymous: ClassVar[bool] = False
@@ -65,21 +65,21 @@ class DLBaseException(Exception):
     # ##
     # Serialization logic for passing from QE
     # ##
-    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, type["DLBaseException"]]] = {}
+    _MAP_CLASS_NAME_CLASS: ClassVar[dict[str, type["DLBaseError"]]] = {}
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         cls._MAP_CLASS_NAME_CLASS[cls.__qualname__] = cls
 
     @classmethod
     @final
-    def from_jsonable_dict(cls, data: dict) -> "DLBaseException":
+    def from_jsonable_dict(cls, data: dict) -> "DLBaseError":
         data = {**data}
         cls_name = data.pop("cls_name")
         target_cls = cls._MAP_CLASS_NAME_CLASS[cls_name]
         return target_cls._from_jsonable_dict(data)
 
     @classmethod
-    def _from_jsonable_dict(cls, data: dict) -> "DLBaseException":
+    def _from_jsonable_dict(cls, data: dict) -> "DLBaseError":
         new_exc = cls(message=data.pop("message", None))
         new_exc.details = data.pop("details")
         new_exc.debug_info = data.pop("debug_info")

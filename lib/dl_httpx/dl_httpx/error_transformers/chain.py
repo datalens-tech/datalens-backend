@@ -10,7 +10,7 @@ import dl_httpx.exceptions as exceptions
 class ChainTransformer:
     transformers: Sequence[base.ErrorTransformerProtocol]
 
-    def transform(self, exception: exceptions.HttpStatusHttpxClientException) -> Exception | None:
+    def transform(self, exception: exceptions.HttpStatusHttpxClientError) -> Exception | None:
         for transformer in self.transformers:
             result = transformer.transform(exception)
             if result is not None:

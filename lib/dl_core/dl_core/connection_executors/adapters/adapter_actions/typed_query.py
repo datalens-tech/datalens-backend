@@ -26,7 +26,7 @@ from dl_core.connection_executors.models.db_adapter_data import (
     DBAdapterQuery,
     ExecutionStepCursorInfo,
 )
-from dl_core.exc import WrongQueryParameterization
+from dl_core.exc import WrongQueryParameterizationError
 from dl_dashsql.formatting.base import (
     QueryFormatterFactory,
     QueryIncomingParameter,
@@ -105,7 +105,7 @@ class TypedQueryToDBAQueryConverter:
                 ]
             )
         except sa_exc.ArgumentError as e:
-            raise WrongQueryParameterization() from e
+            raise WrongQueryParameterizationError() from e
 
         return sa_text
 

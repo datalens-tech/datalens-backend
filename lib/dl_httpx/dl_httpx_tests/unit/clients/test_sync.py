@@ -124,12 +124,12 @@ def test_error_handling(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo, client.send(request):
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientError) as excinfo, client.send(request):
             pass
         assert excinfo.value.response.status_code == 404
 
         request = client.prepare_raw_request("GET", "/api/forbidden")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo, client.send(request):
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientError) as excinfo, client.send(request):
             pass
         assert excinfo.value.response.status_code == 403
 
@@ -298,7 +298,7 @@ def test_retry_client_error(
     mock_route = respx_mock.get("https://example.com/api/data").mock(side_effect=base_client_error)
 
     request = mocked_client.prepare_raw_request("GET", "/api/data")
-    with pytest.raises(dl_httpx.RequestHttpxClientException) as excinfo, mocked_client.send(request):
+    with pytest.raises(dl_httpx.RequestHttpxClientError) as excinfo, mocked_client.send(request):
         pass
 
     assert excinfo.value.original_exception is base_client_error
@@ -321,7 +321,7 @@ def test_retry_no_retries(
 
     request = mocked_client.prepare_raw_request("GET", "/api/data")
 
-    with pytest.raises(dl_httpx.NoRetriesHttpxClientException), mocked_client.send(request):
+    with pytest.raises(dl_httpx.NoRetriesHttpxClientError), mocked_client.send(request):
         pass
 
     assert mock_route.call_count == 0
@@ -399,7 +399,7 @@ def test_retry_mutates_request_id(
             "/api/data",
             headers={REQUEST_ID_HEADER: "test-base-id"},
         )
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException), client.send(request):
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientError), client.send(request):
             pass
 
     assert len(captured_ids) == 3
@@ -468,7 +468,7 @@ def test_rate_limit_propagates_from_send_sync(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/data")
-        with pytest.raises(dl_httpx.RateLimitHttpxClientException), client.send(request):
+        with pytest.raises(dl_httpx.RateLimitHttpxClientError), client.send(request):
             pass
 
     assert mock_route.call_count == 0
@@ -494,7 +494,7 @@ def test_rate_limit_retries_exhausted_not_wrapped_sync(
         rate_limiter=always_rate_limit_limiter,
     ) as client:
         request = client.prepare_raw_request("GET", "/api/data")
-        with pytest.raises(dl_httpx.RateLimitHttpxClientException), client.send(request):
+        with pytest.raises(dl_httpx.RateLimitHttpxClientError), client.send(request):
             pass
 
     assert mock_route.call_count == 0
@@ -593,27 +593,27 @@ def test_send_sets_level2_attempt_request_id(
             "/api/data",
             headers={REQUEST_ID_HEADER: "base-id"},
         )
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException), client.send(request):
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientError), client.send(request):
             pass
 
     assert captured_ids == ["base-id", "base-id/2", "base-id/3"]
 
 
 @attrs.define(kw_only=True)
-class SyncTransformedNotFound(Exception):
+class SyncTransformedNotFoundError(Exception):
     status_code: int
 
     @classmethod
-    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientError) -> Self:
         return cls(status_code=exception.response.status_code)
 
 
 @attrs.define(kw_only=True)
-class SyncTransformedForbidden(Exception):
+class SyncTransformedForbiddenError(Exception):
     status_code: int
 
     @classmethod
-    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientError) -> Self:
         return cls(status_code=exception.response.status_code)
 
 
@@ -631,7 +631,7 @@ def test_sync_no_transformer_raises_original_http_status_exception(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(dl_httpx.HttpStatusHttpxClientException), client.send(request):
+        with pytest.raises(dl_httpx.HttpStatusHttpxClientError), client.send(request):
             pass
 
 
@@ -640,7 +640,7 @@ def test_sync_class_level_transformer_applied(
     ssl_context: ssl.SSLContext,
     mock_error_transformer: mock.MagicMock,
 ) -> None:
-    expected_exception = SyncTransformedNotFound(status_code=404)
+    expected_exception = SyncTransformedNotFoundError(status_code=404)
     mock_error_transformer.transform.return_value = expected_exception
     respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
 
@@ -653,7 +653,7 @@ def test_sync_class_level_transformer_applied(
         ),
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
-        with pytest.raises(SyncTransformedNotFound) as excinfo, client.send(request):
+        with pytest.raises(SyncTransformedNotFoundError) as excinfo, client.send(request):
             pass
 
     assert excinfo.value is expected_exception
@@ -665,7 +665,7 @@ def test_sync_method_level_transformer_applied(
     ssl_context: ssl.SSLContext,
     mock_error_transformer: mock.MagicMock,
 ) -> None:
-    expected_exception = SyncTransformedNotFound(status_code=404)
+    expected_exception = SyncTransformedNotFoundError(status_code=404)
     mock_error_transformer.transform.return_value = expected_exception
     respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
 
@@ -678,7 +678,7 @@ def test_sync_method_level_transformer_applied(
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
         with (
-            pytest.raises(SyncTransformedNotFound) as excinfo,
+            pytest.raises(SyncTransformedNotFoundError) as excinfo,
             client.send(request, error_transformer=mock_error_transformer),
         ):
             pass
@@ -694,10 +694,10 @@ def test_sync_method_level_wins_over_class_level(
     mocker: pytest_mock.MockerFixture,
 ) -> None:
     method_level_transformer = mocker.MagicMock(spec=dl_httpx.ErrorTransformerProtocol)
-    expected_method_exception = SyncTransformedForbidden(status_code=404)
+    expected_method_exception = SyncTransformedForbiddenError(status_code=404)
     method_level_transformer.transform.return_value = expected_method_exception
 
-    class_level_exception = SyncTransformedNotFound(status_code=404)
+    class_level_exception = SyncTransformedNotFoundError(status_code=404)
     mock_error_transformer.transform.return_value = class_level_exception
 
     respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
@@ -712,7 +712,7 @@ def test_sync_method_level_wins_over_class_level(
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
         with (
-            pytest.raises(SyncTransformedForbidden) as excinfo,
+            pytest.raises(SyncTransformedForbiddenError) as excinfo,
             client.send(request, error_transformer=method_level_transformer),
         ):
             pass
@@ -731,7 +731,7 @@ def test_sync_class_level_used_when_method_level_returns_none(
     method_level_transformer = mocker.MagicMock(spec=dl_httpx.ErrorTransformerProtocol)
     method_level_transformer.transform.return_value = None
 
-    expected_class_exception = SyncTransformedNotFound(status_code=404)
+    expected_class_exception = SyncTransformedNotFoundError(status_code=404)
     mock_error_transformer.transform.return_value = expected_class_exception
 
     respx_mock.get("https://example.com/api/not-found").respond(status_code=404)
@@ -746,7 +746,7 @@ def test_sync_class_level_used_when_method_level_returns_none(
     ) as client:
         request = client.prepare_raw_request("GET", "/api/not-found")
         with (
-            pytest.raises(SyncTransformedNotFound) as excinfo,
+            pytest.raises(SyncTransformedNotFoundError) as excinfo,
             client.send(request, error_transformer=method_level_transformer),
         ):
             pass
@@ -778,7 +778,7 @@ def test_sync_both_return_none_raises_original(
     ) as client:
         request = client.prepare_raw_request("GET", "/api/server-error")
         with (
-            pytest.raises(dl_httpx.HttpStatusHttpxClientException) as excinfo,
+            pytest.raises(dl_httpx.HttpStatusHttpxClientError) as excinfo,
             client.send(request, error_transformer=method_level_transformer),
         ):
             pass

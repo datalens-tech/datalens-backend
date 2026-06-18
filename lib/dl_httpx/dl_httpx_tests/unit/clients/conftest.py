@@ -18,11 +18,11 @@ import dl_testing
 class AlwaysRateLimitLimiter:
     @contextlib.contextmanager
     def context(self) -> Iterator[None]:
-        raise dl_httpx.RateLimitHttpxClientException()
+        raise dl_httpx.RateLimitHttpxClientError()
 
     @contextlib.asynccontextmanager
     async def context_async(self) -> AsyncIterator[None]:
-        raise dl_httpx.RateLimitHttpxClientException()
+        raise dl_httpx.RateLimitHttpxClientError()
         yield  # pragma: no cover
 
 
@@ -37,7 +37,7 @@ class CountingRateLimitLimiter:
         with self._lock:
             if self._n < self._failures:
                 self._n += 1
-                raise dl_httpx.RateLimitHttpxClientException()
+                raise dl_httpx.RateLimitHttpxClientError()
         yield
 
     @contextlib.asynccontextmanager
@@ -45,7 +45,7 @@ class CountingRateLimitLimiter:
         with self._lock:
             if self._n < self._failures:
                 self._n += 1
-                raise dl_httpx.RateLimitHttpxClientException()
+                raise dl_httpx.RateLimitHttpxClientError()
         yield
 
 

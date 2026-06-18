@@ -11,13 +11,13 @@ from dl_api_lib.api_decorators import schematic_request
 from dl_api_lib.app.control_api.resources import API
 from dl_api_lib.app.control_api.resources.base import BIResource
 from dl_api_lib.connection_forms.registry import (
-    NoForm,
+    NoFormError,
     get_connection_form_factory_cls,
 )
 from dl_api_lib.enums import BI_TYPE_AGGREGATIONS
 from dl_api_lib.exc import (
-    BadConnectionType,
-    UnsupportedForEntityType,
+    BadConnectionTypeError,
+    UnsupportedForEntityTypeError,
 )
 from dl_api_lib.public.entity_usage_checker import PublicEnvEntityUsageChecker
 from dl_api_lib.schemas.connection import ConnectionFormQuerySchema
@@ -26,7 +26,7 @@ from dl_constants import (
     ConnectionType,
     UserDataType,
 )
-from dl_core.exc import EntityUsageNotAllowed
+from dl_core.exc import EntityUsageNotAllowedError
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
 
@@ -118,7 +118,7 @@ class DatasetsPublicityChecker(BIResource):
                     us_manager=us_manager,
                     localizer=localizer,
                 )
-            except EntityUsageNotAllowed as exc:
+            except EntityUsageNotAllowedError as exc:
                 allowed = False
                 reason = exc.message
             else:
@@ -157,7 +157,7 @@ class ConnectionsPublicityChecker(BIResource):
                     rci=self.get_current_rci(),
                     conn=conn,
                 )
-            except EntityUsageNotAllowed as exc:
+            except EntityUsageNotAllowedError as exc:
                 allowed = False
                 reason = exc.message
             else:
@@ -193,17 +193,17 @@ class ConnectorForm(BIResource):
     )
     def get(self, conn_type: str, form_mode: str, query: dict) -> dict:
         if not conn_type or conn_type not in ConnectionType:
-            raise BadConnectionType(f"Not a valid connection type for this environment: {conn_type}")
+            raise BadConnectionTypeError(f"Not a valid connection type for this environment: {conn_type}")
         ct = ConnectionType(conn_type)
 
         try:
             mode = ConnectionFormMode(form_mode)
         except ValueError:
-            raise UnsupportedForEntityType(f"Unknown form mode: {form_mode}") from None
+            raise UnsupportedForEntityTypeError(f"Unknown form mode: {form_mode}") from None
 
         try:
             form_factory_cls = get_connection_form_factory_cls(ct)
-        except NoForm:
+        except NoFormError:
             return {"form": None}
 
         localizer = self.get_service_registry().get_localizer()

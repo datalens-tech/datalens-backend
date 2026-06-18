@@ -4,11 +4,11 @@ import dl_httpx
 import dl_httpx_tests.unit.error_transformers.conftest as conftest
 
 
-class FakeFirst(Exception):
+class FakeFirstError(Exception):
     pass
 
 
-class FakeSecond(Exception):
+class FakeSecondError(Exception):
     pass
 
 
@@ -16,36 +16,36 @@ class FakeSecond(Exception):
 class _AlwaysTransform:
     exception: Exception
 
-    def transform(self, exception: dl_httpx.HttpStatusHttpxClientException) -> Exception | None:
+    def transform(self, exception: dl_httpx.HttpStatusHttpxClientError) -> Exception | None:
         return self.exception
 
 
 @attrs.define(frozen=True)
 class _NeverTransform:
-    def transform(self, exception: dl_httpx.HttpStatusHttpxClientException) -> Exception | None:
+    def transform(self, exception: dl_httpx.HttpStatusHttpxClientError) -> Exception | None:
         return None
 
 
 def test_chain_first_non_none_wins() -> None:
-    first = _AlwaysTransform(exception=FakeFirst())
-    second = _AlwaysTransform(exception=FakeSecond())
+    first = _AlwaysTransform(exception=FakeFirstError())
+    second = _AlwaysTransform(exception=FakeSecondError())
     chain = dl_httpx.ChainTransformer(transformers=[first, second])
     exception = conftest.make_http_status_exception(status_code=500)
 
     result = chain.transform(exception)
 
-    assert isinstance(result, FakeFirst)
+    assert isinstance(result, FakeFirstError)
 
 
 def test_chain_skips_none_results() -> None:
     first = _NeverTransform()
-    second = _AlwaysTransform(exception=FakeSecond())
+    second = _AlwaysTransform(exception=FakeSecondError())
     chain = dl_httpx.ChainTransformer(transformers=[first, second])
     exception = conftest.make_http_status_exception(status_code=500)
 
     result = chain.transform(exception)
 
-    assert isinstance(result, FakeSecond)
+    assert isinstance(result, FakeSecondError)
 
 
 def test_chain_all_none_returns_none() -> None:

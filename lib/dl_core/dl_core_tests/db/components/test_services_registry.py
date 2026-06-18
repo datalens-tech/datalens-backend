@@ -6,7 +6,7 @@ from dl_api_commons.base_models import RequestContextInfo
 from dl_core.services_registry import ServicesRegistry
 from dl_core.services_registry.entity_checker import (
     EntityUsageChecker,
-    EntityUsageNotAllowed,
+    EntityUsageNotAllowedError,
 )
 from dl_core.us_connection_base import ConnectionBase
 from dl_core.us_dataset import Dataset
@@ -26,11 +26,11 @@ class LocalEntityUsageChecker(EntityUsageChecker):
         localizer: Localizer | None = None,
     ) -> None:
         if not dataset.data.load_preview_by_default:
-            raise EntityUsageNotAllowed("Preview should be enabled by default!")
+            raise EntityUsageNotAllowedError("Preview should be enabled by default!")
 
     def ensure_data_connection_can_be_used(self, rci: RequestContextInfo, conn: ConnectionBase):
         if not self.IS_DASHSQL_ALLOWED:
-            raise EntityUsageNotAllowed("DashSQL should be allowed!")
+            raise EntityUsageNotAllowedError("DashSQL should be allowed!")
 
 
 class TestServicesRegistry(DefaultCoreTestClass):
@@ -65,7 +65,7 @@ class TestServicesRegistry(DefaultCoreTestClass):
         # test ensure_data_connection_can_be_used
         assert ce_factory.get_async_conn_executor(saved_connection) is not None
         LocalEntityUsageChecker.IS_DASHSQL_ALLOWED = False
-        with pytest.raises(EntityUsageNotAllowed, match=r"^DashSQL should be allowed!$"):
+        with pytest.raises(EntityUsageNotAllowedError, match=r"^DashSQL should be allowed!$"):
             ce_factory.get_async_conn_executor(saved_connection)
 
         # test ensure_dataset_can_be_used; can only be tested directly
@@ -75,5 +75,5 @@ class TestServicesRegistry(DefaultCoreTestClass):
         empty_saved_dataset.data.load_preview_by_default = False
         empty_saved_dataset.data.template_enabled = False
         empty_saved_dataset.data.data_export_forbidden = False
-        with pytest.raises(EntityUsageNotAllowed, match=r"^Preview should be enabled by default!$"):
+        with pytest.raises(EntityUsageNotAllowedError, match=r"^Preview should be enabled by default!$"):
             checker.ensure_dataset_can_be_used(rci, empty_saved_dataset, sync_us_manager)

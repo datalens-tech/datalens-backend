@@ -238,7 +238,7 @@ class USManagerBase:
             raise TypeError(err_msg) from e
 
         else:
-            raise exc.UnexpectedUSEntryType()
+            raise exc.UnexpectedUSEntryTypeError()
 
     def get_sensitive_fields_key_info(self, entry: USEntry) -> dict[str, CryptoKeyInfo]:
         if isinstance(entry, USMigrationEntry):
@@ -422,7 +422,7 @@ class USManagerBase:
                 entry_key=entry_loc,
             )
             if expected_type is not None and not issubclass(entry_cls, expected_type):
-                raise exc.UnexpectedUSEntryType(
+                raise exc.UnexpectedUSEntryTypeError(
                     f"Unexpected type of US entry fetched:"
                     f" {entry_cls.__qualname__} instead of {expected_type.__qualname__}"
                 )
@@ -630,7 +630,7 @@ class USManagerBase:
     ) -> Iterator[None]:
         try:
             yield
-        except exc.USReqException as err:
+        except exc.USReqError as err:
             err.details.update(
                 entry_id=entry_id,
                 scope=entry_scope,

@@ -65,7 +65,7 @@ class MetricaAPIDefaultAdapter(BaseSAAdapter[_M_CONN_T_DTO_TV]):
         if isinstance(
             orig_exc,
             (
-                sqla_metrika_exc.MetrikaHttpApiException,
+                sqla_metrika_exc.MetrikaHttpApiError,
                 sqla_metrika_exc.NotSupportedError,
                 sqla_metrika_exc.ProgrammingError,
             ),

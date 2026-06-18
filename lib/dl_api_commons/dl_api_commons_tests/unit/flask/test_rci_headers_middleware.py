@@ -2,7 +2,7 @@ import flask
 import pytest
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.exc import FlaskRCINotSet
+from dl_api_commons.exc import FlaskRCINotSetError
 import dl_api_commons.flask.middlewares as dl_api_commons_flask_middlewares
 
 
@@ -32,7 +32,7 @@ def test_rci_headers_populates_rci(rci_commit: bool) -> None:
             rci_list.append(dl_api_commons_flask_middlewares.ReqCtxInfoMiddleware.get_request_context_info())
         else:
             assert not dl_api_commons_flask_middlewares.ReqCtxInfoMiddleware.is_rci_committed()
-            with pytest.raises(FlaskRCINotSet):
+            with pytest.raises(FlaskRCINotSetError):
                 dl_api_commons_flask_middlewares.ReqCtxInfoMiddleware.get_request_context_info()
             rci_list.append(dl_api_commons_flask_middlewares.ReqCtxInfoMiddleware.get_temp_rci())
         return flask.jsonify({})

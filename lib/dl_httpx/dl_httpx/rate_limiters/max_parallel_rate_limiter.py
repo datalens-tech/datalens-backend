@@ -48,7 +48,7 @@ class MaxParallelRateLimiter:
     def context(self) -> Iterator[None]:
         acquired = self._semaphore.acquire(blocking=False)
         if not acquired:
-            raise base.RateLimitHttpxClientException()
+            raise base.RateLimitHttpxClientError()
         try:
             yield
         finally:
@@ -58,7 +58,7 @@ class MaxParallelRateLimiter:
     async def context_async(self) -> AsyncIterator[None]:
         acquired = self._semaphore.acquire(blocking=False)
         if not acquired:
-            raise base.RateLimitHttpxClientException()
+            raise base.RateLimitHttpxClientError()
         try:
             yield
         finally:

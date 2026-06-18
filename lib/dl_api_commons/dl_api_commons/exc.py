@@ -2,7 +2,7 @@ from typing import Any
 
 import attr
 
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 
 
 def format_response_body(obj: Any) -> str:
@@ -17,7 +17,7 @@ def format_response_body(obj: Any) -> str:
     return format_response_body(orig_repr)
 
 
-class ExceptionWithData[EXC_DATA_TV](Exception):
+class ExceptionWithDataError[EXC_DATA_TV](Exception):
     _data: EXC_DATA_TV
 
     def __init__(self, data: EXC_DATA_TV) -> None:
@@ -37,7 +37,7 @@ class APIResponseData:
     response_body_validation_errors: dict[str, Any] | None = attr.ib(default=None)
 
 
-class InternalAPIBadResponseErr(ExceptionWithData[APIResponseData]):
+class InternalAPIBadResponseErr(ExceptionWithDataError[APIResponseData]):
     CODE = "INTERNAL_API_BAD_RESPONSE"
 
 
@@ -53,7 +53,7 @@ class MalformedAPIResponseErr(InternalAPIBadResponseErr):
     CODE = "MALFORMED_API_RESPONSE"
 
 
-class InvalidHeaderException(Exception):
+class InvalidHeaderError(Exception):
     schema_validation_messages: dict | None
     header_name: str
 
@@ -63,15 +63,15 @@ class InvalidHeaderException(Exception):
         super().__init__(*args)
 
 
-class FlaskRCINotSet(Exception):
+class FlaskRCINotSetError(Exception):
     pass
 
 
-class RequestTimeoutError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "REQUEST_TIMEOUT")
+class RequestTimeoutError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "REQUEST_TIMEOUT")
     default_message = "Backend app request timeout exceeded"
 
 
-class FailedDependencyException(DLBaseException):
-    err_code = (*DLBaseException.err_code, "FAILED_DEPENDENCY")
+class FailedDependencyError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "FAILED_DEPENDENCY")
     default_message = "Failed dependency"

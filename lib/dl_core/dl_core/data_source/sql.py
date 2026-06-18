@@ -97,7 +97,7 @@ class BaseSQLDataSource(DataSource):
         columns = tuple(col._replace(source_id=self.id) for col in schema_info.schema)
 
         if not columns:
-            raise exc.FailedToLoadSchema()
+            raise exc.FailedToLoadSchemaError()
 
         return schema_info.clone(schema=columns)
 
@@ -191,7 +191,7 @@ class SubselectDataSource(BaseSQLDataSource):
 
     def get_sql_source(self, alias: str | None = None) -> SqlSourceType:
         if not self.connection.is_subselect_allowed:
-            raise exc.SubselectNotAllowed()
+            raise exc.SubselectNotAllowedError()
 
         subsql = self.subsql
         if not subsql:

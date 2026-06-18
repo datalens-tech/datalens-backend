@@ -5,7 +5,7 @@ import dl_httpx.exceptions as exceptions
 import dl_settings
 
 
-class RateLimitHttpxClientException(exceptions.BaseHttpxClientException): ...
+class RateLimitHttpxClientError(exceptions.BaseHttpxClientError): ...
 
 
 class RateLimiterProtocol(Protocol):

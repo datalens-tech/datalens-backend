@@ -1,2 +1,2 @@
-class QueryExecutorException(Exception):
+class QueryExecutorError(Exception):
     pass

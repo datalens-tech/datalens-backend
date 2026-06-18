@@ -22,7 +22,7 @@ from dl_constants import (
     DataSourceType,
     JoinType,
 )
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 from dl_core.base_models import (
     ConnectionRef,
     SourceFilterSpec,
@@ -37,8 +37,8 @@ from dl_core.db import (
 )
 from dl_core.exc import (
     ConnectionTemplateDisabledError,
-    ReferencedUSEntryAccessDenied,
-    ReferencedUSEntryNotFound,
+    ReferencedUSEntryAccessDeniedError,
+    ReferencedUSEntryNotFoundError,
     TemplateInvalidError,
 )
 from dl_core.query.bi_query import SqlSourceType
@@ -249,7 +249,7 @@ class DataSource(metaclass=abc.ABCMeta):
             if strict:
                 return getattr(self.connection, attr_name)
             return getattr(self.connection, attr_name, None)
-        except DLBaseException as e:
+        except DLBaseError as e:
             if strict:
                 raise
             LOGGER.warning("Error while getting %s from connection: %s", attr_name, e)
@@ -380,7 +380,7 @@ class DataSource(metaclass=abc.ABCMeta):
     def is_query_settings_enabled(self) -> bool:
         try:
             return self.connection.is_query_settings_enabled
-        except (ReferencedUSEntryNotFound, ReferencedUSEntryAccessDenied):
+        except (ReferencedUSEntryNotFoundError, ReferencedUSEntryAccessDeniedError):
             return False
 
     @property

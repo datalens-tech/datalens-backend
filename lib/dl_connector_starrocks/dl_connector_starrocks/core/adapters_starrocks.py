@@ -96,7 +96,7 @@ class StarRocksAdapter(BaseStarRocksAdapter, BaseClassicAdapter[StarRocksConnTar
         rows = result.get_all()
 
         if not rows:
-            raise exc.SourceDoesNotExist(
+            raise exc.SourceDoesNotExistError(
                 db_message=f"Table '{catalog}.{database}.{table_ident.table_name}' doesn't exist",
             )
 

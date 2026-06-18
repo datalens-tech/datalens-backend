@@ -176,10 +176,10 @@ class ChainedDbErrorTransformer(DbErrorTransformer):
 default_error_transformer_rules = (
     ErrorTransformerRule(
         when=orig_exc_is(sa_exc.NoSuchTableError),  # FIXME: not an exc.DatabaseQueryError
-        then_raise=exc.SourceDoesNotExist,
+        then_raise=exc.SourceDoesNotExistError,
     ),
     ErrorTransformerRule(when=wrapper_exc_is(sa_exc.OperationalError), then_raise=exc.DatabaseOperationalError),
-    ErrorTransformerRule(when=wrapper_exc_is(TimeoutError), then_raise=exc.SourceTimeout),
+    ErrorTransformerRule(when=wrapper_exc_is(TimeoutError), then_raise=exc.SourceTimeoutError),
 )
 
 

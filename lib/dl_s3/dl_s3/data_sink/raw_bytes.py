@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from types_aiobotocore_s3 import S3Client
 
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 from dl_s3.data_sink.base import DataSinkAsync
 from dl_s3.stream import RawBytesAsyncDataStream
 
@@ -26,7 +26,7 @@ class S3RawFileAsyncDataSink(DataSinkAsync[RawBytesAsyncDataStream]):
         s3: S3Client,
         s3_key: str,
         bucket_name: str,
-        max_file_size_exc: type[DLBaseException],
+        max_file_size_exc: type[DLBaseError],
         max_file_size_bytes: int = 200 * 1024**2,
         batch_size_in_bytes: int = 10 * 1024**2,
     ) -> None:

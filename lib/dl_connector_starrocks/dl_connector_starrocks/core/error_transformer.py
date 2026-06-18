@@ -82,14 +82,14 @@ class AsyncStarRocksChainedDbErrorTransformer(error_transformer.ChainedDbErrorTr
 
 async_starrocks_db_error_transformer: DbErrorTransformer = AsyncStarRocksChainedDbErrorTransformer(
     (
-        Rule(when=is_table_does_not_exist_async_error(), then_raise=exc.SourceDoesNotExist),
+        Rule(when=is_table_does_not_exist_async_error(), then_raise=exc.SourceDoesNotExistError),
         Rule(
             when=wrapper_exc_is_and_matches_re(
                 wrapper_exc_cls=pymysql.ProgrammingError, err_regex_str=".*SQL syntax.*"
             ),
-            then_raise=exc.InvalidQuery,
+            then_raise=exc.InvalidQueryError,
         ),
-        Rule(when=is_sql_syntax_error_async_error(), then_raise=exc.InvalidQuery),
+        Rule(when=is_sql_syntax_error_async_error(), then_raise=exc.InvalidQueryError),
         *error_transformer.default_error_transformer_rules,
     )
 )
@@ -98,10 +98,10 @@ async_starrocks_db_error_transformer: DbErrorTransformer = AsyncStarRocksChained
 sync_starrocks_db_error_transformer: DbErrorTransformer = error_transformer.make_default_transformer_with_custom_rules(
     Rule(
         when=is_table_does_not_exist_sync_error(),
-        then_raise=exc.SourceDoesNotExist,
+        then_raise=exc.SourceDoesNotExistError,
     ),
     Rule(
         when=is_sql_syntax_error_sync_error(),
-        then_raise=exc.InvalidQuery,
+        then_raise=exc.InvalidQueryError,
     ),
 )

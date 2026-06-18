@@ -7,7 +7,7 @@ from dl_core.connection_executors.adapters.async_adapters_remote import RemoteAs
 from dl_core.connection_executors.models.common import RemoteQueryExecutorData
 from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 from dl_core.connection_executors.models.db_adapter_data import DBAdapterQuery
-from dl_core.connection_executors.models.exc import QueryExecutorException
+from dl_core.connection_executors.models.exc import QueryExecutorError
 from dl_core.connection_executors.models.scoped_rci import DBAdapterScopedRCI
 from dl_core.us_connection_base import ConnectionBase
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
@@ -52,7 +52,7 @@ class DefaultQESpecificTestSuite[CONN_TV: ConnectionBase](BaseRemoteQueryExecuto
             force_async_rqe=force_async_rqe,
         )
         async with remote_adapter:
-            with pytest.raises(QueryExecutorException, match=r"Invalid signature"):
+            with pytest.raises(QueryExecutorError, match=r"Invalid signature"):
                 await remote_adapter.execute(DBAdapterQuery("select 1"))
 
     @pytest.mark.asyncio

@@ -41,10 +41,10 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
 
             try:
                 self._service_auth(service_token_header)
-            except self.Unauthorized as exc:
+            except self.UnauthorizedError as exc:
                 LOGGER.warning("Service auth unauthorized: %s", exc.message)
                 raise werkzeug_exceptions.Unauthorized(description=exc.message) from exc
-            except self.Forbidden as exc:
+            except self.ForbiddenError as exc:
                 LOGGER.warning("Service auth forbidden: %s", exc.message)
                 raise werkzeug_exceptions.Forbidden(description=exc.message) from exc
 
@@ -54,7 +54,7 @@ class FlaskMiddleware(middlewares_base.BaseMiddleware):
 
         try:
             auth_result = self._auth(user_access_token_header)
-        except self.Unauthorized as exc:
+        except self.UnauthorizedError as exc:
             LOGGER.info("Unauthorized: %s", exc.message)
             raise werkzeug_exceptions.Unauthorized(description=exc.message) from exc
 

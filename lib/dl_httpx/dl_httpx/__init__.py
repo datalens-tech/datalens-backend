@@ -15,10 +15,10 @@ from .error_transformers import (
     StatusMapTransformer,
 )
 from .exceptions import (
-    BaseHttpxClientException,
-    HttpStatusHttpxClientException,
-    NoRetriesHttpxClientException,
-    RequestHttpxClientException,
+    BaseHttpxClientError,
+    HttpStatusHttpxClientError,
+    NoRetriesHttpxClientError,
+    RequestHttpxClientError,
 )
 from .models import (
     BaseRequest,
@@ -40,7 +40,7 @@ from .rate_limiters import (
     NoRateLimiterSettings,
     RateLimiterProtocol,
     RateLimiterSettings,
-    RateLimitHttpxClientException,
+    RateLimitHttpxClientError,
     SlidingWindowRateLimiter,
     SlidingWindowRateLimiterSettings,
 )
@@ -58,7 +58,7 @@ from .transport_adapters import (
 
 __all__ = [
     "NULL_ERROR_TRANSFORMER",
-    "BaseHttpxClientException",
+    "BaseHttpxClientError",
     "BaseRequest",
     "BaseResponseSchema",
     "BaseSchema",
@@ -69,7 +69,7 @@ __all__ = [
     "DefaultDateTimeProvider",
     "ErrorTransformerProtocol",
     "ExceptionFactoryProtocol",
-    "HttpStatusHttpxClientException",
+    "HttpStatusHttpxClientError",
     "HttpxAsyncClient",
     "HttpxBaseClient",
     "HttpxClientDependencies",
@@ -79,16 +79,16 @@ __all__ = [
     "MaxParallelRateLimiterSettings",
     "NoRateLimiter",
     "NoRateLimiterSettings",
-    "NoRetriesHttpxClientException",
+    "NoRetriesHttpxClientError",
     "NoTransportAdapter",
     "NoTransportAdapterSettings",
     "NullErrorTransformer",
     "ParentContext",
     "ParentContextProtocol",
-    "RateLimitHttpxClientException",
+    "RateLimitHttpxClientError",
     "RateLimiterProtocol",
     "RateLimiterSettings",
-    "RequestHttpxClientException",
+    "RequestHttpxClientError",
     "RequestIdRetryMutator",
     "RetryRequestMutator",
     "SlidingWindowRateLimiter",

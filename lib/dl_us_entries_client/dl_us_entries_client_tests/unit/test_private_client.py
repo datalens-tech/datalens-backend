@@ -23,7 +23,7 @@ async def test_get_entry_raises_when_no_permissions_in_response(
             base_url="http://us.example.com",
         ),
     )
-    with pytest.raises(dl_us_entries_client.UsEntriesClientException):
+    with pytest.raises(dl_us_entries_client.UsEntriesClientError):
         await client.get_entry(
             dl_us_entries_client.PrivateEntryGetRequest(
                 entry_id="dummyid",

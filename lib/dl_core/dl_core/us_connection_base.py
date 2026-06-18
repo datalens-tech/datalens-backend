@@ -64,9 +64,9 @@ from dl_core.connectors.settings.mixins import (
 )
 from dl_core.exc import (
     InvalidRequestError,
-    QuerySettingForbidden,
-    QuerySettingNotAllowed,
-    QuerySettingsNotSupported,
+    QuerySettingForbiddenError,
+    QuerySettingNotAllowedError,
+    QuerySettingsNotSupportedError,
 )
 from dl_core.i18n.localizer import Translatable
 from dl_core.us_entry import (
@@ -504,16 +504,16 @@ class ConnectionBase(USEntry, metaclass=abc.ABCMeta):
             return
 
         if not self.is_query_settings_enabled:
-            raise QuerySettingsNotSupported()
+            raise QuerySettingsNotSupportedError()
 
         forbidden_names = self.query_settings_forbidden_names
         allowed_names = self.query_settings_allowed_names
 
         for key in query_settings:
             if key in forbidden_names:
-                raise QuerySettingForbidden(f"Setting '{key}' is forbidden and cannot be set")
+                raise QuerySettingForbiddenError(f"Setting '{key}' is forbidden and cannot be set")
             if allowed_names is not None and key not in allowed_names:
-                raise QuerySettingNotAllowed(f"Setting '{key}' is not allowed and cannot be set")
+                raise QuerySettingNotAllowedError(f"Setting '{key}' is not allowed and cannot be set")
 
     def as_dict(self, short=False):  # type: ignore  # TODO: fix
         resp = super().as_dict(short=short)

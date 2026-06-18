@@ -95,7 +95,7 @@ def usm_tenant_resolver_middleware(
             try:
                 # TODO: context_name not passed due to target type unknown
                 entry = await usm.get_by_id(entry_id)
-            except exc.USObjectNotFoundException as e:
+            except exc.USObjectNotFoundError as e:
                 raise web.HTTPNotFound() from e
             else:
                 tenant = tenant_resolver.resolve_tenant_def_by_tenant_id(entry.raw_tenant_id)

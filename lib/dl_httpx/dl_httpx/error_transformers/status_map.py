@@ -8,7 +8,7 @@ import dl_httpx.exceptions as exceptions
 class StatusMapTransformer:
     status_map: dict[int, base.ExceptionFactoryProtocol]
 
-    def transform(self, exception: exceptions.HttpStatusHttpxClientException) -> Exception | None:
+    def transform(self, exception: exceptions.HttpStatusHttpxClientError) -> Exception | None:
         factory = self.status_map.get(exception.response.status_code)
         if factory is None:
             return None

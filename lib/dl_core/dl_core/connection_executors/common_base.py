@@ -21,7 +21,7 @@ from sqlalchemy.sql.elements import ClauseElement
 
 from dl_api_commons.base_models import RequestContextInfo
 from dl_constants import UserDataType
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 from dl_constants.types import TBIDataValue
 from dl_core.connection_executors.models.common import RemoteQueryExecutorData
 from dl_core.connection_executors.models.db_adapter_data import RawSchemaInfo
@@ -195,7 +195,7 @@ class ConnExecutorBase:
     def _postprocess_db_excs(self) -> Generator[None, None, None]:
         try:
             yield
-        except DLBaseException as exc:
+        except DLBaseError as exc:
             if self._conn_options.pass_db_messages_to_user:
                 for key in ("query", "db_message"):
                     value = exc.debug_info.get(key)

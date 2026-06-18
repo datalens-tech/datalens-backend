@@ -93,7 +93,7 @@ from dl_core.components.accessor import DatasetComponentAccessor
 from dl_core.data_source.base import DataSource
 from dl_core.data_source.collection import DataSourceCollectionFactory
 from dl_core.dataset_capabilities import DatasetCapabilities
-from dl_core.exc import USObjectNotFoundException
+from dl_core.exc import USObjectNotFoundError
 from dl_core.fields import ResultSchema
 from dl_core.reporting.notifications import get_notification_record
 from dl_core.us_dataset import Dataset
@@ -241,7 +241,7 @@ class DatasetDataBaseView(BaseView):
                     params=params,
                     context_name="dataset",
                 )
-            except USObjectNotFoundException as e:
+            except USObjectNotFoundError as e:
                 raise web.HTTPNotFound(reason="Entity not found") from e
 
             await us_manager.load_dataset_dependencies(
@@ -358,7 +358,7 @@ class DatasetDataBaseView(BaseView):
         try:
             assert self.dataset_id is not None
             us_resp = await us_manager.get_by_id_raw(self.dataset_id, params=params)
-        except USObjectNotFoundException as e:
+        except USObjectNotFoundError as e:
             raise web.HTTPNotFound(reason="Entity not found") from e
 
         # TODO: Try using partial deserialization instead of direct dict lookup if possible

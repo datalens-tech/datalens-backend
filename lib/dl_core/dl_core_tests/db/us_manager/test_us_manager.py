@@ -64,7 +64,7 @@ class TestUSManager(DefaultCoreTestClass):
                 reloaded_conn = await usm.get_by_id(original_conn.uuid, ConnectionClickhouse)
                 reloaded_conn.data.name = "ololo"
 
-                with pytest.raises(exc.USLockUnacquiredException) as exc_info:
+                with pytest.raises(exc.USLockUnacquiredError) as exc_info:
                     await usm.save(reloaded_conn)
                 assert isinstance(exc_info.value.orig_exc, ClientResponseError)
                 assert exc_info.value.orig_exc.status == 423
@@ -91,7 +91,7 @@ class TestUSManager(DefaultCoreTestClass):
         reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
         # Ensure lock works
         reloaded_entry.data.host = "ololo"
-        with pytest.raises(exc.USLockUnacquiredException):
+        with pytest.raises(exc.USLockUnacquiredError):
             sync_us_manager.save(reloaded_entry)
         # Ensure we can save originally locked entry
         orig_entry.data.host = "azaza"
@@ -110,7 +110,7 @@ class TestUSManager(DefaultCoreTestClass):
             reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
             # Ensure lock works
             reloaded_entry.data.host = "ololo_get_locked_cm"
-            with pytest.raises(exc.USLockUnacquiredException):
+            with pytest.raises(exc.USLockUnacquiredError):
                 sync_us_manager.save(reloaded_entry)
 
         # Ensure locked entry was released
@@ -126,7 +126,7 @@ class TestUSManager(DefaultCoreTestClass):
             reloaded_entry = sync_us_manager.get_by_id(orig_entry.uuid)
             # Ensure lock works
             reloaded_entry.data.host = "ololo_just_locked_cm"
-            with pytest.raises(exc.USLockUnacquiredException):
+            with pytest.raises(exc.USLockUnacquiredError):
                 sync_us_manager.save(reloaded_entry)
 
         # Ensure locked entry was released
@@ -187,5 +187,5 @@ class TestUSManager(DefaultCoreTestClass):
             respect_sources=True,
         )
 
-        with pytest.raises(exc.ReferencedUSEntryNotFound, match=f".+ {referenced_conn_id} .+"):
+        with pytest.raises(exc.ReferencedUSEntryNotFoundError, match=f".+ {referenced_conn_id} .+"):
             us_manager.get_loaded_us_connection(referenced_conn_id)

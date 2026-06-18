@@ -20,7 +20,7 @@ class AiohttpRetryError(Exception):
     """Aiohttp retrier failed attempting to retry"""
 
 
-class AiohttpRetryTimeout(aiohttp.client_exceptions.ServerTimeoutError, AiohttpRetryError):
+class AiohttpRetryTimeoutError(aiohttp.client_exceptions.ServerTimeoutError, AiohttpRetryError):
     """Timed out attempting to retry"""
 
 
@@ -66,7 +66,7 @@ class AiohttpPolicyRetrier(BaseRetrier):
             return last_known_result
 
         if isinstance(last_known_result, aiohttp.client_exceptions.ServerTimeoutError):
-            raise AiohttpRetryTimeout() from last_known_result
+            raise AiohttpRetryTimeoutError() from last_known_result
 
         if isinstance(last_known_result, Exception):
             raise AiohttpRetryError() from last_known_result

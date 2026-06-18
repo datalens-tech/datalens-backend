@@ -170,7 +170,7 @@ class HttpxBaseClient[THttpxTransport: (httpx.BaseTransport, httpx.AsyncBaseTran
                 e.response.status_code,
                 e.response.text,
             )
-            raise exceptions.HttpStatusHttpxClientException(
+            raise exceptions.HttpStatusHttpxClientError(
                 request=e.request,
                 response=e.response,
             ) from e
@@ -184,7 +184,7 @@ class HttpxBaseClient[THttpxTransport: (httpx.BaseTransport, httpx.AsyncBaseTran
     ) -> Iterator[None]:
         try:
             yield
-        except exceptions.HttpStatusHttpxClientException as exception:
+        except exceptions.HttpStatusHttpxClientError as exception:
             transformed = error_transformer.transform(exception)
             if transformed is not None:
                 raise transformed from exception
@@ -218,7 +218,7 @@ class HttpxSyncRetrier:
         )
         try:
             response = request_func(request)
-        except rate_limiters.RateLimitHttpxClientException:
+        except rate_limiters.RateLimitHttpxClientError:
             self._logger.warning(
                 "%s rate limited: %s",
                 self._client_name,
@@ -278,13 +278,13 @@ class HttpxSyncRetrier:
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
 
-        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientException):
+        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientError):
             raise last_known_result
 
         if isinstance(last_known_result, Exception):
-            raise exceptions.RequestHttpxClientException(original_exception=last_known_result) from last_known_result
+            raise exceptions.RequestHttpxClientError(original_exception=last_known_result) from last_known_result
 
-        raise exceptions.NoRetriesHttpxClientException()
+        raise exceptions.NoRetriesHttpxClientError()
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
@@ -308,7 +308,7 @@ class HttpxAsyncRetrier:
         )
         try:
             response = await request_func(request)
-        except rate_limiters.RateLimitHttpxClientException:
+        except rate_limiters.RateLimitHttpxClientError:
             self._logger.warning(
                 "%s rate limited: %s",
                 self._client_name,
@@ -368,13 +368,13 @@ class HttpxAsyncRetrier:
         if isinstance(last_known_result, httpx.Response):
             return last_known_result
 
-        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientException):
+        if isinstance(last_known_result, rate_limiters.RateLimitHttpxClientError):
             raise last_known_result
 
         if isinstance(last_known_result, Exception):
-            raise exceptions.RequestHttpxClientException(original_exception=last_known_result) from last_known_result
+            raise exceptions.RequestHttpxClientError(original_exception=last_known_result) from last_known_result
 
-        raise exceptions.NoRetriesHttpxClientException()
+        raise exceptions.NoRetriesHttpxClientError()
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)

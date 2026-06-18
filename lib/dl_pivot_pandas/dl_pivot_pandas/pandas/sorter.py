@@ -123,9 +123,9 @@ class PdPivotSorterBase(PivotSorter):
                     sorting_idx = idx
                     header.info.sorting_direction = settings.direction
                 else:  # should never actually occur, as header_values + role_spec uniquely identify sorting_idx
-                    raise exc.PivotSortingRowOrColumnIsAmbiguous()
+                    raise exc.PivotSortingRowOrColumnIsAmbiguousError()
         if sorting_idx is None:
-            raise exc.PivotSortingRowOrColumnNotFound()
+            raise exc.PivotSortingRowOrColumnNotFoundError()
 
         # we can use sort_values to sort a DataFrame by row or column,
         # however tuples in indexes make it incredibly hard to apply,

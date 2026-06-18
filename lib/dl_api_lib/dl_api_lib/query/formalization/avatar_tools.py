@@ -21,7 +21,9 @@ def normalize_explicit_avatar_ids(dataset: Dataset, required_avatar_ids: set[Ava
     if not user_managed_required_avatar_ids:
         # In this case only one non-user-managed avatar can be handled
         if len(required_avatar_ids) > 1:
-            raise dl_query_processing.exc.InvalidQueryStructure("Cannot build query with only feature-managed avatars")
+            raise dl_query_processing.exc.InvalidQueryStructureError(
+                "Cannot build query with only feature-managed avatars"
+            )
 
         if not required_avatar_ids:
             # Attempt to fall back to root avatar

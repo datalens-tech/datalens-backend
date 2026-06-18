@@ -10,18 +10,18 @@ from requests.exceptions import RequestException
 
 import dl_sqlalchemy_metrica_api as package
 from dl_sqlalchemy_metrica_api.exceptions import (  # noqa
-    ConnectionClosedException,
-    CursorClosedException,
+    ConnectionClosedError,
+    CursorClosedError,
     DatabaseError,
     DataError,
     Error,
     IntegrityError,
     InterfaceError,
     InternalError,
-    MetrikaApiAccessDeniedException,
-    MetrikaApiException,
-    MetrikaApiObjectNotFoundException,
-    MetrikaHttpApiException,
+    MetrikaApiAccessDeniedError,
+    MetrikaApiError,
+    MetrikaApiObjectNotFoundError,
+    MetrikaHttpApiError,
     NotSupportedError,
     OperationalError,
     ProgrammingError,
@@ -133,15 +133,15 @@ class MetrikaApiClient:
         except RequestException as ex:
             msg = _parse_metrika_error(response)
             if response.status_code == 403:
-                raise MetrikaApiAccessDeniedException(msg, orig_exc=ex) from ex
+                raise MetrikaApiAccessDeniedError(msg, orig_exc=ex) from ex
             if response.status_code == 404:
-                raise MetrikaApiObjectNotFoundException(msg, orig_exc=ex) from ex
-            raise MetrikaHttpApiException(msg, orig_exc=ex) from ex
+                raise MetrikaApiObjectNotFoundError(msg, orig_exc=ex) from ex
+            raise MetrikaHttpApiError(msg, orig_exc=ex) from ex
 
         try:
             parsed_resp = response.json()
         except JSONDecodeError as ex:
-            raise MetrikaHttpApiException("Unable to parse response.", orig_exc=ex) from ex
+            raise MetrikaHttpApiError("Unable to parse response.", orig_exc=ex) from ex
         return parsed_resp
 
     def get(self, uri, **kwargs: Any):
@@ -165,7 +165,7 @@ class MetrikaApiClient:
             if req_metrics is not None and len(req_metrics) == 1:
                 req_metrics = req_metrics[0].split(",")
                 if len(q_metrics) != len(req_metrics):
-                    raise MetrikaApiException("Unexpected response metrics count.")
+                    raise MetrikaApiError("Unexpected response metrics count.")
                 if q_metrics != req_metrics:
                     LOGGER.info(
                         "Response query metrics not matching requested metrics: %s, %s.",
@@ -191,7 +191,7 @@ class MetrikaApiClient:
                     )
                 )
         except (KeyError, ValueError) as ex:
-            raise MetrikaApiException(orig_exc=ex) from ex
+            raise MetrikaApiError(orig_exc=ex) from ex
 
         return {
             "fields": result_columns,
@@ -227,5 +227,5 @@ class MetrikaApiClient:
             date_str = counter_info.get("create_time", counter_info.get("create_date")).split("T")[0]
             creation_date = datetime.date.fromisoformat(date_str)
         except (ValueError, KeyError) as ex:
-            raise MetrikaApiException(orig_exc=ex) from ex
+            raise MetrikaApiError(orig_exc=ex) from ex
         return creation_date

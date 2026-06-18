@@ -7,7 +7,7 @@ import dl_api_commons.aio.middlewares as dl_api_commons_aio_middlewares
 from dl_api_commons.aio.middlewares.commons import DLRequestBase
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
     DLRequestView,
-    RCINotSet,
+    RCINotSetError,
 )
 
 
@@ -35,7 +35,7 @@ async def test_rci_headers_populates_rci(aiohttp_client: TestClient, rci_commit:
                 rci = dl_req.rci
             else:
                 assert not dl_req.is_rci_committed()
-                with pytest.raises(RCINotSet):
+                with pytest.raises(RCINotSetError):
                     rci = dl_req.rci
                 rci = dl_req.temp_rci
             return web.json_response(

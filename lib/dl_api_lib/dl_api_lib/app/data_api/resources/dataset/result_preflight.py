@@ -48,7 +48,7 @@ class DatasetResultPreflightView(DatasetDataBaseView):
 
         try:
             await self.prepare_dataset_with_mutation_cache(req_model=req_model)
-        except (exc.DLValidationFatal, exc.DatasetActionNotAllowedError) as err:
+        except (exc.DLValidationFatalError, exc.DatasetActionNotAllowedError) as err:
             return self._make_response(
                 code=self._format_err_code(err.err_code),
                 message=err.message,

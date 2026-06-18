@@ -2,7 +2,7 @@ import pytest
 
 from dl_core.exc import (
     InvalidRequestError,
-    SourceDoesNotExist,
+    SourceDoesNotExistError,
 )
 from dl_core.us_connection_base import DataSourceTemplate
 from dl_core_testing.testcases.connection import DefaultConnectionTestClass
@@ -165,7 +165,7 @@ class TestTrinoConnection(
             )
 
         # Test with invalid/non-existent catalog name
-        with pytest.raises(SourceDoesNotExist):
+        with pytest.raises(SourceDoesNotExistError):
             conn.get_data_source_templates_paginated(
                 sync_conn_executor_factory_for_conn, db_name="non_existent_catalog_name_12345"
             )

@@ -43,7 +43,7 @@ async def fixture_cleanup_schedules(
     temporal_client: dl_temporal.TemporalClient,
 ) -> AsyncGenerator[None, None]:
     async for entry in await temporal_client.list_schedules():
-        with contextlib.suppress(dl_temporal.NotFound):
+        with contextlib.suppress(dl_temporal.NotFoundError):
             await temporal_client.delete_schedule(entry.id)
     yield
 

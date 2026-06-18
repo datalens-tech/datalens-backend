@@ -99,7 +99,7 @@ class Response(aiohttp_web.Response):
         )
 
 
-class ResponseException(Response, Exception): ...
+class ResponseError(Response, Exception): ...
 
 
 class BaseResponseSchema(dl_pydantic.BaseSchema): ...
@@ -127,8 +127,8 @@ class ErrorResponseSchema(BaseResponseSchema):
     def as_response(self) -> Response:
         return Response.with_data(data=self.as_data(), status=self.status_code)
 
-    def as_exception(self) -> ResponseException:
-        return ResponseException.with_data(data=self.as_data(), status=self.status_code)
+    def as_exception(self) -> ResponseError:
+        return ResponseError.with_data(data=self.as_data(), status=self.status_code)
 
 
 class BadRequestResponseSchema(ErrorResponseSchema):

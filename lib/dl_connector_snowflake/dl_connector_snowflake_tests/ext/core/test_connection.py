@@ -46,7 +46,7 @@ class TestSnowFlakeConnectionWithExpiredRefreshToken(
     def test_connection_test(self, saved_connection, sync_conn_executor_factory) -> None:
         conn_executor = sync_conn_executor_factory()
         # note: currently could not get proper error message with aiohttp client
-        # with pytest.raises(SnowflakeRefreshTokenInvalid):
+        # with pytest.raises(SnowflakeRefreshTokenInvalidError):
         with pytest.raises(SnowflakeGetAccessTokenError):
             conn_executor.execute(ConnExecutorQuery(query="select 1"))
 

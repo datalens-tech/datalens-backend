@@ -104,10 +104,10 @@ class AiohttpDBAdapter(AsyncDirectDBAdapter, metaclass=abc.ABCMeta):
     execute_err_map: Sequence[tuple[type[Exception], type[exc.DatabaseQueryError]]] = (
         (aiohttp.client_exceptions.ClientConnectorError, exc.SourceConnectError),
         (exc.AIOHttpConnTimeoutError, exc.SourceConnectError),
-        (aiohttp.client_exceptions.ServerTimeoutError, exc.SourceTimeout),
-        (asyncio.exceptions.TimeoutError, exc.SourceTimeout),
-        (aiohttp.client_exceptions.ServerDisconnectedError, exc.SourceClosedPrematurely),
-        (exc.RSTError, exc.SourceClosedPrematurely),
+        (aiohttp.client_exceptions.ServerTimeoutError, exc.SourceTimeoutError),
+        (asyncio.exceptions.TimeoutError, exc.SourceTimeoutError),
+        (aiohttp.client_exceptions.ServerDisconnectedError, exc.SourceClosedPrematurelyError),
+        (exc.RSTError, exc.SourceClosedPrematurelyError),
         (aiohttp.client_exceptions.ClientPayloadError, exc.SourceProtocolError),
     )
 

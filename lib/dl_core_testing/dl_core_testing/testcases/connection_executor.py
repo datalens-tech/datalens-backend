@@ -227,7 +227,7 @@ class DefaultSyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
         nonexistent_table_ident: TableIdent,
     ) -> None:
         query = ConnExecutorQuery(query=f"SELECT * from {db.quote(nonexistent_table_ident.table_name)}")
-        with pytest.raises(core_exc.SourceDoesNotExist):
+        with pytest.raises(core_exc.SourceDoesNotExistError):
             sync_connection_executor.execute(query)
 
     def test_closing_sql_sessions(
@@ -262,7 +262,7 @@ class DefaultSyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
         sync_connection_executor: SyncConnExecutorBase,
         nonexistent_table_ident: TableIdent,
     ) -> None:
-        with pytest.raises(core_exc.DLBaseException):
+        with pytest.raises(core_exc.DLBaseError):
             sync_connection_executor.get_table_schema_info(table_def=nonexistent_table_ident)
 
 
@@ -354,7 +354,7 @@ class DefaultAsyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
         nonexistent_table_ident: TableIdent,
     ) -> None:
         query = ConnExecutorQuery(query=f"SELECT * from {db.quote(nonexistent_table_ident.table_name)}")
-        with pytest.raises(core_exc.SourceDoesNotExist):
+        with pytest.raises(core_exc.SourceDoesNotExistError):
             await async_connection_executor.execute(query)
 
     @pytest.mark.asyncio
@@ -384,7 +384,7 @@ class DefaultAsyncConnectionExecutorTestSuite[CONN_TV: ConnectionBase](
         async_connection_executor: AsyncConnExecutorBase,
         nonexistent_table_ident: TableIdent,
     ) -> None:
-        with pytest.raises(core_exc.DLBaseException):
+        with pytest.raises(core_exc.DLBaseError):
             await async_connection_executor.get_table_schema_info(table_def=nonexistent_table_ident)
 
 

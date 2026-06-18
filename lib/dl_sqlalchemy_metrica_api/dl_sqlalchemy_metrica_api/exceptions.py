@@ -8,7 +8,7 @@ class Error(Exception):
     pass
 
 
-class Warning(Exception):
+class Warning(Exception):  # noqa: N818
     pass
 
 
@@ -47,39 +47,39 @@ class NotSupportedError(DatabaseError):
 # Dialect specific exceptions
 
 
-class MetrikaApiException(DatabaseError):
+class MetrikaApiError(DatabaseError):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.orig_exc = kwargs.pop("orig_exc", None)
         super().__init__(*args, **kwargs)
 
 
-class MetrikaHttpApiException(MetrikaApiException):
+class MetrikaHttpApiError(MetrikaApiError):
     pass
 
 
-class MetrikaApiAccessDeniedException(MetrikaHttpApiException):
+class MetrikaApiAccessDeniedError(MetrikaHttpApiError):
     pass
 
 
-class MetrikaApiObjectNotFoundException(MetrikaHttpApiException):
+class MetrikaApiObjectNotFoundError(MetrikaHttpApiError):
     pass
 
 
-class MetrikaApiGroupByNotSupported(NotSupportedError):
+class MetrikaApiGroupByNotSupportedError(NotSupportedError):
     pass
 
 
-class MetrikaApiDimensionInCalc(NotSupportedError):
+class MetrikaApiDimensionInCalcError(NotSupportedError):
     pass
 
 
-class MetrikaApiNoMetricsNorGroupBy(ProgrammingError):
+class MetrikaApiNoMetricsNorGroupByError(ProgrammingError):
     pass
 
 
-class ConnectionClosedException(MetrikaApiException):
+class ConnectionClosedError(MetrikaApiError):
     pass
 
 
-class CursorClosedException(MetrikaApiException):
+class CursorClosedError(MetrikaApiError):
     pass

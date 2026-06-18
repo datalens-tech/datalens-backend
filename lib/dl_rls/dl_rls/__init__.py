@@ -1,7 +1,7 @@
 from .exc import (
     RLSConfigParsingError,
     RLSError,
-    RLSSubjectNotFound,
+    RLSSubjectNotFoundError,
 )
 from .models import (
     RLS_FAILED_USER_NAME_PREFIX,
@@ -41,7 +41,7 @@ __all__ = [
     "RLSEntry",
     "RLSError",
     "RLSSubject",
-    "RLSSubjectNotFound",
+    "RLSSubjectNotFoundError",
     "is_slug",
     "rls_uses_real_group_ids",
 ]

@@ -3,23 +3,23 @@ from typing import Self
 import dl_httpx
 
 
-class UsEntriesClientException(Exception):
+class UsEntriesClientError(Exception):
     pass
 
 
-class NotFoundError(UsEntriesClientException):
+class NotFoundError(UsEntriesClientError):
     @classmethod
-    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientError) -> Self:
         return cls()
 
 
-class EntryLockedError(UsEntriesClientException):
+class EntryLockedError(UsEntriesClientError):
     @classmethod
-    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientError) -> Self:
         return cls()
 
 
-class BadRequest(UsEntriesClientException):
+class BadRequestError(UsEntriesClientError):
     @classmethod
-    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientException) -> Self:
+    def from_httpx_exception(cls, exception: dl_httpx.HttpStatusHttpxClientError) -> Self:
         return cls()

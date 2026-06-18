@@ -128,7 +128,7 @@ class DashSQLTypedQueryView(BaseView):
         """Check whether we can use this connection to execute the query"""
         need_permission_on_entry(connection, USPermissionKind.execute)
         if not connection.is_typed_query_allowed or not connection.is_dashsql_allowed:
-            raise core_exc.DashSQLNotAllowed()
+            raise core_exc.DashSQLNotAllowedError()
 
     def make_typed_query(self) -> TypedQuery:
         """Formalize and validate query from input"""

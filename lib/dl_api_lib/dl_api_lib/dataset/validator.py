@@ -260,7 +260,7 @@ def validate_cache_invalidation_filters(
         # Check that the referenced field exists
         try:
             field = result_schema.by_guid(filter_obj.field_guid)
-        except common_exc.FieldNotFound:
+        except common_exc.FieldNotFoundError:
             return CacheInvalidationError(
                 title="Invalid Filter",
                 message=f"Filter references unknown field: {filter_obj.field_guid}",
@@ -359,7 +359,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 )
         except common_exc.DatasetConfigurationError as err:
             LOGGER.info("Error occurred during applying action: %r", err)
-            raise exc.DLValidationFatal(f"Invalid action: {err}") from err
+            raise exc.DLValidationFatalError(f"Invalid action: {err}") from err
 
         self._check_for_orphaned_component_errors()
 
@@ -378,7 +378,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         # TODO: ManagedBy is not present in any schema. Why is this check needed here?
         if by is not None and (item_data.managed_by or ManagedBy.user) != by:
-            raise exc.DLValidationFatal(f"Item cannot be managed by {by.name}")
+            raise exc.DLValidationFatalError(f"Item cannot be managed by {by.name}")
 
         if isinstance(item_data, FieldAction):
             self.apply_field_action(
@@ -443,7 +443,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         new_result_schema_len = len(self._ds.result_schema) + field_cnt_diff
         if new_result_schema_len > self._constraints.FIELD_COUNT_LIMIT_HARD and field_cnt_diff > 0:
-            raise dl_query_processing.exc.DatasetTooManyFieldsFatal()
+            raise dl_query_processing.exc.DatasetTooManyFieldsFatalError()
         if new_result_schema_len > self._constraints.FIELD_COUNT_LIMIT_SOFT:
             self._ds.error_registry.add_error(
                 id=self._ds.result_schema.id,
@@ -460,7 +460,7 @@ class DatasetValidator(DatasetBaseWrapper):
             sum(len(field.ui_settings.encode("utf-8")) for field in self._ds.result_schema) + field_ui_settings_len
         )
         if overall_ui_settings_size > DatasetConstraints.OVERALL_UI_SETTINGS_MAX_SIZE:
-            raise exc.DLValidationFatal("Dataset exceeds the maximum size of UI settings")
+            raise exc.DLValidationFatalError("Dataset exceeds the maximum size of UI settings")
 
     def get_dependent_fields(self, field: BIField | None) -> list[BIField]:
         """Return list of fields directly dependent on the given one"""
@@ -476,7 +476,7 @@ class DatasetValidator(DatasetBaseWrapper):
             errors.append(
                 FormulaErrorCtx(
                     message="Data source is not set for the dataset",
-                    code=tuple(common_exc.DataSourceNotFound.err_code),
+                    code=tuple(common_exc.DataSourceNotFoundError.err_code),
                     level=MessageLevel.ERROR,
                 )
             )
@@ -888,7 +888,7 @@ class DatasetValidator(DatasetBaseWrapper):
         if update_field_id:
             if field_data.calc_mode != CalcMode.parameter and not self._id_validator.is_valid(new_field_id):
                 err_msg = f"Field ID must be [a-z0-9_\\-]{{1,{self._id_validator.id_length}}}: {new_field_id}"
-                raise exc.DLValidationFatal(err_msg)
+                raise exc.DLValidationFatalError(err_msg)
             new_component_ref = DatasetComponentRef(component_type=ComponentType.field, component_id=new_field_id)
             self.perform_component_id_validation(component_ref=new_component_ref)
             # non strict option is used only for old charts. not needed for id update
@@ -916,17 +916,17 @@ class DatasetValidator(DatasetBaseWrapper):
             ui_settings_len = len(field_data_dict.get("ui_settings", "").encode("utf-8"))
             if ui_settings_len > DatasetConstraints.FIELD_UI_SETTINGS_MAX_SIZE:
                 err_msg = f"Field with ID {field_id} exceeds the maximum size of UI settings"
-                raise exc.DLValidationFatal(err_msg)
+                raise exc.DLValidationFatalError(err_msg)
             self.validate_overall_ui_settings_length(field_ui_settings_len=ui_settings_len)
 
         if action in (DatasetAction.update_field, DatasetAction.delete_field):
             try:
                 old_field = self.get_field_by_id(field_id)
-            except common_exc.FieldNotFound as err:
+            except common_exc.FieldNotFoundError as err:
                 err_msg = f"Field with ID {field_id} doesn't exist"
                 LOGGER.error(err_msg)
                 if strict:
-                    raise exc.DLValidationFatal(err_msg) from err
+                    raise exc.DLValidationFatalError(err_msg) from err
                 return
 
             self._ds_ca.validate_component_can_be_managed(component_ref=component_ref, by=by)
@@ -936,13 +936,13 @@ class DatasetValidator(DatasetBaseWrapper):
             checked_field_id = field_id if not update_field_id else new_field_id
             try:
                 self.get_field_by_id(checked_field_id)
-            except common_exc.FieldNotFound:
+            except common_exc.FieldNotFoundError:
                 pass
             else:
                 err_msg = f"Field with ID {checked_field_id} already exists"
                 LOGGER.error(err_msg)
                 if strict:
-                    raise exc.DLValidationFatal(err_msg)
+                    raise exc.DLValidationFatalError(err_msg)
                 return
 
         if action == DatasetAction.update_field:
@@ -1188,7 +1188,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
     def perform_component_id_validation(self, component_ref: DatasetComponentRef) -> None:
         if component_ref.component_id in (toplevel_id.value for toplevel_id in TopLevelComponentId):
-            raise exc.DLValidationFatal(f"Cannot use a reserved ID - {component_ref.component_id}")
+            raise exc.DLValidationFatalError(f"Cannot use a reserved ID - {component_ref.component_id}")
 
         # TODO validate component id itself: length, allowed symbols, etc.
 
@@ -1200,7 +1200,7 @@ class DatasetValidator(DatasetBaseWrapper):
         #         other_component_id = other_component.guid if isinstance(other_component, BIField) else other_component.id
         #
         #         if component_ref.component_id == other_component_id:
-        #             raise exc.DLValidationFatal(
+        #             raise exc.DLValidationFatalError(
         #                 f'Component IDs are not unique: '
         #                 f'found {component_ref.component_type.name} and {other_type.name} '
         #                 f'with ID {other_component_id}'
@@ -1223,9 +1223,9 @@ class DatasetValidator(DatasetBaseWrapper):
         old_title_conflict_ids = set()
         new_title_conflict_ids = set()
         exc_cls = {
-            ComponentType.data_source: common_exc.DataSourceTitleConflict,
-            ComponentType.source_avatar: common_exc.SourceAvatarTitleConflict,
-            ComponentType.field: common_exc.FieldTitleConflict,
+            ComponentType.data_source: common_exc.DataSourceTitleConflictError,
+            ComponentType.source_avatar: common_exc.SourceAvatarTitleConflictError,
+            ComponentType.field: common_exc.FieldTitleConflictError,
         }[component_ref.component_type]
 
         for other_component in self._ds_ca.iter_dataset_components_by_type(component_type=component_ref.component_type):
@@ -1297,13 +1297,13 @@ class DatasetValidator(DatasetBaseWrapper):
         dsrc_coll = self._get_data_source_coll_strict(source_id=source_id)
         origin_dsrc = dsrc_coll.get_strict(role=DataSourceRole.origin)
 
-        err: common_exc.DLBaseException | None = None
+        err: common_exc.DLBaseError | None = None
         if origin_dsrc.manual:
             if not origin_dsrc.is_manual_allowed():
-                err = common_exc.ManualSourceNotAllowed()
+                err = common_exc.ManualSourceNotAllowedError()
         elif origin_dsrc.get_default_manual():
             # The source defaults to manual (non-table or templated), so ``manual=False`` is invalid.
-            err = common_exc.NonManualSourceUnsupported()
+            err = common_exc.NonManualSourceUnsupportedError()
 
         if err is not None:
             self._ds.error_registry.add_error(
@@ -1331,7 +1331,7 @@ class DatasetValidator(DatasetBaseWrapper):
         def source_error_ctx() -> Generator[None, None, None]:
             try:
                 yield
-            except common_exc.DLBaseException as err:
+            except common_exc.DLBaseError as err:
                 LOGGER.exception("Failed to check source %s. Assuming it doesn't exist", source_id)
                 self._ds.error_registry.add_error(
                     id=source_id,
@@ -1370,10 +1370,10 @@ class DatasetValidator(DatasetBaseWrapper):
                     schema_info = origin_dsrc.get_schema_info(conn_executor_factory=conn_executor_factory_func)
                     # TODO FIX: BI-2355 Ensure that dsrc.get_schema_info() do not suppress exceptions and remove
                     if not schema_info.schema:  # TODO: remove when get_schema starts raising errors
-                        raise common_exc.DLBaseException(message="Failed to load table schema")
+                        raise common_exc.DLBaseError(message="Failed to load table schema")
                     return schema_info
                 if origin_dsrc.spec.manual is True:
-                    # Manual sources are user-provided: skip raising SourceDoesNotExist when
+                    # Manual sources are user-provided: skip raising SourceDoesNotExistError when
                     # the source can't be discovered through the connector listing.
                     return None
                 params = {}
@@ -1381,7 +1381,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     table_def = origin_dsrc.get_table_definition()
                     params["table_definition"] = str(table_def)
 
-                raise common_exc.SourceDoesNotExist(
+                raise common_exc.SourceDoesNotExistError(
                     db_message="",
                     query="",
                     inspector_query="",
@@ -1487,7 +1487,7 @@ class DatasetValidator(DatasetBaseWrapper):
         def add_source(title: str) -> None:
             connection_id = source_data.get("connection_id")
             if connection_id is None:
-                raise exc.DLValidationFatal("source connection_id cannot be None")
+                raise exc.DLValidationFatalError("source connection_id cannot be None")
 
             connection_ref = DefaultConnectionRef(conn_id=connection_id)
 
@@ -1532,7 +1532,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 created_from=source_data["source_type"],
                 ignore_source_ids=ignore_source_ids or [existing_source_id],  # type: ignore  # TODO: fix
             ):
-                raise exc.DLValidationFatal("Source cannot be added to dataset")
+                raise exc.DLValidationFatalError("Source cannot be added to dataset")
 
         # we have verified that the action is valid, so we can proceed to modifying the dataset
 
@@ -1541,7 +1541,7 @@ class DatasetValidator(DatasetBaseWrapper):
 
         if action == DatasetAction.add_source:
             for field in self._ds.error_registry.for_type(ComponentType.field):
-                self._ds.error_registry.remove_errors(id=field.id, code=common_exc.DataSourceNotFound.err_code)
+                self._ds.error_registry.remove_errors(id=field.id, code=common_exc.DataSourceNotFoundError.err_code)
             add_source(title=source_data.get("title") or None)  # type: ignore  # TODO: fix
             self._validate_manual_field(source_id=source_id)
             self.refresh_data_source(source_id=source_id, old_raw_schema=None)
@@ -1811,7 +1811,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 migration_dtos=migration_dtos,
                 connection_ref=new_connection.conn_ref,  # type: ignore  # 2024-01-24 # TODO: Argument "connection_ref" to "import_migration_dtos" of "DataSourceMigrator" has incompatible type "ConnectionRef | None"; expected "ConnectionRef"  [arg-type]
             )
-        except common_exc.DataSourceMigrationImpossible:
+        except common_exc.DataSourceMigrationImpossibleError:
             # Failed to migrate anything.
             # Let's just go with an empty default data source
             return {}, new_connection.source_type  # type: ignore  # 2024-01-24 # TODO: Incompatible return value type (got "tuple[dict[Any, Any], DataSourceType | None]", expected "tuple[dict[Any, Any], DataSourceType]")  [return-value]
@@ -1841,7 +1841,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 referrer=None,
             )
             old_connection = self._sync_us_manager.get_loaded_us_connection(old_connection_ref)
-        except (common_exc.ReferencedUSEntryNotFound, common_exc.ReferencedUSEntryAccessDenied) as e:
+        except (common_exc.ReferencedUSEntryNotFoundError, common_exc.ReferencedUSEntryAccessDeniedError) as e:
             LOGGER.info('Failed to get the old connection, reason: "%s"', e)
             old_connection = None
 
@@ -2032,7 +2032,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     id=filter.id,
                     type=ComponentType.extract_filter,
                     message=f"Extract filter field {filter.field_guid} does not exist",
-                    code=exc.ExtractValidationFilterFieldMissing.err_code,
+                    code=exc.ExtractValidationFilterFieldMissingError.err_code,
                     details={
                         "field_guid": filter.field_guid,
                     },
@@ -2054,7 +2054,7 @@ class DatasetValidator(DatasetBaseWrapper):
                     id=sort.id,
                     type=ComponentType.extract_sorting,
                     message=f"Extract sorting field {sort.field_guid} does not exist",
-                    code=exc.ExtractValidationSortingFieldMissing.err_code,
+                    code=exc.ExtractValidationSortingFieldMissingError.err_code,
                     details={
                         "field_guid": sort.field_guid,
                     },
@@ -2066,7 +2066,7 @@ class DatasetValidator(DatasetBaseWrapper):
                 id=self._ds_accessor.get_extract_properties().id,
                 type=ComponentType.extract_properties,
                 message="Empty extract sorting",
-                code=exc.ExtractValidationSortingEmpty.err_code,
+                code=exc.ExtractValidationSortingEmptyError.err_code,
                 details={},
             )
 
@@ -2247,12 +2247,12 @@ class DatasetValidator(DatasetBaseWrapper):
                     connection_type=dsrc.conn_type,
                     referrer=None,
                 )
-            except common_exc.ReferencedUSEntryNotFound:
+            except common_exc.ReferencedUSEntryNotFoundError:
                 self._ds.error_registry.add_error(
                     id=dsrc_coll.id,
                     type=ComponentType.data_source,
                     message=f"Connection for {dsrc_coll.title} not found",
-                    code=common_exc.ReferencedUSEntryNotFound.err_code,
+                    code=common_exc.ReferencedUSEntryNotFoundError.err_code,
                     details={},
                 )
 

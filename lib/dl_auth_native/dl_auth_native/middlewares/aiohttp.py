@@ -41,7 +41,7 @@ class AioHTTPMiddleware(middlewares_base.BaseMiddleware):
 
             try:
                 auth_result = self._auth(user_access_token_header)
-            except self.Unauthorized as exc:
+            except self.UnauthorizedError as exc:
                 LOGGER.info("Unauthorized: %s", exc.message)
                 raise aiohttp_web.HTTPUnauthorized(reason=exc.message) from exc
 

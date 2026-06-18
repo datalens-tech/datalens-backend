@@ -7,7 +7,7 @@ import pytest_asyncio
 import shortuuid
 
 from dl_core.base_models import PathEntryLocation
-from dl_core.exc import USLockUnacquiredException
+from dl_core.exc import USLockUnacquiredError
 from dl_core.united_storage_client_aio import UStorageClientAIO
 from dl_core.us_manager.dynamic_token_factory import DynamicUSMasterTokenFactory
 import dl_retrier
@@ -51,7 +51,7 @@ async def test_lock_not_acquired(us_client, test_entry_id):
     initial_lock = await us_client.acquire_lock(test_entry_id, duration=1)
     try:
         # Check for lock
-        with pytest.raises(USLockUnacquiredException):
+        with pytest.raises(USLockUnacquiredError):
             await us_client.acquire_lock(test_entry_id, duration=1)
     finally:
         await us_client.release_lock(test_entry_id, initial_lock)

@@ -22,7 +22,7 @@ from aiohttp.typedefs import (
 )
 
 from dl_api_commons.base_models import RequestContextInfo
-from dl_api_commons.exc import InvalidHeaderException
+from dl_api_commons.exc import InvalidHeaderError
 from dl_api_commons.logging import RequestLoggingContextController
 from dl_api_commons.reporting.profiler import ReportingProfiler
 from dl_api_commons.reporting.registry import ReportingRegistry
@@ -41,7 +41,7 @@ class RequiredResourceCommon(RequiredResource):
     SKIP_CSRF = enum.auto()
 
 
-class RCINotSet(Exception):
+class RCINotSetError(Exception):
     pass
 
 
@@ -113,7 +113,7 @@ class DLRequestBase:
         Returns not-committed RCI. Should be used only during RCI building.
         """
         if self.KEY_RCI_TEMP not in self.request:
-            raise RCINotSet("Temp RCI was not initiated")
+            raise RCINotSetError("Temp RCI was not initiated")
         return self.request[self.KEY_RCI_TEMP]
 
     def init_temp_rci(self, rci: RequestContextInfo):  # type: ignore  # TODO: fix
@@ -148,7 +148,7 @@ class DLRequestBase:
         """
         if self.is_rci_committed():
             return self.request[self.KEY_RCI]
-        raise RCINotSet("RequestContextInfo is not committed for this request")
+        raise RCINotSetError("RequestContextInfo is not committed for this request")
 
     @property
     def last_resort_rci(self) -> RequestContextInfo | None:
@@ -157,10 +157,10 @@ class DLRequestBase:
         """
         try:
             return self.rci
-        except RCINotSet:
+        except RCINotSetError:
             try:
                 return self.temp_rci
-            except RCINotSet:
+            except RCINotSetError:
                 return None
 
     @property
@@ -202,10 +202,10 @@ class DLRequestBase:
 
         if len(header_value_list) == 0:
             if required:
-                raise InvalidHeaderException("Header required, but missing", header_name=header_name)
+                raise InvalidHeaderError("Header required, but missing", header_name=header_name)
             return None
         if len(header_value_list) > 1:
-            raise InvalidHeaderException("Expecting single header but multiple received", header_name=header_name)
+            raise InvalidHeaderError("Expecting single header but multiple received", header_name=header_name)
 
         return header_value_list[0]
 
@@ -216,7 +216,7 @@ class DLRequestBase:
         try:
             return json.loads(raw_header)
         except json.JSONDecodeError as e:
-            raise InvalidHeaderException(
+            raise InvalidHeaderError(
                 "Invalid JSON in header content",
                 header_name=header.value,
             ) from e

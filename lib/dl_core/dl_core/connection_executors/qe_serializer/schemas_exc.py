@@ -10,16 +10,16 @@ from marshmallow import (
 )
 from marshmallow_oneofschema import OneOfSchema
 
-from dl_constants.exc import DLBaseException
-from dl_core.connection_executors.models.exc import QueryExecutorException
+from dl_constants.exc import DLBaseError
+from dl_core.connection_executors.models.exc import QueryExecutorError
 
 
 class DLExcSchema(Schema):
     dl_exec_dict = fields.Function(serialize=lambda exc: exc.to_jsonable_dict(), deserialize=lambda o: o)
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict, **_: Any) -> DLBaseException:
-        return DLBaseException.from_jsonable_dict(data["dl_exec_dict"])
+    def post_load(self, data: dict, **_: Any) -> DLBaseError:
+        return DLBaseError.from_jsonable_dict(data["dl_exec_dict"])
 
 
 class OtherExcSchema(Schema):
@@ -31,9 +31,9 @@ class OtherExcSchema(Schema):
     )
 
     @post_load(pass_many=False)
-    def post_load(self, data: dict, **_: dict) -> QueryExecutorException:
+    def post_load(self, data: dict, **_: dict) -> QueryExecutorError:
         tb = "".join(data.get("exc_tb") or ())
-        return QueryExecutorException(f"{data['exc_type_name']}: {data['exc_msg']}\n{tb}")
+        return QueryExecutorError(f"{data['exc_type_name']}: {data['exc_msg']}\n{tb}")
 
 
 class GenericExcSchema(OneOfSchema):
@@ -43,7 +43,7 @@ class GenericExcSchema(OneOfSchema):
     }
 
     def get_obj_type(self, obj: Any) -> str:
-        if isinstance(obj, DLBaseException):
+        if isinstance(obj, DLBaseError):
             return "dl_exc"
         if isinstance(obj, Exception):
             return "other_exc"

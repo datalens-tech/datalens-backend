@@ -153,7 +153,7 @@ class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
         if row_count_hard_limit is not None:
             result_iter = result_iter.limit(
                 max_count=row_count_hard_limit,
-                limit_exception=exc.ResultRowCountLimitExceeded,
+                limit_exception=exc.ResultRowCountLimitExceededError,
             )
         return result_iter
 

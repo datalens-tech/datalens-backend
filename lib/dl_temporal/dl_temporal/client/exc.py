@@ -5,25 +5,25 @@ class TemporalClientError(Exception):
     pass
 
 
-class PermissionDenied(TemporalClientError):
+class PermissionDeniedError(TemporalClientError):
     pass
 
 
-class AlreadyExists(TemporalClientError):
+class AlreadyExistsError(TemporalClientError):
     pass
 
 
-class NotFound(TemporalClientError):
+class NotFoundError(TemporalClientError):
     pass
 
 
 def wrap_temporal_error(exc: Exception) -> TemporalClientError:
     if isinstance(exc, temporalio.service.RPCError):
         if exc.status == temporalio.service.RPCStatusCode.PERMISSION_DENIED:
-            raise PermissionDenied(exc.message) from exc
+            raise PermissionDeniedError(exc.message) from exc
         if exc.status == temporalio.service.RPCStatusCode.ALREADY_EXISTS:
-            raise AlreadyExists(exc.message) from exc
+            raise AlreadyExistsError(exc.message) from exc
         if exc.status == temporalio.service.RPCStatusCode.NOT_FOUND:
-            raise NotFound(exc.message) from exc
+            raise NotFoundError(exc.message) from exc
 
     raise exc

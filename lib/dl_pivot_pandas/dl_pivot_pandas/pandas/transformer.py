@@ -88,7 +88,7 @@ class PdPivotTransformer(PivotTransformer):
                 return raw_pd_df.pivot(columns=columns, index=index)
             except ValueError as err:
                 if str(err).startswith("Index contains duplicate entries"):
-                    raise dl_query_processing.exc.PivotDuplicateDimensionValue() from err
+                    raise dl_query_processing.exc.PivotDuplicateDimensionValueError() from err
 
                 raise
 
@@ -113,7 +113,7 @@ class PdPivotTransformer(PivotTransformer):
             # corner case. Construct the Series directly via set_index;
             # equivalent to the pre-2.2 pivot output for this branch.
             if raw_pd_df.duplicated(subset=column_ids).any():
-                raise dl_query_processing.exc.PivotDuplicateDimensionValue()
+                raise dl_query_processing.exc.PivotDuplicateDimensionValueError()
             pd_series = raw_pd_df.set_index(column_ids)[fake_measure_piid_str]
             facade = PdHSeriesDataFrameFacade(
                 pd_series=pd_series,
@@ -125,7 +125,7 @@ class PdPivotTransformer(PivotTransformer):
             # column_ids is empty. Same pandas 2.2 unstack regression as above —
             # use set_index to build the Series directly.
             if raw_pd_df.duplicated(subset=row_ids).any():
-                raise dl_query_processing.exc.PivotDuplicateDimensionValue()
+                raise dl_query_processing.exc.PivotDuplicateDimensionValueError()
             pd_series = raw_pd_df.set_index(row_ids)[fake_measure_piid_str]
             facade = PdVSeriesDataFrameFacade(
                 pd_series=pd_series,

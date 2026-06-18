@@ -60,8 +60,8 @@ def wrap_export_import_exception(
 ) -> Callable[Concatenate[BIResource, ...], dict | tuple[list | dict, int]]:
     def wrapper(self: BIResource, *args: Any, **kwargs: Any) -> dict | tuple[list | dict, int]:
         export_import_errors = (  # exceptions which error codes are be covered by UI error handling
-            exc.BadConnectionType,
-            exc.UnsupportedForEntityType,
+            exc.BadConnectionTypeError,
+            exc.UnsupportedForEntityTypeError,
             exc.WorkbookExportError,
             exc.WorkbookImportError,
         )

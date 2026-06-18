@@ -24,7 +24,7 @@ from dl_configs.settings_loaders.common import (
     SDict,
 )
 from dl_configs.settings_loaders.env_remap import remap_env
-from dl_configs.settings_loaders.exc import SettingsLoadingException
+from dl_configs.settings_loaders.exc import SettingsLoadingError
 from dl_configs.settings_loaders.fallback_cfg_resolver import (
     FallbackConfigResolver,
     YamlFileConfigResolver,
@@ -44,11 +44,11 @@ SEP = "_"
 LOGGER = logging.getLogger(__name__)
 
 
-class InvalidConfigValueException(SettingsLoadingException):
+class InvalidConfigValueError(SettingsLoadingError):
     pass
 
 
-class ConfigFieldMissing(InvalidConfigValueException):
+class ConfigFieldMissingError(InvalidConfigValueError):
     def __init__(self, field_set: set[str]) -> None:
         super().__init__(field_set)
         self._field_set = field_set
@@ -127,7 +127,7 @@ class ScalarExtractor(SDictExtractor):
             return self.converter(value)
         # TODO FIX: take in account potential sensivity of value
         except Exception as exc:
-            raise InvalidConfigValueException(f"Could not convert value {self.key}: {self.expected_type}") from exc
+            raise InvalidConfigValueError(f"Could not convert value {self.key}: {self.expected_type}") from exc
 
 
 @attr.s
@@ -203,18 +203,18 @@ class CompositeExtractor(SDictExtractor):
         }
         missing_params = required_params - set(fields.keys())
         if missing_params:
-            raise ConfigFieldMissing(missing_params)
+            raise ConfigFieldMissingError(missing_params)
 
         return self.composition_factory(**fields)
 
     @staticmethod
     def _ensure_no_missing_fields(
-        obj: Any = None, map_field_name_missing_exc: dict[str, ConfigFieldMissing] | None = None
+        obj: Any = None, map_field_name_missing_exc: dict[str, ConfigFieldMissingError] | None = None
     ) -> None:
         missing_required_fields: list[attr.Attribute] = []
         missing_sub_field_code_set: set[str] = set()
 
-        def handle_field_sub_exc(faulty_field_name: str, exc: ConfigFieldMissing) -> None:
+        def handle_field_sub_exc(faulty_field_name: str, exc: ConfigFieldMissingError) -> None:
             missing_sub_field_code_set.update(f"{faulty_field_name}.{sub_field}" for sub_field in exc.field_set)
 
         if obj is None:
@@ -231,14 +231,14 @@ class CompositeExtractor(SDictExtractor):
                     handle_field_sub_exc(field.name, map_field_name_missing_exc[field.name])
 
         if missing_required_fields or missing_sub_field_code_set:
-            raise ConfigFieldMissing(
+            raise ConfigFieldMissingError(
                 field_set={field.name for field in missing_required_fields} | missing_sub_field_code_set
             )
 
     def _extract_from_json(self, s_dict: SDict) -> Any:
         converter = self.json_value_converter
         if converter is None:
-            raise InvalidConfigValueException(f"JSON converter is not defined for field {self.key!r}")
+            raise InvalidConfigValueError(f"JSON converter is not defined for field {self.key!r}")
 
         json_str = s_dict[ReservedKeys.JSON_VALUE]
 
@@ -249,7 +249,7 @@ class CompositeExtractor(SDictExtractor):
             illegal_fields = illegal_fields - {self.field_enables_flag_extractor.key}
 
         if illegal_fields:
-            raise InvalidConfigValueException(
+            raise InvalidConfigValueError(
                 f"{ReservedKeys.JSON_VALUE} can not be combined with any other keys: {' '.join(sorted(illegal_fields))}"
             )
 
@@ -257,13 +257,13 @@ class CompositeExtractor(SDictExtractor):
             json_value = json.loads(json_str)
         except json.JSONDecodeError:
             # TODO FIX: take in account potential sensivity of value
-            raise InvalidConfigValueException(f"Malformed JSON for {self.key!r}") from None
+            raise InvalidConfigValueError(f"Malformed JSON for {self.key!r}") from None
 
         try:
             return converter(json_value)
         except Exception as exc:
             # TODO FIX: take in account potential sensivity of value
-            raise InvalidConfigValueException(f"Can not convert JSON value to target object {self.key!r}") from exc
+            raise InvalidConfigValueError(f"Can not convert JSON value to target object {self.key!r}") from exc
 
     def _extract(self, s_dict: SDict) -> Any:
         default_value = self.default
@@ -277,7 +277,7 @@ class CompositeExtractor(SDictExtractor):
                 return self._extract_from_json(scoped_s_dict)
 
         fields = {}
-        map_field_name_missing_fields: dict[str, ConfigFieldMissing] = {}
+        map_field_name_missing_fields: dict[str, ConfigFieldMissingError] = {}
 
         for field_name, sub_extractor in self.map_field_name_subextractor.items():
             if field_name in self.map_field_name_field_override:
@@ -285,7 +285,7 @@ class CompositeExtractor(SDictExtractor):
             elif sub_extractor.has_field(scoped_s_dict) or sub_extractor.default is not NOT_SET:
                 try:
                     fields[field_name] = sub_extractor.extract(scoped_s_dict)
-                except ConfigFieldMissing as child_field_missing:
+                except ConfigFieldMissingError as child_field_missing:
                     map_field_name_missing_fields[field_name] = child_field_missing
 
         if default_value is None and not self.has_field(s_dict):
@@ -493,7 +493,7 @@ class EnvSettingsLoader:
                 elif len(factory_signature.parameters) == 2:
                     field_default = fallback_factory(fallback_cfg, app_cfg_type)
                 else:
-                    raise SettingsLoadingException(f"Unexpected signature of fallback factory for {field}")
+                    raise SettingsLoadingError(f"Unexpected signature of fallback factory for {field}")
 
             else:
                 field_default = getattr(
@@ -571,7 +571,7 @@ class EnvSettingsLoader:
             if SMeta.from_attrib(field).is_app_cfg_type  # type: ignore  # 2024-02-09 # TODO: Item "None" of "SMeta | None" has no attribute
         ]
         if len(candidates) > 1:
-            raise SettingsLoadingException(
+            raise SettingsLoadingError(
                 f"Settings class {get_type_full_name(settings_type)}"
                 f" has more than one app_type attributes: {candidates}"
             )
@@ -627,7 +627,7 @@ class EnvSettingsLoader:
         keys_from_files_intersection = effective_s_dict.keys() & keys_from_files.keys()
 
         if keys_from_files_intersection:
-            raise InvalidConfigValueException(
+            raise InvalidConfigValueError(
                 f"Got intersection of explicit env vars & file mapped vars:"
                 f" {' '.join(sorted(keys_from_files_intersection))}"
             )

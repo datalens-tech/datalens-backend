@@ -44,7 +44,7 @@ def test_sliding_window_full_sync() -> None:
         pass
     with limiter.context():
         pass
-    with pytest.raises(dl_httpx.RateLimitHttpxClientException), limiter.context():
+    with pytest.raises(dl_httpx.RateLimitHttpxClientError), limiter.context():
         pass
 
 
@@ -63,7 +63,7 @@ async def test_sliding_window_full_async() -> None:
         pass
     async with limiter.context_async():
         pass
-    with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+    with pytest.raises(dl_httpx.RateLimitHttpxClientError):
         async with limiter.context_async():
             pass
 
@@ -92,5 +92,5 @@ def test_sliding_window_failed_attempt_counts() -> None:
     )
     with pytest.raises(RuntimeError), limiter.context():
         raise RuntimeError("fail")
-    with pytest.raises(dl_httpx.RateLimitHttpxClientException), limiter.context():
+    with pytest.raises(dl_httpx.RateLimitHttpxClientError), limiter.context():
         pass

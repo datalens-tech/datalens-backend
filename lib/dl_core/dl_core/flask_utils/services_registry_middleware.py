@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 LOGGER = logging.getLogger(__name__)
 
 
-class NoServiceRegistryForRequest(Exception):
+class NoServiceRegistryForRequestError(Exception):
     pass
 
 
@@ -32,7 +32,7 @@ class ServicesRegistryMiddleware:
     def cleanup_request_services_registry(self, _: BaseException | None = None) -> None:
         try:
             services_registry = self.get_request_services_registry()
-        except NoServiceRegistryForRequest:
+        except NoServiceRegistryForRequestError:
             LOGGER.debug("Service registry was not created. Close procedure does not required.")
         else:
             try:
@@ -51,10 +51,10 @@ class ServicesRegistryMiddleware:
         try:
             services_registry = flask.g.bi_services_registry
         except AttributeError as e:
-            raise NoServiceRegistryForRequest() from e
+            raise NoServiceRegistryForRequestError() from e
         else:
             if services_registry is None:
-                raise NoServiceRegistryForRequest()
+                raise NoServiceRegistryForRequestError()
             return services_registry
 
     @classmethod

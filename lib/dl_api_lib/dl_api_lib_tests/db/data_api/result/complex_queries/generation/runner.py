@@ -13,7 +13,7 @@ from dl_api_client.dsmaker.shortcuts.result_data import get_data_rows
 from dl_api_lib_tests.db.data_api.result.complex_queries.generation.generator import TestSettings
 
 
-class Error400(Exception):
+class Error400Error(Exception):
     pass
 
 
@@ -45,7 +45,7 @@ class PreGeneratedLODTestRunner:
         )
 
         if result_resp.status_code == HTTPStatus.BAD_REQUEST:
-            raise Error400(result_resp.json)
+            raise Error400Error(result_resp.json)
 
         assert result_resp.status_code == HTTPStatus.OK, result_resp.json
         data_rows = get_data_rows(result_resp)
@@ -79,10 +79,10 @@ class PreGeneratedLODTestRunner:
             for measure_name, _measure_formula in measure_fields:
                 one_measure = self.get_measure_data(ds=ds, test_settings=test_settings, measures=[measure_name])
                 assert pytest.approx(all_measures[measure_name]) == one_measure[measure_name]
-        except Error400:
+        except Error400Error:
             if not ignore_400_error:
                 raise
-            print("Ignoring Error400")
+            print("Ignoring Error400Error")
 
     def run_test_list(self, test_list: list[TestSettings], ignore_400_error: bool) -> None:
         for test_idx, test_settings in enumerate(test_list):

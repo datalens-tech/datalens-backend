@@ -13,7 +13,7 @@ from dl_api_commons.base_models import TenantDef
 from dl_api_connector.connection_info import ConnectionInfoProvider
 from dl_api_lib.connection_forms.registry import CONN_FORM_FACTORY_BY_TYPE
 from dl_api_lib.connection_info import get_connector_info_provider
-from dl_api_lib.exc import ConnectorIconNotFoundException
+from dl_api_lib.exc import ConnectorIconNotFoundError
 from dl_api_lib.i18n.localizer import Translatable
 from dl_configs.connector_availability import (
     ConnectorAvailabilityConfigSettings,
@@ -339,7 +339,7 @@ class ConnectorAvailabilityConfig(SettingsBase):
     def get_icon(self, conn_type: str) -> dict[str, Any] | None:
         self.fill_icon_dict_by_conn_type()
         if conn_type not in self._icon_by_conn_type:
-            raise ConnectorIconNotFoundException()
+            raise ConnectorIconNotFoundError()
         return self._icon_by_conn_type[conn_type]
 
     @classmethod

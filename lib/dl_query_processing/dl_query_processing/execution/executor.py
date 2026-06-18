@@ -197,7 +197,7 @@ class QueryExecutor:
             is_top_level = translated_flat_query.id in top_level_query_ids
             is_bottom_level = bool(query_froms) and not any(from_obj.id in all_query_ids for from_obj in query_froms)
             if translated_flat_query.is_empty():
-                raise exc.EmptyQuery()
+                raise exc.EmptyQueryError()
             result_id = translated_flat_query.id
             required_avatar_ids = frozenset(translated_flat_query.joined_from.iter_ids())
 
@@ -393,7 +393,7 @@ class QueryExecutor:
                 role=exec_info.role,
                 row_count_hard_limit=row_count_hard_limit,
             )
-        except exc.EmptyQuery as e:
+        except exc.EmptyQueryError as e:
             if empty_query_mode == EmptyQueryMode.error:
                 raise
             empty_rows: list[TBIDataRow]

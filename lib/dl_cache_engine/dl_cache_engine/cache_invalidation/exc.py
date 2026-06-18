@@ -1,8 +1,8 @@
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 
 
-class CacheInvalidationBaseError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "CACHE_INVALIDATION")
+class CacheInvalidationBaseError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "CACHE_INVALIDATION")
 
 
 class CacheInvalidationNonStringResultError(CacheInvalidationBaseError):

@@ -168,7 +168,7 @@ async def test_lock_nonexisting(
     entry_in_us: dl_us_entries_client.Entry,
 ) -> None:
     # Lock nonexisting
-    with pytest.raises(dl_us_entries_client.BadRequest):
+    with pytest.raises(dl_us_entries_client.BadRequestError):
         await us_entries_private_client.post_lock(
             dl_us_entries_client.PrivateEntryLockPostRequest(
                 entry_id="nonexisting",

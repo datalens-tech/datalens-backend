@@ -22,7 +22,7 @@ def test_max_parallel_invalid(value: int) -> None:
 
 def test_max_parallel_one_nested_second_raises_sync() -> None:
     limiter = _max_parallel_limiter(1)
-    with limiter.context(), pytest.raises(dl_httpx.RateLimitHttpxClientException), limiter.context():
+    with limiter.context(), pytest.raises(dl_httpx.RateLimitHttpxClientError), limiter.context():
         pass
 
 
@@ -30,7 +30,7 @@ def test_max_parallel_one_nested_second_raises_sync() -> None:
 async def test_max_parallel_one_nested_second_raises_async() -> None:
     limiter = _max_parallel_limiter(1)
     async with limiter.context_async():
-        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+        with pytest.raises(dl_httpx.RateLimitHttpxClientError):
             async with limiter.context_async():
                 pass
 
@@ -53,7 +53,7 @@ def test_max_parallel_at_capacity_raises_sync() -> None:
     with (
         limiter.context(),
         limiter.context(),
-        pytest.raises(dl_httpx.RateLimitHttpxClientException),
+        pytest.raises(dl_httpx.RateLimitHttpxClientError),
         limiter.context(),
     ):
         pass
@@ -63,7 +63,7 @@ def test_max_parallel_at_capacity_raises_sync() -> None:
 async def test_max_parallel_at_capacity_raises_async() -> None:
     limiter = _max_parallel_limiter(2)
     async with limiter.context_async(), limiter.context_async():
-        with pytest.raises(dl_httpx.RateLimitHttpxClientException):
+        with pytest.raises(dl_httpx.RateLimitHttpxClientError):
             async with limiter.context_async():
                 pass
 

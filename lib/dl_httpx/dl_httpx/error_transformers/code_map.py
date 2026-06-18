@@ -14,7 +14,7 @@ class CodeMapTransformer:
     code_map: dict[str, base.ExceptionFactoryProtocol]
     status_body_path: tuple[str, ...] = ("code",)
 
-    def transform(self, exception: exceptions.HttpStatusHttpxClientException) -> Exception | None:
+    def transform(self, exception: exceptions.HttpStatusHttpxClientError) -> Exception | None:
         try:
             body = exception.response.json()
         except json.JSONDecodeError:

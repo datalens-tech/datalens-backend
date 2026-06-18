@@ -6,7 +6,7 @@ from aiohttp.typedefs import (
 
 from dl_api_commons.aiohttp.aiohttp_wrappers import (
     DLRequestBase,
-    RCINotSet,
+    RCINotSetError,
 )
 from dl_obfuscator import (
     OBFUSCATION_BASE_OBFUSCATORS_KEY,
@@ -40,7 +40,7 @@ def obfuscation_context_middleware(
         if base_obfuscators is not None:
             try:
                 rci = dl_request.temp_rci
-            except RCINotSet:
+            except RCINotSetError:
                 rci = None
 
             secret_keeper = rci.secret_keeper if rci is not None else None

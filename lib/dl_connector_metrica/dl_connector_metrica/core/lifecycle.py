@@ -4,7 +4,7 @@ import logging
 
 from dl_core import exc
 from dl_core.connectors.base.lifecycle import ConnectionLifecycleManager
-from dl_sqlalchemy_metrica_api.exceptions import MetrikaApiAccessDeniedException
+from dl_sqlalchemy_metrica_api.exceptions import MetrikaApiAccessDeniedError
 
 from dl_connector_metrica.core.us_connection import MetrikaBaseMixin
 
@@ -27,5 +27,5 @@ class MetricaConnectionLifecycleManager(ConnectionLifecycleManager[MetrikaBaseMi
             )
             try:
                 self.entry.data.counter_creation_date = self.entry.get_counter_creation_date()
-            except MetrikaApiAccessDeniedException as ex:
+            except MetrikaApiAccessDeniedError as ex:
                 raise exc.ConnectionConfigurationError("No access to counter info. Check your OAuth token.") from ex

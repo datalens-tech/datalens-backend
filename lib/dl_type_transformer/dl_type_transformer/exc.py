@@ -1,15 +1,15 @@
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 
 
-class TypeCastError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "TYPE_CAST")
+class TypeCastError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "TYPE_CAST")
 
 
-class TypeCastUnsupported(TypeCastError):
+class TypeCastUnsupportedError(TypeCastError):
     err_code = (*TypeCastError.err_code, "UNSUPPORTED")
 
 
-class TypeCastFailed(TypeCastError):
+class TypeCastFailedError(TypeCastError):
     err_code = (*TypeCastError.err_code, "FAILED")
     default_message = "Type casting failed for value"
 
@@ -18,5 +18,5 @@ class UnsupportedNativeTypeError(Exception):
     pass
 
 
-class TypeTransformerNotFound(Exception):
+class TypeTransformerNotFoundError(Exception):
     pass

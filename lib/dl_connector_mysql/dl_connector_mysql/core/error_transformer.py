@@ -99,9 +99,9 @@ async_mysql_db_error_transformer: DbErrorTransformer = AsyncMysqlChainedDbErrorT
             when=wrapper_exc_is_and_matches_re(
                 wrapper_exc_cls=pymysql.ProgrammingError, err_regex_str="You have an error in your SQL syntax"
             ),
-            then_raise=exc.InvalidQuery,
+            then_raise=exc.InvalidQueryError,
         ),
-        Rule(when=is_sql_syntax_error_async_error(), then_raise=exc.InvalidQuery),
+        Rule(when=is_sql_syntax_error_async_error(), then_raise=exc.InvalidQueryError),
         Rule(
             when=wrapper_exc_is_and_matches_re(wrapper_exc_cls=RuntimeError, err_regex_str=".*Received LOAD_LOCAL.*"),
             then_raise=exc.SourceProtocolError,
@@ -118,7 +118,7 @@ sync_mysql_db_error_transformer: DbErrorTransformer = error_transformer.make_def
     ),
     Rule(
         when=is_sql_syntax_error_sync_error(),
-        then_raise=exc.InvalidQuery,
+        then_raise=exc.InvalidQueryError,
     ),
     Rule(
         when=wrapper_exc_is_and_matches_re(

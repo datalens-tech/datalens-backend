@@ -8,7 +8,7 @@ import dl_httpx.exceptions as exceptions
 
 @attrs.define(frozen=True)
 class NullErrorTransformer:
-    def transform(self, exception: exceptions.HttpStatusHttpxClientException) -> Exception | None:
+    def transform(self, exception: exceptions.HttpStatusHttpxClientError) -> Exception | None:
         return None
 
 

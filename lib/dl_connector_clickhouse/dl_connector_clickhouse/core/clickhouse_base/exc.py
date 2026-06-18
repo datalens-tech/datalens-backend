@@ -6,7 +6,7 @@ from typing import Any
 from dl_core import exc
 
 
-class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExist):
+class ClickHouseSourceDoesNotExistError(exc.SourceDoesNotExistError):
     ERR_RE = re.compile(r".*Table\s(?P<table>.*)\sdoesn't exist.*")
 
     def __init__(
@@ -44,12 +44,12 @@ class CHQueryError(exc.DatabaseQueryError):
     default_message = "CH Error"
 
 
-class CHIncorrectData(CHQueryError):
+class CHIncorrectDataError(CHQueryError):
     err_code = (*CHQueryError.err_code, "INCORRECT_DATA")
     default_message = "Clickhouse could not parse the data in the specified source"
 
 
-class CHReadonlyUser(CHQueryError):
+class CHReadonlyUserError(CHQueryError):
     err_code = (*CHQueryError.err_code, "READONLY_USER")
     default_message = (
         "Clickhouse user must be correctly configured to use readonly 1 option (see docs). "

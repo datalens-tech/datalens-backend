@@ -65,7 +65,7 @@ def test_exceptions(m_expr_distinct, metrika_db_engine):
     engine_invalid_token = sa.create_engine("metrika_api://:qwerty@/hits")
     with pytest.raises(DatabaseError) as exc_info:
         engine_invalid_token.execute(m_expr_distinct)
-    assert isinstance(exc_info.value.orig, exceptions.MetrikaApiAccessDeniedException)
+    assert isinstance(exc_info.value.orig, exceptions.MetrikaApiAccessDeniedError)
     assert "Invalid oauth_token" in str(exc_info.value.orig)
 
     expr_invalid_counter_id = sa.select(columns=[sa.column("ym:pv:users")])
@@ -74,7 +74,7 @@ def test_exceptions(m_expr_distinct, metrika_db_engine):
     )
     with pytest.raises(DatabaseError) as exc_info:
         metrika_db_engine.execute(expr_invalid_counter_id)
-    assert isinstance(exc_info.value.orig, exceptions.MetrikaApiObjectNotFoundException)
+    assert isinstance(exc_info.value.orig, exceptions.MetrikaApiObjectNotFoundError)
     assert "Entity not found" in str(exc_info.value.orig)
 
 

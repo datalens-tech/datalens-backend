@@ -9,7 +9,7 @@ from dl_core.base_models import (
     PathEntryLocation,
     WorkbookEntryLocation,
 )
-from dl_core.exc import USPermissionRequired
+from dl_core.exc import USPermissionRequiredError
 
 
 def _make_entry(entry_key: EntryLocation, *, edit: bool, admin: bool) -> unittest.mock.MagicMock:
@@ -30,7 +30,7 @@ def test_workbook_entry_allowed_with_edit_only() -> None:
 
 def test_workbook_entry_denied_without_edit() -> None:
     entry = _make_entry(WorkbookEntryLocation(workbook_id="wb1", entry_name="ds"), edit=False, admin=False)
-    with pytest.raises(USPermissionRequired):
+    with pytest.raises(USPermissionRequiredError):
         need_delete_permission_on_entry(entry)
 
 
@@ -44,11 +44,11 @@ def test_path_entry_allowed_with_admin() -> None:
 
 def test_path_entry_denied_without_admin() -> None:
     entry = _make_entry(PathEntryLocation(path="root/ds"), edit=True, admin=False)
-    with pytest.raises(USPermissionRequired):
+    with pytest.raises(USPermissionRequiredError):
         need_delete_permission_on_entry(entry)
 
 
 def test_collection_entry_denied_without_admin() -> None:
     entry = _make_entry(CollectionEntryLocation(collection_id="coll1", entry_name="ds"), edit=True, admin=False)
-    with pytest.raises(USPermissionRequired):
+    with pytest.raises(USPermissionRequiredError):
         need_delete_permission_on_entry(entry)

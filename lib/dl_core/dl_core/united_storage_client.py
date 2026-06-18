@@ -53,7 +53,7 @@ import dl_retrier
 LOGGER = logging.getLogger(__name__)
 
 
-class USClientHTTPExceptionWrapper(Exception):
+class USClientHTTPExceptionWrapperError(Exception):
     pass
 
 
@@ -275,17 +275,17 @@ class UStorageClientBase:
         def json(self) -> dict:
             pass
 
-    ERROR_MAP: tuple[tuple[int, re.Pattern | None, type[exc.USReqException]], ...] = (
-        (400, re.compile("Validation error"), exc.USValidationException),
-        (400, None, exc.USBadRequestException),
-        (403, None, exc.USAccessDeniedException),
-        (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionException),
-        (404, None, exc.USObjectNotFoundException),
-        (409, re.compile("The entry already exists"), exc.USAlreadyExistsException),
-        (409, re.compile("Incorrect entryId for embed"), exc.USIncorrectEntryIdForEmbed),
-        (409, None, exc.USIncorrectTenantIdException),
-        (423, None, exc.USLockUnacquiredException),
-        (451, None, exc.USReadOnlyModeEnabledException),
+    ERROR_MAP: tuple[tuple[int, re.Pattern | None, type[exc.USReqError]], ...] = (
+        (400, re.compile("Validation error"), exc.USValidationError),
+        (400, None, exc.USBadRequestError),
+        (403, None, exc.USAccessDeniedError),
+        (403, re.compile("Workbook isolation interruption"), exc.USWorkbookIsolationInterruptionError),
+        (404, None, exc.USObjectNotFoundError),
+        (409, re.compile("The entry already exists"), exc.USAlreadyExistsError),
+        (409, re.compile("Incorrect entryId for embed"), exc.USIncorrectEntryIdForEmbedError),
+        (409, None, exc.USIncorrectTenantIdError),
+        (423, None, exc.USLockUnacquiredError),
+        (451, None, exc.USReadOnlyModeEnabledError),
         (530, None, exc.USPermissionCheckError),
     )
 
@@ -428,7 +428,7 @@ class UStorageClientBase:
             )
         try:
             response.raise_for_status()
-        except USClientHTTPExceptionWrapper as http_err_ex_wrapper:
+        except USClientHTTPExceptionWrapperError as http_err_ex_wrapper:
             http_err_ex = cast(Exception | None, http_err_ex_wrapper.__cause__)
 
             message: str | None = response.json().get("message")
@@ -438,17 +438,17 @@ class UStorageClientBase:
                 ):
                     raise exc_cls(orig_exc=http_err_ex) from http_err_ex_wrapper
 
-            raise exc.USReqException(orig_exc=http_err_ex) from http_err_ex_wrapper
+            raise exc.USReqError(orig_exc=http_err_ex) from http_err_ex_wrapper
 
         try:
             return response.json()
         except JSONDecodeError as ex:
             LOGGER.info("Got http status %s with invalid json %s from US", response.status_code, response.content)
-            raise exc.USInvalidResponse from ex
+            raise exc.USInvalidResponseError from ex
 
     def _raise_for_disabled_interactions(self) -> None:
         if self._disabled:
-            raise exc.USInteractionDisabled("Interaction with US is forbidden")
+            raise exc.USInteractionDisabledError("Interaction with US is forbidden")
 
     @contextmanager
     def interaction_disabled(self) -> Generator[None, None, None]:
@@ -735,7 +735,7 @@ class UStorageClient(UStorageClientBase):
             try:
                 self.resp.raise_for_status()
             except HTTPError as http_error:
-                raise USClientHTTPExceptionWrapper(str(http_error)) from http_error
+                raise USClientHTTPExceptionWrapperError(str(http_error)) from http_error
 
         def json(self) -> dict:
             return self.resp.json()
@@ -1009,7 +1009,7 @@ class UStorageClient(UStorageClientBase):
                 lock = resp["lockToken"]
                 LOGGER.info('Acquired lock "%s" for object "%s"', lock, entry_id)
                 return lock
-            except exc.USLockUnacquiredException:
+            except exc.USLockUnacquiredError:
                 if wait_timeout and time.time() - start_ts < wait_timeout:
                     time.sleep(0.25)
                 else:
@@ -1021,7 +1021,7 @@ class UStorageClient(UStorageClientBase):
                 self._req_data_release_lock(entry_id, lock=lock),
                 retry_policy_name="release_lock",
             )
-        except exc.USReqException:
+        except exc.USReqError:
             LOGGER.exception('Unable to release lock "%s"', lock)
 
     def get_entries_info_in_path(self, us_path: str) -> list[dict[str, Any]]:

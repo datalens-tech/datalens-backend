@@ -1,34 +1,34 @@
 from __future__ import annotations
 
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 
 
-class FeatureNotAvailable(DLBaseException):
-    err_code = (*DLBaseException.err_code, "FEATURE_NOT_AVAILABLE")
+class FeatureNotAvailableError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "FEATURE_NOT_AVAILABLE")
 
 
-class DatasetActionNotAllowedError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "ACTION_NOT_ALLOWED")
+class DatasetActionNotAllowedError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "ACTION_NOT_ALLOWED")
 
 
-class UnsupportedForEntityType(DLBaseException):
-    err_code = (*DLBaseException.err_code, "UNSUPPORTED")
+class UnsupportedForEntityTypeError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "UNSUPPORTED")
     default_message = "This entity type does not support this operation"
     forward_for_anonymous = True
 
 
-class BadConnectionType(DLBaseException):
-    err_code = (*DLBaseException.err_code, "BAD_CONN_TYPE")
+class BadConnectionTypeError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "BAD_CONN_TYPE")
     default_message = "Invalid connection type value"
 
 
-class DatasetRevisionMismatch(DLBaseException):
-    err_code = (*DLBaseException.err_code, "DATASET_REVISION_MISMATCH")
+class DatasetRevisionMismatchError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "DATASET_REVISION_MISMATCH")
     default_message = "Dataset version mismatch. Refresh the page to continue."
 
 
-class WorkbookExportError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "WB_EXPORT")
+class WorkbookExportError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "WB_EXPORT")
     default_message = "Error while performing workbook export."
 
 
@@ -42,8 +42,8 @@ class ConnectionExportError(WorkbookExportError):
     default_message = "Error while performing connection export."
 
 
-class WorkbookImportError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "WB_IMPORT")
+class WorkbookImportError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "WB_IMPORT")
     default_message = "Error while performing workbook import."
 
 
@@ -57,13 +57,13 @@ class ConnectionImportError(WorkbookImportError):
     default_message = "Error while performing connection import."
 
 
-class _DLValidationResult(DLBaseException):
-    err_code = (*DLBaseException.err_code, "VALIDATION")
+class _DLValidationResultError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "VALIDATION")
     default_message = ""
 
 
-class DLValidationError(_DLValidationResult):
-    err_code = (*_DLValidationResult.err_code, "ERROR")
+class DLValidationError(_DLValidationResultError):
+    err_code = (*_DLValidationResultError.err_code, "ERROR")
     default_message = "Validation finished with errors."
 
 
@@ -71,12 +71,12 @@ class TooManyFieldsError(DLValidationError):
     err_code = (*DLValidationError.err_code, "TOO_MANY_FIELDS")
 
 
-class DLValidationFatal(_DLValidationResult):
-    err_code = (*_DLValidationResult.err_code, "FATAL")
+class DLValidationFatalError(_DLValidationResultError):
+    err_code = (*_DLValidationResultError.err_code, "FATAL")
     default_message = "Validation encountered a fatal error."
 
 
-class ConnectorIconNotFoundException(DLBaseException):
+class ConnectorIconNotFoundError(DLBaseError):
     default_message = "Connector icon not found"
     err_code = ("ICON_NOT_FOUND",)
 
@@ -85,20 +85,20 @@ class ExtractValidationError(DLValidationError):
     err_code = (*DLValidationError.err_code, "EXTRACT")
 
 
-class ExtractValidationFilterFieldMissing(ExtractValidationError):
+class ExtractValidationFilterFieldMissingError(ExtractValidationError):
     err_code = (*ExtractValidationError.err_code, "FILTER_FIELD_MISSING")
 
 
-class ExtractValidationSortingFieldMissing(ExtractValidationError):
+class ExtractValidationSortingFieldMissingError(ExtractValidationError):
     err_code = (*ExtractValidationError.err_code, "SORTING_FIELD_MISSING")
 
 
-class ExtractValidationSortingEmpty(ExtractValidationError):
+class ExtractValidationSortingEmptyError(ExtractValidationError):
     err_code = (*ExtractValidationError.err_code, "SORTING_EMPTY")
 
 
-class CacheInvalidationTestError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "CACHE_INVALIDATION_TEST")
+class CacheInvalidationTestError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "CACHE_INVALIDATION_TEST")
     default_message = "Cache invalidation test error"
 
 
@@ -137,8 +137,8 @@ class CacheInvalidationTestConnectionViewRequiredError(CacheInvalidationTestErro
     default_message = "View permission on the connection is required to test modified SQL invalidation queries"
 
 
-class CacheInvalidationLastResultError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "CACHE_INVALIDATION_LAST_RESULT")
+class CacheInvalidationLastResultError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "CACHE_INVALIDATION_LAST_RESULT")
     default_message = "Cache invalidation last result error"
 
 
@@ -182,11 +182,11 @@ class CacheInvalidationLastResultNoResultError(CacheInvalidationLastResultError)
     default_message = "No cached invalidation result found"
 
 
-class ConnectionTemplateNotFound(DLBaseException):
-    err_code = (*DLBaseException.err_code, "CONNECTION_TEMPLATE_NOT_FOUND")
+class ConnectionTemplateNotFoundError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "CONNECTION_TEMPLATE_NOT_FOUND")
     default_message = "Connection has no associated template"
 
 
-class PreviewSourceModificationNotAllowedError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "PREVIEW_SOURCE_MODIFICATION_NOT_ALLOWED")
+class PreviewSourceModificationNotAllowedError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "PREVIEW_SOURCE_MODIFICATION_NOT_ALLOWED")
     default_message = "Modifying data source parameters in /preview requires view permission on the connection"

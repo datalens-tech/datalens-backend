@@ -3,7 +3,7 @@ import json
 from dl_api_lib_tests.db.base import DefaultApiTestBase
 from dl_constants import RawSQLLevel
 from dl_core.data_source import BaseSQLDataSource
-from dl_core.exc import FailedToLoadSchema
+from dl_core.exc import FailedToLoadSchemaError
 
 
 class TestDashSQLControlApiErrors(DefaultApiTestBase):
@@ -11,7 +11,7 @@ class TestDashSQLControlApiErrors(DefaultApiTestBase):
 
     def test_empty_source_schema_error(self, db, sample_table, saved_connection_id, control_api, monkeypatch):
         def mock_get_schema_info(self, conn_executor_factory):
-            raise FailedToLoadSchema()
+            raise FailedToLoadSchemaError()
 
         monkeypatch.setattr(BaseSQLDataSource, "get_schema_info", mock_get_schema_info)
 

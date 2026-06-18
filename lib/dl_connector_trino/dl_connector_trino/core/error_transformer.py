@@ -16,7 +16,7 @@ from dl_core.connectors.base.error_transformer import ErrorTransformerRule as Ru
 import dl_core.exc as exc
 
 
-class ExpressionNotAggregateError(exc.InvalidQuery):
+class ExpressionNotAggregateError(exc.InvalidQueryError):
     """
     Raised when Trino receives a SELECT statement containing multiple identical parameterized expressions with the same parameter value.
     In this case, the query should be compiled before being sent to Trino.
@@ -161,11 +161,11 @@ def is_trino_fallback_error() -> ExcMatchCondition:
 
 trino_error_transformer = TrinoErrorTransformer(
     rule_chain=(
-        Rule(when=is_trino_column_does_not_exist_error(), then_raise=exc.ColumnDoesNotExist),
-        Rule(when=is_trino_source_does_not_exist_error(), then_raise=exc.SourceDoesNotExist),
-        Rule(when=is_trino_syntax_error(), then_raise=exc.InvalidQuery),
-        Rule(when=is_trino_timeout_error(), then_raise=exc.SourceTimeout),
-        Rule(when=is_trino_out_of_memory_error(), then_raise=exc.DbMemoryLimitExceeded),
+        Rule(when=is_trino_column_does_not_exist_error(), then_raise=exc.ColumnDoesNotExistError),
+        Rule(when=is_trino_source_does_not_exist_error(), then_raise=exc.SourceDoesNotExistError),
+        Rule(when=is_trino_syntax_error(), then_raise=exc.InvalidQueryError),
+        Rule(when=is_trino_timeout_error(), then_raise=exc.SourceTimeoutError),
+        Rule(when=is_trino_out_of_memory_error(), then_raise=exc.DbMemoryLimitExceededError),
         Rule(when=is_trino_expression_not_aggregate_error(), then_raise=ExpressionNotAggregateError),
         Rule(when=is_trino_fallback_error(), then_raise=exc.DatabaseQueryError),
         *default_error_transformer_rules,

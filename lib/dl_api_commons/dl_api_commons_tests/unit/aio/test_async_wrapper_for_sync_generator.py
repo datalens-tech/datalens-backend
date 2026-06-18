@@ -15,8 +15,8 @@ import attr
 import pytest
 
 from dl_api_commons.aio.async_wrapper_for_sync_generator import (
-    EndOfStream,
-    InitializationFailed,
+    EndOfStreamError,
+    InitializationFailedError,
     Job,
     JobState,
 )
@@ -66,7 +66,7 @@ async def async_gen_adapter(wr: Job) -> AsyncGenerator[int, None]:
     while True:
         try:
             yield await wr.get_next()
-        except EndOfStream:
+        except EndOfStreamError:
             return
 
 
@@ -118,15 +118,15 @@ async def test_error_in_generator_creation(
 ) -> None:
     caplog.set_level("DEBUG")
 
-    class MarkerException(Exception):
+    class MarkerError(Exception):
         pass
 
     def broken_generator_factory() -> Generator[int, None, None]:
-        raise MarkerException
+        raise MarkerError
 
     job = wrapper_factory(broken_generator_factory)
 
-    with pytest.raises(MarkerException):
+    with pytest.raises(MarkerError):
         await job.run()
 
 
@@ -173,7 +173,7 @@ async def test_start_confirmation_timeout(caplog: pytest.LogCaptureFixture) -> N
             workers_tpe=local_worker_tpe,
         )
 
-        with pytest.raises(InitializationFailed):
+        with pytest.raises(InitializationFailedError):
             await job.run()
 
         await job.cancel()

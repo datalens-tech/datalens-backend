@@ -20,7 +20,7 @@ from dl_constants import (
     USEntryMode,
 )
 from dl_core.base_models import EntryLocation
-from dl_core.exc import USObjectNotFoundException
+from dl_core.exc import USObjectNotFoundError
 from dl_core.services_registry.top_level import (
     DummyServiceRegistry,
     ServicesRegistry,
@@ -163,7 +163,7 @@ class MockedUStorageClient(UStorageClient):
         try:
             previous_resp = self._saved_entries[entry_id]
         except KeyError as e:
-            raise USObjectNotFoundException() from e
+            raise USObjectNotFoundError() from e
         else:
             return previous_resp
 
@@ -171,7 +171,7 @@ class MockedUStorageClient(UStorageClient):
         if entry_id in self._saved_entries:
             del self._saved_entries[entry_id]
         else:
-            raise USObjectNotFoundException()
+            raise USObjectNotFoundError()
 
 
 class MockedSyncUSManager(SyncUSManager):

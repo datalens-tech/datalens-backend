@@ -32,7 +32,7 @@ class TestClickHouseQuerySettingsInsufficientRawSqlLevelRejected(BaseClickHouseT
     )
 
     def test_validate_rejects(self, saved_connection: ConnectionClickhouse) -> None:
-        with pytest.raises(dl_core_exc.QuerySettingsNotSupported):
+        with pytest.raises(dl_core_exc.QuerySettingsNotSupportedError):
             saved_connection.validate_query_settings({"max_threads": "4"})
 
 
@@ -45,7 +45,7 @@ class TestClickHouseQuerySettingsDisabledOnConnectorRejected(BaseClickHouseTestC
     )
 
     def test_validate_rejects(self, saved_connection: ConnectionClickhouse) -> None:
-        with pytest.raises(dl_core_exc.QuerySettingsNotSupported):
+        with pytest.raises(dl_core_exc.QuerySettingsNotSupportedError):
             saved_connection.validate_query_settings({"max_threads": "4"})
 
 
@@ -58,7 +58,7 @@ class TestClickHouseQuerySettingsForbiddenRejected(BaseClickHouseTestClass):
     )
 
     def test_validate_rejects(self, saved_connection: ConnectionClickhouse) -> None:
-        with pytest.raises(dl_core_exc.QuerySettingForbidden):
+        with pytest.raises(dl_core_exc.QuerySettingForbiddenError):
             saved_connection.validate_query_settings({"readonly": "0"})
 
 
@@ -74,7 +74,7 @@ class TestClickHouseQuerySettingsNotInWhitelistRejected(BaseClickHouseTestClass)
     )
 
     def test_validate_rejects(self, saved_connection: ConnectionClickhouse) -> None:
-        with pytest.raises(dl_core_exc.QuerySettingNotAllowed):
+        with pytest.raises(dl_core_exc.QuerySettingNotAllowedError):
             saved_connection.validate_query_settings({"max_block_size": "1024"})
 
 

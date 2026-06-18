@@ -12,7 +12,7 @@ from werkzeug.exceptions import (
 
 from dl_api_commons.access_control_common import AuthFailureError
 from dl_api_commons.flask.middlewares.commit_rci_middleware import ReqCtxInfoMiddleware
-from dl_core.exc import USReqException
+from dl_core.exc import USReqError
 
 API = Api(prefix="/api/v1")
 
@@ -28,7 +28,7 @@ def init_apis(app: flask.Flask) -> None:
     API.init_app(app)
 
 
-@API.errorhandler(USReqException)
+@API.errorhandler(USReqError)
 def handle_us_error(error):  # type: ignore  # 2024-01-30 # TODO: Function is missing a type annotation  [no-untyped-def]
     resp = error.orig_exc.response
     try:

@@ -25,9 +25,9 @@ class FieldResolver:
     def _find_field_by_id_or_title(self, id_or_title: str) -> BIField:
         try:
             field = self._dataset.result_schema.by_guid(id_or_title)
-        except dl_core.exc.FieldNotFound:
+        except dl_core.exc.FieldNotFoundError:
             field = self._dataset.result_schema.by_title(id_or_title)
-            # if it still raises `FieldNotFound`, well, then it raises
+            # if it still raises `FieldNotFoundError`, well, then it raises
         return field
 
     def field_id_from_spec(self, field_ref: FieldRef | None) -> FieldId:

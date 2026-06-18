@@ -122,7 +122,7 @@ class TemporalClient:
         except temporalio.service.RPCError as e:
             try:
                 exc.wrap_temporal_error(e)
-            except exc.PermissionDenied:
+            except exc.PermissionDeniedError:
                 return False
 
         return True

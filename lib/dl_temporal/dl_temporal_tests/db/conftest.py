@@ -57,7 +57,7 @@ async def fixture_register_namespace(
     temporal_client: dl_temporal.TemporalClient,
     temporal_namespace: str,
 ) -> None:
-    with contextlib.suppress(dl_temporal.AlreadyExists):
+    with contextlib.suppress(dl_temporal.AlreadyExistsError):
         await temporal_client.register_namespace(
             namespace=temporal_namespace,
             workflow_execution_retention_period=datetime.timedelta(days=1),

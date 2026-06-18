@@ -14,7 +14,7 @@ import shortuuid
 from dl_configs.settings_loaders.common import SDict
 from dl_configs.settings_loaders.fallback_cfg_resolver import ConstantFallbackConfigResolver
 from dl_configs.settings_loaders.loader_env import (
-    ConfigFieldMissing,
+    ConfigFieldMissingError,
     EnvSettingsLoader,
 )
 from dl_configs.settings_loaders.meta_definition import (
@@ -353,12 +353,12 @@ def test_required_in_fallback_factory():
         fallback_env=Fallback,
     )
 
-    with pytest.raises(ConfigFieldMissing) as exc:
+    with pytest.raises(ConfigFieldMissingError) as exc:
         load_settings(env={}, settings_type=SomeSettings, fallback_env=Fallback)
 
     assert exc.value.field_set == {"db.password", "db.user"}
 
-    with pytest.raises(ConfigFieldMissing) as exc:
+    with pytest.raises(ConfigFieldMissingError) as exc:
         load_settings(env={"DB_USER": "user_from_env"}, settings_type=SomeSettings, fallback_env=Fallback)
 
     assert exc.value.field_set == {"db.password"}
@@ -580,7 +580,7 @@ def test_fallback_value_propagation_in_nested_settings():
     )
 
     # Check that exception fires on missing keys
-    with pytest.raises(ConfigFieldMissing) as exc:
+    with pytest.raises(ConfigFieldMissingError) as exc:
         load_settings(
             env={},
             settings_type=Settings,
@@ -628,7 +628,7 @@ def test_complex_nested_with_required_dft_not_defined_no_env():
     class RootWithMissingNone(SettingsBase):
         nested_with_ff: Nested | None = s_attrib("NWFF")
 
-    with pytest.raises(ConfigFieldMissing) as exc:
+    with pytest.raises(ConfigFieldMissingError) as exc:
         load_settings(
             env={},
             settings_type=RootWithMissingNone,
@@ -653,7 +653,7 @@ def test_complex_double_nested_with_required_dft_not_defined_partial_env():
     class RootWithMissingNone(SettingsBase):
         nested_with_ff: Nested | None = s_attrib("NWFF")
 
-    with pytest.raises(ConfigFieldMissing) as exc:
+    with pytest.raises(ConfigFieldMissingError) as exc:
         load_settings(
             env={"NWFF_PAIR_C": "some comment"},
             settings_type=RootWithMissingNone,
@@ -696,7 +696,7 @@ def test_complex_double_nested_dft_fallback_factory_nested_none():
     )
 
     # Check that exception is correct in case of missing vars
-    with pytest.raises(ConfigFieldMissing) as exc:
+    with pytest.raises(ConfigFieldMissingError) as exc:
         load_settings(
             env={
                 "NWFF_PAIR_C": "1",

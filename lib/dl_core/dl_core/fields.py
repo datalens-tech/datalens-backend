@@ -29,7 +29,7 @@ from dl_constants import (
 )
 from dl_core.base_models import DefaultWhereClause
 from dl_core.components.ids import FieldId
-from dl_core.exc import FieldNotFound
+from dl_core.exc import FieldNotFoundError
 from dl_model_tools.typed_values import BIValue
 
 LOGGER = logging.getLogger(__name__)
@@ -483,7 +483,7 @@ class ResultSchema:
         try:
             return self._guid_cache[guid]
         except KeyError as e:
-            raise FieldNotFound(f"Unknown field {guid}") from e
+            raise FieldNotFoundError(f"Unknown field {guid}") from e
 
     def by_title(self, title: str) -> BIField:
         """Find field by title"""
@@ -492,7 +492,7 @@ class ResultSchema:
         try:
             return self._title_cache[title]
         except KeyError as e:
-            raise FieldNotFound(f"Unknown field {title}") from e
+            raise FieldNotFoundError(f"Unknown field {title}") from e
 
     @property
     def titles_to_guids(self) -> dict[str, FieldId]:

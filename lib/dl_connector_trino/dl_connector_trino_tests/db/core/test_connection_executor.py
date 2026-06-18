@@ -103,7 +103,7 @@ class TestTrinoSyncConnectionExecutor(
         )
         sa_query = nonexistent_table.select()
         conn_executor_query = ConnExecutorQuery(sa_query, db_name=nonexistent_table_ident.db_name)
-        with pytest.raises(core_exc.SourceDoesNotExist) as exc_info:
+        with pytest.raises(core_exc.SourceDoesNotExistError) as exc_info:
             sync_connection_executor.execute(conn_executor_query)
 
         exc_instance = exc_info.value
@@ -123,7 +123,7 @@ class TestTrinoSyncConnectionExecutor(
             schema=table_ident.schema_name,
         )
         conn_executor_query = ConnExecutorQuery(table.select(), db_name=table_ident.db_name)
-        with pytest.raises(core_exc.ColumnDoesNotExist) as exc_info:
+        with pytest.raises(core_exc.ColumnDoesNotExistError) as exc_info:
             sync_connection_executor.execute(conn_executor_query)
 
         exc_instance = exc_info.value
@@ -284,5 +284,5 @@ class TestTrinoSyncConnectionExecutorTimeout(TrinoSyncConnectionExecutorBase):
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         conn_executor_query = ConnExecutorQuery("SELECT count(*) FROM blackhole.default.sleeper3")
-        with pytest.raises(core_exc.SourceTimeout):
+        with pytest.raises(core_exc.SourceTimeoutError):
             sync_connection_executor.execute(conn_executor_query)

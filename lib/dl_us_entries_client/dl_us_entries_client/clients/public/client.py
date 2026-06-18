@@ -91,7 +91,7 @@ class USEntriesAsyncClient:
         response = await self._send(prepared, error_transformer=request.error_transformer)
         result = public_models.EntryGetResponse.model_validate(response.json())
         if request.include_permissions_info and result.permissions is None:
-            raise exceptions.UsEntriesClientException("Permissions requested but not returned by US")
+            raise exceptions.UsEntriesClientError("Permissions requested but not returned by US")
         return result
 
     async def post_entry(self, request: public_models.EntryPostRequest) -> public_models.EntryPostResponse:

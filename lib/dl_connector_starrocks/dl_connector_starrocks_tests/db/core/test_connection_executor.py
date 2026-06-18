@@ -71,7 +71,7 @@ class TestStarRocksSyncConnectionExecutor(
     ) -> None:
         fqn = f"{test_config.CoreConnectionSettings.CATALOG}.{test_config.CoreConnectionSettings.DB_NAME}.nonexistent_table_{shortuuid.uuid().lower()}"
         query = ConnExecutorQuery(query=f"SELECT * from {fqn}")
-        with pytest.raises(core_exc.SourceDoesNotExist):
+        with pytest.raises(core_exc.SourceDoesNotExistError):
             sync_connection_executor.execute(query)
 
     def get_schemas_for_type_recognition(self) -> dict[str, Sequence[DefaultSyncConnectionExecutorTestSuite.CD]]:
@@ -176,7 +176,7 @@ class TestStarRocksAsyncConnectionExecutor(
     ) -> None:
         fqn = f"{test_config.CoreConnectionSettings.CATALOG}.{test_config.CoreConnectionSettings.DB_NAME}.nonexistent_table_{shortuuid.uuid().lower()}"
         query = ConnExecutorQuery(query=f"SELECT * from {fqn}")
-        with pytest.raises(core_exc.SourceDoesNotExist):
+        with pytest.raises(core_exc.SourceDoesNotExistError):
             await async_connection_executor.execute(query)
 
     @pytest.fixture(autouse=True)

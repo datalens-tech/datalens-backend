@@ -394,7 +394,7 @@ def test_register_unknown() -> None:
 
 
 def test_unset_type_exception_is_value_error() -> None:
-    assert issubclass(dl_pydantic.UnsetTypeException, ValueError)
+    assert issubclass(dl_pydantic.UnsetTypeError, ValueError)
 
 
 def test_factory_without_type_key_raises_unset() -> None:
@@ -404,7 +404,7 @@ def test_factory_without_type_key_raises_unset() -> None:
 
     Base.register("child", Child)
 
-    with pytest.raises(dl_pydantic.UnsetTypeException) as exc_info:
+    with pytest.raises(dl_pydantic.UnsetTypeError) as exc_info:
         Base.factory({})
 
     assert isinstance(exc_info.value, ValueError)
@@ -425,7 +425,7 @@ def test_register_unset() -> None:
     assert isinstance(Base.factory({"type": "child"}), Child)
     assert isinstance(Base.factory({}), DefaultChild)
 
-    with pytest.raises(dl_pydantic.UnknownTypeException):
+    with pytest.raises(dl_pydantic.UnknownTypeError):
         Base.factory({"type": "bebebe"})
 
 

@@ -101,7 +101,7 @@ async def test_error_handling_middleware(
     caplog.set_level("INFO")
     log_name = "dl_api_commons.aio.middlewares.error_handling_outer"
 
-    class MyException(Exception):
+    class MyError(Exception):
         def __init__(self, msg: str, level: str, status_code: int) -> None:
             super().__init__(msg)
             self.msg = msg
@@ -110,7 +110,7 @@ async def test_error_handling_middleware(
 
     class ErrorHandler(AIOHTTPErrorHandler):
         def _classify_error(self, err: Exception, request: web.Request) -> ErrorData:
-            if isinstance(err, MyException):
+            if isinstance(err, MyError):
                 return ErrorData(
                     status_code=err.status_code,
                     level=ErrorLevel[err.level],
@@ -126,13 +126,13 @@ async def test_error_handling_middleware(
             raise ValueError("Can not format exception")
 
     async def info(request: web.Request) -> web.Response:
-        raise MyException("info_exc", "info", 400)
+        raise MyError("info_exc", "info", 400)
 
     async def warn(request: web.Request) -> web.Response:
-        raise MyException("warn_exc", "warning", 400)
+        raise MyError("warn_exc", "warning", 400)
 
     async def error(request: web.Request) -> web.Response:
-        raise MyException("err_exc", "error", 500)
+        raise MyError("err_exc", "error", 500)
 
     async def fmt_error(request: web.Request) -> web.Response:
         raise ValueError()

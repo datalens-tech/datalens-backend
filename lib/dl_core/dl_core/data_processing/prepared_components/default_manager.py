@@ -52,7 +52,7 @@ class DefaultPreparedComponentManager(PreparedComponentManagerBase):
             yield
         except exc.TableNameNotConfiguredError as err:
             if self._role == DataSourceRole.materialization:
-                raise exc.MaterializationNotFinished(
+                raise exc.MaterializationNotFinishedError(
                     message="Materialization is not yet finished",
                     query="<get_from_clause>",
                     inspector_query="<get_from_clause>",

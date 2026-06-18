@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from dl_core.us_manager.us_manager import USManagerBase
 
 
-class EntityUsageNotAllowed(Exception):
+class EntityUsageNotAllowedError(Exception):
     _user_reason: str | None
 
     def __init__(self, *args: Any, user_reason: str | None = None) -> None:

@@ -36,8 +36,8 @@ from dl_core.data_source.collection import (
 )
 from dl_core.dataset_capabilities import DatasetCapabilities
 from dl_core.exc import (
-    FieldNotFound,
-    ReferencedUSEntryNotFound,
+    FieldNotFoundError,
+    ReferencedUSEntryNotFoundError,
 )
 from dl_core.us_dataset import Dataset
 from dl_core.us_manager.us_manager import USManagerBase
@@ -302,7 +302,7 @@ class DatasetBaseWrapper:
                     dialect_name=dialect_name,
                     dialect_version=db_version,
                 )
-            except ReferencedUSEntryNotFound:
+            except ReferencedUSEntryNotFoundError:
                 self.dialect = D.DUMMY
 
         if self._query_spec is not None:
@@ -363,7 +363,7 @@ class DatasetBaseWrapper:
         try:
             return self._ds.result_schema.by_guid(field_id)
         except KeyError:
-            raise FieldNotFound(f"Field {field_id} not found in dataset") from None
+            raise FieldNotFoundError(f"Field {field_id} not found in dataset") from None
 
     def process_compiled_query(self, compiled_query: CompiledQuery) -> CompiledMultiQueryBase:
         try:

@@ -2,24 +2,24 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from dl_constants.exc import DLBaseException
+from dl_constants.exc import DLBaseError
 from dl_core.fields import BIField
 from dl_formula.core import exc as formula_exc
 from dl_formula.core.message_ctx import FormulaErrorCtx
 from dl_query_processing.enums import ProcessingStage
 
 
-class EmptyQuery(DLBaseException):
-    err_code = (*DLBaseException.err_code, "EMPTY_QUERY")
+class EmptyQueryError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "EMPTY_QUERY")
     default_message = "Attempted to execute an empty query."
 
 
-class LogicError(DLBaseException):
+class LogicError(DLBaseError):
     pass
 
 
-class InvalidGroupByConfiguration(DLBaseException):
-    err_code = (*DLBaseException.err_code, "INVALID_GROUP_BY_CONFIGURATION")
+class InvalidGroupByConfigurationError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "INVALID_GROUP_BY_CONFIGURATION")
     default_message = "Invalid GROUP BY configuration."
 
 
@@ -36,13 +36,13 @@ class FormulaHandlingError(formula_exc.FormulaError):
         self.field = field
 
 
-class InvalidLiteralError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "INVALID_VALUE")
+class InvalidLiteralError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "INVALID_VALUE")
     default_message = "Invalid value for literal"
 
 
-class FilterError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "FILTER")
+class FilterError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "FILTER")
     default_message = "Invalid filter"
 
 
@@ -61,18 +61,18 @@ class FilterArgumentCountError(FilterError):
     default_message = "Invalid argument count for filter"
 
 
-class InvalidQueryStructure(DLBaseException):
-    err_code = (*DLBaseException.err_code, "INVALID_QUERY_STRUCTURE")
+class InvalidQueryStructureError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "INVALID_QUERY_STRUCTURE")
     default_message = "Failed to compile data query."
 
 
-class InconsistentSelectAggregation(InvalidQueryStructure):
-    err_code = (*InvalidQueryStructure.err_code, "INCONSISTENT_AGGREGATION")
+class InconsistentSelectAggregationError(InvalidQueryStructureError):
+    err_code = (*InvalidQueryStructureError.err_code, "INCONSISTENT_AGGREGATION")
     default_message = "Inconsistent aggregation among SELECT items."
 
 
-class BlockSpecError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "BLOCK")
+class BlockSpecError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "BLOCK")
     default_message = "Block spec error."
 
 
@@ -101,27 +101,27 @@ class BlockItemCompatibilityError(BlockSpecError):
     default_message = "Got items with incompatible roles in block."
 
 
-class TreeError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "TREE")
+class TreeError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "TREE")
 
 
 class MultipleTreeError(TreeError):
     err_code = (*TreeError.err_code, "MULTIPLE")
 
 
-class LegendError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "LEGEND")
+class LegendError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "LEGEND")
 
 
 class LegendItemReferenceError(LegendError):
     err_code = (*LegendError.err_code, "ITEM_REFERENCE")
 
 
-class UnsopportedRoleInLegend(LegendError):
+class UnsopportedRoleInLegendError(LegendError):
     err_code = (*LegendError.err_code, "UNSUPPORTED_ROLE")
 
 
-class RoleDataTypeMismatch(LegendError):
+class RoleDataTypeMismatchError(LegendError):
     err_code = (*LegendError.err_code, "ROLE_DATA_TYPE_MISMATCH")
 
 
@@ -134,18 +134,18 @@ class LegendMeasureNameError(LegendError):
     default_message = "Measure names misconfigured."
 
 
-class MeasureNameUnsupported(LegendMeasureNameError):
+class MeasureNameUnsupportedError(LegendMeasureNameError):
     err_code = (*LegendMeasureNameError.err_code, "UNSUPPORTED")
     default_message = "Measure names is not supported."
 
 
-class GenericInvalidRequestError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "INVALID_REQUEST")
+class GenericInvalidRequestError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "INVALID_REQUEST")
     default_message = "Invalid request"
 
 
-class PivotError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "PIVOT")
+class PivotError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "PIVOT")
     default_message = "Pivot error."
 
 
@@ -162,27 +162,27 @@ class PivotSortingError(PivotError):
     default_message = "Pivot sorting error."
 
 
-class PivotSortingMultipleColumnsOrRows(PivotSortingError):
+class PivotSortingMultipleColumnsOrRowsError(PivotSortingError):
     err_code = (*PivotSortingError.err_code, "MULTIPLE_COLUMNS_OR_ROWS")
     default_message = "Requested sort by multiple columns or multiple rows."
 
 
-class PivotSortingAgainstMultipleMeasures(PivotSortingError):
+class PivotSortingAgainstMultipleMeasuresError(PivotSortingError):
     err_code = (*PivotSortingError.err_code, "AGAINST_MULTIPLE_MEASURES")
     default_message = "If there are multiple measures, sorting can only be done along them."
 
 
-class PivotSortingRowOrColumnNotFound(PivotSortingError):
+class PivotSortingRowOrColumnNotFoundError(PivotSortingError):
     err_code = (*PivotSortingError.err_code, "ROW_OR_COLUMN_NOT_FOUND")
     default_message = "Requested sorting row or column not found."
 
 
-class PivotSortingRowOrColumnIsAmbiguous(PivotSortingError):
+class PivotSortingRowOrColumnIsAmbiguousError(PivotSortingError):
     err_code = (*PivotSortingError.err_code, "ROW_OR_COLUMN_IS_AMBIGUOUS")
     default_message = "More than one row or column match requested sorting settings."
 
 
-class PivotSortingWithSubtotalsIsNotAllowed(PivotSortingError):
+class PivotSortingWithSubtotalsIsNotAllowedError(PivotSortingError):
     err_code = (*PivotSortingError.err_code, "SUBTOTALS_ARE_NOT_ALLOWED")
     default_message = "Measure sorting with subtotals is not allowed."
 
@@ -192,17 +192,17 @@ class PivotMeasureNameError(PivotError):
     default_message = "Pivot measure names error."
 
 
-class PivotMeasureNameRequired(PivotMeasureNameError):
+class PivotMeasureNameRequiredError(PivotMeasureNameError):
     err_code = (*PivotMeasureNameError.err_code, "REQUIRED")
     default_message = "Measure names must be used when pivoting multiple measures."
 
 
-class PivotMeasureNameForbidden(PivotMeasureNameError):
+class PivotMeasureNameForbiddenError(PivotMeasureNameError):
     err_code = (*PivotMeasureNameError.err_code, "FORBIDDEN")
     default_message = "Measure names are not allowed in pivot table without measures."
 
 
-class PivotMeasureNameDuplicate(PivotMeasureNameError):
+class PivotMeasureNameDuplicateError(PivotMeasureNameError):
     err_code = (*PivotMeasureNameError.err_code, "DUPLICATE")
     default_message = "Measure names cannot be used twice in pivot table."
 
@@ -216,12 +216,12 @@ class PivotDimensionError(PivotError):
     default_message = "Pivot dimension error."
 
 
-class PivotDimensionDuplicate(PivotDimensionError):
+class PivotDimensionDuplicateError(PivotDimensionError):
     err_code = (*PivotDimensionError.err_code, "DUPLICATE")
     default_message = "Pivot dimension cannot be used twice."
 
 
-class PivotDuplicateDimensionValue(PivotDimensionError):
+class PivotDuplicateDimensionValueError(PivotDimensionError):
     err_code = (*PivotDimensionError.err_code, "DUPLICATE_VALUE")
     default_message = "Duplicate dimension values were encountered in pivot table."
 
@@ -240,14 +240,14 @@ class PivotItemsIncompatibleError(PivotLegendError):
     err_code = (*PivotLegendError.err_code, "ITEMS_INCOMPATIBLE")
 
 
-class UnresolvableSlicingTagOrder(DLBaseException):
-    err_code = (*DLBaseException.err_code, "UNRESOLVABLE_TAG_ORDER")
+class UnresolvableSlicingTagOrderError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "UNRESOLVABLE_TAG_ORDER")
     default_message = "Function nesting order could not be resolved"  # FIXME
 
 
-class DLFormulaError(DLBaseException):
+class DLFormulaError(DLBaseError):
     # TODO: catch all cases of FormulaError in DatasetView and re-raise as this exception
-    err_code = (*DLBaseException.err_code, "FORMULA")
+    err_code = (*DLBaseError.err_code, "FORMULA")
 
     def __init__(
         self,
@@ -275,10 +275,10 @@ class DLFormulaError(DLBaseException):
         super().__init__(message=message, details=details, orig=orig)
 
 
-class DatasetError(DLBaseException):
-    err_code = (*DLBaseException.err_code, "DATASET")
+class DatasetError(DLBaseError):
+    err_code = (*DLBaseError.err_code, "DATASET")
 
 
-class DatasetTooManyFieldsFatal(DatasetError):
+class DatasetTooManyFieldsFatalError(DatasetError):
     err_code = (*DatasetError.err_code, "TOO_MANY_FIELDS")
     default_message = "There are too many fields in the dataset"

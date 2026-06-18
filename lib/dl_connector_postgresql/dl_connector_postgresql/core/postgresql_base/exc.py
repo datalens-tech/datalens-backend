@@ -4,7 +4,7 @@ from typing import Any
 from dl_core import exc as exc
 
 
-class PostgresSourceDoesNotExistError(exc.SourceDoesNotExist):
+class PostgresSourceDoesNotExistError(exc.SourceDoesNotExistError):
     ERR_RE = re.compile(r".*relation\s\"(?P<table>.*)\"\sdoes not exist.*")
 
     def __init__(
@@ -34,7 +34,7 @@ class PostgresSourceDoesNotExistError(exc.SourceDoesNotExist):
                 self.params["table_definition"] = table
 
 
-class PgDoublePrecisionRoundError(exc.UnknownFunction):
+class PgDoublePrecisionRoundError(exc.UnknownFunctionError):
     err_code = (*exc.DatabaseQueryError.err_code, "PG_DOUBLE_PRECISION_ROUND")
     default_message = (
         "ROUND with precision parameter is not supported for `double precision` data type " "in PostgreSQL data source."

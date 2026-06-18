@@ -20,33 +20,33 @@ class CHYTUtils(ClickHouseBaseUtils):
 
     chyt_expr_exc = frozendict(
         {
-            r"Invalid sorted JOIN: (?P<col>.*) is not a key column": chyt_exc.CHYTInvalidSortedJoinNotAKeyColumn,
-            r"Invalid sorted JOIN: joined columns should form prefix of joined table key columns": chyt_exc.CHYTInvalidSortedJoinNotKeyPrefixColumn,
-            r"Invalid sorted JOIN: only single table may currently be joined": chyt_exc.CHYTInvalidSortedJoinMoreThanOneTable,
-            r"Invalid sorted JOIN: table (?P<table>.*) is not sorted": chyt_exc.CHYTInvalidSortedJoinTableNotSorted,
-            r"Invalid sorted JOIN: CHYT does not support compound expressions in ON/USING clause": chyt_exc.CHYTInvalidSortedJoinCompoundExpressionsNotSupported,
-            r"Invalid sorted JOIN: key is empty": chyt_exc.CHYTInvalidSortedJoinKeyIsEmpty,
-            r"Invalid sorted JOIN: joining concatenation of multiple tables is not supported": chyt_exc.CHYTInvalidSortedJoinConcatNotSupported,
+            r"Invalid sorted JOIN: (?P<col>.*) is not a key column": chyt_exc.CHYTInvalidSortedJoinNotAKeyColumnError,
+            r"Invalid sorted JOIN: joined columns should form prefix of joined table key columns": chyt_exc.CHYTInvalidSortedJoinNotKeyPrefixColumnError,
+            r"Invalid sorted JOIN: only single table may currently be joined": chyt_exc.CHYTInvalidSortedJoinMoreThanOneTableError,
+            r"Invalid sorted JOIN: table (?P<table>.*) is not sorted": chyt_exc.CHYTInvalidSortedJoinTableNotSortedError,
+            r"Invalid sorted JOIN: CHYT does not support compound expressions in ON/USING clause": chyt_exc.CHYTInvalidSortedJoinCompoundExpressionsNotSupportedError,
+            r"Invalid sorted JOIN: key is empty": chyt_exc.CHYTInvalidSortedJoinKeyIsEmptyError,
+            r"Invalid sorted JOIN: joining concatenation of multiple tables is not supported": chyt_exc.CHYTInvalidSortedJoinConcatNotSupportedError,
             r"Invalid sorted JOIN: joined columns (?P<col1>.*) and (?P<col2>.*)"
-            r" do not occupy same positions in key columns of joined tables": chyt_exc.CHYTInvalidSortedJoinNotSameKeyPosition,
-            r"Invalid sorted JOIN": chyt_exc.CHYTInvalidSortedJoin,
-            r"Access denied": chyt_exc.CHYTTableAccessDenied,
-            r"Error validating permissions for user": chyt_exc.CHYTTableAccessDenied,
-            r"CHYT does not support tables without schema": chyt_exc.CHYTTableHasNoSchema,
-            r"NYT::TErrorException: Memory limit \(total\) exceeded": exc.DbMemoryLimitExceeded,
-            r"Error resolving path": exc.SourceDoesNotExist,
-            r"No tables to read from": exc.SourceDoesNotExist,
-            r"Reading multiple dynamic tables or dynamic table together with static table is not supported": chyt_exc.CHYTMultipleDynamicTablesNotSupported,
-            r"Subquery exceeds data weight limit": chyt_exc.CHYTSubqueryWeightLimitExceeded,
+            r" do not occupy same positions in key columns of joined tables": chyt_exc.CHYTInvalidSortedJoinNotSameKeyPositionError,
+            r"Invalid sorted JOIN": chyt_exc.CHYTInvalidSortedJoinError,
+            r"Access denied": chyt_exc.CHYTTableAccessDeniedError,
+            r"Error validating permissions for user": chyt_exc.CHYTTableAccessDeniedError,
+            r"CHYT does not support tables without schema": chyt_exc.CHYTTableHasNoSchemaError,
+            r"NYT::TErrorException: Memory limit \(total\) exceeded": exc.DbMemoryLimitExceededError,
+            r"Error resolving path": exc.SourceDoesNotExistError,
+            r"No tables to read from": exc.SourceDoesNotExistError,
+            r"Reading multiple dynamic tables or dynamic table together with static table is not supported": chyt_exc.CHYTMultipleDynamicTablesNotSupportedError,
+            r"Subquery exceeds data weight limit": chyt_exc.CHYTSubqueryWeightLimitExceededError,
         }
     )
     chyt_fallback_exc_cls = chyt_exc.CHYTQueryError
     clique_expr_exc = frozendict(
         {
-            r'User "(?P<user>[-0-9a-zA-Z]+)" has no access to clique \*?(?P<clique>\S+)': chyt_exc.CHYTCliqueAccessDenied,
-            r"Clique (?P<clique>\*\S+) is not running": chyt_exc.CHYTCliqueIsNotRunning,
-            r"Clique (?P<clique>\*\S+) is suspended": chyt_exc.CHYTCliqueIsSuspended,
-            r"Invalid clique specification": chyt_exc.CHYTCliqueNotExists,
+            r'User "(?P<user>[-0-9a-zA-Z]+)" has no access to clique \*?(?P<clique>\S+)': chyt_exc.CHYTCliqueAccessDeniedError,
+            r"Clique (?P<clique>\*\S+) is not running": chyt_exc.CHYTCliqueIsNotRunningError,
+            r"Clique (?P<clique>\*\S+) is suspended": chyt_exc.CHYTCliqueIsSuspendedError,
+            r"Invalid clique specification": chyt_exc.CHYTCliqueNotExistsError,
             r"Error parsing GUID \"(?P<clique>\S+)\"": chyt_exc.CHYTCliqueGuidParsingError,
             r"Authentication failed": chyt_exc.CHYTAuthError,
         }

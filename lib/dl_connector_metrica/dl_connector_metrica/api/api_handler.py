@@ -12,7 +12,7 @@ from dl_app_tools.profiling_base import generic_profiler
 from dl_core.exc import ConnectionConfigurationError
 from dl_core.us_connection_base import ConnectionBase
 from dl_model_tools.schema.base import BaseSchema
-from dl_sqlalchemy_metrica_api.exceptions import MetrikaApiAccessDeniedException
+from dl_sqlalchemy_metrica_api.exceptions import MetrikaApiAccessDeniedError
 
 from dl_connector_metrica.core.constants import (
     CONNECTION_TYPE_APPMETRICA_API,
@@ -41,11 +41,11 @@ class MetricaConnectionAvailableCounters(BIResource):
         )
         need_permission_on_entry(conn, USPermissionKind.edit)
         if conn.conn_type not in (CONNECTION_TYPE_METRICA_API, CONNECTION_TYPE_APPMETRICA_API):
-            raise exc.UnsupportedForEntityType("Unsupported connection type")
+            raise exc.UnsupportedForEntityTypeError("Unsupported connection type")
         assert isinstance(conn, MetrikaBaseMixin)
         try:
             counters = conn.get_available_counters()
-        except MetrikaApiAccessDeniedException as ex:
+        except MetrikaApiAccessDeniedError as ex:
             raise ConnectionConfigurationError(
                 "Unable to load available counters. Possibly caused by invalid OAuth token."
             ) from ex

@@ -73,7 +73,7 @@ class SlidingWindowRateLimiter:
             while self._timestamps and self._timestamps[0] < cutoff:
                 self._timestamps.popleft()
             if len(self._timestamps) >= self._max_requests:
-                raise base.RateLimitHttpxClientException()
+                raise base.RateLimitHttpxClientError()
             self._timestamps.append(now)
 
     @contextlib.contextmanager

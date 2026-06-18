@@ -16,7 +16,7 @@ class RequestsRetryError(Exception):
     """Requests retrier failed attempting to retry"""
 
 
-class RequestsRetryTimeout(requests.exceptions.Timeout, RequestsRetryError):
+class RequestsRetryTimeoutError(requests.exceptions.Timeout, RequestsRetryError):
     """Timed out attempting to retry"""
 
 
@@ -60,7 +60,7 @@ class RequestsPolicyRetrier:
             return last_known_result
 
         if isinstance(last_known_result, requests.Timeout):
-            raise RequestsRetryTimeout() from last_known_result
+            raise RequestsRetryTimeoutError() from last_known_result
 
         if isinstance(last_known_result, Exception):
             raise RequestsRetryError() from last_known_result

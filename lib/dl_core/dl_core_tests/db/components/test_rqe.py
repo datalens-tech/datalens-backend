@@ -1,7 +1,7 @@
 import attr
 import pytest
 
-from dl_core.connection_executors.models.exc import QueryExecutorException
+from dl_core.connection_executors.models.exc import QueryExecutorError
 from dl_core_testing.testcases.remote_query_executor import BaseRemoteQueryExecutorTestClass
 from dl_core_tests.db.base import DefaultCoreTestClass
 import dl_logging
@@ -33,7 +33,7 @@ class TestRQE(DefaultCoreTestClass, BaseRemoteQueryExecutorTestClass):
             rqe_data=attr.evolve(query_executor_options, hmac_key=b"not_so_secret_key"),
         )
         async with remote_adapter:
-            with pytest.raises(QueryExecutorException, match=r"Invalid signature"):
+            with pytest.raises(QueryExecutorError, match=r"Invalid signature"):
                 await self.execute_request(remote_adapter, query="select 1")
 
     @staticmethod

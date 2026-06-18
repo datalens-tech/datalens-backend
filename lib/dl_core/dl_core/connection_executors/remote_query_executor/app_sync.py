@@ -44,7 +44,7 @@ from dl_core.connection_executors.remote_query_executor.settings import (
     RQESettings,
 )
 from dl_core.enums import RQEEventType
-from dl_core.exc import SourceTimeout
+from dl_core.exc import SourceTimeoutError
 from dl_core.loader import (
     CoreLibraryConfig,
     load_core_lib,
@@ -246,7 +246,9 @@ class ActionHandlingView(flask.views.View):
                     if isinstance(action, (act.ActionExecuteQuery, act.ActionNonStreamExecuteQuery)):
                         query = action.db_adapter_query.debug_compiled_query
                         inspector_query = action.db_adapter_query.inspector_query
-                    raise SourceTimeout(db_message="Source timed out", query=query, inspector_query=inspector_query)
+                    raise SourceTimeoutError(
+                        db_message="Source timed out", query=query, inspector_query=inspector_query
+                    )
 
         if isinstance(action, act.ActionExecuteQuery):
             return self.execute_execute_action(dba, action)

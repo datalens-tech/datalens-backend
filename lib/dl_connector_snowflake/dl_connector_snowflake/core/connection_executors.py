@@ -13,7 +13,7 @@ from dl_connector_snowflake.auth import SFAuthProvider
 from dl_connector_snowflake.core.adapters import SnowFlakeDefaultAdapter
 from dl_connector_snowflake.core.constants import NOTIF_TYPE_SF_REFRESH_TOKEN_SOON_TO_EXPIRE
 from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
-from dl_connector_snowflake.core.exc import SnowflakeRefreshTokenInvalid
+from dl_connector_snowflake.core.exc import SnowflakeRefreshTokenInvalidError
 from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 
 LOGGER = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class BaseSnowFlakeConnExecutor(DefaultSqlAlchemyConnExecutor[_BASE_SNOWFLAKE_AD
         sf_auth_provider = SFAuthProvider.from_dto(self._conn_dto)
 
         if sf_auth_provider.is_refresh_token_expired():
-            raise SnowflakeRefreshTokenInvalid()
+            raise SnowflakeRefreshTokenInvalidError()
         if sf_auth_provider.should_notify_refresh_token_to_expire_soon():
             reporting_service = None
             if self._services_registry is not None:

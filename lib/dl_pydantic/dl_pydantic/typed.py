@@ -115,7 +115,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
     def _get_class_name(cls, data: dict[str, Any]) -> str:
         type_key = cls.type_key()
         if type_key not in data:
-            raise exceptions.UnsetTypeException(f"Data must contain '{type_key}' key")
+            raise exceptions.UnsetTypeError(f"Data must contain '{type_key}' key")
 
         data_type = data[type_key]
 
@@ -124,7 +124,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
             if registered_type.lower() == data_type_lower:
                 return registered_type
 
-        raise exceptions.UnknownTypeException(f"Unknown type: {data_type}")
+        raise exceptions.UnknownTypeError(f"Unknown type: {data_type}")
 
     @classmethod
     def factory(cls, data: Any) -> Self:
@@ -136,11 +136,11 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
         try:
             class_name = cls._get_class_name(data)
-        except exceptions.UnsetTypeException as exc:
+        except exceptions.UnsetTypeError as exc:
             if cls._unset_class is None:
                 raise exc
             class_ = cls._unset_class
-        except exceptions.UnknownTypeException as exc:
+        except exceptions.UnknownTypeError as exc:
             if cls._unknown_class is None:
                 raise exc
             class_ = cls._unknown_class
@@ -192,7 +192,7 @@ class TypedBaseModel(base.BaseModel, metaclass=TypedMeta):
 
             try:
                 result_cls = cls.factory(value)
-            except exceptions.UnknownTypeException:
+            except exceptions.UnknownTypeError:
                 LOGGER.error("Skipping unknown type '%s' in dict_with_type_key_factory for %s", key, cls.__name__)
                 continue
 

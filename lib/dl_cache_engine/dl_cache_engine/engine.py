@@ -90,7 +90,7 @@ from dl_app_tools.profiling_base import (
     GenericProfiler,
     generic_profiler_async,
 )
-from dl_cache_engine.exc import CachedEntryPackageVersionMismatch
+from dl_cache_engine.exc import CachedEntryPackageVersionMismatchError
 from dl_cache_engine.primitives import LocalKeyRepresentation
 from dl_constants.types import TJSONExt
 from dl_model_tools.serialization import (
@@ -212,7 +212,7 @@ class ResultCacheEntry:
         initial_bi_c_version_str = metadata["bi_common_version"]
 
         if initial_bi_c_version_str != cls.bi_c_version_str():
-            raise CachedEntryPackageVersionMismatch(
+            raise CachedEntryPackageVersionMismatchError(
                 f"Package version mismatch. In cache: {initial_bi_c_version_str}. Actual: {cls.bi_c_version_str()}"
             )
 
@@ -628,7 +628,7 @@ class EntityCacheEngineBase:
                 cache_entry_redis_data,
                 details=details,
             )
-        except CachedEntryPackageVersionMismatch as err:
+        except CachedEntryPackageVersionMismatchError as err:
             self._log_cache_miss(
                 reason="bi_common_was_updated",
                 details=details,

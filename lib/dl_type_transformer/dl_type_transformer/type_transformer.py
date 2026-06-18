@@ -43,7 +43,7 @@ def _if_not_none[INN_TV](value: INN_TV, func: Callable[[INN_TV], Any]) -> Any:
         try:
             return func(value)
         except ValueError as e:
-            raise exc.TypeCastFailed(f"Cannot convert {value!r} to {func.__name__}") from e
+            raise exc.TypeCastFailedError(f"Cannot convert {value!r} to {func.__name__}") from e
     return None
 
 
@@ -80,7 +80,7 @@ def _handle_type_cast_errors() -> Generator[None, None, None]:
     try:
         yield
     except (TypeError, ValueError) as e:
-        raise exc.TypeCastFailed("Type casting failed for value") from e
+        raise exc.TypeCastFailedError("Type casting failed for value") from e
 
 
 class TypeCaster:
@@ -174,12 +174,12 @@ class UnsupportedCaster(TypeCaster):
     def _cast_for_input(self, value: Any) -> None:
         if value is None:
             return
-        raise exc.TypeCastUnsupported("Asked `cast_for_input` for an Unsupported type for a non-null")
+        raise exc.TypeCastUnsupportedError("Asked `cast_for_input` for an Unsupported type for a non-null")
 
     def _cast_for_output(self, value: Any) -> None:
         if value is None:
             return
-        raise exc.TypeCastUnsupported("Asked `cast_for_output` for an Unsupported type for a non-null")
+        raise exc.TypeCastUnsupportedError("Asked `cast_for_output` for an Unsupported type for a non-null")
 
 
 def _cast_array[INN_TV](value: Iterable[INN_TV] | None, f: Callable[[INN_TV], Any]) -> tuple | None:
@@ -294,4 +294,4 @@ def get_type_transformer(conn_type: ConnectionType) -> TypeTransformer:
     try:
         return TYPE_TRANSFORMER_MAP[conn_type]
     except KeyError as e:
-        raise exc.TypeTransformerNotFound(conn_type) from e
+        raise exc.TypeTransformerNotFoundError(conn_type) from e

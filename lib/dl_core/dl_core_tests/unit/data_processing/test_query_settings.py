@@ -26,19 +26,19 @@ def test_validate_noop_on_empty_query_settings() -> None:
 
 def test_validate_rejects_when_not_enabled() -> None:
     connection = _make_connection(enabled=False)
-    with pytest.raises(exc.QuerySettingsNotSupported):
+    with pytest.raises(exc.QuerySettingsNotSupportedError):
         ConnectionBase.validate_query_settings(connection, {"max_threads": "4"})
 
 
 def test_validate_rejects_forbidden_setting() -> None:
     connection = _make_connection(forbidden=frozenset({"readonly"}))
-    with pytest.raises(exc.QuerySettingForbidden):
+    with pytest.raises(exc.QuerySettingForbiddenError):
         ConnectionBase.validate_query_settings(connection, {"readonly": "1"})
 
 
 def test_validate_rejects_setting_not_in_whitelist() -> None:
     connection = _make_connection(allowed=frozenset({"max_threads"}))
-    with pytest.raises(exc.QuerySettingNotAllowed):
+    with pytest.raises(exc.QuerySettingNotAllowedError):
         ConnectionBase.validate_query_settings(connection, {"unknown_setting": "1"})
 
 
@@ -54,5 +54,5 @@ def test_validate_passes_when_whitelist_contains_key() -> None:
 
 def test_validate_rejects_empty_whitelist() -> None:
     connection = _make_connection(allowed=frozenset())
-    with pytest.raises(exc.QuerySettingNotAllowed):
+    with pytest.raises(exc.QuerySettingNotAllowedError):
         ConnectionBase.validate_query_settings(connection, {"max_threads": "4"})

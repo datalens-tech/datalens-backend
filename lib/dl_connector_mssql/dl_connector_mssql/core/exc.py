@@ -4,7 +4,7 @@ from typing import Any
 import dl_core.exc as exc
 
 
-class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExist):
+class SyncMssqlSourceDoesNotExistError(exc.SourceDoesNotExistError):
     ERR_RE = re.compile(r".*Invalid\sobject\sname\s'(?P<table>.*)'\.\s\(208\).*")
 
     def __init__(

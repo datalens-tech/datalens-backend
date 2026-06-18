@@ -67,7 +67,7 @@ class ScheduleSyncService:
                 LOGGER.info("Deleting stale schedule: %s", entry.id)
                 try:
                     await self.temporal_client.delete_schedule(entry.id)
-                except client.NotFound:
+                except client.NotFoundError:
                     LOGGER.debug("Stale schedule %s was already deleted", entry.id)
 
     async def _upsert_schedule(

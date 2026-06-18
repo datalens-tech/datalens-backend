@@ -6,8 +6,8 @@ import logging
 import attr
 
 from dl_i18n.exc import (
-    UnknownDomain,
-    UnknownLocale,
+    UnknownDomainError,
+    UnknownLocaleError,
 )
 
 LOGGER = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ class Localizer:
 
     def translate(self, message: Translatable) -> str:
         if message.domain not in self._localizers:
-            raise UnknownDomain(f"Unknown domain {message.domain}")
+            raise UnknownDomainError(f"Unknown domain {message.domain}")
         return self._localizers[message.domain].translate(message)
 
 
@@ -70,7 +70,7 @@ class LocalizerFactory:
             LOGGER.info("Unknown locale %s", locale)
             if fallback:
                 return fallback
-            raise UnknownLocale(f"Unknown locale {locale}")
+            raise UnknownLocaleError(f"Unknown locale {locale}")
         return Localizer(localizers)
 
 
@@ -90,7 +90,7 @@ class LocalizerLoader:
                 )
                 assert isinstance(gnu_localizer, gettext.GNUTranslations)
             except FileNotFoundError as e:
-                raise UnknownDomain(f"Unknown domain {config.domain}") from e
+                raise UnknownDomainError(f"Unknown domain {config.domain}") from e
             localizers.append(
                 _GNULocalizer(
                     domain=config.domain,

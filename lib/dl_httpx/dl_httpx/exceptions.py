@@ -2,19 +2,19 @@ import attrs
 import httpx
 
 
-class BaseHttpxClientException(Exception): ...
+class BaseHttpxClientError(Exception): ...
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class HttpStatusHttpxClientException(BaseHttpxClientException):
+class HttpStatusHttpxClientError(BaseHttpxClientError):
     request: httpx.Request
     response: httpx.Response
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class RequestHttpxClientException(BaseHttpxClientException):
+class RequestHttpxClientError(BaseHttpxClientError):
     original_exception: Exception
 
 
 @attrs.define(kw_only=True, auto_attribs=True, frozen=True)
-class NoRetriesHttpxClientException(BaseHttpxClientException): ...
+class NoRetriesHttpxClientError(BaseHttpxClientError): ...
