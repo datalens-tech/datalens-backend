@@ -113,7 +113,7 @@ class MetaPackageManager:
 
     def export_dependencies_raw(self, group: str) -> str:
         proc = subprocess.run(
-            [
+            [  # noqa: S607
                 "poetry",
                 "export",
                 "--only",
@@ -156,7 +156,7 @@ class MetaPackageManager:
     def run_poetry_lock(self, suppress_stdout: bool = False) -> None:
         stdout_target = subprocess.DEVNULL if suppress_stdout else None
         subprocess.run(
-            ["poetry", "lock", "--no-update"],
+            ["poetry", "lock", "--no-update"],  # noqa: S607
             cwd=self.dir_path,
             check=True,
             stdout=stdout_target,

@@ -13,7 +13,7 @@ from dl_repmanager.primitives import (
 
 
 def run_poetry_lock(dir_path: Path) -> None:
-    subprocess.run(["poetry", "lock", "--no-update"], cwd=dir_path, check=True)
+    subprocess.run(["poetry", "lock", "--no-update"], cwd=dir_path, check=True)  # noqa: S607
 
 
 def sync_scoped_metapkg(

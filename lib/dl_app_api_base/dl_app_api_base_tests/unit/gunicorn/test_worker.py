@@ -8,6 +8,7 @@ import enum
 import logging
 import os
 import subprocess
+import sys
 import tempfile
 from typing import (
     ClassVar,
@@ -211,6 +212,8 @@ def fixture_app_context(
         # real subprocess: the test spawns an actual gunicorn process to exercise worker lifecycle
         gunicorn_process = subprocess.Popen(  # noqa: ASYNC220
             [
+                sys.executable,
+                "-m",
                 "gunicorn",
                 "test_worker:get_app",
                 "--bind",
