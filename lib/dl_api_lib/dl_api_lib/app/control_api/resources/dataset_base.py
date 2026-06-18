@@ -31,7 +31,6 @@ from dl_constants import (
     BinaryJoinOperator,
     ConnectionType,
     ManagedBy,
-    RLSSubjectType,
     USEntryBranch,
     UserDataType,
 )
@@ -222,9 +221,7 @@ class DatasetResource(BIResource):
                 field_rls = [e for e in dataset.rls.items if e.field_guid == field.guid]
                 if field_rls:
                     rls[field.guid] = FieldRLSSerializer.to_text_config(field_rls)
-                field_rls2 = [e for e in field_rls if e.subject.subject_type != RLSSubjectType.notfound]
-                if field_rls2:
-                    rls_v2[field.guid] = field_rls2
+                    rls_v2[field.guid] = field_rls
         data["rls"] = rls
         data["rls2"] = rls_v2
 

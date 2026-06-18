@@ -364,11 +364,7 @@ class DatasetApiLoader:
                 # e.g. preview request in async api
                 if use_rls_v2:
                     rls_entries_pre = rls_entries
-                    saved_field_rls = [
-                        rlse
-                        for rlse in dataset.rls.items
-                        if rlse.field_guid == field.guid and rlse.subject.subject_type != RLSSubjectType.notfound
-                    ]
+                    saved_field_rls = [rlse for rlse in dataset.rls.items if rlse.field_guid == field.guid]
                     compare_by_name = False
                 else:
                     rls_entries_pre = dl_rls.FieldRLSSerializer.from_text_config(
