@@ -27,6 +27,23 @@ class TestAsyncMySQLAdapter(
 
     ASYNC_ADAPTER_CLS = AsyncMySQLAdapter
 
+    @pytest.mark.asyncio
+    async def test_modifying_query_returns_empty_result(
+        self,
+        conn_bi_context: RequestContextInfo,
+        target_conn_dto: MySQLConnTargetDTO,
+    ) -> None:
+        # A modifying / no-result-set statement (INSERT/UPDATE/DELETE/DDL/SET) makes aiomysql
+        # auto-close the ResultProxy and drop its cursor (`result.cursor` becomes None). The
+        # adapter must emit an empty result instead of crashing while building cursor info.
+        dba = self._make_dba(target_conn_dto, conn_bi_context)
+
+        result = await dba.execute(DBAdapterQuery(query="CREATE TEMPORARY TABLE dl_modifying_query_test (id INT)"))
+
+        assert result.raw_cursor_info["names"] == []
+        rows = [row async for row in result.get_all_rows()]
+        assert rows == []
+
 
 class TestAsyncRogueMySQLAdapter(
     BaseRogueMySQLTestClass,

@@ -83,6 +83,10 @@ class WithCursorInfo:
     def _make_cursor_info(self, cursor, db_session=None) -> dict:  # type: ignore  # TODO: fix
         return {}
 
+    def _make_empty_cursor_info(self) -> dict:
+        """Cursor info for a statement that produced no result set (INSERT/UPDATE/DELETE/DDL/etc.)."""
+        return {}
+
 
 class WithMinimalCursorInfo(WithCursorInfo, SATypeTransformer):
     def _make_cursor_info(self, cursor, db_session=None) -> dict:  # type: ignore  # TODO: fix
@@ -98,6 +102,14 @@ class WithMinimalCursorInfo(WithCursorInfo, SATypeTransformer):
             db_types=[
                 self._cursor_column_to_native_type(cursor_col, require=False) for cursor_col in cursor.description
             ],
+        )
+
+    def _make_empty_cursor_info(self) -> dict:
+        return dict(
+            super()._make_empty_cursor_info(),
+            names=[],
+            driver_types=[],
+            db_types=[],
         )
 
 

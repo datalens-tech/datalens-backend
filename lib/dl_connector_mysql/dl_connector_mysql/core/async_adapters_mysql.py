@@ -173,6 +173,18 @@ class AsyncMySQLAdapter(
         with self.handle_execution_error(debug_query=debug_query, inspector_query=inspector_query):
             async with self._get_connection(db_adapter_query.db_name) as conn:
                 result = await conn.execute(compiled_query, compiled_query_parameters)
+
+                # Modifying / no-result-set statements (INSERT/UPDATE/DELETE/DDL/SET) make aiomysql
+                # auto-close the ResultProxy and drop its cursor (`result.cursor` becomes None).
+                if result.cursor is None:
+                    if db_adapter_query.allow_write:
+                        # aiomysql runs with autocommit disabled, so an explicit COMMIT is required for
+                        # the write to persist; otherwise it is rolled back when the connection is
+                        # released back to the pool.
+                        await conn.execute("COMMIT")
+                    yield ExecutionStepCursorInfo(cursor_info=self._make_empty_cursor_info(), raw_cursor_description=[])
+                    return
+
                 cursor_info = ExecutionStepCursorInfo(
                     cursor_info=self._make_cursor_info(result.cursor),
                     raw_cursor_description=list(result.cursor.description),

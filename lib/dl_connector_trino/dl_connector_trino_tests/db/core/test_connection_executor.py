@@ -38,6 +38,7 @@ from dl_connector_trino.core.us_connection import (
     ConnectionTrino,
     ConnectionTrinoBase,
 )
+from dl_connector_trino_tests.db.config import CoreConnectionSettings
 from dl_connector_trino_tests.db.core.base import BaseTrinoTestClass
 
 
@@ -58,6 +59,19 @@ class TestTrinoSyncConnectionExecutor(
     TrinoSyncConnectionExecutorBase,
     DefaultSyncConnectionExecutorTestSuite[ConnectionTrino],
 ):
+    def test_modifying_query_returns_empty_result(
+        self,
+        sync_connection_executor: SyncConnExecutorBase,
+    ) -> None:
+        # A modifying / no-result-set statement makes the DBAPI cursor expose `description = None`.
+        # The classic SA adapter must emit an empty result instead of crashing while building cursor info.
+        query = ConnExecutorQuery(
+            query=f"DROP TABLE IF EXISTS {CoreConnectionSettings.CATALOG}.{CoreConnectionSettings.SCHEMA}.dl_no_result_test"
+        )
+        result = sync_connection_executor.execute(query)
+        assert result.cursor_info["names"] == []
+        assert result.get_all() == []
+
     @pytest.mark.parametrize(
         ("layer", "expected_error_name"),
         [

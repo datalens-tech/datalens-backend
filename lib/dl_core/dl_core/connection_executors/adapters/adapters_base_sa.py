@@ -12,12 +12,14 @@ from typing import (
     Any,
     ClassVar,
     TypeVar,
+    cast,
     final,
 )
 
 import attr
 import sqlalchemy as sa
 from sqlalchemy import event
+from sqlalchemy.engine import CursorResult
 from sqlalchemy.engine.base import Engine
 
 from dl_app_tools.profiling_base import (
@@ -180,15 +182,30 @@ class BaseSAAdapter(
             self.execution_context(),
         ):
             with GenericProfiler("db-exec"):
-                result = db_session.execute(
-                    query,
-                    # *args,
-                    # **kwargs,
+                result = cast(
+                    CursorResult,
+                    db_session.execute(
+                        query,
+                        # *args,
+                        # **kwargs,
+                    ),
                 )
 
+            # Modifying / no-result-set statements (INSERT/UPDATE/DELETE/DDL/SET) have no cursor
+            # description, and SQLAlchemy drops the cursor (`result.cursor` becomes None). There are
+            # no columns to describe and no rows to fetch, so emit empty cursor info and stop instead
+            # of crashing while building cursor info.
+            if not result.returns_rows:
+                yield ExecutionStepCursorInfo(
+                    cursor_info=self._make_empty_cursor_info(),
+                    raw_cursor_description=[],
+                    raw_engine=engine,
+                )
+                return
+
             cursor_info = ExecutionStepCursorInfo(
-                cursor_info=self._make_cursor_info(result.cursor, db_session=db_session),  # type: ignore  # 2024-01-24 # TODO: "Result" has no attribute "cursor"  [attr-defined]
-                raw_cursor_description=list(result.cursor.description),  # type: ignore  # 2024-01-24 # TODO: "Result" has no attribute "cursor"  [attr-defined]
+                cursor_info=self._make_cursor_info(result.cursor, db_session=db_session),
+                raw_cursor_description=list(result.cursor.description),
                 raw_engine=engine,
             )
             yield cursor_info
