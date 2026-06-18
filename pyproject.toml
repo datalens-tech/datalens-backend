@@ -102,6 +102,7 @@ ignore = [
   "S101", # Never: assert — `assert` is an accepted inline invariant/precondition idiom repo-wide (incl. non-test source) and ubiquitous in tests; flake8-bandit's assert ban would only add noqa noise. Preliminary disposition for the `S` category (migrated incrementally in BI-7445; security-relevant `S` sub-rules handled separately).
   "S104", # Never: hardcoded-bind-all-interfaces — binding to 0.0.0.0 is intentional for containerized services (exposure is controlled by the orchestrator, not the app); the rule would only add noqa noise.
   "S311", # Never: suspicious-non-cryptographic-random-usage — `random` for non-security use (load balancing, retry jitter, test data, internal ids) is pervasive and legitimate; per-site review found no security-sensitive use, so enforcing only adds noqa noise.
+  "S608", # Never: hardcoded-sql-expression — string-built SQL is pervasive and legitimate here (connectors, repositories: structural query construction with parameterized values, not user-input interpolation); per-site review found no injection sites, so enforcing only adds noqa noise.
   "SIM108", # Never: if-else-block-instead-of-if-exp — forcing ternaries hurts readability; many sites carry explanatory comments / type-ignores that don't survive the (unsafe-only) autofix
   "SIM300", # Never: yoda-conditions — autofix mis-handles our settings/config comparisons (`settings.MODE == Enum.member`), yoda-fying correct code
 ]
