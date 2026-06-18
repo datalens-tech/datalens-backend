@@ -78,6 +78,7 @@ exclude = [
   "lib/dl_task_processor/dl_task_processor/upstream_worker.py",
   "lib/redis-cache-lock/**",
   "node_modules",
+  "tools/cookiecutter/templates/**",
   "tools_venv",
   "venv",
 ]
@@ -143,6 +144,7 @@ select = [
   "N813", # pep8-naming (sub-rule): camelcase-imported-as-lowercase
   "N814", # pep8-naming (sub-rule): camelcase-imported-as-constant
   "N817", # pep8-naming (sub-rule): camelcase-imported-as-acronym
+  "N999", # pep8-naming (sub-rule): invalid-module-name
   "PERF", # Perflint
   "PIE", # flake8-pie
   "PT", # flake8-pytest-style
