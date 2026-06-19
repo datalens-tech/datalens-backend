@@ -11,7 +11,7 @@ from dl_connector_snowflake.core.dto import SnowFlakeConnDTO
 from dl_connector_snowflake.core.target_dto import SnowFlakeConnTargetDTO
 from dl_connector_snowflake.db_testing.engine_wrapper import SnowFlakeDbEngineConfig
 from dl_connector_snowflake.formula.constants import SnowFlakeDialect as D
-import dl_connector_snowflake_tests.ext.config as test_config  # noqa
+import dl_connector_snowflake_tests.ext.config as test_config
 from dl_connector_snowflake_tests.ext.settings import Settings
 
 

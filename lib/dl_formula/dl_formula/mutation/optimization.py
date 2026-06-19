@@ -56,7 +56,7 @@ class OptimizeConstComparisonMutation(OptimizeConstOperatorMutation):
             and isinstance(node.left, nodes.BaseLiteral)
             and isinstance(node.right, nodes.BaseLiteral)
             # To stay on the safe side, only do this for same-type constants
-            and type(node.left) is type(node.right)  # noqa
+            and type(node.left) is type(node.right)
         )
 
     def make_replacement(

@@ -113,11 +113,11 @@ class IntegerTypeCaster(TypeCaster):
 
 
 class FloatTypeCaster(TypeCaster):
-    cast_func = lambda value: _if_not_none(value, float)  # type: ignore[assignment]  # noqa  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
+    cast_func = lambda value: _if_not_none(value, float)  # type: ignore[assignment]  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
 
 
 class BooleanTypeCaster(TypeCaster):
-    cast_func = lambda value: _if_not_none(value, bool)  # type: ignore[assignment]  # noqa  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
+    cast_func = lambda value: _if_not_none(value, bool)  # type: ignore[assignment]  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
 
 
 class YTBooleanTypeCaster(BooleanTypeCaster):
@@ -130,7 +130,7 @@ class YTBooleanTypeCaster(BooleanTypeCaster):
 
 
 class StringTypeCaster(TypeCaster):
-    cast_func = lambda value: _if_not_none(value, str)  # type: ignore[assignment]  # noqa  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
+    cast_func = lambda value: _if_not_none(value, str)  # type: ignore[assignment]  # fmt: skip  # 26.05.2026 mypy bump 1.20.2
 
 
 class DateTypeCaster(TypeCaster):

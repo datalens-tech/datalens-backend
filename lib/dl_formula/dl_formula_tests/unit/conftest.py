@@ -12,7 +12,7 @@ from dl_formula_testing.initialization import initialize_formula_test
 PARSERS = (ParserType.antlr_py,)
 
 
-def pytest_configure(config):  # noqa
+def pytest_configure(config):
     initialize_formula_test(
         pytest_config=config,
         formula_test_config=FormulaTestEnvironmentConfiguration(

@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from dl_sqlalchemy_postgres.base import register_dialect
 
 
-def pytest_configure(config):  # noqa
+def pytest_configure(config):
     register_dialect()
 
 

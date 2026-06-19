@@ -183,7 +183,7 @@ class FuncTranslationImplementationBase(abc.ABC):
 
 
 @attr.s
-class FuncTranslationImplementation(FuncTranslationImplementationBase):  # noqa
+class FuncTranslationImplementation(FuncTranslationImplementationBase):
     """
     Basic function implementation class.
     Consists of a single "main" translatable part that is generated
@@ -297,7 +297,7 @@ class TranslationVariant(ValueVariant[FuncTranslationImplementationBase]):
         translation_range: Callable[..., WinRangeTuple] | None = None,
         translation_rows: Callable[..., WinRangeTuple] | None = None,
     ) -> _TRANS_VAR_TV:
-        translation_impl: FuncTranslationImplementationBase  # noqa
+        translation_impl: FuncTranslationImplementationBase
         if as_winfunc:
             translation_impl = WindowFunctionImplementation(
                 translation_main=translation,

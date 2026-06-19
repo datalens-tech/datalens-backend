@@ -124,14 +124,14 @@ class ConnExecutorBase:
     def is_conn_dto_equals(self, another: ConnDTO) -> bool:
         try:
             return self._conn_dto == another
-        except Exception:  # noqa
+        except Exception:
             LOGGER.exception("Exception during connection DTO comparision")
             return False
 
     def is_context_info_equals(self, another: RequestContextInfo) -> bool:
         try:
             return self._req_ctx_info == another
-        except Exception:  # noqa
+        except Exception:
             LOGGER.exception("Exception during request context info comparision")
             return False
 

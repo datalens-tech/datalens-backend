@@ -90,7 +90,7 @@ def need_permission_on_entry(us_entry: USEntry, permission: str) -> None:
 
 
 @attr.s
-class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
+class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):
     """
     Simple formalizer.
     Can be used for validation (no real data query is performed).
@@ -296,7 +296,7 @@ class SimpleQuerySpecFormalizer(QuerySpecFormalizerBase):  # noqa
 
 
 @attr.s
-class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):  # noqa
+class DataQuerySpecFormalizer(SimpleQuerySpecFormalizer):
     """
     A more complex formalizer for real data queries:
     ``/result``, ``/preview``, etc.

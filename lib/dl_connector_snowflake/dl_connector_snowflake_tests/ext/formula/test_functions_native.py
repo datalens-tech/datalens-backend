@@ -4,7 +4,7 @@ from dl_formula_testing.testcases.functions_native import (
     DefaultNativeFunctionFormulaConnectorTestSuite,
 )
 
-from dl_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase  # noqa
+from dl_connector_snowflake_tests.ext.formula.base import SnowFlakeTestBase
 
 
 class TestNativeFunctionSnowFlake(

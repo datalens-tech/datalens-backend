@@ -9,7 +9,7 @@ from dl_connector_metrica.core.constants import (
 
 
 @attr.s(frozen=True)
-class MetricaAPIConnDTO(ConnDTO):  # noqa
+class MetricaAPIConnDTO(ConnDTO):
     conn_type = CONNECTION_TYPE_METRICA_API
 
     token: str = attr.ib(repr=False, kw_only=True)

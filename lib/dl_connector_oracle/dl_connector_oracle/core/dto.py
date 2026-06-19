@@ -9,7 +9,7 @@ from dl_connector_oracle.core.constants import (
 
 
 @attr.s(frozen=True)
-class OracleConnDTO(DefaultSQLDTO):  # noqa
+class OracleConnDTO(DefaultSQLDTO):
     conn_type = CONNECTION_TYPE_ORACLE
 
     db_name_type: OracleDbNameType = attr.ib(kw_only=True)

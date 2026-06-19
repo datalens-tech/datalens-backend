@@ -69,7 +69,7 @@ from dl_type_transformer.native_type import CommonNativeType
 from dl_utils.utils import get_type_full_name
 
 if TYPE_CHECKING:
-    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO  # noqa: F401
+    from dl_core.connection_executors.models.connection_target_dto_base import ConnTargetDTO
 
 
 LOGGER = logging.getLogger(__name__)
@@ -307,7 +307,7 @@ class BaseSAAdapter(
                         with GenericProfiler("db-idx-fetch"):
                             indexes = self._get_table_indexes(table_def)
 
-                    except Exception:  # noqa
+                    except Exception:
                         LOGGER.exception("Indexes fetching fail for %s", table_def)
 
                 return RawSchemaInfo(columns=columns, indexes=indexes)

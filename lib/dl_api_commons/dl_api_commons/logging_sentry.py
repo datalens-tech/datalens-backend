@@ -43,7 +43,7 @@ SECRET_VAR_CONTENT_RE = re.compile(
     ")"
 )
 
-S3_TBL_FUNC_RE = re.compile("s3\([^,]*['\"]http([^,]+,){3}")  # noqa
+S3_TBL_FUNC_RE = re.compile("s3\([^,]*['\"]http([^,]+,){3}")
 
 
 def is_secret_var(var_name: str) -> bool:
@@ -115,7 +115,7 @@ def cleanup_event_request_section(req_section: dict[str, str | dict[str, str]]) 
 
 def cleanup_common_secret_data(
     event: dict,
-    hint: dict,  # noqa
+    hint: dict,
 ) -> dict:
     for exc_data in event.get("exception", {}).get("values"):
         for frame in exc_data.get("stacktrace", {}).get("frames", ()):

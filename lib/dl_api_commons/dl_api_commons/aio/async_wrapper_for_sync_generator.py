@@ -90,7 +90,7 @@ class SynchronizedJobState[STATE_ITEM_TV]:
     _state: JobState = attr.ib(init=False, default=JobState.worker_not_started)
 
     def _ensure_monitor(self):  # type: ignore  # TODO: fix
-        if not self._monitor._is_owned():  # type: ignore  # TODO: fix  # noqa
+        if not self._monitor._is_owned():  # type: ignore  # TODO: fix
             msg = "Attempt to use synchronized method without monitor acquiring"
             self._log.error(msg)
             raise AWFSGRuntimeError(msg)
@@ -199,7 +199,7 @@ class Job[JOB_ITEM_TV](metaclass=abc.ABCMeta):
             # Notifying generator that we won't receive any more data
             try:
                 generator.close()
-            except Exception:  # noqa
+            except Exception:
                 self._log.exception("Exception during generator closing")
 
             self._ss.set_state(JobState.closed)
@@ -252,7 +252,7 @@ class Job[JOB_ITEM_TV](metaclass=abc.ABCMeta):
                     self._log.error("Worker main cycle exits with running generator")
                     try:
                         generator.close()
-                    except Exception:  # noqa
+                    except Exception:
                         self._log.exception("Exception during generator closing")
 
     # Initialization

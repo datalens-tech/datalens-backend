@@ -12,7 +12,7 @@ from dl_connector_bigquery.core.data_source_spec import (
 )
 
 
-class DatasetSQLDataSourceSpecStorageSchemaMixin(BaseSQLDataSourceSpecStorageSchema):  # noqa
+class DatasetSQLDataSourceSpecStorageSchemaMixin(BaseSQLDataSourceSpecStorageSchema):
     dataset_name = ma_fields.String(required=True)
 
 

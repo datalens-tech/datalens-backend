@@ -126,7 +126,7 @@ class AsyncUSManager(USManagerBase):
     async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         try:
             await self.close()
-        except Exception:  # noqa
+        except Exception:
             LOGGER.warning("Error during closing AsyncUSManager", exc_info=True)
 
     @overload

@@ -199,10 +199,10 @@ class DatasetDataBaseView(BaseView):
                             sr.get_conn_executor_factory().get_async_conn_executor_cls(target_conn).__qualname__
                         )
                         self.dl_request.log_ctx_controller.put_to_context("conn_exec_cls", ce_cls_str)
-                    except Exception:  # noqa
+                    except Exception:
                         LOGGER.exception("Can not get CE class for connection %s", target_conn.uuid)
 
-                except Exception:  # noqa
+                except Exception:
                     LOGGER.exception("Can not save connection info to logging context")
 
             stack.enter_context(GenericProfiler(f"{self.profiler_prefix}-{profiling_code}"))  # type: ignore  # TODO: fix
@@ -341,7 +341,7 @@ class DatasetDataBaseView(BaseView):
                     self.dataset_id, dataset.revision_id, req_model.updates
                 )
 
-                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)  # noqa
+                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)
 
         return update_info
 
@@ -641,7 +641,7 @@ class DatasetDataBaseView(BaseView):
             executor = services_registry.get_compute_executor()
             await executor.execute(lambda: ds_validator.apply_batch(action_batch=req_model.updates))
             if enable_mutation_caching:
-                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)  # noqa
+                await self.try_save_dataset_to_cache(mutation_cache, mutation_key, self.dataset)
 
         return update_info
 

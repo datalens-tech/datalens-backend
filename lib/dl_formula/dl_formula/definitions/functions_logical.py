@@ -93,7 +93,7 @@ class FuncCase(LogicalFunction):
     name = "case"
     arg_cnt = None
     scopes = LogicalFunction.scopes & ~Scope.DOCUMENTED  # Documented in _case_block_
-    variants = (VW(D.DUMMY, n.func._case_block_),)  # noqa
+    variants = (VW(D.DUMMY, n.func._case_block_),)
     return_type = CaseTypeStrategy()
 
 

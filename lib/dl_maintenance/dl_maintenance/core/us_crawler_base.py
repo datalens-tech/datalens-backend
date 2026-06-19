@@ -191,7 +191,7 @@ class USEntryCrawler:
 
         try:
             map_handling_status_entry_id = await self._run(crawler_run_extra)
-        except Exception:  # noqa
+        except Exception:
             crawler_run_extra.update(us_entry_crawler_run_success=False)
             LOGGER.exception(
                 "Crawler run failure: %s %s",
@@ -278,7 +278,7 @@ class USEntryCrawler:
                 entry_handling_extra=entry_handling_extra,
             )
             entry_handling_extra.update(entry_handling_status=result.name)
-        except Exception:  # noqa
+        except Exception:
             result = EntryHandlingResult.FAILED
             entry_handling_extra.update(entry_handling_status=result.name)
             LOGGER.exception(
@@ -371,7 +371,7 @@ class USEntryCrawler:
                 entry_diff = get_pre_save_top_level_dict(target_entry)
             else:
                 return "N/A"
-        except Exception:  # noqa
+        except Exception:
             LOGGER.warning(
                 "Exception during diff calculation",
                 extra=extra_with_evt_code(EVT_CODE_DIFF_CALC_EXC, entry_handling_extra),
@@ -380,7 +380,7 @@ class USEntryCrawler:
 
         try:
             return entry_diff.short_str()
-        except Exception:  # noqa
+        except Exception:
             LOGGER.warning(
                 "Can not pretty stringify diff for entry: %s",
                 target_entry.uuid,

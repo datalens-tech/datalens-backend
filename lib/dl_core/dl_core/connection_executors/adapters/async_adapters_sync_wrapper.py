@@ -48,7 +48,7 @@ class AsyncWrapperForSyncAdapter(AsyncDBAdapter):
     _gen_wrappers_weak_set: set[Job] = attr.ib(init=False, factory=weakref.WeakSet)
 
     @attr.s(cmp=False, hash=False)
-    class AdapterExecuteJob(Job[ExecutionStep]):  # noqa
+    class AdapterExecuteJob(Job[ExecutionStep]):
         """Class to be instantiated on connection executor"""
 
         _adapter: SyncDirectDBAdapter = attr.ib(kw_only=True)

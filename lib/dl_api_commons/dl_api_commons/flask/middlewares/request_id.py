@@ -68,7 +68,7 @@ class RequestIDService:
                 for ctx_key, ctx_val in logging_ctx_from_header.items():
                     dl_logging.put_to_context(ctx_key, ctx_val)
 
-            except Exception:  # noqa
+            except Exception:
                 LOGGER.exception("Can not parse logging context: %s", logging_ctx_header)
 
         LOG_HELPER.log_request_start(

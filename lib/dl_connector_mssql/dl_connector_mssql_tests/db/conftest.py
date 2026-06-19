@@ -16,7 +16,7 @@ from dl_connector_mssql_tests.db.config import (
 )
 
 
-def pytest_configure(config):  # noqa
+def pytest_configure(config):
     initialize_api_lib_test(pytest_config=config, api_test_config=API_TEST_CONFIG)
     initialize_db()
 

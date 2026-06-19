@@ -50,7 +50,7 @@ def check_ago_data(
     day_offset: int,
     allow_missing_date_values: bool = False,
 ) -> None:
-    def ago_date_callable(cur_date: datetime.date) -> datetime.date:  # noqa
+    def ago_date_callable(cur_date: datetime.date) -> datetime.date:
         return cur_date - datetime.timedelta(days=day_offset)
 
     check_at_date_data(

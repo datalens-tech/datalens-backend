@@ -102,7 +102,7 @@ class ApiServiceRegistry(ServicesRegistry, metaclass=abc.ABCMeta):
 
 
 @attr.s
-class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  # noqa
+class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):
     _default_formula_parser_type: ParserType | None = attr.ib(kw_only=True, default=None)
     _formula_parser_factory: FormulaParserFactory | None = attr.ib(kw_only=True)
     _dataset_validator_factory: DatasetValidatorFactory | None = attr.ib(kw_only=True)
@@ -127,19 +127,19 @@ class DefaultApiServiceRegistry(DefaultServicesRegistry, ApiServiceRegistry):  #
         ),
     )
 
-    @_formula_parser_factory.default  # noqa
+    @_formula_parser_factory.default
     def _default_formula_parser_factory(self) -> FormulaParserFactory:
         return FormulaParserFactory(default_formula_parser_type=self._default_formula_parser_type)
 
-    @_field_id_generator_factory.default  # noqa
+    @_field_id_generator_factory.default
     def _default_field_id_generator_factory(self) -> FieldIdGeneratorFactory:
         return FieldIdGeneratorFactory()
 
-    @_typed_query_processor_factory.default  # noqa
+    @_typed_query_processor_factory.default
     def _default_typed_query_processor_factory(self) -> TypedQueryProcessorFactory:
         return DefaultQueryProcessorFactory(service_registry_ref=FutureRef.fulfilled(self))
 
-    @_typed_query_raw_processor_factory.default  # noqa
+    @_typed_query_raw_processor_factory.default
     def _default_typed_query_raw_processor_factory(self) -> TypedQueryRawProcessorFactory:
         return DefaultRawQueryProcessorFactory(service_registry_ref=FutureRef.fulfilled(self))
 

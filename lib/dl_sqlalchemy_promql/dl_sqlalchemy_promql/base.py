@@ -26,7 +26,7 @@ class PromQLDialect(default.DefaultDialect):
 
     @classmethod
     def dbapi(cls) -> ModuleType:
-        from dl_sqlalchemy_promql import dbapi  # noqa
+        from dl_sqlalchemy_promql import dbapi
 
         return dbapi
 

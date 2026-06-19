@@ -53,7 +53,7 @@ class SentryRequestLoggingContextController(RequestLoggingContextController):
         try:
             json.dumps(value)
             val_to_write = value
-        except Exception:  # noqa
+        except Exception:
             LOGGER.exception("Attempt to put to context non-jsonable value")
             try:
                 val_to_write = str(value)

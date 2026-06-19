@@ -213,7 +213,6 @@ async def test_common_logging_aiohttp(caplog: pytest.LogCaptureFixture, aiohttp_
     )
     expected_end_msg = "Response. method: GET, path: /?a=b, status: 200"
 
-    # noqa
     req_id_records = [rec for rec in caplog.records if rec.name == aio_request_id.LOGGER.name]
     assert len(req_id_records) == 2
     assert expected_start_msg == req_id_records[0].message

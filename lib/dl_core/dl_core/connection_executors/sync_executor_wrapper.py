@@ -98,7 +98,7 @@ class SyncWrapperForAsyncConnExecutor(SyncConnExecutorBase):
     def _extract_sync_sa_adapter(self, raise_on_not_exists: Literal[False]) -> SyncDirectDBAdapter | None:
         pass
 
-    @overload  # noqa
+    @overload
     def _extract_sync_sa_adapter(self, raise_on_not_exists: Literal[True]) -> SyncDirectDBAdapter:
         pass
 

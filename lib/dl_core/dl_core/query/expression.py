@@ -39,7 +39,7 @@ class OrderByExpressionCtx(ExpressionCtx):
 
 
 @attr.s(auto_attribs=True, frozen=True)
-class JoinOnExpressionCtx(ExpressionCtx):  # noqa
+class JoinOnExpressionCtx(ExpressionCtx):
     left_id: AvatarId | None = attr.ib(kw_only=True)  # can be None for feature-managed relations
     right_id: AvatarId = attr.ib(kw_only=True)
     join_type: JoinType = attr.ib(kw_only=True)

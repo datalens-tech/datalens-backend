@@ -55,7 +55,7 @@ class FieldAction(Action):
 
     @property
     def serialized(self) -> dict[str, Any]:
-        serializer = lambda t, at, val: val.name if isinstance(val, Enum) else val  # noqa
+        serializer = lambda t, at, val: val.name if isinstance(val, Enum) else val
         return attr.asdict(self, recurse=True, value_serializer=serializer)
 
 

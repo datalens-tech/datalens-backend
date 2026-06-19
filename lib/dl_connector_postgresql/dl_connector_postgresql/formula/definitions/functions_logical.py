@@ -38,7 +38,7 @@ DEFINITIONS_LOGICAL = [
     # isnan
     base.FuncIsnan(
         variants=[
-            V(D.POSTGRESQL, lambda x: x == sa.text("double precision 'NaN'")),  # noqa
+            V(D.POSTGRESQL, lambda x: x == sa.text("double precision 'NaN'")),
         ]
     ),
     # isnull

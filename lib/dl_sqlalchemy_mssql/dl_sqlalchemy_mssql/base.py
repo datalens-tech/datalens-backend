@@ -19,7 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class BIMSSQLDialectBasic(UPSTREAM):
-    @staticmethod  # noqa: C901
+    @staticmethod
     def _quote_simple_value(value) -> str | None:
         """Mainly from pymssql quoting, without the encoded output"""
 

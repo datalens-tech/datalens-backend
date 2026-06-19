@@ -90,7 +90,7 @@ class ClickHouseNativeType(CommonNativeType):
 
 
 @attr.s(frozen=True)
-class ClickHouseDateTime64NativeType(ClickHouseNativeType):  # noqa
+class ClickHouseDateTime64NativeType(ClickHouseNativeType):
     native_type_class_name = "clickhouse_datetime64_native_type"
     precision: int = attr.ib(kw_only=True)
 

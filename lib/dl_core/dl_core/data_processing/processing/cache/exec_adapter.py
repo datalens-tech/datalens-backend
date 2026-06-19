@@ -33,7 +33,7 @@ from dl_utils.streaming import AsyncChunkedBase
 
 
 @attr.s
-class CacheExecAdapter(ProcessorDbExecAdapterBase):  # noqa
+class CacheExecAdapter(ProcessorDbExecAdapterBase):
     _dataset_id: str | None = attr.ib(kw_only=True)
     _main_processor: ExecutorBasedOperationProcessor = attr.ib(kw_only=True)
     _use_cache: bool = attr.ib(kw_only=True)

@@ -25,7 +25,7 @@ from aiohttp.client import (
 import attr
 from clickhouse_sqlalchemy import exceptions as ch_exc
 from clickhouse_sqlalchemy import types as ch_types
-from clickhouse_sqlalchemy.drivers.http.transport import _get_type  # noqa
+from clickhouse_sqlalchemy.drivers.http.transport import _get_type
 from clickhouse_sqlalchemy.parsers.jsoncompact import JSONCompactChunksParser
 import requests
 import sqlalchemy as sa
@@ -203,7 +203,7 @@ class BaseClickHouseAdapter(BaseClassicAdapter["BaseClickHouseConnTargetDTO"], B
                     if ch_exc_cls_with_params:
                         ch_exc_cls, _ = ch_exc_cls_with_params
                         ch_exc_cls = ch_exc_cls or exc_cls
-                except Exception:  # noqa
+                except Exception:
                     LOGGER.info("Can not parse ClickHouse error message")
 
         if ch_exc_cls:
@@ -580,7 +580,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
             async def empty_chunk_gen() -> TBIChunksGen:
                 return
-                yield  # noqa
+                yield
 
             return AsyncRawExecutionResult(
                 raw_cursor_info={"clickhouse_headers": ch_resp_headers},
@@ -668,7 +668,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
 
     def make_exc(  # TODO:  Move to ErrorTransformer
         self,
-        status_code: int,  # noqa
+        status_code: int,
         err_body: str,
         debug_query: str | None = None,
         inspector_query: str | None = None,
@@ -676,7 +676,7 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         exc_cls: type[exc.DatabaseQueryError]
         try:
             exc_cls, exc_params = self.ch_utils.get_exc_class(err_body) or (exc.DatabaseQueryError, None)
-        except Exception:  # noqa
+        except Exception:
             exc_cls, exc_params = exc.DatabaseQueryError, None
 
         return exc_cls(

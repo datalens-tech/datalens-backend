@@ -23,7 +23,7 @@ class MetricaConnectionLifecycleManager(ConnectionLifecycleManager[MetrikaBaseMi
                 "initial counter_id = %s, current counter_id = %s. "
                 "Retrieving current counter creation date from Metrika API",
                 self.entry._initial_counter_id,
-                self.entry.counter_id,  # noqa
+                self.entry.counter_id,
             )
             try:
                 self.entry.data.counter_creation_date = self.entry.get_counter_creation_date()

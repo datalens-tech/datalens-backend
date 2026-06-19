@@ -16,7 +16,7 @@ class ClickHouseBaseDTO(ConnDTO):
 
 
 @attr.s(frozen=True)
-class ClickHouseConnDTO(ClickHouseBaseDTO, DefaultSQLDTO):  # noqa
+class ClickHouseConnDTO(ClickHouseBaseDTO, DefaultSQLDTO):
     conn_type = CONNECTION_TYPE_CLICKHOUSE
     secure: bool = attr.ib(kw_only=True, default=False)
     ssl_ca: str | None = attr.ib(kw_only=True, default=None)

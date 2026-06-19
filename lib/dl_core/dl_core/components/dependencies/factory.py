@@ -12,7 +12,7 @@ from dl_core.us_dataset import Dataset
 
 
 @attr.s
-class ComponentDependencyManagerFactory(ComponentDependencyManagerFactoryBase):  # noqa
+class ComponentDependencyManagerFactory(ComponentDependencyManagerFactoryBase):
     _dataset: Dataset = attr.ib(kw_only=True)
 
     def _make_field_shallow_inter_dependency_manager(self) -> FieldShallowInterDependencyManager:

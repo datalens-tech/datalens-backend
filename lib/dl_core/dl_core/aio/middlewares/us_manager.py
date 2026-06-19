@@ -119,7 +119,7 @@ async def _usm_close_cm(usm: AsyncUSManager, label: str) -> AsyncGenerator[None,
             await shield_wait_for_complete(usm.close())
         except asyncio.CancelledError:
             raise
-        except Exception:  # noqa
+        except Exception:
             LOGGER.warning("Error during closing %s USManager", label, exc_info=True)
 
 

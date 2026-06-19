@@ -8,10 +8,10 @@ import oracledb
 oracledb.version = "8.3.0"
 sys.modules["cx_Oracle"] = oracledb
 
-import sqlalchemy as sa  # noqa: E402
-from sqlalchemy.dialects.oracle.cx_oracle import OracleDialect_cx_oracle as UPSTREAM  # noqa: E402
+import sqlalchemy as sa
+from sqlalchemy.dialects.oracle.cx_oracle import OracleDialect_cx_oracle as UPSTREAM
 
-from dl_sqlalchemy_common.base import CompilerPrettyMixin  # noqa: E402
+from dl_sqlalchemy_common.base import CompilerPrettyMixin
 
 
 class BIOracleCompilerBasic(UPSTREAM.statement_compiler):

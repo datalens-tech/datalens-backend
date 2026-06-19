@@ -31,7 +31,7 @@ def to_tuple(v: Any) -> tuple:
 
 
 @attr.s(frozen=True)
-class DefaultSQLDTO(ConnDTO):  # noqa
+class DefaultSQLDTO(ConnDTO):
     host: str = attr.ib(kw_only=True)
     multihosts: tuple[str, ...] = attr.ib(kw_only=True, converter=to_tuple)
     port: int = attr.ib(kw_only=True)

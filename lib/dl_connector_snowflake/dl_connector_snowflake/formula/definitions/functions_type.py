@@ -169,8 +169,8 @@ DEFINITIONS_TYPE = [
                 lambda value: sa.case(
                     whens=[
                         (value.is_(None), sa.null()),
-                        (value == True, 1.0),  # noqa: E712
-                        (value == False, 0.0),  # noqa: E712
+                        (value == True, 1.0),
+                        (value == False, 0.0),
                     ],
                 ),
             )

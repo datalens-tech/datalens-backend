@@ -36,8 +36,8 @@ class MultiLevelQueryTranslator:
     _source_db_columns: ColumnRegistry = attr.ib(kw_only=True)
     _inspect_env: InspectionEnvironment = attr.ib(kw_only=True)
     _function_scopes: int = attr.ib(kw_only=True)
-    _verbose_logging: bool = attr.ib(kw_only=True, default=False)  # noqa
-    _avatar_alias_mapper: Callable[[str], str] = attr.ib(kw_only=True, default=lambda s: s)  # noqa
+    _verbose_logging: bool = attr.ib(kw_only=True, default=False)
+    _avatar_alias_mapper: Callable[[str], str] = attr.ib(kw_only=True, default=lambda s: s)
     _dialect: DialectCombo = attr.ib(kw_only=True)
     _compeng_dialect: DialectCombo | None = attr.ib(kw_only=True)
 

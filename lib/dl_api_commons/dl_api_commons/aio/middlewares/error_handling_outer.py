@@ -65,9 +65,9 @@ class AIOHTTPErrorHandler(metaclass=abc.ABCMeta):
     ) -> tuple[web.Response, ErrorData]:
         if isinstance(err, CancelledError):
             LOGGER.warning("Client request was cancelled", exc_info=err)
-            raise  # noqa
+            raise
         if isinstance(err, web.HTTPSuccessful):
-            raise  # noqa
+            raise
         try:
             # TODO CONSIDER: Validate that response is serializable
             err_data = self._classify_error(err, request)

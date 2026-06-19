@@ -94,7 +94,7 @@ class RequestId:
                 logging_ctx_from_header = json.loads(request.headers.get(self.logging_ctx_header_name) or "")
                 for ctx_key in NON_TRANSITIVE_LOGGING_CTX_KEYS:
                     logging_ctx_from_header.pop(ctx_key, None)
-            except Exception:  # noqa
+            except Exception:
                 LOGGER.exception("Can not parse logging context: %s", request.headers.get(self.logging_ctx_header_name))
             else:
                 for ctx_key, ctx_val in logging_ctx_from_header.items():

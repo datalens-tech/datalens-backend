@@ -190,7 +190,7 @@ class WSGIRunner:
     def _run_fork_child_code(self) -> None:
         self._debug("child: running uwsgi")
         os.environ.update(self._env or {})
-        import pyuwsgi  # noqa
+        import pyuwsgi
 
         cmd = [sys.argv[0], *list(self._make_uwsgi_params())]
         sys.argv = cmd
@@ -206,7 +206,7 @@ class WSGIRunner:
             self._proc.terminate()
             exit_code = self._proc.wait(self._wait_term_time)
             LOGGER.debug("Test fixture worker on port %s was terminated. Exit code: %s", self._bind_port, exit_code)
-        except Exception:  # noqa
+        except Exception:
             LOGGER.exception("Exception during test worker graceful shutdown. Going to kill...")
             self._proc.kill()
 

@@ -133,7 +133,7 @@ class RawGroupByFieldSpec(RawFieldSpec):
 
 
 @attr.s(frozen=True)
-class RawOrderByFieldSpec(RawFieldSpec):  # noqa
+class RawOrderByFieldSpec(RawFieldSpec):
     """
     Ambiguous ORDER BY field clause specifier that serves as input from the API,
     where either field ID or title can be specified.
@@ -143,7 +143,7 @@ class RawOrderByFieldSpec(RawFieldSpec):  # noqa
 
 
 @attr.s(frozen=True)
-class RawFilterFieldSpec(RawFieldSpec):  # noqa
+class RawFilterFieldSpec(RawFieldSpec):
     """
     Ambiguous filter specifier
     """

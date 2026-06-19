@@ -52,7 +52,7 @@ class ErrorHandlerMixin:
             if exc_post_processor is not None:
                 try:
                     exc_post_processor(exc_to_post_process)
-                except Exception:  # noqa
+                except Exception:
                     LOGGER.exception("Error during postprocessing DatabaseQueryError exception")
 
         try:

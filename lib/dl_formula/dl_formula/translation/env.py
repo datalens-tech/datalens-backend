@@ -14,7 +14,7 @@ from dl_formula.core.datatype import (
     DataTypeParams,
 )
 from dl_formula.core.dialect import DialectCombo
-import dl_formula.translation.context as ctx_mod  # noqa
+import dl_formula.translation.context as ctx_mod
 
 
 class FunctionStatsSignature(NamedTuple):

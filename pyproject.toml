@@ -99,7 +99,6 @@ ignore = [
   "RUF002", # Never: ambiguous-unicode-character-docstring — Cyrillic in RU docstrings is intentional; per-site review showed flagging only adds `noqa` noise (incl. dead/commented-out code)
   "RUF003", # Never: ambiguous-unicode-character-comment — same intentional Cyrillic in RU comments
   "RUF009", # Never: function-call-in-dataclass-default — fires on the attrs field-declaration idiom (`s_attrib()` returns `attr.ib()`, ~287 sites); a pure false positive, not a real shared-mutable default
-  "RUF100", # Later: unused-noqa — revisit once all rules from this migration are enabled
   "S101", # Never: assert — `assert` is an accepted inline invariant/precondition idiom repo-wide (incl. non-test source) and ubiquitous in tests; flake8-bandit's assert ban would only add noqa noise. Preliminary disposition for the `S` category (migrated incrementally in BI-7445; security-relevant `S` sub-rules handled separately).
   "S104", # Never: hardcoded-bind-all-interfaces — binding to 0.0.0.0 is intentional for containerized services (exposure is controlled by the orchestrator, not the app); the rule would only add noqa noise.
   "S105", # Never: hardcoded-password-string — fires on the naming heuristic (vars named password/token/secret); per-site review of all sites found zero real secrets (HTTP header names, form-field keys, log-masking regexes, masks, fakes), so enforcing only adds noqa noise.

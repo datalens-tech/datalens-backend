@@ -205,7 +205,7 @@ class AsyncPromQLAdapter(AiohttpDBAdapter):
 
     @staticmethod
     def make_exc(  # TODO:  Move to ErrorTransformer
-        status_code: int,  # noqa
+        status_code: int,
         err_body: str,
         debug_query: str | None = None,
         inspector_query: str | None = None,

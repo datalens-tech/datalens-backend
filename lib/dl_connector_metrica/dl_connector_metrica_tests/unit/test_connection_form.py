@@ -36,7 +36,7 @@ class TestMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
     EXPECTED_FORMS_DIR = "expected_forms/Metrica"
 
     @pytest.fixture
-    def connectors_settings(  # noqa
+    def connectors_settings(
         self,
         allow_auto_dash_creation,
         allow_counter_manual_input,
@@ -53,7 +53,7 @@ class TestAppMetricaAPIConnectionForm(MetricaLikeConnectionFormTestBase):
     EXPECTED_FORMS_DIR = "expected_forms/AppMetrica"
 
     @pytest.fixture
-    def connectors_settings(  # noqa
+    def connectors_settings(
         self,
         allow_auto_dash_creation,
         allow_counter_manual_input,

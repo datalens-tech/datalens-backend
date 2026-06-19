@@ -177,7 +177,7 @@ class BinaryInDate(base.BinaryIn):
     variants = (
         V(
             D.CLICKHOUSE_22_10,
-            functools.partial(base._in_fix_null, stringify_values=True),  # noqa
+            functools.partial(base._in_fix_null, stringify_values=True),
         ),
     )
 

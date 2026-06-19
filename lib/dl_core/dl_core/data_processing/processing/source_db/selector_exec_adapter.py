@@ -72,7 +72,7 @@ def get_query_type(connection: ConnectionBase, conn_sec_mgr: ConnectionSecurityM
 
 
 @attr.s
-class SourceDbExecAdapter(ProcessorDbExecAdapterBase):  # noqa
+class SourceDbExecAdapter(ProcessorDbExecAdapterBase):
     _role: DataSourceRole = attr.ib(kw_only=True)
     _dataset: Dataset = attr.ib(kw_only=True)
     _prep_component_manager: PreparedComponentManagerBase | None = attr.ib(kw_only=True, default=None)

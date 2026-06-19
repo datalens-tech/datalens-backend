@@ -349,5 +349,5 @@ class ModelMapperMarshmallow:
         try:
             schema = self.get_or_create_schema_for_attrs_class(type(model))()
             return schema.dumps(model)
-        except Exception:  # noqa
+        except Exception:
             return json.dumps({"kind": "serialization_error"})

@@ -122,7 +122,7 @@ class DataSourceTemplate(NamedTuple):
     disabled_text: DataSourceTemplateDisabledTextDict | None = None
 
     def get_param_hash(self) -> str:
-        from dl_core import data_source  # noqa
+        from dl_core import data_source
 
         return data_source.get_parameters_hash(
             source_type=self.source_type,

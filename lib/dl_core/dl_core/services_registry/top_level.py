@@ -196,19 +196,19 @@ class DefaultServicesRegistry(ServicesRegistry):
     _exports_history_url_path: str | None = attr.ib(default=None)
     _extract_clickhouse_provider: dl_extract.ExtractClickhouseProvider | None = attr.ib(default=None)
 
-    @_compute_executor.default  # noqa
+    @_compute_executor.default
     def _default_compute_executor(self) -> ComputeExecutor:
         return ComputeExecutorTPE()  # type: ignore  # Incompatible return value type (got "ComputeExecutorTPE", expected "ComputeExecutor")
 
-    @_cache_engine_factory.default  # noqa
+    @_cache_engine_factory.default
     def _default_cache_engine_factory(self) -> CacheEngineFactory:
         return DefaultCacheEngineFactory(services_registry_ref=FutureRef.fulfilled(self))
 
-    @_cache_invalidation_engine_factory.default  # noqa
+    @_cache_invalidation_engine_factory.default
     def _default_cache_invalidation_engine_factory(self) -> CacheInvalidationEngineFactory:
         return DefaultCacheInvalidationEngineFactory(services_registry_ref=FutureRef.fulfilled(self))
 
-    @_data_processor_factory.default  # noqa
+    @_data_processor_factory.default
     def _default_data_processor_factory(self) -> BaseClosableDataProcessorFactory:
         return DefaultDataProcessorFactory(
             services_registry_ref=FutureRef.fulfilled(self),

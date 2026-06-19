@@ -13,7 +13,7 @@ GENERATED_TESTS = [
     {
         "base_dimensions": ["category"],
         "measure_formulas": [
-            "SUM(AVG(AVG(SUM(AVG(SUM(AVG([sales] INCLUDE [region]) INCLUDE [ship_date]) INCLUDE [city]) INCLUDE [sub_category]) INCLUDE [order_date]) INCLUDE [ship_mode] BEFORE FILTER BY [category]))",  # noqa
+            "SUM(AVG(AVG(SUM(AVG(SUM(AVG([sales] INCLUDE [region]) INCLUDE [ship_date]) INCLUDE [city]) INCLUDE [sub_category]) INCLUDE [order_date]) INCLUDE [ship_mode] BEFORE FILTER BY [category]))",
             "AVG(SUM(AVG(SUM(SUM([sales] INCLUDE [region]) INCLUDE [city]) INCLUDE [sub_category]) INCLUDE [ship_mode]))",
         ],
         "filters": {"category": {"op": "EQ", "values": ["Furniture"]}},
@@ -40,7 +40,7 @@ GENERATED_TESTS = [
         "base_dimensions": ["region"],
         "measure_formulas": [
             "AVG(AVG(AVG(AVG([sales] INCLUDE [category]) INCLUDE [ship_mode]) INCLUDE [sub_category]))",
-            "SUM(AVG(AVG(SUM(AVG(SUM(SUM([sales] INCLUDE [order_date]) INCLUDE [city]) INCLUDE [sub_category]) INCLUDE [ship_date]) INCLUDE [category]) INCLUDE [ship_mode] BEFORE FILTER BY [order_date]))",  # noqa
+            "SUM(AVG(AVG(SUM(AVG(SUM(SUM([sales] INCLUDE [order_date]) INCLUDE [city]) INCLUDE [sub_category]) INCLUDE [ship_date]) INCLUDE [category]) INCLUDE [ship_mode] BEFORE FILTER BY [order_date]))",
             "SUM(AVG([sales] INCLUDE [city]) BEFORE FILTER BY [order_date])",
         ],
         "filters": {"order_date": {"op": "GT", "values": ["2014-03-01"]}},
@@ -49,7 +49,7 @@ GENERATED_TESTS = [
         "base_dimensions": ["category"],
         "measure_formulas": [
             "SUM(AVG([sales] INCLUDE [ship_mode] BEFORE FILTER BY [category]))",
-            "SUM(SUM(SUM(SUM(SUM(AVG(SUM([sales] INCLUDE [ship_mode] BEFORE FILTER BY [category]) INCLUDE [region]) INCLUDE [order_date]) INCLUDE [city]) INCLUDE [ship_date]) INCLUDE [sub_category]))",  # noqa
+            "SUM(SUM(SUM(SUM(SUM(AVG(SUM([sales] INCLUDE [ship_mode] BEFORE FILTER BY [category]) INCLUDE [region]) INCLUDE [order_date]) INCLUDE [city]) INCLUDE [ship_date]) INCLUDE [sub_category]))",
             "AVG(AVG(SUM([sales] INCLUDE [ship_mode]) INCLUDE [region] BEFORE FILTER BY [category]))",
         ],
         "filters": {"category": {"op": "EQ", "values": ["Furniture"]}},
@@ -57,7 +57,7 @@ GENERATED_TESTS = [
     {
         "base_dimensions": ["region"],
         "measure_formulas": [
-            "SUM(SUM(AVG(SUM(SUM(AVG(AVG([sales] INCLUDE [order_date]) INCLUDE [sub_category]) INCLUDE [city]) INCLUDE [ship_mode]) INCLUDE [ship_date]) INCLUDE [category]) BEFORE FILTER BY [category])",  # noqa
+            "SUM(SUM(AVG(SUM(SUM(AVG(AVG([sales] INCLUDE [order_date]) INCLUDE [sub_category]) INCLUDE [city]) INCLUDE [ship_mode]) INCLUDE [ship_date]) INCLUDE [category]) BEFORE FILTER BY [category])",
             "SUM(AVG(AVG(AVG(SUM(AVG([sales] INCLUDE [ship_mode]) INCLUDE [city]) INCLUDE [sub_category]) INCLUDE [ship_date]) INCLUDE [category]))",
             "SUM(AVG(AVG(SUM(SUM([sales] INCLUDE [ship_mode]) INCLUDE [city] BEFORE FILTER BY [category]) INCLUDE [ship_date]) INCLUDE [category]))",
             "AVG(AVG(SUM(AVG([sales] INCLUDE [ship_date]) INCLUDE [ship_mode] BEFORE FILTER BY [category]) INCLUDE [city]))",

@@ -6,7 +6,7 @@ from dl_connector_bitrix_gds_tests.ext.config import API_TEST_CONFIG
 from dl_connector_bitrix_gds_tests.ext.settings import Settings
 
 
-def pytest_configure(config):  # noqa
+def pytest_configure(config):
     initialize_api_lib_test(pytest_config=config, api_test_config=API_TEST_CONFIG)
 
 

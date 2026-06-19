@@ -77,7 +77,7 @@ class TracingMiddleware(FlaskWSGIMiddleware):
                         scope.span.set_tag(opentracing.tags.HTTP_STATUS_CODE, status_code)
                         if status_code >= 500:
                             scope.span.set_tag(opentracing.tags.ERROR, True)
-                    except Exception:  # noqa
+                    except Exception:
                         LOGGER.exception("Exception during extracting tags from WSGI start_response args")
 
                     return start_response(status, response_headers, exc_info)

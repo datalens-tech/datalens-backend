@@ -54,6 +54,6 @@ class ToolRunner:
             stdin_stream.write(stdin_str)
             stdin_stream.seek(0)
         with redirect_stdout(stdout), redirect_stderr(stderr), redirect_stdin(stdin_stream):
-            self.tool_cls.run(self.parser.parse_args(args))  # noqa
+            self.tool_cls.run(self.parser.parse_args(args))
 
         return stdout.getvalue(), stderr.getvalue()

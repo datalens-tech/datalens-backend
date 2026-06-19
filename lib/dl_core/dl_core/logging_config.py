@@ -14,7 +14,7 @@ def hook_configure_logging(app: Flask, *args: Any, **kwargs: Any) -> None:
     but ensure it is configured in `before_first_request` (flask app).
     """
     try:
-        import uwsgidecorators  # type: ignore  # TODO: fix  # noqa
+        import uwsgidecorators  # type: ignore  # TODO: fix
     except Exception:
         LOGGER.debug("uwsgidecorators is not available", exc_info=True)
     else:

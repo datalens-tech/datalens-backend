@@ -37,7 +37,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
-class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):  # noqa
+class AiopgExecAdapter(PostgreSQLExecAdapterAsync[aiopg.sa.SAConnection]):
     _conn: aiopg.sa.SAConnection = attr.ib()
     _log: ClassVar[logging.Logger] = LOGGER
 

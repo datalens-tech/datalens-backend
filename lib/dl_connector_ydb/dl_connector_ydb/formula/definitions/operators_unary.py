@@ -13,7 +13,7 @@ DEFINITIONS_UNARY = [
     base.UnaryIsFalseDateTime.for_dialect(D.YQL),
     base.UnaryIsFalseBoolean(
         variants=[
-            V(D.YQL, lambda x: x == False),  # noqa: E712
+            V(D.YQL, lambda x: x == False),
         ]
     ),
     # istrue
@@ -22,7 +22,7 @@ DEFINITIONS_UNARY = [
     base.UnaryIsTrueDateTime.for_dialect(D.YQL),
     base.UnaryIsTrueBoolean(
         variants=[
-            V(D.YQL, lambda x: x == True),  # noqa: E712
+            V(D.YQL, lambda x: x == True),
         ]
     ),
     # neg

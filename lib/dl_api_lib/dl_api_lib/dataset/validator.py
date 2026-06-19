@@ -140,7 +140,7 @@ class ErrorInfo:
 
 
 @attr.s(frozen=True)
-class FormulaErrorInfo(ErrorInfo):  # noqa
+class FormulaErrorInfo(ErrorInfo):
     row: int | None = attr.ib(kw_only=True)
     column: int | None = attr.ib(kw_only=True)
     token: str | None = attr.ib(kw_only=True)

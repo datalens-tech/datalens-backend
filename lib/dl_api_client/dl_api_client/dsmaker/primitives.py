@@ -688,7 +688,7 @@ class ResultField(ConditionMakerMixin, _ResultField):  # type: ignore[misc]  # T
 
 
 @attr.s
-class RoleSpec:  # noqa
+class RoleSpec:
     role: FieldRole = attr.ib(kw_only=True)
 
 
@@ -703,7 +703,7 @@ class RowRoleSpec(DimensionRoleSpec):
 
 
 @attr.s
-class TemplateRoleSpec(DimensionRoleSpec):  # noqa
+class TemplateRoleSpec(DimensionRoleSpec):
     template: str = attr.ib(kw_only=True)
 
 
@@ -725,7 +725,7 @@ class OrderByRoleSpec(RoleSpec):
 
 
 @attr.s
-class LegendItemBase:  # noqa
+class LegendItemBase:
     role_spec: RoleSpec = attr.ib(kw_only=True)
     legend_item_id: int | None = attr.ib(kw_only=True, default=None)
     block_id: int | None = attr.ib(kw_only=True, default=None)
@@ -761,7 +761,7 @@ class RequestLegendItem(LegendItemBase):
 
 
 @attr.s
-class LegendItem(LegendItemBase):  # noqa
+class LegendItem(LegendItemBase):
     legend_item_id: int = attr.ib(kw_only=True)  # redefine as strictly not None
     id: str = attr.ib(kw_only=True)
     title: str = attr.ib(kw_only=True)

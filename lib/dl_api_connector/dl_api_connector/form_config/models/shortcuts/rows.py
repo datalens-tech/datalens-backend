@@ -63,7 +63,7 @@ class RowConstructor:
 
     def port_row(
         self,
-        label_text: BaseTranslatable | None = None,  # noqa: B008
+        label_text: BaseTranslatable | None = None,
         default_value: str | None = None,
         display_conditions: TDisplayConditions | None = None,
         disabled: bool | None = None,

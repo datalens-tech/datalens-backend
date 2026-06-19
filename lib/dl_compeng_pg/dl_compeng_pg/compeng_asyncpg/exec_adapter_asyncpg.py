@@ -42,7 +42,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
-class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionProxy]):  # noqa
+class AsyncpgExecAdapter(PostgreSQLExecAdapterAsync[asyncpg.pool.PoolConnectionProxy]):
     # `<PoolConnectionProxy <asyncpg.connection.Connection object at ...> ...>`
     _conn: asyncpg.pool.PoolConnectionProxy = attr.ib()
     _error_transformer: DbErrorTransformer = attr.ib(init=False, factory=make_async_pg_error_transformer)

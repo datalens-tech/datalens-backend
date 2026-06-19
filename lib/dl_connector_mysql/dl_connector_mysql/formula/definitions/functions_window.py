@@ -19,7 +19,7 @@ DEFINITIONS_WINDOW = [
             V(
                 SUPPORTED_DIALECTS,
                 translation=lambda x, condition: sa.func.AVG(sa.func.IF(condition, x, None)),
-                translation_rows=base._rows_full_window,  # noqa
+                translation_rows=base._rows_full_window,
                 as_winfunc=True,
             ),
         ]
@@ -33,7 +33,7 @@ DEFINITIONS_WINDOW = [
             V(
                 SUPPORTED_DIALECTS,
                 translation=lambda x, condition: sa.func.COUNT(sa.func.IF(condition, x, None)),
-                translation_rows=base._rows_full_window,  # noqa
+                translation_rows=base._rows_full_window,
                 as_winfunc=True,
             ),
         ]
@@ -100,7 +100,7 @@ DEFINITIONS_WINDOW = [
             V(
                 SUPPORTED_DIALECTS,
                 translation=lambda x, condition: sa.func.SUM(sa.func.IF(condition, x, None)),
-                translation_rows=base._rows_full_window,  # noqa
+                translation_rows=base._rows_full_window,
                 as_winfunc=True,
             ),
         ]

@@ -188,15 +188,15 @@ class DLRequestBase:
     def get_single_header(self, header: DLHeaders | str) -> str | None:
         pass
 
-    @overload  # noqa
+    @overload
     def get_single_header(self, header: DLHeaders | str, required: Literal[False]) -> str | None:
         pass
 
-    @overload  # noqa
+    @overload
     def get_single_header(self, header: DLHeaders | str, required: Literal[True]) -> str:
         pass
 
-    def get_single_header(self, header, required=False):  # type: ignore  # TODO: fix  # noqa
+    def get_single_header(self, header, required=False):  # type: ignore  # TODO: fix
         header_name = header.value if isinstance(header, DLHeaders) else header
         header_value_list = self.request.headers.getall(header_name, ())
 

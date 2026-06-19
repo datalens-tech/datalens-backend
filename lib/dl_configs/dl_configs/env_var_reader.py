@@ -41,17 +41,17 @@ def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], defau
     pass
 
 
-@overload  # noqa
+@overload
 def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: Required) -> RET_TV:
     pass
 
 
-@overload  # noqa
+@overload
 def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV], default: RET_TV | Factory[RET_TV]) -> RET_TV:
     pass
 
 
-@overload  # noqa
+@overload
 def get_from_env[RET_TV](env_key: str, converter: Callable[[str], RET_TV]) -> RET_TV:
     pass
 

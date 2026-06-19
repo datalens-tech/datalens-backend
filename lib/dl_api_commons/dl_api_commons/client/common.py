@@ -55,7 +55,7 @@ class CommonInternalAPIClient(DLCommonAPIClient):
         body: Any
         try:
             body = resp.json
-        except Exception:  # noqa
+        except Exception:
             body = resp.content
 
         return dl_api_commons.exc.APIResponseData(
@@ -70,7 +70,7 @@ class CommonInternalAPIClient(DLCommonAPIClient):
         resp_data: str
         try:
             resp_data = json.dumps(common_data.response_body)
-        except Exception:  # noqa
+        except Exception:
             resp_data = repr(common_data.response_body)
 
         LOGGER.info(

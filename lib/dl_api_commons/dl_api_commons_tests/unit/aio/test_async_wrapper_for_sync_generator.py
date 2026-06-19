@@ -99,7 +99,6 @@ async def test_error_in_start_generator(
 
     def test_generator() -> Generator[int, None, None]:
         raise ValueError("Error in generator")
-        # noqa
         yield
 
     job = wrapper_factory(test_generator)

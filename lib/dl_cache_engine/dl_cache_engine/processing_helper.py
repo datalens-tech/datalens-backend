@@ -141,7 +141,7 @@ class CacheProcessingHelper:
         sync_result_iter = None
         try:
             sync_result_iter = await cem.initialize()
-        except BaseException as err:  # noqa
+        except BaseException as err:
             LOGGER.exception("Error during checking cache")
             try:
                 err_serializable = self._dump_error_for_cache(err)
