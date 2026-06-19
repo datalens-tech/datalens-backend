@@ -94,7 +94,7 @@ class DatasetDistinctViewV1(DatasetDistinctView):
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
-class DatasetDistinctViewV1_5(DatasetDistinctView):
+class DatasetDistinctViewV1p5(DatasetDistinctView):
     """
     Same as v1, for full v1.5 coverage
     """

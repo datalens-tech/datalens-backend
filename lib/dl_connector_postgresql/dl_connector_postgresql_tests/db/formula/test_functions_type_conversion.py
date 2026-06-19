@@ -27,8 +27,8 @@ from dl_formula_testing.util import (
 )
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 # STR
@@ -44,55 +44,55 @@ class StrTypeFunctionPostgreSQLTestSuite(DefaultStrTypeFunctionFormulaConnectorT
         assert to_str(dbe.eval("STR([arr_str_value])", from_=data_table)) == '{"","",cde,NULL}'
 
 
-class TestStrTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, StrTypeFunctionPostgreSQLTestSuite):
+class TestStrTypeFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, StrTypeFunctionPostgreSQLTestSuite):
     pass
 
 
-class TestStrTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, StrTypeFunctionPostgreSQLTestSuite):
+class TestStrTypeFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, StrTypeFunctionPostgreSQLTestSuite):
     pass
 
 
 # FLOAT
 
 
-class TestFloatTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+class TestFloatTypeFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestFloatTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+class TestFloatTypeFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # BOOL
 
 
-class TestBoolTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
+class TestBoolTypeFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestBoolTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
+class TestBoolTypeFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # INT
 
 
-class TestIntTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+class TestIntTypeFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestIntTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+class TestIntTypeFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # DATE
 
 
-class TestDateTypeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
+class TestDateTypeFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestDateTypeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
+class TestDateTypeFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
@@ -129,15 +129,15 @@ class GenericDatetimeTypeFunctionPostgreSQLTestSuite(
         assert dt_strip(dbe.eval(f"{func_name}({func_name}('{dt_naive_iso_str}', '{mos_tz}'), '{mos_tz}')")) == dt_naive
 
 
-class TestGenericDatetimeTypeFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestGenericDatetimeTypeFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     GenericDatetimeTypeFunctionPostgreSQLTestSuite,
 ):
     pass
 
 
-class TestGenericDatetimeTypeFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestGenericDatetimeTypeFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     GenericDatetimeTypeFunctionPostgreSQLTestSuite,
 ):
     pass
@@ -146,15 +146,15 @@ class TestGenericDatetimeTypeFunctionPostgreSQL_9_4(
 # GEOPOINT
 
 
-class TestGeopointTypeFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestGeopointTypeFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestGeopointTypeFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestGeopointTypeFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -163,15 +163,15 @@ class TestGeopointTypeFunctionPostgreSQL_9_4(
 # GEOPOLYGON
 
 
-class TestGeopolygonTypeFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestGeopolygonTypeFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestGeopolygonTypeFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestGeopolygonTypeFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -230,15 +230,15 @@ class DbCastTypeFunctionPostgreSQLTestSuite(
         assert dbe.eval('DB_CAST([arr_str_value], "varchar[]")', from_=data_table) == ["", "", "cde", None]
 
 
-class TestDbCastTypeFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestDbCastTypeFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DbCastTypeFunctionPostgreSQLTestSuite,
 ):
     pass
 
 
-class TestDbCastTypeFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestDbCastTypeFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DbCastTypeFunctionPostgreSQLTestSuite,
 ):
     pass
@@ -247,15 +247,15 @@ class TestDbCastTypeFunctionPostgreSQL_9_4(
 # TREE
 
 
-class TestTreeTypeFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestTreeTypeFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestTreeTypeFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestTreeTypeFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

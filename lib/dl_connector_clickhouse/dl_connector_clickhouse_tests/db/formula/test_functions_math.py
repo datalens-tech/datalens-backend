@@ -1,6 +1,6 @@
 from dl_connector_clickhouse.formula.testing.test_suites import MathFunctionClickHouseTestSuite
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse21p8TestBase
 
 
-class TestMathFunctionClickHouse_21_8(ClickHouse_21_8TestBase, MathFunctionClickHouseTestSuite):
+class TestMathFunctionClickHouse21p8(ClickHouse21p8TestBase, MathFunctionClickHouseTestSuite):
     pass

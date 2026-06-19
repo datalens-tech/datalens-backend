@@ -1,7 +1,7 @@
 from dl_formula_testing.testcases.functions_window import DefaultWindowFunctionFormulaConnectorTestSuite
 
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_22_10TestBase
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse22p10TestBase
 
 
-class TestWindowFunctionClickHouse_22_10(ClickHouse_22_10TestBase, DefaultWindowFunctionFormulaConnectorTestSuite):
+class TestWindowFunctionClickHouse22p10(ClickHouse22p10TestBase, DefaultWindowFunctionFormulaConnectorTestSuite):
     pass

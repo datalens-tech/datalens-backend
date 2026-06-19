@@ -1,8 +1,8 @@
 from dl_formula_testing.testcases.functions_string import DefaultStringFunctionFormulaConnectorTestSuite
 
 from dl_connector_mysql_tests.db.formula.base import (
-    MySQL_5_7TestBase,
-    MySQL_8_0_12TestBase,
+    MySQL5p7TestBase,
+    MySQL8p0p12TestBase,
 )
 
 
@@ -10,11 +10,11 @@ class StringFunctionMySQLTestSuite(DefaultStringFunctionFormulaConnectorTestSuit
     datetime_str_ending = ".000000"
 
 
-class TestStringFunctionMySQL_5_7(MySQL_5_7TestBase, StringFunctionMySQLTestSuite):
+class TestStringFunctionMySQL5p7(MySQL5p7TestBase, StringFunctionMySQLTestSuite):
     supports_regex_extract = False
     supports_regex_extract_nth = False
     supports_regex_replace = False
 
 
-class TestStringFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, StringFunctionMySQLTestSuite):
+class TestStringFunctionMySQL8p0p12(MySQL8p0p12TestBase, StringFunctionMySQLTestSuite):
     pass

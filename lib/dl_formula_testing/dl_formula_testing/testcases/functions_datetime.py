@@ -14,7 +14,7 @@ from dl_formula.core.exc import TranslationError
 from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.base import FormulaConnectorTestBase
 from dl_formula_testing.util import (
-    approx_datetime,
+    ApproxDatetime,
     dt_strip,
     now,
 )
@@ -44,13 +44,13 @@ class DefaultDateTimeFunctionFormulaConnectorTestSuite(FormulaConnectorTestBase)
 
     @pytest.mark.parametrize("func_name", ["NOW", "GENERICNOW"])
     def test_now(self, dbe: DbEvaluator, func_name: str, now: datetime.datetime) -> None:
-        assert dt_strip(dbe.eval(f"{func_name}()")) == approx_datetime(now)
+        assert dt_strip(dbe.eval(f"{func_name}()")) == ApproxDatetime(now)
 
     def test_today(self, dbe: DbEvaluator, today: datetime.date) -> None:
         assert dbe.eval("TODAY()") == today
 
     def test_dateadd_to_now(self, dbe: DbEvaluator, now: datetime.datetime) -> None:
-        assert dt_strip(dbe.eval('DATEADD(NOW(), "day", 1)')) == approx_datetime(now + datetime.timedelta(days=1))
+        assert dt_strip(dbe.eval('DATEADD(NOW(), "day", 1)')) == ApproxDatetime(now + datetime.timedelta(days=1))
 
     def test_dateadd_to_today(self, dbe: DbEvaluator, today: datetime.date) -> None:
         assert dbe.eval('DATEADD(TODAY(), "day", 1)') == today + datetime.timedelta(days=1)

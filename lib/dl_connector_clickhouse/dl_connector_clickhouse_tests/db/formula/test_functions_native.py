@@ -8,13 +8,13 @@ from dl_formula_testing.testcases.functions_native import (
 )
 
 from dl_connector_clickhouse_tests.db.formula.base import (
-    ClickHouse_21_8TestBase,
-    ClickHouse_22_10TestBase,
+    ClickHouse21p8TestBase,
+    ClickHouse22p10TestBase,
 )
 
 
-class TestNativeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestNativeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
@@ -49,8 +49,8 @@ class TestNativeFunctionClickHouse_21_8(
         assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == dbe.eval('ARRAY("a", "b", "c")')
 
 
-class TestNativeFunctionClickHouse_22_10(
-    ClickHouse_22_10TestBase,
+class TestNativeFunctionClickHouse22p10(
+    ClickHouse22p10TestBase,
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
@@ -83,15 +83,15 @@ class TestNativeFunctionClickHouse_22_10(
         assert dbe.eval('DB_CALL_ARRAY_STRING("splitByChar", ",", "a,b,c")') == dbe.eval('ARRAY("a", "b", "c")')
 
 
-class TestNativeAggregationFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestNativeAggregationFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestNativeAggregationFunctionClickHouse_22_10(
-    ClickHouse_22_10TestBase,
+class TestNativeAggregationFunctionClickHouse22p10(
+    ClickHouse22p10TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
     def test_native_aggregation_functions(

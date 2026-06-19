@@ -10,77 +10,77 @@ from dl_formula_testing.testcases.functions_type_conversion import (
 )
 
 from dl_connector_mysql_tests.db.formula.base import (
-    MySQL_5_7TestBase,
-    MySQL_8_0_12TestBase,
+    MySQL5p7TestBase,
+    MySQL8p0p12TestBase,
 )
 
 # STR
 
 
-class TestStrTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
+class TestStrTypeFunctionMySQL5p7(MySQL5p7TestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     skip_custom_tz = True
 
 
-class TestStrTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
+class TestStrTypeFunctionMySQL8p0p12(MySQL8p0p12TestBase, DefaultStrTypeFunctionFormulaConnectorTestSuite):
     skip_custom_tz = True
 
 
 # FLOAT
 
 
-class TestFloatTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+class TestFloatTypeFunctionMySQL5p7(MySQL5p7TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestFloatTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+class TestFloatTypeFunctionMySQL8p0p12(MySQL8p0p12TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # BOOL
 
 
-class TestBoolTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
+class TestBoolTypeFunctionMySQL5p7(MySQL5p7TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestBoolTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
+class TestBoolTypeFunctionMySQL8p0p12(MySQL8p0p12TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # INT
 
 
-class TestIntTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+class TestIntTypeFunctionMySQL5p7(MySQL5p7TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestIntTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+class TestIntTypeFunctionMySQL8p0p12(MySQL8p0p12TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # DATE
 
 
-class TestDateTypeFunctionMySQL_5_7(MySQL_5_7TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
+class TestDateTypeFunctionMySQL5p7(MySQL5p7TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
-class TestDateTypeFunctionMySQL_8_0_12(MySQL_8_0_12TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
+class TestDateTypeFunctionMySQL8p0p12(MySQL8p0p12TestBase, DefaultDateTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # GENERICDATETIME (& DATETIME)
 
 
-class TestGenericDatetimeTypeFunctionMySQL_5_7(
-    MySQL_5_7TestBase,
+class TestGenericDatetimeTypeFunctionMySQL5p7(
+    MySQL5p7TestBase,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestGenericDatetimeTypeFunctionMySQL_8_0_12(
-    MySQL_8_0_12TestBase,
+class TestGenericDatetimeTypeFunctionMySQL8p0p12(
+    MySQL8p0p12TestBase,
     DefaultGenericDatetimeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -89,15 +89,15 @@ class TestGenericDatetimeTypeFunctionMySQL_8_0_12(
 # GEOPOINT
 
 
-class TestGeopointTypeFunctionMySQL_5_7(
-    MySQL_5_7TestBase,
+class TestGeopointTypeFunctionMySQL5p7(
+    MySQL5p7TestBase,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestGeopointTypeFunctionMySQL_8_0_12(
-    MySQL_8_0_12TestBase,
+class TestGeopointTypeFunctionMySQL8p0p12(
+    MySQL8p0p12TestBase,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -106,15 +106,15 @@ class TestGeopointTypeFunctionMySQL_8_0_12(
 # GEOPOLYGON
 
 
-class TestGeopolygonTypeFunctionMySQL_5_7(
-    MySQL_5_7TestBase,
+class TestGeopolygonTypeFunctionMySQL5p7(
+    MySQL5p7TestBase,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestGeopolygonTypeFunctionMySQL_8_0_12(
-    MySQL_8_0_12TestBase,
+class TestGeopolygonTypeFunctionMySQL8p0p12(
+    MySQL8p0p12TestBase,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

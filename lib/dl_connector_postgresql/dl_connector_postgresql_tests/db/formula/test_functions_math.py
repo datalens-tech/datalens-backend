@@ -4,8 +4,8 @@ from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_math import DefaultMathFunctionFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -15,16 +15,16 @@ class PostgreSQLMatchTestMixin:
         assert dbe.eval('LOG(DB_CAST(4.0, "double precision"), DB_CAST(2.0, "numeric", 10, 5))') == pytest.approx(2)
 
 
-class TestMathFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestMathFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DefaultMathFunctionFormulaConnectorTestSuite,
     PostgreSQLMatchTestMixin,
 ):
     pass
 
 
-class TestMathFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestMathFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DefaultMathFunctionFormulaConnectorTestSuite,
     PostgreSQLMatchTestMixin,
 ):

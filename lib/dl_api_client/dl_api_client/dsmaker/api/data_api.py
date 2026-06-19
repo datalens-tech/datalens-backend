@@ -1205,7 +1205,7 @@ class AsyncHttpDataApiV2(AsyncHttpDataApiBase):
 
 
 @attr.s
-class SyncHttpDataApiV1_5(SyncHttpDataApiV2):
+class SyncHttpDataApiV1p5(SyncHttpDataApiV2):
     api_v = "v1.5"
 
     def _make_resp_data(self, full_response_data: dict) -> dict:

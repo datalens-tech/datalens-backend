@@ -1,14 +1,14 @@
 from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
-class TestConditionalBlockPostgreSQL_9_3(PostgreSQL_9_3TestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
+class TestConditionalBlockPostgreSQL9p3(PostgreSQL9p3TestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
     pass
 
 
-class TestConditionalBlockPostgreSQL_9_4(PostgreSQL_9_4TestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
+class TestConditionalBlockPostgreSQL9p4(PostgreSQL9p4TestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
     pass

@@ -192,14 +192,14 @@ class DatasetResultViewV1(DatasetResultView):
         )
 
 
-class DatasetResultViewV1_5(DatasetResultView):
+class DatasetResultViewV1p5(DatasetResultView):
     """
     Accepts requests in v2 format, but responds in old v1 format (with YQL schema).
     To make the transition smoother for the frontend.
     """
 
     def load_req_model(self) -> DataRequestModel:
-        schema = dl_api_lib.schemas.data.ResultDataRequestV1_5Schema()
+        schema = dl_api_lib.schemas.data.ResultDataRequestV1p5Schema()
         req_model: DataRequestModel = schema.load(self.dl_request.json)
         return req_model
 

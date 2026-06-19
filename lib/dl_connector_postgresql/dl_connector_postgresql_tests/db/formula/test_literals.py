@@ -1,8 +1,8 @@
 from dl_formula_testing.testcases.literals import DefaultLiteralFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -12,9 +12,9 @@ class ConditionalBlockPostgreSQLTestSuite(DefaultLiteralFormulaConnectorTestSuit
     supports_custom_tz = True
 
 
-class TestConditionalBlockPostgreSQL_9_3(PostgreSQL_9_3TestBase, ConditionalBlockPostgreSQLTestSuite):
+class TestConditionalBlockPostgreSQL9p3(PostgreSQL9p3TestBase, ConditionalBlockPostgreSQLTestSuite):
     pass
 
 
-class TestConditionalBlockPostgreSQL_9_4(PostgreSQL_9_4TestBase, ConditionalBlockPostgreSQLTestSuite):
+class TestConditionalBlockPostgreSQL9p4(PostgreSQL9p4TestBase, ConditionalBlockPostgreSQLTestSuite):
     pass

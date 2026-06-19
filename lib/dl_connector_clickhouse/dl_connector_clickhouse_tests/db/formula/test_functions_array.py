@@ -6,10 +6,10 @@ import sqlalchemy as sa
 from dl_formula_testing.evaluator import DbEvaluator
 
 from dl_connector_clickhouse.formula.testing.test_suites import ArrayFunctionClickHouseTestSuite
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse21p8TestBase
 
 
-class TestArrayFunctionClickHouse_21_8(ClickHouse_21_8TestBase, ArrayFunctionClickHouseTestSuite):
+class TestArrayFunctionClickHouse21p8(ClickHouse21p8TestBase, ArrayFunctionClickHouseTestSuite):
     def test_array_contains_optimization(self, dbe: DbEvaluator, data_table: sa.Table) -> None:
         has_cases = [
             dbe.compile_formula("CONTAINS(ARRAY(1, 2, 3), NULL)"),

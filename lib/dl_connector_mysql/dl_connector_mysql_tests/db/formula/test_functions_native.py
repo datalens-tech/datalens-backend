@@ -7,13 +7,13 @@ from dl_formula_testing.testcases.functions_native import (
 )
 
 from dl_connector_mysql_tests.db.formula.base import (
-    MySQL_5_7TestBase,
-    MySQL_8_0_12TestBase,
+    MySQL5p7TestBase,
+    MySQL8p0p12TestBase,
 )
 
 
-class TestNativeFunctionMySQL_5_7(
-    MySQL_5_7TestBase,
+class TestNativeFunctionMySQL5p7(
+    MySQL5p7TestBase,
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
@@ -34,8 +34,8 @@ class TestNativeFunctionMySQL_5_7(
         assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == False
 
 
-class TestNativeFunctionMySQL_8_0_12(
-    MySQL_8_0_12TestBase,
+class TestNativeFunctionMySQL8p0p12(
+    MySQL8p0p12TestBase,
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
@@ -56,15 +56,15 @@ class TestNativeFunctionMySQL_8_0_12(
         assert dbe.eval('DB_CALL_BOOL("ISNULL", 5)') == False
 
 
-class TestNativeAggregationFunctionMySQL_5_7(
-    MySQL_5_7TestBase,
+class TestNativeAggregationFunctionMySQL5p7(
+    MySQL5p7TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestNativeAggregationFunctionMySQL_8_0_12(
-    MySQL_8_0_12TestBase,
+class TestNativeAggregationFunctionMySQL8p0p12(
+    MySQL8p0p12TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
     pass

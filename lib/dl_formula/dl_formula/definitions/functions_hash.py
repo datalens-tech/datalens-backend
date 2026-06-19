@@ -43,7 +43,7 @@ class SHA256(HashFunction):
     variants = (V(D.DUMMY, lambda value: sa.func.hex(sa.func.SHA256(value))),)
 
 
-class MurmurHash2_64(HashFunction):
+class MurmurHash2x64(HashFunction):
     name = "murmurhash2_64"
     arg_names = ("value",)
     arg_cnt = 1
@@ -83,7 +83,7 @@ DEFINITIONS_HASH = [
     MD5,
     SHA1,
     SHA256,
-    MurmurHash2_64,
+    MurmurHash2x64,
     SipHash64,
     IntHash64,
     CityHash64,

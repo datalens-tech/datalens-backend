@@ -1,8 +1,8 @@
 from dl_formula_testing.testcases.functions_aggregation import DefaultMainAggFunctionFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -10,10 +10,10 @@ class MainAggFunctionPostgreTestSuite(DefaultMainAggFunctionFormulaConnectorTest
     supports_all_concat = True
 
 
-class TestMainAggFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, MainAggFunctionPostgreTestSuite):
+class TestMainAggFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, MainAggFunctionPostgreTestSuite):
     pass
 
 
-class TestMainAggFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, MainAggFunctionPostgreTestSuite):
+class TestMainAggFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, MainAggFunctionPostgreTestSuite):
     supports_quantile = True
     supports_median = True

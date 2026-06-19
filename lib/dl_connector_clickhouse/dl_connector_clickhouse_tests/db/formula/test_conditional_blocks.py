@@ -1,7 +1,7 @@
 from dl_formula_testing.testcases.conditional_blocks import DefaultConditionalBlockFormulaConnectorTestSuite
 
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse21p8TestBase
 
 
-class TestMainAggFunctionClickHouse_21_8(ClickHouse_21_8TestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
+class TestMainAggFunctionClickHouse21p8(ClickHouse21p8TestBase, DefaultConditionalBlockFormulaConnectorTestSuite):
     pass

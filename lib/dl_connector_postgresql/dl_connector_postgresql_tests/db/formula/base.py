@@ -23,11 +23,11 @@ class PostgreSQLTestBase(FormulaConnectorTestBase):
         db.execute("DROP EXTENSION IF EXISTS pgcrypto;")
 
 
-class PostgreSQL_9_3TestBase(PostgreSQLTestBase):
+class PostgreSQL9p3TestBase(PostgreSQLTestBase):
     dialect = D.POSTGRESQL_9_3
 
 
-class PostgreSQL_9_4TestBase(PostgreSQLTestBase):
+class PostgreSQL9p4TestBase(PostgreSQLTestBase):
     dialect = D.POSTGRESQL_9_4
 
 

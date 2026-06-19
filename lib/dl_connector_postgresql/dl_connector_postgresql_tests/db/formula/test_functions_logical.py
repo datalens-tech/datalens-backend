@@ -1,8 +1,8 @@
 from dl_formula_testing.testcases.functions_logical import DefaultLogicalFunctionFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -11,9 +11,9 @@ class LogicalFunctionPostgreTestSuite(DefaultLogicalFunctionFormulaConnectorTest
     supports_iif = True
 
 
-class TestLogicalFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, LogicalFunctionPostgreTestSuite):
+class TestLogicalFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, LogicalFunctionPostgreTestSuite):
     pass
 
 
-class TestLogicalFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, LogicalFunctionPostgreTestSuite):
+class TestLogicalFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, LogicalFunctionPostgreTestSuite):
     pass

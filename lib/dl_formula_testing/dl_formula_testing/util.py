@@ -21,7 +21,7 @@ month = dateutil.relativedelta.relativedelta(months=1)
 year = dateutil.relativedelta.relativedelta(years=1)
 
 
-class approximately:
+class Approximately:
     def __init__(self, value: Any, rel_tol: float = 1e-09, abs_tol: float = 1e-09) -> None:
         self._value = value
         self._rel_tol = rel_tol
@@ -32,7 +32,7 @@ class approximately:
         return abs(self._value - other) <= max(self._rel_tol * max(abs(self._value), abs(other)), self._abs_tol)
 
 
-class approx_datetime:
+class ApproxDatetime:
     def __init__(self, value: Any) -> None:
         self._value = value
 
@@ -40,7 +40,7 @@ class approx_datetime:
         return abs(self._value - other) <= datetime.timedelta(seconds=2)
 
 
-class approx_timestamp(approximately):
+class ApproxTimestamp(Approximately):
     def __init__(self, value: Any) -> None:
         super().__init__(value, abs_tol=1)
 

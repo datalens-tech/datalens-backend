@@ -1,8 +1,8 @@
 from dl_formula_testing.testcases.operators import DefaultOperatorFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -12,9 +12,9 @@ class OperatorPostgreSQLTestSuite(DefaultOperatorFormulaConnectorTestSuite):
     make_str_array_cast = "text[]"
 
 
-class TestOperatorPostgreSQL_9_3(PostgreSQL_9_3TestBase, OperatorPostgreSQLTestSuite):
+class TestOperatorPostgreSQL9p3(PostgreSQL9p3TestBase, OperatorPostgreSQLTestSuite):
     pass
 
 
-class TestOperatorPostgreSQL_9_4(PostgreSQL_9_4TestBase, OperatorPostgreSQLTestSuite):
+class TestOperatorPostgreSQL9p4(PostgreSQL9p4TestBase, OperatorPostgreSQLTestSuite):
     pass

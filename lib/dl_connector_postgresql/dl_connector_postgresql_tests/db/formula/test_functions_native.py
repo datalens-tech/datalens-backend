@@ -7,13 +7,13 @@ from dl_formula_testing.testcases.functions_native import (
 )
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
-class TestNativeFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestNativeFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
@@ -40,8 +40,8 @@ class TestNativeFunctionPostgreSQL_9_3(
         assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == dbe.eval('ARRAY("a", "b", "c")')
 
 
-class TestNativeFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestNativeFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DefaultNativeFunctionFormulaConnectorTestSuite,
 ):
     def test_native_functions(self, dbe: DbEvaluator) -> None:
@@ -68,15 +68,15 @@ class TestNativeFunctionPostgreSQL_9_4(
         assert dbe.eval('DB_CALL_ARRAY_STRING("string_to_array", "a,b,c", ",")') == dbe.eval('ARRAY("a", "b", "c")')
 
 
-class TestNativeAggregationFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestNativeAggregationFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
     pass
 
 
-class TestNativeAggregationFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestNativeAggregationFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     DefaultNativeAggregationFunctionFormulaConnectorTestSuite,
 ):
     pass

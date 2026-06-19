@@ -15,55 +15,55 @@ from dl_connector_clickhouse.formula.testing.test_suites import (
     GenericDatetimeTypeFunctionClickHouseTestSuite,
     StrTypeFunctionClickHouseTestSuite,
 )
-from dl_connector_clickhouse_tests.db.formula.base import ClickHouse_21_8TestBase
+from dl_connector_clickhouse_tests.db.formula.base import ClickHouse21p8TestBase
 
 # STR
 
 
-class TestStrTypeFunctionClickHouse_21_8(ClickHouse_21_8TestBase, StrTypeFunctionClickHouseTestSuite):
+class TestStrTypeFunctionClickHouse21p8(ClickHouse21p8TestBase, StrTypeFunctionClickHouseTestSuite):
     pass
 
 
 # FLOAT
 
 
-class TestFloatTypeFunctionClickHouse_21_8(ClickHouse_21_8TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
+class TestFloatTypeFunctionClickHouse21p8(ClickHouse21p8TestBase, DefaultFloatTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # BOOL
 
 
-class TestBoolTypeFunctionClickHouse_21_8(ClickHouse_21_8TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
+class TestBoolTypeFunctionClickHouse21p8(ClickHouse21p8TestBase, DefaultBoolTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # INT
 
 
-class TestIntTypeFunctionClickHouse_21_8(ClickHouse_21_8TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
+class TestIntTypeFunctionClickHouse21p8(ClickHouse21p8TestBase, DefaultIntTypeFunctionFormulaConnectorTestSuite):
     pass
 
 
 # DATE
 
 
-class TestDateTypeFunctionClickHouse_21_8(ClickHouse_21_8TestBase, DateTypeFunctionClickHouseTestSuite):
+class TestDateTypeFunctionClickHouse21p8(ClickHouse21p8TestBase, DateTypeFunctionClickHouseTestSuite):
     pass
 
 
 # DATE_PARSE
 
 
-class TestDateParseTypeFunctionClickHouse_21_8(ClickHouse_21_8TestBase, FormulaConnectorTestBase):
+class TestDateParseTypeFunctionClickHouse21p8(ClickHouse21p8TestBase, FormulaConnectorTestBase):
     pass
 
 
 # GENERICDATETIME (& DATETIME)
 
 
-class TestGenericDatetimeTypeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestGenericDatetimeTypeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     GenericDatetimeTypeFunctionClickHouseTestSuite,
 ):
     pass
@@ -72,8 +72,8 @@ class TestGenericDatetimeTypeFunctionClickHouse_21_8(
 # GENERICDATETIME_PARSE (& DATETIME_PARSE)
 
 
-class TestGenericDatetimeParseTypeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestGenericDatetimeParseTypeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     GenericDatetimeParseTypeFunctionClickHouseTestSuite,
 ):
     pass
@@ -82,8 +82,8 @@ class TestGenericDatetimeParseTypeFunctionClickHouse_21_8(
 # GEOPOINT
 
 
-class TestGeopointTypeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestGeopointTypeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     DefaultGeopointTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -92,8 +92,8 @@ class TestGeopointTypeFunctionClickHouse_21_8(
 # GEOPOLYGON
 
 
-class TestGeopolygonTypeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestGeopolygonTypeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     DefaultGeopolygonTypeFunctionFormulaConnectorTestSuite,
 ):
     pass
@@ -102,8 +102,8 @@ class TestGeopolygonTypeFunctionClickHouse_21_8(
 # DB_CAST
 
 
-class TestDbCastTypeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestDbCastTypeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     DbCastTypeFunctionClickHouseTestSuite,
 ):
     pass
@@ -112,8 +112,8 @@ class TestDbCastTypeFunctionClickHouse_21_8(
 # TREE
 
 
-class TestTreeTypeFunctionClickHouse_21_8(
-    ClickHouse_21_8TestBase,
+class TestTreeTypeFunctionClickHouse21p8(
+    ClickHouse21p8TestBase,
     DefaultTreeTypeFunctionFormulaConnectorTestSuite,
 ):
     pass

@@ -571,7 +571,7 @@ class NewDatasetDataRequestBaseSchema(DatasetDataRequestBaseSchema):
         )
 
 
-class ResultDataRequestV1_5Schema(NewDatasetDataRequestBaseSchema):
+class ResultDataRequestV1p5Schema(NewDatasetDataRequestBaseSchema):
     TARGET_CLS = DataRequestModel
     QUERY_TYPE = QueryType.result
 

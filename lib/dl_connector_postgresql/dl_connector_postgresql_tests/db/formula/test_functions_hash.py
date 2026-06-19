@@ -8,8 +8,8 @@ from dl_formula_testing.testcases.functions_hash import (
 )
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 PG_HASH_FUNCTION_SUPPORT = HashFunctionSupport(
@@ -31,15 +31,15 @@ class PostgreSQLHashFunctionTestSuite(DefaultHashFunctionFormulaConnectorTestSui
         return super().test_sha256(dbe, data_table)
 
 
-class TestHashFunctionPostgreSQL_9_3(
-    PostgreSQL_9_3TestBase,
+class TestHashFunctionPostgreSQL9p3(
+    PostgreSQL9p3TestBase,
     PostgreSQLHashFunctionTestSuite,
 ):
     pass
 
 
-class TestHashFunctionPostgreSQL_9_4(
-    PostgreSQL_9_4TestBase,
+class TestHashFunctionPostgreSQL9p4(
+    PostgreSQL9p4TestBase,
     PostgreSQLHashFunctionTestSuite,
 ):
     pass

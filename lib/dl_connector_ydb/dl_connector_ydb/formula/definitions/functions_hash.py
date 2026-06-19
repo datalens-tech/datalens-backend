@@ -34,7 +34,7 @@ DEFINITIONS_HASH = [
             ),
         ]
     ),
-    base.MurmurHash2_64(
+    base.MurmurHash2x64(
         variants=[
             V(
                 D.YQL,

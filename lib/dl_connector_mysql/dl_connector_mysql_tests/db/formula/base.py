@@ -15,9 +15,9 @@ class MySQLTestBase(FormulaConnectorTestBase):
         return DB_URLS[self.dialect]
 
 
-class MySQL_5_7TestBase(MySQLTestBase):
+class MySQL5p7TestBase(MySQLTestBase):
     dialect = D.MYSQL_5_7
 
 
-class MySQL_8_0_12TestBase(MySQLTestBase):
+class MySQL8p0p12TestBase(MySQLTestBase):
     dialect = D.MYSQL_8_0_12

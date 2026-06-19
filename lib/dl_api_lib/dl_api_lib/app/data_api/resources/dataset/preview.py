@@ -241,7 +241,7 @@ class DatasetPreviewViewV1(DatasetPreviewView):
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
-class DatasetPreviewViewV1_5(DatasetPreviewViewV1):
+class DatasetPreviewViewV1p5(DatasetPreviewViewV1):
     """
     Same as v1, for full v1.5 coverage
     """

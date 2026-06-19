@@ -41,24 +41,24 @@ from dl_api_lib.app.data_api.resources.dataset.cache_invalidation_last_result im
 from dl_api_lib.app.data_api.resources.dataset.cache_invalidation_test import DatasetCacheInvalidationTestView
 from dl_api_lib.app.data_api.resources.dataset.distinct import (
     DatasetDistinctViewV1,
-    DatasetDistinctViewV1_5,
+    DatasetDistinctViewV1p5,
     DatasetDistinctViewV2,
 )
 from dl_api_lib.app.data_api.resources.dataset.fields import DatasetFieldsView
 from dl_api_lib.app.data_api.resources.dataset.pivot import DatasetPivotView
 from dl_api_lib.app.data_api.resources.dataset.preview import (
     DatasetPreviewViewV1,
-    DatasetPreviewViewV1_5,
+    DatasetPreviewViewV1p5,
     DatasetPreviewViewV2,
 )
 from dl_api_lib.app.data_api.resources.dataset.range import (
     DatasetRangeViewV1,
-    DatasetRangeViewV1_5,
+    DatasetRangeViewV1p5,
     DatasetRangeViewV2,
 )
 from dl_api_lib.app.data_api.resources.dataset.result import (
     DatasetResultViewV1,
-    DatasetResultViewV1_5,
+    DatasetResultViewV1p5,
     DatasetResultViewV2,
 )
 from dl_api_lib.app.data_api.resources.dataset.result_preflight import DatasetResultPreflightView
@@ -180,7 +180,7 @@ class DataApiAppFactory[TDataApiSettings: DataApiAppSettings](SRFactoryBuilder[T
             "post", "/api/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1
         )  # FIXME: Remove
         app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/result", DatasetResultViewV1)
-        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/result", DatasetResultViewV1_5)
+        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/result", DatasetResultViewV1p5)
         app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/result", DatasetResultViewV2)
         app.router.add_route(
             "post",
@@ -193,13 +193,13 @@ class DataApiAppFactory[TDataApiSettings: DataApiAppSettings](SRFactoryBuilder[T
         app.router.add_route(
             "post", "/api/data/v1/datasets/{ds_id}/versions/draft/values/distinct", DatasetDistinctViewV1
         )
-        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/values/distinct", DatasetDistinctViewV1_5)
+        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/values/distinct", DatasetDistinctViewV1p5)
         app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/values/distinct", DatasetDistinctViewV2)
         app.router.add_route(
             "post", "/api/v1/datasets/{ds_id}/versions/draft/values/range", DatasetRangeViewV1
         )  # FIXME: Remove
         app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/values/range", DatasetRangeViewV1)
-        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/values/range", DatasetRangeViewV1_5)
+        app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/values/range", DatasetRangeViewV1p5)
         app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/values/range", DatasetRangeViewV2)
         app.router.add_route(
             "post", "/api/data/v1/datasets/{ds_id}/versions/draft/pivot", DatasetPivotView
@@ -216,8 +216,8 @@ class DataApiAppFactory[TDataApiSettings: DataApiAppSettings](SRFactoryBuilder[T
                 "post", "/api/v1/datasets/{ds_id}/versions/draft/preview", DatasetPreviewViewV1
             )  # FIXME: Remove
             app.router.add_route("post", "/api/data/v1/datasets/{ds_id}/versions/draft/preview", DatasetPreviewViewV1)
-            app.router.add_route("post", "/api/data/v1.5/datasets/data/preview", DatasetPreviewViewV1_5)
-            app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/preview", DatasetPreviewViewV1_5)
+            app.router.add_route("post", "/api/data/v1.5/datasets/data/preview", DatasetPreviewViewV1p5)
+            app.router.add_route("post", "/api/data/v1.5/datasets/{ds_id}/preview", DatasetPreviewViewV1p5)
             app.router.add_route("post", "/api/data/v2/datasets/data/preview", DatasetPreviewViewV2)
             app.router.add_route("post", "/api/data/v2/datasets/{ds_id}/preview", DatasetPreviewViewV2)
 

@@ -1,8 +1,8 @@
 from dl_formula_testing.testcases.functions_datetime import DefaultDateTimeFunctionFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -12,9 +12,9 @@ class DateTimeFunctionPostgreSQLTestSuite(DefaultDateTimeFunctionFormulaConnecto
     supports_datetimetz = True
 
 
-class TestDateTimeFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, DateTimeFunctionPostgreSQLTestSuite):
+class TestDateTimeFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, DateTimeFunctionPostgreSQLTestSuite):
     pass
 
 
-class TestDateTimeFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, DateTimeFunctionPostgreSQLTestSuite):
+class TestDateTimeFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, DateTimeFunctionPostgreSQLTestSuite):
     pass

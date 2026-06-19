@@ -182,7 +182,7 @@ class DatasetRangeViewV1(DatasetRangeView):
         return self._make_response_v1(req_model=req_model, merged_stream=merged_stream)
 
 
-class DatasetRangeViewV1_5(DatasetRangeView):
+class DatasetRangeViewV1p5(DatasetRangeView):
     """
     Same as v1, for full v1.5 coverage
     """

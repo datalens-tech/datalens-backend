@@ -4,8 +4,8 @@ from dl_formula_testing.testcases.functions_hash import (
 )
 
 from dl_connector_mysql_tests.db.formula.base import (
-    MySQL_5_7TestBase,
-    MySQL_8_0_12TestBase,
+    MySQL5p7TestBase,
+    MySQL8p0p12TestBase,
 )
 
 MYSQL_HASH_FUNCTION_SUPPORT = HashFunctionSupport(
@@ -19,15 +19,15 @@ class HashFunctionMySQLTestSuite(DefaultHashFunctionFormulaConnectorTestSuite):
     hash_function_support = MYSQL_HASH_FUNCTION_SUPPORT
 
 
-class TestHashFunctionMySQL_5_7(
-    MySQL_5_7TestBase,
+class TestHashFunctionMySQL5p7(
+    MySQL5p7TestBase,
     HashFunctionMySQLTestSuite,
 ):
     pass
 
 
-class TestHashFunctionMySQL_8_0_12(
-    MySQL_8_0_12TestBase,
+class TestHashFunctionMySQL8p0p12(
+    MySQL8p0p12TestBase,
     HashFunctionMySQLTestSuite,
 ):
     pass

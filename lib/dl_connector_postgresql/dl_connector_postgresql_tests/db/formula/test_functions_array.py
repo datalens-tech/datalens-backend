@@ -4,8 +4,8 @@ from dl_formula_testing.evaluator import DbEvaluator
 from dl_formula_testing.testcases.functions_array import DefaultArrayFunctionFormulaConnectorTestSuite
 
 from dl_connector_postgresql_tests.db.formula.base import (
-    PostgreSQL_9_3TestBase,
-    PostgreSQL_9_4TestBase,
+    PostgreSQL9p3TestBase,
+    PostgreSQL9p4TestBase,
 )
 
 
@@ -32,9 +32,9 @@ class ArrayFunctionPostgreTestSuite(DefaultArrayFunctionFormulaConnectorTestSuit
         assert dbe.eval('CONTAINS_ANY(DB_CAST(ARRAY("cde"), "varchar[]"), [arr_str_value])', from_=data_table)
 
 
-class TestArrayFunctionPostgreSQL_9_3(PostgreSQL_9_3TestBase, ArrayFunctionPostgreTestSuite):
+class TestArrayFunctionPostgreSQL9p3(PostgreSQL9p3TestBase, ArrayFunctionPostgreTestSuite):
     pass
 
 
-class TestArrayFunctionPostgreSQL_9_4(PostgreSQL_9_4TestBase, ArrayFunctionPostgreTestSuite):
+class TestArrayFunctionPostgreSQL9p4(PostgreSQL9p4TestBase, ArrayFunctionPostgreTestSuite):
     pass

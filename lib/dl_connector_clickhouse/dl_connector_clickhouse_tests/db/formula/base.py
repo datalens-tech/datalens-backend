@@ -20,7 +20,7 @@ class ClickHouseTestBase(FormulaConnectorTestBase):
         return DB_URLS[self.dialect]
 
 
-class ClickHouse_21_8TestBase(ClickHouseTestBase):
+class ClickHouse21p8TestBase(ClickHouseTestBase):
     dialect = D.CLICKHOUSE_21_8
 
     @pytest.fixture(scope="class")
@@ -29,5 +29,5 @@ class ClickHouse_21_8TestBase(ClickHouseTestBase):
         return pytz.timezone("America/New_York")
 
 
-class ClickHouse_22_10TestBase(ClickHouseTestBase):
+class ClickHouse22p10TestBase(ClickHouseTestBase):
     dialect = D.CLICKHOUSE_22_10
