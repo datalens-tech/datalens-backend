@@ -25,7 +25,6 @@ jinja2 = "*"
 opentelemetry-sdk = "*"
 pydantic = "*"
 python = ">=3.12, <3.13"
-typing-extensions = "*"
 
 [tool.poetry.group.tests.dependencies]
 aiofiles = "*"

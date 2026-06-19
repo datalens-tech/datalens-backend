@@ -38,7 +38,7 @@ LOGGER = logging.getLogger(__name__)
 # label encoding, PID-change handling, lock discipline) is preserved verbatim
 # so that `prometheus_client.multiprocess.MultiProcessCollector` can read our
 # files unchanged, and so upstream bug-fixes remain trivial to backport.
-def PatchedMultiProcessValue(
+def PatchedMultiProcessValue(  # noqa: N802
     metrics_dir: pathlib.Path,
     process_identifier: Callable[[], int] = os.getpid,
 ) -> type:

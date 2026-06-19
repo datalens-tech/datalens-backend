@@ -1,7 +1,7 @@
 from dl_attrs_model_mapper.structs.mappings import FrozenMappingStrToStrOrStrSeq
 
 
-def test_FrozenMappingStrToStrOrStrSeq():
+def test_frozen_mapping_str_to_str_or_str_seq():
     mapping_data = {
         "de_havilland": (
             "comet",

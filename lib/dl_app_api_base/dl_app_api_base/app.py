@@ -500,12 +500,12 @@ class HttpServerAppFactoryMixin[AppType: HttpServerAppMixin](
     async def _setup_openapi(self, app: aiohttp.web.Application) -> None:
         open_api_spec = await self._get_aiohttp_open_api_spec()
         open_api_handler = openapi.OpenApiHandler(raw_spec=open_api_spec.raw)
-        app.router.add_route("GET", self.settings.OPEN_API.SPEC_PATH, open_api_handler.process)
+        app.router.add_route("GET", self.settings.OPEN_API.spec_path, open_api_handler.process)
 
         if self.settings.OPEN_API.SWAGGER_UI_ENABLED:
             swagger_handler = openapi.SwaggerHandler.from_dependencies(
                 openapi.SwaggerHandlerDependencies(
-                    url_prefix=self.settings.OPEN_API.EXTERNAL_DOCS_PATH,
+                    url_prefix=self.settings.OPEN_API.external_docs_path,
                     config_url=self.settings.OPEN_API.SPEC_REL_URL,
                 )
             )

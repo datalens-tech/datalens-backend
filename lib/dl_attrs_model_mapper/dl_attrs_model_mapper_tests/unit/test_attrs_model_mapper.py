@@ -257,7 +257,7 @@ def test_nested_containers():
     assert restored_target == target
 
 
-def test_FrozenMappingStrToStrOrStrSeqField():
+def test_frozen_mapping_str_to_str_or_str_seq_field():
     @ModelDescriptor()
     @attr.s(auto_attribs=True)
     class Container:

@@ -10,13 +10,13 @@ import dl_pydantic
 
 class OpenApiHandlerProtocol(Protocol):
     @property
-    def OPENAPI_TAGS(self) -> Sequence[str]: ...
+    def OPENAPI_TAGS(self) -> Sequence[str]: ...  # noqa: N802
 
     @property
-    def OPENAPI_DESCRIPTION(self) -> str: ...
+    def OPENAPI_DESCRIPTION(self) -> str: ...  # noqa: N802
 
     @property
-    def OPENAPI_INCLUDE(self) -> bool: ...
+    def OPENAPI_INCLUDE(self) -> bool: ...  # noqa: N802
 
     @property
     def _request_schema(self) -> type[dl_pydantic.BaseModel]: ...

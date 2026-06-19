@@ -182,7 +182,7 @@ def test_read_top_level_setting_fields_from_nested(
         root: _RootSettings = pydantic.Field(default_factory=_RootSettings)
 
         @property
-        def NESTED_FIELD3(self) -> str:
+        def nested_field3(self) -> str:
             return self.root.FIELD3
 
     class Settings(dl_settings.BaseRootSettings):
@@ -202,7 +202,7 @@ def test_read_top_level_setting_fields_from_nested(
 
     settings = Settings()
 
-    assert settings.NESTED.NESTED_FIELD3 == "top_level_setting_value"
+    assert settings.NESTED.nested_field3 == "top_level_setting_value"
 
 
 def test_partial_field_aliases_in_child_classes(

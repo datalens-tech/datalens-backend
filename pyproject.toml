@@ -137,6 +137,7 @@ select = [
   "FURB", # refurb
   "G", # flake8-logging-format
   "LOG", # flake8-logging
+  "N802", # pep8-naming (sub-rule): invalid-function-name
   "N804", # pep8-naming (sub-rule): invalid-first-argument-name-for-class-method
   "N805", # pep8-naming (sub-rule): invalid-first-argument-name-for-method
   "N806", # pep8-naming (sub-rule): non-lowercase-variable-in-function

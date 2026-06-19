@@ -10,10 +10,10 @@ from dl_sqlalchemy_mysql.base import DLMYSQLDialect
 
 
 class StarRocksTypeCompiler(MySQLTypeCompiler):
-    def visit_DATETIME(self, type_, **kw: Any):
+    def visit_DATETIME(self, type_, **kw: Any):  # noqa: N802
         return "DATETIME"
 
-    def visit_BOOLEAN(self, type_, **kw: Any):
+    def visit_BOOLEAN(self, type_, **kw: Any):  # noqa: N802
         return "BOOLEAN"
 
 

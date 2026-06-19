@@ -96,7 +96,7 @@ class BIPGCompiler(BIPGCompilerBasic, UPSTREAM.statement_compiler, CompilerPrett
 
 
 class BICustomPGTypeCompiler(UPSTREAM.type_compiler):
-    def visit_CITEXT(self, type_, **kw: Any):
+    def visit_CITEXT(self, type_, **kw: Any):  # noqa: N802
         return "CITEXT"
 
 

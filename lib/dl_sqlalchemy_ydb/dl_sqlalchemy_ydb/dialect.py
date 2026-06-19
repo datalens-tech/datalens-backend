@@ -261,88 +261,88 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
     def visit_datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "Datetime"
 
-    def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+    def visit_DATETIME(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_datetime(type_, **kw)
 
-    def visit_Datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+    def visit_Datetime(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_datetime(type_, **kw)
 
     def visit_datetime64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "Datetime64"
 
-    def visit_DATETIME64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+    def visit_DATETIME64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_datetime64(type_, **kw)
 
-    def visit_Datetime64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+    def visit_Datetime64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_datetime64(type_, **kw)
 
     def visit_timestamp(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "Timestamp"
 
-    def visit_TIMESTAMP(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+    def visit_TIMESTAMP(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_timestamp(type_, **kw)
 
-    def visit_Timestamp(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+    def visit_Timestamp(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_timestamp(type_, **kw)
 
     def visit_timestamp64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "Timestamp64"
 
-    def visit_TIMESTAMP64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+    def visit_TIMESTAMP64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_timestamp64(type_, **kw)
 
-    def visit_Timestamp64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+    def visit_Timestamp64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_timestamp64(type_, **kw)
 
     def visit_interval(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "Interval"
 
-    def visit_INTERVAL(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+    def visit_INTERVAL(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_interval(type_, **kw)
 
-    def visit_Interval(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+    def visit_Interval(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_interval(type_, **kw)
 
     def visit_interval64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
         return "Interval64"
 
-    def visit_INTERVAL64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:
+    def visit_INTERVAL64(self, type_: sa.DATETIME, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_interval64(type_, **kw)
 
-    def visit_Interval64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:
+    def visit_Interval64(self, type_: sa.DateTime, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_interval64(type_, **kw)
 
-    def visit_INTEGER(self, type_: sa.INTEGER, **kw: typing.Any) -> typing.Any:
+    def visit_INTEGER(self, type_: sa.INTEGER, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_integer(type_, **kw)
 
     def visit_integer(self, type_: sa.Integer, **kw: typing.Any) -> typing.Any:
         return "int32"
 
-    def visit_SMALLINT(self, type_: sa.SMALLINT, **kw: typing.Any) -> typing.Any:
+    def visit_SMALLINT(self, type_: sa.SMALLINT, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_small_integer(type_, **kw)
 
     def visit_small_integer(self, type_: sa.SmallInteger, **kw: typing.Any) -> typing.Any:
         return "int16"
 
-    def visit_BIGINT(self, type_: sa.BIGINT, **kw: typing.Any) -> typing.Any:
+    def visit_BIGINT(self, type_: sa.BIGINT, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return self.visit_big_integer(type_, **kw)
 
     def visit_big_integer(self, type_: sa.BigInteger, **kw: typing.Any) -> typing.Any:
         return "int64"
 
-    def visit_String(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+    def visit_String(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return "String"
 
-    def visit_Utf8(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+    def visit_Utf8(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return "Utf8"
 
-    def visit_Double(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+    def visit_Double(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return "Double"
 
-    def visit_Float(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+    def visit_Float(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return "Float"
 
-    def visit_Uuid(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:
+    def visit_Uuid(self, type_: typing.Any, **kw: typing.Any) -> typing.Any:  # noqa: N802
         return "UUID"
 
     def get_ydb_type(
@@ -384,7 +384,7 @@ class CustomYqlTypeCompiler(ydb_sa.YqlTypeCompiler):
 
         return super().get_ydb_type(type_, is_optional)
 
-    def visit_ARRAY(self, type_: sa.ARRAY, **kw: Any):
+    def visit_ARRAY(self, type_: sa.ARRAY, **kw: Any):  # noqa: N802
         inner = self.process(type_.item_type, **kw)
 
         if isinstance(type_, YqlOptionalItemListType):
