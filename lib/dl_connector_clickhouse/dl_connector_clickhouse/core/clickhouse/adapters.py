@@ -29,4 +29,6 @@ class DLAsyncClickHouseAdapter(AsyncClickHouseAdapter):
             return None
         if self._target_dto.readonly == 1:
             return 1
+        if dba_q.allow_write and self._target_dto.readonly == 0:
+            return 0
         return 2

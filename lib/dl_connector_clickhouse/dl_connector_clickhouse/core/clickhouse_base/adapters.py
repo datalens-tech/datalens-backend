@@ -534,6 +534,11 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
                     yield event, data
 
         else:
+            if event is None:
+                # No data received at all (0-byte body): a modifying / no-result-set statement
+                # (INSERT/UPDATE/DELETE/DDL/SET) returns an empty body.
+                yield parser.parts.FINISHED, None
+                return
             if event != parser.parts.FINISHED:
                 # TODO: return a sensible user-facing error in this case
                 # (see a test in `bi-api/tests/db/result/test_error_handling.py`)
@@ -598,6 +603,23 @@ class BaseAsyncClickHouseAdapter(AiohttpDBAdapter):
         events_generator = self._parse_response_body(resp)
         with self.wrap_execute_excs(query=query, stage="meta"):
             first_evt_type, first_evt_data = await events_generator.__anext__()
+
+        if first_evt_type == et.FINISHED:
+
+            async def empty_chunk_gen() -> TBIChunksGen:
+                return
+                yield
+
+            return AsyncRawExecutionResult(
+                raw_cursor_info={
+                    "columns": [],
+                    "names": [],
+                    "driver_types": [],
+                    "db_types": [],
+                    "clickhouse_headers": ch_resp_headers,
+                },
+                raw_chunk_generator=empty_chunk_gen(),
+            )
         assert first_evt_type == et.META
         if self._target_dto.disable_value_processing:
             row_converters = tuple(None for _ in first_evt_data)
