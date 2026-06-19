@@ -1743,6 +1743,7 @@ dl-obfuscator = {path = "../dl_obfuscator"}
 dl-retrier = {path = "../dl_retrier"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
+frozendict = "*"
 marshmallow = "*"
 multidict = "*"
 opentracing = "*"
@@ -1821,6 +1822,7 @@ dl-utils = {path = "../dl_utils"}
 flask = "*"
 flask-marshmallow = "*"
 flask-restx = "*"
+frozendict = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 pydantic = "*"
@@ -1901,7 +1903,6 @@ gunicorn = "*"
 jinja2 = "*"
 opentelemetry-sdk = "*"
 pydantic = "*"
-typing-extensions = "*"
 
 [package.source]
 type = "directory"
@@ -2192,6 +2193,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 google-api-core = "*"
 google-auth = "*"
 google-cloud-bigquery = "*"
@@ -2230,6 +2232,7 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-bitrix = {path = "../dl_sqlalchemy_bitrix"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 marshmallow = "*"
 redis = "*"
 redis_cache_lock = {path = "../redis-cache-lock"}
@@ -2263,6 +2266,7 @@ dl-settings = {path = "../dl_settings"}
 dl-sqlalchemy-chyt = {path = "../dl_sqlalchemy_chyt"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 marshmallow = "*"
 pydantic = "*"
 pydantic-settings = "*"
@@ -2302,6 +2306,7 @@ dl-sqlalchemy-clickhouse = {path = "../dl_sqlalchemy_clickhouse"}
 dl-testing = {path = "../dl_testing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 marshmallow = "*"
 pydantic = "*"
 pytest = "*"
@@ -2364,6 +2369,7 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-metrica-api = {path = "../dl_sqlalchemy_metrica_api"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 marshmallow = "*"
 sqlalchemy = "*"
 
@@ -2392,6 +2398,7 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-mssql = {path = "../dl_sqlalchemy_mssql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 pyodbc = "*"
 sqlalchemy = "*"
 
@@ -2424,6 +2431,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-mysql = {path = "../dl_sqlalchemy_mysql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 pymysql = "*"
 sqlalchemy = "*"
@@ -2455,6 +2463,7 @@ dl-formula-ref = {path = "../dl_formula_ref"}
 dl-i18n = {path = "../dl_i18n"}
 dl-sqlalchemy-oracle = {path = "../dl_sqlalchemy_oracle"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 oracledb = "*"
 sqlalchemy = "*"
@@ -2488,6 +2497,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-postgres = {path = "../dl_sqlalchemy_postgres"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
 python-dateutil = "*"
@@ -2520,6 +2530,7 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-sqlalchemy-promql = {path = "../dl_sqlalchemy_promql"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 marshmallow = "*"
 sqlalchemy = "*"
 
@@ -2549,6 +2560,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 marshmallow = "*"
 requests = "*"
 snowflake-connector-python = "*"
@@ -2586,6 +2598,7 @@ dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-starrocks = {path = "../dl_sqlalchemy_starrocks"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 pymysql = ">=1.0.2"
 sqlalchemy = "==1.4.51"
@@ -2618,6 +2631,7 @@ dl-i18n = {path = "../dl_i18n"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-query-processing = {path = "../dl_query_processing"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 requests = "*"
 sqlalchemy = "*"
@@ -2651,6 +2665,7 @@ dl-query-processing = {path = "../dl_query_processing"}
 dl-sqlalchemy-ydb = {path = "../dl_sqlalchemy_ydb"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 grpcio = "*"
 marshmallow = "*"
 shortuuid = "*"
@@ -2762,6 +2777,7 @@ dl-task-processor = {path = "../dl_task_processor"}
 dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 flask = "*"
+frozendict = "*"
 jaeger-client = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
@@ -2809,6 +2825,7 @@ dl-type-transformer = {path = "../dl_type_transformer"}
 dl-utils = {path = "../dl_utils"}
 docker = "*"
 Flask = "*"
+frozendict = "*"
 marshmallow = "*"
 psycopg2-binary = "*"
 pytest = "*"
@@ -2999,6 +3016,7 @@ attrs = "*"
 ciso8601 = "*"
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 graphviz = "*"
 pytz = "*"
 sqlalchemy = "*"
@@ -3024,6 +3042,7 @@ dl-formula = {path = "../dl_formula"}
 dl-formula-testing = {path = "../dl_formula_testing"}
 dl-i18n = {path = "../dl_i18n"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 jinja2 = "*"
 sqlalchemy = "*"
 tabulate = "*"
@@ -3183,6 +3202,7 @@ attrs = "*"
 dl-constants = {path = "../dl_constants"}
 dl-dynamic-enum = {path = "../dl_dynamic_enum"}
 dl-type-transformer = {path = "../dl_type_transformer"}
+frozendict = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 msgpack = "*"
@@ -3302,6 +3322,7 @@ dl-core = {path = "../dl_core"}
 dl-formula = {path = "../dl_formula"}
 dl-model-tools = {path = "../dl_model_tools"}
 dl-utils = {path = "../dl_utils"}
+frozendict = "*"
 pytz = "*"
 
 [package.source]
@@ -3406,6 +3427,7 @@ develop = true
 
 [package.dependencies]
 dl-pydantic = {path = "../dl_pydantic"}
+frozendict = "*"
 pydantic = "*"
 pydantic-settings = {version = "*", extras = ["yaml"]}
 
@@ -3423,6 +3445,7 @@ files = []
 develop = true
 
 [package.dependencies]
+frozendict = "*"
 sqlalchemy = "*"
 
 [package.source]
@@ -3566,6 +3589,7 @@ develop = true
 [package.dependencies]
 asyncpg = "*"
 dl-sqlalchemy-common = {path = "../dl_sqlalchemy_common"}
+frozendict = "*"
 psycopg2-binary = "*"
 sqlalchemy = "*"
 
@@ -3617,6 +3641,7 @@ files = []
 develop = true
 
 [package.dependencies]
+frozendict = "*"
 packaging = "*"
 sqlalchemy = "*"
 ydb = "*"
@@ -3715,6 +3740,7 @@ develop = true
 [package.dependencies]
 attrs = "*"
 dl-constants = {path = "../dl_constants"}
+frozendict = "*"
 marshmallow = "*"
 marshmallow-oneofschema = "*"
 python-dateutil = "*"
@@ -3787,7 +3813,7 @@ url = "../lib/dl_utils"
 
 [[package]]
 name = "dl-version"
-version = "0.2736.0"
+version = "0.2744.0"
 description = ""
 optional = false
 python-versions = ">=3.12, <3.13"
