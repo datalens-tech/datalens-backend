@@ -144,6 +144,7 @@ select = [
   "N812", # pep8-naming (sub-rule): lowercase-imported-as-non-lowercase
   "N813", # pep8-naming (sub-rule): camelcase-imported-as-lowercase
   "N814", # pep8-naming (sub-rule): camelcase-imported-as-constant
+  "N815", # pep8-naming (sub-rule): mixed-case-variable-in-class-scope
   "N817", # pep8-naming (sub-rule): camelcase-imported-as-acronym
   "N818", # pep8-naming (sub-rule): error-suffix-on-exception-name
   "N999", # pep8-naming (sub-rule): invalid-module-name

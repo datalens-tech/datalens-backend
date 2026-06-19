@@ -88,7 +88,7 @@ class BadRequestResponseSchema(BaseSchema):
 
 
 class ConnectionTemplateResponseSchema(BaseSchema):
-    templateName = ma_fields.String(required=True)
+    template_name = ma_fields.String(required=True, data_key="templateName")
 
 
 class GenericConnectionSchema(OneOfSchema):

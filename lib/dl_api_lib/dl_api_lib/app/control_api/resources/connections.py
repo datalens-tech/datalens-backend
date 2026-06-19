@@ -668,4 +668,4 @@ class ConnectionInfoTemplate(BIResource):
         if template_name is None:
             raise exc.ConnectionTemplateNotFoundError()
 
-        return {"templateName": template_name}
+        return {"template_name": template_name}
