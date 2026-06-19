@@ -114,7 +114,6 @@ ignore = [
 # Later — want these; enable in follow-up PRs/tickets, once the backlog
 # of existing violations is cleared:
 # "ANN",   # flake8-annotations — Later: blanket annotation enforcement, enabled incrementally per sub-rule in BI-7445 (see ANN* entries in select); the full category is still deferred
-# "S",     # flake8-bandit — Later: security checks; could complement a dedicated scanner (bandit/semgrep)
 #
 # Never — will not enable:
 # "I",   # isort — Never: ruff has no `force_grid_wrap` equivalent (tried; collapses multi-member imports), keep the standalone isort linter (see [tool.isort])
@@ -141,17 +140,7 @@ select = [
   "PT", # flake8-pytest-style
   "RET", # flake8-return
   "RUF", # Ruff-specific rules
-  "S107", # flake8-bandit (sub-rule): hardcoded-password-default (password-like value as a function default)
-  "S108", # flake8-bandit (sub-rule): hardcoded-temp-file (temp paths under /tmp etc.)
-  "S110", # flake8-bandit (sub-rule): try-except-pass (silently swallowed exceptions)
-  "S113", # flake8-bandit (sub-rule): request-without-timeout (HTTP call can hang forever)
-  "S301", # flake8-bandit (sub-rule): suspicious-pickle-usage (deserializing untrusted data)
-  "S303", # flake8-bandit (sub-rule): suspicious-insecure-hash-usage (MD2/MD4/MD5/SHA1)
-  "S602", # flake8-bandit (sub-rule): subprocess-popen-with-shell-equals-true (shell injection via subprocess shell=True)
-  "S603", # flake8-bandit (sub-rule): subprocess-without-shell-equals-true (subprocess call — audit for untrusted input)
-  "S605", # flake8-bandit (sub-rule): start-process-with-a-shell (shell injection via os.system)
-  "S607", # flake8-bandit (sub-rule): start-process-with-partial-path (subprocess with a non-absolute executable, e.g. "git" not "/usr/bin/git")
-  "S701", # flake8-bandit (sub-rule): jinja2-autoescape-false (XSS via unescaped template output)
+  "S", # flake8-bandit
   "SIM", # flake8-simplify
   "UP", # pyupgrade
 ]
