@@ -128,6 +128,8 @@ class DatasetView(DatasetBaseWrapper):
 
     _verbose_logging = True
 
+    RESULT_QUERY_SPEC_FORMALIZER_CLS: type[DataQuerySpecFormalizer] = DataQuerySpecFormalizer
+
     def __init__(
         self,
         ds: Dataset,
@@ -154,7 +156,7 @@ class DatasetView(DatasetBaseWrapper):
         elif query_type == QueryType.totals:
             query_form_cls = TotalsSpecFormalizer
         else:
-            query_form_cls = DataQuerySpecFormalizer
+            query_form_cls = self.RESULT_QUERY_SPEC_FORMALIZER_CLS
         return query_form_cls(
             verbose_logging=self._verbose_logging,
             dataset=self._ds,

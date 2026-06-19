@@ -136,6 +136,8 @@ LOGGER = logging.getLogger(__name__)
 class DatasetDataBaseView(BaseView):
     STORED_DATASET_REQUIRED: ClassVar[bool] = True
 
+    DATASET_VIEW_CLS: ClassVar[type[DatasetView]] = DatasetView
+
     profiler_prefix: ClassVar[str]
 
     dataset: Dataset
@@ -863,7 +865,7 @@ class DatasetDataBaseView(BaseView):
 
         us_manager = self.dl_request.us_manager
 
-        ds_view = DatasetView(
+        ds_view = self.DATASET_VIEW_CLS(
             ds=self.dataset,
             us_manager=us_manager,
             block_spec=block_spec,
