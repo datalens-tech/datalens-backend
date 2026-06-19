@@ -3,7 +3,7 @@ Load environment from config file (dl-repo.yml).
 The file should have a structure similar to this:
 
     dl_repo:
-      fs_editor: git
+      fs_editor: default
 
       include:
         - core_repo/dl-repo.yml

@@ -10,7 +10,6 @@ import os
 from pathlib import Path
 import re
 import shutil
-import subprocess
 from typing import (
     TextIO,
     cast,
@@ -18,7 +17,6 @@ from typing import (
 )
 
 import attr
-from git import Repo as GitRepo  # type: ignore
 
 
 @attr.s(frozen=True)
@@ -233,41 +231,6 @@ class DefaultFilesystemEditor(FilesystemEditor):
 
 
 @attr.s(frozen=True)
-class GitFilesystemEditor(DefaultFilesystemEditor):
-    """An FS editor that buses git to move files and directories"""
-
-    def _validate_paths_in_same_repo(self, *paths: Path) -> None:
-        root_paths = {GitRepo(path, search_parent_directories=True).working_tree_dir for path in paths}
-        if len(root_paths) > 1:
-            raise RuntimeError(
-                "Cross-repository operations are not supported for GitFilesystemEditor. Use `--fs-editor default`"
-            )
-
-    def _find_existing_parent(self, path: Path) -> Path:
-        assert path.is_absolute()
-        while not path.exists():
-            if path.parent == path:
-                break
-            path = path.parent
-        return path
-
-    def _move_path(self, old_path: Path, new_path: Path) -> None:
-        self._validate_paths_in_same_repo(old_path, self._find_existing_parent(new_path))
-        cwd = Path.cwd()
-        rel_old_path = Path(os.path.relpath(old_path, cwd))
-        rel_new_path = Path(os.path.relpath(new_path, cwd))
-        subprocess.run(
-            f'git add "{rel_old_path}" && git mv "{rel_old_path}" "{rel_new_path}"',
-            shell=True,
-        )
-
-    def _remove_path(self, path: Path) -> None:
-        result = subprocess.run(f'git rm -r "{path}"', shell=True)
-        if result.returncode != 0:
-            super()._remove_path(path)
-
-
-@attr.s(frozen=True)
 class VirtualFilesystemEditor(FilesystemEditor):
     _moved_paths: dict[Path, Path] = attr.ib(init=False, factory=dict)  # {<new_path>: <old_path>}
     _copied_paths: dict[Path, Path] = attr.ib(init=False, factory=dict)  # {<new_path>: <original_path>}
@@ -392,7 +355,6 @@ class VirtualFilesystemEditor(FilesystemEditor):
 
 _FS_EDITOR_CLASSES: dict[str, type[FilesystemEditor]] = {
     "default": DefaultFilesystemEditor,
-    "git": GitFilesystemEditor,
     "virtual": VirtualFilesystemEditor,
 }
 

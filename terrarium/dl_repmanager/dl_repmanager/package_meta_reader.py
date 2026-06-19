@@ -88,9 +88,6 @@ class PackageMetaReader:
     def get_mypy_stubs_overrides(self) -> dict:
         return dict(self._toml_reader.get_section(f"{self._SECTION_NAME_META}.mypy_stubs_packages_override"))
 
-    def get_mypy_common(self) -> dict:
-        return dict(self._toml_reader.get_section(f"{self._SECTION_NAME_META}.mypy_common", strict=False))
-
     def get_mypy_overrides_modules(self) -> list[dict]:
         section = self._toml_reader.get_section("tool.mypy", strict=False)
         return list(section.get("overrides", []))
@@ -138,22 +135,6 @@ class PackageMetaWriter(PackageMetaReader):
                 override = tomlkit.inline_table()
                 override.add("ignore", True)
                 section.add(name, override)
-
-    def update_mypy_common(self, to_update: dict[str, str]) -> bool:
-        changes = False
-        with self.toml_writer.suppress_non_existent_key():
-            key = "tools.mypy"
-            try:
-                section = self.toml_writer.get_editable_section(key)
-            except Exception as err:
-                print(err)
-                section = self.toml_writer.add_section(key)
-
-            for k, v in to_update.items():
-                if section[k] != v:
-                    changes = True
-                section[k] = v
-        return changes
 
     def update_package_name(self, new_name: str) -> None:
         self.toml_writer.set_text_value(section_name=self._SECTION_NAME_MAIN, key="name", value=new_name)

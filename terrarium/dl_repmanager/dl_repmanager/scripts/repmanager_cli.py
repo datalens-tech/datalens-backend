@@ -182,15 +182,6 @@ def make_parser() -> argparse.ArgumentParser:
     req_check_parser.add_argument("--ignore-prefix", type=str, help="Package prefix to ignore when comparing")
     req_check_parser.add_argument("--tests", action="store_true", help="Check for tests, not the main package")
 
-    metapackage_parser = argparse.ArgumentParser(add_help=False)
-    metapackage_parser.add_argument("--metapackage", required=True, help="Metapackage name from repo config")
-
-    subparsers.add_parser(
-        "ensure-mypy-common",
-        parents=[metapackage_parser],
-        help="Checks and updates all sub projects with mypy config using template in the meta package",
-    )
-
     compare_resulting_dependencies = subparsers.add_parser(
         "compare-resulting-deps",
         help=(
@@ -377,9 +368,6 @@ class DlRepManagerTool(CliToolBase):
         if not extra_req_specs and not extra_import_specs:
             print("Requirements are in sync with imports")
 
-    def ensure_mypy_common(self, metapackage_name: str) -> None:
-        self.py_prj_editor.update_mypy_common(metapackage_name=metapackage_name)
-
     def compare_resulting_deps(self, base_revision: str, group: str) -> None:
         repo_root = self.py_prj_editor.base_path
         main_git_mgr = GitManager(repo_root)
@@ -502,7 +490,6 @@ class DlRepManagerTool(CliToolBase):
             ),
             py_prj_editor=PyPrjEditor(
                 repository_env=repository_env,
-                package_index=package_index,
             ),
         )
 
@@ -557,8 +544,6 @@ class DlRepManagerTool(CliToolBase):
                     ignore_prefix=args.ignore_prefix,
                     tests=args.tests,
                 )
-            case "ensure-mypy-common":
-                tool.ensure_mypy_common(metapackage_name=args.metapackage)
             case "compare-resulting-deps":
                 tool.compare_resulting_deps(base_revision=args.base_rev, group=args.group)
             case "resolve":

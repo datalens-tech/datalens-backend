@@ -95,13 +95,12 @@ Controls how FS operations are performed
 
 Possible values:
 - `default`
-- `git`
 - `virtual`
 
 The default is set in the repo config ([dl-repo.yml](../../dl-repo.yml)). If not, the default is `default`.
 
 ```bash
-dl-repo --fs-editor git <command> ...
+dl-repo --fs-editor default <command> ...
 ```
 
 
@@ -144,11 +143,6 @@ dl-repo copy --package-name dl_super_package --from-package-name dl_core
 The `--package-name` argument is the name of the new package's folder and module name. This argument is required.
 
 The `--from-package-name` argument of the package to copy (to use as the boilerplate). This argument is required.
-
-
-### ensure-mypy-common
-
-*TODO*
 
 
 ### import-list

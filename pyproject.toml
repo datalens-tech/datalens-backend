@@ -159,6 +159,7 @@ select = [
   "S113", # flake8-bandit (sub-rule): request-without-timeout (HTTP call can hang forever)
   "S301", # flake8-bandit (sub-rule): suspicious-pickle-usage (deserializing untrusted data)
   "S303", # flake8-bandit (sub-rule): suspicious-insecure-hash-usage (MD2/MD4/MD5/SHA1)
+  "S602", # flake8-bandit (sub-rule): subprocess-popen-with-shell-equals-true (shell injection via subprocess shell=True)
   "S603", # flake8-bandit (sub-rule): subprocess-without-shell-equals-true (subprocess call — audit for untrusted input)
   "S605", # flake8-bandit (sub-rule): start-process-with-a-shell (shell injection via os.system)
   "S607", # flake8-bandit (sub-rule): start-process-with-partial-path (subprocess with a non-absolute executable, e.g. "git" not "/usr/bin/git")
