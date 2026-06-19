@@ -10,7 +10,7 @@ DSN_TEMPLATE = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
 
 def make_constructor(
     username: str = "user",
-    password: str = "secret",
+    password: str = "secret",  # noqa: S107
     db_name: str = "mydb",
 ) -> ClassicSQLConnLineConstructor:
     dto = BaseSQLConnTargetDTO(

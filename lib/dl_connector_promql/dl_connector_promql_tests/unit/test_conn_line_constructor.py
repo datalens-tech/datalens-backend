@@ -11,7 +11,7 @@ DSN_TEMPLATE = "{dialect}://{user}:{passwd}@{host}:{port}/{db_name}"
 
 def make_constructor(
     username: str | None = "user",
-    password: str | None = "secret",
+    password: str | None = "secret",  # noqa: S107
 ) -> PromQLConnLineConstructor:
     dto = PromQLConnTargetDTO(
         conn_id=None,
