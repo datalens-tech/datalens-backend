@@ -2,8 +2,6 @@ name: "🐳 Build Debian Docker Image"
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "04 05 * * 6" # every Saturday at 05:04
   push:
     branches:
       - main
