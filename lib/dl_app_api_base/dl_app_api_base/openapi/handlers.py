@@ -46,7 +46,7 @@ class SwaggerHandler(base.BaseHandler):
     def from_dependencies(cls, dependencies: SwaggerHandlerDependencies) -> Self:
         environment = jinja2.Environment(
             loader=jinja2.FileSystemLoader(SWAGGER_TEMPLATE_DIR),
-            autoescape=jinja2.select_autoescape(["html"]),
+            autoescape=True,
         )
         template = environment.get_template("doc.html")
 
