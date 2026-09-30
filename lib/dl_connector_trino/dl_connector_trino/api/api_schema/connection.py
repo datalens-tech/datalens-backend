@@ -25,14 +25,6 @@ class TrinoConnectionSchemaBase(
 ):
     TARGET_CLS = ConnectionTrinoBase
 
-    auth_type = DynamicEnumField(
-        TrinoAuthType,
-        attribute="data.auth_type",
-        required=False,
-        allow_none=True,
-        dump_default=None,
-        bi_extra=FieldExtra(editable=True),
-    )
     password = secret_string_field(
         attribute="data.password",
         required=False,
@@ -52,7 +44,6 @@ class TrinoConnectionSchemaBase(
     ssl_ca = core_ma_fields.Base64StringField(
         attribute="data.ssl_ca",
         required=False,
-        allow_none=True,
         load_only=True,
         load_default=None,
         bi_extra=FieldExtra(editable=True),
@@ -61,7 +52,6 @@ class TrinoConnectionSchemaBase(
         ListingSources,
         attribute="data.listing_sources",
         required=True,
-        allow_none=False,
         bi_extra=FieldExtra(editable=True),
     )
 
@@ -73,6 +63,5 @@ class TrinoConnectionSchema(TrinoConnectionSchemaBase):
         TrinoAuthType,
         attribute="data.auth_type",
         required=True,
-        allow_none=False,
         bi_extra=FieldExtra(editable=True),
     )
